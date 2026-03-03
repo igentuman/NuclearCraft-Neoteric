@@ -1,5 +1,6 @@
 package igentuman.nc.block.target_chamber;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
 import igentuman.nc.multiblock.MultiblockHandler;
@@ -9,14 +10,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -56,6 +58,12 @@ public class TargetChamberBeamPortBlock extends HorizontalDirectionalBlock imple
                         .setValue(PORT_MODE, PortMode.Mode.INPUT)
         );
     }
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return simpleCodec(TargetChamberBeamPortBlock::new);
+    }
+
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
@@ -74,18 +82,18 @@ public class TargetChamberBeamPortBlock extends HorizontalDirectionalBlock imple
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
-            if(isMultiTool(player.getItemInHand(hand))) {
+            if(isMultiTool(stack)) {
                 PortMode.Mode mode = state.getValue(PORT_MODE);
                 PortMode.Mode newMode = mode.next();
                 level.setBlockAndUpdate(pos, state.setValue(PORT_MODE, newMode));
                 MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(pos);
                 player.sendSystemMessage(__("message.nc.switch_side.mode", newMode));
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @javax.annotation.Nullable
@@ -105,7 +113,7 @@ public class TargetChamberBeamPortBlock extends HorizontalDirectionalBlock imple
         };
     }
 
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag)
     {
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }
@@ -114,7 +122,7 @@ public class TargetChamberBeamPortBlock extends HorizontalDirectionalBlock imple
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
         super.onNeighborChange(state, level, pos, neighbor);
         if(level.isClientSide()) return;
-        if(level.getExistingBlockEntity(neighbor) instanceof MultiblockControllerBE) {
+        if(NCLevels.getExistingBlockEntity(level, neighbor) instanceof MultiblockControllerBE) {
             return;
         }
         MultiblockHandler.get(((Level)level).dimension()).trackBlockChange(pos);

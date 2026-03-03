@@ -8,20 +8,19 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.setup.registration.FissionFuel;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.List;
-import java.util.function.Consumer;
 
-import static igentuman.nc.NuclearCraft.forgeRl;
+import static igentuman.nc.NuclearCraft.neoforgeRl;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.FissionFuel.*;
 import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
@@ -37,7 +36,7 @@ public abstract class AbstractRecipeProvider {
 
     public static String ID;
 
-    public static Consumer<FinishedRecipe> consumer;
+    public static RecipeOutput consumer;
     private static List<NcIngredient> input;
     private static List<NcIngredient> output;
     private static double[] params;
@@ -73,7 +72,7 @@ public abstract class AbstractRecipeProvider {
     }
 
     protected static ItemStack stack(String item, int count) {
-        return new ItemStack(ForgeRegistries.ITEMS.getValue(rlFromString(item)), count);
+        return new ItemStack(BuiltInRegistries.ITEM.get(rlFromString(item)), count);
     }
 
     public static ItemStack[] stackArray(ItemStack... stacks) {
@@ -260,7 +259,7 @@ public abstract class AbstractRecipeProvider {
             key = name.split(":")[0];
             name = name.split(":")[1];
         }
-        return TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), ResourceLocation.tryBuild(key, name));
+        return TagKey.create(BuiltInRegistries.FLUID.key(), ResourceLocation.fromNamespaceAndPath(key, name));
     }
 
     public static Item blockItem(String name)
@@ -348,7 +347,7 @@ public abstract class AbstractRecipeProvider {
     {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];
-        return ingredient(TagKey.create(ITEM_REGISTRY, forgeRl(name)), count);
+        return ingredient(TagKey.create(ITEM_REGISTRY, neoforgeRl(name)), count);
     }
 
     public static NcIngredient dustIngredient(String name, int...pCount)

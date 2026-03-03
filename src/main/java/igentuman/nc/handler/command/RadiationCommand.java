@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import igentuman.nc.radiation.data.RadiationManager;
+import igentuman.nc.setup.registration.NCAttachments;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -12,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
-import static igentuman.nc.radiation.data.PlayerRadiationProvider.PLAYER_RADIATION;
 import static igentuman.nc.util.TextUtils.__;
 
 public class RadiationCommand {
@@ -52,9 +52,7 @@ public class RadiationCommand {
 
         if ("clear_player".equals(action)) {
             ServerPlayer targetPlayer = EntityArgument.getPlayer(context, "player");
-            targetPlayer.getCapability(PLAYER_RADIATION).ifPresent(playerRadiation -> {
-                playerRadiation.setRadiation(0);
-            });
+            targetPlayer.getData(NCAttachments.PLAYER_RADIATION.get()).setRadiation(0);
             executor.sendSystemMessage(Component.literal("Cleared player radiation " + targetPlayer.getName().getString()));
             return 1;
         }

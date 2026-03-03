@@ -1,15 +1,13 @@
 package igentuman.nc.recipes.type;
 
 import igentuman.nc.content.particles.ParticleStack;
-import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
 
@@ -26,7 +24,7 @@ public abstract class TargetChamberRecipe extends NcRecipe {
     public ParticleStack[] outputParticles;
 
     public TargetChamberRecipe(
-            ResourceLocation id,
+            String codeId,
             ItemStackIngredient[] inputItems,
             ItemStackIngredient[] outputItems,
             FluidStackIngredient[] inputFluids,
@@ -37,7 +35,7 @@ public abstract class TargetChamberRecipe extends NcRecipe {
             double crossSection
     ) {
 
-        super(id);
+        super(codeId);
         this.inputItems = inputItems;
         this.outputItems = outputItems;
         this.inputFluids = inputFluids;
@@ -57,7 +55,7 @@ public abstract class TargetChamberRecipe extends NcRecipe {
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
+    public void write(RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(inputItems.length);
         for (ItemStackIngredient input : inputItems) {
             if(input == null || input.getRepresentations().isEmpty()) {

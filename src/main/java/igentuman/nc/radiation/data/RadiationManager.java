@@ -4,8 +4,11 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.compat.mekanism.MekanismRadiation;
 import igentuman.nc.network.toClient.PacketPlayerRadiationData;
 import igentuman.nc.network.toClient.PacketWorldRadiationData;
+import igentuman.nc.setup.registration.NCAttachments;
 import igentuman.nc.util.ModUtil;
 import net.minecraft.core.BlockPos;
+import igentuman.api.platform.NCSerialization;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -57,7 +60,9 @@ public class RadiationManager extends SavedData {
             return instances.get(level.dimension());
         }
         DimensionDataStorage storage = ((ServerLevel)level).getDataStorage();
-        instances.put(level.dimension(), storage.computeIfAbsent(RadiationManager::new, RadiationManager::new, "nc_world_radiation"));
+        instances.put(level.dimension(), storage.computeIfAbsent(
+                new SavedData.Factory<>(RadiationManager::new, RadiationManager::new, null),
+                "nc_world_radiation"));
         return instances.get(level.dimension());
     }
 
@@ -67,12 +72,10 @@ public class RadiationManager extends SavedData {
             long wasRadiation = 0;
             long playerRadiation = 0;
             if (player instanceof ServerPlayer serverPlayer) {
-                PlayerRadiation playerRadiationCap = serverPlayer.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
-                if(playerRadiationCap != null) {
-                    wasRadiation = playerRadiationCap.getRadiation();
-                    playerRadiationCap.updateRadiation(level, player);
-                    playerRadiation = playerRadiationCap.getRadiation();
-                }
+                PlayerRadiation playerRadiationCap = serverPlayer.getData(NCAttachments.PLAYER_RADIATION.get());
+                wasRadiation = playerRadiationCap.getRadiation();
+                playerRadiationCap.updateRadiation(level, player);
+                playerRadiation = playerRadiationCap.getRadiation();
 
                 NuclearCraft.packetHandler().sendTo(new PacketWorldRadiationData(worldRadiation.chunkRadiation), serverPlayer);
                 NuclearCraft.packetHandler().sendTo(new PacketPlayerRadiationData(playerRadiation), serverPlayer);
@@ -94,9 +97,9 @@ public class RadiationManager extends SavedData {
         }
     }
 
-    public RadiationManager(CompoundTag tag) {
+    public RadiationManager(CompoundTag tag, HolderLookup.Provider registries) {
         if(tag.contains("radiation")) {
-            worldRadiation = WorldRadiation.deserialize(tag);
+            worldRadiation = WorldRadiation.deserialize(registries, tag);
         } else {
             worldRadiation = new WorldRadiation();
         }
@@ -104,8 +107,8 @@ public class RadiationManager extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(CompoundTag tag) {
-        return worldRadiation.serializeNBT();
+    public @NotNull CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        return NCSerialization.serialize(worldRadiation, registries);
     }
     protected int[] ignoredPos;
     public void addRadiation(Level level, double value, int x, int y, int z) {

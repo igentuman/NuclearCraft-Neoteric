@@ -1,10 +1,9 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.api.nc.Processor;
+import igentuman.api.platform.NCSerialization;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.compat.cc.ProcessorPeripheral;
-import igentuman.nc.compat.oc2.ProcessorDevice;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -34,27 +33,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
-import static igentuman.nc.compat.oc2.ProcessorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.handler.config.ProcessorsConfig.PROCESSOR_CONFIG;
 import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
-import static igentuman.nc.util.ModUtil.*;
+import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
 public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
@@ -63,12 +55,9 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     protected final CustomEnergyStorage energyStorage;
     public final HashMap<String, NcRecipe> cachedRecipes = new HashMap<>();
     public final UpgradesHandler upgradesHandler;
-    protected final LazyOptional<IItemHandler> handler;
     public final CatalystHandler catalystHandler;
     public int manualUpdateCounter = 40;
     protected int skippedTicks = 1;
-    protected LazyOptional<ProcessorPeripheral> peripheralCap;
-    protected final LazyOptional<IEnergyStorage> energy;
     protected long lastTickTime = 0;
 
     @NBTField
@@ -88,10 +77,6 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     protected ParticleOptions particle1 = ParticleTypes.SMOKE;
     protected ProcessorPrefab<?,?> prefab;
 
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
-
     public NCProcessorBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(NCProcessors.PROCESSORS_BE.get(name).get(), pPos, pBlockState);
         NAME = name;
@@ -103,9 +88,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         energyStorage = createEnergy();
         energyStorage.setInputEnergyTier(GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get().ordinal());
         energyStorage.setOutputEnergyTier(GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get().ordinal());
-        energy = LazyOptional.of(() -> energyStorage);
         upgradesHandler = createUpgradesHandler();
-        handler = LazyOptional.of(() -> upgradesHandler);
         catalystHandler = createCatalystHandler();
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
         for(int i = 0; i < prefab().getSlotsConfig().getInputFluids(); i++) {
@@ -150,13 +133,6 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
             prefab = Processors.all().get(getName());
         }
         return prefab;
-    }
-
-    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new ProcessorPeripheral(this));
-        }
-        return peripheralCap.cast();
     }
 
     @Override
@@ -316,35 +292,6 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     protected boolean gtEUSupported()
     {
         return PROCESSOR_CONFIG.GT_SUPPORT.get() == 2 || PROCESSOR_CONFIG.GT_SUPPORT.get() == 1;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY && PROCESSOR_CONFIG.GT_SUPPORT.get() != 2) {
-            if(prefab().config().getPower() > 0) {
-                return getEnergy().cast();
-            }
-            return LazyOptional.empty();
-        }
-
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return getPeripheral(cap, side);
-            }
-        }
-
-        if(isOC2Loaded()) {
-            if(cap == DEVICE_CAPABILITY) {
-                return getOCDevice(cap, side);
-            }
-        }
-
-        return super.getCapability(cap, side);
-    }
-
-    private <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
-        return LazyOptional.of(() -> ProcessorDevice.createDevice(this)).cast();
     }
 
     public void tickClient() {
@@ -512,8 +459,6 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        contentHandler().invalidate();
-        energy.invalidate();
     }
 
     public double getProgress() {
@@ -548,14 +493,15 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     public CompoundTag getTagForStack() {
         CompoundTag data = new CompoundTag();
+        var registries = level.registryAccess();
         contentHandler().saveSideMap();
-        data.put("Content", contentHandler().serializeNBT());
-        data.put("Energy", energyStorage().serializeNBT());
+        data.put("Content", NCSerialization.serialize(contentHandler(), registries));
+        data.put("Energy", NCSerialization.serialize(energyStorage(), registries));
         CompoundTag infoTag = new CompoundTag();
         saveFullTagData(infoTag);
-        infoTag.put("upgrades", upgradesHandler().serializeNBT());
-        infoTag.put("catalyst", catalystHandler().serializeNBT());
-        infoTag.put("recipeInfo", recipeInfo().serializeNBT());
+        infoTag.put("upgrades", NCSerialization.serialize(upgradesHandler(), registries));
+        infoTag.put("catalyst", NCSerialization.serialize(catalystHandler(), registries));
+        infoTag.put("recipeInfo", NCSerialization.serialize(recipeInfo(), registries));
         infoTag.putInt("energy", energyStorage().getEnergyStored());
         data.put("Info", infoTag);
         return data;

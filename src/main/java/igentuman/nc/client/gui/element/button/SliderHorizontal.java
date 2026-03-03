@@ -82,7 +82,6 @@ public class SliderHorizontal extends NCGuiElement {
     }
 
     public void drawSlide(GuiGraphics graphics) {
-        RenderSystem.setShaderTexture(0, TEXTURE);
         graphics.blit(TEXTURE, this.x+ screen.getGuiLeft(), this.y+2+screen.getGuiTop(), 5, 175, this.width, 3, this.textureWidth, this.textureHeight);
     }
 

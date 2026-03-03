@@ -1,6 +1,6 @@
 package igentuman.nc.effect;
 import igentuman.nc.radiation.data.PlayerRadiation;
-import igentuman.nc.radiation.data.PlayerRadiationProvider;
+import igentuman.nc.setup.registration.NCAttachments;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -27,14 +27,13 @@ public class RadiationResistance extends MobEffect {
         return true;
     }
 
-    public void applyEffectTick(LivingEntity ent, int id)
+    @Override
+    public boolean applyEffectTick(LivingEntity ent, int id)
     {
         if(ent instanceof ServerPlayer serverPlayer) {
-            PlayerRadiation radCap = serverPlayer.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
-            if (radCap == null) {
-                return;
-            }
+            PlayerRadiation radCap = serverPlayer.getData(NCAttachments.PLAYER_RADIATION.get());
             radCap.setRadiation(Math.max(radCap.getRadiation() - 1000, 0));
         }
+        return true;
     }
 }

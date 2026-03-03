@@ -1,5 +1,6 @@
 package igentuman.nc.block.fission;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.container.FissionPortContainer;
 import igentuman.nc.multiblock.MultiblockHandler;
@@ -8,18 +9,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -32,7 +33,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,6 +60,12 @@ public class FissionPortBlock extends HorizontalDirectionalBlock implements Enti
                         .setValue(HORIZONTAL_FACING, Direction.NORTH)
         );
     }
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return simpleCodec(FissionPortBlock::new);
+    }
+
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
@@ -76,10 +83,9 @@ public class FissionPortBlock extends HorizontalDirectionalBlock implements Enti
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-
+    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result) {
         if (!level.isClientSide()) {
-            BlockEntity be = level.getExistingBlockEntity(pos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(level, pos);
 
             if (be instanceof FissionPortBE port)  {
                 MenuProvider containerProvider = new MenuProvider() {
@@ -93,7 +99,7 @@ public class FissionPortBlock extends HorizontalDirectionalBlock implements Enti
                         return new FissionPortContainer(windowId, pos, playerInventory);
                     }
                 };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+                ((ServerPlayer) player).openMenu(containerProvider, be.getBlockPos());
             }
         }
         return InteractionResult.SUCCESS;
@@ -116,7 +122,7 @@ public class FissionPortBlock extends HorizontalDirectionalBlock implements Enti
         };
     }
 
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag)
     {
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.energy_eu_tier.depends_on_controller").withStyle(ChatFormatting.GOLD));
@@ -132,7 +138,7 @@ public class FissionPortBlock extends HorizontalDirectionalBlock implements Enti
 
     @Override
     public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
-        return pLevel.getExistingBlockEntity(pPos) instanceof FissionPortBE be ? be.analogSignal : 0;
+        return NCLevels.getExistingBlockEntity(pLevel, pPos) instanceof FissionPortBE be ? be.analogSignal : 0;
     }
 
     @Override

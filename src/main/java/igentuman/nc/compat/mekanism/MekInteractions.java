@@ -2,7 +2,7 @@ package igentuman.nc.compat.mekanism;
 
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -10,13 +10,10 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.CapabilityUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
-import java.util.Optional;
 
 public class MekInteractions {
 
@@ -33,7 +30,7 @@ public class MekInteractions {
                     if (!player.isShiftKeyDown()) {
                         player.displayClientMessage(MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
                                 dataType, dataType.getColor().getColoredName()), true);
-                    } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, be)) {
+                    } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, be.getLevel(), be.getBlockPos(), be)) {
                         return false;
                     } else {
                         DataType old = dataType;
@@ -48,9 +45,12 @@ public class MekInteractions {
                 return true;
             }
         }
-        Optional<IConfigurable> capability = CapabilityUtils.getCapability(be, Capabilities.CONFIGURABLE, side).resolve();
-        if (capability.isPresent()) {
-            IConfigurable config = capability.get();
+        // TODO: Mekanism capability lookup changed in NeoForge 1.21.1.
+        // Verify the correct Mekanism NeoForge 1.21.1 API for CONFIGURABLE capability lookup.
+        IConfigurable config = be.getLevel() != null
+                ? be.getLevel().getCapability(Capabilities.CONFIGURABLE, be.getBlockPos(), side)
+                : null;
+        if (config != null) {
             if (player.isShiftKeyDown()) {
                 return config.onSneakRightClick(player) == InteractionResult.SUCCESS;
             }

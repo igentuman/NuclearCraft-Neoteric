@@ -1,5 +1,6 @@
 package igentuman.nc.network.toServer;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fission.entity.FissionPortBE;
@@ -14,19 +15,26 @@ import igentuman.nc.client.gui.element.button.Button.ReactorPortRedstoneModeButt
 import igentuman.nc.client.gui.element.button.Button.ReactorMode;
 import igentuman.nc.client.gui.element.button.Button.RedstoneConfig;
 import igentuman.nc.item.ContainerBlockItem;
-import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
 
-public class PacketGuiButtonPress implements INcPacket {
+public class PacketGuiButtonPress implements CustomPacketPayload {
+
+    public static final CustomPacketPayload.Type<PacketGuiButtonPress> TYPE =
+        new CustomPacketPayload.Type<>(NuclearCraft.rl("gui_button_press"));
+
+    public static final StreamCodec<FriendlyByteBuf, PacketGuiButtonPress> STREAM_CODEC =
+        StreamCodec.of((buf, pkt) -> pkt.encode(buf), PacketGuiButtonPress::decode);
 
     private BlockPos tilePosition;
     private UUID playerUUID;
@@ -48,10 +56,15 @@ public class PacketGuiButtonPress implements INcPacket {
 
     }
 
-
     @Override
-    public void handle(NetworkEvent.Context context) {
-        ServerPlayer player = context.getSender();
+    public Type<? extends CustomPacketPayload> type() { return TYPE; }
+
+    public static void handle(PacketGuiButtonPress packet, IPayloadContext context) {
+        context.enqueueWork(() -> packet.handlePacket(context));
+    }
+
+    private void handlePacket(IPayloadContext context) {
+        ServerPlayer player = (ServerPlayer) context.player();
         if (player == null) {
             return;
         }
@@ -123,7 +136,6 @@ public class PacketGuiButtonPress implements INcPacket {
         }
     }
 
-    @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(tilePosition);
         buffer.writeUUID(playerUUID);

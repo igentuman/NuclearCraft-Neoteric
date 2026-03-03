@@ -1,9 +1,10 @@
 package igentuman.nc.block;
 
+import igentuman.api.platform.NCItemStacks;
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,6 +35,11 @@ public class MultiblockControllerBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return simpleCodec(MultiblockControllerBlock::new);
+    }
+
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
@@ -47,10 +54,9 @@ public class MultiblockControllerBlock extends HorizontalDirectionalBlock {
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
 
-        if (stack.hasTag()) {
-            MultiblockControllerBE tileEntity = (MultiblockControllerBE) world.getExistingBlockEntity(pos);
-            CompoundTag nbtData = stack.getOrCreateTag();
-            tileEntity.updateEnergyTier(nbtData.getInt("upgrade_tier"));
+        if (NCItemStacks.hasCustomData(stack)) {
+            MultiblockControllerBE tileEntity = (MultiblockControllerBE) NCLevels.getExistingBlockEntity(world, pos);
+            tileEntity.updateEnergyTier(NCItemStacks.getInt(stack, "upgrade_tier"));
         }
     }
 
@@ -64,7 +70,7 @@ public class MultiblockControllerBlock extends HorizontalDirectionalBlock {
         pPlayer.awardStat(Stats.BLOCK_MINED.get(this));
         pPlayer.causeFoodExhaustion(0.005F);
         ItemStack drop = new ItemStack(this);
-        drop.getOrCreateTag().putInt("upgrade_tier", be.upgrade_tier);
+        NCItemStacks.putInt(drop, "upgrade_tier", be.upgrade_tier);
         if (!pLevel.isClientSide()) {
             ItemEntity itemEntity = new ItemEntity(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), drop);
             itemEntity.setDefaultPickUpDelay();

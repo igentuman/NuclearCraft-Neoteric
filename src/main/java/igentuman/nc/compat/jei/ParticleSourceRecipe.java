@@ -4,7 +4,7 @@ import igentuman.nc.content.particles.Particle;
 import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import static igentuman.nc.NuclearCraft.rl;
 

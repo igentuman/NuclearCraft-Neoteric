@@ -1,5 +1,6 @@
 package igentuman.nc.item;
 
+import igentuman.api.platform.NCItemStacks;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -43,9 +44,9 @@ public class ProcessorBlockItem extends BlockItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
 	{
-		if(stack.hasTag() && stack.getTag().contains("energy")) {
+		if(NCItemStacks.hasCustomData(stack) && NCItemStacks.contains(stack, "energy")) {
 			list.add(__("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
 		}
 		if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;

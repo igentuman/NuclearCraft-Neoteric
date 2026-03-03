@@ -1,9 +1,10 @@
 package igentuman.nc.util.capability;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
-import net.minecraftforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.EnergyStorage;
 
 import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.compat.gregtech.GTUtils.*;
@@ -141,14 +142,16 @@ public class CustomEnergyStorage extends EnergyStorage {
         maxExtract = i;
     }
 
-    public Tag serializeNBT() {
+    @Override
+    public Tag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putInt("energy", this.getEnergyStored());
         tag.putInt("capacity", this.getMaxEnergyStored());
         return tag;
     }
 
-    public void deserializeNBT(Tag nbt) {
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, Tag nbt) {
         if (nbt instanceof IntTag intNbt) {
             this.energy = intNbt.getAsInt();
         } else {

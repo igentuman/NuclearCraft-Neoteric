@@ -1,7 +1,9 @@
 package igentuman.nc.block.turbine;
 
+import igentuman.api.platform.NCBlockProperties;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -12,11 +14,16 @@ import static net.minecraft.world.level.block.Blocks.IRON_BARS;
 
 public class TurbineDummyBladeBlock extends DirectionalBlock {
     public TurbineDummyBladeBlock(Properties pProperties) {
-        super(Properties.copy(IRON_BARS).noCollission().forceSolidOff());
+        super(NCBlockProperties.copy(IRON_BARS).noCollission().forceSolidOff());
         this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(FACING, Direction.NORTH)
         );
+    }
+
+    @Override
+    protected MapCodec<? extends DirectionalBlock> codec() {
+        return simpleCodec(TurbineDummyBladeBlock::new);
     }
 
     @Override

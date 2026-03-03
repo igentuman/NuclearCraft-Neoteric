@@ -1,9 +1,11 @@
 package igentuman.nc.util;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.INBTSerializable;
+import igentuman.api.platform.NCSerialization;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public class ReactorPebble  implements INBTSerializable<Tag> {
 
@@ -43,7 +45,7 @@ public class ReactorPebble  implements INBTSerializable<Tag> {
     }
 
     @Override
-    public Tag serializeNBT() {
+    public Tag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putInt("ticks", ticks);
         tag.putDouble("ticksProcessed", ticksProcessed);
@@ -51,12 +53,12 @@ public class ReactorPebble  implements INBTSerializable<Tag> {
         tag.putDouble("criticality", criticality);
         tag.putDouble("power", power);
         tag.putDouble("heat", heat);
-        tag.put("outputStack", outputStack.serializeNBT());
+        tag.put("outputStack", NCSerialization.saveItemStack(outputStack, provider));
         return tag;
     }
 
     @Override
-    public void deserializeNBT(Tag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, Tag nbt) {
         if (nbt instanceof CompoundTag tag) {
             ticks = tag.getInt("ticks");
             ticksProcessed = tag.getDouble("ticksProcessed");
@@ -64,7 +66,7 @@ public class ReactorPebble  implements INBTSerializable<Tag> {
             criticality = tag.getDouble("criticality");
             power = tag.getDouble("power");
             heat = tag.getDouble("heat");
-            outputStack = ItemStack.of(tag.getCompound("outputStack"));
+            outputStack = NCSerialization.loadItemStack(provider, tag.getCompound("outputStack"));
         }
     }
 }

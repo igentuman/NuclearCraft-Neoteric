@@ -8,8 +8,8 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.IgnoredIInventory;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -18,9 +18,10 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -31,11 +32,11 @@ import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
 import static igentuman.nc.util.NcUtils.getModId;
 import static net.minecraft.world.item.Items.BARRIER;
 import static net.minecraft.world.level.block.Blocks.AIR;
-import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
+import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
 
-    private final ResourceLocation id;
+    private ResourceLocation id;
     public final String codeId;
     protected double timeModifier = 1;
     protected double powerModifier = 1;
@@ -48,7 +49,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
     protected List<FluidStack> cachedOutputFluids;
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
         return getResultItem();
     }
     public FluidStackIngredient[] getInputFluids() {
@@ -68,16 +69,16 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                     FluidStack flowing = null;
                     for(FluidStack fluid: outputFluid.getRepresentations()) {
                         if(getModId(fluid).equals(mod) || getModId(fluid).equals("minecraft")) {
-                            if(ForgeRegistries.FLUIDS.getKey(fluid.getFluid()).getPath().contains("_flowing")) {
+                            if(BuiltInRegistries.FLUID.getKey(fluid.getFluid()).getPath().contains("_flowing")) {
                                 flowing = fluid;
                                 continue; //skipping flowing types
                             }
-                            cachedOutputFluids.add(new FluidStack(fluid.getRawFluid(), fluid.getAmount()));
+                            cachedOutputFluids.add(fluid.copy());
                             break resolve;
                         }
                     } //if no still found
                     if(flowing != null) {
-                        cachedOutputFluids.add(new FluidStack(flowing, flowing.getAmount()));
+                        cachedOutputFluids.add(flowing.copy());
                     }
                 }
             }
@@ -87,15 +88,14 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
 
 
     /**
-     * @param id     Recipe name.
+     * @param codeId  Recipe type identifier (e.g. "fission", "fusion_core").
      */
-    protected AbstractRecipe(ResourceLocation id) {
-        this.id = Objects.requireNonNull(id, "Recipe name cannot be null.");
-        this.codeId = getCodeId();
+    protected AbstractRecipe(String codeId) {
+        this.codeId = Objects.requireNonNull(codeId, "Recipe codeId cannot be null.");
     }
 
     public String getCodeId() {
-        return id.getPath().split("/")[0];
+        return codeId;
     }
 
 
@@ -117,7 +117,9 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return NcRecipeSerializers.SERIALIZERS.get(codeId).get();
+        var entry = NcRecipeSerializers.SERIALIZERS.get(codeId);
+        if (entry == null) throw new IllegalStateException("No serializer for recipe type: " + codeId);
+        return entry.get();
     }
 
     @Override
@@ -136,15 +138,20 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
 
     @Override
     public @NotNull RecipeType<? extends AbstractRecipe> getType() {
-        return NcRecipeType.ALL_RECIPES.get(codeId).get();
+        var entry = NcRecipeType.ALL_RECIPES.get(codeId);
+        if (entry == null) throw new IllegalStateException("No recipe type registered for: " + codeId);
+        return entry.get();
     }
 
-    public abstract void write(FriendlyByteBuf buffer);
+    public abstract void write(RegistryFriendlyByteBuf buffer);
 
     @NotNull
-    @Override
     public ResourceLocation getId() {
         return id;
+    }
+
+    public void setId(ResourceLocation id) {
+        this.id = id;
     }
 
     @Override
@@ -188,7 +195,7 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
 
     @NotNull
     @Override
-    public ItemStack assemble(@NotNull IgnoredIInventory inv, RegistryAccess access) {
+    public ItemStack assemble(@NotNull IgnoredIInventory inv, @NotNull HolderLookup.Provider provider) {
         return ItemStack.EMPTY;
     }
 
@@ -234,10 +241,9 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         return List.of(FluidStack.EMPTY);
     }
 
-    //todo WTF?!
     public List<FluidStack> getOutputFluids(int id) {
-        if(getOutputFluids().size() > id) return List.of(getOutputFluids().get(id));
-        return List.of(FluidStack.EMPTY);
+        List<FluidStack> outputs = getOutputFluids();
+        return outputs.size() > id ? List.of(outputs.get(id)) : List.of(FluidStack.EMPTY);
     }
 
     public double getTimeModifier() {

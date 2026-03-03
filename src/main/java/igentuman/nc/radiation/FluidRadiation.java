@@ -6,14 +6,15 @@ import igentuman.nc.setup.registration.FissionFuel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.NuclearCraft.forgeRl;
+import static igentuman.nc.NuclearCraft.neoforgeRl;
 import static igentuman.nc.util.NcUtils.rlFromString;
 
 public class FluidRadiation {
@@ -92,7 +93,7 @@ public class FluidRadiation {
             name = MODID +":" + name;
         }
         ResourceLocation itemKey = rlFromString(name.replace("/", "_"));
-        return ForgeRegistries.FLUIDS.getValue(itemKey);
+        return BuiltInRegistries.FLUID.get(itemKey);
     }
 
     public static double byFluid(Fluid item) {

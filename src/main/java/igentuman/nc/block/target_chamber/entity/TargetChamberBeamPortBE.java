@@ -1,8 +1,10 @@
 package igentuman.nc.block.target_chamber.entity;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.block.accelerator.entity.AcceleratorBeamPortBE;
+import igentuman.nc.content.particles.IParticleStackHandler;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
@@ -16,21 +18,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Objects;
 
-import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
-import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BE;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isOC2Loaded;
 import static igentuman.nc.util.PortMode.PORT_MODE;
 
 public class TargetChamberBeamPortBE extends MultiblockPortBE {
@@ -145,53 +138,19 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
         return controller().contentHandler().fluidHandler;
     }
 
-    protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)
-    {
-        return controller().contentHandler().getFluidCapability(side);
-    }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(controller() == null) return super.getCapability(cap, side);
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return LazyOptional.empty();
-            }
-        }
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return LazyOptional.empty();
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return LazyOptional.empty();
-        }
-        if (cap == ForgeCapabilities.ENERGY) {
-            return LazyOptional.empty();
-        }
-        if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return controller().getCapability(cap, side);
-        }
-
-
-        if(isOC2Loaded()) {
-            if(cap == DEVICE_CAPABILITY) {
-                return LazyOptional.empty();
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
     @Override
     public TargetChamberControllerBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
-            return (TargetChamberControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+            return (TargetChamberControllerBE) NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
         }
         try {
             return (TargetChamberControllerBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                return (TargetChamberControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+                return (TargetChamberControllerBE) NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
             }
             return null;
         }
@@ -249,10 +208,10 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
                 if (targetPort.getFacing() == facing.getOpposite() && targetPort.getBlockState().getValue(PORT_MODE) == PortMode.Mode.INPUT) {
                     if (targetPort.controller() != null) {
                         particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
-                        targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
-                                .ifPresent(handler -> {
-                                    handler.reciveParticle(facing.getOpposite(), particleStack);
-                                });
+                        IParticleStackHandler handler = targetPort.controller().getParticleStorage();
+                        if (handler != null) {
+                            handler.reciveParticle(facing.getOpposite(), particleStack);
+                        }
                     }
                 }
                 break;
@@ -260,10 +219,10 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
                 if (targetPort.getFacing() == facing.getOpposite() && targetPort.getBlockState().getValue(PORT_MODE) == PortMode.Mode.INPUT) {
                     if (targetPort.controller() != null) {
                         particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
-                        targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
-                                .ifPresent(handler -> {
-                                    handler.reciveParticle(facing.getOpposite(), particleStack);
-                                });
+                        IParticleStackHandler tcHandler = targetPort.controller().particleStorage;
+                        if (tcHandler != null) {
+                            tcHandler.reciveParticle(facing.getOpposite(), particleStack);
+                        }
                     }
                 }
                 break;

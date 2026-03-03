@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.Direction;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class GTEnergyContainer implements IEnergyContainer {
 
@@ -21,8 +20,8 @@ public class GTEnergyContainer implements IEnergyContainer {
         this.owner = tile;
     }
 
-    public static LazyOptional<GTEnergyContainer> wrapped(CustomEnergyStorage feStorage, Direction side, NuclearCraftBE tile) {
-        return LazyOptional.of(() -> new GTEnergyContainer(feStorage, side, tile));
+    public static GTEnergyContainer wrapped(CustomEnergyStorage feStorage, Direction side, NuclearCraftBE tile) {
+        return new GTEnergyContainer(feStorage, side, tile);
     }
 
     @Override

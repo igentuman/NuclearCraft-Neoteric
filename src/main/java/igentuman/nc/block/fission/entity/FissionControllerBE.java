@@ -3,8 +3,6 @@ package igentuman.nc.block.fission.entity;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.compat.cc.SolidFissionReactorPeripheral;
-import igentuman.nc.compat.oc2.FissionReactorDevice;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
@@ -33,16 +31,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -51,9 +45,6 @@ import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
-import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
-import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
@@ -62,17 +53,14 @@ import static igentuman.nc.multiblock.fission.FissionReactorRegistration.heatsin
 import static igentuman.nc.setup.registration.FissionFuel.ITEM_PROPERTIES;
 import static igentuman.nc.setup.registration.NCSounds.FISSION_REACTOR;
 import static igentuman.nc.setup.registration.NcParticleTypes.RADIATION;
-import static igentuman.nc.util.ModUtil.*;
 import static net.minecraft.core.Direction.UP;
 import static net.minecraft.world.item.Items.AIR;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.*;
 
 public class FissionControllerBE extends MultiblockControllerBE {
 
     public static final String NAME = "fission_reactor_controller";
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
-    protected final LazyOptional<IEnergyStorage> energy;
 
     @NBTField
     public double maxHeat = FISSION_CONFIG.HEAT_CAPACITY.getDefault();
@@ -189,7 +177,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
                 .setOutputEnergyTier(getBaseGTEnergyTier())
                 .setInputAmperage(0)
                 .setOutputAmperage(16);
-        energy = LazyOptional.of(() -> energyStorage);
     }
 
     public void initializePorts()
@@ -261,9 +248,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
         return contentHandler().itemHandler;
     }
 
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
 
     private CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(100000000, 0, 100000000) {
@@ -346,72 +330,9 @@ public class FissionControllerBE extends MultiblockControllerBE {
         toggleModeTimer = 200;
     }
 
-    private LazyOptional<SolidFissionReactorPeripheral> peripheralCap;
-
-    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new SolidFissionReactorPeripheral(this));
-        }
-        return peripheralCap.cast();
-    }
-
-    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
-        return LazyOptional.of(() -> FissionReactorDevice.createDevice(this)).cast();
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ITEM_HANDLER) {
-            return contentHandler().getItemCapability(side);
-        }
-        if (cap == FLUID_HANDLER && canAcceptFluid()) {
-            return contentHandler().getFluidCapability(side);
-        }
-
-        if(isGtLoaded()) {
-            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                if (isGTEUCapEnabled() && !isSteamMode && side == null) {
-                    return getGTEnergy(this, side).cast();
-                }
-            }
-        }
-        if (cap == ENERGY && !isSteamMode && side == null) {
-            if(!isOnlyGTCEUCapEnabled()) {
-                return getEnergy().cast();
-            } else {
-                return LazyOptional.empty();
-            }
-        }
 
 
-        if(isOC2Loaded()) {
-            if(cap == DEVICE_CAPABILITY) {
-                return getOCDevice(cap, side);
-            }
-        }
-        if(isMekanismLoaded() && isSteamMode) {
-            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
-                if(contentHandler().hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> contentHandler().gasConverter(side));
-                }
-                return LazyOptional.empty();
-            }
-            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
-                if(contentHandler().hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> contentHandler().getSlurryConverter(side));
-                }
-                return LazyOptional.empty();
-            }
-        }
 
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return getPeripheral(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
     public void tickClient() {
         super.tickClient();
@@ -708,7 +629,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     public double environmentCooling() {
         if(envCooling == 0.0D) {
-            envCooling = 1 / Math.max(getLevel().getBiome(getBlockPos()).get().getBaseTemperature(), 0.01);
+            envCooling = 1 / Math.max(getLevel().getBiome(getBlockPos()).value().getBaseTemperature(), 0.01);
         }
         return envCooling;
     }
@@ -947,7 +868,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     public boolean hasEnoughCoolant(String coolant, int amount) {
         for(int i = 2; i < contentHandler().fluidHandler.tanks.size(); i++) {
             FluidStack stack = contentHandler().fluidHandler.tanks.get(i).getFluid();
-            if(ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getPath().equals(coolant) && stack.getAmount() >= amount) {
+            if(BuiltInRegistries.FLUID.getKey(stack.getFluid()).getPath().equals(coolant) && stack.getAmount() >= amount) {
                 return true;
             }
         }
@@ -957,7 +878,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     public void drainCoolant(String coolant, int amount) {
         for(int i = 2; i < contentHandler().fluidHandler.tanks.size(); i++) {
             FluidStack stack = contentHandler().fluidHandler.tanks.get(i).getFluid();
-            if(ForgeRegistries.FLUIDS.getKey(stack.getFluid()).getPath().equals(coolant) && stack.getAmount() >= amount) {
+            if(BuiltInRegistries.FLUID.getKey(stack.getFluid()).getPath().equals(coolant) && stack.getAmount() >= amount) {
                 contentHandler().fluidHandler.tanks.get(i).drain(amount, IFluidHandler.FluidAction.EXECUTE);
                 return;
             }
@@ -987,8 +908,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
     public static class Recipe extends NcRecipe {
 
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
-            super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
+        public Recipe(String codeId, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
+            super(codeId, input, output, timeModifier, powerModifier, heatModifier, rarity);
             CATALYSTS.put(codeId, List.of(getToastSymbol()));
         }
 
@@ -1050,10 +971,10 @@ public class FissionControllerBE extends MultiblockControllerBE {
     public static class FissionBoilingRecipe extends NcRecipe {
         protected double conversionRate;
 
-        public FissionBoilingRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output,
+        public FissionBoilingRecipe(String codeId, ItemStackIngredient[] input, ItemStackIngredient[] output,
                                     FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids,
                                     double conversionRate, double powerModifier, double radiation, double rar) {
-            super(id, input, output, inputFluids, outputFluids, conversionRate, powerModifier, radiation, rar);
+            super(codeId, input, output, inputFluids, outputFluids, conversionRate, powerModifier, radiation, rar);
             this.conversionRate = conversionRate;
         }
 

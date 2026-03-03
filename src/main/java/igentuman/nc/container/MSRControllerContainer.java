@@ -11,9 +11,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.*;
@@ -124,7 +123,7 @@ public class MSRControllerContainer extends AbstractContainerMenu {
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
-            addSlot(new net.minecraftforge.items.SlotItemHandler(handler, slotIndex, x, y));
+            addSlot(new net.neoforged.neoforge.items.SlotItemHandler(handler, slotIndex, x, y));
             x += dx;
             slotIndex++;
         }

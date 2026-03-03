@@ -556,7 +556,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         if(bottomLeft == null || topRight == null) {
             findCorners();
         }
-        structureBounds = new AABB(bottomLeft, topRight);
+        structureBounds = AABB.encapsulatingFullBlocks(bottomLeft, topRight);
     }
 
     @Override

@@ -10,6 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -65,16 +66,13 @@ public class PortalBlock extends Block {
 
             ServerLevel portalDimension = minecraftserver.getLevel(resourcekey);
             if (portalDimension != null && !player.isPassenger()) {
-                if(resourcekey == Dimensions.WASTELAND) {
-                    player.changeDimension(portalDimension, new ModTeleporter(pPos));
-                } else {
-                    player.changeDimension(portalDimension, new ModTeleporter(pPos));
-                }
+                ModTeleporter teleporter = new ModTeleporter(pPos);
+                player.changeDimension(teleporter.createTransition(player, portalDimension));
             }
         }
     }
 
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag)
     {
         if(!DIMENSION_CONFIG.registerWasteland.get()) {
             list.add(__("tooltip.nc.wasteland.disabled").withStyle(ChatFormatting.RED));

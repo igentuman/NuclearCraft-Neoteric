@@ -37,7 +37,6 @@ public class EXPLRenderer implements BlockEntityRenderer<BlockEntity> {
         BlockState blockstate = pBlockEntity.getBlockState();
         EXPLBE expl = (EXPLBE) pBlockEntity;
         BakedModel center = blockRenderer.getBlockModel(blockstate);
-        pPoseStack.clear();
         pPoseStack.pushPose();
 
         pPoseStack.translate(0.5D, 0.5D, 0.5D);

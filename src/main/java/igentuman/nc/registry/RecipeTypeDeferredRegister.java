@@ -3,8 +3,8 @@ package igentuman.nc.registry;
 import igentuman.nc.recipes.INcRecipeTypeProvider;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.type.NcRecipe;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class RecipeTypeDeferredRegister extends WrappedDeferredRegister<RecipeTy
     private final List<INcRecipeTypeProvider<?>> recipeTypes = new ArrayList<>();
 
     public RecipeTypeDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.RECIPE_TYPES);
+        super(modid, Registries.RECIPE_TYPE);
     }
 
     public <RECIPE extends NcRecipe> RecipeTypeRegistryObject<RECIPE> register(String name, Supplier<? extends NcRecipeType<RECIPE>> sup) {
@@ -23,5 +23,4 @@ public class RecipeTypeDeferredRegister extends WrappedDeferredRegister<RecipeTy
         recipeTypes.add(registeredRecipeType);
         return registeredRecipeType;
     }
-
 }

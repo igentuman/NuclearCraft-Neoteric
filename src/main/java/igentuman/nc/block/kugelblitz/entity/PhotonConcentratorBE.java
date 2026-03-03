@@ -1,5 +1,6 @@
 package igentuman.nc.block.kugelblitz.entity;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
@@ -46,7 +47,7 @@ public class PhotonConcentratorBE extends NuclearCraftBE implements MultiblockAt
     public ChamberTerminalBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
-            return (ChamberTerminalBE) getLevel().getExistingBlockEntity(controllerPos);
+            return (ChamberTerminalBE) NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
         }
         if (controller != null && !controller.isRemoved()) {
             return controller;
@@ -59,7 +60,7 @@ public class PhotonConcentratorBE extends NuclearCraftBE implements MultiblockAt
             }
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                controller = (ChamberTerminalBE) getLevel().getExistingBlockEntity(controllerPos);
+                controller = (ChamberTerminalBE) NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
             }
         }
         if(controller == null) {

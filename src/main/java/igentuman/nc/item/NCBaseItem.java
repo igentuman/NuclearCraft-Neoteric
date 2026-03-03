@@ -61,7 +61,7 @@ public class NCBaseItem extends Item
 
 	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
 	{
-		return Mob.getEquipmentSlotForItem(stack)==armorType||getEquipmentSlot(stack)==armorType;
+		return entity instanceof net.minecraft.world.entity.LivingEntity living && living.getEquipmentSlotForItem(stack) == armorType;
 	}
 
 	@Override

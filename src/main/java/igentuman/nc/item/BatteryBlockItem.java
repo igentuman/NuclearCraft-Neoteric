@@ -1,11 +1,8 @@
 package igentuman.nc.item;
 
 import igentuman.nc.content.energy.BatteryBlocks;
-import igentuman.nc.handler.ItemEnergyHandler;
-import igentuman.nc.util.capability.CapabilityUtils;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -13,8 +10,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -56,18 +53,14 @@ public class BatteryBlockItem extends BlockItem
 		return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
 	}
 
-	protected int getEnergyMaxStorage() {
+	public int getEnergyMaxStorage() {
 		return ENERGY_STORAGE.getCapacityFor(toString());
-	}
-
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-		return new ItemEnergyHandler(stack, getEnergyMaxStorage(), getEnergyMaxStorage(), getEnergyMaxStorage());
 	}
 
 	public CustomEnergyStorage getEnergy(ItemStack stack)
 	{
-		return (CustomEnergyStorage) CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
+		IEnergyStorage storage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+		return (CustomEnergyStorage) storage;
 	}
 
 	@Override
@@ -78,7 +71,7 @@ public class BatteryBlockItem extends BlockItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
 	{
 		if(isGtLoaded() && isGTEUCapEnabled()) {
 			list.add(__("tooltip.nc.eu_energy_stored", formatEUEnergy(getEnergy(stack).getEnergyStored()), formatEUEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.GOLD));

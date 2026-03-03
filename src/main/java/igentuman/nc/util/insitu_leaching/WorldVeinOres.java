@@ -1,6 +1,8 @@
 package igentuman.nc.util.insitu_leaching;
 
 import igentuman.nc.recipes.type.OreVeinRecipe;
+import igentuman.api.platform.NCSerialization;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -22,9 +24,9 @@ public class WorldVeinOres implements IWorldVeinCapability {
         this.level = (ServerLevel) level;
     }
 
-    public static WorldVeinOres deserialize(CompoundTag veins) {
+    public static WorldVeinOres deserialize(HolderLookup.Provider provider, CompoundTag veins) {
         WorldVeinOres worldVeins = new WorldVeinOres();
-        worldVeins.deserializeNBT(veins);
+        NCSerialization.deserialize(worldVeins, provider, veins);
         return worldVeins;
     }
 
@@ -61,7 +63,7 @@ public class WorldVeinOres implements IWorldVeinCapability {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         CompoundTag veinsTag = new CompoundTag();
         for(long key : blocksInVein.keySet()) {
@@ -72,7 +74,7 @@ public class WorldVeinOres implements IWorldVeinCapability {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         CompoundTag veinsTag = nbt.getCompound("depletion");
         for(String key : veinsTag.getAllKeys()) {
             blocksInVein.put(Long.parseLong(key), veinsTag.getInt(key));

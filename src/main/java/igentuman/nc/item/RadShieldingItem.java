@@ -11,7 +11,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static igentuman.nc.util.TextUtils.__;
@@ -84,7 +83,7 @@ public class RadShieldingItem extends Item
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
 	{
 		list.add(__("tooltip.nc.shielding.desc").withStyle(net.minecraft.ChatFormatting.GRAY));
 	}

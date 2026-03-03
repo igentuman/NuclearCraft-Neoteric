@@ -8,7 +8,6 @@ import igentuman.nc.client.gui.processor.side.SideConfigScreen;
 import igentuman.nc.network.toServer.PacketSideConfigToggle;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -78,8 +77,8 @@ public class SideConfig extends NCGuiElement {
         }
     }
 
-    public static class SideBtn extends ImageButton {
-        public SideBtn(int x, int y, ResourceLocation btnTexture, OnPress onPress) {
+    public static class SideBtn extends NCImageButton {
+        public SideBtn(int x, int y, ResourceLocation btnTexture, net.minecraft.client.gui.components.Button.OnPress onPress) {
             super(x, y, 16, 16, 0, 0, 0, btnTexture, 16, 16, onPress);
         }
     }

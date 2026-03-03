@@ -12,12 +12,10 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -42,10 +40,13 @@ public class AcceleratorPortContainer extends AbstractContainerMenu {
         this.playerInventory =  new InvWrapper(playerInventory);
         portBE = (AcceleratorPortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
-        portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 71, 26));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 89, 26));
-        });
+        if (portBE.controller() != null && portBE.controller().contentHandler() != null) {
+            IItemHandler h = portBE.controller().contentHandler().itemHandler;
+            if (h != null) {
+                addSlot(new NCSlotItemHandler.Input(h, 0, 71, 26));
+                addSlot(new NCSlotItemHandler.Output(h, 1, 89, 26));
+            }
+        }
     }
 
     public BlockPos getPosition() {
@@ -65,7 +66,7 @@ public class AcceleratorPortContainer extends AbstractContainerMenu {
                 }
                 slot.onQuickCraft(stack, itemstack);
             } else {
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
+                if (stack.getBurnTime(RecipeType.SMELTING) > 0) {
                     if (!this.moveItemStackTo(stack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }

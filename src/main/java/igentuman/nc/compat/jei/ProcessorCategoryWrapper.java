@@ -6,7 +6,7 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -21,7 +21,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -195,7 +195,7 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
             } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("fluid_in")) {
                 if(!recipe.getInputFluids(inputFluidCounter).get(0).equals(FluidStack.EMPTY)) {
                     builder.addSlot(RecipeIngredientRole.INPUT, pos[0]+xShift+barXshift, pos[1]+yShift)
-                        .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(inputFluidCounter))
+                        .addIngredients(NeoForgeTypes.FLUID_STACK, recipe.getInputFluids(inputFluidCounter))
                         .setFluidRenderer((fluidTankCapacity+recipe.getInputFluids()[inputFluidCounter].getAmount())/2, false, 16, 16);;
                 }
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
@@ -204,7 +204,7 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
             } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("fluid_out")) {
                 if (!recipe.getOutputFluids(putFluidCounter).get(0).equals(FluidStack.EMPTY)) {
                     builder.addSlot(RecipeIngredientRole.OUTPUT, pos[0] + xShift + barXshift, pos[1] + yShift)
-                            .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(putFluidCounter))
+                            .addIngredients(NeoForgeTypes.FLUID_STACK, recipe.getOutputFluids(putFluidCounter))
                             .setFluidRenderer((fluidTankCapacity+recipe.getOutputFluids().get(putFluidCounter).getAmount())/2, false, 16, 16);
                 }
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 36, 18, 18);

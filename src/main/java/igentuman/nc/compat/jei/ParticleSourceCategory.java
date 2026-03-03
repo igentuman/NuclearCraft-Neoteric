@@ -3,7 +3,6 @@ package igentuman.nc.compat.jei;
 import igentuman.nc.compat.jei.ingredient.ParticleType;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.Particles;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -24,7 +23,7 @@ import static igentuman.nc.util.TextUtils.__;
 @SuppressWarnings("removal")
 public class ParticleSourceCategory implements IRecipeCategory<ParticleSourceRecipe> {
     public final static ResourceLocation TEXTURE =
-            new ResourceLocation(MODID, "textures/gui/small_window.png");
+            ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/small_window.png");
     public static final RecipeType<ParticleSourceRecipe> TYPE = RecipeType.create(MODID, "particle_source_info", ParticleSourceRecipe.class);
     private final IDrawable background;
     private final IDrawable icon;

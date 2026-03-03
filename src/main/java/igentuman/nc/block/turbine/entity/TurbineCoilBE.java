@@ -1,5 +1,6 @@
 package igentuman.nc.block.turbine.entity;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
@@ -74,7 +75,7 @@ public class TurbineCoilBE extends TurbineBE {
         if(getMultiblock() != null) {
             if (!isValid) {
                 for (Direction dir : Direction.values()) {
-                    BlockEntity be = Objects.requireNonNull(getLevel()).getExistingBlockEntity(getBlockPos().relative(dir));
+                    BlockEntity be = NCLevels.getExistingBlockEntity(Objects.requireNonNull(getLevel()), getBlockPos().relative(dir));
                     BlockState bs = getLevel().getBlockState(getBlockPos().relative(dir));
                     if (bs.getBlock() instanceof TurbineBearingBlock) {
                         hasBearingConnection = getMultiblock().bearingPositions.contains(getBlockPos().relative(dir));

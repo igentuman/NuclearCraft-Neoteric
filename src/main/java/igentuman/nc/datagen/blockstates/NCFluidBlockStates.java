@@ -6,12 +6,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -35,7 +36,7 @@ public class NCFluidBlockStates extends ExtendedBlockstateProvider {
             if(still.getFluidType().getDensity() < 1000) {
                 renderType = "minecraft:translucent";
             }
-            ModelFile model = models().getBuilder("block/fluid/"+ ForgeRegistries.FLUIDS.getKey(still).getPath())
+            ModelFile model = models().getBuilder("block/fluid/"+ BuiltInRegistries.FLUID.getKey(still).getPath())
                     .texture("particle", stillTexture);
             getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));
         }

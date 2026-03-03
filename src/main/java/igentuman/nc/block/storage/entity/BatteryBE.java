@@ -6,25 +6,21 @@ import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.content.energy.BatteryBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
 import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class BatteryBE extends NCEnergy {
 
@@ -42,7 +38,6 @@ public class BatteryBE extends NCEnergy {
         return pBlockState.getBlock().asItem().toString();
     }
 
-    @Nonnull
     @Override
     public @NotNull ModelData getModelData() {
         return ModelData.builder()
@@ -72,31 +67,6 @@ public class BatteryBE extends NCEnergy {
 
 
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(isGtLoaded()) {
-            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                if (isGTEUCapEnabled()) {
-                    if (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED) {
-                        return getGTEnergy(this, side).cast();
-                    }
-                }
-            }
-        }
-
-        if (cap == ENERGY) {
-            if (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED) {
-                if (!isOnlyGTCEUCapEnabled()) {
-                    return getEnergy().cast();
-
-                } else {
-                    return LazyOptional.empty();
-                }
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
     @Override
     protected int getEnergyTransferPerTick() {
@@ -123,21 +93,21 @@ public class BatteryBE extends NCEnergy {
 
 
     @Override
-    protected void saveClientData(CompoundTag tag) {
-        super.saveClientData(tag);
+    protected void saveClientData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveClientData(tag, registries);
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 
     @Override
-    public void loadClientData(CompoundTag tag) {
-        super.loadClientData(tag);
+    public void loadClientData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadClientData(tag, registries);
         if (!tag.contains("sideConfig")) return;
         loadSideConfig(tag.getIntArray("sideConfig"));
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         if(!tag.contains("sideConfig")) return;
         loadSideConfig(tag.getIntArray("sideConfig"));
     }
@@ -159,8 +129,8 @@ public class BatteryBE extends NCEnergy {
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 

@@ -1,5 +1,6 @@
 package igentuman.nc.container;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.content.processors.ProcessorPrefab;
 import igentuman.nc.content.processors.Processors;
@@ -14,12 +15,10 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.NuclearCraft.MODID;
@@ -40,7 +39,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
 
     public NCEnergyContainer(int windowId, BlockPos pos, Inventory playerInventory, Player player, String name) {
         this(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), windowId);
-        blockEntity = (NCProcessorBE) player.getCommandSenderWorld().getExistingBlockEntity(pos);
+        blockEntity = (NCProcessorBE) NCLevels.getExistingBlockEntity(player.getCommandSenderWorld(), pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
         this.name = name;
@@ -54,32 +53,26 @@ public class NCEnergyContainer extends AbstractContainerMenu {
     }
 
     private void processorSlots() {
+        IItemHandler h = blockEntity.contentHandler().itemHandler;
+        if (h == null) return;
         int itemIdx = 0;
         for(int[] pos: processor.getSlotsConfig().getSlotPositions()) {
             if(processor.getSlotsConfig().getSlotType(itemIdx).contains("item")) {
                 int idx = itemIdx;
-                blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-                    addSlot(new SlotItemHandler(h, idx, pos[0], pos[1]));
-                });
+                addSlot(new SlotItemHandler(h, idx, pos[0], pos[1]));
                 itemIdx++;
             }
         }
         int ux = 154;
         if(getProcessor().supportSpeedUpgrade) {
             int idx = itemIdx;
-            int finalUx = ux;
-            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-                addSlot(new SlotItemHandler(h, idx, finalUx, 77));
-            });
+            addSlot(new SlotItemHandler(h, idx, ux, 77));
             itemIdx++;
             ux -= 18;
         }
         if(getProcessor().supportEnergyUpgrade) {
             int idx = itemIdx;
-            int finalUx = ux;
-            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-                addSlot(new SlotItemHandler(h, idx, finalUx, 77));
-            });
+            addSlot(new SlotItemHandler(h, idx, ux, 77));
         }
     }
 
@@ -96,7 +89,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
                 }
                 slot.onQuickCraft(stack, itemstack);
             } else {
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
+                if (stack.getBurnTime(RecipeType.SMELTING) > 0) {
                     if (!this.moveItemStackTo(stack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -163,7 +156,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
     }
 
     public IEnergyStorage getEnergy() {
-        return (IEnergyStorage) blockEntity.getEnergy().orElse(null);
+        return blockEntity.energyStorage();
     }
 
     public double getProgress() {

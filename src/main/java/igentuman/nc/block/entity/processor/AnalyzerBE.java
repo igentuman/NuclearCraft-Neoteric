@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.processor;
 
+import igentuman.api.platform.NCItemStacks;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.util.insitu_leaching.OreVeinProvider;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -31,11 +32,11 @@ public class AnalyzerBE extends NCProcessorBE {
 
     @NothingNullByDefault
     public static class Recipe extends NcRecipe {
-        public Recipe(ResourceLocation id,
+        public Recipe(String codeId,
                       ItemStackIngredient[] input, ItemStackIngredient[] output,
                       FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids,
                       double timeModifier, double powerModifier, double heatModifier, double rarity) {
-            super(id, input, output, timeModifier, powerModifier, heatModifier,1);
+            super(codeId, input, output, timeModifier, powerModifier, heatModifier,1);
         }
 
         @Override
@@ -68,8 +69,8 @@ public class AnalyzerBE extends NCProcessorBE {
     private void handleMapAnalyze() {
         if(recipe.getInputIngredient(0).test(new ItemStack(FILLED_MAP))) {
             for (ItemStack output : recipe.getResultItems()) {
-                output.setTag(contentHandler.itemHandler.holdedInputs.get(0).getOrCreateTag());
-                output.getOrCreateTag().putBoolean("is_nc_analyzed", true);
+                NCItemStacks.setTag(output, NCItemStacks.getTag(contentHandler.itemHandler.holdedInputs.get(0)));
+                NCItemStacks.putBoolean(output, "is_nc_analyzed", true);
             }
         }
     }
@@ -80,16 +81,16 @@ public class AnalyzerBE extends NCProcessorBE {
             alreadySearched = worldPosition;
             if (vein == null) {
                 for (ItemStack output : recipe.getResultItems()) {
-                    output.getOrCreateTag().putString("vein", "nc.ore_vein.none");
+                    NCItemStacks.putString(output, "vein", "nc.ore_vein.none");
                 }
             } else {
                 for (ItemStack output : recipe.getResultItems()) {
-                    output.getOrCreateTag().putString("vein", "nc.ore_vein." + vein.getId().getPath().replace("nc_ore_veins/", ""));
+                    NCItemStacks.putString(output, "vein", "nc.ore_vein." + vein.getId().getPath().replace("nc_ore_veins/", ""));
                 }
             }
             for (ItemStack output : recipe.getResultItems()) {
-                output.getOrCreateTag().putLong("pos", worldPosition.asLong());
-                output.getOrCreateTag().putBoolean("is_nc_analyzed", true);
+                NCItemStacks.putLong(output, "pos", worldPosition.asLong());
+                NCItemStacks.putBoolean(output, "is_nc_analyzed", true);
             }
         }
     }

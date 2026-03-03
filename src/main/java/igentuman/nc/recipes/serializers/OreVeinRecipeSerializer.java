@@ -3,8 +3,7 @@ package igentuman.nc.recipes.serializers;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.debugLog;
@@ -16,7 +15,7 @@ public class OreVeinRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    protected RECIPE fromNetwork(@NotNull RegistryFriendlyByteBuf buffer) {
         try {
             ItemStackIngredient[] inputItems = readItems(buffer);
             ItemStackIngredient[] outputItems = readItems(buffer);
@@ -28,7 +27,7 @@ public class OreVeinRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
             double radiation = buffer.readDouble();
             double rarity = buffer.readDouble();
 
-            return this.factory.create(recipeId, inputItems, outputItems, inputFluids,  outputFluids, timeModifier, powerModifier, radiation, rarity);
+            return this.factory.create(getCodeId(), inputItems, outputItems, inputFluids, outputFluids, timeModifier, powerModifier, radiation, rarity);
         } catch (Exception e) {
             debugLog("Error reading from packet." + e);
             throw e;

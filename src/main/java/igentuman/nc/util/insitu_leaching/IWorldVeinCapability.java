@@ -2,7 +2,7 @@ package igentuman.nc.util.insitu_leaching;
 
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 
 public interface IWorldVeinCapability extends INBTSerializable<CompoundTag> {

@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.particle_chamber;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.target_chamber.DetectorBlock;
 import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
@@ -297,7 +298,7 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
     public void removeFromCacheIfChanged(BlockPos pos) {
         long packedPos = pos.asLong();
         if (beCache.containsKey(packedPos)) {
-            BlockEntity be = getLevel().getExistingBlockEntity(pos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), pos);
             if(be != beCache.get(packedPos) || (be != null && be.isRemoved())) {
                 beCache.remove(packedPos);
             }

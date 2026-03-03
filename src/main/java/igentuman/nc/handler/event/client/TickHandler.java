@@ -10,11 +10,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -40,7 +40,7 @@ public class TickHandler {
             // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
             Vec3 camVec = camera.getPosition();
             matrix.translate(-camVec.x, -camVec.y, -camVec.z);
-            renderer.render(camera, minecraft.renderBuffers().bufferSource(), matrix, event.getRenderTick(), event.getPartialTick());
+            renderer.render(camera, minecraft.renderBuffers().bufferSource(), matrix, event.getRenderTick(), event.getPartialTick().getGameTimeDeltaPartialTick(true));
             matrix.popPose();
         }
     }
@@ -98,14 +98,12 @@ public class TickHandler {
     }
 
     public static void register(FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.addListener(TickHandler::onTick);
-        MinecraftForge.EVENT_BUS.register(new TickHandler());
+        NeoForge.EVENT_BUS.addListener(TickHandler::onTick);
+        NeoForge.EVENT_BUS.register(new TickHandler());
     }
     @SubscribeEvent
-    public static void onTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            tickStart();
-        }
+    public static void onTick(ClientTickEvent.Pre event) {
+        tickStart();
     }
 
     protected static GeigerSound geigerSound;

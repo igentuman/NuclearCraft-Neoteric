@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.InputIngredient;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,7 +63,7 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      *
      * @throws NullPointerException if the given buffer is null.
      */
-    INGREDIENT read(FriendlyByteBuf buffer);
+    INGREDIENT read(RegistryFriendlyByteBuf buffer);
 
     /**
      * Helper to deserialize a Json Object into an Ingredient.

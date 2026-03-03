@@ -1,6 +1,6 @@
 package igentuman.nc.util;
 
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 
 public class ModUtil {
     protected static boolean initialized = false;

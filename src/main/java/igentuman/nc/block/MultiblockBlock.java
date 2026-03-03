@@ -10,7 +10,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.TRANSPARENT_BLOCKS;
@@ -28,7 +29,7 @@ public class MultiblockBlock extends Block {
 
     public String getCode()
     {
-        return ForgeRegistries.BLOCKS.getKey(this).getPath();
+        return BuiltInRegistries.BLOCK.getKey(this).getPath();
     }
 
     @Override

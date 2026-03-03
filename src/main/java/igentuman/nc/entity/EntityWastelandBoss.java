@@ -6,12 +6,13 @@ import igentuman.nc.entity.goal.RangedAttackGoal;
 import igentuman.nc.entity.goal.SlamAttackGoal;
 import igentuman.nc.entity.goal.SummonGhoulsGoal;
 import igentuman.nc.entity.goal.ThrowSpamGoal;
-import igentuman.nc.radiation.data.PlayerRadiationProvider;
+import igentuman.nc.setup.registration.NCAttachments;
 import igentuman.nc.setup.registration.NcParticleTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -158,10 +159,9 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         boolean attackResult = super.doHurtTarget(pEntity);
 
         if (attackResult && pEntity instanceof Player player) {
-            player.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).ifPresent(radiation -> {
-                long currentRadiation = radiation.getRadiation();
-                radiation.setRadiation(currentRadiation + BOSS_RADIATION_AMOUNT);
-            });
+            var radiation = player.getData(NCAttachments.PLAYER_RADIATION.get());
+            long currentRadiation = radiation.getRadiation();
+            radiation.setRadiation(currentRadiation + BOSS_RADIATION_AMOUNT);
 
             Vec3 knockbackDirection = pEntity.position().subtract(this.position()).normalize().scale(2.0);
             pEntity.setDeltaMovement(pEntity.getDeltaMovement().add(knockbackDirection));
@@ -278,10 +278,9 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
             }
 
             for (Player player : nearbyPlayers) {
-                player.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).ifPresent(radiation -> {
-                    long currentRadiation = radiation.getRadiation();
-                    radiation.setRadiation(currentRadiation + RADIATION_BURST_AMOUNT);
-                });
+                var radiation = player.getData(NCAttachments.PLAYER_RADIATION.get());
+                long currentRadiation = radiation.getRadiation();
+                radiation.setRadiation(currentRadiation + RADIATION_BURST_AMOUNT);
 
                 player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 20, 0));
                 player.addEffect(new MobEffectInstance(MobEffects.POISON, 10, 0));
@@ -373,7 +372,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
             isExecutingAttack = true;
 
             this.playSound(BOSS_ACTION.get(), 1.4F, 0.9F);
-            this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0F, 0.1F);
+            this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1.0F, 0.1F);
 
             double entityX = this.getX();
             double entityY = this.getY();
@@ -596,8 +595,8 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
     }
 
     /**
@@ -646,7 +645,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose pose) {
-        return super.getDimensions(pose).scale(1.5f, 1.5f);
+    public EntityDimensions getDefaultDimensions(Pose pose) {
+        return super.getDefaultDimensions(pose).scale(1.5f, 1.5f);
     }
 }

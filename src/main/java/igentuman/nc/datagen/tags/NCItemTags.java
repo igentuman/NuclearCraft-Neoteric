@@ -9,13 +9,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
+import igentuman.api.platform.NCMusicDiscs;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.List;
 
@@ -49,13 +49,13 @@ public class NCItemTags extends ItemTagsProvider {
         waste();
         disks();
         ionSources();
-        for(RegistryObject<Item> magnet: NC_ELECTROMAGNETS_ITEMS.values()) {
+        for(DeferredHolder<Item, Item> magnet: NC_ELECTROMAGNETS_ITEMS.values()) {
             tag(ELECTROMAGNETS_ITEMS).add(magnet.get());
             tag(AcceleratorRegistration.ACCELERATOR_INNER_ITEMS).add(
                     magnet.get()
             );
         }
-        for(RegistryObject<Item> amplifier: NC_RF_AMPLIFIERS_ITEMS.values()) {
+        for(DeferredHolder<Item, Item> amplifier: NC_RF_AMPLIFIERS_ITEMS.values()) {
             tag(AMPLIFIERS_ITEMS).add(amplifier.get());
             tag(AcceleratorRegistration.ACCELERATOR_INNER_ITEMS).add(
                     amplifier.get()
@@ -83,7 +83,7 @@ public class NCItemTags extends ItemTagsProvider {
 
     private void disks() {
         for(String name: NC_RECORDS.keySet()) {
-            tag(ItemTags.MUSIC_DISCS).add(NC_RECORDS.get(name).get());
+            tag(NCMusicDiscs.musicDiscsTag()).add(NC_RECORDS.get(name).get());
         }
     }
 

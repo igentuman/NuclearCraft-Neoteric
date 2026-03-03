@@ -4,19 +4,16 @@ package igentuman.nc.util.builder;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.event.RegisterShadersEvent;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Quaternionf;
 import org.lwjgl.opengl.GL11;
 
@@ -59,7 +56,7 @@ public class MultiblockRenderer {
         stack.pushPose();
         // Center within the provided x, y, w, h bounds
         stack.translate(x + w/2.0f, y + h/2.0f, 100);
-        RenderSystem.setShader(GameRenderer::getRendertypeTextShader);
+
         // Apply isometric-style rotation for better viewing angle
         stack.mulPose(new Quaternionf().rotationX((float) Math.toRadians(30)));
         stack.mulPose(new Quaternionf().rotationY((float) Math.toRadians(-135)));
@@ -79,7 +76,7 @@ public class MultiblockRenderer {
             BlockState state = entry.getValue().defaultBlockState();
 
             stack.pushPose();
-            RenderSystem.setShader(GameRenderer::getRendertypeTextShader);
+    
             // Directly subtract 1 from each coordinate instead of using minPos
             stack.translate(
                 pos.getX() - 1,

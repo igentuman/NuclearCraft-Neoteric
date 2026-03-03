@@ -1,35 +1,35 @@
 package igentuman.nc.recipes.type;
 
+import igentuman.api.platform.NCItemStacks;
 import igentuman.nc.item.BatteryBlockItem;
 import igentuman.nc.item.BatteryItem;
 import igentuman.nc.item.ProcessorBlockItem;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 
 @NothingNullByDefault
 public class ResetNbtRecipe extends CustomRecipe {
 
-    public ResetNbtRecipe(ResourceLocation id, CraftingBookCategory cat) {
-        super(id, CraftingBookCategory.EQUIPMENT);
+    public ResetNbtRecipe(CraftingBookCategory cat) {
+        super(CraftingBookCategory.EQUIPMENT);
     }
 
 
     @Override
-    public boolean matches(CraftingContainer inv, Level world) {
+    public boolean matches(CraftingInput inv, Level world) {
         ItemStack targetStack = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getContainerSize(); ++i) {
+        for (int i = 0; i < inv.size(); ++i) {
             if(targetStack != ItemStack.EMPTY && !inv.getItem(i).isEmpty()) {
                 return false; //only allow 1 item
             }
@@ -52,9 +52,9 @@ public class ResetNbtRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv, RegistryAccess access) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider access) {
         ItemStack targetStack = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getContainerSize(); ++i) {
+        for (int i = 0; i < inv.size(); ++i) {
             if(targetStack != ItemStack.EMPTY && !inv.getItem(i).isEmpty()) {
                 return ItemStack.EMPTY; //only allow 1 item
             }
@@ -76,7 +76,7 @@ public class ResetNbtRecipe extends CustomRecipe {
         }
         ItemStack result = targetStack.copy();
         result.setCount(1);
-        result.setTag(new CompoundTag());
+        NCItemStacks.setTag(result, new CompoundTag());
         return result;
     }
 

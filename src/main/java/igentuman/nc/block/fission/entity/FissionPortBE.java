@@ -1,5 +1,6 @@
 package igentuman.nc.block.fission.entity;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
@@ -13,22 +14,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.currentTick;
-import static igentuman.nc.compat.gregtech.GTUtils.*;
-import static igentuman.nc.compat.oc2.FissionReactorDevice.DEVICE_CAPABILITY;
-import static igentuman.nc.util.ModUtil.*;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.transferEU;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 
 public class FissionPortBE extends MultiblockPortBE {
 
@@ -173,7 +171,7 @@ public class FissionPortBE extends MultiblockPortBE {
             return; // No energy to transfer
         }
         int wasEnergy = getEnergyStored();
-        BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
+        BlockEntity be = NCLevels.getExistingBlockEntity(level, worldPosition.relative(direction));
         if (be == null || be instanceof FissionPortBE || be instanceof FissionControllerBE) {
             return;
         }
@@ -191,17 +189,12 @@ public class FissionPortBE extends MultiblockPortBE {
             return;
         }
         int canExtract = Math.min(controller().energyStorage().getMaxExtract() - extracted, getEnergyStored());
-        be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
-                    if (handler.canReceive()) {
-                        int received = handler.receiveEnergy(canExtract, false);
-                        controller().energyStorage().consumeEnergy(received);
-                        controller().setChanged();
-                        return getEnergyStored() > 0;
-                    } else {
-                        return true;
-                    }
-                }
-        );
+        IEnergyStorage handler = level.getCapability(Capabilities.EnergyStorage.BLOCK, worldPosition.relative(direction), direction.getOpposite());
+        if (handler != null && handler.canReceive()) {
+            int received = handler.receiveEnergy(canExtract, false);
+            controller().energyStorage().consumeEnergy(received);
+            controller().setChanged();
+        }
     }
 
     protected ItemCapabilityHandler itemHandler()
@@ -214,59 +207,6 @@ public class FissionPortBE extends MultiblockPortBE {
         return controller().contentHandler().fluidHandler;
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (controller() == null) return super.getCapability(cap, side);
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return controller().getCapability(cap, side);
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER && controller().canAcceptFluid()) {
-            return controller().getCapability(cap, side);
-        }
-        if(isGtLoaded()) {
-            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                if (isGTEUCapEnabled() && !isSteamMode) {
-                    return getGTEnergy(controller(), side).cast();
-                }
-            }
-        }
-        if (cap == ENERGY && !isSteamMode) {
-            if(!isOnlyGTCEUCapEnabled()) {
-                return controller().getEnergy().cast();
-            } else {
-                return LazyOptional.empty();
-            }
-        }
-
-        if (isMekanismLoaded() && isSteamMode) {
-            if (cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
-                if (controller().contentHandler().hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> controller().contentHandler().gasConverter(side));
-                }
-                return LazyOptional.empty();
-            }
-            if (cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
-                if (controller().contentHandler().hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> controller().contentHandler().getSlurryConverter(side));
-                }
-                return LazyOptional.empty();
-            }
-        }
-
-        if (isOC2Loaded()) {
-            if (cap == DEVICE_CAPABILITY) {
-                return controller().getOCDevice(cap, side);
-            }
-        }
-
-        if (isCcLoaded()) {
-            if (cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return controller().getPeripheral(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
     @Override
     public boolean canInvalidateCache() {
@@ -292,7 +232,7 @@ public class FissionPortBE extends MultiblockPortBE {
     public FissionControllerBE controller() {
         if (NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if (controller == null && getLevel().isClientSide && controllerPos != null) {
-            BlockEntity be = getLevel().getExistingBlockEntity(controllerPos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
             if (be instanceof FissionControllerBE controllerBe) {
                 controller = controllerBe;
                 return  controller;
@@ -306,7 +246,7 @@ public class FissionPortBE extends MultiblockPortBE {
             }
         } catch (NullPointerException e) {
             if (controllerPos != null) {
-                BlockEntity be = getLevel().getExistingBlockEntity(controllerPos);
+                BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
                 if (be instanceof FissionControllerBE controllerBe) {
                     controller = controllerBe;
                 }

@@ -2,9 +2,6 @@ package igentuman.nc.block.target_chamber.entity;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
-import igentuman.nc.compat.cc.TargetChamberPeripheral;
-import igentuman.nc.compat.oc2.TargetChamberDevice;
-import igentuman.nc.content.particles.CapabilityParticleStackHandler;
 import igentuman.nc.content.particles.IParticleStackHandler;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.ParticleStorage;
@@ -21,6 +18,7 @@ import igentuman.nc.recipes.type.TargetChamberRecipe;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -29,13 +27,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,23 +38,15 @@ import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.target_chamber.TargetChamberControllerBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
-import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
-import static igentuman.nc.compat.oc2.TargetChamberDevice.DEVICE_CAPABILITY;
-import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BE;
 import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
-import static igentuman.nc.util.ModUtil.*;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.*;
 
 public class TargetChamberControllerBE extends MultiblockControllerBE {
 
     public static final String NAME = "target_chamber_controller";
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
-    protected final LazyOptional<IEnergyStorage> energy;
-    protected final LazyOptional<IParticleStackHandler> particleHandler;
     public final ParticleStorage particleStorage;
 
     @NBTField
@@ -103,10 +88,8 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
                 .setOutputEnergyTier(0)
                 .setInputAmperage(16)
                 .setOutputAmperage(0);
-        energy = LazyOptional.of(() -> energyStorage);
         particleStorage = new ParticleStorage();
         particleStorage.setTileEntity(this);
-        particleHandler = CapabilityParticleStackHandler.createHandler(particleStorage);
     }
 
     @Override
@@ -133,8 +116,8 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             particleStorage.readFromNBT(infoTag.getCompound("particle_storage"));
@@ -142,8 +125,8 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
@@ -151,16 +134,16 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     }
 
     @Override
-    public void loadClientData(CompoundTag tag) {
-        super.loadClientData(tag);
+    public void loadClientData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadClientData(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             particleStorage.readFromNBT(infoTag.getCompound("particle_storage"));
         }
     }
     @Override
-    protected void saveClientData(CompoundTag tag) {
-        super.saveClientData(tag);
+    protected void saveClientData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveClientData(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
@@ -173,9 +156,6 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         return contentHandler().itemHandler;
     }
 
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
 
     private CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(100000000, 100000000, 0) {
@@ -197,65 +177,9 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
     }
 
 
-    private LazyOptional<TargetChamberPeripheral> peripheralCap;
-
-    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new TargetChamberPeripheral(this));
-        }
-        return peripheralCap.cast();
-    }
-
-    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
-        return LazyOptional.of(() -> TargetChamberDevice.createDevice(this)).cast();
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-
-        if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return particleHandler.cast();
-        }
-
-        if (cap == FLUID_HANDLER) {
-            return contentHandler().getFluidCapability(side);
-        }
-
-        if (cap == ITEM_HANDLER) {
-            return contentHandler().getItemCapability(side);
-        }
-
-        if(isGtLoaded()) {
-            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                if (isGTEUCapEnabled()) {
-                    return getGTEnergy(this, side).cast();
-                }
-            }
-        }
-        if (cap == ENERGY) {
-            if(!isOnlyGTCEUCapEnabled()) {
-                return getEnergy().cast();
-            } else {
-                return LazyOptional.empty();
-            }
-        }
 
 
-        if(isOC2Loaded()) {
-            if(cap == DEVICE_CAPABILITY) {
-                return getOCDevice(cap, side);
-            }
-        }
 
-
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return getPeripheral(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
     public void tickServer() {
 
@@ -545,8 +469,8 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
 
     public static class Recipe extends TargetChamberRecipe {
 
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, ParticleStack[] inputParticles, ParticleStack[] outputParticles, long maxEnergy, double crossSection) {
-            super(id, input, output, inputFluids, outputFluids, inputParticles, outputParticles, maxEnergy, crossSection);
+        public Recipe(String codeId, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, ParticleStack[] inputParticles, ParticleStack[] outputParticles, long maxEnergy, double crossSection) {
+            super(codeId, input, output, inputFluids, outputFluids, inputParticles, outputParticles, maxEnergy, crossSection);
             CATALYSTS.put(NAME, List.of(getToastSymbol()));
         }
 

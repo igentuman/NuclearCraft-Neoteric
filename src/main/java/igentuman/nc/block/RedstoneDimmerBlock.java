@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.entity.RedstoneDimmerBE;
 import igentuman.nc.container.RedstoneDImmerContainer;
 import igentuman.nc.util.TextUtils;
@@ -8,18 +9,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -33,7 +35,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
+
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
@@ -63,6 +65,11 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock implements E
     }
 
     @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return simpleCodec(RedstoneDimmerBlock::new);
+    }
+
+    @Override
     public boolean isSignalSource(BlockState state) {
         return true;
     }
@@ -85,8 +92,7 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock implements E
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result) {
         /*if (!level.isClientSide()) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof RedstoneDimmerBE)  {
@@ -101,7 +107,7 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock implements E
                         return new RedstoneDImmerContainer(windowId, pos, playerInventory);
                     }
                 };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+                ((ServerPlayer) player).openMenu(containerProvider, be.getBlockPos());
             }
         }*/
         return InteractionResult.SUCCESS;
@@ -132,7 +138,7 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock implements E
 
     @Override
     public int getSignal(BlockState state, BlockGetter world, BlockPos pos, Direction direction) {
-        BlockEntity be = world.getExistingBlockEntity(pos);
+        BlockEntity be = NCLevels.getExistingBlockEntity(world, pos);
         if (be instanceof RedstoneDimmerBE) {
             return ((RedstoneDimmerBE) be).output;
         }
@@ -145,7 +151,7 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock implements E
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
         list.add(TextUtils.applyFormat(__("nc.redstone_dimmer.description"), ChatFormatting.AQUA));
     }

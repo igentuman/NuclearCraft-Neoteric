@@ -3,8 +3,7 @@ package igentuman.nc.recipes.type;
 import igentuman.nc.util.insitu_leaching.OreVeinProvider;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +16,8 @@ import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 import static net.minecraft.world.item.Items.BARRIER;
 
 public class OreVeinRecipe extends NcRecipe {
-    public OreVeinRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double rarityModifier) {
-        super(id, input, output, timeModifier, powerModifier, radiation, rarityModifier);
+    public OreVeinRecipe(String codeId, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double rarityModifier) {
+        super(codeId, input, output, timeModifier, powerModifier, radiation, rarityModifier);
     }
 
     private HashMap<ItemStackIngredient, Integer> itemsPool = new HashMap<>();
@@ -71,7 +70,7 @@ public class OreVeinRecipe extends NcRecipe {
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
+    public void write(RegistryFriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeDouble(rarityModifier);
     }

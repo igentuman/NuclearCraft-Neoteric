@@ -1,6 +1,7 @@
 package igentuman.nc.recipes.ingredient;
 
-import net.minecraftforge.fluids.FluidStack;
+import igentuman.api.platform.NCFluidStacks;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class HashedFluid {
 
     public static HashedFluid create(@NotNull FluidStack stack) {
-        return new HashedFluid(new FluidStack(stack, 1));
+        return new HashedFluid(stack.copyWithAmount(1));
     }
 
     /**
@@ -41,7 +42,7 @@ public class HashedFluid {
         if (size <= 0 || fluidStack.isEmpty()) {
             return FluidStack.EMPTY;
         }
-        return new FluidStack(fluidStack, size);
+        return fluidStack.copyWithAmount(size);
     }
 
     @Override
@@ -60,8 +61,8 @@ public class HashedFluid {
     private int initHashCode() {
         int code = 1;
         code = 31 * code + fluidStack.getFluid().hashCode();
-        if (fluidStack.hasTag()) {
-            code = 31 * code + fluidStack.getTag().hashCode();
+        if (NCFluidStacks.hasCustomData(fluidStack)) {
+            code = 31 * code + NCFluidStacks.getTag(fluidStack).hashCode();
         }
         return code;
     }

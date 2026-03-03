@@ -2,6 +2,7 @@ package igentuman.nc.client.gui.element.fluid;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import igentuman.api.platform.NCRendering;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.network.toServer.PacketFlushSlotContent;
@@ -9,7 +10,6 @@ import igentuman.nc.network.toServer.PacketHandleFluidSlotClick;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -18,10 +18,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
@@ -32,7 +32,7 @@ import java.util.List;
 
 import static igentuman.nc.handler.event.client.InputEvents.SHIFT_PRESSED;
 import static igentuman.nc.util.TextUtils.__;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER_ITEM;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 // CREDIT: https://github.com/mezz/JustEnoughItems by mezz
 // Under MIT-License: https://github.com/mezz/JustEnoughItems/blob/1.19/LICENSE.txt
@@ -114,7 +114,7 @@ public class FluidTankRenderer extends NCGuiElement {
     }
 
     private boolean draggingFluidItem(Player player) {
-        return player.containerMenu.getCarried().getCapability(FLUID_HANDLER_ITEM).isPresent();
+        return player.containerMenu.getCarried().getCapability(Capabilities.FluidHandler.ITEM) != null;
     }
 
     public FluidTankRenderer(FluidTank tank, int width, int height, int x, int y) {
@@ -193,7 +193,6 @@ public class FluidTankRenderer extends NCGuiElement {
     }
 
     private static void drawTiledSprite(GuiGraphics graphics, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
-        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         Matrix4f matrix = graphics.pose().last().pose();
         setGLColorFromInt(color);
 
@@ -237,16 +236,14 @@ public class FluidTankRenderer extends NCGuiElement {
         uMax = uMax - (maskRight / 16F * (uMax - uMin));
         vMax = vMax - (maskTop / 16F * (vMax - vMin));
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuilder();
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.vertex(matrix, xCoord, yCoord + 16, zLevel).uv(uMin, vMax).endVertex();
-        bufferBuilder.vertex(matrix, xCoord + 16 - maskRight, yCoord + 16, zLevel).uv(uMax, vMax).endVertex();
-        bufferBuilder.vertex(matrix, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).uv(uMax, vMin).endVertex();
-        bufferBuilder.vertex(matrix, xCoord, yCoord + maskTop, zLevel).uv(uMin, vMin).endVertex();
-        tessellator.end();
+        final float uMaxFinal = uMax;
+        final float vMaxFinal = vMax;
+        NCRendering.draw(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX, buffer -> {
+            buffer.addVertex(matrix, xCoord, yCoord + 16, zLevel).setUv(uMin, vMaxFinal);
+            buffer.addVertex(matrix, xCoord + 16 - maskRight, yCoord + 16, zLevel).setUv(uMaxFinal, vMaxFinal);
+            buffer.addVertex(matrix, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).setUv(uMaxFinal, vMin);
+            buffer.addVertex(matrix, xCoord, yCoord + maskTop, zLevel).setUv(uMin, vMin);
+        });
     }
 
     public List<Component> getTooltips() {

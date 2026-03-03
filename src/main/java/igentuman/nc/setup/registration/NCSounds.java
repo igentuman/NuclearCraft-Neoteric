@@ -1,7 +1,7 @@
 package igentuman.nc.setup.registration;
 
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import java.util.HashMap;
 import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
@@ -12,31 +12,31 @@ public final class NCSounds {
     private NCSounds() {
     }
 
-    public static final List<RegistryObject<SoundEvent>> GEIGER_SOUNDS = initGeigerSounds();
-    public static final RegistryObject<SoundEvent> BOSS_ANGRY = SOUND_EVENTS.register("boss_angry", () -> SoundEvent.createVariableRangeEvent(rl( "boss_angry")));
-    public static final RegistryObject<SoundEvent> BOSS_ACTION = SOUND_EVENTS.register("boss_action", () -> SoundEvent.createVariableRangeEvent(rl( "boss_action")));
-    public static final RegistryObject<SoundEvent> BOSS_HIT = SOUND_EVENTS.register("boss_hit", () -> SoundEvent.createVariableRangeEvent(rl( "boss_hit")));
-    public static final RegistryObject<SoundEvent> BOSS_IDLE = SOUND_EVENTS.register("boss_idle", () -> SoundEvent.createVariableRangeEvent(rl( "boss_idle")));
-    public static final RegistryObject<SoundEvent> FERAL_GHOUL_CHARGE = SOUND_EVENTS.register("feral_ghoul_charge", () -> SoundEvent.createVariableRangeEvent(rl( "feral_ghoul_charge")));
-    public static final RegistryObject<SoundEvent> FERAL_GHOUL_DEATH = SOUND_EVENTS.register("feral_ghoul_death", () -> SoundEvent.createVariableRangeEvent(rl( "feral_ghoul_death")));
-    public static final RegistryObject<SoundEvent> ITEM_CHARGED = SOUND_EVENTS.register("charge_energy", () -> SoundEvent.createVariableRangeEvent(rl( "charge_energy")));
-    public static final RegistryObject<SoundEvent> FUSION_CHARGING = SOUND_EVENTS.register("tile.fusion_charging", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fusion_charging")));
-    public static final RegistryObject<SoundEvent> LASER_SHOOT = SOUND_EVENTS.register("tile.laser_shoot", () -> SoundEvent.createVariableRangeEvent(rl( "tile.laser_shoot")));
-    public static final RegistryObject<SoundEvent> BLACKHOLE_SPAWN = SOUND_EVENTS.register("tile.blackhole_spawn", () -> SoundEvent.createVariableRangeEvent(rl( "tile.blackhole_spawn")));
-    public static final RegistryObject<SoundEvent> BLACKHOLE_IDLE = SOUND_EVENTS.register("tile.blackhole_idle", () -> SoundEvent.createVariableRangeEvent(rl( "tile.blackhole_idle")));
-    public static final RegistryObject<SoundEvent> FUSION_READY = SOUND_EVENTS.register("tile.fusion_ready", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fusion_ready")));
-    public static final RegistryObject<SoundEvent> FUSION_RUNNING = SOUND_EVENTS.register("tile.fusion_running", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fusion_running")));
-    public static final RegistryObject<SoundEvent> TURBINE = SOUND_EVENTS.register("tile.turbine", () -> SoundEvent.createVariableRangeEvent(rl( "tile.turbine")));
-    public static final RegistryObject<SoundEvent> FISSION_REACTOR = SOUND_EVENTS.register("tile.fission_reactor", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fission_reactor")));
-    public static final RegistryObject<SoundEvent> RECORD_WANDERER = SOUND_EVENTS.register("music.wanderer", () -> SoundEvent.createVariableRangeEvent(rl( "music.wanderer")));
-    public static final RegistryObject<SoundEvent> RECORD_END_OF_THE_WORLD = SOUND_EVENTS.register("music.end_of_the_world", () -> SoundEvent.createVariableRangeEvent(rl( "music.end_of_the_world")));
-    public static final RegistryObject<SoundEvent> RECORD_MONEY_FOR_NOTHING = SOUND_EVENTS.register("music.money_for_nothing", () -> SoundEvent.createVariableRangeEvent(rl( "music.money_for_nothing")));
-    public static final RegistryObject<SoundEvent> RECORD_HYPERSPACE = SOUND_EVENTS.register("music.hyperspace", () -> SoundEvent.createVariableRangeEvent(rl( "music.hyperspace")));
+    public static final List<DeferredHolder<SoundEvent, SoundEvent>> GEIGER_SOUNDS = initGeigerSounds();
+    public static final DeferredHolder<SoundEvent, SoundEvent> BOSS_ANGRY = SOUND_EVENTS.register("boss_angry", () -> SoundEvent.createVariableRangeEvent(rl( "boss_angry")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> BOSS_ACTION = SOUND_EVENTS.register("boss_action", () -> SoundEvent.createVariableRangeEvent(rl( "boss_action")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> BOSS_HIT = SOUND_EVENTS.register("boss_hit", () -> SoundEvent.createVariableRangeEvent(rl( "boss_hit")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> BOSS_IDLE = SOUND_EVENTS.register("boss_idle", () -> SoundEvent.createVariableRangeEvent(rl( "boss_idle")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> FERAL_GHOUL_CHARGE = SOUND_EVENTS.register("feral_ghoul_charge", () -> SoundEvent.createVariableRangeEvent(rl( "feral_ghoul_charge")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> FERAL_GHOUL_DEATH = SOUND_EVENTS.register("feral_ghoul_death", () -> SoundEvent.createVariableRangeEvent(rl( "feral_ghoul_death")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> ITEM_CHARGED = SOUND_EVENTS.register("charge_energy", () -> SoundEvent.createVariableRangeEvent(rl( "charge_energy")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> FUSION_CHARGING = SOUND_EVENTS.register("tile.fusion_charging", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fusion_charging")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> LASER_SHOOT = SOUND_EVENTS.register("tile.laser_shoot", () -> SoundEvent.createVariableRangeEvent(rl( "tile.laser_shoot")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> BLACKHOLE_SPAWN = SOUND_EVENTS.register("tile.blackhole_spawn", () -> SoundEvent.createVariableRangeEvent(rl( "tile.blackhole_spawn")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> BLACKHOLE_IDLE = SOUND_EVENTS.register("tile.blackhole_idle", () -> SoundEvent.createVariableRangeEvent(rl( "tile.blackhole_idle")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> FUSION_READY = SOUND_EVENTS.register("tile.fusion_ready", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fusion_ready")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> FUSION_RUNNING = SOUND_EVENTS.register("tile.fusion_running", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fusion_running")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURBINE = SOUND_EVENTS.register("tile.turbine", () -> SoundEvent.createVariableRangeEvent(rl( "tile.turbine")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> FISSION_REACTOR = SOUND_EVENTS.register("tile.fission_reactor", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fission_reactor")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> RECORD_WANDERER = SOUND_EVENTS.register("music.wanderer", () -> SoundEvent.createVariableRangeEvent(rl( "music.wanderer")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> RECORD_END_OF_THE_WORLD = SOUND_EVENTS.register("music.end_of_the_world", () -> SoundEvent.createVariableRangeEvent(rl( "music.end_of_the_world")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> RECORD_MONEY_FOR_NOTHING = SOUND_EVENTS.register("music.money_for_nothing", () -> SoundEvent.createVariableRangeEvent(rl( "music.money_for_nothing")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> RECORD_HYPERSPACE = SOUND_EVENTS.register("music.hyperspace", () -> SoundEvent.createVariableRangeEvent(rl( "music.hyperspace")));
 
-    public static final HashMap<String, RegistryObject<SoundEvent>> SOUND_MAP = initSoundMap();
+    public static final HashMap<String, DeferredHolder<SoundEvent, SoundEvent>> SOUND_MAP = initSoundMap();
 
-    private static HashMap<String, RegistryObject<SoundEvent>> initSoundMap() {
-        HashMap<String, RegistryObject<SoundEvent>> soundMap = new HashMap<>();
+    private static HashMap<String, DeferredHolder<SoundEvent, SoundEvent>> initSoundMap() {
+        HashMap<String, DeferredHolder<SoundEvent, SoundEvent>> soundMap = new HashMap<>();
         soundMap.put("wanderer", RECORD_WANDERER);
         soundMap.put("end_of_the_world", RECORD_END_OF_THE_WORLD);
         soundMap.put("money_for_nothing", RECORD_MONEY_FOR_NOTHING);
@@ -44,7 +44,7 @@ public final class NCSounds {
         return soundMap;
     }
 
-    private static List<RegistryObject<SoundEvent>> initGeigerSounds() {
+    private static List<DeferredHolder<SoundEvent, SoundEvent>> initGeigerSounds() {
         return List.of(
                 SOUND_EVENTS.register("geiger_1", () -> SoundEvent.createVariableRangeEvent(rl( "geiger_1"))),
                 SOUND_EVENTS.register("geiger_2", () -> SoundEvent.createVariableRangeEvent(rl( "geiger_2"))),

@@ -1,5 +1,6 @@
 package igentuman.nc.recipes.ingredient.creator;
 
+import igentuman.api.platform.NCItemStacks;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.tags.TagKey;
@@ -7,7 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 import java.util.Objects;
 
@@ -36,8 +37,8 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         //Copy the stack to ensure it doesn't get modified afterwards
         stack = stack.copy();
         //Support NBT that is on the stack in case it matters
-        // Note: Only bother making it an NBT ingredient if the stack has NBT, otherwise there is no point in doing the extra checks
-        Ingredient ingredient = stack.hasTag() ? StrictNBTIngredient.of(stack) : Ingredient.of(stack);
+        // Note: Only bother making it an NBT ingredient if the stack has custom data, otherwise there is no point in doing the extra checks
+        Ingredient ingredient = NCItemStacks.hasCustomData(stack) ? DataComponentIngredient.of(false, stack) : Ingredient.of(stack);
         return from(ingredient, amount);
     }
 

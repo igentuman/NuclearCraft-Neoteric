@@ -2,19 +2,20 @@ package igentuman.nc.datagen;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import static igentuman.nc.NuclearCraft.rl;
 
 public class BiomeModifierProvider
 {
 
-	public static void register(BootstapContext<BiomeModifier> context) {
+	public static void register(BootstrapContext<BiomeModifier> context) {
 		HolderGetter<PlacedFeature> features = context.lookup(Registries.PLACED_FEATURE);
 		HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
 		return;
@@ -33,6 +34,6 @@ public class BiomeModifierProvider
 
 	private static ResourceKey<BiomeModifier> key(String path)
 	{
-		return ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, rl(path));
+		return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, rl(path));
 	}
 }

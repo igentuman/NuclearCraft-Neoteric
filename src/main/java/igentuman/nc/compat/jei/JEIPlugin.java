@@ -329,7 +329,7 @@ public  class JEIPlugin implements IModPlugin {
             Optional<Resource> structure = resourceManager.getResource(rl("structures/" + file));
             CompoundTag nbt = null;
             try {
-                nbt = NbtIo.readCompressed(structure.get().open());
+                nbt = NbtIo.readCompressed(structure.get().open(), net.minecraft.nbt.NbtAccounter.unlimitedHeap());
             } catch (IOException e) {
                 continue;
             }

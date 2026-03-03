@@ -3,7 +3,7 @@ package igentuman.nc.recipes.serializers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import igentuman.nc.NuclearCraft;
+import igentuman.api.platform.NCRecipeSerializerFactory;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -12,12 +12,14 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.util.JsonConstants;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -27,13 +29,38 @@ import static igentuman.nc.recipes.type.NcRecipe.getBarrier;
 
 public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerializer<RECIPE> {
 
-    final IFactory<RECIPE> factory;
+    protected final IFactory<RECIPE> factory;
+    private String codeId;
 
     public NcRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
-    protected FluidStackIngredient[] inputFluidsFromJson(JsonObject json, ResourceLocation recipeId) {
+    /**
+     * Get the recipe type code ID for this serializer, derived from its registry name.
+     */
+    protected String getCodeId() {
+        if (codeId == null) {
+            codeId = BuiltInRegistries.RECIPE_SERIALIZER.getKey(this).getPath();
+        }
+        return codeId;
+    }
+
+    // --- Codec / StreamCodec (NeoForge 1.21.1 API) ---
+
+    @Override
+    public @NotNull MapCodec<RECIPE> codec() {
+        return NCRecipeSerializerFactory.createCodec(this::fromJson);
+    }
+
+    @Override
+    public @NotNull StreamCodec<RegistryFriendlyByteBuf, RECIPE> streamCodec() {
+        return NCRecipeSerializerFactory.createStreamCodec(this::fromNetwork, this::toNetwork);
+    }
+
+    // --- JSON parsing helpers ---
+
+    protected FluidStackIngredient[] inputFluidsFromJson(JsonObject json) {
         FluidStackIngredient[] inputFluids = new FluidStackIngredient[0];
         if(json.has("inputFluids")) {
             if (GsonHelper.isArrayNode(json, "inputFluids")) {
@@ -44,7 +71,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                     try {
                         inputFluids[i] = IngredientCreatorAccess.fluid().deserialize(in);
                     } catch (Exception ex) {
-                        debugLog("Unable to parse input fluid for recipe: "+recipeId);
+                        debugLog("Unable to parse input fluid for recipe type: " + getCodeId());
                         inputFluids[i] = IngredientCreatorAccess.fluid().from(FluidStack.EMPTY);
                     }
                     i++;
@@ -54,7 +81,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                 try {
                 inputFluids = new FluidStackIngredient[]{IngredientCreatorAccess.fluid().deserialize(inputJson)};
                 } catch (Exception ex) {
-                    debugLog("Unable to parse input fluid for recipe: " + recipeId);
+                    debugLog("Unable to parse input fluid for recipe type: " + getCodeId());
                     inputFluids[0] = IngredientCreatorAccess.fluid().from(FluidStack.EMPTY);
                 }
             }
@@ -63,7 +90,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         return inputFluids;
     }
 
-    protected FluidStackIngredient[] outputFluidsFromJson(JsonObject json, ResourceLocation recipeId) {
+    protected FluidStackIngredient[] outputFluidsFromJson(JsonObject json) {
         FluidStackIngredient[] outputFluids = new FluidStackIngredient[0];
 
             if(json.has("outputFluids")) {
@@ -75,7 +102,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                         try {
                             outputFluids[i] = IngredientCreatorAccess.fluid().deserialize(out.getAsJsonObject());
                         } catch (Exception ex) {
-                            debugLog("Unable to parse output fluid for recipe: "+recipeId);
+                            debugLog("Unable to parse output fluid for recipe type: " + getCodeId());
                             outputFluids[i] = IngredientCreatorAccess.fluid().from(FluidStack.EMPTY);
                         }
                         i++;
@@ -85,7 +112,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                     try {
                         outputFluids = new FluidStackIngredient[]{IngredientCreatorAccess.fluid().deserialize(output.getAsJsonObject())};
                     } catch (Exception ex) {
-                        debugLog("Unable to parse output fluid for recipe: " + recipeId);
+                        debugLog("Unable to parse output fluid for recipe type: " + getCodeId());
                         outputFluids[0] = IngredientCreatorAccess.fluid().from(FluidStack.EMPTY);
                     }
                 }
@@ -94,7 +121,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             return outputFluids;
     }
 
-    protected ParticleStack[] particleStacksFromJson(JsonObject json, String fieldName, ResourceLocation recipeId) {
+    protected ParticleStack[] particleStacksFromJson(JsonObject json, String fieldName) {
         ParticleStack[] inputParticles = new ParticleStack[0];
 
         if (json.has(fieldName)) {
@@ -115,7 +142,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         return inputParticles;
     }
 
-    protected ItemStackIngredient[] inputItemsFromJson(JsonObject json, ResourceLocation recipeId) {
+    protected ItemStackIngredient[] inputItemsFromJson(JsonObject json) {
         ItemStackIngredient[] inputItems = new ItemStackIngredient[0];
 
         if (json.has(JsonConstants.INPUT)) {
@@ -127,7 +154,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                     try {
                         inputItems[i] = IngredientCreatorAccess.item().deserialize(in);
                     } catch (Exception ex) {
-                        debugLog("Unable to parse input for recipe: "+recipeId);
+                        debugLog("Unable to parse input for recipe type: " + getCodeId());
                         inputItems[i] = getBarrier();
                     }
                     i++;
@@ -137,7 +164,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                 try {
                     inputItems = new ItemStackIngredient[]{IngredientCreatorAccess.item().deserialize(inputJson)};
                 } catch (Exception ex) {
-                    debugLog("Unable to parse input for recipe: " + recipeId);
+                    debugLog("Unable to parse input for recipe type: " + getCodeId());
                     inputItems[0] = getBarrier();
                 }
             }
@@ -146,7 +173,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         return inputItems;
     }
 
-    protected ItemStackIngredient[] outputItemsFromJson(JsonObject json, ResourceLocation recipeId) {
+    protected ItemStackIngredient[] outputItemsFromJson(JsonObject json) {
         ItemStackIngredient[] outputItems = new ItemStackIngredient[0];
         if(json.has(JsonConstants.OUTPUT)) {
             if (GsonHelper.isArrayNode(json, JsonConstants.OUTPUT)) {
@@ -158,7 +185,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                     try {
                         outputItems[i] = IngredientCreatorAccess.item().deserialize(out);
                     } catch (JsonSyntaxException ex) {
-                        debugLog("Error parsing output itemstack for recipe: " + recipeId.toString());
+                        debugLog("Error parsing output itemstack for recipe type: " + getCodeId());
                         outputItems[i] = getBarrier();
                     }
                     i++;
@@ -168,7 +195,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                 try {
                     outputItems = new ItemStackIngredient[]{IngredientCreatorAccess.item().deserialize(output.getAsJsonObject())};
                 } catch (Exception ex) {
-                    debugLog("Unable to parse output for recipe: "+recipeId);
+                    debugLog("Unable to parse output for recipe type: " + getCodeId());
                     outputItems[0] = getBarrier();
                 }
             }
@@ -177,17 +204,18 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         return outputItems;
     }
 
-    @Override
-    public @NotNull RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
+    // --- JSON deserialization ---
+
+    protected @NotNull RECIPE fromJson(@NotNull JsonObject json) {
         String type = GsonHelper.getAsString(json, "type");
         if(Processors.all().containsKey(type) && !Processors.all().get(type).config().isRegistered()) {
-            return emptyRecipe(recipeId);
+            return emptyRecipe();
         }
 
-        ItemStackIngredient[] inputItems = inputItemsFromJson(json, recipeId);
-        ItemStackIngredient[] outputItems = outputItemsFromJson(json, recipeId);
-        FluidStackIngredient[] inputFluids = inputFluidsFromJson(json, recipeId);
-        FluidStackIngredient[] outputFluids = outputFluidsFromJson(json, recipeId);
+        ItemStackIngredient[] inputItems = inputItemsFromJson(json);
+        ItemStackIngredient[] outputItems = outputItemsFromJson(json);
+        FluidStackIngredient[] inputFluids = inputFluidsFromJson(json);
+        FluidStackIngredient[] outputFluids = outputFluidsFromJson(json);
 
         double timeModifier = 1D;
         double powerModifier = 1D;
@@ -204,16 +232,19 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
                 rarityModifier = temperature;
             }
         } catch (Exception ex) {
-            debugLog("Unable to parse params for recipe: "+recipeId);
+            debugLog("Unable to parse params for recipe type: " + getCodeId());
         }
-        return this.factory.create(recipeId, inputItems, outputItems, inputFluids, outputFluids, timeModifier, powerModifier, radiation, rarityModifier);
+        return this.factory.create(getCodeId(), inputItems, outputItems, inputFluids, outputFluids, timeModifier, powerModifier, radiation, rarityModifier);
     }
 
-    RECIPE emptyRecipe(@NotNull ResourceLocation recipeId) {
-        return (RECIPE) new EmptyRecipe(recipeId);
+    @SuppressWarnings("unchecked")
+    RECIPE emptyRecipe() {
+        return (RECIPE) new EmptyRecipe(getCodeId());
     }
 
-    public ItemStackIngredient[] readItems(@NotNull FriendlyByteBuf buffer) {
+    // --- Network I/O ---
+
+    public ItemStackIngredient[] readItems(@NotNull RegistryFriendlyByteBuf buffer) {
         int size = buffer.readInt();
         ItemStackIngredient[] items = new ItemStackIngredient[size];
         for(int i = 0; i < size; i++) {
@@ -222,7 +253,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         return items;
     }
 
-    public FluidStackIngredient[] readFluids(@NotNull FriendlyByteBuf buffer) {
+    public FluidStackIngredient[] readFluids(@NotNull RegistryFriendlyByteBuf buffer) {
         int size = buffer.readInt();
         FluidStackIngredient[] fluids = new FluidStackIngredient[size];
         for(int i = 0; i < size; i++) {
@@ -231,8 +262,7 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
         return fluids;
     }
 
-    @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    protected RECIPE fromNetwork(@NotNull RegistryFriendlyByteBuf buffer) {
         try {
             ItemStackIngredient[] inputItems = readItems(buffer);
             ItemStackIngredient[] outputItems = readItems(buffer);
@@ -243,18 +273,17 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
             double powerModifier = buffer.readDouble();
             double radiation = buffer.readDouble();
 
-            return this.factory.create(recipeId, inputItems, outputItems, inputFluids,  outputFluids, timeModifier, powerModifier, radiation, 1);
+            return this.factory.create(getCodeId(), inputItems, outputItems, inputFluids,  outputFluids, timeModifier, powerModifier, radiation, 1);
         } catch (Exception e) {
-            debugLog("Error reading recipe {} from packet. Trace: {} "+ recipeId + e);
+            debugLog("Error reading recipe from packet for type: " + getCodeId() + ". Trace: " + e);
         }
-        debugLog("Return empty recipe for: {}" + recipeId);
+        debugLog("Return empty recipe for type: " + getCodeId());
 
         //return invalid recipe
-        return emptyRecipe(recipeId);
+        return emptyRecipe();
     }
 
-    @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
+    protected void toNetwork(@NotNull RegistryFriendlyByteBuf buffer, @NotNull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -265,9 +294,9 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
 
     @FunctionalInterface
     public interface IFactory<RECIPE extends NcRecipe> {
-        RECIPE create(ResourceLocation id,
+        RECIPE create(String codeId,
                       ItemStackIngredient[] inputItems, ItemStackIngredient[] outputItems,
                       FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids,
-                      double timeMultiplier, double powerMultiplier, double radiationMultiplier, double rarityMultiplier);
+                      double timeMultiplier, double powerMultiplier, double radiationMultiplier, double extraModifier);
     }
 }

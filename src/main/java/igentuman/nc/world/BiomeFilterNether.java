@@ -1,6 +1,7 @@
 package igentuman.nc.world;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
@@ -20,9 +21,7 @@ import static igentuman.nc.setup.registration.WorldGeneration.VEGETATION_MODIFIE
 public class BiomeFilterNether extends PlacementModifier {
 
     private static final BiomeFilterNether INSTANCE = new BiomeFilterNether();
-    public static Codec<BiomeFilterNether> CODEC = Codec.unit(() -> {
-        return INSTANCE;
-    });
+    public static MapCodec<BiomeFilterNether> CODEC = MapCodec.unit(INSTANCE);
 
     private BiomeFilterNether() {
     }

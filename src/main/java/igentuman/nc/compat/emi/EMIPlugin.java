@@ -15,9 +15,9 @@ import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
-import igentuman.nc.compat.ae2.ProcessorEmiRecipeHandlerAE2;
+
 import igentuman.nc.compat.emi.ingredient.ParticleEmiStack;
-import igentuman.nc.compat.refined_storage.ProcessorEmiRecipeHandlerRS;
+
 import igentuman.nc.handler.config.ClientConfig;
 import igentuman.nc.compat.jei.ParticleRecipe;
 import igentuman.nc.compat.jei.ParticleSourceRecipe;
@@ -38,7 +38,7 @@ import igentuman.nc.util.ModUtil;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -455,13 +455,7 @@ public class EMIPlugin implements EmiPlugin {
             var menuType = NCProcessors.PROCESSORS_CONTAINERS.get(name).get();
             registry.addRecipeHandler((MenuType) menuType, new ProcessorEmiRecipeHandler<>());
         }
-        if(ModUtil.isRefinedStorageLoaded()) {
-            registry.addRecipeHandler(com.refinedmods.refinedstorage.RSContainerMenus.GRID.get(), new ProcessorEmiRecipeHandlerRS<>());
-        }
-        if(ModUtil.isAE2Loaded()) {
-            registry.addRecipeHandler(appeng.menu.me.items.PatternEncodingTermMenu.TYPE, new ProcessorEmiRecipeHandlerAE2<>());
-            registry.addRecipeHandler(appeng.menu.me.items.PatternEncodingTermMenu.WIRELESS_TYPE, new ProcessorEmiRecipeHandlerAE2<>());
-        }
+        // Refined Storage and AE2 integration removed (no 1.21.1 port)
     }
     
     private List<ParticleRecipe> particleInfoRecipes() {

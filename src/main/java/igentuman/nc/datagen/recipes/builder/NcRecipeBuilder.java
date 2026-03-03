@@ -5,13 +5,12 @@ import com.google.gson.JsonObject;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.rl;
 
@@ -116,8 +115,8 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         return val;
     }
 
-    public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, getRecipeId());
+    public void build(RecipeOutput output) {
+        build(output, getRecipeId());
     }
 
     public NcRecipeBuilder temperature(double temperature) {
@@ -169,8 +168,8 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             JsonArray inputJson = new JsonArray();
 
             if(!inputItems.isEmpty()) {
-                for(Ingredient in: inputItems) {
-                    inputJson.add(serializeIngredient(in));
+                for(NcIngredient in: inputItems) {
+                    inputJson.add(serializeIngredient(in.asIngredient()));
                 }
                 json.add("input", inputJson);
             }
@@ -178,8 +177,8 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             JsonArray outJson = new JsonArray();
 
             if(!outputItems.isEmpty()) {
-                for (Ingredient out: outputItems) {
-                    outJson.add(serializeIngredient(out));
+                for (NcIngredient out: outputItems) {
+                    outJson.add(serializeIngredient(out.asIngredient()));
                 }
                 json.add("output", outJson);
             }

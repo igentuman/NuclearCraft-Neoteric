@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import igentuman.nc.block.entity.energy.DecayGeneratorBE;
 
 import java.util.HashMap;
@@ -23,11 +23,11 @@ import java.util.HashMap;
 import static igentuman.nc.setup.registration.Registries.*;
 
 public class NCEnergyBlocks {
-    public static HashMap<String, RegistryObject<Block>> ENERGY_BLOCKS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> BLOCK_ITEMS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Block, Block>> ENERGY_BLOCKS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> BLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ENERGY_ITEM_PROPERTIES = new Item.Properties();
     public static final BlockBehaviour.Properties ENERGY_BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends NCEnergy>>> ENERGY_BE = new HashMap<>();
+    public static HashMap<String, DeferredHolder<BlockEntityType<?>, BlockEntityType<? extends NCEnergy>>> ENERGY_BE = new HashMap<>();
 
     public static void init() {
         registerBlocks();
@@ -83,11 +83,11 @@ public class NCEnergyBlocks {
         }
     }
 
-    public static <B extends Block> RegistryObject<Item> fromBatteryBlock(RegistryObject<B> block) {
+    public static <B extends Block> DeferredHolder<Item, Item> fromBatteryBlock(DeferredHolder<B, B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BatteryBlockItem(block.get(), ENERGY_ITEM_PROPERTIES));
     }
 
-    public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
+    public static <B extends Block> DeferredHolder<Item, Item> fromBlock(DeferredHolder<B, B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ENERGY_ITEM_PROPERTIES));
     }
 

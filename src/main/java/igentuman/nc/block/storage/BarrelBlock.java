@@ -1,5 +1,7 @@
 package igentuman.nc.block.storage;
 
+import igentuman.api.platform.NCItemStacks;
+import igentuman.api.platform.NCLevels;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.storage.entity.BarrelBE;
 import igentuman.nc.setup.registration.NCStorageBlocks;
@@ -11,15 +13,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -30,10 +32,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -62,7 +64,7 @@ public class BarrelBlock extends Block implements EntityBlock {
     }
 
     public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
-        BlockEntity blockEntity = pLevel.getExistingBlockEntity(pPos);
+        BlockEntity blockEntity = NCLevels.getExistingBlockEntity(pLevel, pPos);
         if (blockEntity instanceof BarrelBE barrelBE) {
             return (int) ((barrelBE.fluidTank.getFluid().getAmount()/(double)barrelBE.fluidTank.getCapacity())*15);
         }
@@ -70,12 +72,11 @@ public class BarrelBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
-            BarrelBE be = (BarrelBE)level.getExistingBlockEntity(pos);
-            ItemStack handStack = player.getItemInHand(hand);
-            IFluidHandler barrel = be.getFluidHandler().orElse(null);
-            if(isMultiTool(handStack)) {
+            BarrelBE be = (BarrelBE)NCLevels.getExistingBlockEntity(level, pos);
+            IFluidHandler barrel = be.fluidTank;
+            if(isMultiTool(stack)) {
                 Direction dirToChange = result.getDirection();
                 if(player.isShiftKeyDown()) {
                     dirToChange = dirToChange.getOpposite();
@@ -83,17 +84,17 @@ public class BarrelBlock extends Block implements EntityBlock {
                 SideModeToggleable.SideMode mode = be.toggleSideConfig(dirToChange.ordinal());
                 player.sendSystemMessage(__("message.nc.switch_side.mode", mode.name()));
             } else
-            if(!handStack.equals(ItemStack.EMPTY)) {
-                if(handStack.getItem() instanceof BucketItem) {
-                    Fluid to = ((BucketItem) handStack.getItem()).getFluid();
+            if(!stack.equals(ItemStack.EMPTY)) {
+                if(stack.getItem() instanceof BucketItem) {
+                    Fluid to = ((BucketItem) stack.getItem()).content;
                     if(to == null || to == FluidStack.EMPTY.getFluid()) {
                         if(!barrel.getFluidInTank(0).isEmpty() && barrel.getFluidInTank(0).getAmount() >= 1000) {
                             ItemStack bucket = new ItemStack(barrel.getFluidInTank(0).getFluid().getBucket());
                             barrel.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                            if(handStack.getCount() == 1) {
+                            if(stack.getCount() == 1) {
                                 player.setItemInHand(hand, bucket);
                             } else {
-                                handStack.shrink(1);
+                                stack.shrink(1);
                                 if(!player.getInventory().add(bucket)) {
                                     player.drop(bucket, false);
                                 }
@@ -103,11 +104,11 @@ public class BarrelBlock extends Block implements EntityBlock {
                         int filled = barrel.fill(new FluidStack(to, 1000), IFluidHandler.FluidAction.SIMULATE);
                         if(filled == 1000) {
                             barrel.fill(new FluidStack(to, 1000), IFluidHandler.FluidAction.EXECUTE);
-                            if(player.isCreative()) return InteractionResult.SUCCESS;
-                            if(handStack.getCount() == 1) {
+                            if(player.isCreative()) return ItemInteractionResult.SUCCESS;
+                            if(stack.getCount() == 1) {
                                 player.setItemInHand(hand, new ItemStack(BUCKET));
                             } else {
-                                handStack.shrink(1);
+                                stack.shrink(1);
                                 if(!player.getInventory().add(new ItemStack(to.getBucket()))) {
                                     player.drop(new ItemStack(to.getBucket()), false);
                                 }
@@ -115,11 +116,11 @@ public class BarrelBlock extends Block implements EntityBlock {
                         }
                     }
 
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
-                IFluidHandlerItem fluidCap = handStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).orElse(null);
+                IFluidHandlerItem fluidCap = stack.getCapability(Capabilities.FluidHandler.ITEM);
                 if(fluidCap == null) {
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
                 FluidStack inhandFluid = fluidCap.getFluidInTank(0);
                 if(inhandFluid == null || inhandFluid.isEmpty()) {
@@ -130,7 +131,7 @@ public class BarrelBlock extends Block implements EntityBlock {
                 }
             } else {
                 FluidStack fluid = FluidStack.EMPTY;
-                fluid = be.getFluidHandler().orElseGet(null).getFluidInTank(0);
+                fluid = be.fluidTank.getFluidInTank(0);
                 int storage = BarrelBlocks.all().get(code()).getCapacity();
                 if(fluid == null || fluid.isEmpty()) {
                     player.sendSystemMessage(__("tooltip.nc.liquid_empty", formatLiquid(storage)).withStyle(ChatFormatting.BLUE));
@@ -139,13 +140,13 @@ public class BarrelBlock extends Block implements EntityBlock {
                 }
             }
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
-            BlockEntity blockEntity = pLevel.getExistingBlockEntity(pPos);
+            BlockEntity blockEntity = NCLevels.getExistingBlockEntity(pLevel, pPos);
 
         }
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
@@ -183,10 +184,10 @@ public class BarrelBlock extends Block implements EntityBlock {
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
 
-        if (stack.hasTag()) {
-            BarrelBE tileEntity = (BarrelBE) world.getExistingBlockEntity(pos);
-            CompoundTag nbtData = stack.getTag();
-            tileEntity.load(nbtData);
+        if (NCItemStacks.hasCustomData(stack)) {
+            BarrelBE tileEntity = (BarrelBE) NCLevels.getExistingBlockEntity(world, pos);
+            CompoundTag nbtData = NCItemStacks.getTag(stack);
+            tileEntity.loadCustomOnly(nbtData, world.registryAccess());
         }
     }
 
@@ -195,10 +196,10 @@ public class BarrelBlock extends Block implements EntityBlock {
         pPlayer.awardStat(Stats.BLOCK_MINED.get(this));
         pPlayer.causeFoodExhaustion(0.005F);
         BarrelBE BarrelBE = (BarrelBE) pBlockEntity;
-        CompoundTag data = BarrelBE.getUpdateTag();
+        CompoundTag data = BarrelBE.getUpdateTag(pLevel.registryAccess());
 
         ItemStack drop = new ItemStack(this);
-        drop.setTag(data);
+        NCItemStacks.setTag(drop, data);
         if (!pLevel.isClientSide()) {
             ItemEntity itemEntity = new ItemEntity(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), drop);
             itemEntity.setDefaultPickUpDelay();
@@ -208,7 +209,7 @@ public class BarrelBlock extends Block implements EntityBlock {
 
 
     @Override
-    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
     {
         int storage = BarrelBlocks.all().get(code()).config().getCapacity() * 1000;
 

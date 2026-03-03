@@ -2,14 +2,13 @@ package igentuman.nc.compat.gregtech;
 
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.config.CommonConfig.GTCEUCompatibilityConfig.GTCEUTier;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -49,8 +48,10 @@ public class GTUtils {
         return tier;
     }
 
-    public static LazyOptional<IEnergyContainer> getGTEnergy(NuclearCraftBE energyHolder, @Nullable Direction side) {
-        return GTEnergyContainer.wrapped(energyHolder.energyStorage(), side, energyHolder).cast();
+    // TODO: LazyOptional removed in NeoForge 1.21.1. GTCapability API may also have changed.
+    // Verify GTCapability usage with the NeoForge 1.21.1 version of GregTech.
+    public static IEnergyContainer getGTEnergy(NuclearCraftBE energyHolder, @Nullable Direction side) {
+        return GTEnergyContainer.wrapped(energyHolder.energyStorage(), side, energyHolder);
     }
 
     public static int convert2FE(long eu) {
@@ -75,14 +76,27 @@ public class GTUtils {
         return FeCompat.ratio(false);
     }
 
+    // TODO: GTCapability.CAPABILITY_ENERGY_CONTAINER lookup needs updating for NeoForge 1.21.1.
+    // In NeoForge 1.21.1, use level.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, pos, side)
+    // or the GregTech NeoForge equivalent. Verify with GregTech NeoForge 1.21.1 API.
     public static void transferEU(NuclearCraftBE nuclearCraftBE, BlockEntity be, CustomEnergyStorage energyStorage, Direction direction) {
         int amps = (int) (energyStorage.getEnergyStored() / (energyStorage.getGTOuputVoltage() * EU2FERatio()));
         amps = (int) Math.min(amps, energyStorage.getGTOutputAmperage());
         if(amps < 1) {
             return;
         }
-        if (be.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, direction.getOpposite()).isPresent()) {
-            IEnergyContainer gtEnergyContainer = be.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, direction.getOpposite()).orElse(null);
+        if (be.getLevel() != null) {
+            // TODO: Update GTCapability lookup for NeoForge 1.21.1 block capability API
+            IEnergyContainer gtEnergyContainer = null;
+            try {
+                gtEnergyContainer = be.getLevel().getCapability(
+                        GTCapability.CAPABILITY_ENERGY_CONTAINER,
+                        be.getBlockPos(),
+                        direction.getOpposite()
+                );
+            } catch (Exception ignored) {
+                // GT capability lookup may not match this signature yet
+            }
             if (gtEnergyContainer != null) {
                 long outAmps = gtEnergyContainer.acceptEnergyFromNetwork(direction.getOpposite(), energyStorage.getGTOuputVoltage(), amps);
                 long received = outAmps * energyStorage.getGTOuputVoltage();

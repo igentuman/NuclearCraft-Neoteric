@@ -1,18 +1,27 @@
 package igentuman.nc.network.toServer;
 
+import igentuman.api.platform.NCItemStacks;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
-import igentuman.nc.network.INcPacket;
 import igentuman.nc.recipes.type.NcRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class PacketRecipeTransfer implements INcPacket {
+public class PacketRecipeTransfer implements CustomPacketPayload {
+
+    public static final CustomPacketPayload.Type<PacketRecipeTransfer> TYPE =
+        new CustomPacketPayload.Type<>(NuclearCraft.rl("recipe_transfer"));
+
+    public static final StreamCodec<FriendlyByteBuf, PacketRecipeTransfer> STREAM_CODEC =
+        StreamCodec.of((buf, pkt) -> pkt.encode(buf), PacketRecipeTransfer::decode);
 
     private BlockPos blockPos;
     private ResourceLocation recipeId;
@@ -26,8 +35,14 @@ public class PacketRecipeTransfer implements INcPacket {
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
-        ServerPlayer player = context.getSender();
+    public Type<? extends CustomPacketPayload> type() { return TYPE; }
+
+    public static void handle(PacketRecipeTransfer packet, IPayloadContext context) {
+        context.enqueueWork(() -> packet.handlePacket(context));
+    }
+
+    private void handlePacket(IPayloadContext context) {
+        ServerPlayer player = (ServerPlayer) context.player();
         if (player == null) {
             return;
         }
@@ -48,9 +63,13 @@ public class PacketRecipeTransfer implements INcPacket {
             return;
         }
 
-        // Find the recipe by ID
-        Recipe<?> recipe = player.level().getRecipeManager().byKey(recipeId).orElse(null);
-        if (!(recipe instanceof NcRecipe ncRecipe)) {
+        // Find the recipe by ID — byKey returns Optional<RecipeHolder<?>> in 1.21.1
+        NcRecipe ncRecipe = player.level().getRecipeManager().byKey(recipeId)
+                .map(RecipeHolder::value)
+                .filter(r -> r instanceof NcRecipe)
+                .map(r -> (NcRecipe) r)
+                .orElse(null);
+        if (ncRecipe == null) {
             return;
         }
 
@@ -59,39 +78,59 @@ public class PacketRecipeTransfer implements INcPacket {
     }
 
     private void transferRecipeItems(ServerPlayer player, NCProcessorBE processorBE, NcRecipe recipe) {
-        // Get the processor's item handler
-        processorBE.getCapability(net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER).ifPresent(processorItemHandler -> {
-            int inputSlotIndex = 0;
-            int maxInputSlots = processorBE.prefab().getSlotsConfig().getInputItems();
+        // Get the processor's item handler directly
+        var processorItemHandler = processorBE.contentHandler().itemHandler;
+        if (processorItemHandler == null) return;
 
-            // Process each input ingredient
-            for (var inputIngredient : recipe.getInputItems()) {
-                if (inputSlotIndex >= maxInputSlots) break;
-                if (inputIngredient == null || inputIngredient.getRepresentations().isEmpty()) {
-                    inputSlotIndex++;
-                    continue;
-                }
+        int inputSlotIndex = 0;
+        int maxInputSlots = processorBE.prefab().getSlotsConfig().getInputItems();
 
-                // Find the first matching item in player inventory
-                for (ItemStack requiredStack : inputIngredient.getRepresentations()) {
-                    int playerSlotIndex = findItemSlotInPlayerInventory(player, requiredStack);
-                    if (playerSlotIndex != -1) {
-                        ItemStack playerStack = player.getInventory().getItem(playerSlotIndex);
-                        
-                        // Calculate how much we can transfer
-                        int transferAmount = Math.min(requiredStack.getCount(), playerStack.getCount());
-                        
-                        // Check if the processor slot can accept this item
-                        ItemStack toTransfer = playerStack.copy();
-                        toTransfer.setCount(transferAmount);
-                        
-                        ItemStack currentInSlot = processorItemHandler.getStackInSlot(inputSlotIndex);
-                        
-                        if (currentInSlot.isEmpty()) {
-                            // Slot is empty, try to insert
-                            ItemStack remainder = processorItemHandler.insertItem(inputSlotIndex, toTransfer, false);
-                            int actualTransferred = transferAmount - remainder.getCount();
-                            
+        // Process each input ingredient
+        for (var inputIngredient : recipe.getInputItems()) {
+            if (inputSlotIndex >= maxInputSlots) break;
+            if (inputIngredient == null || inputIngredient.getRepresentations().isEmpty()) {
+                inputSlotIndex++;
+                continue;
+            }
+
+            // Find the first matching item in player inventory
+            for (ItemStack requiredStack : inputIngredient.getRepresentations()) {
+                int playerSlotIndex = findItemSlotInPlayerInventory(player, requiredStack);
+                if (playerSlotIndex != -1) {
+                    ItemStack playerStack = player.getInventory().getItem(playerSlotIndex);
+
+                    // Calculate how much we can transfer
+                    int transferAmount = Math.min(requiredStack.getCount(), playerStack.getCount());
+
+                    // Check if the processor slot can accept this item
+                    ItemStack toTransfer = playerStack.copy();
+                    toTransfer.setCount(transferAmount);
+
+                    ItemStack currentInSlot = processorItemHandler.getStackInSlot(inputSlotIndex);
+
+                    if (currentInSlot.isEmpty()) {
+                        // Slot is empty, try to insert
+                        ItemStack remainder = processorItemHandler.insertItem(inputSlotIndex, toTransfer, false);
+                        int actualTransferred = transferAmount - remainder.getCount();
+
+                        if (actualTransferred > 0) {
+                            playerStack.shrink(actualTransferred);
+                            if (playerStack.isEmpty()) {
+                                player.getInventory().setItem(playerSlotIndex, ItemStack.EMPTY);
+                            }
+                            break;
+                        }
+                    } else if (NCItemStacks.canStack(currentInSlot, toTransfer)) {
+                        // Same item, try to stack
+                        int spaceLeft = currentInSlot.getMaxStackSize() - currentInSlot.getCount();
+                        int actualTransfer = Math.min(transferAmount, spaceLeft);
+
+                        if (actualTransfer > 0) {
+                            ItemStack toInsert = toTransfer.copy();
+                            toInsert.setCount(actualTransfer);
+                            ItemStack remainder = processorItemHandler.insertItem(inputSlotIndex, toInsert, false);
+                            int actualTransferred = actualTransfer - remainder.getCount();
+
                             if (actualTransferred > 0) {
                                 playerStack.shrink(actualTransferred);
                                 if (playerStack.isEmpty()) {
@@ -99,40 +138,21 @@ public class PacketRecipeTransfer implements INcPacket {
                                 }
                                 break;
                             }
-                        } else if (ItemStack.isSameItemSameTags(currentInSlot, toTransfer)) {
-                            // Same item, try to stack
-                            int spaceLeft = currentInSlot.getMaxStackSize() - currentInSlot.getCount();
-                            int actualTransfer = Math.min(transferAmount, spaceLeft);
-                            
-                            if (actualTransfer > 0) {
-                                ItemStack toInsert = toTransfer.copy();
-                                toInsert.setCount(actualTransfer);
-                                ItemStack remainder = processorItemHandler.insertItem(inputSlotIndex, toInsert, false);
-                                int actualTransferred = actualTransfer - remainder.getCount();
-                                
-                                if (actualTransferred > 0) {
-                                    playerStack.shrink(actualTransferred);
-                                    if (playerStack.isEmpty()) {
-                                        player.getInventory().setItem(playerSlotIndex, ItemStack.EMPTY);
-                                    }
-                                    break;
-                                }
-                            }
                         }
                     }
                 }
-                inputSlotIndex++;
             }
-            
-            // Mark the processor as changed to sync with clients
-            processorBE.setChanged();
-        });
+            inputSlotIndex++;
+        }
+
+        // Mark the processor as changed to sync with clients
+        processorBE.setChanged();
     }
 
     private int findItemSlotInPlayerInventory(ServerPlayer player, ItemStack required) {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
-            if (ItemStack.isSameItemSameTags(stack, required) && stack.getCount() >= required.getCount()) {
+            if (NCItemStacks.canStack(stack, required) && stack.getCount() >= required.getCount()) {
                 return i;
             }
         }
@@ -142,20 +162,19 @@ public class PacketRecipeTransfer implements INcPacket {
     private boolean isPlayerLookingAtBlock(ServerPlayer player, BlockPos blockPos) {
         // Get player's look vector
         var lookVec = player.getLookAngle();
-        
+
         // Get vector from player's eye position to block center
         var playerEyePos = player.getEyePosition();
         var blockCenter = blockPos.getCenter();
         var toBlock = blockCenter.subtract(playerEyePos).normalize();
-        
+
         // Calculate dot product to determine angle
         double dotProduct = lookVec.dot(toBlock);
-        
-        // Allow for a reasonable viewing angle (about 45 degrees = cos(45°) ≈ 0.707)
+
+        // Allow for a reasonable viewing angle (about 45 degrees = cos(45) ~ 0.707)
         return dotProduct > 0.5;
     }
 
-    @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(blockPos);
         buffer.writeResourceLocation(recipeId);

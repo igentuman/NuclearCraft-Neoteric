@@ -5,7 +5,7 @@ import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.util.TagUtil;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 @NothingNullByDefault
 public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, FluidStack, FluidStackIngredient> {
@@ -18,7 +18,11 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
             return from(NCFluids.ALL_FLUID_ENTRIES.get(name).getStill(), amount);
         }
         if (!name.contains(":")) {
-            return IngredientCreatorAccess.fluid().from(new FluidStack(TagUtil.getFluidByName(name), amount));
+            FluidStack resolved = TagUtil.getFluidByName(name);
+            if (!resolved.isEmpty()) {
+                return IngredientCreatorAccess.fluid().from(resolved.copyWithAmount(amount));
+            }
+            return IngredientCreatorAccess.fluid().from(FluidStack.EMPTY);
         }
         return IngredientCreatorAccess.fluid().from(name, amount);
     }

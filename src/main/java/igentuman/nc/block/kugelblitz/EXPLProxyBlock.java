@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,8 +23,9 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.registries.ForgeRegistries;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_PROXY_BE;
 import static igentuman.nc.util.TextUtils.__;
@@ -52,7 +52,7 @@ public class EXPLProxyBlock extends Block implements EntityBlock {
 
     public String getCode()
     {
-        return ForgeRegistries.BLOCKS.getKey(this).getPath();
+        return BuiltInRegistries.BLOCK.getKey(this).getPath();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class EXPLProxyBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result) {
         if (!level.isClientSide()) {
             BlockEntity be = level.getBlockEntity(pos);
             EXPLProxyBE proxy = (EXPLProxyBE) be;
@@ -79,7 +79,7 @@ public class EXPLProxyBlock extends Block implements EntityBlock {
                         return new EXPLContainer(windowId, proxy.getCorePos(), playerInventory);
                     }
                 };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, proxy.getCorePos());
+                ((ServerPlayer) player).openMenu(containerProvider, proxy.getCorePos());
             }
         }
         return InteractionResult.SUCCESS;

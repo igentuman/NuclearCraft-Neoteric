@@ -1,6 +1,6 @@
 package igentuman.nc.util.functions;
 
-import net.minecraftforge.common.util.TriPredicate;
+import net.neoforged.neoforge.common.util.TriPredicate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiPredicate;

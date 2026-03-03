@@ -6,11 +6,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import igentuman.api.platform.NCIngredients;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,7 +92,7 @@ public class CoilDef {
         String namespace;
         String location;
         TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(key));
-        Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
+        Ingredient ing = NCIngredients.ofTag(tag);
         for (ItemStack item: ing.getItems()) {
             tmp.add(item.getItem().toString());
         }
@@ -250,7 +252,7 @@ public class CoilDef {
                             if (!bStr.contains(":")) {
                                 bStr = MODID + ":" + bStr;
                             }
-                            tmp.add(ForgeRegistries.BLOCKS.getValue(rlFromString(bStr)));
+                            tmp.add(BuiltInRegistries.BLOCK.get(rlFromString(bStr)));
                         }
                     }
                     blocks.put(condition, tmp);

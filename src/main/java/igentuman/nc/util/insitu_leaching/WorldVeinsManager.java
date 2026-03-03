@@ -1,5 +1,7 @@
 package igentuman.nc.util.insitu_leaching;
 
+import igentuman.api.platform.NCSerialization;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,19 +34,21 @@ public class WorldVeinsManager extends SavedData {
             throw new RuntimeException("Don't access this client-side!");
         }
         DimensionDataStorage storage = ((ServerLevel) level).getDataStorage();
-        return storage.computeIfAbsent(WorldVeinsManager::new, WorldVeinsManager::new, "nc_world_veins");
+        return storage.computeIfAbsent(
+                new SavedData.Factory<>(WorldVeinsManager::new, WorldVeinsManager::new, null),
+                "nc_world_veins");
     }
 
-    public WorldVeinsManager(CompoundTag tag) {
+    public WorldVeinsManager(CompoundTag tag, HolderLookup.Provider registries) {
         if(tag.contains("depletion")) {
-            worldVeinData = WorldVeinOres.deserialize(tag);
+            worldVeinData = WorldVeinOres.deserialize(registries, tag);
         } else {
             worldVeinData = new WorldVeinOres();
         }
     }
 
     @Override
-    public @NotNull CompoundTag save(CompoundTag tag) {
-        return worldVeinData.serializeNBT();
+    public @NotNull CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        return NCSerialization.serialize(worldVeinData, registries);
     }
 }

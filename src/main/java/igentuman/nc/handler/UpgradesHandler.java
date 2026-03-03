@@ -4,7 +4,7 @@ import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.content.processors.ProcessorPrefab;
 import igentuman.nc.setup.registration.NCItems;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 

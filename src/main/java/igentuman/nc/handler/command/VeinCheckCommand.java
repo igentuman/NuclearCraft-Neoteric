@@ -8,7 +8,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 
 import static igentuman.nc.util.TextUtils.__;
 
@@ -17,7 +17,7 @@ public class VeinCheckCommand {
     private VeinCheckCommand() {}
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
-        MinecraftForge.EVENT_BUS.register(VeinCheckCommand.class);
+        NeoForge.EVENT_BUS.register(VeinCheckCommand.class);
         return Commands.literal("nc_vein_check")
                 .requires(cs -> cs.hasPermission(3))
                 .executes(ctx -> {

@@ -12,10 +12,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
@@ -77,12 +77,12 @@ public class NCBlockTags extends BlockTagsProvider {
                 ACCELERATOR_BLOCKS.get("particle_beam").get(),
                 ACCELERATOR_BLOCKS.get("electromagnet_yoke").get()
         );
-        for(RegistryObject<Block> magnet: NC_ELECTROMAGNETS.values()) {
+        for(DeferredHolder<Block, Block> magnet: NC_ELECTROMAGNETS.values()) {
             tag(AcceleratorRegistration.ACCELERATOR_INNER_BLOCKS).add(
                     magnet.get()
             );
         }
-        for(RegistryObject<Block> block: NC_RF_AMPLIFIERS.values()) {
+        for(DeferredHolder<Block, Block> block: NC_RF_AMPLIFIERS.values()) {
             tag(AcceleratorRegistration.ACCELERATOR_INNER_BLOCKS).add(
                     block.get()
             );
@@ -93,12 +93,12 @@ public class NCBlockTags extends BlockTagsProvider {
                     cooler
             );
         }
-        for(RegistryObject<Block> magnet: NC_ELECTROMAGNETS.values()) {
+        for(DeferredHolder<Block, Block> magnet: NC_ELECTROMAGNETS.values()) {
             tag(ELECTROMAGNETS).add(
                     magnet.get()
             );
         }
-        for(RegistryObject<Block> amplifier: NC_RF_AMPLIFIERS.values()) {
+        for(DeferredHolder<Block, Block> amplifier: NC_RF_AMPLIFIERS.values()) {
             tag(AMPLIFIERS).add(
                     amplifier.get()
             );

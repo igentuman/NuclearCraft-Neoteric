@@ -1,6 +1,7 @@
 package igentuman.nc.content.particles;
 
 
+import igentuman.api.platform.NCItemStacks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,7 +22,7 @@ public interface IItemParticleAmount
 		if (!nbt.contains("particle_capacity")) {
 			return moleAmount;
 		}
-		
+
 		return nbt.getInt("particle_capacity");
 	}
 
@@ -35,7 +36,14 @@ public interface IItemParticleAmount
 		}
 		CompoundTag nbt = getStorageNBT(stack);
 		if (!nbt.contains("particle")) {
-			nbt.putString("particle", sources.get(stack.getItem().toString()).getParticle().name);
+			// Write the particle key atomically
+			String particleName = sources.get(stack.getItem().toString()).getParticle().name;
+			NCItemStacks.modifyTag(stack, rootTag -> {
+				CompoundTag storage = rootTag.getCompound("particle_storage");
+				storage.putString("particle", particleName);
+				rootTag.put("particle_storage", storage);
+			});
+			return particles.get(particleName);
 		}
 		return particles.get(nbt.getString("particle"));
 	}
@@ -53,22 +61,26 @@ public interface IItemParticleAmount
 	{
 		if(stack.getItem() instanceof IItemParticleAmount)
 		{
-			CompoundTag nbt = getStorageNBT(stack);
-            nbt.putInt("particle_amount", Math.min(amount, getCapacity(stack)));
+			int capped = Math.min(amount, getCapacity(stack));
+			NCItemStacks.modifyTag(stack, rootTag -> {
+				CompoundTag storage = rootTag.getCompound("particle_storage");
+				storage.putInt("particle_amount", capped);
+				rootTag.put("particle_storage", storage);
+			});
 		}
 	}
-	
-	
+
+
 	default ItemStack fill(ItemStack stack, int amount, String type)
 	{
 		if(getAmountStored(stack) + amount <= getCapacity(stack))
 		{
 			setAmountStored(stack,getAmountStored(stack)+amount);
 		}
-		
+
 		return stack;
 	}
-	
+
 	default ItemStack use(ItemStack stack, int amount)
 	{
 		if(getAmountStored(stack) > amount)
@@ -79,29 +91,29 @@ public interface IItemParticleAmount
 		{
 			return getEmptyItem();
 		}
-		
+
 		return stack;
 	}
-	
+
 	default ItemStack getEmptyItem()
 	{
 		return  ItemStack.EMPTY;
 	}
-	
+
 	default boolean isEmptyItem(ItemStack stack)
 	{
 		return  stack == getEmptyItem() || getAmountStored(stack) <= 0;
 	}
-	
+
 	static ItemStack cleanNBT(ItemStack stack)
 	{
 		ItemStack newStack = stack.copy();
-		newStack.setTag(null);
+		NCItemStacks.setTag(newStack, null);
 
 		return newStack;
 	}
-	
-	
+
+
 	static ItemStack fullItem(ItemStack stack)
 	{
 		if(stack.getItem() instanceof IItemParticleAmount)
@@ -113,15 +125,22 @@ public interface IItemParticleAmount
 		return stack;
 	}
 
+	/**
+	 * Returns a READ-ONLY copy of the "particle_storage" sub-compound.
+	 * If none exists yet, returns a default in-memory compound without persisting.
+	 * Use {@link #setAmountStored}, {@link #setStorageNBT}, or
+	 * {@link NCItemStacks#modifyTag} for writes.
+	 */
 	static CompoundTag getStorageNBT(ItemStack stack)
 	{
-		CompoundTag nbt = stack.getOrCreateTag();
+		CompoundTag nbt = NCItemStacks.getTagCopy(stack);
 		if (!nbt.contains("particle_storage"))
 		{
+			// Return a default in-memory compound without persisting
 			CompoundTag storage = new CompoundTag();
 			storage.putInt("particle_amount", ParticleSources.getCapacity(stack));
 			storage.putInt("particle_capacity", ParticleSources.getCapacity(stack));
-			nbt.put("particle_storage", storage);
+			return storage;
 		}
 		return nbt.getCompound("particle_storage");
 	}
@@ -132,24 +151,22 @@ public interface IItemParticleAmount
 		{
 			return;
 		}
-		
+
 		IItemParticleAmount item = (IItemParticleAmount) stack.getItem();
 
-		CompoundTag nbt = stack.getOrCreateTag();
-		
-		if (!nbt.contains("particle_storage"))
-		{
-			CompoundTag storage =  new CompoundTag();
-			storage.putInt("particle_amount", moleAmount);
-			storage.putInt("particle_capacity", item.getItemCapacity(stack));
-			nbt.put("particle_storage",storage);
-			stack.setTag(nbt);
-		}
-		else if(!nbt.getCompound("particle_storage").contains("particle_capacity"))
-		{
-			nbt.getCompound("particle_storage").putInt("particle_capacity", item.getItemCapacity(stack));
-			stack.setTag(nbt);
-		}
+		NCItemStacks.modifyTag(stack, nbt -> {
+			if (!nbt.contains("particle_storage"))
+			{
+				CompoundTag storage = new CompoundTag();
+				storage.putInt("particle_amount", moleAmount);
+				storage.putInt("particle_capacity", item.getItemCapacity(stack));
+				nbt.put("particle_storage", storage);
+			}
+			else if(!nbt.getCompound("particle_storage").contains("particle_capacity"))
+			{
+				nbt.getCompound("particle_storage").putInt("particle_capacity", item.getItemCapacity(stack));
+			}
+		});
 	}
 
 	default ParticleStack getParticleStack(ItemStack stack) {

@@ -2,17 +2,16 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static net.minecraft.world.level.material.Fluids.WATER;
 
 public class SteamTurbineRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         SteamTurbineRecipes.consumer = consumer;
         ID = Processors.STEAM_TURBINE;
 

@@ -8,7 +8,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
 

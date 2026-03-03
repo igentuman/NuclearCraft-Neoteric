@@ -5,37 +5,37 @@ import igentuman.nc.entity.EntityWastelandBoss;
 import igentuman.nc.entity.EntityWastelandProjectile;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.SpawnPlacements;
+import igentuman.api.platform.NCSpawning;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
+import igentuman.api.platform.NCRegistration;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Entities {
 
-    @SuppressWarnings("unchecked")
-    public static final RegistryObject<EntityType<EntityFeralGhoul>> FERAL_GHOUL =
-            Registries.ENTITIES.register("feral_ghoul", 
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityFeralGhoul>> FERAL_GHOUL =
+            NCRegistration.registerEntity(Registries.ENTITIES, "feral_ghoul",
                     () -> EntityType.Builder.<EntityFeralGhoul>of(EntityFeralGhoul::new, MobCategory.MONSTER)
                             .sized(0.6f, 1.95f)
                             .build("feral_ghoul"));
-    
-    @SuppressWarnings("unchecked")
-    public static final RegistryObject<EntityType<EntityWastelandBoss>> FERAL_GHOUL_BOSS =
-            Registries.ENTITIES.register("feral_ghoul_boss",
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityWastelandBoss>> FERAL_GHOUL_BOSS =
+            NCRegistration.registerEntity(Registries.ENTITIES, "feral_ghoul_boss",
                     () -> EntityType.Builder.<EntityWastelandBoss>of(EntityWastelandBoss::new, MobCategory.MONSTER)
                             .sized(1.3f, 2.9f)  // 50% larger than regular ghoul
                             .fireImmune()       // Boss is immune to fire damage
                             .build("feral_ghoul_boss"));
 
     // Wasteland projectile entity
-    @SuppressWarnings("unchecked")
-    public static final RegistryObject<EntityType<EntityWastelandProjectile>> WASTELAND_PROJECTILE =
-            Registries.ENTITIES.register("wasteland_projectile",
+    public static final DeferredHolder<EntityType<?>, EntityType<EntityWastelandProjectile>> WASTELAND_PROJECTILE =
+            NCRegistration.registerEntity(Registries.ENTITIES, "wasteland_projectile",
                     () -> EntityType.Builder.<EntityWastelandProjectile>of((type, level) ->
                             new EntityWastelandProjectile(type, level), MobCategory.MISC)
                             .sized(0.5F, 0.5F)
@@ -43,14 +43,15 @@ public class Entities {
                             .updateInterval(5)
                             .build("wasteland_projectile"));
 
-    public static void registerSpawnPlacements() {
-        SpawnPlacements.register(FERAL_GHOUL.get(), 
-                SpawnPlacements.Type.NO_RESTRICTIONS,
+    @SubscribeEvent
+    public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
+        NCSpawning.register(event, FERAL_GHOUL.get(),
+                NCSpawning.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 EntityFeralGhoul::checkFeralGhoulSpawnRules);
 
-        SpawnPlacements.register(FERAL_GHOUL_BOSS.get(),
-                SpawnPlacements.Type.NO_RESTRICTIONS,
+        NCSpawning.register(event, FERAL_GHOUL_BOSS.get(),
+                NCSpawning.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 EntityWastelandBoss::checkFeralGhoulBossSpawnRules);
     }

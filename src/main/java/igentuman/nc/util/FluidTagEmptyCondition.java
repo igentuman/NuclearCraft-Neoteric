@@ -5,73 +5,48 @@
 
 package igentuman.nc.util;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
+import net.neoforged.neoforge.common.conditions.ICondition;
 
-public class FluidTagEmptyCondition implements ICondition
-{
-    private static final ResourceLocation NAME = ResourceLocation.fromNamespaceAndPath("forge", "fluid_tag_empty");
-    private final TagKey<Fluid> tag;
+public record FluidTagEmptyCondition(TagKey<Fluid> tag) implements ICondition {
+    public static final MapCodec<FluidTagEmptyCondition> CODEC = RecordCodecBuilder.mapCodec(
+            builder -> builder
+                    .group(
+                            ResourceLocation.CODEC.xmap(
+                                    loc -> TagKey.create(Registries.FLUID, loc),
+                                    TagKey::location
+                            ).fieldOf("tag").forGetter(FluidTagEmptyCondition::tag))
+                    .apply(builder, FluidTagEmptyCondition::new));
 
-    public FluidTagEmptyCondition(String location)
-    {
+    public FluidTagEmptyCondition(String location) {
         this(ResourceLocation.tryParse(location));
     }
 
-    public FluidTagEmptyCondition(String namespace, String path)
-    {
+    public FluidTagEmptyCondition(String namespace, String path) {
         this(ResourceLocation.fromNamespaceAndPath(namespace, path));
     }
 
-    public FluidTagEmptyCondition(ResourceLocation tag)
-    {
-        this.tag = TagKey.create(Registries.FLUID, tag);
+    public FluidTagEmptyCondition(ResourceLocation tag) {
+        this(TagKey.create(Registries.FLUID, tag));
     }
 
     @Override
-    public ResourceLocation getID()
-    {
-        return NAME;
-    }
-
-    @Override
-    public boolean test(IContext context)
-    {
+    public boolean test(IContext context) {
         return context.getTag(tag).isEmpty();
     }
 
     @Override
-    public String toString()
-    {
-        return "tag_empty(\"" + tag.location() + "\")";
+    public MapCodec<? extends ICondition> codec() {
+        return CODEC;
     }
 
-    public static class Serializer implements IConditionSerializer<FluidTagEmptyCondition>
-    {
-        public static final Serializer INSTANCE = new Serializer();
-
-        @Override
-        public void write(JsonObject json, FluidTagEmptyCondition value)
-        {
-            json.addProperty("tag", value.tag.location().toString());
-        }
-
-        @Override
-        public FluidTagEmptyCondition read(JsonObject json)
-        {
-            return new FluidTagEmptyCondition(ResourceLocation.tryParse(GsonHelper.getAsString(json, "tag")));
-        }
-
-        @Override
-        public ResourceLocation getID()
-        {
-            return FluidTagEmptyCondition.NAME;
-        }
+    @Override
+    public String toString() {
+        return "fluid_tag_empty(\"" + tag.location() + "\")";
     }
 }

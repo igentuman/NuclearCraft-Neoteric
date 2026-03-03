@@ -16,7 +16,6 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
@@ -94,16 +93,9 @@ public class NCGuiElement extends AbstractWidget {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-        if (this.visible) {
-            this.isHovered = pMouseX >= this.x && pMouseY >= this.y && pMouseX < this.x + this.width && pMouseY < this.y + this.height;
-            this.renderButton(graphics, pMouseX, pMouseY, pPartialTick);
-        }
-    }
-
-    @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int i, int i1, float v) {
-
+    protected void renderWidget(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        this.isHovered = pMouseX >= this.x && pMouseY >= this.y && pMouseX < this.x + this.width && pMouseY < this.y + this.height;
+        this.renderButton(graphics, pMouseX, pMouseY, pPartialTick);
     }
 
     protected void onFocusedChanged(boolean pFocused) {
@@ -142,8 +134,6 @@ public class NCGuiElement extends AbstractWidget {
     public void renderButton(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         int i = this.getYImage(this.isHoveredOrFocused());
         RenderSystem.enableBlend();
@@ -222,7 +212,6 @@ public class NCGuiElement extends AbstractWidget {
     }
 
     public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
-        RenderSystem.setShaderTexture(0, TEXTURE);
     }
 
     public List<Component> getTooltips() {

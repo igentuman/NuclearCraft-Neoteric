@@ -1,11 +1,10 @@
 package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.content.processors.Processors;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.content.materials.Materials.*;
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_BLOCK;
@@ -13,7 +12,7 @@ import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 
 public class SubatomicLiquifierRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         SubatomicLiquifierRecipes.consumer = consumer;
         ID = Processors.SUBATOMIC_LIQUIFIER;
         itemsAndFluids(

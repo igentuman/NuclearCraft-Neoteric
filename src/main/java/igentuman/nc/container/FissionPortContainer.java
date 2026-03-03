@@ -1,5 +1,6 @@
 package igentuman.nc.container;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
@@ -11,11 +12,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.__;
@@ -32,13 +32,16 @@ public class FissionPortContainer extends AbstractContainerMenu {
         super(FissionReactorRegistration.FISSION_PORT_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        portBE = (FissionPortBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
+        portBE = (FissionPortBE) NCLevels.getExistingBlockEntity(playerEntity.getCommandSenderWorld(), pos);
         slotIndex = 0;
         layoutPlayerInventorySlots();
-        portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
-        });
+        if (portBE.controller() != null && portBE.controller().contentHandler() != null) {
+            IItemHandler h = portBE.controller().contentHandler().itemHandler;
+            if (h != null) {
+                addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
+                addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
+            }
+        }
     }
 
     public BlockPos getPosition() {

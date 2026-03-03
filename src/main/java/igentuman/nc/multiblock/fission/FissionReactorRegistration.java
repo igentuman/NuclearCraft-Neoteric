@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.registries.RegistryObject;
+import igentuman.api.platform.NCRegistration;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -36,22 +36,19 @@ public class FissionReactorRegistration {
 
     public static final Pattern TRANSPARENT_BLOCKS = Pattern.compile(".*glass|.*cell.*|photon.*|.*stabilizer.*");
     public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties();
-    public static final HashMap<String, RegistryObject<Block>> FISSION_BLOCKS = new HashMap<>();
-    public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FISSION_BE = new HashMap<>();
-    public static final HashMap<String, RegistryObject<Item>> FISSION_BLOCK_ITEMS = new HashMap<>();
-    private static final List<RegistryObject<Block>> hsBlocks = new ArrayList<>();
+    public static final HashMap<String, DeferredHolder<Block, Block>> FISSION_BLOCKS = new HashMap<>();
+    public static final HashMap<String, DeferredHolder<BlockEntityType<?>, BlockEntityType<? extends BlockEntity>>> FISSION_BE = new HashMap<>();
+    public static final HashMap<String, DeferredHolder<Item, Item>> FISSION_BLOCK_ITEMS = new HashMap<>();
+    private static final List<DeferredHolder<Block, Block>> hsBlocks = new ArrayList<>();
     public static final List<String> hsSchedule = new ArrayList<>();
-    public static final RegistryObject<MenuType<FissionControllerContainer>> FISSION_CONTROLLER_CONTAINER = CONTAINERS.register("fission_reactor_controller",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new FissionControllerContainer(windowId, data.readBlockPos(), inv))
-            );
+    public static final DeferredHolder<MenuType<?>, MenuType<FissionControllerContainer>> FISSION_CONTROLLER_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "fission_reactor_controller", (windowId, inv, data) -> new FissionControllerContainer(windowId, data.readBlockPos(), inv));
 
-    public static final RegistryObject<MenuType<FissionPortContainer>> FISSION_PORT_CONTAINER = CONTAINERS.register("fission_reactor_port",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new FissionPortContainer(windowId, data.readBlockPos(), inv))
-            );
+    public static final DeferredHolder<MenuType<?>, MenuType<FissionPortContainer>> FISSION_PORT_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "fission_reactor_port", (windowId, inv, data) -> new FissionPortContainer(windowId, data.readBlockPos(), inv));
 
-    public static final RegistryObject<MenuType<MSRControllerContainer>> MSR_CONTROLLER_CONTAINER = CONTAINERS.register("msr_controller",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new MSRControllerContainer(windowId, data.readBlockPos(), inv))
-            );
+    public static final DeferredHolder<MenuType<?>, MenuType<MSRControllerContainer>> MSR_CONTROLLER_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "msr_controller", (windowId, inv, data) -> new MSRControllerContainer(windowId, data.readBlockPos(), inv));
 
     public static final BlockBehaviour.Properties REACTOR_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
 
@@ -202,14 +199,14 @@ public class FissionReactorRegistration {
     public static Block[] getHSBlocks() {
         Block[] blocks = new Block[hsBlocks.size()];
         int i = 0;
-        for (RegistryObject<Block> b: hsBlocks) {
+        for (DeferredHolder<Block, Block> b: hsBlocks) {
             blocks[i] = b.get();
             i++;
         }
         return blocks;
     }
 
-    public static <B extends Block> RegistryObject<Item> fromMultiblock(RegistryObject<B> block) {
+    public static <B extends Block> DeferredHolder<Item, Item> fromMultiblock(DeferredHolder<B, B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), FISSION_ITEM_PROPS));
     }
 }

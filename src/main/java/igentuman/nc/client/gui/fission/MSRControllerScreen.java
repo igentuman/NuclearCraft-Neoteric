@@ -1,6 +1,5 @@
 package igentuman.nc.client.gui.fission;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
@@ -84,9 +83,8 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        renderBackground(graphics);
+        renderBackground(graphics, mouseX, mouseY, partialTick);
         graphics.blit(GUI, relX, relY, 0, 0, imageWidth, imageHeight);
         
         for (NCGuiElement widget : widgets) {
@@ -106,7 +104,7 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
     
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(graphics);
+        this.renderBackground(graphics, mouseX, mouseY, partialTicks);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
     }

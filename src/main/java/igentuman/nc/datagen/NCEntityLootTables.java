@@ -1,7 +1,9 @@
 package igentuman.nc.datagen;
 
+import igentuman.api.platform.NCLoot;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCItems;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
@@ -9,7 +11,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
@@ -22,8 +23,11 @@ import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 
 public class NCEntityLootTables extends EntityLootSubProvider {
 
-    public NCEntityLootTables() {
-        super(FeatureFlags.REGISTRY.allFlags());
+    private final HolderLookup.Provider registries;
+
+    public NCEntityLootTables(HolderLookup.Provider registries) {
+        super(FeatureFlags.REGISTRY.allFlags(), registries);
+        this.registries = registries;
     }
 
     @Override
@@ -34,25 +38,25 @@ public class NCEntityLootTables extends EntityLootSubProvider {
                         .setRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(NC_ISOTOPES.get("xenorium/298").get())
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
-                                .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F))))
+                                .apply(NCLoot.lootingMultiplier(registries, UniformGenerator.between(0.0F, 1.0F))))
                 )
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(NC_ISOTOPES.get("californium/252").get())
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
-                                .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F))))
+                                .apply(NCLoot.lootingMultiplier(registries, UniformGenerator.between(0.0F, 1.0F))))
                 )
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(Items.ROTTEN_FLESH)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
-                                .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F))))
+                                .apply(NCLoot.lootingMultiplier(registries, UniformGenerator.between(0.0F, 1.0F))))
                 )
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(NCBlocks.WASTELAND_EARTH.get())
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
-                                .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F))))
+                                .apply(NCLoot.lootingMultiplier(registries, UniformGenerator.between(0.0F, 1.0F))))
                 )
         );
 
@@ -61,7 +65,7 @@ public class NCEntityLootTables extends EntityLootSubProvider {
                         .setRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(Items.ROTTEN_FLESH)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
-                                .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F))))
+                                .apply(NCLoot.lootingMultiplier(registries, UniformGenerator.between(0.0F, 1.0F))))
                 )
         );
     }

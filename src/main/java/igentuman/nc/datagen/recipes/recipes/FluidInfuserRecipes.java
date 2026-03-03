@@ -6,11 +6,10 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.registration.FissionFuel;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.FissionFuel.NC_FUEL;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
@@ -21,7 +20,7 @@ import static net.minecraft.world.item.Items.ICE;
 
 public class FluidInfuserRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         FluidInfuserRecipes.consumer = consumer;
         ID = Processors.FLUID_INFUSER;
 

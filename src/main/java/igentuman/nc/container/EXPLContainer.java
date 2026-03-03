@@ -1,5 +1,6 @@
 package igentuman.nc.container;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.kugelblitz.entity.EXPLBE;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
@@ -10,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
@@ -28,7 +29,7 @@ public class EXPLContainer extends AbstractContainerMenu {
     public EXPLContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(EXPL_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
-        blockEntity = (EXPLBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
+        blockEntity = (EXPLBE) NCLevels.getExistingBlockEntity(playerEntity.getCommandSenderWorld(), pos);
     }
 
     @Override

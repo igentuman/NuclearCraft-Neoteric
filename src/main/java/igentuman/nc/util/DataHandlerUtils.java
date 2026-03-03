@@ -1,10 +1,12 @@
 package igentuman.nc.util;
 
+import igentuman.api.platform.NCSerialization;
 import igentuman.nc.util.annotation.NothingNullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fluids.IFluidTank;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.fluids.IFluidTank;
 
 import java.util.List;
 
@@ -17,27 +19,27 @@ public class DataHandlerUtils {
     /**
      * Helper to read and load a list of containers from a {@link ListTag}
      */
-    public static void readContainers(List<? extends INBTSerializable<CompoundTag>> containers, ListTag storedContainers) {
-        readContents(containers, storedContainers, getTagByType(containers));
+    public static void readContainers(HolderLookup.Provider provider, List<? extends INBTSerializable<CompoundTag>> containers, ListTag storedContainers) {
+        readContents(provider, containers, storedContainers, getTagByType(containers));
     }
 
     /**
      * Helper to read and load a list of containers to a {@link ListTag}
      */
-    public static ListTag writeContainers(List<? extends INBTSerializable<CompoundTag>> containers) {
-        return writeContents(containers, getTagByType(containers));
+    public static ListTag writeContainers(HolderLookup.Provider provider, List<? extends INBTSerializable<CompoundTag>> containers) {
+        return writeContents(provider, containers, getTagByType(containers));
     }
 
     /**
      * Helper to read and load a list of handler contents from a {@link ListTag}
      */
-    public static void readContents(List<? extends INBTSerializable<CompoundTag>> contents, ListTag storedContents, String key) {
+    public static void readContents(HolderLookup.Provider provider, List<? extends INBTSerializable<CompoundTag>> contents, ListTag storedContents, String key) {
         int size = contents.size();
         for (int tagCount = 0; tagCount < storedContents.size(); tagCount++) {
             CompoundTag tagCompound = storedContents.getCompound(tagCount);
             byte id = tagCompound.getByte(key);
             if (id >= 0 && id < size) {
-                contents.get(id).deserializeNBT(tagCompound);
+                NCSerialization.deserialize(contents.get(id), provider, tagCompound);
             }
         }
     }
@@ -45,10 +47,10 @@ public class DataHandlerUtils {
     /**
      * Helper to read and load a list of handler contents to a {@link ListTag}
      */
-    public static ListTag writeContents(List<? extends INBTSerializable<CompoundTag>> contents, String key) {
+    public static ListTag writeContents(HolderLookup.Provider provider, List<? extends INBTSerializable<CompoundTag>> contents, String key) {
         ListTag storedContents = new ListTag();
         for (int tank = 0; tank < contents.size(); tank++) {
-            CompoundTag tagCompound = contents.get(tank).serializeNBT();
+            CompoundTag tagCompound = NCSerialization.serialize(contents.get(tank), provider);
             if (!tagCompound.isEmpty()) {
                 tagCompound.putByte(key, (byte) tank);
                 storedContents.add(tagCompound);

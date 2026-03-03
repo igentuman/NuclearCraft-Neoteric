@@ -1,5 +1,6 @@
 package igentuman.nc.block.fission;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.compat.gregtech.GTUtils;
@@ -11,15 +12,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
+
 
 import java.util.List;
 
@@ -65,9 +65,9 @@ public class MSRControllerBlock extends MultiblockControllerBlock implements Ent
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result) {
         if (!level.isClientSide()) {
-            BlockEntity be = level.getExistingBlockEntity(pos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(level, pos);
 
             if (be instanceof MSRControllerBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
@@ -81,7 +81,7 @@ public class MSRControllerBlock extends MultiblockControllerBlock implements Ent
                         return new MSRControllerContainer(windowId, pos, playerInventory);
                     }
                 };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+                ((ServerPlayer) player).openMenu(containerProvider, be.getBlockPos());
             }
         }
         return InteractionResult.SUCCESS;
@@ -105,7 +105,7 @@ public class MSRControllerBlock extends MultiblockControllerBlock implements Ent
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
         int max = FISSION_CONFIG.MAX_SIZE.get();
         int min = FISSION_CONFIG.MIN_SIZE.get() + 2;

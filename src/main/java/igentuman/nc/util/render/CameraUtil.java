@@ -23,7 +23,6 @@ public class CameraUtil {
         // Check if block is occluded
         Vec3 cameraPos = camera.getPosition();
         Vec3 blockCenter = new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-        Vec3 direction = blockCenter.subtract(cameraPos);
 
         // Ray trace from camera to block
         HitResult hitResult = level.clip(
@@ -47,7 +46,9 @@ public class CameraUtil {
 
         float fov = (float) mc.options.fov().get();
         Matrix4f projMatrix = mc.gameRenderer.getProjectionMatrix(fov);
-        Matrix4f modelViewMatrix = RenderSystem.getModelViewMatrix();
+        // In 1.21.1, RenderSystem.getModelViewMatrix() is removed.
+        // Use an identity matrix — the view transform is already applied via the camera position subtraction above.
+        Matrix4f modelViewMatrix = new Matrix4f();
 
         Vector4f screenPos = new Vector4f((float) viewPos.x, (float) viewPos.y, (float) viewPos.z, 1.0F);
         screenPos.mul(modelViewMatrix);

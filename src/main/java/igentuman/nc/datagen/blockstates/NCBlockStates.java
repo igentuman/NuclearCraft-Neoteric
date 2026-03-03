@@ -11,9 +11,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.client.model.generators.*;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.client.model.generators.*;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.function.Function;
 
@@ -419,7 +420,7 @@ public class NCBlockStates extends BlockStateProvider {
     }
 
     private ResourceLocation key(Block block) {
-        return ForgeRegistries.BLOCKS.getKey(block);
+        return BuiltInRegistries.BLOCK.getKey(block);
     }
 
     public ModelFile model(Block block, String subPath) {
@@ -451,9 +452,9 @@ public class NCBlockStates extends BlockStateProvider {
         }
         BlockModelBuilder model = models().cubeAll(
                 blockPath+key(block).getPath(),
-                        ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
+                        ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
         if(name.getPath().matches(".*glass|.*cell.*|.*photon.*|.*event_horizon_stabilizer.*|.*quantum_transformer.*")) {
-            model.renderType(ResourceLocation.tryBuild("minecraft","cutout"));
+            model.renderType(ResourceLocation.fromNamespaceAndPath("minecraft","cutout"));
         }
         return model;
     }
@@ -465,9 +466,9 @@ public class NCBlockStates extends BlockStateProvider {
         }
         BlockModelBuilder m = models().cubeAll(
                 "block/multiblock/"+key(block).getPath(),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath));
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath));
         if(subPath.matches(".*glass|.*cell.*|.*photon.*|.*event_horizon_stabilizer.*|.*quantum_transformer.*")) {
-            m.renderType(ResourceLocation.tryBuild("minecraft","cutout"));
+            m.renderType(ResourceLocation.fromNamespaceAndPath("minecraft","cutout"));
         }
         return m;
     }
@@ -492,12 +493,12 @@ public class NCBlockStates extends BlockStateProvider {
         }
         return models().cube(
                 blockPath+key(block).getPath(),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/top"),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/bottom"),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/back"),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side"),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side")
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/top"),
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/bottom"),
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()),
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/back"),
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side"),
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side")
         ).texture("particle", ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side");
     }
 
@@ -506,17 +507,17 @@ public class NCBlockStates extends BlockStateProvider {
 
         BlockModelBuilder model =  models().cube(
                 key(block).getPath(),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top"),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side")
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top"),
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side")
         );
 
         model.texture("particle", ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top");
         if(subPath.matches(".*voltaic_pile.*|.*lithium_ion_battery.*")) {
-            model.customLoader((blockModelBuilder, helper) -> new CustomLoaderBuilder<BlockModelBuilder>(BATTERY_LOADER, blockModelBuilder, helper) { });
+            model.customLoader((blockModelBuilder, helper) -> igentuman.api.platform.NCModels.customLoader(BATTERY_LOADER, blockModelBuilder, helper));
         }
         return model;
     }

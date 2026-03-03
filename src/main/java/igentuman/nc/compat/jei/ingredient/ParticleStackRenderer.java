@@ -110,7 +110,6 @@ public class ParticleStackRenderer  implements IIngredientRenderer<ParticleStack
 		}
 		
 		// Set up proper rendering state
-		RenderSystem.setShaderTexture(0, particleStack.getParticle().getTexture());
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		

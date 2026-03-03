@@ -1,5 +1,6 @@
 package igentuman.nc.datagen;
 
+import igentuman.api.platform.NCMusicDiscs;
 import igentuman.nc.world.NCConfiguredFeatures;
 import igentuman.nc.world.NCPlacedFeatures;
 import igentuman.nc.world.biome.NCBiomeModifier;
@@ -10,9 +11,10 @@ import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.Set;
 
@@ -27,7 +29,8 @@ public class NCWorldGenProvider extends DatapackBuiltinEntriesProvider {
             //.add(Registries.LEVEL_STEM, Dimensions::bootstrapStem)
             .add(Registries.DENSITY_FUNCTION, NCDensityFunction::bootstrap)
             //.add(Registries.NOISE_SETTINGS, NCSurfaceRuleData::bootstrap)
-            .add(ForgeRegistries.Keys.BIOME_MODIFIERS, NCBiomeModifier::bootstrap);
+            .add(Registries.JUKEBOX_SONG, NCMusicDiscs::bootstrap)
+            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, NCBiomeModifier::bootstrap);
 
 
     public NCWorldGenProvider(DataGenerator generator, GatherDataEvent event) {

@@ -5,8 +5,6 @@ import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.recipes.type.NcRecipe;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.List;
 
@@ -31,8 +29,6 @@ public interface Processor {
     String getName();
 
     int getEnergyCapacity();
-
-    LazyOptional<IEnergyStorage> getEnergy();
 
     List<Item> getAllowedCatalysts();
 

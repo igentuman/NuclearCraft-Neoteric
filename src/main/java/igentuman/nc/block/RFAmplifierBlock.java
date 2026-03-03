@@ -4,9 +4,9 @@ import igentuman.nc.content.RFAmplifier;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class RFAmplifierBlock extends MultiblockBlock {
     public int getMaxTemperature() {
         return prefab().getMaxTemp();
     }
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag)
     {
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.eu_amplifier.power", formatEUEnergy(prefab().getPower())).withStyle(ChatFormatting.GOLD));

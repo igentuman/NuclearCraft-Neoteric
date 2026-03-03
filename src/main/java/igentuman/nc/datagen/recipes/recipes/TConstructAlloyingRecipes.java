@@ -3,16 +3,15 @@ package igentuman.nc.datagen.recipes.recipes;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 
 public class TConstructAlloyingRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         TConstructAlloyingRecipes.consumer = consumer;
         ID = "alloy";
 

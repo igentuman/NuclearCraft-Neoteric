@@ -8,12 +8,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -24,7 +26,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +41,12 @@ public class TurbineRotorBlock extends DirectionalBlock implements EntityBlock {
     public TurbineRotorBlock(Properties pProperties) {
         super(pProperties.sound(SoundType.METAL).noOcclusion());
     }
+
+    @Override
+    protected MapCodec<? extends DirectionalBlock> codec() {
+        return simpleCodec(TurbineRotorBlock::new);
+    }
+
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
 
     @Override
@@ -84,7 +93,7 @@ public class TurbineRotorBlock extends DirectionalBlock implements EntityBlock {
 
     private String codeID()
     {
-        return ForgeRegistries.BLOCKS.getKey(this).getPath();
+        return BuiltInRegistries.BLOCK.getKey(this).getPath();
     }
 
     @Nullable
@@ -132,7 +141,7 @@ public class TurbineRotorBlock extends DirectionalBlock implements EntityBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
         list.add(TextUtils.applyFormat(__("tooltip.nc.rotor_shaft.desc"), ChatFormatting.BLUE));
     }
 }

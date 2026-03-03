@@ -9,21 +9,22 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import igentuman.api.platform.NCTrading;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.TickEvent.LevelTickEvent;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.TickEvent.ServerTickEvent;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.event.level.ChunkEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.event.village.WandererTradesEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+import net.neoforged.neoforge.event.village.WandererTradesEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -37,7 +38,7 @@ import static igentuman.nc.handler.config.WorldConfig.VILLAGE_CONFIG;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.Villager.addVillagerTrades;
 
-@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = MODID)
 public class WorldEvents {
 
     public final static LinkedList<Block> trackingBlocks = new LinkedList<>();
@@ -57,8 +58,8 @@ public class WorldEvents {
         List<VillagerTrades.ItemListing> genericTrades = event.getGenericTrades();
         List<VillagerTrades.ItemListing> rareTrades = event.getRareTrades();
 
-        genericTrades.add((pTrader, pRandom) -> new MerchantOffer(
-                new ItemStack(Items.EMERALD, 8),
+        genericTrades.add((pTrader, pRandom) -> NCTrading.offer(
+                NCTrading.cost(Items.EMERALD, 8),
                 new ItemStack(NC_ISOTOPES.get(plutonium239).get(), 1),
                 8, 2, 0.2f));
     }
@@ -110,21 +111,17 @@ public class WorldEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onTick(ServerTickEvent event) {
-        if (event.side.isServer() && event.phase == Phase.START) {
-            currentTick++;
-        }
+    public void onTick(ServerTickEvent.Pre event) {
+        currentTick++;
     }
 
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onTick(LevelTickEvent event) {
-        if (event.side.isServer() && event.phase == Phase.START) {
-            if(currentTick % 5 != 0 || event.level.getChunkSource().getLoadedChunksCount() < 1) return;
-            final ServerLevel level = (ServerLevel) event.level;
-            RadiationEvents.tickAsync(event);
-            MultiblockHandler.trackChangesAsync(level);
-        }
+    public void onTick(LevelTickEvent.Pre event) {
+        if(currentTick % 5 != 0 || event.getLevel().getChunkSource().getLoadedChunksCount() < 1) return;
+        final ServerLevel level = (ServerLevel) event.getLevel();
+        RadiationEvents.tickAsync(event);
+        MultiblockHandler.trackChangesAsync(level);
     }
 
     

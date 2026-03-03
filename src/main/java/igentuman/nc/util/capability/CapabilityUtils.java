@@ -1,44 +1,9 @@
 package igentuman.nc.util.capability;
 
-import net.minecraft.core.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullConsumer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-
+/**
+ * Capability utilities. Most methods removed during NeoForge 1.21.1 migration
+ * since LazyOptional and ICapabilityProvider no longer exist.
+ */
 public final class CapabilityUtils {
-
-    private CapabilityUtils() {
-    }
-
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static void addListener(@NotNull LazyOptional<?> lazyOptional, @NotNull NonNullConsumer listener) {
-        lazyOptional.addListener(listener);
-    }
-
-    public static <T> T getPresentCapability(ICapabilityProvider provider, Capability<T> cap)
-    {
-        return Objects.requireNonNull(getCapability(provider, cap, null));
-    }
-
-    @Nullable
-    public static <T> T getCapability(ICapabilityProvider provider, Capability<T> cap)
-    {
-        return getCapability(provider, cap, null);
-    }
-
-    @Nullable
-    public static <T> T getCapability(ICapabilityProvider provider, Capability<T> cap, @Nullable Direction side)
-    {
-        LazyOptional<T> optional = provider.getCapability(cap, side);
-        if(optional.isPresent())
-            return optional.orElseThrow(RuntimeException::new);
-        else
-            return null;
-    }
+    private CapabilityUtils() {}
 }

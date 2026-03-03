@@ -5,91 +5,71 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.FluidStackIngredientCreator;
 import igentuman.nc.util.TagUtil;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITag;
-import net.minecraftforge.registries.tags.ITagManager;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static igentuman.nc.NuclearCraft.forgeRl;
-import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.util.NcUtils.rlFromString;
+import static igentuman.nc.NuclearCraft.neoforgeRl;
 import static net.minecraft.world.item.Items.BUCKET;
 
 public class MekChemicalConversionRecipe extends NcRecipe {
 
     public static class Type extends MekChemicalConversionRecipe {
         public Type() {
-            super(rl("mek_chemical"), new ItemStackIngredient[0], new ItemStackIngredient[0], new FluidStackIngredient[0], new FluidStackIngredient[0], 1, 1, 1, 1);
+            super("mek_chemical", new ItemStackIngredient[0], new ItemStackIngredient[0], new FluidStackIngredient[0], new FluidStackIngredient[0], 1, 1, 1, 1);
         }
     }
-    public ChemicalStack<?> inputChemical;
+    public ChemicalStack inputChemical;
     public FluidStack outputFluid;
-    public MekChemicalConversionRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double rarityModifier) {
-        super(id, input, output, timeModifier, powerModifier, radiation, rarityModifier);
+    public MekChemicalConversionRecipe(String codeId, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double rarityModifier) {
+        super(codeId, input, output, timeModifier, powerModifier, radiation, rarityModifier);
     }
 
-    public MekChemicalConversionRecipe(ChemicalStack<?> input, FluidStack outputFluid) {
-        super(rl("mek_chemical_conversion"), new ItemStackIngredient[0], new ItemStackIngredient[0], 1, 1, 1, 1);
+    public MekChemicalConversionRecipe(ChemicalStack input, FluidStack outputFluid) {
+        super("mek_chemical_conversion", new ItemStackIngredient[0], new ItemStackIngredient[0], 1, 1, 1, 1);
         this.inputChemical = input;
         this.outputFluid = outputFluid;
     }
 
     public static FluidStack getStackByTagCode(String name)
     {
-        ITagManager<Fluid> tagManager = TagUtil.manager(ForgeRegistries.FLUIDS);
-        TagKey<Fluid> key = tagManager.createTagKey(forgeRl(name));
-        ITag<Fluid> fluidITag = TagUtil.tag(ForgeRegistries.FLUIDS, key);
-        if(fluidITag.isEmpty()) {
+        TagKey<Fluid> key = TagUtil.createKey(BuiltInRegistries.FLUID, neoforgeRl(name));
+        if(TagUtil.isTagEmpty(BuiltInRegistries.FLUID, key)) {
             return FluidStack.EMPTY;
         }
         FluidStack fluidStack = FluidStack.EMPTY;
         try {
             fluidStack = FluidStackIngredientCreator.INSTANCE
-                    .from(fluidITag.getKey(), 1000).getRepresentations().get(0);
+                    .from(key, 1000).getRepresentations().get(0);
         } catch (Exception e) {
 
         }
         return fluidStack;
     }
 
-    public static FluidStack getFluidBySlurry(Slurry gas) {
-        String name = gas.getName();
-        return getStackByTagCode(name);
-    }
-
-    public static FluidStack getFluidByGas(Gas gas) {
-        String name = gas.getName();
+    public static FluidStack getFluidByChemical(Chemical chemical) {
+        String name = chemical.getRegistryName().getPath();
         return getStackByTagCode(name);
     }
 
     public static List<MekChemicalConversionRecipe> getRecipes() {
         List<MekChemicalConversionRecipe> recipes = new ArrayList<>();
 
-        for(Map.Entry<ResourceKey<Gas>, Gas> gas: MekanismAPI.gasRegistry().getEntries()) {
-            FluidStack fluid = getFluidByGas(gas.getValue());
+        for(Map.Entry<ResourceKey<Chemical>, Chemical> entry : MekanismAPI.CHEMICAL_REGISTRY.entrySet()) {
+            FluidStack fluid = getFluidByChemical(entry.getValue());
             if(fluid.isEmpty()) continue;
-            recipes.add(new MekChemicalConversionRecipe(new GasStack(gas.getValue(), 1000), fluid));
-        }
-        for(Map.Entry<ResourceKey<Slurry>, Slurry> slurry: MekanismAPI.slurryRegistry().getEntries()) {
-            FluidStack fluid = getFluidBySlurry(slurry.getValue());
-            if(fluid.isEmpty()) continue;
-            recipes.add(new MekChemicalConversionRecipe(new SlurryStack(slurry.getValue(), 1000), fluid));
+            recipes.add(new MekChemicalConversionRecipe(new ChemicalStack(entry.getValue(), 1000), fluid));
         }
 
         return recipes;
@@ -106,7 +86,7 @@ public class MekChemicalConversionRecipe extends NcRecipe {
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
+    public void write(RegistryFriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeDouble(rarityModifier);
     }

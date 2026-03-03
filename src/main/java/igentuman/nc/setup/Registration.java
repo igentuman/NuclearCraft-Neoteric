@@ -18,34 +18,34 @@ import igentuman.nc.world.placement.NCPlacementModifierTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import static igentuman.nc.setup.registration.Registries.CONTAINERS;
 import static igentuman.nc.setup.registration.Registries.EFFECTS;
 
 public class Registration {
 
-    public static final RegistryObject<MobEffect> RADIATION_RESISTANCE = EFFECTS.register("radiation_resistance", () -> new RadiationResistance(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
-    public static final RegistryObject<MobEffect> RADIATION_DECAY = EFFECTS.register("radiation_decay", () -> new RadiationDecay(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
-    public static final RegistryObject<MenuType<MultiblockControllerContainer>> MULTIBLOCK_REPORT_CONTAINER = CONTAINERS.register("multilblock_report_container",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new MultiblockControllerContainer(windowId, data.readBlockPos(), inv))
+    public static final DeferredHolder<MobEffect, MobEffect> RADIATION_RESISTANCE = EFFECTS.register("radiation_resistance", () -> new RadiationResistance(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
+    public static final DeferredHolder<MobEffect, MobEffect> RADIATION_DECAY = EFFECTS.register("radiation_decay", () -> new RadiationDecay(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
+    public static final DeferredHolder<MenuType<?>, MenuType<MultiblockControllerContainer>> MULTIBLOCK_REPORT_CONTAINER = CONTAINERS.register("multilblock_report_container",
+            () -> IMenuTypeExtension.create((windowId, inv, data) -> new MultiblockControllerContainer(windowId, data.readBlockPos(), inv))
     );
 
     @SubscribeEvent
     public static void onConstruction(FMLConstructModEvent event) {
         event.enqueueWork(() -> {
             ParticleSources.init();
-            FissionFuel.registerRuntimeFuels();;
+            FissionFuel.registerRuntimeFuels();
             NCFluids.init();
         });
     }
 
-    public static void init(FMLJavaModLoadingContext context) {
-        Registries.init(context);
+    public static void init(IEventBus modbus) {
+        Registries.init(modbus);
         NCStorageBlocks.init();
         NCBlocks.init();
         ParticleSources.init();
@@ -62,9 +62,9 @@ public class Registration {
         NCEnergyBlocks.init();
         NCItems.init();
         NCProcessors.init();
-        Villager.init(context);
+        Villager.init(modbus);
         NCSounds.init();
-        GameEvents.init(context);
+        GameEvents.init(modbus);
         NcRecipeType.init();
         NcParticleTypes.init();
         WorldGeneration.init();

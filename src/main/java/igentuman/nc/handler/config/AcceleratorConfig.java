@@ -1,6 +1,6 @@
 package igentuman.nc.handler.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,10 +11,10 @@ public class AcceleratorConfig {
     {
         return new ArrayList<>(vals);
     }
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final GeneralConfig ACCELERATOR_CONFIG = new GeneralConfig(BUILDER);
     public static final ParticleChamberConfig PARTICLE_CHAMBER_CONFIG = new ParticleChamberConfig(BUILDER);
-    public static final ForgeConfigSpec spec = BUILDER.build();
+    public static final ModConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
 
@@ -36,10 +36,10 @@ public class AcceleratorConfig {
     }
 
     public static class ParticleChamberConfig {
-        public final ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
-        public final ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public final ModConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public final ModConfigSpec.ConfigValue<Integer> MAX_SIZE;
 
-        public ParticleChamberConfig(ForgeConfigSpec.Builder builder) {
+        public ParticleChamberConfig(ModConfigSpec.Builder builder) {
             builder.comment("Particle chamber").push("particle_chamber");
 
             MIN_SIZE = builder
@@ -55,11 +55,11 @@ public class AcceleratorConfig {
     }
 
     public static class GeneralConfig {
-        public final ForgeConfigSpec.ConfigValue<Integer> SCALE;
-        public final ForgeConfigSpec.ConfigValue<Double> BEAM_ATTENUATION_RATE;
-        public final ForgeConfigSpec.ConfigValue<Double> BEAM_SCALING;
+        public final ModConfigSpec.ConfigValue<Integer> SCALE;
+        public final ModConfigSpec.ConfigValue<Double> BEAM_ATTENUATION_RATE;
+        public final ModConfigSpec.ConfigValue<Double> BEAM_SCALING;
 
-        public GeneralConfig(ForgeConfigSpec.Builder builder) {
+        public GeneralConfig(ModConfigSpec.Builder builder) {
             builder.comment("Settings for accelerators").push("general");
 
             SCALE = builder

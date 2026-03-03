@@ -1,12 +1,13 @@
 package igentuman.nc.block.kugelblitz.entity;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzMultiblock;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
-import mekanism.api.math.FloatingLong;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -16,8 +17,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
@@ -40,7 +39,6 @@ public class EXPLBE extends NuclearCraftBE {
     public boolean activatedByOther = false;
     KugelblitzMultiblock chamber = null;
 
-    protected final LazyOptional<IEnergyStorage> energy;
     public final CustomEnergyStorage energyStorage;
     private EXPLProxyBE[] proxyBES;
     private boolean energyTransfered = false;
@@ -51,7 +49,6 @@ public class EXPLBE extends NuclearCraftBE {
         energyStorage = createEnergy();
         energyStorage.setInputEnergyTier(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal());
         energyStorage.setOutputEnergyTier(GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get().ordinal());
-        energy = LazyOptional.of(() -> energyStorage);
     }
 
     public EXPLBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
@@ -192,7 +189,7 @@ public class EXPLBE extends NuclearCraftBE {
         int activatedLasers = 1;
         for (int i = 4; i <= KUGELBLITZ_CONFIG.LASER_DISTANCE.get()+4; i++) {
             BlockPos pos = getBlockPos().relative(getFacing(), i);
-            BlockEntity be = level.getExistingBlockEntity(pos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(level, pos);
             if (be instanceof PhotonConcentratorBE photonConcentrator) {
                 AbstractMultiblock multiblock = photonConcentrator.getMultiblock();
                 if (multiblock instanceof KugelblitzMultiblock kugelblitzMultiblock) {
@@ -206,7 +203,7 @@ public class EXPLBE extends NuclearCraftBE {
                             continue;
                         }
                         for(int j = 10; j < KUGELBLITZ_CONFIG.LASER_DISTANCE.get() + 20; j++) {
-                            BlockEntity be2 = level.getExistingBlockEntity(center.relative(direction, j));
+                            BlockEntity be2 = NCLevels.getExistingBlockEntity(level, center.relative(direction, j));
                             if(be2 instanceof EXPLBE expl) {
                                 expl.activate(true);
                                 activatedLasers++;
@@ -237,16 +234,17 @@ public class EXPLBE extends NuclearCraftBE {
     private int getActualLaserDistance() {
         for (int i = 4; i <= KUGELBLITZ_CONFIG.LASER_DISTANCE.get()+4; i++) {
             BlockPos pos = getBlockPos().relative(getFacing(), i);
-            BlockEntity be = level.getExistingBlockEntity(pos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(level, pos);
             if (be instanceof PhotonConcentratorBE) {
                 return i;
             }
             if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix) {
                 return i;
             }
-            if (isBfrLoaded() && be instanceof igentuman.bfr.common.tile.fusion.TileEntityLaserFocusMatrix) {
-                return i;
-            }
+            // TODO: BFR (Better Fusion Reactor) has no 1.21.1 port — re-enable when available
+            // if (isBfrLoaded() && be instanceof igentuman.bfr.common.tile.fusion.TileEntityLaserFocusMatrix) {
+            //     return i;
+            // }
         }
         return KUGELBLITZ_CONFIG.LASER_DISTANCE.get();
     }
@@ -256,7 +254,7 @@ public class EXPLBE extends NuclearCraftBE {
         killEntitiesInBeam();
         energyTransfered = true;
         BlockPos pos = getBlockPos().relative(getFacing(), getActualLaserDistance());
-        BlockEntity be = level.getExistingBlockEntity(pos);
+        BlockEntity be = NCLevels.getExistingBlockEntity(level, pos);
         if(allLasersBurst) {
             chamber.gotLaserBurst();
             allLasersBurst = false;
@@ -265,11 +263,12 @@ public class EXPLBE extends NuclearCraftBE {
             photonConcentratorBE.gotEnergy(getFacing());
         }
         if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
-            matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy*5));
+            matrixBe.receiveLaserEnergy((long)(aggregatedEnergy*5));
         }
-        if (isBfrLoaded() && be instanceof igentuman.bfr.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
-            matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy*5));
-        }
+        // TODO: BFR (Better Fusion Reactor) has no 1.21.1 port — re-enable when available
+        // if (isBfrLoaded() && be instanceof igentuman.bfr.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
+        //     matrixBe.receiveLaserEnergy((long)(aggregatedEnergy*5));
+        // }
     }
 
     private void killEntitiesInBeam() {
@@ -302,10 +301,6 @@ public class EXPLBE extends NuclearCraftBE {
         return energyStorage;
     }
 
-    @Override
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
 
     public boolean hasEnoughEnergy() {
         return aggregatedEnergy >= KUGELBLITZ_CONFIG.EXPL_CHARGE.get();

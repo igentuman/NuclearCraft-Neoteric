@@ -2,15 +2,15 @@ package igentuman.nc.handler.event.client;
 
 import igentuman.nc.recipes.NcRecipeType;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static igentuman.nc.recipes.NcRecipeType.ALL_RECIPES;
 
 public class RecipesUpdated {
     public static void register(FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.addListener(RecipesUpdated::recipesUpdated);
+        NeoForge.EVENT_BUS.addListener(RecipesUpdated::recipesUpdated);
     }
 
     public static RecipeManager manager;

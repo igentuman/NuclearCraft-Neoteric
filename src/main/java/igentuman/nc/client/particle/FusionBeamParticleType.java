@@ -1,18 +1,26 @@
 package igentuman.nc.client.particle;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
 public class FusionBeamParticleType extends ParticleType<FusionBeamParticleData> {
 
     public FusionBeamParticleType() {
-        super(false, FusionBeamParticleData.DESERIALIZER);
+        super(false);
     }
 
     @NotNull
     @Override
-    public Codec<FusionBeamParticleData> codec() {
+    public MapCodec<FusionBeamParticleData> codec() {
         return FusionBeamParticleData.CODEC;
+    }
+
+    @NotNull
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, FusionBeamParticleData> streamCodec() {
+        return FusionBeamParticleData.STREAM_CODEC;
     }
 }

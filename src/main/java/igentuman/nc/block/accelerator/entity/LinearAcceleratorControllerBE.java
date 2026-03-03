@@ -1,8 +1,6 @@
 package igentuman.nc.block.accelerator.entity;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.compat.cc.LinearAcceleratorPeripheral;
-import igentuman.nc.compat.oc2.LinearAcceleratorDevice;
 import igentuman.nc.content.particles.*;
 import igentuman.nc.item.ParticleSourceItem;
 import igentuman.nc.multiblock.accelerator.LinearAcceleratorMultiblock;
@@ -17,34 +15,24 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.accelerator.AcceleratorPortBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.oc2.LinearAcceleratorDevice.DEVICE_CAPABILITY;
-import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.util.Equations.*;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
 public class LinearAcceleratorControllerBE extends AbstractAcceleratorControllerBE {
 
     public static String NAME = "linear_accelerator_controller";
 
-    private LazyOptional<LinearAcceleratorPeripheral> peripheralCap;
 
 
 
@@ -80,37 +68,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         return null;
     }
 
-    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new LinearAcceleratorPeripheral(this));
-        }
-        return peripheralCap.cast();
-    }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return contentHandler().getFluidCapability(side);
-        }
-        if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return particleHandler.cast();
-        }
-        if (cap == ForgeCapabilities.ENERGY) {
-            return getEnergy().cast();
-        }
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return getPeripheral(cap, side);
-            }
-        }
-        if(isOC2Loaded()) {
-            if(cap == DEVICE_CAPABILITY) {
-                return getOCDevice(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
 
     public void tickClient() {
@@ -258,15 +216,12 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
     }
 
 
-    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
-        return LazyOptional.of(() -> LinearAcceleratorDevice.createDevice(this)).cast();
-    }
 
 
     public static class Recipe extends NcRecipe {
 
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
-            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, rarity);
+        public Recipe(String codeId, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
+            super(codeId, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, rarity);
             CATALYSTS.put(NAME, List.of(getToastSymbol()));
         }
 
@@ -295,8 +250,8 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
     public static class CoolantRecipe extends NcRecipe {
         protected double coolingRate;
 
-        public CoolantRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double temperature, double powerModifier, double radiation, double rar) {
-            super(id, input, output, inputFluids, outputFluids, temperature, powerModifier, radiation, rar);
+        public CoolantRecipe(String codeId, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double temperature, double powerModifier, double radiation, double rar) {
+            super(codeId, input, output, inputFluids, outputFluids, temperature, powerModifier, radiation, rar);
             coolingRate = temperature;
         }
 

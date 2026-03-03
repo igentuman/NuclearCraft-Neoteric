@@ -1,7 +1,7 @@
 package igentuman.nc.handler.config;
 
 import igentuman.nc.content.processors.Processors;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,10 +13,10 @@ public class ProcessorsConfig {
     {
         return new ArrayList<>(vals);
     }
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ProcessorConfig PROCESSOR_CONFIG = new ProcessorConfig(BUILDER);
     public static final InSituLeachingConfig IN_SITU_LEACHING = new InSituLeachingConfig(BUILDER);
-    public static final ForgeConfigSpec spec = BUILDER.build();
+    public static final ModConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
 
@@ -38,15 +38,15 @@ public class ProcessorsConfig {
     }
 
     public static class InSituLeachingConfig {
-        public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_VEINS;
-        public final ForgeConfigSpec.ConfigValue<List<Integer>> VEIN_BLOCKS_AMOUNT;
-        public final ForgeConfigSpec.ConfigValue<Integer> VEINS_RARITY;
-        public final ForgeConfigSpec.ConfigValue<Boolean> RANDOMIZED_ORES;
-        public final ForgeConfigSpec.ConfigValue<Boolean> ADD_IE_VEINS;
-        public final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_TO_LEACH_IE_VEINS;
+        public final ModConfigSpec.ConfigValue<Boolean> ENABLE_VEINS;
+        public final ModConfigSpec.ConfigValue<List<Integer>> VEIN_BLOCKS_AMOUNT;
+        public final ModConfigSpec.ConfigValue<Integer> VEINS_RARITY;
+        public final ModConfigSpec.ConfigValue<Boolean> RANDOMIZED_ORES;
+        public final ModConfigSpec.ConfigValue<Boolean> ADD_IE_VEINS;
+        public final ModConfigSpec.ConfigValue<Boolean> ALLOW_TO_LEACH_IE_VEINS;
 
 
-        public InSituLeachingConfig(ForgeConfigSpec.Builder builder) {
+        public InSituLeachingConfig(ModConfigSpec.Builder builder) {
             builder.comment("Settings for In situ leaching").push("in_situ_leaching");
 
             ENABLE_VEINS = builder
@@ -80,27 +80,27 @@ public class ProcessorsConfig {
     }
 
     public static class ProcessorConfig {
-        public final ForgeConfigSpec.ConfigValue<Integer> GT_AMPERAGE;
-        public final ForgeConfigSpec.ConfigValue<Integer> GT_SUPPORT;
-        public final ForgeConfigSpec.ConfigValue<Boolean> GT_EXPLODE;
-        public final ForgeConfigSpec.ConfigValue<Integer> BASE_TIME;
-        public final ForgeConfigSpec.ConfigValue<Integer> BASE_POWER;
-        public final ForgeConfigSpec.ConfigValue<Integer> SKIP_TICKS;
+        public final ModConfigSpec.ConfigValue<Integer> GT_AMPERAGE;
+        public final ModConfigSpec.ConfigValue<Integer> GT_SUPPORT;
+        public final ModConfigSpec.ConfigValue<Boolean> GT_EXPLODE;
+        public final ModConfigSpec.ConfigValue<Integer> BASE_TIME;
+        public final ModConfigSpec.ConfigValue<Integer> BASE_POWER;
+        public final ModConfigSpec.ConfigValue<Integer> SKIP_TICKS;
         public HashMap<String, ProcessorConfigSpec> PROCESSOR_CONFIG;
 
         public static class ProcessorConfigSpec {
-            public final ForgeConfigSpec.ConfigValue<Boolean> register;
-            public final ForgeConfigSpec.ConfigValue<Integer> base_power;
-            public final ForgeConfigSpec.ConfigValue<Integer> base_time;
+            public final ModConfigSpec.ConfigValue<Boolean> register;
+            public final ModConfigSpec.ConfigValue<Integer> base_power;
+            public final ModConfigSpec.ConfigValue<Integer> base_time;
 
-            public ProcessorConfigSpec(ForgeConfigSpec.Builder builder, boolean register, int base_power, int base_time) {
+            public ProcessorConfigSpec(ModConfigSpec.Builder builder, boolean register, int base_power, int base_time) {
                 this.register = builder.define("register", register);
                 this.base_power = builder.define("base_power", base_power);
                 this.base_time = builder.define("base_time", base_time);
             }
         }
 
-        public ProcessorConfig(ForgeConfigSpec.Builder builder) {
+        public ProcessorConfig(ModConfigSpec.Builder builder) {
             builder.push("Common settings");
             BASE_TIME = builder
                     .comment("Ticks")

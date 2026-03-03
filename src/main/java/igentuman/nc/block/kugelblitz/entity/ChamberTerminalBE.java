@@ -3,7 +3,7 @@ package igentuman.nc.block.kugelblitz.entity;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.compat.cc.KugelblitzPeripheral;
-import igentuman.nc.compat.oc2.KugelblitzDevice;
+
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -18,6 +18,7 @@ import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -27,16 +28,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static igentuman.nc.NuclearCraft.currentTick;
@@ -46,7 +42,7 @@ import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MAX_MASS;
 import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MIN_MASS;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
-import static igentuman.nc.compat.oc2.KugelblitzDevice.DEVICE_CAPABILITY;
+
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
@@ -63,8 +59,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     public static String NAME = "chamber_terminal";
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
-    private LazyOptional<KugelblitzPeripheral> peripheralCap;
-    protected final LazyOptional<IEnergyStorage> energy;
 
     @NBTField
     public long feeding = 0;
@@ -110,7 +104,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
                 .setOutputEnergyTier(getBaseGTEnergyTier())
                 .setInputAmperage(0)
                 .setOutputAmperage(16);
-        energy = LazyOptional.of(() -> energyStorage);
         contentHandler = new SidedContentHandler(
                 1, 1,
                 1, 0, 1000);
@@ -141,8 +134,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
     }
 
     @Override
@@ -150,10 +143,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         return NAME;
     }
 
-    @Override
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
 
     private CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(100000000, 0, 100000000) {
@@ -187,42 +176,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         return null;
     }
 
-    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new KugelblitzPeripheral(this));
-        }
-        return peripheralCap.cast();
-    }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return contentHandler().getFluidCapability(null);
-        }
-        if(isGtLoaded()) {
-            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                if (isGTEUCapEnabled()) {
-                    return getGTEnergy(this, side).cast();
-                }
-            }
-        }
-        if (cap == ForgeCapabilities.ENERGY) {
-            return getEnergy().cast();
-        }
-
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return getPeripheral(cap, side);
-            }
-        }
-        if(isOC2Loaded()) {
-            if(cap == DEVICE_CAPABILITY) {
-                return getOCDevice(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
     @Override
     public void handleSliderUpdate(int buttonId, int ratio) {
@@ -285,7 +239,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             trackChanges(processRecipe());
             handleRecipeOutput();
             if(!isBlackHoleStable()) {
-                 getLevel().gameEvent(null, BLACKHOLE_VIBRATION.get(), getMultiblock().getCenter());
+                 getLevel().gameEvent(BLACKHOLE_VIBRATION, getMultiblock().getCenter().getCenter(), GameEvent.Context.of(null, null));
             }
         } else if(mass > 0) {
             mass = 0;
@@ -637,9 +591,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
         return energyStorage;
     }
 
-    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
-        return LazyOptional.of(() -> KugelblitzDevice.createDevice(this)).cast();
-    }
 
     public FluidTank getFluidTank(int i) {
         return contentHandler().fluidHandler.tanks.get(i);
@@ -703,8 +654,8 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     public static class Recipe extends NcRecipe {
 
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
-            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, rarity);
+        public Recipe(String codeId, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
+            super(codeId, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, rarity);
             CATALYSTS.put(NAME, List.of(getToastSymbol()));
         }
 

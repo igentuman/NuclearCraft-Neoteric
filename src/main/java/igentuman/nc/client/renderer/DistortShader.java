@@ -1,21 +1,22 @@
 package igentuman.nc.client.renderer;
 
+import igentuman.api.platform.NCLevels;
+import igentuman.api.platform.NCRendering;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import igentuman.nc.block.kugelblitz.entity.BlackHoleBE;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
 import org.joml.Matrix4f;
 
 import java.util.Collections;
@@ -27,12 +28,12 @@ import static igentuman.nc.client.renderer.NCShaders.blackholePostEffect;
 import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 
-@Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class DistortShader {
 
     private static int currentSize = 0;
     public static void register() {
-        MinecraftForge.EVENT_BUS.register(DistortShader.class);
+        NeoForge.EVENT_BUS.register(DistortShader.class);
     }
 
     public static final BlackholeRegistry blackhole = new BlackholeRegistry();
@@ -65,7 +66,7 @@ public class DistortShader {
         if(distance > 64) {
             return false;
         }
-        BlockEntity be = mc.level.getExistingBlockEntity(pos);
+        BlockEntity be = NCLevels.getExistingBlockEntity(mc.level, pos);
         float scaleMult = 1;
         if(be instanceof BlackHoleBE blackHoleBE) {
             scaleMult = 0.3f / blackHoleBE.scale;
@@ -158,7 +159,7 @@ public class DistortShader {
             
             for (BlockPos pos : blackhole.getPositions()) {
                 if(processBlackHole(mc, event, effect, pos)) {
-                    blackholePostEffect.process(mc.getFrameTime());
+                    blackholePostEffect.process(mc.getTimer().getGameTimeDeltaPartialTick(true));
                 }
             }
             
@@ -178,14 +179,14 @@ public class DistortShader {
             );
 
             // Draw a fullscreen quad with the processed shader result
-            Tesselator tesselator = Tesselator.getInstance();
-            BufferBuilder bufferbuilder = tesselator.getBuilder();
-            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-            bufferbuilder.vertex(0, mc.getMainRenderTarget().height, 0).uv(0, 0).endVertex();
-            bufferbuilder.vertex(mc.getMainRenderTarget().width, mc.getMainRenderTarget().height, 0).uv(1, 0).endVertex();
-            bufferbuilder.vertex(mc.getMainRenderTarget().width, 0, 0).uv(1, 1).endVertex();
-            bufferbuilder.vertex(0, 0, 0).uv(0, 1).endVertex();
-            tesselator.end();
+            int rtWidth = mc.getMainRenderTarget().width;
+            int rtHeight = mc.getMainRenderTarget().height;
+            NCRendering.draw(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX, buffer -> {
+                buffer.addVertex(0, rtHeight, 0).setUv(0, 0);
+                buffer.addVertex(rtWidth, rtHeight, 0).setUv(1, 0);
+                buffer.addVertex(rtWidth, 0, 0).setUv(1, 1);
+                buffer.addVertex(0, 0, 0).setUv(0, 1);
+            });
 
             // Restore render state
             RenderSystem.depthFunc(515);

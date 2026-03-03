@@ -2,8 +2,6 @@ package igentuman.nc.block.accelerator.entity;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.accelerator.AcceleratorPortBlock;
-import igentuman.nc.compat.cc.RingAcceleratorPeripheral;
-import igentuman.nc.compat.oc2.RingAcceleratorDevice;
 import igentuman.nc.content.particles.*;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
@@ -15,27 +13,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
-import static igentuman.nc.compat.oc2.RingAcceleratorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.util.Equations.*;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
 public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE {
 
     public static String NAME = "ring_accelerator_controller";
-    private LazyOptional<RingAcceleratorPeripheral> peripheralCap;
 
 
     protected Direction facing;
@@ -58,34 +47,7 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
     }
 
 
-    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new RingAcceleratorPeripheral(this));
-        }
-        return peripheralCap.cast();
-    }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return contentHandler().getFluidCapability(null);
-        }
-        if (cap == ForgeCapabilities.ENERGY) {
-            return getEnergy().cast();
-        }
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return getPeripheral(cap, side);
-            }
-        }
-        if(isOC2Loaded()) {
-            if(cap == DEVICE_CAPABILITY) {
-                return getOCDevice(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
 
     public void tickClient() {
@@ -213,9 +175,6 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
         return energyStorage;
     }
 
-    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
-        return LazyOptional.of(() -> RingAcceleratorDevice.createDevice(this)).cast();
-    }
 
     public FluidTank getFluidTank(int i) {
         return contentHandler().fluidHandler.tanks.get(i);

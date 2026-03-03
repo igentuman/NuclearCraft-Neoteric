@@ -2,22 +2,18 @@ package igentuman.nc.recipes.ingredient;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
+import igentuman.api.platform.NCItemStacks;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.minecraft.nbt.CompoundTag;
 import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -26,12 +22,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 import static igentuman.nc.util.NcUtils.rlFromString;
 
-public class NcIngredient extends Ingredient {
+public class NcIngredient implements Predicate<ItemStack> {
 
    private static final java.util.concurrent.atomic.AtomicInteger INVALIDATION_COUNTER = new java.util.concurrent.atomic.AtomicInteger();
    public static void invalidateAll() {
@@ -50,12 +45,8 @@ public class NcIngredient extends Ingredient {
 
    private String name;
 
-   protected NcIngredient(Stream<? extends Ingredient.Value> pValues) {
-      super(Stream.empty());
-      this.values = pValues.toArray((p_43933_) -> {
-         return new NcIngredient.Value[p_43933_];
-      });
-
+   protected NcIngredient(Stream<? extends NcIngredient.Value> pValues) {
+      this.values = pValues.toArray(NcIngredient.Value[]::new);
    }
 
     public static NcIngredient of(String name) {
@@ -63,7 +54,7 @@ public class NcIngredient extends Ingredient {
             TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(name.replace("#","")));
             return of(tag);
          }
-         return of(ForgeRegistries.ITEMS.getValue(rlFromString(name)));
+         return of(BuiltInRegistries.ITEM.get(rlFromString(name)));
     }
 
     public String getName() {
@@ -81,6 +72,13 @@ public class NcIngredient extends Ingredient {
       return this.itemStacks;
    }
 
+   /**
+    * Convert this NcIngredient to a vanilla Ingredient for APIs that require it.
+    */
+   public Ingredient asIngredient() {
+      return Ingredient.of(getItems());
+   }
+
    private void dissolve() {
       if (this.itemStacks == null) {
          this.itemStacks = Arrays.stream(this.values).flatMap((p_43916_) -> {
@@ -92,6 +90,7 @@ public class NcIngredient extends Ingredient {
 
    }
 
+   @Override
    public boolean test(@Nullable ItemStack pStack) {
       if (pStack == null) {
          return false;
@@ -127,6 +126,18 @@ public class NcIngredient extends Ingredient {
       return this.stackingIds;
    }
 
+   private boolean checkInvalidation() {
+      int current = INVALIDATION_COUNTER.get();
+      if (this.invalidationCounter != current) {
+         this.invalidationCounter = current;
+         return true;
+      }
+      return false;
+   }
+
+   private void markValid() {
+      this.invalidationCounter = INVALIDATION_COUNTER.get();
+   }
 
    public JsonElement toJson() {
       if (this.values.length == 1) {
@@ -151,12 +162,11 @@ public class NcIngredient extends Ingredient {
       return true;
    }
 
-   private final boolean isVanilla = this.getClass() == NcIngredient.class;
    public static NcIngredient of(TagKey<Item> pTag) {
       return fromValues(Stream.of(new NcIngredient.TagValue(pTag)));
    }
 
-   public static NcIngredient fromValues(Stream<? extends Ingredient.Value> pStream) {
+   public static NcIngredient fromValues(Stream<? extends NcIngredient.Value> pStream) {
       NcIngredient ingredient = new NcIngredient(pStream);
       return ingredient.isEmpty() ? EMPTY : ingredient;
    }
@@ -214,15 +224,16 @@ public class NcIngredient extends Ingredient {
 
       public JsonObject serialize() {
          JsonObject jsonobject = new JsonObject();
-         jsonobject.addProperty("item", ForgeRegistries.ITEMS.getKey(this.item.getItem()).toString());
-         if(item.hasTag()) {
-            if(item.getTag().contains("Damage")) {
-               if(item.getTag().getInt("Damage") == 0) {
-                  item.getTag().remove("Damage");
+         jsonobject.addProperty("item", BuiltInRegistries.ITEM.getKey(this.item.getItem()).toString());
+         if(NCItemStacks.hasCustomData(item)) {
+            CompoundTag tag = NCItemStacks.getTag(item);
+            if(tag.contains("Damage")) {
+               if(tag.getInt("Damage") == 0) {
+                  tag.remove("Damage");
                }
             }
-            if(!item.getTag().getAllKeys().isEmpty()) {
-               jsonobject.addProperty("nbt", item.getTag().toString());
+            if(!tag.getAllKeys().isEmpty()) {
+               jsonobject.addProperty("nbt", tag.toString());
             }
          }
          if(item.getCount()>1) {
@@ -244,7 +255,7 @@ public class NcIngredient extends Ingredient {
             count = 1;
          }
       }
-      
+
       public String getName() {
          return tag.location().getPath().replace("/","_");
       }
@@ -252,12 +263,16 @@ public class NcIngredient extends Ingredient {
       public Collection<ItemStack> getItems() {
          List<ItemStack> list = Lists.newArrayList();
 
-         for(Item item : ForgeRegistries.ITEMS.tags().getTag(tag).stream().toList()) {
-            list.add(new ItemStack(item));
-         }
+         BuiltInRegistries.ITEM.getTag(tag).ifPresent(holders -> {
+            for (net.minecraft.core.Holder<Item> holder : holders) {
+               list.add(new ItemStack(holder.value()));
+            }
+         });
 
-         if (list.size() == 0) {
-            list.add(new ItemStack(net.minecraft.world.level.block.Blocks.BARRIER).setHoverName(net.minecraft.network.chat.Component.literal("Empty Tag: " + this.tag.location())));
+         if (list.isEmpty()) {
+            ItemStack barrier = new ItemStack(net.minecraft.world.level.block.Blocks.BARRIER);
+            barrier.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("Empty Tag: " + this.tag.location()));
+            list.add(barrier);
          }
          return list;
       }
@@ -272,7 +287,9 @@ public class NcIngredient extends Ingredient {
       }
    }
 
-   public interface Value  extends Ingredient.Value{
+   public interface Value {
       String getName();
+      Collection<ItemStack> getItems();
+      JsonObject serialize();
    }
 }

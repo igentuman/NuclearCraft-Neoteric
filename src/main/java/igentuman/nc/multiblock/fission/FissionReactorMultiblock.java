@@ -16,7 +16,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.*;
 
@@ -386,7 +387,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
             return true;
         }
         if(isHeatSink(bs)) {
-            String name = String.valueOf(ForgeRegistries.BLOCKS.getKey(bs.getBlock()));
+            String name = String.valueOf(BuiltInRegistries.BLOCK.getKey(bs.getBlock()));
             indexedHeatSinks.computeIfAbsent(name, k -> new HashSet<>()).add(toCheck);
             reversedIndexedHeatSinks.put(toCheck, name);
             addIfNotExists(toCheck, allHeatSinks);

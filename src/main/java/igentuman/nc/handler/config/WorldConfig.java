@@ -1,6 +1,6 @@
 package igentuman.nc.handler.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,11 +13,11 @@ public class WorldConfig {
     {
         return new ArrayList<>(vals);
     }
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
     public static final VillageConfig VILLAGE_CONFIG = new VillageConfig(BUILDER);
     public static final BiomeConfig BIOME_CONFIG = new BiomeConfig(BUILDER);
-    public static final ForgeConfigSpec spec = BUILDER.build();
+    public static final ModConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
 
@@ -39,10 +39,10 @@ public class WorldConfig {
     }
 
     public static class VillageConfig {
-        public final ForgeConfigSpec.ConfigValue<Boolean> generateScientistHouse;
-        public final ForgeConfigSpec.ConfigValue<Boolean> addWandererTrades;
+        public final ModConfigSpec.ConfigValue<Boolean> generateScientistHouse;
+        public final ModConfigSpec.ConfigValue<Boolean> addWandererTrades;
 
-        public VillageConfig(ForgeConfigSpec.Builder builder) {
+        public VillageConfig(ModConfigSpec.Builder builder) {
             builder.push("Villages");
             generateScientistHouse = builder
                     .comment("Generate Scientist House in Villages")
@@ -55,9 +55,9 @@ public class WorldConfig {
     }
 
     public static class DimensionConfig {
-        public final ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
+        public final ModConfigSpec.ConfigValue<Boolean> registerWasteland;
 
-        public DimensionConfig(ForgeConfigSpec.Builder builder) {
+        public DimensionConfig(ModConfigSpec.Builder builder) {
             builder.push("Dimension");
             registerWasteland = builder
                     .comment("Register Wasteland Dimension")
@@ -67,9 +67,9 @@ public class WorldConfig {
     }
 
     public static class BiomeConfig {
-        public final ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
+        public final ModConfigSpec.ConfigValue<Boolean> registerWasteland;
 
-        public BiomeConfig(ForgeConfigSpec.Builder builder) {
+        public BiomeConfig(ModConfigSpec.Builder builder) {
             builder.push("Biome");
             registerWasteland = builder
                     .comment("Generate Wasteland Biome in Overworld")

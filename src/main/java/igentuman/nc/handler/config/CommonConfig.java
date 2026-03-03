@@ -5,7 +5,7 @@ import igentuman.nc.content.energy.RTGs;
 import igentuman.nc.content.energy.SolarPanels;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,14 +20,14 @@ public class CommonConfig {
     {
         return new ArrayList<>(vals);
     }
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final EnergyGenerationConfig ENERGY_GENERATION = new EnergyGenerationConfig(BUILDER);
     public static final EnergyStorageConfig ENERGY_STORAGE = new EnergyStorageConfig(BUILDER);
     public static final MiscConfig MISC_CONFIG = new MiscConfig(BUILDER);
     public static final GTCEUCompatibilityConfig GTCEU_CONFIG = new GTCEUCompatibilityConfig(BUILDER);
 
     public static final StorageBlocksConfig STORAGE_BLOCKS = new StorageBlocksConfig(BUILDER);
-    public static final ForgeConfigSpec spec = BUILDER.build();
+    public static final ModConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
 
@@ -49,18 +49,18 @@ public class CommonConfig {
     }
 
     public static class EnergyGenerationConfig {
-        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
-        public final ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
-        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_RTG;
-        public final ForgeConfigSpec.ConfigValue<List<Integer>> RTG_GENERATION;
-        public final ForgeConfigSpec.ConfigValue<List<Integer>> RTG_RADIATION;
-        public final ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
-        public final ForgeConfigSpec.ConfigValue<Integer> DECAY_GENERATOR;
-        public final ForgeConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
+        public final ModConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
+        public final ModConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
+        public final ModConfigSpec.ConfigValue<List<Boolean>> REGISTER_RTG;
+        public final ModConfigSpec.ConfigValue<List<Integer>> RTG_GENERATION;
+        public final ModConfigSpec.ConfigValue<List<Integer>> RTG_RADIATION;
+        public final ModConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
+        public final ModConfigSpec.ConfigValue<Integer> DECAY_GENERATOR;
+        public final ModConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
 
 
 
-        public EnergyGenerationConfig(ForgeConfigSpec.Builder builder) {
+        public EnergyGenerationConfig(ModConfigSpec.Builder builder) {
             builder.push("Energy");
 
             GENERATION_MULTIPLIER = builder
@@ -100,11 +100,11 @@ public class CommonConfig {
     }
 
     public static class StorageBlocksConfig {
-        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_BARREL;
-        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_CONTAINER;
-        public final ForgeConfigSpec.ConfigValue<List<Integer>> BARREL_CAPACITY;
+        public final ModConfigSpec.ConfigValue<List<Boolean>> REGISTER_BARREL;
+        public final ModConfigSpec.ConfigValue<List<Boolean>> REGISTER_CONTAINER;
+        public final ModConfigSpec.ConfigValue<List<Integer>> BARREL_CAPACITY;
 
-        public StorageBlocksConfig(ForgeConfigSpec.Builder builder) {
+        public StorageBlocksConfig(ModConfigSpec.Builder builder) {
 
             builder.push("storage_blocks")
                     .comment("Blocks to store items, fluids, etc...");
@@ -127,14 +127,14 @@ public class CommonConfig {
     }
 
     public static class EnergyStorageConfig {
-        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_ENERGY_BLOCK;
-        public final ForgeConfigSpec.ConfigValue<List<Integer>> ENERGY_BLOCK_STORAGE;
-        public final ForgeConfigSpec.ConfigValue<Integer> LITHIUM_ION_BATTERY_STORAGE;
-        public final ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_STORAGE;
-        public final ForgeConfigSpec.ConfigValue<Integer> LIGHTNING_ROD_CHARGE;
-        public final ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_PER_BLOCK;
+        public final ModConfigSpec.ConfigValue<List<Boolean>> REGISTER_ENERGY_BLOCK;
+        public final ModConfigSpec.ConfigValue<List<Integer>> ENERGY_BLOCK_STORAGE;
+        public final ModConfigSpec.ConfigValue<Integer> LITHIUM_ION_BATTERY_STORAGE;
+        public final ModConfigSpec.ConfigValue<Integer> QNP_ENERGY_STORAGE;
+        public final ModConfigSpec.ConfigValue<Integer> LIGHTNING_ROD_CHARGE;
+        public final ModConfigSpec.ConfigValue<Integer> QNP_ENERGY_PER_BLOCK;
 
-        public EnergyStorageConfig(ForgeConfigSpec.Builder builder) {
+        public EnergyStorageConfig(ModConfigSpec.Builder builder) {
             builder.push("energy_storage");
 
             LIGHTNING_ROD_CHARGE = builder
@@ -170,9 +170,9 @@ public class CommonConfig {
 
 
     public static class MiscConfig {
-        public final ForgeConfigSpec.ConfigValue<Boolean> DEBUG_LOG;
+        public final ModConfigSpec.ConfigValue<Boolean> DEBUG_LOG;
 
-        public MiscConfig(ForgeConfigSpec.Builder builder) {
+        public MiscConfig(ModConfigSpec.Builder builder) {
             builder.push("Misc");
 
             DEBUG_LOG = builder
@@ -198,18 +198,18 @@ public class CommonConfig {
             }
         }
 
-        public final ForgeConfigSpec.ConfigValue<GTCEUCompatibility> COMPATIBILITY;
-        public final ForgeConfigSpec.ConfigValue<Boolean> OVERCHARGE_EXPLOSIONS;
-        public final ForgeConfigSpec.ConfigValue<Boolean> LIMIT_FE_OUTPUT;
-        public final ForgeConfigSpec.ConfigValue<GTCEUTier> FISSION_REACTOR_TIER;
-        public final ForgeConfigSpec.ConfigValue<GTCEUTier> TURBINE_ENERGY_TIER;
-        public final ForgeConfigSpec.ConfigValue<GTCEUTier> FUSION_REACTOR_ENERGY_TIER;
-        public final ForgeConfigSpec.ConfigValue<GTCEUTier> KUGELBLITZ_ENERGY_TIER;
-        public final ForgeConfigSpec.ConfigValue<GTCEUTier> ACCELERATORS_ENERGY_TIER;
-        public final ForgeConfigSpec.ConfigValue<GTCEUTier> PROCESSOR_ENERGY_TIER;
-        public final ForgeConfigSpec.ConfigValue<Integer> ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER;
+        public final ModConfigSpec.ConfigValue<GTCEUCompatibility> COMPATIBILITY;
+        public final ModConfigSpec.ConfigValue<Boolean> OVERCHARGE_EXPLOSIONS;
+        public final ModConfigSpec.ConfigValue<Boolean> LIMIT_FE_OUTPUT;
+        public final ModConfigSpec.ConfigValue<GTCEUTier> FISSION_REACTOR_TIER;
+        public final ModConfigSpec.ConfigValue<GTCEUTier> TURBINE_ENERGY_TIER;
+        public final ModConfigSpec.ConfigValue<GTCEUTier> FUSION_REACTOR_ENERGY_TIER;
+        public final ModConfigSpec.ConfigValue<GTCEUTier> KUGELBLITZ_ENERGY_TIER;
+        public final ModConfigSpec.ConfigValue<GTCEUTier> ACCELERATORS_ENERGY_TIER;
+        public final ModConfigSpec.ConfigValue<GTCEUTier> PROCESSOR_ENERGY_TIER;
+        public final ModConfigSpec.ConfigValue<Integer> ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER;
 
-        public GTCEUCompatibilityConfig(ForgeConfigSpec.Builder builder) {
+        public GTCEUCompatibilityConfig(ModConfigSpec.Builder builder) {
             builder.push("GregTech Energy Compatibility");
             List<String> tiers = Arrays.stream(GTCEUTier.values())
                     .map(GTCEUTier::name)

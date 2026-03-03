@@ -3,7 +3,7 @@ package igentuman.nc.world;
 import igentuman.nc.content.materials.Ores;
 import igentuman.nc.world.ore.NCOre;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvi
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import static net.minecraft.world.level.block.Blocks.*;
 public class NCConfiguredFeatures {
 
     public static final HashMap<String, ResourceKey<ConfiguredFeature<?, ?>>> CONFIGURED_FEATURES = initFeatures();
-    public static final RegistryObject<ConfiguredFeature<?, ?>> CONFIGURED_WASTELAND_RUINS = CONFIGURED.register("wasteland_ruins", () -> new ConfiguredFeature<>(WASTELAND_RUINS_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
+    public static final DeferredHolder<ConfiguredFeature<?, ?>, ConfiguredFeature<?, ?>> CONFIGURED_WASTELAND_RUINS = CONFIGURED.register("wasteland_ruins", () -> new ConfiguredFeature<>(WASTELAND_RUINS_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
 
     private static HashMap<String, ResourceKey<ConfiguredFeature<?,?>>> initFeatures() {
         HashMap<String, ResourceKey<ConfiguredFeature<?,?>>> features = new HashMap<>();
@@ -53,7 +53,7 @@ public class NCConfiguredFeatures {
         return features;
     }
 
-    public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context) {
+    public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
         RuleTest stoneReplaceable = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
         RuleTest deepslateReplaceables = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
         RuleTest netherrackReplacables = new BlockMatchTest(Blocks.NETHERRACK);
@@ -131,7 +131,7 @@ public class NCConfiguredFeatures {
         return ResourceKey.create(Registries.CONFIGURED_FEATURE, rl(name));
     }
 
-    private static <FC extends FeatureConfiguration, F extends Feature<FC>> void register(BootstapContext<ConfiguredFeature<?, ?>> context,
+    private static <FC extends FeatureConfiguration, F extends Feature<FC>> void register(BootstrapContext<ConfiguredFeature<?, ?>> context,
                                                                                           ResourceKey<ConfiguredFeature<?, ?>> key, F feature, FC configuration) {
         context.register(key, new ConfiguredFeature<>(feature, configuration));
     }

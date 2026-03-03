@@ -1,5 +1,7 @@
 package igentuman.nc.block;
 
+import igentuman.api.platform.NCItemStacks;
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -11,7 +13,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -38,7 +40,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
@@ -52,8 +54,14 @@ import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.__;
 
 public class ProcessorBlock extends HorizontalDirectionalBlock implements EntityBlock {
+    public static final MapCodec<ProcessorBlock> CODEC = simpleCodec(ProcessorBlock::new);
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
+    }
     public ProcessorBlock() {
         this(Properties.of()
                 .sound(SoundType.METAL)
@@ -93,10 +101,10 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
-        NCProcessorBE tileEntity = (NCProcessorBE) world.getExistingBlockEntity(pos);
-        if (stack.hasTag()) {
-            CompoundTag nbtData = stack.getTag();
-            tileEntity.load(nbtData);
+        NCProcessorBE tileEntity = (NCProcessorBE) NCLevels.getExistingBlockEntity(world, pos);
+        if (NCItemStacks.hasCustomData(stack)) {
+            CompoundTag nbtData = NCItemStacks.getTag(stack);
+            tileEntity.loadCustomOnly(nbtData, world.registryAccess());
         }
         if(placer instanceof ServerPlayer player) {
             tileEntity.setPlayer(player);
@@ -111,7 +119,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
         CompoundTag data = processorBe.getTagForStack();
 
         ItemStack drop = new ItemStack(this);
-        drop.setTag(data);
+        NCItemStacks.setTag(drop, data);
         if (!pLevel.isClientSide()) {
             ItemEntity itemEntity = new ItemEntity(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), drop, pLevel.random.nextDouble() * 0.1D - 0.05D, 0.15D, pLevel.random.nextDouble() * 0.1D - 0.05D);
             itemEntity.setDefaultPickUpDelay();
@@ -120,9 +128,9 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result) {
         if (!level.isClientSide()) {
-            BlockEntity be = level.getExistingBlockEntity(pos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(level, pos);
             if (be instanceof NCProcessorBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
@@ -140,7 +148,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
                         return null;
                     }
                 };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+                ((ServerPlayer) player).openMenu(containerProvider, be.getBlockPos());
             }
         }
         return InteractionResult.SUCCESS;

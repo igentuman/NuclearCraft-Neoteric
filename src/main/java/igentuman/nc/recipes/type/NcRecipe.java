@@ -5,10 +5,9 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public abstract class NcRecipe extends AbstractRecipe {
     public double rarityModifier;
 
     public NcRecipe(
-            ResourceLocation id,
+            String codeId,
             ItemStackIngredient[] inputItems,
             ItemStackIngredient[] outputItems,
             FluidStackIngredient[] inputFluids,
@@ -33,7 +32,7 @@ public abstract class NcRecipe extends AbstractRecipe {
             double rarityModifier
     ) {
 
-        super(id);
+        super(codeId);
         this.inputItems = inputItems;
         this.outputItems = outputItems;
         this.inputFluids = inputFluids;
@@ -49,7 +48,7 @@ public abstract class NcRecipe extends AbstractRecipe {
 
 
     public NcRecipe(
-            ResourceLocation id,
+            String codeId,
             ItemStackIngredient[] inputItems,
             ItemStackIngredient[] outputItems,
             double timeModifier,
@@ -57,11 +56,11 @@ public abstract class NcRecipe extends AbstractRecipe {
             double radiationModifier,
             double rarityModifier
     ) {
-        this(id, inputItems, outputItems, new FluidStackIngredient[0], new FluidStackIngredient[0], timeModifier, powerModifier, radiationModifier, rarityModifier);
+        this(codeId, inputItems, outputItems, new FluidStackIngredient[0], new FluidStackIngredient[0], timeModifier, powerModifier, radiationModifier, rarityModifier);
     }
 
     public NcRecipe(
-            ResourceLocation id,
+            String codeId,
             FluidStackIngredient[] inputFluids,
             FluidStackIngredient[] outputFluids,
             double timeModifier,
@@ -69,11 +68,11 @@ public abstract class NcRecipe extends AbstractRecipe {
             double radiationModifier,
             double rarityModifier
     ) {
-            this(id, new ItemStackIngredient[0], new ItemStackIngredient[0], inputFluids, outputFluids, timeModifier, powerModifier, radiationModifier, rarityModifier);
+            this(codeId, new ItemStackIngredient[0], new ItemStackIngredient[0], inputFluids, outputFluids, timeModifier, powerModifier, radiationModifier, rarityModifier);
     }
 
-    public NcRecipe(ResourceLocation id) {
-        super(id);
+    public NcRecipe(String codeId) {
+        super(codeId);
     }
 
     public static ItemStackIngredient getBarrier()
@@ -87,7 +86,7 @@ public abstract class NcRecipe extends AbstractRecipe {
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
+    public void write(RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(inputItems.length);
         for (ItemStackIngredient input : inputItems) {
             if(input == null || input.getRepresentations().isEmpty()) {

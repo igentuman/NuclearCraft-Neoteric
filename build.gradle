@@ -1,103 +1,105 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'java-library'
     id 'idea'
+    id 'net.neoforged.gradle.userdev' version '7.1.20'
 }
 
 version = "${mod_version}"
 group = 'igentuman.nc'
-archivesBaseName = "NuclearCraft-${mc_version}"
+base {
+    archivesName = "NuclearCraft-${mc_version}"
+}
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+
 idea {
     module {
         downloadJavadoc = true
         downloadSources = true
     }
 }
+
 minecraft {
-    mappings channel: 'parchment', version: "${mappings_version}-${mc_version}"
-     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
-            args '--width', '1920', '--height', '1080'
-            mods {
-                nuclearcraft {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('server')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
-
-            mods {
-                nuclearcraft {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', 'nuclearcraft', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            mods {
-                nuclearcraft {
-                    source sourceSets.main
-                }
-            }
-        }
+    accessTransformers {
+        file('src/main/resources/META-INF/accesstransformer.cfg')
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
+        modSource project.sourceSets.main
+    }
+
+    client {
+        systemProperty 'neoforge.enabledGameTestNamespaces', "${mod_id}"
+        programArguments.addAll '--width', '1920', '--height', '1080'
+    }
+
+    server {
+        systemProperty 'neoforge.enabledGameTestNamespaces', "${mod_id}"
+        programArgument '--nogui'
+    }
+
+    data {
+        programArguments.addAll '--mod', "${mod_id}", '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            exclude 'igentuman/nc/compat/oc2/**'
+            exclude 'igentuman/nc/compat/tis3d/**'
+            exclude 'igentuman/nc/compat/kubejs/**'
+            exclude 'igentuman/nc/compat/refined_storage/**'
+            exclude 'igentuman/nc/compat/ae2/**'
+            exclude 'igentuman/nc/network/toServer/PacketAE2PatternTransfer.java'
+            exclude 'igentuman/nc/mixin/KubeJSRecipesEventJSMixin.java'
+        }
+        resources { srcDir 'src/generated/resources' }
+    }
+}
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
 
 repositories {
-    maven { url "https://minecraft.curseforge.com/api/maven/" }
-    maven { url "https://maven.blamejared.com" }
-    maven { url "https://jitpack.io" }
-    maven { url "https://www.cursemaven.com" }
-    maven { url "https://squiddev.cc/maven/" }
-    maven { url "https://maven.tterrag.com/" }
-    maven { url "https://modmaven.dev/" }
-    maven { url "https://maven.firstdarkdev.xyz/snapshots/" }
-    maven { url "https://maven.architectury.dev" }
-    maven { url "https://maven.saps.dev/minecraft" }
+    mavenLocal()
     maven {
-        url "https://maven.latvian.dev/releases"
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        name = "TOP"
+        url = "https://maven.k-4u.nl"
+    }
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
+    maven {
+        name = "CurseMaven"
+        url = "https://www.cursemaven.com"
         content {
-            includeGroup "dev.latvian.mods"
-            includeGroup "dev.latvian.apps"
+            includeGroup "curse.maven"
         }
     }
-
     maven {
-        url 'https://jitpack.io'
+        name = "SquidDev"
+        url = "https://maven.squiddev.cc"
         content {
-            includeGroup "com.github.rtyley"
+            includeGroup("cc.tweaked")
         }
     }
-
+    maven { url = "https://jitpack.io" }
+    maven { url = "https://modmaven.dev/" }
+    maven { url = "https://maven.architectury.dev" }
+    maven { url = "https://maven.saps.dev/minecraft" }
     maven {
         name = 'GTCEu Maven'
         url = 'https://maven.gtceu.com'
@@ -105,107 +107,96 @@ repositories {
             includeGroup 'com.gregtechceu.gtceu'
         }
     }
+    maven {
+        url = "https://maven.latvian.dev/releases"
+        content {
+            includeGroup "dev.latvian.mods"
+            includeGroup "dev.latvian.apps"
+        }
+    }
 }
 
 dependencies {
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    implementation 'org.spongepowered:mixin:0.8.5'
-    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    implementation "net.neoforged:neoforge:${neo_version}"
 
-    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
-        transitive = false
-    }
-    implementation fg.deobf("curse.maven:markdownmanual-502485:4873115")
+    // JEI
+    compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
+    localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
 
-    implementation fg.deobf("curse.maven:tis-3d-238603:5266274") {
-        transitive = false
-    }
+    // EMI
+    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    localRuntime "dev.emi:emi-neoforge:${emi_version}"
 
-    compileOnly fg.deobf("curse.maven:masterful-machinery-423476:5818581")
-    //implementation fg.deobf("curse.maven:configured-457570:5180900")
-    //compileOnly fg.deobf("curse.maven:mantle-74924:6603205")
-    //compileOnly fg.deobf("curse.maven:tinkers-construct-74072:6603344")
-    runtimeOnly fg.deobf("curse.maven:construction-wand-399558:4684054")
-    runtimeOnly fg.deobf("curse.maven:spark-361579:4738952")
-/*    implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-${mc_version}:${ldlib_version}") {
-        transitive = false
-    }
-    implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}") {
-        transitive = false
-    }*/
-    compileOnly fg.deobf("curse.maven:guideme-1173950:7013686") {
-        transitive = false
-    }
-    compileOnly fg.deobf("curse.maven:applied-energistics-2-223794:7096071") {
-        transitive = false
-    }
-    implementation fg.deobf("curse.maven:multi-builder-tool-827020:7041820")
-    runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
-    compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
-    implementation fg.deobf("curse.maven:thermal-foundation-222880:5443583")
-    implementation fg.deobf("curse.maven:thermal-expansion-69163:5372749")
-    implementation fg.deobf("curse.maven:cofh-core-69162:5374122")
-    compileOnly fg.deobf("curse.maven:refined-storage-243076:4844585")
+    // The One Probe
+    compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") { transitive = false }
+    localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}") { transitive = false }
 
-    implementation fg.deobf("curse.maven:flib-661261:6369719")
-    implementation fg.deobf("curse.maven:cyclic-239286:6373460")
-    compileOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    implementation fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
-    compileOnly fg.deobf("curse.maven:emi-580555:5872526")
-
-    compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
-        transitive = false
-    }
-    runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
-        transitive = false
-    }
-
-    compileOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}"){
-        transitive = false
-    }
-
-    compileOnly fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}"){
-        transitive = false
-    }
-    implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
-    implementation fg.deobf("curse.maven:ftb-library-forge-404465:5282375")
-    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:5267190")
-    implementation fg.deobf("curse.maven:ftb-chunks-forge-314906:5267364")
-
-    //runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:4420565")
-    //runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${ct_version}")
-
-
-    runtimeOnly fg.deobf("curse.maven:large-ore-deposits-318833:6251845") {
-        transitive = false
-    }
-    runtimeOnly fg.deobf("curse.maven:forgeendertech-244844:6030567"){
-        transitive = false
-    }
-    compileOnly fg.deobf("curse.maven:better-fusion-reactor-for-mekanism-602409:6794834")
-    implementation fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}")
-    implementation fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:generators")
-    //compileOnly fg.deobf("mekanism:Mekanism:${mc_version}-${mekanism_version}:api")
-
+    // CC:Tweaked (uses -forge naming for NeoForge 1.21.1)
     compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cc_version}")
-    compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cc_version}"))
-    implementation fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cc_version}")
+    compileOnly("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cc_version}")
+    localRuntime("cc.tweaked:cc-tweaked-${mc_version}-forge:${cc_version}")
 
-    compileOnly fg.deobf("curse.maven:sedna-511276:${sedna_version}")
-    compileOnly fg.deobf("curse.maven:markdownmanual-502485:${md_version}")
-    compileOnly fg.deobf("curse.maven:oc2r-1037738:${oc2_version}")
+    // Mekanism
+    implementation "mekanism:Mekanism:${mc_version}-${mekanism_version}"
+    implementation "mekanism:Mekanism:${mc_version}-${mekanism_version}:generators"
 
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}:api")
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}")
+    // GregTech CEu Modern
+    compileOnly("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}") { transitive = false }
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+    // KubeJS
+    compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}") { transitive = false }
+    compileOnly("dev.latvian.mods:rhino:${rhino_version}") { transitive = false }
 
-// Mockito dependencies
-    testImplementation 'org.mockito:mockito-core:5.3.1'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.3.1'
+    // Architectury
+    implementation "dev.architectury:architectury-neoforge:${architectury_version}"
+
+    // Patchouli
+    compileOnly "vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}:api"
+    localRuntime "vazkii.patchouli:Patchouli:${mc_version}-${patchouli_version}"
+
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+    testImplementation 'org.mockito:mockito-core:5.11.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0'
+
+    // ---- DEFERRED: These mods have no NeoForge 1.21.1 port ----
+    // Thermal Foundation, Thermal Expansion, CoFH Core
+    // OC2 / Sedna / MarkdownManual
+    // TIS-3D
+    // Masterful Machinery, Large Ore Deposits, ForgeEnderTech, Cyclic, FLib
+    // Refined Storage, Immersive Engineering, The Lost Cities
+    // Construction Wand, Spark
+    // FTB Library/Teams/Chunks, CTM
+    // Better Fusion Reactor for Mekanism
+    // Multi Builder Tool, AE2 (check availability)
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            mc_version        : mc_version,
+            mc_version_range  : mc_version_range,
+            neo_version       : neo_version,
+            neo_version_range : neo_version_range,
+            loader_version_range : loader_version_range,
+            mod_id            : mod_id,
+            mod_version       : mod_version,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/neoforge.mods.toml']) {
+        expand replaceProperties
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-Xmaxerrs', '5000']
 }
 
 jar {
@@ -221,70 +212,3 @@ jar {
         ])
     }
 }
-
-mixin {
-    add sourceSets.main, "nuclearcraft.refmap.json"
-    config "nuclearcraft.mixins.json"
-}
-
-jar.enabled = false
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-}
-
-configurations {
-    shaded {
-        transitive = false
-    }
-}
-
-test {
-    useJUnitPlatform()
-}
-
-tasks.named('processResources', ProcessResources).configure {
-    var replaceProperties = [
-            'version': version,
-    ]
-    inputs.properties replaceProperties
-
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-        expand replaceProperties + [project: project]
-    }
-}
-
-shadowJar {
-    finalizedBy 'reobfShadowJar'
-
-    from sourceSets.main.output.classesDirs
-    from sourceSets.main.output.resourcesDir
-
-    manifest {
-        attributes([
-                "Specification-Title"   : "NuclearCraft",
-                "Specification-Vendor"  : "igentuman",
-                "Specification-Version" : "${project.version}",
-                "Implementation-Title"  : "${project.name}",
-                "Implementation-Version": "${version}",
-                "Implementation-Vendor" : "igentuman",
-                "MixinConfigs"          : "nuclearcraft.mixins.json",
-                "MixinConnector"        : "igentuman.nc.mixin.NuclearCraftMixinConnector"
-        ])
-    }
-
-    configurations = [project.configurations.shaded]
-    archiveClassifier = null
-}
-
-
-
-reobf {
-    shadowJar {}
-}
-
-afterEvaluate {
-    tasks.reobfJar.enabled = false
-}
-
-tasks.assemble.dependsOn reobfShadowJar

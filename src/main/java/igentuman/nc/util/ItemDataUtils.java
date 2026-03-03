@@ -1,10 +1,12 @@
 package igentuman.nc.util;
 
+import igentuman.api.platform.NCItemStacks;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,20 +20,23 @@ public final class ItemDataUtils {
     private ItemDataUtils() {
     }
 
+    /**
+     * Returns a READ-ONLY copy of the NC_DATA sub-compound.
+     * Do NOT mutate the returned tag and expect changes to persist on the stack.
+     * For writes, use the dedicated setter methods which call modifyTag().
+     */
     @NotNull
     public static CompoundTag getDataMap(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
+        CompoundTag tag = NCItemStacks.getTagCopy(stack);
         if (tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
             return tag.getCompound(NBTConstants.NC_DATA);
         }
-        CompoundTag dataMap = new CompoundTag();
-        tag.put(NBTConstants.NC_DATA, dataMap);
-        return dataMap;
+        return new CompoundTag();
     }
 
     @Nullable
     public static CompoundTag getDataMapIfPresent(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
+        CompoundTag tag = NCItemStacks.getTag(stack);
         if (tag != null && tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
             return tag.getCompound(NBTConstants.NC_DATA);
         }
@@ -44,14 +49,19 @@ public final class ItemDataUtils {
     }
 
     public static void removeData(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
-        if (dataMap != null) {
-            dataMap.remove(key);
-            if (dataMap.isEmpty()) {
-                //If our data map no longer has any elements after removing a piece of stored data
-                // then remove the data tag to make the stack nice and clean again
-                stack.removeTagKey(NBTConstants.NC_DATA);
-            }
+        CompoundTag existing = getDataMapIfPresent(stack);
+        if (existing != null) {
+            NCItemStacks.modifyTag(stack, tag -> {
+                if (tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+                    CompoundTag dataMap = tag.getCompound(NBTConstants.NC_DATA);
+                    dataMap.remove(key);
+                    if (dataMap.isEmpty()) {
+                        //If our data map no longer has any elements after removing a piece of stored data
+                        // then remove the data tag to make the stack nice and clean again
+                        tag.remove(NBTConstants.NC_DATA);
+                    }
+                }
+            });
         }
     }
 
@@ -88,20 +98,36 @@ public final class ItemDataUtils {
         return getDataValue(stack, dataMap -> dataMap.getCompound(key), new CompoundTag());
     }
 
+    /**
+     * Gets or creates a sub-compound within the NC_DATA map.
+     * Note: the returned tag is a snapshot. Callers that mutate it must
+     * write it back via {@link #setCompound(ItemStack, String, CompoundTag)}.
+     */
     public static CompoundTag getOrAddCompound(ItemStack stack, String key) {
         CompoundTag dataMap = getDataMap(stack);
         if (dataMap.contains(key, Tag.TAG_COMPOUND)) {
             return dataMap.getCompound(key);
         }
         CompoundTag compound = new CompoundTag();
-        dataMap.put(key, compound);
+        // Persist the new empty compound back to the stack
+        NCItemStacks.modifyTag(stack, tag -> {
+            if (!tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+                tag.put(NBTConstants.NC_DATA, new CompoundTag());
+            }
+            tag.getCompound(NBTConstants.NC_DATA).put(key, compound);
+        });
         return compound;
     }
 
     public static void setCompoundIfPresent(ItemStack stack, String key, Consumer<CompoundTag> setter) {
         CompoundTag dataMap = getDataMapIfPresent(stack);
         if (dataMap != null && dataMap.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(dataMap.getCompound(key));
+            NCItemStacks.modifyTag(stack, tag -> {
+                CompoundTag ncData = tag.getCompound(NBTConstants.NC_DATA);
+                if (ncData.contains(key, Tag.TAG_COMPOUND)) {
+                    setter.accept(ncData.getCompound(key));
+                }
+            });
         }
     }
 
@@ -119,7 +145,12 @@ public final class ItemDataUtils {
     }
 
     public static void setInt(ItemStack stack, String key, int i) {
-        getDataMap(stack).putInt(key, i);
+        NCItemStacks.modifyTag(stack, tag -> {
+            if (!tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+                tag.put(NBTConstants.NC_DATA, new CompoundTag());
+            }
+            tag.getCompound(NBTConstants.NC_DATA).putInt(key, i);
+        });
     }
 
     public static void setIntOrRemove(ItemStack stack, String key, int i) {
@@ -131,7 +162,12 @@ public final class ItemDataUtils {
     }
 
     public static void setLong(ItemStack stack, String key, long l) {
-        getDataMap(stack).putLong(key, l);
+        NCItemStacks.modifyTag(stack, tag -> {
+            if (!tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+                tag.put(NBTConstants.NC_DATA, new CompoundTag());
+            }
+            tag.getCompound(NBTConstants.NC_DATA).putLong(key, l);
+        });
     }
 
     public static void setLongOrRemove(ItemStack stack, String key, long l) {
@@ -143,31 +179,61 @@ public final class ItemDataUtils {
     }
 
     public static void setBoolean(ItemStack stack, String key, boolean b) {
-        getDataMap(stack).putBoolean(key, b);
+        NCItemStacks.modifyTag(stack, tag -> {
+            if (!tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+                tag.put(NBTConstants.NC_DATA, new CompoundTag());
+            }
+            tag.getCompound(NBTConstants.NC_DATA).putBoolean(key, b);
+        });
     }
 
     public static void setDouble(ItemStack stack, String key, double d) {
-        getDataMap(stack).putDouble(key, d);
+        NCItemStacks.modifyTag(stack, tag -> {
+            if (!tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+                tag.put(NBTConstants.NC_DATA, new CompoundTag());
+            }
+            tag.getCompound(NBTConstants.NC_DATA).putDouble(key, d);
+        });
     }
 
     public static void setString(ItemStack stack, String key, String s) {
-        getDataMap(stack).putString(key, s);
+        NCItemStacks.modifyTag(stack, tag -> {
+            if (!tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+                tag.put(NBTConstants.NC_DATA, new CompoundTag());
+            }
+            tag.getCompound(NBTConstants.NC_DATA).putString(key, s);
+        });
     }
 
-    public static void setCompound(ItemStack stack, String key, CompoundTag tag) {
-        getDataMap(stack).put(key, tag);
+    public static void setCompound(ItemStack stack, String key, CompoundTag compoundTag) {
+        NCItemStacks.modifyTag(stack, tag -> {
+            if (!tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+                tag.put(NBTConstants.NC_DATA, new CompoundTag());
+            }
+            tag.getCompound(NBTConstants.NC_DATA).put(key, compoundTag);
+        });
     }
 
     public static void setUUID(ItemStack stack, String key, @Nullable UUID uuid) {
         if (uuid == null) {
             removeData(stack, key);
         } else {
-            getDataMap(stack).putUUID(key, uuid);
+            NCItemStacks.modifyTag(stack, tag -> {
+                if (!tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+                    tag.put(NBTConstants.NC_DATA, new CompoundTag());
+                }
+                tag.getCompound(NBTConstants.NC_DATA).putUUID(key, uuid);
+            });
         }
     }
 
-    public static void setList(ItemStack stack, String key, ListTag tag) {
-        getDataMap(stack).put(key, tag);
+    public static void setList(ItemStack stack, String key, ListTag listTag) {
+        NCItemStacks.modifyTag(stack, tag -> {
+            if (!tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+                tag.put(NBTConstants.NC_DATA, new CompoundTag());
+            }
+            tag.getCompound(NBTConstants.NC_DATA).put(key, listTag);
+        });
     }
 
     public static void setListOrRemove(ItemStack stack, String key, ListTag tag) {
@@ -186,19 +252,24 @@ public final class ItemDataUtils {
         if (array.length == 0) {
             removeData(stack, key);
         } else {
-            getDataMap(stack).putLongArray(key, array);
+            NCItemStacks.modifyTag(stack, tag -> {
+                if (!tag.contains(NBTConstants.NC_DATA, Tag.TAG_COMPOUND)) {
+                    tag.put(NBTConstants.NC_DATA, new CompoundTag());
+                }
+                tag.getCompound(NBTConstants.NC_DATA).putLongArray(key, array);
+            });
         }
     }
 
-    public static void readContainers(ItemStack stack, String containerKey, List<? extends INBTSerializable<CompoundTag>> containers) {
+    public static void readContainers(HolderLookup.Provider provider, ItemStack stack, String containerKey, List<? extends INBTSerializable<CompoundTag>> containers) {
         if (!stack.isEmpty()) {
-            DataHandlerUtils.readContainers(containers, getList(stack, containerKey));
+            DataHandlerUtils.readContainers(provider, containers, getList(stack, containerKey));
         }
     }
 
-    public static void writeContainers(ItemStack stack, String containerKey, List<? extends INBTSerializable<CompoundTag>> containers) {
+    public static void writeContainers(HolderLookup.Provider provider, ItemStack stack, String containerKey, List<? extends INBTSerializable<CompoundTag>> containers) {
         if (!stack.isEmpty()) {
-            setListOrRemove(stack, containerKey, DataHandlerUtils.writeContainers(containers));
+            setListOrRemove(stack, containerKey, DataHandlerUtils.writeContainers(provider, containers));
         }
     }
 }

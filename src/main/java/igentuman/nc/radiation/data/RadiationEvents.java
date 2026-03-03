@@ -1,10 +1,10 @@
 package igentuman.nc.radiation.data;
 
 import igentuman.nc.compat.mekanism.MekanismRadiation;
-import igentuman.nc.handler.config.RadiationConfig;
 import igentuman.nc.radiation.FluidRadiation;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.RadiationCleaningItems;
+import igentuman.nc.setup.registration.NCAttachments;
 import igentuman.nc.util.ModUtil;
 import igentuman.nc.util.RadiationExecutorManager;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -15,14 +15,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.currentTick;
-import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.setup.Registration.RADIATION_DECAY;
 import static igentuman.nc.setup.Registration.RADIATION_RESISTANCE;
@@ -41,14 +39,9 @@ public class RadiationEvents {
     private static final HashMap<Level, List<ItemEntity>> droppedRadioactiveItems = new HashMap<>();
     private static CompletableFuture<Void> radiationFuture;
 
-    public static void attachWorldRadiation(final AttachCapabilitiesEvent<Level> event) {
-        if (!event.getObject().getCapability(WorldRadiationProvider.WORLD_RADIATION).isPresent()) {
-            event.addCapability(rl("radiation"), new WorldRadiationProvider());
-            isTracking = true;
-        }
-    }
+    // WorldRadiation is managed via RadiationManager (SavedData) -- no attachment needed
 
-    public static void tickAsync(TickEvent.LevelTickEvent event) {
+    public static void tickAsync(LevelTickEvent.Pre event) {
         if(currentTick % 10 == 0 && RADIATION_CONFIG.ENABLED.get()) {
             if (radiationFuture == null || radiationFuture.isDone()) {
                 radiationFuture = CompletableFuture.runAsync(
@@ -69,23 +62,23 @@ public class RadiationEvents {
         }
         long radiation = RadiationCleaningItems.byItem(stack.getItem());
 
-        PlayerRadiation radCap = entity.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
-        if(radCap != null) {
+        PlayerRadiation radCap = entity.getData(NCAttachments.PLAYER_RADIATION.get());
+        {
             if(stack.getItem().toString().equals("radaway")) {
-                if(entity.hasEffect(RADIATION_RESISTANCE.get())) {
-                    entity.removeEffect(RADIATION_RESISTANCE.get());
+                if(entity.hasEffect(RADIATION_RESISTANCE)) {
+                    entity.removeEffect(RADIATION_RESISTANCE);
                 }
-                entity.addEffect(new MobEffectInstance(RADIATION_RESISTANCE.get(), 1200, 1, false, true));
+                entity.addEffect(new MobEffectInstance(RADIATION_RESISTANCE, 1200, 1, false, true));
             } else if(stack.getItem().toString().contains("rad_x")) {
-                if(entity.hasEffect(RADIATION_RESISTANCE.get())) {
-                    entity.removeEffect(RADIATION_RESISTANCE.get());
+                if(entity.hasEffect(RADIATION_RESISTANCE)) {
+                    entity.removeEffect(RADIATION_RESISTANCE);
                 }
-                entity.addEffect(new MobEffectInstance(RADIATION_RESISTANCE.get(), 1200, 2, false, true));
+                entity.addEffect(new MobEffectInstance(RADIATION_RESISTANCE, 1200, 2, false, true));
             } else if(stack.getItem().toString().contains("radaway_slow")) {
-                if(entity.hasEffect(RADIATION_DECAY.get())) {
-                    entity.removeEffect(RADIATION_DECAY.get());
+                if(entity.hasEffect(RADIATION_DECAY)) {
+                    entity.removeEffect(RADIATION_DECAY);
                 }
-                entity.addEffect(new MobEffectInstance(RADIATION_DECAY.get(), 2400, 1, false, true));
+                entity.addEffect(new MobEffectInstance(RADIATION_DECAY, 2400, 1, false, true));
             }
             if(radiation == 0) return;
             radCap.setRadiation(Math.max(0, radCap.getRadiation() - radiation/1000));
@@ -116,22 +109,13 @@ public class RadiationEvents {
     }
 
 
-    public static void attachPlayerRadiation(final AttachCapabilitiesEvent<Entity> event) {
-        if(event.getObject() instanceof Player) {
-            if (!event.getObject().getCapability(PlayerRadiationProvider.PLAYER_RADIATION).isPresent()) {
-                event.addCapability(rl("radiation"), new PlayerRadiationProvider());
-            }
-        }
-    }
+    // PlayerRadiation is now managed via NeoForge Data Attachments (NCAttachments.PLAYER_RADIATION)
 
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if (event.isWasDeath()) {
-            // We need to copyFrom the capabilities
-            event.getOriginal().getCapability(PlayerRadiationProvider.PLAYER_RADIATION).ifPresent(oldStore -> {
-                event.getEntity().getCapability(PlayerRadiationProvider.PLAYER_RADIATION).ifPresent(newStore -> {
-                    newStore.copyFrom(oldStore);
-                });
-            });
+            PlayerRadiation oldStore = event.getOriginal().getData(NCAttachments.PLAYER_RADIATION.get());
+            PlayerRadiation newStore = event.getEntity().getData(NCAttachments.PLAYER_RADIATION.get());
+            newStore.copyFrom(oldStore);
         }
     }
 
@@ -146,15 +130,15 @@ public class RadiationEvents {
         }
     }
 
-    public static void onWorldTick(TickEvent.LevelTickEvent event) {
-        if(!isTracking || event.level.isClientSide) {
+    public static void onWorldTick(LevelTickEvent.Pre event) {
+        if(!isTracking || event.getLevel().isClientSide()) {
             return;
         }
-        Level world = event.level;
+        Level world = event.getLevel();
         if(!droppedRadioactiveItems.containsKey(world)) {
             droppedRadioactiveItems.put(world, new LinkedList<>());
         }
-        RadiationManager manager = RadiationManager.get(event.level);
+        RadiationManager manager = RadiationManager.get(event.getLevel());
         int size = droppedRadioactiveItems.get(world).size();
         for(int i = 0; i < size; i++) {
             ItemEntity entity = droppedRadioactiveItems.get(world).get(i);
@@ -169,7 +153,7 @@ public class RadiationEvents {
                 size--;
             }
         }
-        manager.tick(event.level);
+        manager.tick(event.getLevel());
     }
 
     public static void stopTracking() {

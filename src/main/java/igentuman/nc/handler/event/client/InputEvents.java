@@ -1,26 +1,27 @@
 package igentuman.nc.handler.event.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static com.mojang.blaze3d.platform.InputConstants.*;
 import static igentuman.nc.NuclearCraft.MODID;
 
-@Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class InputEvents {
 
     public static boolean DESCRIPTIONS_SHOW = false;
     public static boolean SHIFT_PRESSED = false;
 
     public static void register(FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.addListener(InputEvents::onKeyPressed);
-        MinecraftForge.EVENT_BUS.addListener(InputEvents::onScreenKeyPressed);
-        MinecraftForge.EVENT_BUS.addListener(InputEvents::onScreenKeyReleased);
+        NeoForge.EVENT_BUS.addListener(InputEvents::onKeyPressed);
+        NeoForge.EVENT_BUS.addListener(InputEvents::onScreenKeyPressed);
+        NeoForge.EVENT_BUS.addListener(InputEvents::onScreenKeyReleased);
     }
     public static void onKeyPressed(InputEvent.Key event) {
         if (event.getKey() == KEY_N && event.getModifiers() == MOD_CONTROL) {

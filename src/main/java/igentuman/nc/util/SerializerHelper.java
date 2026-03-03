@@ -2,18 +2,21 @@ package igentuman.nc.util;
 
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import igentuman.api.platform.NCFluidStacks;
+import igentuman.api.platform.NCItemStacks;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.math.FloatingLong;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.util.NcUtils.rlFromString;
@@ -69,11 +72,37 @@ public class SerializerHelper {
      */
     public static ItemStack getItemStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
-        return ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, key));
+        return deserializeItem(GsonHelper.getAsJsonObject(json, key));
     }
 
     public static ItemStack getItemStack(@NotNull JsonObject json) {
-        return ShapedRecipe.itemStackFromJson(json);
+        return deserializeItem(json);
+    }
+
+    /**
+     * Deserializes an ItemStack from a JsonObject.
+     * Replaces {@code ShapedRecipe.itemStackFromJson} which was removed in 1.21.1.
+     */
+    private static ItemStack deserializeItem(@NotNull JsonObject json) {
+        String itemName = GsonHelper.getAsString(json, "item");
+        Item item = BuiltInRegistries.ITEM.get(rlFromString(itemName));
+        int count = GsonHelper.getAsInt(json, "count", 1);
+        ItemStack stack = new ItemStack(item, count);
+        if (json.has("nbt")) {
+            try {
+                JsonElement nbtElement = json.get("nbt");
+                CompoundTag nbt;
+                if (nbtElement.isJsonObject()) {
+                    nbt = TagParser.parseTag(GSON.toJson(nbtElement));
+                } else {
+                    nbt = TagParser.parseTag(GsonHelper.convertToString(nbtElement, "nbt"));
+                }
+                NCItemStacks.setTag(stack, nbt);
+            } catch (CommandSyntaxException e) {
+                throw new JsonSyntaxException("Invalid NBT entry for item '" + itemName + "'");
+            }
+        }
+        return stack;
     }
 
     /**
@@ -113,24 +142,13 @@ public class SerializerHelper {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
         ResourceLocation resourceLocation = rlFromString(GsonHelper.getAsString(json, "fluid"));
-        Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourceLocation);
+        Fluid fluid = BuiltInRegistries.FLUID.get(resourceLocation);
         if (fluid == null || fluid == Fluids.EMPTY) {
             throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");
         }
-        CompoundTag nbt = null;
-        if (json.has("nbt")) {
-            JsonElement jsonNBT = json.get("nbt");
-            try {
-                if (jsonNBT.isJsonObject()) {
-                    nbt = TagParser.parseTag(GSON.toJson(jsonNBT));
-                } else {
-                    nbt = TagParser.parseTag(GsonHelper.convertToString(jsonNBT, "nbt"));
-                }
-            } catch (CommandSyntaxException e) {
-                throw new JsonSyntaxException("Invalid NBT entry for fluid '" + resourceLocation + "'");
-            }
-        }
-        return new FluidStack(fluid, amount, nbt);
+        // Note: FluidStack no longer stores NBT in 1.21.1.
+        // NBT data from legacy JSON is silently ignored.
+        return new FluidStack(fluid, amount);
     }
 
 
@@ -143,12 +161,12 @@ public class SerializerHelper {
      */
     public static JsonElement serializeItemStack(@NotNull ItemStack stack) {
         JsonObject json = new JsonObject();
-        json.addProperty("item", ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
+        json.addProperty("item", BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
         if (stack.getCount() > 1) {
             json.addProperty("count", stack.getCount());
         }
-        if (stack.hasTag()) {
-            json.addProperty("nbt", stack.getTag().toString());
+        if (NCItemStacks.hasCustomData(stack)) {
+            json.addProperty("nbt", NCItemStacks.getTag(stack).toString());
         }
         return json;
     }
@@ -162,10 +180,10 @@ public class SerializerHelper {
      */
     public static JsonElement serializeFluidStack(@NotNull FluidStack stack) {
         JsonObject json = new JsonObject();
-        json.addProperty("fluid", ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString());
+        json.addProperty("fluid", BuiltInRegistries.FLUID.getKey(stack.getFluid()).toString());
         json.addProperty("amount", stack.getAmount());
-        if (stack.hasTag()) {
-            json.addProperty("nbt", stack.getTag().toString());
+        if (NCFluidStacks.hasCustomData(stack)) {
+            json.addProperty("nbt", NCFluidStacks.getTag(stack).toString());
         }
         return json;
     }

@@ -1,24 +1,24 @@
 package igentuman.nc.item;
 
-import igentuman.nc.content.ArmorMaterials;
-import igentuman.nc.handler.ItemEnergyHandler;
-import igentuman.nc.util.capability.CapabilityUtils;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import java.util.List;
 
@@ -27,8 +27,8 @@ import static igentuman.nc.util.TextUtils.__;
 
 public class HEVItem extends ArmorItem {
 
-    public HEVItem(ArmorMaterials armorMaterials, ArmorItem.Type type, Properties hazmatProps) {
-        super(armorMaterials, type, hazmatProps);
+    public HEVItem(Holder<ArmorMaterial> armorMaterial, ArmorItem.Type type, Properties hazmatProps) {
+        super(armorMaterial, type, hazmatProps);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class HEVItem extends ArmorItem {
         return false;
     }
 
-    protected int getEnergyMaxStorage() {
+    public int getEnergyMaxStorage() {
         return 1000000;
     }
 
@@ -55,13 +55,8 @@ public class HEVItem extends ArmorItem {
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new ItemEnergyHandler(stack, getEnergyMaxStorage(), 5000, getEnergyMaxStorage()/4);
-    }
-
-    @Override
-    public void onInventoryTick(ItemStack st, Level level, Player player, int slotIndex, int selectedIndex) {
-        if (charged(st)) {
+    public void inventoryTick(ItemStack st, Level level, Entity entity, int slotId, boolean isSelected) {
+        if (entity instanceof Player player && charged(st)) {
             if (st.is(HEV_CHEST.get()) && player.getItemBySlot(EquipmentSlot.CHEST).equals(st)) {
                 player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 1, 1, false, false));
             }
@@ -80,11 +75,12 @@ public class HEVItem extends ArmorItem {
 
     public CustomEnergyStorage getEnergy(ItemStack stack)
     {
-        return (CustomEnergyStorage) CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
+        IEnergyStorage storage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        return (CustomEnergyStorage) storage;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
     {
         list.add(__("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
         list.add(__("tooltip.nc.hev.desc").withStyle(ChatFormatting.AQUA));

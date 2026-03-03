@@ -1,6 +1,7 @@
 package igentuman.nc.setup.registration;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import igentuman.nc.world.BiomeFilterNether;
 import igentuman.nc.world.OrePlacementModifier;
 import igentuman.nc.world.structure.WastelandBossLairFeature;
@@ -20,28 +21,29 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Registries.PLACEMENT_MODIFIERS;
 
 public class WorldGeneration {
-    public static final TagKey<Biome> WASTELAND = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), rl("wasteland"));
+    public static final TagKey<Biome> WASTELAND = TagKey.create(net.minecraft.core.registries.Registries.BIOME, rl("wasteland"));
 
     public static final ResourceKey<Biome> WASTELAND_BIOME = makeKey("wasteland");
 
-    public static final RegistryObject<PlacementModifierType<?>> NC_ORE_MODIFIER =
+    public static final DeferredHolder<PlacementModifierType<?>, PlacementModifierType<?>> NC_ORE_MODIFIER =
             PLACEMENT_MODIFIERS.register("nc_ore_modifier", () -> placement(OrePlacementModifier.CODEC));
 
-    public static final RegistryObject<PlacementModifierType<?>> VEGETATION_MODIFIER =
+    public static final DeferredHolder<PlacementModifierType<?>, PlacementModifierType<?>> VEGETATION_MODIFIER =
             PLACEMENT_MODIFIERS.register("nc_vegetation_modifier", () -> placement(BiomeFilterNether.CODEC));
 
     private static ResourceKey<Biome> makeKey(String name) {
         return ResourceKey.create(Registries.BIOME, rl(name));
     }
 
-    public static <P extends PlacementModifier> PlacementModifierType<P> placement(Codec<P> codec) {
+    public static <P extends PlacementModifier> PlacementModifierType<P> placement(MapCodec<P> codec) {
         return () -> codec;
     }
 

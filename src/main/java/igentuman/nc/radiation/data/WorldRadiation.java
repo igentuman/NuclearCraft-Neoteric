@@ -2,6 +2,8 @@ package igentuman.nc.radiation.data;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import igentuman.api.platform.NCSerialization;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -27,9 +29,9 @@ public class WorldRadiation implements IWorldRadiationCapability {
         this.chunkRadiation = radiation;
     }
 
-    public static WorldRadiation deserialize(CompoundTag radiation) {
+    public static WorldRadiation deserialize(HolderLookup.Provider provider, CompoundTag radiation) {
         WorldRadiation worldRadiation = new WorldRadiation();
-        worldRadiation.deserializeNBT(radiation);
+        NCSerialization.deserialize(worldRadiation, provider, radiation);
         return worldRadiation;
     }
 
@@ -146,7 +148,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         CompoundTag radiationTag = new CompoundTag();
         for(long key : chunkRadiation.keySet()) {
@@ -157,7 +159,7 @@ public class WorldRadiation implements IWorldRadiationCapability {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         CompoundTag radiationTag = nbt.getCompound("radiation");
         for(String key : radiationTag.getAllKeys()) {
             chunkRadiation.put(Long.parseLong(key), radiationTag.getLong(key));

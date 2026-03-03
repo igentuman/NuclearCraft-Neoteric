@@ -1,9 +1,8 @@
 package igentuman.nc.block.accelerator.entity;
 
-import igentuman.api.nc.multiblock.MultiblockAttachable;
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.MultiblockPortBE;
-import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
@@ -15,21 +14,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.currentTick;
-import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
 public class AcceleratorPortBE extends MultiblockPortBE {
 
@@ -156,50 +147,19 @@ public class AcceleratorPortBE extends MultiblockPortBE {
         return controller().contentHandler().fluidHandler;
     }
 
-    protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)
-    {
-        return controller().contentHandler().getFluidCapability(side);
-    }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(controller() == null) return super.getCapability(cap, side);
-
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return controller().getCapability(cap, side);
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return controller().getCapability(cap, side);
-        }
-        if (cap == ForgeCapabilities.ENERGY) {
-            return  controller().getCapability(cap, side);
-        }
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return controller().getPeripheral(cap, side);
-            }
-        }
-
-        if(isOC2Loaded()) {
-            if(cap == DEVICE_CAPABILITY) {
-                return controller().getOCDevice(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
     @Override
     public AbstractAcceleratorControllerBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
-            return (AbstractAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+            return (AbstractAcceleratorControllerBE) NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
         }
         try {
             return (AbstractAcceleratorControllerBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                return (AbstractAcceleratorControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+                return (AbstractAcceleratorControllerBE) NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
             }
             return null;
         }

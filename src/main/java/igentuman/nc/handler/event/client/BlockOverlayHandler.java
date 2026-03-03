@@ -3,6 +3,7 @@ package igentuman.nc.handler.event.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import igentuman.api.nc.SideModeToggleable;
+import igentuman.api.platform.NCRendering;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
@@ -12,9 +13,9 @@ import igentuman.nc.util.collection.HashList;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -28,15 +29,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -55,7 +56,7 @@ import static igentuman.nc.item.QNP.getMode;
 import static igentuman.nc.util.AreaUtil.getArea;
 import static igentuman.nc.util.StackUtils.isMultiTool;
 
-@Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class BlockOverlayHandler {
 
     private static int outlineCooldown = 5;
@@ -64,8 +65,8 @@ public class BlockOverlayHandler {
     public final static HashList<FissionControllerBE> reactors = new HashList<>();
 
     public static void register(FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.addListener(BlockOverlayHandler::blockOverlayEvent);
-        MinecraftForge.EVENT_BUS.addListener(BlockOverlayHandler::onRenderPre);
+        NeoForge.EVENT_BUS.addListener(BlockOverlayHandler::blockOverlayEvent);
+        NeoForge.EVENT_BUS.addListener(BlockOverlayHandler::onRenderPre);
     }
 
     @SubscribeEvent
@@ -196,7 +197,7 @@ public class BlockOverlayHandler {
             VertexConsumer builder = Minecraft.getInstance().renderBuffers().outlineBufferSource().getBuffer(RenderType.lines());
             BlockPos.betweenClosed(area.getLeft(), area.getRight()).forEach(blockPos -> {
                 VoxelShape shape = world.getBlockState(blockPos).getShape(world, blockPos);
-                if (shape != null && !shape.isEmpty() && !world.isEmptyBlock(blockPos) && world.getBlockState(blockPos).getDestroySpeed(world, blockPos) >= 0 && !(world.getBlockState(blockPos).getBlock() instanceof IFluidBlock) && !(world.getBlockState(blockPos).getBlock() instanceof LiquidBlock)) {
+                if (shape != null && !shape.isEmpty() && !world.isEmptyBlock(blockPos) && world.getBlockState(blockPos).getDestroySpeed(world, blockPos) >= 0 && !(world.getBlockState(blockPos).getBlock() instanceof LiquidBlock)) {
                     LevelRenderer.renderLineBox(stack, builder, shape.bounds().move(blockPos.getX() - d0, blockPos.getY() - d1, blockPos.getZ() - d2), 0, 0, 0, 0.35F);
                 }
             });
@@ -237,14 +238,12 @@ public class BlockOverlayHandler {
         VertexConsumer bufferIn = renderTypeBuffer.getBuffer(RenderType.lines());
         voxelShape.forAllEdges((x0, y0, z0, x1, y1, z1) -> {
             if (!pos.equals(aimed)){
-                bufferIn.vertex(pose.pose(), (float) (x0 + originX), (float) (y0 + originY), (float) (z0 + originZ))
-                        .color(red, green, blue, alpha)
-                        .normal(pose.normal(), (float) (x1-x0), (float) (y1-y0), (float) (z1-z0))
-                        .endVertex();
-                bufferIn.vertex(pose.pose(), (float) (x1 + originX), (float) (y1 + originY), (float) (z1 + originZ))
-                        .color(red, green, blue, alpha)
-                        .normal(pose.normal(), (float) (x1-x0), (float) (y1-y0), (float) (z1-z0))
-                        .endVertex();
+                bufferIn.addVertex(pose.pose(), (float) (x0 + originX), (float) (y0 + originY), (float) (z0 + originZ))
+                        .setColor(red, green, blue, alpha)
+                        .setNormal(pose, (float) (x1-x0), (float) (y1-y0), (float) (z1-z0));
+                bufferIn.addVertex(pose.pose(), (float) (x1 + originX), (float) (y1 + originY), (float) (z1 + originZ))
+                        .setColor(red, green, blue, alpha)
+                        .setNormal(pose, (float) (x1-x0), (float) (y1-y0), (float) (z1-z0));
             }
 
         });
@@ -255,7 +254,6 @@ public class BlockOverlayHandler {
     public static void renderFilledBox(PoseStack poseStack, AABB box, float r, float g, float b, float alpha, BlockPos pos, BlockPos player) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
         // Get camera position for proper translation
         Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
@@ -268,11 +266,6 @@ public class BlockOverlayHandler {
         // Just translate relative to camera
         poseStack.translate(-camX, -camY, -camZ);
 
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
-
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-
         Matrix4f matrix = poseStack.last().pose();
 
         // Use the box coordinates directly - they're already in world space
@@ -283,43 +276,43 @@ public class BlockOverlayHandler {
         float y2 = (float) box.maxY;
         float z2 = (float) box.maxZ;
 
-        // Bottom face
-        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, alpha).endVertex();
+        NCRendering.draw(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR, buffer -> {
+            // Bottom face
+            buffer.addVertex(matrix, x1, y1, z1).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x2, y1, z1).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x2, y1, z2).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x1, y1, z2).setColor(r, g, b, alpha);
 
-        // Top face
-        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, alpha).endVertex();
+            // Top face
+            buffer.addVertex(matrix, x1, y2, z1).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x1, y2, z2).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x2, y2, z2).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x2, y2, z1).setColor(r, g, b, alpha);
 
-        // North
-        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, alpha).endVertex();
+            // North
+            buffer.addVertex(matrix, x1, y1, z1).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x1, y2, z1).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x2, y2, z1).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x2, y1, z1).setColor(r, g, b, alpha);
 
-        // South
-        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, alpha).endVertex();
+            // South
+            buffer.addVertex(matrix, x2, y1, z2).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x2, y2, z2).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x1, y2, z2).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x1, y1, z2).setColor(r, g, b, alpha);
 
-        // West
-        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha).endVertex();
+            // West
+            buffer.addVertex(matrix, x1, y1, z2).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x1, y2, z2).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x1, y2, z1).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x1, y1, z1).setColor(r, g, b, alpha);
 
-        // East
-        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha).endVertex();
-        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, alpha).endVertex();
-
-        tesselator.end();
+            // East
+            buffer.addVertex(matrix, x2, y1, z1).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x2, y2, z1).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x2, y2, z2).setColor(r, g, b, alpha);
+            buffer.addVertex(matrix, x2, y1, z2).setColor(r, g, b, alpha);
+        });
 
         // Pop the matrix stack to restore previous state
         poseStack.popPose();
@@ -378,13 +371,13 @@ public class BlockOverlayHandler {
     static void addQuadVertex(Matrix4f matrixPos, Matrix3f matrixNormal, VertexConsumer renderBuffer,
                               Vector3f pos, Vec2 texUV,
                               Vector3f normalVector, Color color, int lightmapValue) {
-        renderBuffer.vertex(matrixPos, pos.x(), pos.y(), pos.z()) // position coordinate
-                .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())        // color
-                .uv(texUV.x, texUV.y)                     // texel coordinate
-                .overlayCoords(OverlayTexture.NO_OVERLAY)  // only relevant for rendering Entities (Living)
-                .uv2(lightmapValue)         			    // lightmap with full brightness
-                .normal(matrixNormal, normalVector.x(), normalVector.y(), normalVector.z())
-                .endVertex();
+        Vector3f transformedNormal = matrixNormal.transform(new Vector3f(normalVector));
+        renderBuffer.addVertex(matrixPos, pos.x(), pos.y(), pos.z())
+                .setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+                .setUv(texUV.x, texUV.y)
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setUv2(lightmapValue & 0xFFFF, lightmapValue >> 16 & 0xFFFF)
+                .setNormal(transformedNormal.x(), transformedNormal.y(), transformedNormal.z());
     }
 
     public static void addFusionReactor(BlockPos pos) {

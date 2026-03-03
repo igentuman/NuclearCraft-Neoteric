@@ -1,7 +1,7 @@
 package igentuman.nc.block.kugelblitz.entity;
 
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.compat.kubejs.NCKubeJsEvents;
+
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
@@ -17,8 +17,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.Event;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ import static igentuman.nc.client.renderer.DistortShader.blackhole;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_IDLE;
 import static igentuman.nc.setup.registration.NCSounds.BLACKHOLE_SPAWN;
-import static igentuman.nc.util.ModUtil.isKubeJsLoaded;
+
 import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class BlackHoleBE extends NuclearCraftBE {
@@ -226,10 +226,8 @@ public class BlackHoleBE extends NuclearCraftBE {
         } else if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity instanceof ServerPlayer) {
                 PlayerEnterBlackholeEvent event = new PlayerEnterBlackholeEvent((ServerPlayer) livingEntity, getBlockPos(), getLevel());
-                MinecraftForge.EVENT_BUS.post(event);
-                if(isKubeJsLoaded()) {
-                    NCKubeJsEvents.onPlayerEnterBlackhole(event);
-                }
+                NeoForge.EVENT_BUS.post(event);
+                // KubeJS integration removed (no 1.21.1 port)
                 if(event.isCanceled()) return;
                 entity.kill();
 
@@ -255,12 +253,7 @@ public class BlackHoleBE extends NuclearCraftBE {
     }
 
 
-    public class PlayerEnterBlackholeEvent extends Event {
-
-        @Override
-        public boolean isCancelable() {
-            return true;
-        }
+    public class PlayerEnterBlackholeEvent extends Event implements net.neoforged.bus.api.ICancellableEvent {
 
         public ServerPlayer getPlayer() {
             return player;

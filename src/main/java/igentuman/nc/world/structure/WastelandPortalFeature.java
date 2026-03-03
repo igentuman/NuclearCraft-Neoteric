@@ -12,7 +12,8 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.minecraftforge.registries.RegistryObject;
+import igentuman.api.platform.NCRegistration;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +26,9 @@ import static igentuman.nc.setup.registration.Registries.FEATURE_REGISTER;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
 
 public class WastelandPortalFeature extends Feature<NoneFeatureConfiguration> {
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> WASTELAND_PORTAL_FEATURE = FEATURE_REGISTER.register(
-            "wasteland_portal",
-            () -> new WastelandPortalFeature(NoneFeatureConfiguration.CODEC)
-    );
+    public static final DeferredHolder<Feature<?>, WastelandPortalFeature> WASTELAND_PORTAL_FEATURE =
+            NCRegistration.registerFeature(FEATURE_REGISTER, "wasteland_portal",
+                    () -> new WastelandPortalFeature(NoneFeatureConfiguration.CODEC));
 
     public WastelandPortalFeature(Codec<NoneFeatureConfiguration> codec) {
         super(codec);

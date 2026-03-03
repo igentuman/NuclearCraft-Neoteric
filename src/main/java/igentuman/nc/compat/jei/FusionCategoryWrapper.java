@@ -3,7 +3,7 @@ package igentuman.nc.compat.jei;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.compat.jei.util.TickTimer;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -34,7 +34,7 @@ import static net.minecraft.world.item.Items.*;
 @SuppressWarnings("removal")
 public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
-            new ResourceLocation(MODID, "textures/gui/processor_jei.png");
+            ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/processor_jei.png");
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -118,7 +118,7 @@ public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRe
         int idx = 0;
         for(int i = 0; i < 2; i++) {
             builder.addSlot(RecipeIngredientRole.INPUT, 12+10*i, 6)
-                    .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(i))
+                    .addIngredients(NeoForgeTypes.FLUID_STACK, recipe.getInputFluids(i))
                     .setFluidRenderer((recipe.getInputFluids()[i].getAmount())/2, false, 6, 34);
             slots[idx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 34, 90, 8, 36);
             idx++;
@@ -127,7 +127,7 @@ public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRe
         for(int i = 0; i < 4; i++) {
             if(recipe.getOutputFluids().size() > i) {
                 builder.addSlot(RecipeIngredientRole.OUTPUT, 75 + 10 * i, 6)
-                        .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(i))
+                        .addIngredients(NeoForgeTypes.FLUID_STACK, recipe.getOutputFluids(i))
                         .setFluidRenderer((recipe.getOutputFluids().get(i).getAmount()) / 2, false, 6, 34);
             }
             slots[idx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 34, 90, 8, 38);

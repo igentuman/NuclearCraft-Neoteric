@@ -1,18 +1,22 @@
 package igentuman.nc.recipes;
 
+import igentuman.api.platform.NCRecipes;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.recipes.type.NcRecipe;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.NoSuchElementException;
 
@@ -43,7 +47,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     }
 
     @Override
-    public Tag serializeNBT() {
+    public Tag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag data = new CompoundTag();
         data.putInt("ticks", ticks);
         data.putDouble("ticksProcessed", ticksProcessed);
@@ -58,7 +62,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     }
 
     @Override
-    public void deserializeNBT(Tag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, Tag nbt) {
         if(nbt instanceof CompoundTag) {
             ticks = ((CompoundTag) nbt).getInt("ticks");
             ticksProcessed = ((CompoundTag) nbt).getDouble("ticksProcessed");
@@ -77,16 +81,18 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     private Level getLevel()
     {
         if(be != null) return be.getLevel();
-        return DistExecutor.unsafeRunForDist(
-                () -> NcClient::tryGetClientWorld,
-                () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
+        return FMLEnvironment.dist == Dist.CLIENT ? NcClient.tryGetClientWorld() : ServerLifecycleHooks.getCurrentServer().overworld();
     }
 
     private NcRecipe getRecipeFromTag(String recipe) {
         ResourceLocation id = rlFromString(recipe);
         if(getLevel() == null) return null;
         try {
-            return (NcRecipe) getLevel().getRecipeManager().byKey(id).get();
+            return NCRecipes.byKey(getLevel().getRecipeManager(), id)
+                    .map(RecipeHolder::value)
+                    .filter(r -> r instanceof NcRecipe)
+                    .map(r -> (NcRecipe) r)
+                    .orElse(null);
         } catch (NoSuchElementException e) {
             return null;
         }

@@ -7,25 +7,26 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCItems.HEV_BOOTS;
 
-@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = MODID)
 public class PlayerEvents {
 
     @SubscribeEvent
-    public static void onPickupItem(EntityItemPickupEvent event) {
-        Player player = event.getEntity();
-        ItemStack pickedUpItem = event.getItem().getItem();
+    public static void onPickupItem(ItemEntityPickupEvent.Pre event) {
+        Player player = event.getPlayer();
+        ItemStack pickedUpItem = event.getItemEntity().getItem();
         
         // Skip if the picked up item is empty
         if (pickedUpItem.isEmpty()) {
@@ -60,7 +61,7 @@ public class PlayerEvents {
                                 if (remainingStack.isEmpty()) {
                                     pickedUpItem.setCount(0);
                                     //event.getOriginalEntity().setItem(pickedUpItem);
-                                    event.setResult(Event.Result.DENY);
+                                    event.setCanPickup(net.neoforged.neoforge.common.util.TriState.FALSE);
                                     break;
                                 } else {
                                     // Update the picked up item with the remaining count
@@ -75,7 +76,7 @@ public class PlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onPlayerDamage(LivingHurtEvent event) {
+    public static void onPlayerDamage(LivingIncomingDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
             if (event.getSource() != null && event.getSource().is(DamageTypes.MAGIC)) {
                 if(isFullyEquipped(player)) {
@@ -123,11 +124,15 @@ public class PlayerEvents {
 
     public static boolean isCharged(ItemStack item)
     {
-        return item.getCapability(ForgeCapabilities.ENERGY).map(handler -> handler.getEnergyStored() > 0).orElse(false);
+        IEnergyStorage handler = item.getCapability(Capabilities.EnergyStorage.ITEM);
+        return handler != null && handler.getEnergyStored() > 0;
     }
 
 
     private static void consumeEnergy(ItemStack stack, int i) {
-        stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(handler -> handler.extractEnergy(i, false));
+        IEnergyStorage handler = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        if (handler != null) {
+            handler.extractEnergy(i, false);
+        }
     }
 }

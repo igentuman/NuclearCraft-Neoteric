@@ -1,11 +1,9 @@
 package igentuman.nc.item;
 
+import igentuman.api.platform.NCItemStacks;
 import igentuman.nc.container.StorageContainerItemContainer;
 import igentuman.nc.content.storage.ContainerBlocks;
-import igentuman.nc.util.capability.CapabilityUtils;
-import igentuman.nc.util.capability.ItemCapabilityProvider;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -17,14 +15,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -46,7 +44,7 @@ public class ContainerBlockItem extends BlockItem
 
         if (!player.isSteppingCarefully()) {
             if (!level.isClientSide) {
-                NetworkHooks.openScreen((ServerPlayer) player, new MenuProvider() {
+                ((ServerPlayer) player).openMenu(new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
                         return __("container.nc.storage");
@@ -88,22 +86,17 @@ public class ContainerBlockItem extends BlockItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
 	{
 		list.add(__("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
 		list.add(__("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 	}
 
     public IItemHandler getInventory(ItemStack stack) {
-        return (IItemHandler) CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ITEM_HANDLER);
+        return stack.getCapability(Capabilities.ItemHandler.ITEM);
     }
 
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new ItemCapabilityProvider(stack, getInventorySize(), 64);
-    }
-
-    private int getInventorySize() {
+    public int getInventorySize() {
         return getRows()*getColls();
     }
 
@@ -117,10 +110,10 @@ public class ContainerBlockItem extends BlockItem
 
     public UUID getUUID(ItemStack stack) {
         try {
-            if(!stack.getOrCreateTag().contains("uuid")) {
-                stack.getOrCreateTag().putUUID("uuid", UUID.randomUUID());
+            if(!NCItemStacks.contains(stack, "uuid")) {
+                NCItemStacks.putUUID(stack, "uuid", UUID.randomUUID());
             }
-            return stack.getOrCreateTag().getUUID("uuid");
+            return NCItemStacks.getUUID(stack, "uuid");
         } catch(Exception e) {
             return null;
         }
@@ -131,19 +124,19 @@ public class ContainerBlockItem extends BlockItem
     }
 
     public void toggleMagnetMode(ItemStack stack) {
-        if(!stack.getOrCreateTag().contains("magnet")) {
-            stack.getOrCreateTag().putBoolean("magnet", true);
+        if(!NCItemStacks.contains(stack, "magnet")) {
+            NCItemStacks.putBoolean(stack, "magnet", true);
         } else {
-            boolean mode = stack.getOrCreateTag().getBoolean("magnet");
-            stack.getOrCreateTag().putBoolean("magnet", !mode);
+            boolean mode = NCItemStacks.getBoolean(stack, "magnet");
+            NCItemStacks.putBoolean(stack, "magnet", !mode);
         }
     }
 
     public boolean isMagnetModeEnabled(ItemStack stack) {
-        if(!stack.getOrCreateTag().contains("magnet")) {
-            stack.getOrCreateTag().putBoolean("magnet", false);
+        if(!NCItemStacks.contains(stack, "magnet")) {
+            NCItemStacks.putBoolean(stack, "magnet", false);
             return false;
         }
-        return stack.getOrCreateTag().getBoolean("magnet");
+        return NCItemStacks.getBoolean(stack, "magnet");
     }
 }

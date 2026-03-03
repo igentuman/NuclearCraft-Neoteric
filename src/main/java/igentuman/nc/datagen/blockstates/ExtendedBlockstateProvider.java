@@ -18,11 +18,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.client.model.generators.*;
-import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
-import net.minecraftforge.client.model.generators.loaders.ObjModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.client.model.generators.*;
+import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
+import net.neoforged.neoforge.client.model.generators.loaders.ObjModelBuilder;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -58,7 +59,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected String name(Block b)
 	{
-		return ForgeRegistries.BLOCKS.getKey(b).getPath();
+		return BuiltInRegistries.BLOCK.getKey(b).getPath();
 	}
 
 	public void simpleBlockAndItem(Supplier<? extends Block> b, ModelFile model)
@@ -101,7 +102,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected ResourceLocation addModelsPrefix(ResourceLocation in)
 	{
-		return ResourceLocation.tryBuild(in.getNamespace(), "models/"+in.getPath());
+		return ResourceLocation.fromNamespaceAndPath(in.getNamespace(), "models/"+in.getPath());
 	}
 
 	protected void itemModel(Supplier<? extends Block> block, ModelFile model)

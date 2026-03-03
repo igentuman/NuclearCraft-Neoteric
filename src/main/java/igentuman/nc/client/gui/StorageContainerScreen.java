@@ -1,6 +1,5 @@
 package igentuman.nc.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.container.StorageContainerContainer;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,7 +32,7 @@ public class StorageContainerScreen extends AbstractContainerScreen<StorageConta
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(graphics);
+        this.renderBackground(graphics, mouseX, mouseY, partialTicks);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
@@ -44,7 +43,6 @@ public class StorageContainerScreen extends AbstractContainerScreen<StorageConta
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, GUI);
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
         graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);

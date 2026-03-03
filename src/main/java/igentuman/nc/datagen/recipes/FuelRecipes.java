@@ -4,15 +4,16 @@ import igentuman.nc.setup.registration.FissionFuel;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.fuel.FuelManager;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.getIsotope;
@@ -22,11 +23,11 @@ import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 public class FuelRecipes extends NCRecipes {
 
 
-    public FuelRecipes(DataGenerator generatorIn) {
-        super(generatorIn);
+    public FuelRecipes(DataGenerator generatorIn, CompletableFuture<HolderLookup.Provider> registries) {
+        super(generatorIn, registries);
     }
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
 
         for (String name: Materials.isotopes()) {
             for(String type: new String[] {"_ox", "_ni", "_za"}) {
@@ -84,7 +85,7 @@ public class FuelRecipes extends NCRecipes {
 
     }
 
-    private static void fuelPelletRecipe(Consumer<FinishedRecipe> consumer, String name, String subType, String type, int isotope1, int isotope2)
+    private static void fuelPelletRecipe(RecipeOutput consumer, String name, String subType, String type, int isotope1, int isotope2)
     {
         int isotope1Cnt = 1;
         int isotope2Cnt = 8;

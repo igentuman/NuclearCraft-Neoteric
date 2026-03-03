@@ -3,7 +3,7 @@ package igentuman.nc.compat.jei;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.compat.jei.util.TickTimer;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -32,7 +32,7 @@ import static net.minecraft.world.item.Items.BARRIER;
 @SuppressWarnings("removal")
 public class FissionBoilingCategoryWrapper<T extends FissionControllerBE.FissionBoilingRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
-            new ResourceLocation(MODID, "textures/gui/processor_jei.png");
+            ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/processor_jei.png");
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -98,13 +98,13 @@ public class FissionBoilingCategoryWrapper<T extends FissionControllerBE.Fission
                 .buildAnimated(new TickTimer(100, 36, true), IDrawableAnimated.StartDirection.LEFT);
 
         builder.addSlot(RecipeIngredientRole.INPUT, 12, 6)
-                .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(0))
+                .addIngredients(NeoForgeTypes.FLUID_STACK, recipe.getInputFluids(0))
                 .setFluidRenderer(recipe.getInputFluids()[0].getAmount(), false, 16, 16);
         slots[0] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
 
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 75, 6)
-                .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(0))
+                .addIngredients(NeoForgeTypes.FLUID_STACK, recipe.getOutputFluids(0))
                 .setFluidRenderer(recipe.getOutputFluids().get(0).getAmount(), false, 16, 16);
         slots[1] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
 

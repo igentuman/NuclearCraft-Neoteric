@@ -4,13 +4,12 @@ import igentuman.nc.content.particles.Particle;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static igentuman.nc.content.materials.Materials.*;
 import static igentuman.nc.content.particles.ParticleSources.moleAmount;
@@ -20,7 +19,7 @@ import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 
 public class TargetChamberRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         TargetChamberRecipes.consumer = consumer;
         ID = "target_chamber";
 

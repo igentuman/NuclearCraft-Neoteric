@@ -4,14 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
-import javax.json.Json;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.rl;
 
@@ -31,7 +29,7 @@ public class TConstructRecipeBuilder extends RecipeBuilder<TConstructRecipeBuild
     private int time = 0;
 
     protected static ResourceLocation ncSerializer(String name) {
-        return ResourceLocation.tryBuild("tconstruct", name);
+        return ResourceLocation.fromNamespaceAndPath("tconstruct", name);
     }
 
     protected TConstructRecipeBuilder(String id) {
@@ -84,7 +82,7 @@ public class TConstructRecipeBuilder extends RecipeBuilder<TConstructRecipeBuild
         }
         name.replace(name.length()-1, name.length(), "");
 
-        return ResourceLocation.tryBuild("tconstruct",ID+"/"+recipeIdReplacements(name.toString()));
+        return ResourceLocation.fromNamespaceAndPath("tconstruct",ID+"/"+recipeIdReplacements(name.toString()));
     }
 
     protected String recipeIdReplacements(String val) {
@@ -93,8 +91,8 @@ public class TConstructRecipeBuilder extends RecipeBuilder<TConstructRecipeBuild
         return val;
     }
 
-    public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, getRecipeId());
+    public void build(RecipeOutput output) {
+        build(output, getRecipeId());
     }
 
     public TConstructRecipeBuilder temperature(int temperature) {
@@ -131,25 +129,25 @@ public class TConstructRecipeBuilder extends RecipeBuilder<TConstructRecipeBuild
         }
 
         private JsonObject fluidTagNotEmpty(String tag) {
-            JsonObject forgeNot = new JsonObject();
-            forgeNot.addProperty("type", "forge:not");
+            JsonObject neoforgeNot = new JsonObject();
+            neoforgeNot.addProperty("type", "neoforge:not");
             JsonObject fluidTagNotEmpty = new JsonObject();
-            fluidTagNotEmpty.addProperty("type", "forge:fluid_tag_empty");
+            fluidTagNotEmpty.addProperty("type", "neoforge:fluid_tag_empty");
             fluidTagNotEmpty.addProperty("tag", tag);
-            forgeNot.add("value", fluidTagNotEmpty);
-            return forgeNot;
+            neoforgeNot.add("value", fluidTagNotEmpty);
+            return neoforgeNot;
         }
 
         @Override
         public void serializeRecipeData(@NotNull JsonObject json) {
             JsonArray inputJson = new JsonArray();
             JsonObject modLoaded = new JsonObject();
-            modLoaded.addProperty("type", "forge:mod_loaded");
+            modLoaded.addProperty("type", "neoforge:mod_loaded");
             modLoaded.addProperty("modid", "tconstruct");
             JsonArray conditions = new JsonArray();
             conditions.add(modLoaded);
 
-            json.add("conditions", conditions);
+            json.add("neoforge:conditions", conditions);
 
             if(cast) {
                 JsonObject castTag = new JsonObject();
@@ -157,16 +155,16 @@ public class TConstructRecipeBuilder extends RecipeBuilder<TConstructRecipeBuild
                 json.add("cast", castTag);
             }
             if(!inputItems.isEmpty()) {
-                for(Ingredient in: inputItems) {
-                    json.add("ingredient", serializeIngredient(in));
+                for(NcIngredient in: inputItems) {
+                    json.add("ingredient", serializeIngredient(in.asIngredient()));
                     break;
                 }
             }
 
 
             if(!outputItems.isEmpty()) {
-                for (Ingredient out: outputItems) {
-                    json.add("result", serializeIngredient(out));
+                for (NcIngredient out: outputItems) {
+                    json.add("result", serializeIngredient(out.asIngredient()));
                     break;
                 }
             }

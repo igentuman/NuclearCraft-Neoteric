@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
 
 import static igentuman.nc.NuclearCraft.rl;
@@ -59,15 +60,13 @@ public class WastelandBossRenderer extends MobRenderer<EntityWastelandBoss, Mode
                 float glowIntensity = 0.5F + 0.5F * (float) Math.sin((entitylivingbaseIn.tickCount + partialTicks) * 0.1F);
                 int glowLight = 15728880; // Full bright (15 << 20 | 15 << 4)
 
+                int color = FastColor.ARGB32.color(255, (int)(1.0F * 255), (int)(glowIntensity * 255), (int)(glowIntensity * 255));
                 model.renderToBuffer(
                     matrixStackIn,
                     bufferIn.getBuffer(RenderType.eyes(BOSS_GLOW_TEXTURE)), // Use eyes render type for glow effect
                     glowLight,
                     packedLightIn,
-                    1.0F,
-                    glowIntensity,
-                    glowIntensity,
-                    1.0F
+                    color
                 );
             }
         }

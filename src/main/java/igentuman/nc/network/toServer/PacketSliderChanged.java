@@ -1,13 +1,21 @@
 package igentuman.nc.network.toServer;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class PacketSliderChanged implements INcPacket {
+public class PacketSliderChanged implements CustomPacketPayload {
+
+    public static final CustomPacketPayload.Type<PacketSliderChanged> TYPE =
+        new CustomPacketPayload.Type<>(NuclearCraft.rl("slider_changed"));
+
+    public static final StreamCodec<FriendlyByteBuf, PacketSliderChanged> STREAM_CODEC =
+        StreamCodec.of((buf, pkt) -> pkt.encode(buf), PacketSliderChanged::decode);
 
     private BlockPos tilePosition;
     private int ratio;
@@ -24,8 +32,14 @@ public class PacketSliderChanged implements INcPacket {
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
-        ServerPlayer player = context.getSender();
+    public Type<? extends CustomPacketPayload> type() { return TYPE; }
+
+    public static void handle(PacketSliderChanged packet, IPayloadContext context) {
+        context.enqueueWork(() -> packet.handlePacket(context));
+    }
+
+    private void handlePacket(IPayloadContext context) {
+        ServerPlayer player = (ServerPlayer) context.player();
         if (player == null) {
             return;
         }
@@ -36,7 +50,6 @@ public class PacketSliderChanged implements INcPacket {
         }
     }
 
-    @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(tilePosition);
         buffer.writeInt(ratio);

@@ -1,5 +1,6 @@
 package igentuman.nc.block.kugelblitz;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.kugelblitz.entity.EXPLBE;
 import igentuman.nc.block.kugelblitz.entity.EXPLProxyBE;
 import igentuman.nc.container.EXPLContainer;
@@ -10,18 +11,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -35,7 +37,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -57,6 +59,11 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
                         .setValue(FACING, Direction.UP)
                         .setValue(ACTIVE, false)
         );
+    }
+
+    @Override
+    protected MapCodec<? extends DirectionalBlock> codec() {
+        return simpleCodec(EXPLBlock::new);
     }
 
     @Override
@@ -240,9 +247,9 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result) {
         if (!level.isClientSide()) {
-            BlockEntity be = level.getExistingBlockEntity(pos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(level, pos);
             if (be instanceof EXPLProxyBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
@@ -255,7 +262,7 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
                         return new EXPLContainer(windowId, pos, playerInventory);
                     }
                 };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+                ((ServerPlayer) player).openMenu(containerProvider, be.getBlockPos());
             }
         }
         return InteractionResult.SUCCESS;
@@ -280,7 +287,7 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get()).withStyle(ChatFormatting.GOLD));

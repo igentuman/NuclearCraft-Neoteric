@@ -72,7 +72,6 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
 
         BakedModel center = blockRenderer.getBlockModel(blockstate.setValue(TurbineRotorBlock.ACTIVE, true));
 
-        pPoseStack.clear();
         pPoseStack.pushPose();
 
         long time = Util.getMillis();

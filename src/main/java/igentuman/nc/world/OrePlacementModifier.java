@@ -1,6 +1,7 @@
 package igentuman.nc.world;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import igentuman.nc.setup.registration.WorldGeneration;
 import igentuman.nc.world.dimension.Dimensions;
 import net.minecraft.core.BlockPos;
@@ -23,9 +24,8 @@ import static net.minecraft.core.registries.Registries.DIMENSION;
 
 public class OrePlacementModifier extends PlacementModifier {
 
-    public static final Codec<OrePlacementModifier> CODEC = Codec.STRING.fieldOf("name")
-            .xmap(OrePlacementModifier::new, (modifier) -> modifier.name)
-            .codec();
+    public static final MapCodec<OrePlacementModifier> CODEC = Codec.STRING.fieldOf("name")
+            .xmap(OrePlacementModifier::new, (modifier) -> modifier.name);
 
     private final String name;
     private boolean register;

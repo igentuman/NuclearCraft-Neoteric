@@ -1,5 +1,7 @@
 package igentuman.nc.block.fusion.entity;
 
+import igentuman.api.platform.NCItemStacks;
+import igentuman.api.platform.NCLevels;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
@@ -13,23 +15,19 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
-import static igentuman.nc.compat.gregtech.GTUtils.*;
-import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.transferEU;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY_BE;
-import static igentuman.nc.util.ModUtil.*;
 
 public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttachable<FusionReactorMultiblock, FusionCoreBE> {
 
@@ -65,14 +63,14 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
             if(!level.isLoaded(core.getBlockPos())) {
                 return;
             }
-            core = (FusionCoreBE) level.getExistingBlockEntity(core.getBlockPos());
+            core = (FusionCoreBE) NCLevels.getExistingBlockEntity(level, core.getBlockPos());
             if(core == null) {
                 core = (FusionCoreBE) level.getBlockEntity(core.getBlockPos());
             }
             corePos = core.getBlockPos();
         } else {
             if(corePos == null) return;
-            core = (FusionCoreBE) level.getExistingBlockEntity(corePos);
+            core = (FusionCoreBE) NCLevels.getExistingBlockEntity(level, corePos);
             if(core == null) {
                 core = (FusionCoreBE) level.getBlockEntity(corePos);
             }
@@ -112,10 +110,10 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
         ) return null;
 
         if(getLevel().isClientSide() && corePos != null) {
-            return (FusionCoreBE) getLevel().getExistingBlockEntity(corePos);
+            return (FusionCoreBE) NCLevels.getExistingBlockEntity(getLevel(), corePos);
         }
         if(core == null && corePos != null) {
-            core = (FusionCoreBE) getLevel().getExistingBlockEntity(corePos);
+            core = (FusionCoreBE) NCLevels.getExistingBlockEntity(getLevel(), corePos);
         }
         return core;
     }
@@ -147,7 +145,7 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
             if(st.equals(Blocks.AIR.defaultBlockState())) return;
 
             ItemStack core = new ItemStack(st.getBlock().asItem());
-            core.getOrCreateTag().putInt("upgrade_tier", getCoreBE().upgrade_tier);
+            NCItemStacks.putInt(core, "upgrade_tier", getCoreBE().upgrade_tier);
 
             level.removeBlock(corePos, false);
             Block.popResource(level, corePos, core);
@@ -162,60 +160,6 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
         return corePos;
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(controller() == null) return super.getCapability(cap, side);
-        if(side == null || side.getAxis().isHorizontal()) {
-            return LazyOptional.empty();
-        }
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return LazyOptional.empty();
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return controller().getCapability(cap, side);
-        }
-        if(isGtLoaded()) {
-            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                if (isGTEUCapEnabled()) {
-                    return getGTEnergy(controller(), side).cast();
-                }
-            }
-        }
-        if (cap == ForgeCapabilities.ENERGY) {
-            if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
-                return LazyOptional.empty();
-            }
-            return controller().getCapability(cap, side);
-        }
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return controller().getPeripheral(cap, side);
-            }
-        }
-
-        if(isOC2Loaded()) {
-            if(cap == DEVICE_CAPABILITY) {
-                return controller().getOCDevice(cap, side);
-            }
-        }
-
-        if(isMekanismLoaded()) {
-            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
-                if(controller().contentHandler().hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> controller().contentHandler().gasConverter(side));
-                }
-                return LazyOptional.empty();
-            }
-            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
-                if(controller().contentHandler().hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> controller().contentHandler().getSlurryConverter(side));
-                }
-                return LazyOptional.empty();
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
     @Override
     public boolean canInvalidateCache()
@@ -227,7 +171,7 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
         int required = getCoreBE().rfAmplifiersPower + getCoreBE().magnetsPower;
         for(Direction side: List.of(Direction.UP, Direction.DOWN)) {
             if(getCoreBE().energyStorage().getEnergyStored() > required) {
-                BlockEntity be = getLevel().getExistingBlockEntity(getBlockPos().relative(side));
+                BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), getBlockPos().relative(side));
                 if(!(be instanceof BlockEntity) || (be instanceof FusionCoreProxyBE) || (be instanceof FusionCoreBE)) {
                     continue;
                 }
@@ -240,7 +184,7 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
                     return;
                 }
 
-                IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, side.getOpposite()).orElse(null);
+                IEnergyStorage r = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(side), side.getOpposite());
                 if(r == null || getCoreBE() == null) continue;
                 int extracted = wasEnergy - getCoreBE().energyStorage().getEnergyStored();
                 if(extracted >= controller().energyStorage().getMaxExtract()) {

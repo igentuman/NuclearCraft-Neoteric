@@ -5,7 +5,7 @@ import igentuman.nc.setup.registration.WorldGeneration;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -39,14 +39,14 @@ public class NCSurfaceRuleData {
 
     public static final ResourceKey<NoiseGeneratorSettings> CUSTOM_OVERWORLD_NOISE_GEN = ResourceKey.create(Registries.NOISE_SETTINGS, rl("custom_overworld"));
 
-    public static void bootstrap(BootstapContext<NoiseGeneratorSettings> context) {
+    public static void bootstrap(BootstrapContext<NoiseGeneratorSettings> context) {
         context.register(CUSTOM_OVERWORLD_NOISE_GEN, makeCustomOverworldNoiseSettings(context));
     }
     
     /**
      * Creates a custom NoiseGeneratorSettings that inherits from OVERWORLD but overrides specific properties
      */
-    public static NoiseGeneratorSettings makeCustomOverworldNoiseSettings(BootstapContext<NoiseGeneratorSettings> context) {
+    public static NoiseGeneratorSettings makeCustomOverworldNoiseSettings(BootstrapContext<NoiseGeneratorSettings> context) {
         // Get the OVERWORLD NoiseGeneratorSettings
         HolderGetter<NoiseGeneratorSettings> noiseGenSettings = context.lookup(Registries.NOISE_SETTINGS);
         NoiseGeneratorSettings overworldSettings = NoiseGeneratorSettings.overworld(context, false, false);

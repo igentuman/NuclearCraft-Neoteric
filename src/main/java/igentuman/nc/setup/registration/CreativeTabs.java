@@ -11,7 +11,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.*;
 
@@ -36,21 +36,21 @@ import static igentuman.nc.util.TextUtils.__;
 
 public class CreativeTabs {
 
-    public static final RegistryObject<CreativeModeTab> FUSION_REACTOR_TAB = CREATIVE_TABS.register("fusion_reactor",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> FUSION_REACTOR_TAB = CREATIVE_TABS.register("fusion_reactor",
             () ->  CreativeModeTab.builder()
             .displayItems((displayParams, output) -> FUSION_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
             .icon(() -> new ItemStack(FUSION_BLOCKS.get("fusion_core").get()))
             .title(__("itemGroup.nuclearcraft_fusion_reactor"))
             .build());
 
-    public static final RegistryObject<CreativeModeTab> KUGELBLITZ_TAB = CREATIVE_TABS.register("kugelblitz",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> KUGELBLITZ_TAB = CREATIVE_TABS.register("kugelblitz",
             () ->  CreativeModeTab.builder()
                     .displayItems((displayParams, output) -> KUGELBLITZ_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
                     .icon(() -> new ItemStack(KUGELBLITZ_BLOCKS.get("chamber_terminal").get()))
                     .title(__("itemGroup.nuclearcraft_kugelblitz"))
                     .build());
 
-    public static final RegistryObject<CreativeModeTab> ACCELERATOR_TAB = CREATIVE_TABS.register("accelerator",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ACCELERATOR_TAB = CREATIVE_TABS.register("accelerator",
             () ->  CreativeModeTab.builder()
                     .displayItems((displayParams, output) -> acceleratorStuff().forEach(output::accept))
                     .icon(() -> new ItemStack(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()))
@@ -58,14 +58,14 @@ public class CreativeTabs {
                     .build());
 
 
-    public static final RegistryObject<CreativeModeTab> NC_BLOCKS_TAB = CREATIVE_TABS.register("nc_blocks",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> NC_BLOCKS_TAB = CREATIVE_TABS.register("nc_blocks",
             () ->  CreativeModeTab.builder()
             .icon(() -> new ItemStack(getSingleBlockByTagKey("forge:storage_blocks/uranium")))
             .displayItems((displayParams, output) -> getBlocks().forEach(output::accept))
             .title(__("itemGroup.nuclearcraft_blocks"))
             .build());
 
-    public static final RegistryObject<CreativeModeTab> NC_ITEMS_TAB = CREATIVE_TABS.register("nc_items",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> NC_ITEMS_TAB = CREATIVE_TABS.register("nc_items",
             () ->  CreativeModeTab.builder()
                     .icon(() -> new ItemStack(getItemsByTagKey("forge:ingots/uranium").get(0)))
                     .displayItems((displayParams, output) -> getItems().forEach(output::accept))
@@ -73,51 +73,51 @@ public class CreativeTabs {
                     .build()
     );
 
-    public static final RegistryObject<CreativeModeTab> NC_PARTS_TAB = CREATIVE_TABS.register("nc_parts",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> NC_PARTS_TAB = CREATIVE_TABS.register("nc_parts",
             () ->  CreativeModeTab.builder()
                     .icon(() -> new ItemStack(NC_PARTS.get("actuator").get()))
                     .displayItems((displayParams, output) -> NC_PARTS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
                     .title(__("itemGroup.nuclearcraft_items"))
                     .build());
 
-    public static final RegistryObject<CreativeModeTab> FISSION_REACTOR_TAB = CREATIVE_TABS.register("fission_reactor",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> FISSION_REACTOR_TAB = CREATIVE_TABS.register("fission_reactor",
             () -> CreativeModeTab.builder()
                     .icon(() -> new ItemStack(FISSION_BLOCKS.get("fission_reactor_controller").get()))
                     .displayItems((displayParams, output) -> FISSION_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
                     .title(__("itemGroup.nuclearcraft_fission_reactor"))
                     .build());
 
-    public static final RegistryObject<CreativeModeTab> TURBINE_TAB = CREATIVE_TABS.register("turbine",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TURBINE_TAB = CREATIVE_TABS.register("turbine",
             () -> CreativeModeTab.builder()
                     .icon(() -> new ItemStack(TURBINE_BLOCKS.get("turbine_controller").get()))
                     .displayItems((displayParams, output) -> TURBINE_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
                     .title(__("itemGroup.nuclearcraft_turbine"))
                     .build());
 
-    public static final RegistryObject<CreativeModeTab> NC_FLUIDS = CREATIVE_TABS.register("nc_fluids",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> NC_FLUIDS = CREATIVE_TABS.register("nc_fluids",
             () -> CreativeModeTab.builder()
                     .icon(() -> new ItemStack(ALL_BUCKETS.get(0).get()))
                     .displayItems((displayParams, output) -> ALL_BUCKETS.forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
                     .title(__("itemGroup.nuclearcraft_fluids"))
                     .build());
 
-    private static List<ItemStack> itemStacks(Collection<RegistryObject<Item>> map) {
+    private static List<ItemStack> itemStacks(Collection<DeferredHolder<Item, Item>> map) {
         List<ItemStack> stacks = new ArrayList<>();
-        for(RegistryObject<Item> item: map) {
+        for(DeferredHolder<Item, Item> item: map) {
             stacks.add(new ItemStack(item.get()));
         }
         return stacks;
     }
 
-    private static List<ItemStack> blockStacks(Collection<RegistryObject<Block>> map) {
+    private static List<ItemStack> blockStacks(Collection<DeferredHolder<Block, Block>> map) {
         List<ItemStack> stacks = new ArrayList<>();
-        for(RegistryObject<Block> item: map) {
+        for(DeferredHolder<Block, Block> item: map) {
             stacks.add(new ItemStack(item.get()));
         }
         return stacks;
     }
 
-    private static List<ItemStack> onlyEnabledItems(String type, HashMap<String, RegistryObject<Item>> items)
+    private static List<ItemStack> onlyEnabledItems(String type, HashMap<String, DeferredHolder<Item, Item>> items)
     {
         List<ItemStack> itemsList = new ArrayList<>();
         Set<String> enabled = Materials.registeredOf(type);
@@ -129,7 +129,7 @@ public class CreativeTabs {
         return itemsList;
     }
 
-    private static List<ItemStack> onlyEnabledBlocks(HashMap<String, RegistryObject<Block>> block)
+    private static List<ItemStack> onlyEnabledBlocks(HashMap<String, DeferredHolder<Block, Block>> block)
     {
         List<ItemStack> itemsList = new ArrayList<>();
         Set<String> enabled = Materials.registeredOf("block");
@@ -185,13 +185,13 @@ public class CreativeTabs {
 
     private static List<ItemStack> acceleratorStuff() {
         List<ItemStack> items = new ArrayList<>();
-        for(RegistryObject<Block> block: ACCELERATOR_BLOCKS.values()) {
+        for(DeferredHolder<Block, Block> block: ACCELERATOR_BLOCKS.values()) {
             items.add(new ItemStack(block.get()));
         }
-        for(RegistryObject<Block> block: TARGET_CHAMBER_BLOCKS.values()) {
+        for(DeferredHolder<Block, Block> block: TARGET_CHAMBER_BLOCKS.values()) {
             items.add(new ItemStack(block.get()));
         }
-        for(RegistryObject<Item> item: ION_SOURCES.values()) {
+        for(DeferredHolder<Item, Item> item: ION_SOURCES.values()) {
             items.add(new ItemStack(item.get()));
         }
         return items;
@@ -213,7 +213,7 @@ public class CreativeTabs {
         items.add(new ItemStack(EXPL_BLOCK.get()));
         items.addAll(blockStacks(NC_ELECTROMAGNETS.values()));
         items.addAll(blockStacks(NC_RF_AMPLIFIERS.values()));
-        for(RegistryObject<Block> block: ENERGY_BLOCKS.values()) {
+        for(DeferredHolder<Block, Block> block: ENERGY_BLOCKS.values()) {
             if(block.get() instanceof SolarPanelBlock solarPanel) {
                 if(solarPanel.registered()) {
                     items.add(new ItemStack(solarPanel));
@@ -241,7 +241,7 @@ public class CreativeTabs {
             }
         }
         items.addAll(onlyEnabledBlocks(NC_MATERIAL_BLOCKS));
-        for(RegistryObject<Block> block: STORAGE_BLOCKS.values()) {
+        for(DeferredHolder<Block, Block> block: STORAGE_BLOCKS.values()) {
             if(block.get() instanceof ContainerBlock containerBlock) {
                 if(containerBlock.registered()) {
                     items.add(new ItemStack(containerBlock));

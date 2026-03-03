@@ -4,7 +4,7 @@ import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.compat.jei.ingredient.ParticleType;
 import igentuman.nc.util.Units;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -33,7 +33,7 @@ import static net.minecraft.world.item.Items.BARRIER;
 @SuppressWarnings("removal")
 public class TargetChamberCategoryWrapper<T extends TargetChamberControllerBE.Recipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
-            new ResourceLocation(MODID, "textures/gui/accelerators/target_chamber_controller.png");
+            ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/accelerators/target_chamber_controller.png");
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -92,14 +92,14 @@ public class TargetChamberCategoryWrapper<T extends TargetChamberControllerBE.Re
 
         if(recipe.getInputFluids().length > 0) {
             builder.addSlot(RecipeIngredientRole.INPUT, 43, 45)
-                    .addIngredients(ForgeTypes.FLUID_STACK, recipe.getInputFluids(0))
+                    .addIngredients(NeoForgeTypes.FLUID_STACK, recipe.getInputFluids(0))
                     .setFluidRenderer(recipe.getInputFluids()[0].getAmount(), false, 16, 16);
             guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
         }
 
         if(!recipe.getOutputFluids().isEmpty()) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, 101, 45)
-                    .addIngredients(ForgeTypes.FLUID_STACK, recipe.getOutputFluids(0))
+                    .addIngredients(NeoForgeTypes.FLUID_STACK, recipe.getOutputFluids(0))
                     .setFluidRenderer(recipe.getOutputFluids().get(0).getAmount(), false, 16, 16);
             guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
         }

@@ -16,23 +16,23 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.HashMap;
 
 import static igentuman.nc.setup.registration.Registries.*;
 
 public class NCStorageBlocks {
-    public static HashMap<String, RegistryObject<Block>> STORAGE_BLOCKS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> BLOCK_ITEMS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Block, Block>> STORAGE_BLOCKS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> BLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties();
     public static final BlockBehaviour.Properties BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops().noOcclusion();
-    public static HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> STORAGE_BE = new HashMap<>();
-    public static final RegistryObject<MenuType<StorageContainerContainer<?>>> STORAGE_CONTAINER = CONTAINERS.register("storage_container",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new StorageContainerContainer<>(windowId, data.readBlockPos(), inv)));
-    public static final RegistryObject<MenuType<StorageContainerItemContainer<?>>> STORAGE_ITEM_CONTAINER = CONTAINERS.register("storage_item_container",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new StorageContainerItemContainer<>(windowId, data.readBlockPos(), inv, data.readInt())));
+    public static HashMap<String, DeferredHolder<BlockEntityType<?>, BlockEntityType<? extends BlockEntity>>> STORAGE_BE = new HashMap<>();
+    public static final DeferredHolder<MenuType<?>, MenuType<StorageContainerContainer<?>>> STORAGE_CONTAINER = CONTAINERS.register("storage_container",
+            () -> IMenuTypeExtension.create((windowId, inv, data) -> new StorageContainerContainer<>(windowId, data.readBlockPos(), inv)));
+    public static final DeferredHolder<MenuType<?>, MenuType<StorageContainerItemContainer<?>>> STORAGE_ITEM_CONTAINER = CONTAINERS.register("storage_item_container",
+            () -> IMenuTypeExtension.create((windowId, inv, data) -> new StorageContainerItemContainer<>(windowId, data.readBlockPos(), inv, data.readInt())));
     public static void init() {
         registerBlocks();
         registerBlockEntities();
@@ -71,15 +71,15 @@ public class NCStorageBlocks {
         }
     }
 
-    public static <B extends Block> RegistryObject<Item> fromBarrelBlock(RegistryObject<B> block) {
+    public static <B extends Block> DeferredHolder<Item, Item> fromBarrelBlock(DeferredHolder<B, B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BarrelBlockItem(block.get(), ITEM_PROPERTIES));
     }
 
-    public static <B extends Block> RegistryObject<Item> fromContainerBlock(RegistryObject<B> block) {
+    public static <B extends Block> DeferredHolder<Item, Item> fromContainerBlock(DeferredHolder<B, B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new ContainerBlockItem(block.get(), ITEM_PROPERTIES));
     }
 
-    public static <B extends Block> RegistryObject<Item> fromBlock(RegistryObject<B> block) {
+    public static <B extends Block> DeferredHolder<Item, Item> fromBlock(DeferredHolder<B, B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ITEM_PROPERTIES));
     }
 

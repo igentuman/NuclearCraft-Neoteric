@@ -1,6 +1,6 @@
 package igentuman.nc.handler.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,9 +12,9 @@ public class ClientConfig {
     {
         return new ArrayList<>(vals);
     }
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final MiscConfig MISC_CONFIG = new MiscConfig(BUILDER);
-    public static final ForgeConfigSpec spec = BUILDER.build();
+    public static final ModConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
 
@@ -36,9 +36,9 @@ public class ClientConfig {
     }
 
     public static class MiscConfig {
-        public final ForgeConfigSpec.ConfigValue<Boolean> HIDE_PARTICLES;
+        public final ModConfigSpec.ConfigValue<Boolean> HIDE_PARTICLES;
 
-        public MiscConfig(ForgeConfigSpec.Builder builder) {
+        public MiscConfig(ModConfigSpec.Builder builder) {
             builder.push("Misc");
 
             HIDE_PARTICLES = builder

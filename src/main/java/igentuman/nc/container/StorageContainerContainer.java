@@ -7,9 +7,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
 
@@ -26,7 +26,7 @@ public class StorageContainerContainer<T extends AbstractContainerMenu> extends 
       this.playerEntity = pPlayerInventory.player;
       this.playerInventory = new InvWrapper(pPlayerInventory);
        assert blockEntity != null;
-       this.containerInventory = blockEntity.getItemHandler().orElse(null);
+       this.containerInventory = blockEntity.inventory;
        int idx = 0;
       int i = getRows();
       int j = getColls();

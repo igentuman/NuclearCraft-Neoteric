@@ -1,16 +1,15 @@
 package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
 
 public class KugelblitzRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         KugelblitzRecipes.consumer = consumer;
         ID = "kugelblitz_chamber";
         List<String> items = List.of(

@@ -26,7 +26,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.lwjgl.glfw.GLFW;
@@ -40,7 +40,7 @@ import static igentuman.nc.util.TextUtils.__;
 
 @SuppressWarnings("removal")
 public class MultiblockStructureCategory implements IRecipeCategory<MultiblockStructureRecipe> {
-    public static final ResourceLocation UID = new ResourceLocation(MODID, "multiblock_structure");
+    public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(MODID, "multiblock_structure");
     public static final RecipeType<MultiblockStructureRecipe> TYPE = RecipeType.create(MODID, "multiblock_structure", MultiblockStructureRecipe.class);
     private boolean isMouseDragging = false;
     private double lastMouseX = 0;

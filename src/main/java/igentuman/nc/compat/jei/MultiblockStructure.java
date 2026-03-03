@@ -7,14 +7,14 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static igentuman.nc.util.NcUtils.rlFromString;
-import static net.minecraft.world.level.block.state.StateHolder.PROPERTIES_TAG;
 
 public class MultiblockStructure {
     private final Map<BlockPos, BlockState> blocks = new HashMap<>();
@@ -38,13 +38,13 @@ public class MultiblockStructure {
                         
                         BlockPos pos = new BlockPos(x, y, z);
                         String blockId = state.getString("Name");
-                        Block block = ForgeRegistries.BLOCKS.getValue(rlFromString(blockId));
+                        Block block = BuiltInRegistries.BLOCK.get(rlFromString(blockId));
                         
                         if (block != null) {
                             BlockState bs = block.defaultBlockState();
                             
                             // Handle block state properties if they exist
-                            if (state.contains(PROPERTIES_TAG, Tag.TAG_COMPOUND)) {
+                            if (state.contains("Properties", Tag.TAG_COMPOUND)) {
                                 CompoundTag properties = state.getCompound("Properties");
                                 for(String pKey: state.getCompound("Properties").getAllKeys()) {
                                     for (net.minecraft.world.level.block.state.properties.Property<?> property : bs.getProperties()) {

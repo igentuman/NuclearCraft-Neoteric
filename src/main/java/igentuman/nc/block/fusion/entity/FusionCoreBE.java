@@ -5,8 +5,6 @@ import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.fusion.FusionCoreBlock;
 import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.client.sound.SoundHandler;
-import igentuman.nc.compat.cc.FusionReactorPeripheral;
-import igentuman.nc.compat.oc2.FusionReactorDevice;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.multiblock.MultiblockHandler;
@@ -22,7 +20,7 @@ import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,29 +31,21 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
-import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
-import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
-import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE;
 import static igentuman.nc.setup.registration.NCSounds.*;
-import static igentuman.nc.util.ModUtil.*;
-import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
+import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class FusionCoreBE extends MultiblockControllerBE {
 
@@ -117,10 +107,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
     protected double lastKnownOptimalTemp = 1000000;
 
     protected FusionCoolantRecipe coolantRecipe;
-    protected final LazyOptional<IEnergyStorage> energy;
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
-    protected LazyOptional<FusionReactorPeripheral> peripheralCap;
     protected List<FusionCoolantRecipe> coolantRecipes;
     public boolean controllerEnabled = false;
     public Recipe recipe;
@@ -137,7 +125,6 @@ public class FusionCoreBE extends MultiblockControllerBE {
                 .setOutputEnergyTier(getBaseGTEnergyTier())
                 .setInputAmperage(4)
                 .setOutputAmperage(16);
-        energy = LazyOptional.of(() -> energyStorage);
         contentHandler = new SidedContentHandler(
                 0, 0,
                 3, 5, 10, 50);
@@ -187,10 +174,6 @@ public class FusionCoreBE extends MultiblockControllerBE {
         return energyStorage;
     }
 
-    @Override
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
 
     private void initMultiblock() {
         if(multiblock == null) {
@@ -215,47 +198,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
         return coolantRecipes;
     }
 
-    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new FusionReactorPeripheral(this));
-        }
-        return peripheralCap.cast();
-    }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(isGtLoaded()) {
-            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                if (isGTEUCapEnabled()) {
-                    return getGTEnergy(this, side).cast();
-                }
-            }
-        }
-        if (cap == ForgeCapabilities.ENERGY) {
-            if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
-                return LazyOptional.empty();
-            }
-            return getEnergy().cast();
-        }
 
-        if(isOC2Loaded()) {
-            if(cap == DEVICE_CAPABILITY) {
-                return getOCDevice(cap, side);
-            }
-        }
-
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return getPeripheral(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
-
-    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
-        return LazyOptional.of(() -> FusionReactorDevice.createDevice(this)).cast();
-    }
 
     public void updateAnalogSignal() {
         switch (redstoneMode) {
@@ -504,7 +448,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
         }
         BlockEntity be = Objects.requireNonNull(getLevel()).getBlockEntity(getBlockPos().relative(Direction.DOWN));
         if(be instanceof BlockEntity && !(be instanceof FusionCoreProxyBE) && !(be instanceof FusionCoreBE)) {
-            IEnergyStorage r = be.getCapability(ForgeCapabilities.ENERGY, Direction.UP).orElse(null);
+            IEnergyStorage r = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(Direction.DOWN), Direction.UP);
             if(r == null) return;
             if(r.canReceive()) {
                 int received = r.receiveEnergy(energyStorage().getEnergyStored() - rfAmplifiersPower - magnetsPower, false);
@@ -915,8 +859,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
     }
 
     public static class Recipe extends NcRecipe {
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double temperature) {
-            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, radiation, temperature);
+        public Recipe(String codeId, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double radiation, double temperature) {
+            super(codeId, input, output, inputFluids, outputFluids, timeModifier, powerModifier, radiation, temperature);
         }
 
         @Override
@@ -942,7 +886,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(RegistryFriendlyByteBuf buffer) {
             super.write(buffer);
             buffer.writeDouble(getOptimalTemperature());
         }
@@ -960,8 +904,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
     public static class FusionCoolantRecipe extends NcRecipe {
         protected double coolingRate;
 
-        public FusionCoolantRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double temperature, double powerModifier, double radiation, double rar) {
-            super(id, input, output, inputFluids, outputFluids, temperature, powerModifier, radiation, rar);
+        public FusionCoolantRecipe(String codeId, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double temperature, double powerModifier, double radiation, double rar) {
+            super(codeId, input, output, inputFluids, outputFluids, temperature, powerModifier, radiation, rar);
             coolingRate = temperature;
         }
 

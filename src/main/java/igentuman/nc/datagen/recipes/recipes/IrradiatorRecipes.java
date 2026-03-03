@@ -3,12 +3,11 @@ package igentuman.nc.datagen.recipes.recipes;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.Tags;
+import igentuman.api.platform.NCTagFactory;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 import static igentuman.nc.setup.registration.NCBlocks.WASTELAND_EARTH;
@@ -18,7 +17,7 @@ import static net.minecraft.world.level.block.Blocks.*;
 
 public class IrradiatorRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         IrradiatorRecipes.consumer = consumer;
         ID = Processors.IRRADIATOR;
 
@@ -28,7 +27,7 @@ public class IrradiatorRecipes extends AbstractRecipeProvider {
                 List.of(ingredient(Item.byBlock(NETHERRACK))),
                 List.of(fluidIngredient("redstone", MOLTEN_INGOT/2)),
                 List.of(), 0.5D);
-        itemToItem(ingredient(Tags.Items.SAND, 1), NcIngredient.stack(stack(GLOWSTONE, 1)), 3D);
+        itemToItem(ingredient(NCTagFactory.sands(), 1), NcIngredient.stack(stack(GLOWSTONE, 1)), 3D);
         itemToItem(ingredient(COARSE_DIRT, 1), NcIngredient.stack(stack(WASTELAND_EARTH.get(), 1)), 3D);
         itemToItem(ingredient(NC_PARTS.get("silicon_wafer").get(), 1), NcIngredient.stack(stack(NC_PARTS.get("silicon_n_doped").get(), 1)), 0.75D);
         itemToItem(dustIngredient(Materials.tbp), dustIngredient(Materials.protactinium_233), 2.5D);

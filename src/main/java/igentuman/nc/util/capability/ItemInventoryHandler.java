@@ -1,13 +1,15 @@
 package igentuman.nc.util.capability;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
+import igentuman.api.platform.NCItemStacks;
+import igentuman.api.platform.NCSerialization;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -66,11 +68,11 @@ public class ItemInventoryHandler implements IItemHandlerModifiable, INBTSeriali
             }
         } else {
             if (!simulate) {
-                this.stacks.set(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.getCount() - toExtract));
+                this.stacks.set(slot, NCItemStacks.copyWithCount(existing, existing.getCount() - toExtract));
                // onContentsChanged(slot);
             }
 
-            return ItemHandlerHelper.copyStackWithSize(existing, toExtract);
+            return NCItemStacks.copyWithCount(existing, toExtract);
         }
     }
 
@@ -87,7 +89,7 @@ public class ItemInventoryHandler implements IItemHandlerModifiable, INBTSeriali
         int limit = getSlotLimit(slot);
 
         if (!existing.isEmpty()) {
-            if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
+            if (!NCItemStacks.canStack(stack, existing))
                 return stack;
 
             limit -= existing.getCount();
@@ -100,13 +102,13 @@ public class ItemInventoryHandler implements IItemHandlerModifiable, INBTSeriali
 
         if (!simulate) {
             if (existing.isEmpty()) {
-                this.stacks.set(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+                this.stacks.set(slot, reachedLimit ? NCItemStacks.copyWithCount(stack, limit) : stack);
             } else {
                 existing.grow(reachedLimit ? limit : stack.getCount());
             }
         }
 
-        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
+        return reachedLimit ? NCItemStacks.copyWithCount(stack, stack.getCount() - limit) : ItemStack.EMPTY;
     }
 
     @Override
@@ -137,21 +139,19 @@ public class ItemInventoryHandler implements IItemHandlerModifiable, INBTSeriali
      * @param compoundTag The NBT tag to save to
      * @return The NBT tag with the ItemStack data
      */
-    private CompoundTag saveItemStackWithLargeCount(ItemStack stack, CompoundTag compoundTag) {
-        CompoundTag saveTag = stack.save(compoundTag);
+    private CompoundTag saveItemStackWithLargeCount(ItemStack stack, HolderLookup.Provider provider) {
+        CompoundTag saveTag = (CompoundTag) NCSerialization.saveItemStack(stack, provider);
         saveTag.putInt("RealCount", stack.getCount());
         return saveTag;
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         ListTag nbtTagList = new ListTag();
         for (int i = 0; i < stacks.size(); i++) {
             if (!stacks.get(i).isEmpty()) {
-                CompoundTag itemTag = new CompoundTag();
+                CompoundTag itemTag = saveItemStackWithLargeCount(stacks.get(i), provider);
                 itemTag.putInt("Slot", i);
-                // Use custom save method to support large stack counts
-                saveItemStackWithLargeCount(stacks.get(i), itemTag);
                 nbtTagList.add(itemTag);
             }
         }
@@ -166,12 +166,12 @@ public class ItemInventoryHandler implements IItemHandlerModifiable, INBTSeriali
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         // Clear existing stacks first
         for (int i = 0; i < stacks.size(); i++) {
             stacks.set(i, ItemStack.EMPTY);
         }
-        
+
         // Load items from NBT
         ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
         for (int i = 0; i < tagList.size(); i++) {
@@ -180,13 +180,11 @@ public class ItemInventoryHandler implements IItemHandlerModifiable, INBTSeriali
 
             if (slot >= 0 && slot < stacks.size()) {
                 // Load ItemStack preserving large stack counts
-                // First create the stack normally
-                ItemStack stack = ItemStack.of(itemTags);
-                
+                ItemStack stack = NCSerialization.loadItemStack(provider, itemTags);
+
                 // Then force the count to the original value if it was larger than the item's max stack size
                 if (itemTags.contains("RealCount")) {
                     int originalCount = itemTags.getInt("RealCount");
-                    // Always set the count to the original value, bypassing any validation
                     stack.setCount(originalCount);
                 }
                 stacks.set(slot, stack);

@@ -6,11 +6,11 @@ import igentuman.nc.block.entity.processor.*;
 import igentuman.nc.container.LeacherContainer;
 import igentuman.nc.util.annotation.NCProcessorsRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.forgespi.language.ModFileScanData;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
 
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ public class Processors {
                             .withCatalyst()
                             .build()
             );
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ()-> Processors.setScreen(LEACHER, LeacherScreen::new));
+            if (FMLEnvironment.dist == Dist.CLIENT) { Processors.setScreen(LEACHER, LeacherScreen::new); }
 
             all.put(PUMP,
                     ProcessorBuilder

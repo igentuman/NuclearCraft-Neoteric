@@ -4,16 +4,17 @@ import igentuman.nc.client.model.ModelFeralGhoul;
 import igentuman.nc.client.model.ModelWastelandBoss;
 import igentuman.nc.client.renderer.FeralGhoulRenderer;
 import igentuman.nc.client.renderer.WastelandBossRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL;
 import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL_BOSS;
 
-@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class EntityRenderHandler {
 
     @SubscribeEvent

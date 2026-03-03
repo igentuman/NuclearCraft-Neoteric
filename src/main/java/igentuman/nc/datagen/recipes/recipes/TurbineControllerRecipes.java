@@ -2,14 +2,13 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class TurbineControllerRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         TurbineControllerRecipes.consumer = consumer;
         ID = TurbineControllerBE.NAME;
 

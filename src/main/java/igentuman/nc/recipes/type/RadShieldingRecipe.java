@@ -1,33 +1,33 @@
 package igentuman.nc.recipes.type;
 
+import igentuman.api.platform.NCItemStacks;
 import igentuman.nc.item.RadShieldingItem;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 
 @NothingNullByDefault
 public class RadShieldingRecipe extends CustomRecipe {
 
-    public RadShieldingRecipe(ResourceLocation id, CraftingBookCategory category) {
-        super(id, CraftingBookCategory.EQUIPMENT);
+    public RadShieldingRecipe(CraftingBookCategory category) {
+        super(CraftingBookCategory.EQUIPMENT);
     }
 
     @Override
-    public boolean matches(CraftingContainer inv, Level world) {
+    public boolean matches(CraftingInput inv, Level world) {
         ItemStack shielding = ItemStack.EMPTY;
         ItemStack armor = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getContainerSize(); ++i) {
+        for (int i = 0; i < inv.size(); ++i) {
             if(inv.getItem(i).getItem() instanceof RadShieldingItem) {
                 shielding = inv.getItem(i);
                 continue;
@@ -48,10 +48,10 @@ public class RadShieldingRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv, RegistryAccess access) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider access) {
         ItemStack shielding = ItemStack.EMPTY;
         ItemStack armor = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getContainerSize(); ++i) {
+        for (int i = 0; i < inv.size(); ++i) {
             if(inv.getItem(i).getItem() instanceof RadShieldingItem) {
                 shielding = inv.getItem(i);
                 continue;
@@ -70,7 +70,7 @@ public class RadShieldingRecipe extends CustomRecipe {
         }
         ItemStack result = armor.copy();
         result.setCount(1);
-        result.getOrCreateTag().putInt("rad_shielding", ((RadShieldingItem)shielding.getItem()).getRadiationShieldingLevel());
+        NCItemStacks.putInt(result, "rad_shielding", ((RadShieldingItem)shielding.getItem()).getRadiationShieldingLevel());
         return result;
     }
 

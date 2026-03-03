@@ -2,7 +2,7 @@ package igentuman.nc.datagen;
 
 import igentuman.nc.setup.registration.*;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 
 import java.util.List;
 

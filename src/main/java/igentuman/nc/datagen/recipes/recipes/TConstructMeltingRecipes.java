@@ -8,10 +8,9 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.registration.FissionFuel;
 import igentuman.nc.setup.registration.NCItems;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_NUGGET;
@@ -21,7 +20,7 @@ import static net.minecraft.world.item.Items.SUGAR;
 
 public class TConstructMeltingRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         TConstructMeltingRecipes.consumer = consumer;
         ID = "melting";
         for(String name: List.of("tough_alloy")) {

@@ -3,11 +3,10 @@ package igentuman.nc.datagen.recipes.recipes;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 import static igentuman.nc.setup.registration.Tags.forgeGem;
@@ -16,7 +15,7 @@ import static net.minecraft.world.item.Items.*;
 
 public class RockCrusherRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         RockCrusherRecipes.consumer = consumer;
         ID = Processors.ROCK_CRUSHER;
 

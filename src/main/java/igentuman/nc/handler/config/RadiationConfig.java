@@ -1,6 +1,6 @@
 package igentuman.nc.handler.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,9 +12,9 @@ public class RadiationConfig {
     {
         return new ArrayList<>(vals);
     }
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final RadiationConf RADIATION_CONFIG = new RadiationConf(BUILDER);
-    public static final ForgeConfigSpec spec = BUILDER.build();
+    public static final ModConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
 
@@ -36,18 +36,18 @@ public class RadiationConfig {
     }
 
     public static class RadiationConf {
-        public final ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
-        public final ForgeConfigSpec.ConfigValue<Integer> NATURAL_RADIATION;
-        public final ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED;
-        public final ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED_FOR_PLAYER;
-        public final ForgeConfigSpec.ConfigValue<Double> GAIN_SPEED_FOR_PLAYER;
-        public final ForgeConfigSpec.ConfigValue<List<String>> ITEM_RADIATION;
-        public final ForgeConfigSpec.ConfigValue<List<String>> RADIATION_REMOVAL_ITEMS;
-        public final ForgeConfigSpec.ConfigValue<List<String>> ARMOR_PROTECTION;
-        public final ForgeConfigSpec.ConfigValue<List<String>> BIOME_RADIATION;
-        public final ForgeConfigSpec.ConfigValue<List<String>> DIMENSION_RADIATION;
-        public final ForgeConfigSpec.ConfigValue<Integer> RADIATION_UPDATE_INTERVAL;
-        public final ForgeConfigSpec.ConfigValue<Boolean> MEKANISM_RADIATION_INTEGRATION;
+        public final ModConfigSpec.ConfigValue<Boolean> ENABLED;
+        public final ModConfigSpec.ConfigValue<Integer> NATURAL_RADIATION;
+        public final ModConfigSpec.ConfigValue<Integer> DECAY_SPEED;
+        public final ModConfigSpec.ConfigValue<Integer> DECAY_SPEED_FOR_PLAYER;
+        public final ModConfigSpec.ConfigValue<Double> GAIN_SPEED_FOR_PLAYER;
+        public final ModConfigSpec.ConfigValue<List<String>> ITEM_RADIATION;
+        public final ModConfigSpec.ConfigValue<List<String>> RADIATION_REMOVAL_ITEMS;
+        public final ModConfigSpec.ConfigValue<List<String>> ARMOR_PROTECTION;
+        public final ModConfigSpec.ConfigValue<List<String>> BIOME_RADIATION;
+        public final ModConfigSpec.ConfigValue<List<String>> DIMENSION_RADIATION;
+        public final ModConfigSpec.ConfigValue<Integer> RADIATION_UPDATE_INTERVAL;
+        public final ModConfigSpec.ConfigValue<Boolean> MEKANISM_RADIATION_INTEGRATION;
         protected HashMap<String, Integer> biomeRadiationMap;
         public int biomeRadiation(String id)
         {
@@ -86,7 +86,7 @@ public class RadiationConfig {
             return 0;
         }
 
-        public RadiationConf(ForgeConfigSpec.Builder builder) {
+        public RadiationConf(ModConfigSpec.Builder builder) {
             builder.comment("Settings for Radiation").push("radiation");
 
             ENABLED = builder

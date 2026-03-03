@@ -18,10 +18,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +44,7 @@ public final class NcUtils {
     private static final List<UUID> warnedFails = new ArrayList<>();
 
     public static ResourceLocation getName(ParticleType<?> element) {
-        return getName(ForgeRegistries.PARTICLE_TYPES, element);
+        return getName(BuiltInRegistries.PARTICLE_TYPE, element);
     }
 
     public static ResourceLocation rlFromString(String name) {
@@ -52,14 +52,14 @@ public final class NcUtils {
     }
 
     public static ResourceLocation getName(Item element) {
-        return getName(ForgeRegistries.ITEMS, element);
+        return getName(BuiltInRegistries.ITEM, element);
     }
 
     public static ResourceLocation getName(Fluid element) {
-        return getName(ForgeRegistries.FLUIDS, element);
+        return getName(BuiltInRegistries.FLUID, element);
     }
 
-    private static <T> ResourceLocation getName(IForgeRegistry<T> registry, T element) {
+    private static <T> ResourceLocation getName(Registry<T> registry, T element) {
         return registry.getKey(element);
     }
     public static String getPath(Item element) {
@@ -67,7 +67,7 @@ public final class NcUtils {
     }
 
     public static ResourceLocation getName(Block element) {
-        return getName(ForgeRegistries.BLOCKS, element);
+        return getName(BuiltInRegistries.BLOCK, element);
     }
 
     public static String getNamespace(Block element) {
@@ -75,7 +75,7 @@ public final class NcUtils {
     }
 
     public static ResourceLocation getName(MenuType<?> element) {
-        return getName(ForgeRegistries.MENU_TYPES, element);
+        return getName(BuiltInRegistries.MENU, element);
     }
     /**
      * Gets the creator's modid if it exists, or falls back to the registry name.
@@ -122,7 +122,7 @@ public final class NcUtils {
         Fluid fluid = stack.getFluid();
         String modid = "";
         try {
-            modid = ForgeRegistries.FLUIDS.getKey(fluid).getNamespace();
+            modid = BuiltInRegistries.FLUID.getKey(fluid).getNamespace();
         } catch (Exception e) {
             //todo find workaround
             return "";
@@ -202,7 +202,7 @@ public final class NcUtils {
         }
         return Collections.emptyList();
     }
-    public static List<HashMap<String, RegistryObject<Item>>> ALL_ITEMS = List.of(
+    public static List<HashMap<String, DeferredHolder<Item, Item>>> ALL_ITEMS = List.of(
             NC_ITEMS,
             NC_PARTS,
             NC_GEMS,
@@ -211,7 +211,7 @@ public final class NcUtils {
             NC_NUGGETS,
             ALL_NC_ITEMS
     );
-    public static List<HashMap<String, RegistryObject<Block>>> ALL_BLOCKS = List.of(
+    public static List<HashMap<String, DeferredHolder<Block, Block>>> ALL_BLOCKS = List.of(
             NC_BLOCKS,
             FISSION_BLOCKS,
             FUSION_BLOCKS,
@@ -222,7 +222,7 @@ public final class NcUtils {
     );
     public static Block getNCBlock(String name)
     {
-        for(HashMap<String, RegistryObject<Block>> map: ALL_BLOCKS) {
+        for(HashMap<String, DeferredHolder<Block, Block>> map: ALL_BLOCKS) {
             if(map.containsKey(name)) {
                 return map.get(name).get();
             }
@@ -237,7 +237,7 @@ public final class NcUtils {
 
     public static Item getNCItem(String name)
     {
-        for(HashMap<String, RegistryObject<Item>> map: ALL_ITEMS) {
+        for(HashMap<String, DeferredHolder<Item, Item>> map: ALL_ITEMS) {
             if(map.containsKey(name)) {
                 return map.get(name).get();
             }

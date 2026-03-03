@@ -2,7 +2,7 @@ package igentuman.nc.recipes.ingredient;
 
 import com.google.gson.JsonElement;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -66,7 +66,7 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @param buffer The buffer to write to.
      */
-    void write(FriendlyByteBuf buffer);
+    void write(RegistryFriendlyByteBuf buffer);
 
     /**
      * Serializes this ingredient to a JsonElement

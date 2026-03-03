@@ -1,22 +1,19 @@
 package igentuman.nc.item;
 
 import igentuman.nc.content.storage.BarrelBlocks;
-import igentuman.nc.util.capability.CapabilityUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -52,18 +49,13 @@ public class BarrelBlockItem extends BlockItem
 	}
 
 
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-		return new FluidHandlerItemStack(stack, getCapacity());
-	}
-
 	public int getCapacity() {
 		return BarrelBlocks.all().get(code()).config().getCapacity();
 	}
 
 	public IFluidHandlerItem getFluid(ItemStack stack)
 	{
-		return CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.FLUID_HANDLER_ITEM);
+		return stack.getCapability(Capabilities.FluidHandler.ITEM);
 	}
 
 	public String code()
@@ -72,7 +64,7 @@ public class BarrelBlockItem extends BlockItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
 	{
 		int storage = BarrelBlocks.all().get(code()).config().getCapacity() * 1000;
 		FluidStack fluid = getFluid(stack).getFluidInTank(0);

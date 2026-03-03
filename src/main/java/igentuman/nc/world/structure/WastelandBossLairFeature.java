@@ -12,7 +12,8 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.minecraftforge.registries.RegistryObject;
+import igentuman.api.platform.NCRegistration;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.NuclearCraft.rl;
@@ -20,10 +21,9 @@ import static igentuman.nc.setup.registration.Registries.FEATURE_REGISTER;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
 
 public class WastelandBossLairFeature extends Feature<NoneFeatureConfiguration> {
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> WASTELAND_BOSS_LAIR_FEATURE = FEATURE_REGISTER.register(
-            "wasteland_boss_lair",
-            () -> new WastelandBossLairFeature(NoneFeatureConfiguration.CODEC)
-    );
+    public static final DeferredHolder<Feature<?>, WastelandBossLairFeature> WASTELAND_BOSS_LAIR_FEATURE =
+            NCRegistration.registerFeature(FEATURE_REGISTER, "wasteland_boss_lair",
+                    () -> new WastelandBossLairFeature(NoneFeatureConfiguration.CODEC));
 
     public WastelandBossLairFeature(Codec<NoneFeatureConfiguration> codec) {
         super(codec);

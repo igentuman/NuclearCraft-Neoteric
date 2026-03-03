@@ -1,20 +1,20 @@
 package igentuman.nc.datagen.recipes.recipes;
 
+import igentuman.api.platform.NCItemStacks;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 
 public class OreVeinsRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         OreVeinsRecipes.consumer = consumer;
         ID = "nc_ore_veins";
 
@@ -118,7 +118,7 @@ public class OreVeinsRecipes extends AbstractRecipeProvider {
             ores.add(oreIngredient(material, materials.get(material)));
         }
         ItemStack paper = new ItemStack(NC_PARTS.get("research_paper").get(), 1);
-        paper.getOrCreateTag().putString("vein", "nc.ore_vein." + name);
+        NCItemStacks.putString(paper, "vein", "nc.ore_vein." + name);
         oreVein(ores, NcIngredient.stack(paper), name, modifiers);
     }
 }

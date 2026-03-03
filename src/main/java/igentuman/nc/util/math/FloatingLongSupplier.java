@@ -1,6 +1,5 @@
 package igentuman.nc.util.math;
 
-import net.minecraftforge.common.util.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
@@ -10,7 +9,7 @@ import java.util.function.Supplier;
  * easier to declare {@link Supplier}'s for {@link FloatingLong}s.
  */
 @FunctionalInterface
-public interface FloatingLongSupplier extends Supplier<FloatingLong>, NonNullSupplier<FloatingLong> {
+public interface FloatingLongSupplier extends Supplier<FloatingLong> {
 
     @NotNull
     @Override

@@ -1,5 +1,7 @@
 package igentuman.nc.block.storage;
 
+import igentuman.api.platform.NCItemStacks;
+import igentuman.api.platform.NCLevels;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.storage.entity.BatteryBE;
 import igentuman.nc.block.entity.energy.NCEnergy;
@@ -11,7 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +42,7 @@ public class BatteryBlock extends Block implements EntityBlock {
     }
 
     public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
-        BlockEntity blockEntity = pLevel.getExistingBlockEntity(pPos);
+        BlockEntity blockEntity = NCLevels.getExistingBlockEntity(pLevel, pPos);
         if (blockEntity instanceof BatteryBE batteryBE) {
             return (int) ((batteryBE.energyStorage.getEnergyStored()/(double)batteryBE.energyStorage.getMaxEnergyStored())*15);
         }
@@ -48,11 +50,11 @@ public class BatteryBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
-            BlockEntity be = level.getExistingBlockEntity(pos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(level, pos);
             if (be instanceof BatteryBE batteryBE)  {
-                if(isMultiTool(player.getItemInHand(hand))) {
+                if(isMultiTool(stack)) {
                     Direction dirToChange = result.getDirection();
                     if(player.isShiftKeyDown()) {
                         dirToChange = dirToChange.getOpposite();
@@ -64,13 +66,13 @@ public class BatteryBlock extends Block implements EntityBlock {
                 }
             }
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
-            BlockEntity blockEntity = pLevel.getExistingBlockEntity(pPos);
+            BlockEntity blockEntity = NCLevels.getExistingBlockEntity(pLevel, pPos);
             if (blockEntity instanceof BatteryBE) {
 
             }
@@ -110,10 +112,10 @@ public class BatteryBlock extends Block implements EntityBlock {
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
 
-        if (stack.hasTag()) {
-            BatteryBE tileEntity = (BatteryBE) world.getExistingBlockEntity(pos);
-            CompoundTag nbtData = stack.getTag();
-            tileEntity.load(nbtData);
+        if (NCItemStacks.hasCustomData(stack)) {
+            BatteryBE tileEntity = (BatteryBE) NCLevels.getExistingBlockEntity(world, pos);
+            CompoundTag nbtData = NCItemStacks.getTag(stack);
+            tileEntity.loadCustomOnly(nbtData, world.registryAccess());
         }
     }
 
@@ -122,10 +124,10 @@ public class BatteryBlock extends Block implements EntityBlock {
         pPlayer.awardStat(Stats.BLOCK_MINED.get(this));
         pPlayer.causeFoodExhaustion(0.005F);
         BatteryBE batteryBE = (BatteryBE) pBlockEntity;
-        CompoundTag data = batteryBE.getUpdateTag();
+        CompoundTag data = batteryBE.getUpdateTag(pLevel.registryAccess());
 
         ItemStack drop = new ItemStack(this);
-        drop.setTag(data);
+        NCItemStacks.setTag(drop, data);
         if (!pLevel.isClientSide()) {
             ItemEntity itemEntity = new ItemEntity(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), drop);
             itemEntity.setDefaultPickUpDelay();

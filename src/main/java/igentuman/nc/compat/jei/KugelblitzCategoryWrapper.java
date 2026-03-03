@@ -36,7 +36,7 @@ import static net.minecraft.world.item.Items.BARRIER;
 @SuppressWarnings("removal")
 public class KugelblitzCategoryWrapper<T extends ChamberTerminalBE.Recipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
-            new ResourceLocation(MODID, "textures/gui/fission/jei.png");
+            ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/fission/jei.png");
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -106,7 +106,7 @@ public class KugelblitzCategoryWrapper<T extends ChamberTerminalBE.Recipe> imple
         }
         for(int i = 0; i < recipe.getItemIngredients().size(); i++) {
             if(recipe.getResultItem().is(resolveStackByModPriority(recipe.getItemIngredients().get(i).getItems()).getItem())) {
-                builder.addSlot(RecipeIngredientRole.INPUT, 11+18*i, 7).addIngredients(NcIngredient.of(UNKNOWN_INGREDIENT.get()));
+                builder.addSlot(RecipeIngredientRole.INPUT, 11+18*i, 7).addIngredients(NcIngredient.of(UNKNOWN_INGREDIENT.get()).asIngredient());
             } else {
                 builder.addSlot(RecipeIngredientRole.INPUT, 11+18*i, 7).addIngredients(recipe.getItemIngredients().get(i));
             }

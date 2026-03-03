@@ -11,12 +11,11 @@ import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -118,9 +117,6 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         return contentHandler().itemHandler;
     }
 
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
 
     @Override
     public SidedContentHandler contentHandler() {
@@ -152,8 +148,8 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             if(infoTag.contains("erroredBlock")) {
@@ -193,8 +189,8 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.putInt("validationId", validationResult.id);
@@ -208,8 +204,8 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     }
 
     @Override
-    public void loadClientData(CompoundTag tag) {
-        super.loadClientData(tag);
+    public void loadClientData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadClientData(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             BlockPos tmp = BlockPos.ZERO;
@@ -225,8 +221,8 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     }
 
     @Override
-    protected void saveClientData(CompoundTag tag) {
-        super.saveClientData(tag);
+    protected void saveClientData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveClientData(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.putInt("validationId", validationResult.id);

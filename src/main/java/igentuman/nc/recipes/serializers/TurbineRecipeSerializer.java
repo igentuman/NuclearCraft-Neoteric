@@ -4,8 +4,7 @@ import com.google.gson.JsonObject;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,23 +17,23 @@ public class TurbineRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
     }
 
     @Override
-    public @NotNull RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
+    protected @NotNull RECIPE fromJson(@NotNull JsonObject json) {
 
-        FluidStackIngredient[] inputFluids = inputFluidsFromJson(json, recipeId);
-        FluidStackIngredient[] outputFluids = outputFluidsFromJson(json, recipeId);
+        FluidStackIngredient[] inputFluids = inputFluidsFromJson(json);
+        FluidStackIngredient[] outputFluids = outputFluidsFromJson(json);
 
         double heatRequired = 1D;
         try {
             heatRequired = GsonHelper.getAsDouble(json, "heatRequired", 1D);
         } catch (Exception ex) {
-            debugLog("Unable to parse params for recipe: "+recipeId);
+            debugLog("Unable to parse params for recipe type: " + getCodeId());
         }
-        return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStackIngredient[]{}, inputFluids, outputFluids, heatRequired, 1, 1, 1);
+        return this.factory.create(getCodeId(), new ItemStackIngredient[]{}, new ItemStackIngredient[]{}, inputFluids, outputFluids, heatRequired, 1, 1, 1);
     }
 
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    protected RECIPE fromNetwork(@NotNull RegistryFriendlyByteBuf buffer) {
         try {
             ItemStackIngredient[] inputItems = readItems(buffer);
             ItemStackIngredient[] outputItems = readItems(buffer);
@@ -45,7 +44,7 @@ public class TurbineRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
             double powerModifier = buffer.readDouble();
             double radiation = buffer.readDouble();
 
-            return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStackIngredient[]{}, inputFluids,  outputFluids, heatRequired, 1, 1, 1);
+            return this.factory.create(getCodeId(), new ItemStackIngredient[]{}, new ItemStackIngredient[]{}, inputFluids, outputFluids, heatRequired, 1, 1, 1);
         } catch (Exception e) {
             debugLog("Error reading from packet." + e);
             throw e;

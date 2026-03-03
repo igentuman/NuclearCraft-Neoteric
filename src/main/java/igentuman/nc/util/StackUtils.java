@@ -7,6 +7,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AirItem;
 import net.minecraft.world.item.Item;
+import igentuman.api.platform.NCIngredients;
+import igentuman.api.platform.NCItemStacks;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
@@ -15,8 +17,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ public final class StackUtils {
         if (size <= 0 || stack.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        return ItemHandlerHelper.copyStackWithSize(stack, size);
+        return NCItemStacks.copyWithCount(stack, size);
     }
 
     public static ItemStack resolveStackByModPriority(ItemStack[] items) {
@@ -62,7 +64,7 @@ public final class StackUtils {
     {
         List<String> tmp = new ArrayList<>();
         TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(key));
-        Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
+        Ingredient ing = NCIngredients.ofTag(tag);
         for (ItemStack item: ing.getItems()) {
             tmp.add(item.getItem().toString());
         }
@@ -71,7 +73,7 @@ public final class StackUtils {
 
 
     public static Item getItemByRegistryName(String id) {
-        return ForgeRegistries.ITEMS.getValue(rlFromString(id));
+        return BuiltInRegistries.ITEM.get(rlFromString(id));
     }
 
     private static final List<Item> allowedTools = new ArrayList<>();

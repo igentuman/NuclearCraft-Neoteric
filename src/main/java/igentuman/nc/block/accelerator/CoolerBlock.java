@@ -9,18 +9,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +106,7 @@ public class CoolerBlock extends MultiblockBlock {
             String id = code;
             if(!id.contains(":")) {
                 ResourceLocation res = rl(id);
-                Block block = ForgeRegistries.BLOCKS.getValue(res);
+                Block block = BuiltInRegistries.BLOCK.get(res);
                 names.add(block.getName().getString());
             } else {
                 names.add(convertToName(id.split(":")[1]));
@@ -125,8 +125,8 @@ public class CoolerBlock extends MultiblockBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        if(!player.getItemInHand(hand).isEmpty()) return InteractionResult.FAIL;
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+        if(!stack.isEmpty()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (!level.isClientSide()) {
             Block block = level.getBlockState(pos).getBlock();
             if(block instanceof CoolerBlock) {
@@ -138,11 +138,11 @@ public class CoolerBlock extends MultiblockBlock {
                 }
             }
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty")) return;
         initParams();
         list.add(TextUtils.applyFormat(__("heat_sink.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));

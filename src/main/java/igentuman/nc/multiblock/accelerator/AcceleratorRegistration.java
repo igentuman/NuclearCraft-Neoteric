@@ -16,8 +16,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.registries.RegistryObject;
+import igentuman.api.platform.NCRegistration;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,31 +34,27 @@ public class AcceleratorRegistration {
     public static final Item.Properties ACCELERATOR_ITEM_PROPERTIES = new Item.Properties();
     public static final BlockBehaviour.Properties NO_OCCLUSION_BLOCK_PROPS = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
     public static final Block.Properties ACCELERATOR_BLOCK_PROPERTIES =  BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();;
-    public static final HashMap<String, RegistryObject<Block>> ACCELERATOR_BLOCKS = new HashMap<>();
-    public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> ACCELERATOR_BE = new HashMap<>();
-    public static final HashMap<String, RegistryObject<Item>> ACCELERATOR_ITEMS = new HashMap<>();
+    public static final HashMap<String, DeferredHolder<Block, Block>> ACCELERATOR_BLOCKS = new HashMap<>();
+    public static final HashMap<String, DeferredHolder<BlockEntityType<?>, BlockEntityType<? extends BlockEntity>>> ACCELERATOR_BE = new HashMap<>();
+    public static final HashMap<String, DeferredHolder<Item, Item>> ACCELERATOR_ITEMS = new HashMap<>();
     public static final TagKey<Block> ACCELERATOR_CASING_BLOCKS = blockTag("accelerator_casing");
     public static final TagKey<Block> ACCELERATOR_INNER_BLOCKS = blockTag("accelerator_inner");
     public static final TagKey<Item> ACCELERATOR_INNER_ITEMS = itemTag("accelerator_inner");
     public static final TagKey<Item> ACCELERATOR_CASING_ITEMS = itemTag("accelerator_casing");
     public static final Pattern TRANSPARENT_BLOCKS_PATTERN = Pattern.compile(".*glass.*");
 
-    public static final RegistryObject<MenuType<LinearAcceleratorContainer>> LINEAR_ACCELERATOR_CONTROLLER_CONTAINER = CONTAINERS.register("linear_accelerator_controller",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new LinearAcceleratorContainer(windowId, data.readBlockPos(), inv))
-    );
-    public static final RegistryObject<MenuType<RingAcceleratorContainer>> THOROIDAL_ACCELERATOR_CONTROLLER_CONTAINER = CONTAINERS.register("ring_accelerator_controller",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new RingAcceleratorContainer(windowId, data.readBlockPos(), inv))
-    );
-    public static final RegistryObject<MenuType<AcceleratorPortContainer>> ACCELERATOR_PORT_CONTAINER = CONTAINERS.register("accelerator_port",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new AcceleratorPortContainer(windowId, data.readBlockPos(), inv))
-    );
-    public static final RegistryObject<MenuType<AcceleratorIonSourcePortContainer>> ACCELERATOR_ION_SOURCE_PORT_CONTAINER = CONTAINERS.register("accelerator_ion_source_port",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new AcceleratorIonSourcePortContainer(windowId, data.readBlockPos(), inv))
-    );
+    public static final DeferredHolder<MenuType<?>, MenuType<LinearAcceleratorContainer>> LINEAR_ACCELERATOR_CONTROLLER_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "linear_accelerator_controller", (windowId, inv, data) -> new LinearAcceleratorContainer(windowId, data.readBlockPos(), inv));
+    public static final DeferredHolder<MenuType<?>, MenuType<RingAcceleratorContainer>> THOROIDAL_ACCELERATOR_CONTROLLER_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "ring_accelerator_controller", (windowId, inv, data) -> new RingAcceleratorContainer(windowId, data.readBlockPos(), inv));
+    public static final DeferredHolder<MenuType<?>, MenuType<AcceleratorPortContainer>> ACCELERATOR_PORT_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "accelerator_port", (windowId, inv, data) -> new AcceleratorPortContainer(windowId, data.readBlockPos(), inv));
+    public static final DeferredHolder<MenuType<?>, MenuType<AcceleratorIonSourcePortContainer>> ACCELERATOR_ION_SOURCE_PORT_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "accelerator_ion_source_port", (windowId, inv, data) -> new AcceleratorIonSourcePortContainer(windowId, data.readBlockPos(), inv));
 
     public static final HashMap<String,CoolerDef> COOLERS = coolers();
 
-    private static final List<RegistryObject<Block>> COOLER_BLOCKS = new ArrayList<>();
+    private static final List<DeferredHolder<Block, Block>> COOLER_BLOCKS = new ArrayList<>();
 
     public static void init() {
         registerSimpleBlock("accelerator_casing");
@@ -156,7 +152,7 @@ public class AcceleratorRegistration {
     public static Block[] getCoolerBlocks() {
         Block[] blocks = new Block[COOLER_BLOCKS.size()];
         int i = 0;
-        for (RegistryObject<Block> b: COOLER_BLOCKS) {
+        for (DeferredHolder<Block, Block> b: COOLER_BLOCKS) {
             blocks[i] = b.get();
             i++;
         }

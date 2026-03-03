@@ -1,5 +1,6 @@
 package igentuman.nc.block.fusion;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
 import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
@@ -7,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -20,7 +22,8 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -58,7 +61,7 @@ public class FusionBeBlock extends Block implements EntityBlock {
 
     public String getCode()
     {
-        return ForgeRegistries.BLOCKS.getKey(this).getPath();
+        return BuiltInRegistries.BLOCK.getKey(this).getPath();
     }
 
     @javax.annotation.Nullable
@@ -80,7 +83,7 @@ public class FusionBeBlock extends Block implements EntityBlock {
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        BlockEntity be = level.getExistingBlockEntity(pos);
+        BlockEntity be = NCLevels.getExistingBlockEntity(level, pos);
         if(be instanceof MultiblockAttachable<?,?> mbAttachableBe) {
             mbAttachableBe.onNeighborChange(state, pos, neighbor);
         }
@@ -90,7 +93,7 @@ public class FusionBeBlock extends Block implements EntityBlock {
     public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion)
     {
         if(!level.isClientSide) {
-            BlockEntity be = level.getExistingBlockEntity(pos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(level, pos);
             if(be instanceof MultiblockAttachable<?,?> mbAttachableBe) {
                 mbAttachableBe.onBlockDestroyed(state, level, pos, explosion);
             }
@@ -102,7 +105,7 @@ public class FusionBeBlock extends Block implements EntityBlock {
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid)
     {
         if(!level.isClientSide) {
-            BlockEntity be = level.getExistingBlockEntity(pos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(level, pos);
             if(be instanceof MultiblockAttachable<?,?> mbAttachableBe) {
                 mbAttachableBe.onBlockDestroyed(state, level, pos, null);
             }
@@ -111,7 +114,7 @@ public class FusionBeBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
     {
         if (getCode().equals("fusion_reactor_connector")) {
             list.add(__("tooltip.nc.fusion_connector.descr").withStyle(ChatFormatting.YELLOW));

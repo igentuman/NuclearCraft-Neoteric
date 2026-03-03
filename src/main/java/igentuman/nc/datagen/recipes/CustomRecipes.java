@@ -2,16 +2,18 @@ package igentuman.nc.datagen.recipes;
 
 import igentuman.nc.datagen.recipes.recipes.*;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.FinishedRecipe;
-import java.util.function.Consumer;
+import net.minecraft.data.recipes.RecipeOutput;
+
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.core.HolderLookup;
 
 public class CustomRecipes extends NCRecipes {
-    public CustomRecipes(DataGenerator generatorIn) {
-        super(generatorIn);
+    public CustomRecipes(DataGenerator generatorIn, CompletableFuture<HolderLookup.Provider> registries) {
+        super(generatorIn, registries);
     }
-    public static Consumer<FinishedRecipe> consumer;
+    public static RecipeOutput consumer;
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         CustomRecipes.consumer = consumer;
         KugelblitzRecipes.generate(consumer);
         FissionRecipes.generate(consumer);

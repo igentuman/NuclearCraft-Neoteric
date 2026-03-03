@@ -61,8 +61,8 @@ public class ParticleEmiStack extends EmiStack {
     }
     
     @Override
-    public net.minecraft.nbt.CompoundTag getNbt() {
-        return null; // ParticleStack doesn't use NBT data
+    public net.minecraft.core.component.DataComponentPatch getComponentChanges() {
+        return net.minecraft.core.component.DataComponentPatch.EMPTY;
     }
     
     @Override

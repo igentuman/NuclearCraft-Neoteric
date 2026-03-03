@@ -14,7 +14,7 @@ import igentuman.nc.util.builder.ReactorDesignParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button.Builder;
-import net.minecraft.client.gui.components.ImageButton;
+import igentuman.api.platform.NCWidgets;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -152,7 +152,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             super(xPos, yPos, screen, 69);//nice
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 220, 220, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 220, 220, 18, TEXTURE, pButton -> {
                 Minecraft.getInstance().forceSetScreen(new SideConfigSlotSelectionScreen<>(screen));
             });
             tooltipKey = __("gui.nc.side_config.tooltip");
@@ -178,7 +178,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public void setMode(int redstoneMode) {
             mode = redstoneMode;
-            btn = new ImageButton(X(), Y(), width, height, 184, 220 - redstoneMode * 36, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 184, 220 - redstoneMode * 36, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
         }
@@ -192,7 +192,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             super(xPos, yPos, screen, 70);
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 220, 76, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 220, 76, 18, TEXTURE, pButton -> {
                 if(isEMILoaded()) {
                     EMIPlugin.displayRecipes(screen);
                 }
@@ -209,7 +209,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             super(xPos, yPos, screen, 71);
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 202, 220, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 202, 220, 18, TEXTURE, pButton -> {
                 this.screen.onClose();
             });
         }
@@ -224,7 +224,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             super(xPos, yPos, screen, BTN_ID);
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 184, 112, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 184, 112, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(NcClient.tryGetClientPlayer(), BTN_ID));
             });
         }
@@ -241,7 +241,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         public void setEnabled(boolean flag) {
             enabled = flag;
             int y = flag ? 1 : 0;
-            btn = new ImageButton(X(), Y(), width, height, 184, 112 - (y+1) * 36, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 184, 112 - (y+1) * 36, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(NcClient.tryGetClientPlayer(), BTN_ID));
             });
         }
@@ -263,7 +263,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 220, 184, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 220, 184, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
         }
@@ -283,7 +283,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         public void setMode(boolean reactorMode) {
             mode = reactorMode;
             int y = reactorMode ? 1 : 0;
-            btn = new ImageButton(X(), Y(), width, height, 220, 184 - (y+1) * 36, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 220, 184 - (y+1) * 36, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
         }
@@ -305,7 +305,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 184, 112, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 184, 112, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
                 Minecraft.getInstance().forceSetScreen(new MultiblockAnalyzeReportScreen<>(screen, container));
             });
@@ -341,7 +341,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             height = 8;
             width = 8;
             String link = "https://github.com/igentuman/NuclearCraft-Neoteric/issues/new?template=bug_report.md";
-            btn = new ImageButton(X(), Y(), width, height, 0, 0, 8, BTN_TEXTURE, 8, 16, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 0, 0, 8, BTN_TEXTURE, 8, 16, pButton -> {
                 if (!copyToBuffer(link)) {
                     //debugLog("Failed to open link: " + link);
                 }
@@ -387,7 +387,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 144, 220, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 144, 220, 18, TEXTURE, pButton -> {
                 try {
                     String jsonText = Minecraft.getInstance().keyboardHandler.getClipboard();
                     if (jsonText != null && !jsonText.isEmpty()) {
@@ -432,7 +432,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 162, 220, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 162, 220, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketBuildMultiblock(pos, screen.blockMap));
             });
         }
@@ -472,7 +472,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.tooltips = tooltips;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 126, 220, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 126, 220, 18, TEXTURE, pButton -> {
                 if (!openUrl(link)) {
                     debugLog("Failed to open link: " + link);
                 }
@@ -493,7 +493,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         @Override
         public void setMode(byte redstoneMode) {
             mode = redstoneMode;
-            btn = new ImageButton(X(), Y(), width, height, 238, 256 - (redstoneMode-10) * 36, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 238, 256 - (redstoneMode-10) * 36, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
         }
@@ -510,7 +510,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 238, 256, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 238, 256, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, bId));
             });
         }
@@ -520,7 +520,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 238, 256, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 238, 256, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, bId));
             });
         }
@@ -534,7 +534,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public void setMode(byte redstoneMode) {
             mode = redstoneMode;
-            btn = new ImageButton(X(), Y(), width, height, 238, 256 - (redstoneMode) * 36, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 238, 256 - (redstoneMode) * 36, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
         }
@@ -550,7 +550,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 238, 256, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 238, 256, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, bId));
             });
         }
@@ -564,7 +564,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public void setMode(byte redstoneMode) {
             mode = redstoneMode;
-            btn = new ImageButton(X(), Y(), width, height, 238, 256 - (redstoneMode+1) * 36, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 238, 256 - (redstoneMode+1) * 36, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
         }
@@ -581,7 +581,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             this.pos = pos;
             height = 18;
             width = 18;
-            btn = new ImageButton(X(), Y(), width, height, 202, 256, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 202, 256, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, bId));
             });
         }
@@ -595,7 +595,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
 
         public void setMode(byte redstoneMode) {
             mode = redstoneMode;
-            btn = new ImageButton(X(), Y(), width, height, 202, 256 - (redstoneMode+1) * 36, 18, TEXTURE, pButton -> {
+            btn = NCWidgets.imageButton(X(), Y(), width, height, 202, 256 - (redstoneMode+1) * 36, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
         }

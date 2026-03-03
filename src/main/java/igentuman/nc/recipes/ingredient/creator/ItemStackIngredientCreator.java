@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import igentuman.api.platform.NCIngredients;
 import igentuman.nc.network.BasePacketHandler;
 import igentuman.nc.recipes.ingredient.IMultiIngredient;
 import igentuman.nc.recipes.ingredient.InputIngredient;
@@ -11,15 +12,12 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.JsonConstants;
 import igentuman.nc.util.StackUtils;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.core.Registry;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.contents.LiteralContents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,10 +57,10 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     }
 
     @Override
-    public ItemStackIngredient read(FriendlyByteBuf buffer) {
+    public ItemStackIngredient read(RegistryFriendlyByteBuf buffer) {
         Objects.requireNonNull(buffer, "ItemStackIngredients cannot be read from a null packet buffer.");
         return switch (buffer.readEnum(IngredientType.class)) {
-            case SINGLE -> from(Ingredient.fromNetwork(buffer), buffer.readVarInt());
+            case SINGLE -> from(NCIngredients.fromNetwork(buffer), buffer.readVarInt());
             case MULTI -> createMulti(BasePacketHandler.readArray(buffer, ItemStackIngredient[]::new, this::read));
         };
     }
@@ -102,7 +100,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             }
         }
 
-        Ingredient ingredient = Ingredient.fromJson(jsonObject);
+        Ingredient ingredient = NCIngredients.fromJson(jsonObject);
         return from(ingredient, amount);
     }
 
@@ -172,7 +170,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
                 return true;
             } else if (items.length == 1) {
                 ItemStack item = items[0];
-                return item.getItem() == BARRIER && item.getHoverName().getContents() instanceof LiteralContents contents && contents.text().startsWith("Empty Tag: ");
+                return item.getItem() == BARRIER && item.getHoverName().getContents() instanceof PlainTextContents.LiteralContents contents && contents.text().startsWith("Empty Tag: ");
             }
             return false;
         }
@@ -181,7 +179,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         {
             List<String> tmp = new ArrayList<>();
             TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(key));
-            Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
+            Ingredient ing = NCIngredients.ofTag(tag);
             for (ItemStack item: ing.getItems()) {
                 tmp.add(item.getItem().toString());
             }
@@ -218,9 +216,9 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(RegistryFriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.SINGLE);
-            ingredient.toNetwork(buffer);
+            NCIngredients.toNetwork(buffer, ingredient);
             buffer.writeVarInt(amount);
         }
 
@@ -230,7 +228,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             if (amount > 1) {
                 json.addProperty("count", amount);
             }
-            json.add(JsonConstants.INGREDIENT, ingredient.toJson());
+            json.add(JsonConstants.INGREDIENT, NCIngredients.toJson(ingredient));
             return json;
         }
 
@@ -325,7 +323,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(RegistryFriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
             BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
         }

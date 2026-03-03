@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.kugelblitz;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.kugelblitz.entity.BlackHoleBE;
 import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import igentuman.nc.block.kugelblitz.entity.PhotonConcentratorBE;
@@ -66,7 +67,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
 
     public BlockEntity getBlackHole() {
         if(getCenter() == null || getCenter().equals(BlockPos.ZERO)) return null;
-        return getLevel().getExistingBlockEntity(getCenter());
+        return NCLevels.getExistingBlockEntity(getLevel(), getCenter());
     }
 
     @Override
@@ -169,7 +170,7 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
         int forward = depth() == 8 ? -4 : -3;
         BlockPos l = getLeftPos(left-2).relative(getControllerDirection(), forward);
         BlockPos topCenter = new BlockPos(l.getX(), topY, l.getZ());
-        if(!(getLevel().getExistingBlockEntity(topCenter) instanceof PhotonConcentratorBE pcBE)) {
+        if(!(NCLevels.getExistingBlockEntity(getLevel(), topCenter) instanceof PhotonConcentratorBE pcBE)) {
             validationResult = ValidationResult.PHOTON_CONCENTRATOR;
             return;
         } else {

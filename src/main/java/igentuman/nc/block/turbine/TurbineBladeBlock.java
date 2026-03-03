@@ -1,5 +1,7 @@
 package igentuman.nc.block.turbine;
 
+import igentuman.api.platform.NCBlockProperties;
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.turbine.entity.TurbineBE;
 import igentuman.nc.block.turbine.entity.TurbineBladeBE;
 import igentuman.nc.multiblock.turbine.BladeDef;
@@ -17,6 +19,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -42,7 +45,12 @@ import static net.minecraft.world.level.block.Blocks.IRON_BARS;
 public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
     public static final BooleanProperty HIDDEN = BlockStateProperties.POWERED;
     public TurbineBladeBlock(Properties pProperties) {
-        super(Properties.copy(IRON_BARS).noCollission().forceSolidOff());
+        super(NCBlockProperties.copy(IRON_BARS).noCollission().forceSolidOff());
+    }
+
+    @Override
+    protected MapCodec<? extends DirectionalBlock> codec() {
+        return simpleCodec(TurbineBladeBlock::new);
     }
 
     @Override
@@ -174,12 +182,12 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        ((TurbineBE) Objects.requireNonNull(level.getExistingBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
+        ((TurbineBE) Objects.requireNonNull(NCLevels.getExistingBlockEntity(level, pos))).onNeighborChange(state,  pos, neighbor);
     }
 
 
     @Override
-    public void appendHoverText(@NotNull ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+    public void appendHoverText(@NotNull ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
         initParams();
 
         if(DESCRIPTIONS_SHOW) {

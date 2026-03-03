@@ -1,7 +1,7 @@
 package igentuman.nc.recipes.ingredient;
 
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class FluidStackIngredient implements InputIngredient<@NotNull FluidStack> {

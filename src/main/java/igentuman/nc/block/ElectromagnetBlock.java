@@ -4,9 +4,9 @@ import igentuman.nc.content.Electromagnets;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class ElectromagnetBlock extends MultiblockBlock {
         return prefab().getMaxTemp();
     }
 
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag)
     {
         list.add(TextUtils.applyFormat(
                 translatable("tooltip.nc.rf_amplifier.power", numberFormat(prefab().getPower())),

@@ -4,7 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 
 import static igentuman.nc.util.TextUtils.__;
 
@@ -13,7 +13,7 @@ public class PatronsCommand {
     private PatronsCommand() {}
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
-        MinecraftForge.EVENT_BUS.register(PatronsCommand.class);
+        NeoForge.EVENT_BUS.register(PatronsCommand.class);
         return Commands.literal("nc_patrons")
                 .executes(ctx -> {
             return execute(ctx.getSource());

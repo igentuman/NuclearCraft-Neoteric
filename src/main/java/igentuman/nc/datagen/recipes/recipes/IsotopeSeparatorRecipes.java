@@ -5,14 +5,13 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.FissionFuel;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.fuel.FuelManager;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class IsotopeSeparatorRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         IsotopeSeparatorRecipes.consumer = consumer;
         ID = Processors.ISOTOPE_SEPARATOR;
 

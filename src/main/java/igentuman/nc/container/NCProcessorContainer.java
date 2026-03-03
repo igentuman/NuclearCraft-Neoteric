@@ -18,13 +18,11 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,11 +72,12 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
             if(slots.getSlotType(i).contains("item")) {
                 int idx = slotIdx;
                 if(!processor.isSlotHidden(idx+slots.getInputFluids())) {
-                    blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                    IItemHandler h = blockEntity.contentHandler().itemHandler;
+                    if (h != null) {
                         NCSlotItemHandler slotItemHandler = new NCSlotItemHandler(h, idx, pos[0], pos[1]);
                         slotItemHandler.allowed(blockEntity.getAllowedItems(idx));
                         addSlot(slotItemHandler);
-                    });
+                    }
                 }
                 slotIdx++;
             }

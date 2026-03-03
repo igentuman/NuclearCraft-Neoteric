@@ -12,7 +12,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static igentuman.nc.util.TextUtils.*;
@@ -52,7 +51,7 @@ public class ParticleSourceItem extends Item implements IItemParticleAmount {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
     {
         ParticleSourceItem particleItem = (ParticleSourceItem) stack.getItem();
         if(particleItem.getParticle(stack) != null) {

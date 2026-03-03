@@ -1,6 +1,15 @@
 package igentuman.nc.setup.registration;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import igentuman.api.platform.NCArmorMaterials;
+import igentuman.api.platform.NCConditions;
+import igentuman.api.platform.NCFluidCapability;
+import igentuman.nc.util.FluidTagEmptyCondition;
+import igentuman.nc.util.GTCEUCompatibilityCondition;
+import igentuman.nc.util.WastelandEnabledCondition;
+import net.minecraft.core.component.DataComponentType;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.registry.ParticleTypeDeferredRegister;
 import igentuman.nc.registry.RecipeSerializerDeferredRegister;
@@ -8,7 +17,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
@@ -26,35 +34,34 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.recipes.NcRecipeType.RECIPE_TYPES;
 
 public class Registries {
-    public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MODID);
+    public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, MODID);
     public static final ParticleTypeDeferredRegister PARTICLE_TYPES = new ParticleTypeDeferredRegister(NuclearCraft.MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(net.minecraft.core.registries.Registries.CREATIVE_MODE_TAB, MODID);
-    public static final ResourceKey<Registry<Block>> BLOCK_REGISTRY = ForgeRegistries.BLOCKS.getRegistryKey();
-    public static final ResourceKey<Registry<Item>> ITEM_REGISTRY = ForgeRegistries.ITEMS.getRegistryKey();
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
-    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, MODID);
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
-    public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
-    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
-    public static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, MODID);
+    public static final ResourceKey<Registry<Block>> BLOCK_REGISTRY = net.minecraft.core.registries.Registries.BLOCK;
+    public static final ResourceKey<Registry<Item>> ITEM_REGISTRY = net.minecraft.core.registries.Registries.ITEM;
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID, MODID);
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID);
+    public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(BuiltInRegistries.MENU, MODID);
+    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, MODID);
+    public static final DeferredRegister<MapCodec<? extends BiomeModifier>> BIOME_MODIFIERS = DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, MODID);
     public static final DeferredRegister<StructureType<?>> STRUCTURES = DeferredRegister.create(net.minecraft.core.registries.Registries.STRUCTURE_TYPE, MODID);
     public static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(net.minecraft.core.registries.Registries.PLACED_FEATURE, MODID);
-    public static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, MODID);
-    public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
-    public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MODID);
+    public static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(BuiltInRegistries.FEATURE, MODID);
+    public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, MODID);
+    public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, MODID);
     public static final RecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new RecipeSerializerDeferredRegister(NuclearCraft.MODID);
     public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED = DeferredRegister.create(net.minecraft.core.registries.Registries.CONFIGURED_FEATURE, MODID);
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister.create(net.minecraft.core.registries.Registries.PLACEMENT_MODIFIER_TYPE, MODID);
@@ -62,9 +69,10 @@ public class Registries {
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIERS = DeferredRegister.create(net.minecraft.core.registries.Registries.PLACEMENT_MODIFIER_TYPE, MODID);
     public static final DeferredRegister<Biome> BIOMES = DeferredRegister.create(net.minecraft.core.registries.Registries.BIOME, MODID);
     public static final DeferredRegister<DamageType> DAMAGE_SOURCE = DeferredRegister.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE, MODID);
+    public static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister.createDataComponents(net.minecraft.core.registries.Registries.DATA_COMPONENT_TYPE, MODID);
+    public static final DeferredRegister<MapCodec<? extends ICondition>> CONDITION_CODECS = NCConditions.createRegistry(MODID);
 
-    public static void init(FMLJavaModLoadingContext context) {
-        IEventBus bus = context.getModEventBus();
+    public static void init(IEventBus bus) {
         DAMAGE_SOURCE.register(bus);
         BLOCKS.register(bus);
         ITEMS.register(bus);
@@ -89,5 +97,14 @@ public class Registries {
         DIMENSION_TYPE.register(bus);
         PLACEMENT_MODIFIERS.register(bus);
         BIOMES.register(bus);
+        // Add entries to DeferredRegisters BEFORE calling .register(bus) on them
+        NCFluidCapability.init(DATA_COMPONENTS);
+        DATA_COMPONENTS.register(bus);
+        NCConditions.register(CONDITION_CODECS, "fluid_tag_empty", () -> FluidTagEmptyCondition.CODEC);
+        NCConditions.register(CONDITION_CODECS, "wasteland_enabled", () -> WastelandEnabledCondition.CODEC);
+        NCConditions.register(CONDITION_CODECS, "gtceu_compat_enabled", () -> GTCEUCompatibilityCondition.CODEC);
+        CONDITION_CODECS.register(bus);
+        NCArmorMaterials.init(bus);
+        NCAttachments.init(bus);
     }
 }

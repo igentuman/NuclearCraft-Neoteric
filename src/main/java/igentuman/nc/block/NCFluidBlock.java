@@ -5,6 +5,7 @@ import igentuman.nc.util.NCDamageSources;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -20,7 +21,6 @@ import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,13 +32,13 @@ public class NCFluidBlock extends LiquidBlock
     private static NCFluids.FluidEntry entryStatic;
 	private final NCFluids.FluidEntry entry;
 	@Nullable
-	private MobEffect effect;
+	private Holder<MobEffect> effect;
 	private int duration;
 	private int level;
 
 	public NCFluidBlock(NCFluids.FluidEntry entry, Properties props)
 	{
-		super(entry.getStillGetter(), Util.make(props, $ -> entryStatic = entry).noOcclusion().noCollission().noLootTable());
+		super(entry.getStill(), Util.make(props, $ -> entryStatic = entry).noOcclusion().noCollission().noLootTable());
 		this.entry = entry;
 		entryStatic = null;
 
@@ -46,14 +46,14 @@ public class NCFluidBlock extends LiquidBlock
 	@Override
 	public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction)
 	{
-		return getFluid().getFluidType().getTemperature() > 600;
+		return entry.getStill().getFluidType().getTemperature() > 600;
 	}
 
 
 	@Override
 	public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos)
 	{
-		if(getFluid().getFluidType().getTemperature() > 600) {
+		if(entry.getStill().getFluidType().getTemperature() > 600) {
 			return 5;
 		}
 		return 0;
@@ -84,7 +84,7 @@ public class NCFluidBlock extends LiquidBlock
 		return oldState.setValue(prop, copyFrom.getValue(prop));
 	}
 
-	public void setEffect(@Nonnull MobEffect effect, int duration, int level)
+	public void setEffect(@Nonnull Holder<MobEffect> effect, int duration, int level)
 	{
 		this.effect = effect;
 		this.duration = duration;
@@ -97,10 +97,10 @@ public class NCFluidBlock extends LiquidBlock
 		super.entityInside(state, worldIn, pos, entityIn);
 		if(effect!=null&&entityIn instanceof LivingEntity)
 			((LivingEntity)entityIn).addEffect(new MobEffectInstance(effect, duration, level));
-		if(getFluid().getFluidType().getTemperature() > 600) {
-			entityIn.setSecondsOnFire(1);
+		if(entry.getStill().getFluidType().getTemperature() > 600) {
+			entityIn.igniteForSeconds(1);
 		}
-		if(getFluid().getFluidType().toString().contains("acid")) {
+		if(entry.getStill().getFluidType().toString().contains("acid")) {
 			entityIn.hurt(NCDamageSources.ACID, 1.0F);
 		}
 	}

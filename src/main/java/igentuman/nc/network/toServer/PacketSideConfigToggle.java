@@ -1,14 +1,22 @@
 package igentuman.nc.network.toServer;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
-import igentuman.nc.network.INcPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class PacketSideConfigToggle implements INcPacket {
+public class PacketSideConfigToggle implements CustomPacketPayload {
+
+    public static final CustomPacketPayload.Type<PacketSideConfigToggle> TYPE =
+        new CustomPacketPayload.Type<>(NuclearCraft.rl("side_config_toggle"));
+
+    public static final StreamCodec<FriendlyByteBuf, PacketSideConfigToggle> STREAM_CODEC =
+        StreamCodec.of((buf, pkt) -> pkt.encode(buf), PacketSideConfigToggle::decode);
 
     private BlockPos tilePosition;
     private int slotId;
@@ -24,10 +32,15 @@ public class PacketSideConfigToggle implements INcPacket {
 
     }
 
-
     @Override
-    public void handle(NetworkEvent.Context context) {
-        ServerPlayer player = context.getSender();
+    public Type<? extends CustomPacketPayload> type() { return TYPE; }
+
+    public static void handle(PacketSideConfigToggle packet, IPayloadContext context) {
+        context.enqueueWork(() -> packet.handlePacket(context));
+    }
+
+    private void handlePacket(IPayloadContext context) {
+        ServerPlayer player = (ServerPlayer) context.player();
         if (player == null) {
             return;
         }
@@ -39,7 +52,6 @@ public class PacketSideConfigToggle implements INcPacket {
         processor.toggleSideConfig(slotId, direction);
     }
 
-    @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(tilePosition);
         buffer.writeInt(slotId);

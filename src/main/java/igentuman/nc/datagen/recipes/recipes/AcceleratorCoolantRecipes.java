@@ -1,14 +1,13 @@
 package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class AcceleratorCoolantRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         AcceleratorCoolantRecipes.consumer = consumer;
         ID = "accelerator_coolant";
 

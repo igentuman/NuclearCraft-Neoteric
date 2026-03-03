@@ -1,25 +1,24 @@
 package igentuman.nc.block.storage.entity;
 
 import igentuman.api.nc.SideModeToggleable;
+import igentuman.api.platform.NCSerialization;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.ItemStorageCapabilityHandler;
 import igentuman.nc.content.storage.ContainerBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import javax.annotation.Nonnull;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BE;
@@ -33,11 +32,7 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
         return new ItemStorageCapabilityHandler(ContainerBlocks.all().get(getName()).getCapacity(), 64);
     }
 
-    public LazyOptional<ItemStorageCapabilityHandler> getItemHandler() {
-        return itemHandler;
-    }
 
-    protected final LazyOptional<ItemStorageCapabilityHandler> itemHandler;
 
     public static final ModelProperty<HashMap<Integer, SideMode>> SIDE_CONFIG = new ModelProperty<>();
 
@@ -47,7 +42,6 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
             sideConfig.put(direction.ordinal(), SideMode.DEFAULT);
         }
         inventory = createInventory();
-        itemHandler = LazyOptional.of(() -> inventory);
     }
 
     @Nonnull
@@ -85,10 +79,8 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
         for (Direction direction : Direction.values()) {
             if (sideConfig.get(direction.ordinal()) == SideMode.DISABLED) continue;
             if (level == null) continue;
-            BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
-            if(be == null) continue;
-            if (be.getCapability(ForgeCapabilities.ITEM_HANDLER, direction.getOpposite()).isPresent()) {
-                be.getCapability(ForgeCapabilities.ITEM_HANDLER, direction.getOpposite()).ifPresent(cap -> {
+            IItemHandler cap = level.getCapability(Capabilities.ItemHandler.BLOCK, worldPosition.relative(direction), direction.getOpposite());
+            if (cap != null) {
                     boolean transactionDone = false;
                     switch (sideConfig.get(direction.ordinal())) {
                         case OUT -> {
@@ -126,39 +118,31 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
                             }
                         }
                     }
-                });
             }
         }
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER && (side != null && sideConfig.get(side.ordinal()) != SideMode.DISABLED)) {
-            return getItemHandler().cast();
-        }
-        return super.getCapability(cap, side);
-    }
 
-    protected void saveClientData(CompoundTag tag) {
-        CompoundTag tank = new CompoundTag();
-        tag.put("Inventory", inventory.serializeNBT());
+    @Override
+    protected void saveClientData(CompoundTag tag, HolderLookup.Provider registries) {
+        tag.put("Inventory", NCSerialization.serialize(inventory, registries));
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 
-    public void loadClientData(CompoundTag tag) {
+    @Override
+    public void loadClientData(CompoundTag tag, HolderLookup.Provider registries) {
         if(tag.contains("Inventory")) {
-            inventory.deserializeNBT(tag.getCompound("Inventory"));
+            NCSerialization.deserialize(inventory, registries, tag.getCompound("Inventory"));
         }
         if (!tag.contains("sideConfig")) return;
         loadSideConfig(tag.getIntArray("sideConfig"));
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         if(tag.contains("Inventory")) {
-            inventory.deserializeNBT(tag.getCompound("Inventory"));
+            NCSerialization.deserialize(inventory, registries, tag.getCompound("Inventory"));
         }
         if(!tag.contains("sideConfig")) return;
         loadSideConfig(tag.getIntArray("sideConfig"));
@@ -184,9 +168,9 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        tag.put("Inventory", inventory.serializeNBT());
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.put("Inventory", NCSerialization.serialize(inventory, registries));
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 

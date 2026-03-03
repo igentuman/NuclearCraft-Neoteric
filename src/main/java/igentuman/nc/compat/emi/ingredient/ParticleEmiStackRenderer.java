@@ -32,7 +32,6 @@ public class ParticleEmiStackRenderer {
         }
         
         // Set up proper rendering state
-        RenderSystem.setShaderTexture(0, particle.getTexture());
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         

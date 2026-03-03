@@ -10,11 +10,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_PROXY_BE;
 
@@ -71,12 +67,6 @@ public class EXPLProxyBE extends NuclearCraftBE {
         }
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(getCoreBE() == null) return super.getCapability(cap, side);
-        return getCoreBE().getCapability(cap, side);
-    }
 
     public void forceTickServer(EXPLBE core) {
         //Disallow boosters like torcherino

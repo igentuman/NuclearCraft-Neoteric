@@ -1,7 +1,6 @@
 package igentuman.nc.client.gui.element;
 
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.util.Units;
 import net.minecraft.ChatFormatting;
@@ -36,7 +35,6 @@ public class GuiParticle extends NCGuiElement {
 			return;
 		}
 
-		RenderSystem.setShaderTexture(0,particleStack.getParticle().getTexture());
 		graphics.pose().pushPose();
 		graphics.pose().translate(RELATIVE_X, RELATIVE_Y, 0);
 		graphics.blit(particleStack.getParticle().getTexture(), x, y, 0, 0, 16, 16, 16, 16);

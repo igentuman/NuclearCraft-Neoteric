@@ -1,6 +1,8 @@
 package igentuman.nc.recipes.ingredient.creator;
 
 import com.google.gson.*;
+import igentuman.api.platform.NCFluidStacks;
+import igentuman.api.platform.NCSerialization;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.network.BasePacketHandler;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -10,16 +12,15 @@ import igentuman.nc.util.NcUtils;
 import igentuman.nc.util.SerializerHelper;
 import igentuman.nc.util.TagUtil;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.Holder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITag;
-import net.minecraftforge.registries.tags.ITagManager;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,10 +63,10 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     }
 
     @Override
-    public FluidStackIngredient read(FriendlyByteBuf buffer) {
+    public FluidStackIngredient read(RegistryFriendlyByteBuf buffer) {
         Objects.requireNonNull(buffer, "FluidStackIngredients cannot be read from a null packet buffer.");
         return switch (buffer.readEnum(IngredientType.class)) {
-            case SINGLE -> from(FluidStack.readFromPacket(buffer));
+            case SINGLE -> from(NCSerialization.readFluidFromNetwork(buffer));
             case TAGGED -> from(FluidTags.create(buffer.readResourceLocation()), buffer.readVarInt());
             case MULTI -> createMulti(BasePacketHandler.readArray(buffer, FluidStackIngredient[]::new, this::read));
         };
@@ -117,8 +118,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = rlFromString(GsonHelper.getAsString(jsonObject, "tag"));
-            ITagManager<Fluid> tagManager = TagUtil.manager(ForgeRegistries.FLUIDS);
-            TagKey<Fluid> key = tagManager.createTagKey(resourceLocation);
+            TagKey<Fluid> key = TagUtil.createKey(BuiltInRegistries.FLUID, resourceLocation);
             return from(key, amount);
         }
         throw new JsonSyntaxException("Expected to receive a resource location representing either a tag or a fluid.");
@@ -209,9 +209,9 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(RegistryFriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.SINGLE);
-            fluidInstance.writeToPacket(buffer);
+            NCSerialization.writeFluidToNetwork(buffer, fluidInstance);
         }
 
         @Override
@@ -219,8 +219,8 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             JsonObject json = new JsonObject();
             json.addProperty("amount", fluidInstance.getAmount());
             json.addProperty("fluid", NcUtils.getName(fluidInstance.getFluid()).toString());
-            if (fluidInstance.hasTag()) {
-                json.addProperty("nbt", fluidInstance.getTag().toString());
+            if (NCFluidStacks.hasCustomData(fluidInstance)) {
+                json.addProperty("nbt", NCFluidStacks.getTag(fluidInstance).toString());
             }
             return json;
         }
@@ -246,20 +246,16 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     @NothingNullByDefault
     public static class TaggedFluidStackIngredient extends FluidStackIngredient {
 
-        protected final ITag<Fluid> tag;
+        protected final TagKey<Fluid> tag;
 
         private TaggedFluidStackIngredient(TagKey<Fluid> tag, int amount) {
-            this(TagUtil.tag(ForgeRegistries.FLUIDS, tag), amount);
-        }
-
-        private TaggedFluidStackIngredient(ITag<Fluid> tag, int amount) {
             this.tag = tag;
             this.amount = amount;
         }
 
         public String getName()
         {
-            return tag.getKey().location().getPath().replace('/', '_').replace(':', '.');
+            return tag.location().getPath().replace('/', '_').replace(':', '.');
         }
 
         @Override
@@ -269,14 +265,14 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean testType(FluidStack fluidStack) {
-            return tag.contains(Objects.requireNonNull(fluidStack).getFluid());
+            return TagUtil.tagContains(BuiltInRegistries.FLUID, tag, Objects.requireNonNull(fluidStack).getFluid());
         }
 
         @Override
         public FluidStack getMatchingInstance(FluidStack fluidStack) {
             if (test(fluidStack)) {
                 //Our fluid is in the tag, so we make a new stack with the given amount
-                return new FluidStack(fluidStack, amount);
+                return fluidStack.copyWithAmount(amount);
             }
             return FluidStack.EMPTY;
         }
@@ -288,22 +284,22 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean hasNoMatchingInstances() {
-            return tag.isEmpty();
+            return TagUtil.isTagEmpty(BuiltInRegistries.FLUID, tag);
         }
 
         @Override
         public List<@NotNull FluidStack> getRepresentations() {
             //TODO: Can this be cached some how
             List<@NotNull FluidStack> representations = new ArrayList<>();
-            for (Fluid fluid : tag) {
+            for (Fluid fluid : TagUtil.getTagElements(BuiltInRegistries.FLUID, tag)) {
                 representations.add(new FluidStack(fluid, amount));
             }
             if(representations.isEmpty()) {
-                Fluid fallbackFluid = TagUtil.getFirstMatchingFluidByTag(tag.getKey().location().toString());
+                Fluid fallbackFluid = TagUtil.getFirstMatchingFluidByTag(tag.location().toString());
                 if (fallbackFluid != FluidStack.EMPTY.getFluid()) {
                     representations.add(new FluidStack(fallbackFluid, amount));
                 } else {
-                    NuclearCraft.LOGGER.error("No fluid found for tag {}", tag.getKey().location());
+                    NuclearCraft.LOGGER.error("No fluid found for tag {}", tag.location());
                 }
             }
             return representations;
@@ -313,13 +309,13 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
          * For use in recipe input caching.
          */
         public Iterable<Fluid> getRawInput() {
-            return tag;
+            return TagUtil.getTagElements(BuiltInRegistries.FLUID, tag);
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(RegistryFriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.TAGGED);
-            buffer.writeResourceLocation(tag.getKey().location());
+            buffer.writeResourceLocation(tag.location());
             buffer.writeVarInt(amount);
         }
 
@@ -327,7 +323,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             json.addProperty("amount", amount);
-            json.addProperty("tag", tag.getKey().location().toString());
+            json.addProperty("tag", tag.location().toString());
             return json;
         }
 
@@ -418,7 +414,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
+        public void write(RegistryFriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
             BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
         }

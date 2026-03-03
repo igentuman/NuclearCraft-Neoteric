@@ -1,5 +1,7 @@
 package igentuman.nc.block.entity;
 
+import igentuman.api.platform.NCLevels;
+import igentuman.api.platform.NCSerialization;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.handler.CatalystHandler;
@@ -16,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -27,15 +30,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -45,8 +45,6 @@ import static igentuman.nc.handler.config.CommonConfig.GTCEUCompatibilityConfig.
 import static igentuman.nc.handler.config.CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.ONLY_GTCEU;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
-import static igentuman.nc.util.ModUtil.isMekanismLoaded;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class NuclearCraftBE extends BlockEntity {
 
@@ -66,7 +64,6 @@ public class NuclearCraftBE extends BlockEntity {
     protected boolean saveSideMapFlag = true;
     public boolean wasUpdated = true;
     public HashMap<String, NcRecipe> cachedRecipes = new HashMap<>();
-    protected LazyOptional<IEnergyStorage> energy;
     protected long lastTickTime = 0;
     //all fields
     private final List<Field> booleanFields;
@@ -132,26 +129,22 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     protected void pullEnergyFromSide(Direction direction) {
-        BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
-        if (be == null) {
-            return;
-        }
         if(isGtLoaded() && isOnlyGTCEUCapEnabled()) {
             return;
         }
-        be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
-                    if (handler.canExtract()) {
-                        int canReceive = energyStorage().receiveEnergy(handler.getEnergyStored(), true);
-                        if (canReceive > 0) {
-                            int received = energyStorage().receiveEnergy(canReceive, false);
-                            handler.extractEnergy(received, false);
-                        }
-                        setChanged();
-                        return true;
-                    }
-                    return true;
-                }
-        );
+        BlockPos neighborPos = worldPosition.relative(direction);
+        IEnergyStorage handler = level.getCapability(Capabilities.EnergyStorage.BLOCK, neighborPos, direction.getOpposite());
+        if (handler == null) {
+            return;
+        }
+        if (handler.canExtract()) {
+            int canReceive = energyStorage().receiveEnergy(handler.getEnergyStored(), true);
+            if (canReceive > 0) {
+                int received = energyStorage().receiveEnergy(canReceive, false);
+                handler.extractEnergy(received, false);
+            }
+            setChanged();
+        }
     }
 
     protected void transferEnergyToSide(Direction direction) {
@@ -159,7 +152,7 @@ public class NuclearCraftBE extends BlockEntity {
             return; // No energy to transfer
         }
         int wasEnergy = energyStorage().getEnergyStored();
-        BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
+        BlockEntity be = NCLevels.getExistingBlockEntity(level, worldPosition.relative(direction));
         if (be == null) {
             return;
         }
@@ -174,17 +167,13 @@ public class NuclearCraftBE extends BlockEntity {
             return;
         }
         int canExtract = energyStorage().getMaxExtract() - extracted;
-        be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
-                    if (handler.canReceive()) {
-                        int received = handler.receiveEnergy(Math.min(canExtract, energyStorage().getEnergyStored()), false);
-                        energyStorage().consumeEnergy(received);
-                        setChanged();
-                        return energyStorage().getEnergyStored() > 0;
-                    } else {
-                        return true;
-                    }
-                }
-        );
+        BlockPos neighborPos = worldPosition.relative(direction);
+        IEnergyStorage handler = level.getCapability(Capabilities.EnergyStorage.BLOCK, neighborPos, direction.getOpposite());
+        if (handler != null && handler.canReceive()) {
+            int received = handler.receiveEnergy(Math.min(canExtract, energyStorage().getEnergyStored()), false);
+            energyStorage().consumeEnergy(received);
+            setChanged();
+        }
     }
 
     //for the moment input and output energy tiers are the same
@@ -213,7 +202,7 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     public BlockEntity blockEntity(BlockPos pos) {
-        BlockEntity blockEntity = level.getExistingBlockEntity(pos);
+        BlockEntity blockEntity = NCLevels.getExistingBlockEntity(level, pos);
         if(blockEntity == null) {
             blockEntity = level.getBlockEntity(pos);
         }
@@ -247,10 +236,6 @@ public class NuclearCraftBE extends BlockEntity {
         return null;
     }
 
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
-
     protected void addToCache(NcRecipe recipe) {
         String key = contentHandler().getCacheKey();
         if(cachedRecipes.containsKey(key)) {
@@ -260,7 +245,7 @@ public class NuclearCraftBE extends BlockEntity {
         }
     }
 
-    protected void playSound(RegistryObject<SoundEvent> sound, float volume) {
+    protected void playSound(DeferredHolder<SoundEvent, SoundEvent> sound, float volume) {
         if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(sound.get().getLocation()))) {
             SoundHandler.stopTileSound(getBlockPos());
             currentSound = null;
@@ -478,125 +463,82 @@ public class NuclearCraftBE extends BlockEntity {
 
 
 
-    @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(isGtLoaded()) {
-            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER && energyStorage() != null) {
-                if (isGTEUCapEnabled()) {
-                    if (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED)
-                        return getGTEnergy(this, side).cast();
-                } else {
-                    return LazyOptional.empty();
-                }
-            }
-        }
-        if (cap == ENERGY && energyStorage() != null) {
-            if(GTCEU_CONFIG.COMPATIBILITY.get() != ONLY_GTCEU) {
-                return getEnergy().cast();
-            } else {
-                return LazyOptional.empty();
-            }
-        }
-        if (cap == ForgeCapabilities.ITEM_HANDLER && contentHandler() != null) {
-            return contentHandler().getItemCapability(side);
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER && contentHandler() != null) {
-            return contentHandler().getFluidCapability(side);
-        }
-
-        if(isMekanismLoaded() && contentHandler() != null) {
-            if(cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
-                if(contentHandler().hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> contentHandler().gasConverter(side));
-                }
-                return LazyOptional.empty();
-            }
-            if(cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
-                if(contentHandler().hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> contentHandler().getSlurryConverter(side));
-                }
-                return LazyOptional.empty();
-            }
-        }
-        return super.getCapability(cap, side);
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             readTagData(infoTag);
             if (infoTag.contains("recipeInfo") && recipeInfo() != null) {
-                recipeInfo().deserializeNBT(infoTag.getCompound("recipeInfo"));
+                NCSerialization.deserialize(recipeInfo(), registries, infoTag.getCompound("recipeInfo"));
             }
             if(infoTag.contains("upgrades") && upgradesHandler() != null) {
-                upgradesHandler().deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
+                NCSerialization.deserialize(upgradesHandler(), registries, (CompoundTag) (infoTag).get("upgrades"));
             }
             if(infoTag.contains("catalyst") && catalystHandler() != null) {
-                catalystHandler().deserializeNBT((CompoundTag) (infoTag).get("catalyst"));
+                NCSerialization.deserialize(catalystHandler(), registries, (CompoundTag) (infoTag).get("catalyst"));
             }
         }
         if (tag.contains("Energy") && energyStorage() != null) {
-            energyStorage().deserializeNBT(tag.get("Energy"));
+            NCSerialization.deserialize(energyStorage(), registries, tag.get("Energy"));
         }
         if (tag.contains("Content") && contentHandler() != null) {
-            contentHandler().deserializeNBT(tag.getCompound("Content"));
+            NCSerialization.deserialize(contentHandler(), registries, tag.getCompound("Content"));
         }
         if (tag.contains("energy")) {
             energyStorage().setEnergy(tag.getInt("energy"));
         }
-        super.load(tag);
         updateRecipeAfterLoad();
     }
 
 
 
-    public void loadClientData(CompoundTag tag) {
+    public void loadClientData(CompoundTag tag, HolderLookup.Provider registries) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             readTagData(infoTag);
             if (infoTag.contains("recipeInfo") && recipeInfo() != null) {
-                recipeInfo().deserializeNBT(infoTag.getCompound("recipeInfo"));
+                NCSerialization.deserialize(recipeInfo(), registries, infoTag.getCompound("recipeInfo"));
             }
             if (tag.contains("Energy") && energyStorage() != null) {
-                energyStorage().deserializeNBT(tag.get("Energy"));
+                NCSerialization.deserialize(energyStorage(), registries, tag.get("Energy"));
             }
             if(infoTag.contains("energy") && energyStorage() != null) {
                 energyStorage().setEnergy(infoTag.getInt("energy"));
             }
             if(infoTag.contains("upgrades") && upgradesHandler() != null) {
-                upgradesHandler().deserializeNBT((CompoundTag) (infoTag).get("upgrades"));
+                NCSerialization.deserialize(upgradesHandler(), registries, (CompoundTag) (infoTag).get("upgrades"));
             }
             if(infoTag.contains("catalyst") && catalystHandler() != null) {
-                catalystHandler().deserializeNBT((CompoundTag) (infoTag).get("catalyst"));
+                NCSerialization.deserialize(catalystHandler(), registries, (CompoundTag) (infoTag).get("catalyst"));
             }
         }
         if (tag.contains("Content") && contentHandler() != null) {
-            contentHandler().deserializeNBT(tag.getCompound("Content"));
+            NCSerialization.deserialize(contentHandler(), registries, tag.getCompound("Content"));
         }
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
         if (contentHandler() != null) {
             contentHandler().saveSideMap();
         }
         if(!tag.contains("Content") && contentHandler() != null) {
-            tag.put("Content", contentHandler().serializeNBT());
+            tag.put("Content", NCSerialization.serialize(contentHandler(), registries));
         }
         if(!tag.contains("Energy") && energyStorage() != null && energyStorage().wasUpdated) {
-            tag.put("Energy", energyStorage().serializeNBT());
+            tag.put("Energy", NCSerialization.serialize(energyStorage(), registries));
         }
         CompoundTag infoTag = new CompoundTag();
         if (upgradesHandler() != null) {
-            infoTag.put("upgrades", upgradesHandler().serializeNBT());
+            infoTag.put("upgrades", NCSerialization.serialize(upgradesHandler(), registries));
         }
         if (catalystHandler() != null) {
-            infoTag.put("catalyst", catalystHandler().serializeNBT());
+            infoTag.put("catalyst", NCSerialization.serialize(catalystHandler(), registries));
         }
         if (recipeInfo() != null) {
-            infoTag.put("recipeInfo", recipeInfo().serializeNBT());
+            infoTag.put("recipeInfo", NCSerialization.serialize(recipeInfo(), registries));
         }
         if(playerUID != null) {
             tag.putUUID("playerUID", playerUID);
@@ -605,28 +547,28 @@ public class NuclearCraftBE extends BlockEntity {
         tag.put("Info", infoTag);
     }
 
-    protected void saveClientData(CompoundTag tag) {
+    protected void saveClientData(CompoundTag tag, HolderLookup.Provider registries) {
         CompoundTag infoTag = new CompoundTag();
         if(upgradesHandler() != null && upgradesHandler().wasUpdated) {
-            infoTag.put("upgrades", upgradesHandler().serializeNBT());
+            infoTag.put("upgrades", NCSerialization.serialize(upgradesHandler(), registries));
             upgradesHandler().wasUpdated = false;
         }
         if(catalystHandler() != null && catalystHandler().wasUpdated) {
-            infoTag.put("catalyst", catalystHandler().serializeNBT());
+            infoTag.put("catalyst", NCSerialization.serialize(catalystHandler(), registries));
             catalystHandler().wasUpdated = false;
         }
         if (recipeInfo() != null) {
-            infoTag.put("recipeInfo", recipeInfo().serializeNBT());
+            infoTag.put("recipeInfo", NCSerialization.serialize(recipeInfo(), registries));
         }
         if (contentHandler() != null) {
             if(saveSideMapFlag) {
                 contentHandler().saveSideMap();
                 saveSideMapFlag = false;
             }
-            tag.put("Content", contentHandler().serializeNBT());
+            tag.put("Content", NCSerialization.serialize(contentHandler(), registries));
         }
         if(!tag.contains("Energy") && energyStorage() != null && energyStorage().wasUpdated) {
-            tag.put("Energy", energyStorage().serializeNBT());
+            tag.put("Energy", NCSerialization.serialize(energyStorage(), registries));
         }
         if (energyStorage() != null) {
             infoTag.putInt("energy", energyStorage().getEnergyStored());
@@ -636,9 +578,9 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveClientData(tag);
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = super.getUpdateTag(registries);
+        saveClientData(tag, registries);
         if(playerUID != null) {
             tag.putUUID("playerUID", playerUID);
         }
@@ -646,9 +588,9 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
         if (tag != null) {
-            loadClientData(tag);
+            loadClientData(tag, registries);
             if (tag.contains("playerUID")) {
                 playerUID = tag.getUUID("playerUID");
             }
@@ -662,8 +604,11 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        handleUpdateTag(pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider registries) {
+        CompoundTag tag = pkt.getTag();
+        if (tag != null) {
+            handleUpdateTag(tag, registries);
+        }
     }
 
     public void setPlayer(ServerPlayer player) {

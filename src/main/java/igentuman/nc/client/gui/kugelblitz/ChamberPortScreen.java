@@ -1,6 +1,5 @@
 package igentuman.nc.client.gui.kugelblitz;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
@@ -14,7 +13,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +72,7 @@ public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContai
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         xCenter = getGuiLeft()-imageWidth/2;
-        this.renderBackground(graphics);
+        this.renderBackground(graphics, mouseX, mouseY, partialTicks);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
@@ -104,7 +103,6 @@ public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContai
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
         graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);

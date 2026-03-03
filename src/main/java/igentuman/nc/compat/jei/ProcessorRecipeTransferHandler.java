@@ -92,7 +92,7 @@ public class ProcessorRecipeTransferHandler<T extends NcRecipe> implements IReci
     private boolean hasItemInInventory(Player player, ItemStack required) {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
-            if (ItemStack.isSameItemSameTags(stack, required) && stack.getCount() >= required.getCount()) {
+            if (ItemStack.isSameItemSameComponents(stack, required) && stack.getCount() >= required.getCount()) {
                 return true;
             }
         }

@@ -21,15 +21,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,14 +42,13 @@ import static igentuman.nc.setup.registration.NCSounds.TURBINE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static net.minecraft.core.particles.ParticleTypes.CLOUD;
 import static net.minecraft.world.level.block.Blocks.AIR;
-import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
+import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class TurbineControllerBE extends MultiblockControllerBE {
 
     public static String NAME = "turbine_controller";
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
-    protected final LazyOptional<IEnergyStorage> energy;
 
     @NBTField
     public BlockPos bearingPos = BlockPos.ZERO;
@@ -105,7 +99,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
                 .setOutputEnergyTier(getBaseGTEnergyTier())
                 .setInputAmperage(0)
                 .setOutputAmperage(16);
-        energy = LazyOptional.of(() -> energyStorage);
     }
 
     @Override
@@ -128,10 +121,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         return energyStorage;
     }
 
-    @Override
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
 
     private CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(100000000, 0, 100000000) {
@@ -172,31 +161,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     }
 
 
-    private LazyOptional<TurbinePeripheral> peripheralCap;
 
-    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(peripheralCap == null) {
-            peripheralCap = LazyOptional.of(() -> new TurbinePeripheral(this));
-        }
-        return peripheralCap.cast();
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return contentHandler().getFluidCapability(side);
-        }
-        if (cap == ForgeCapabilities.ENERGY) {
-            return energy.cast();
-        }
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return getPeripheral(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
     protected void playRunningSound() {
         if(isRemoved() || (currentSound != null && !currentSound.getLocation().equals(TURBINE.get().getLocation()))) {
@@ -540,8 +505,8 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     public static class Recipe extends NcRecipe {
 
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
-            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, rarity);
+        public Recipe(String codeId, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
+            super(codeId, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, rarity);
             CATALYSTS.put(TurbineControllerBE.NAME, List.of(getToastSymbol()));
         }
 

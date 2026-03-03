@@ -12,7 +12,8 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.minecraftforge.registries.RegistryObject;
+import igentuman.api.platform.NCRegistration;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +27,9 @@ import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
 
 public class WastelandStructureFeature extends Feature<NoneFeatureConfiguration> {
     public static final List<ResourceLocation> structures = new ArrayList<>();
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> WASTELAND_RUINS_FEATURE = FEATURE_REGISTER.register(
-            "wasteland_ruins",
-            () -> new WastelandStructureFeature(NoneFeatureConfiguration.CODEC)
-    );
+    public static final DeferredHolder<Feature<?>, WastelandStructureFeature> WASTELAND_RUINS_FEATURE =
+            NCRegistration.registerFeature(FEATURE_REGISTER, "wasteland_ruins",
+                    () -> new WastelandStructureFeature(NoneFeatureConfiguration.CODEC));
 
     public WastelandStructureFeature(Codec<NoneFeatureConfiguration> codec) {
         super(codec);

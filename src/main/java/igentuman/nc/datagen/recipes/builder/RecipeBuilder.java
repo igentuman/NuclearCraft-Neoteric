@@ -1,29 +1,30 @@
 package igentuman.nc.datagen.recipes.builder;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import igentuman.api.platform.NCRecipeOutput;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import igentuman.api.platform.NCItemStacks;
+import igentuman.api.platform.NCFluidStacks;
+import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
@@ -36,17 +37,23 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
     }
 
     protected final List<ICondition> conditions = new ArrayList<>();
-    protected final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
     protected final ResourceLocation serializerName;
+    private boolean hasCriterion = false;
+    private Advancement.Builder advancementBuilder;
 
     protected RecipeBuilder(ResourceLocation serializerName) {
         this.serializerName = serializerName;
     }
 
+    private Advancement.Builder getOrCreateAdvancement() {
+        if (advancementBuilder == null) {
+            advancementBuilder = Advancement.Builder.advancement();
+        }
+        return advancementBuilder;
+    }
+
     /**
      * Adds a criterion to this recipe.
-     *
-     * @param criterion Criterion to add.
      */
     public BUILDER addCriterion(RecipeCriterion criterion) {
         return addCriterion(criterion.name(), criterion.criterion());
@@ -54,19 +61,15 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
 
     /**
      * Adds a criterion to this recipe.
-     *
-     * @param name      Name of the criterion.
-     * @param criterion Criterion to add.
      */
-    public BUILDER addCriterion(String name, CriterionTriggerInstance criterion) {
-        advancementBuilder.addCriterion(name, criterion);
+    public BUILDER addCriterion(String name, Criterion<?> criterion) {
+        getOrCreateAdvancement().addCriterion(name, criterion);
+        hasCriterion = true;
         return (BUILDER) this;
     }
 
     /**
      * Adds a condition to this recipe.
-     *
-     * @param condition Condition to add.
      */
     public BUILDER addCondition(ICondition condition) {
         conditions.add(condition);
@@ -75,62 +78,76 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
 
     /**
      * Checks if this recipe has any criteria.
-     *
-     * @return {@code true} if this recipe has any criteria.
      */
     protected boolean hasCriteria() {
-        return !advancementBuilder.getCriteria().isEmpty();
+        return hasCriterion;
     }
 
     /**
      * Gets a recipe result object.
-     *
-     * @param id ID of the recipe being built.
      */
     protected abstract RecipeResult getResult(ResourceLocation id);
 
     /**
      * Performs any extra validation.
-     *
-     * @param id ID of the recipe validation is being performed on.
      */
     protected void validate(ResourceLocation id) {
     }
 
     /**
      * Builds this recipe.
-     *
-     * @param consumer Finished Recipe Consumer.
-     * @param id       Name of the recipe being built.
      */
-    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
+    public void build(RecipeOutput output, ResourceLocation id) {
         validate(id);
+
+        // Build the recipe JSON
+        RecipeResult result = getResult(id);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type", serializerName.toString());
+        result.serializeRecipeData(jsonObject);
+
+        // Build advancement if criteria exist
+        AdvancementHolder advancement = null;
         if (hasCriteria()) {
-            //If there is a way to "unlock" this recipe then add an advancement with the criteria
-            advancementBuilder.parent(rlFromString("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
-                  .rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+            advancement = getOrCreateAdvancement()
+                    .parent(rlFromString("recipes/root"))
+                    .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+                    .rewards(AdvancementRewards.Builder.recipe(id))
+                    .requirements(AdvancementRequirements.Strategy.OR)
+                    .build(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "recipes/" + id.getPath()));
         }
-        consumer.accept(getResult(id));
+
+        // Save via NCRecipeOutput's JSON path
+        if (output instanceof NCRecipeOutput ncOutput) {
+            ncOutput.acceptJson(id, jsonObject, advancement, conditions.toArray(ICondition[]::new));
+        } else {
+            // Fallback: embed conditions directly in JSON and use the standard path
+            // This shouldn't normally happen, but provides safety
+            if (!conditions.isEmpty()) {
+                ICondition.writeConditions(com.mojang.serialization.JsonOps.INSTANCE, jsonObject, conditions);
+            }
+            // Can't use standard accept() without a real Recipe object — save via DataProvider
+            throw new UnsupportedOperationException(
+                    "NC custom recipe builders require NCRecipeOutput. Recipe: " + id);
+        }
     }
 
     /**
      * Builds this recipe basing the name on the output item.
-     *
-     * @param consumer Finished Recipe Consumer.
-     * @param output       Output to base the recipe name off of.
      */
-    protected void build(Consumer<FinishedRecipe> consumer, ItemLike... output) {
-        ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(output[0].asItem());
+    protected void build(RecipeOutput output, ItemLike... items) {
+        ResourceLocation registryName = BuiltInRegistries.ITEM.getKey(items[0].asItem());
         if (registryName == null) {
             throw new IllegalStateException("Could not retrieve registry name for output.");
         }
-        build(consumer, registryName);
+        build(output, registryName);
     }
 
     /**
-     * Base recipe result.
+     * Base recipe result — produces JSON via serializeRecipeData().
+     * No longer implements FinishedRecipe (removed in 1.21.1).
      */
-    protected abstract class RecipeResult implements FinishedRecipe {
+    protected abstract class RecipeResult {
 
         private final ResourceLocation id;
 
@@ -138,80 +155,53 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
             this.id = id;
         }
 
-        @Override
-        public JsonObject serializeRecipe() {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("type", serializerName.toString());
-            if (!conditions.isEmpty()) {
-                JsonArray conditionsArray = new JsonArray();
-                for (ICondition condition : conditions) {
-                    conditionsArray.add(CraftingHelper.serialize(condition));
-                }
-                jsonObject.add("conditions", conditionsArray);
-            }
-            this.serializeRecipeData(jsonObject);
-            return jsonObject;
-        }
-
-        @NotNull
-        @Override
-        public RecipeSerializer<?> getType() {
-            return ForgeRegistries.RECIPE_SERIALIZERS.getValue(serializerName);
-        }
-
-        @NotNull
-        @Override
         public ResourceLocation getId() {
             return this.id;
         }
 
-        @Nullable
-        @Override
-        public JsonObject serializeAdvancement() {
-            return hasCriteria() ? advancementBuilder.serializeToJson() : null;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getAdvancementId() {
-            return ResourceLocation.tryBuild(id.getNamespace(), "recipes/" + id.getPath());
-        }
+        /**
+         * Serializes the recipe-specific data into the JSON object.
+         */
+        public abstract void serializeRecipeData(@NotNull JsonObject json);
     }
+
     public static JsonElement serializeItemStack(@NotNull ItemStack stack) {
         JsonObject json = new JsonObject();
-        json.addProperty("item", ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
+        json.addProperty("item", BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
         if (stack.getCount() > 1) {
             json.addProperty("count", stack.getCount());
         }
-        if (stack.hasTag()) {
-            if(stack.getTag().contains("Damage")) {
-                if(stack.getTag().getInt("Damage") == 0) {
-                    stack.getTag().remove("Damage");
+        if (NCItemStacks.hasCustomData(stack)) {
+            CompoundTag tag = NCItemStacks.getTag(stack);
+            if(tag.contains("Damage")) {
+                if(tag.getInt("Damage") == 0) {
+                    tag.remove("Damage");
                 }
             }
-            if(!stack.getTag().getAllKeys().isEmpty())
-            json.addProperty("nbt", stack.getTag().toString());
+            if(!tag.getAllKeys().isEmpty())
+            json.addProperty("nbt", tag.toString());
         }
         return json;
     }
 
     public static JsonElement serializeIngredient(@NotNull Ingredient ingredient) {
-        return ingredient.toJson();
+        return NCRecipeOutput.serializeIngredient(ingredient);
     }
 
 
     public static JsonElement serializeFluidStack(@NotNull FluidStack fluidStack) {
         JsonObject json = new JsonObject();
-        json.addProperty("fluid", ForgeRegistries.FLUIDS.getKey(fluidStack.getFluid()).toString());
+        json.addProperty("fluid", BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()).toString());
         json.addProperty("amount", fluidStack.getAmount());
-        if (fluidStack.hasTag()) {
-            if(fluidStack.getTag().contains("Damage")) {
-                if(fluidStack.getTag().getInt("Damage") == 0) {
-                    fluidStack.getTag().remove("Damage");
+        if (NCFluidStacks.hasCustomData(fluidStack)) {
+            CompoundTag tag = NCFluidStacks.getTag(fluidStack);
+            if(tag.contains("Damage")) {
+                if(tag.getInt("Damage") == 0) {
+                    tag.remove("Damage");
                 }
             }
-            if(!fluidStack.getTag().getAllKeys().isEmpty())
-            json.addProperty("nbt", fluidStack.getTag().toString());
+            if(!tag.getAllKeys().isEmpty())
+            json.addProperty("nbt", tag.toString());
         }
         return json;
     }

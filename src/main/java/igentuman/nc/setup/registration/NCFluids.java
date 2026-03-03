@@ -12,7 +12,6 @@ import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TextureUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
@@ -20,13 +19,17 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.SoundActions;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.SoundActions;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.fml.loading.FMLEnvironment;
+import igentuman.api.platform.NCBlockProperties;
+import igentuman.api.platform.NCTagFactory;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredItem;
+import igentuman.api.platform.NCRegistration;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -36,7 +39,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static igentuman.nc.NuclearCraft.forgeRl;
+import static igentuman.nc.NuclearCraft.neoforgeRl;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.content.materials.Materials.slurries;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
@@ -131,11 +134,11 @@ public class NCFluids {
         items.put(Materials.irradiated_sodium, new LiquidDefinition(Materials.irradiated_sodium, 0x90CDBEE7));
 
         for(LiquidDefinition liquid: items.values()) {
-            LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(liquid.name)));
+            LIQUIDS_TAG.put(liquid.name, NCTagFactory.fluidTag(neoforgeRl(liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
 
             if (!liquid.name.matches(".*_solution|.*_water|.*_liquor|.*_chocolate|.*_milk|.*_coolant.*")) {
-                LIQUIDS_TAG.put("molten_" + liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("molten_" + liquid.name)));
+                LIQUIDS_TAG.put("molten_" + liquid.name, NCTagFactory.fluidTag(neoforgeRl("molten_" + liquid.name)));
             }
         }
     }
@@ -149,7 +152,7 @@ public class NCFluids {
         items.put(subliquid_matter, new LiquidDefinition(subliquid_matter, 0x50C90076));
 
         for(LiquidDefinition liquid: items.values()) {
-            LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(liquid.name)));
+            LIQUIDS_TAG.put(liquid.name, NCTagFactory.fluidTag(neoforgeRl(liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid));
         }
     }
@@ -175,7 +178,7 @@ public class NCFluids {
             items.put(material+"_clean_slurry", new AcidDefinition(material+"_clean_slurry", TextureUtil.rgbaToInt(rgba)));
         }
         for(AcidDefinition acid: items.values()) {
-            LIQUIDS_TAG.put(acid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(acid.name)));
+            LIQUIDS_TAG.put(acid.name, NCTagFactory.fluidTag(neoforgeRl(acid.name)));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
         }
     }
@@ -190,19 +193,19 @@ public class NCFluids {
         items.put("aqua_regia_acid", new AcidDefinition("aqua_regia_acid", 0XCCFFBB99));
 
         for(AcidDefinition acid: items.values()) {
-            LIQUIDS_TAG.put(acid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(acid.name)));
+            LIQUIDS_TAG.put(acid.name, NCTagFactory.fluidTag(neoforgeRl(acid.name)));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
         }
     }
 
     private static void materialFluids() {
         for (String name: Materials.fluids().keySet()) {
-            LIQUIDS_TAG.put(name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(name)));
+            LIQUIDS_TAG.put(name, NCTagFactory.fluidTag(neoforgeRl(name)));
             NC_MATERIALS.put(name, FluidEntry.makeMoltenLiquid(name, Materials.fluids().get(name).color));
-            LIQUIDS_TAG.put("molten_" + name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("molten_" + name)));
+            LIQUIDS_TAG.put("molten_" + name, NCTagFactory.fluidTag(neoforgeRl("molten_" + name)));
         }
-        LIQUIDS_TAG.put("aluminium", TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("aluminium")));
-        LIQUIDS_TAG.put("molten_aluminium", TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("molten_aluminium")));
+        LIQUIDS_TAG.put("aluminium", NCTagFactory.fluidTag(neoforgeRl("aluminium")));
+        LIQUIDS_TAG.put("molten_aluminium", NCTagFactory.fluidTag(neoforgeRl("molten_aluminium")));
     }
 
     private static void fuel() {
@@ -220,10 +223,10 @@ public class NCFluids {
                     NC_MATERIALS.put(key,
                             FluidEntry.makeMoltenLiquid(key.replace("-","_"),
                                     colorFuel));
-                    LIQUIDS_TAG.put(key, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), forgeRl(key.replace("-","_"))));
+                    LIQUIDS_TAG.put(key, NCTagFactory.fluidTag(neoforgeRl(key.replace("-","_"))));
                     NC_MATERIALS.put("depleted_"+key,
                             FluidEntry.makeMoltenLiquid("depleted_"+key.replace("-","_"), colorDepleted));
-                    LIQUIDS_TAG.put("depleted_"+key, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), forgeRl("depleted_"+key.replace("-","_"))));
+                    LIQUIDS_TAG.put("depleted_"+key, NCTagFactory.fluidTag(neoforgeRl("depleted_"+key.replace("-","_"))));
                     if(name.matches("xenorium.*|quantite.*|")) break;
                 }
             }
@@ -265,8 +268,8 @@ public class NCFluids {
         items.put("radon", new GasDefinition("radon", 0xFFFFFFFF, 260));
 
         for(GasDefinition gas: items.values()) {
-            LIQUIDS_TAG.put(gas.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(gas.name)));
-            GASES_TAG.put(gas.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("gases/"+gas.name)));
+            LIQUIDS_TAG.put(gas.name, NCTagFactory.fluidTag(neoforgeRl(gas.name)));
+            GASES_TAG.put(gas.name, NCTagFactory.fluidTag(neoforgeRl("gases/"+gas.name)));
             NC_GASES.put(gas.name, FluidEntry.makeGas(gas));
         }
     }
@@ -285,7 +288,7 @@ public class NCFluids {
                 }
                 NC_MATERIALS.put(name+type,
                         FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,color));
-                LIQUIDS_TAG.put(name+type, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(name+type)));
+                LIQUIDS_TAG.put(name+type, NCTagFactory.fluidTag(neoforgeRl(name+type)));
                 if(name.matches("xenorium.*|quantite.*|")) break;
             }
         }
@@ -312,17 +315,17 @@ public class NCFluids {
         return builder -> builder.temperature(temperature).density(density).viscosity(visconsity);
     }
     public record FluidEntry(
-            RegistryObject<NCFluid> flowing,
-            RegistryObject<NCFluid> still,
+            DeferredHolder<Fluid, NCFluid> flowing,
+            DeferredHolder<Fluid, NCFluid> still,
             NCBlocks.BlockEntry<NCFluidBlock> block,
-            RegistryObject<BucketItem> bucket,
-            RegistryObject<FluidType> type,
+            DeferredItem<BucketItem> bucket,
+            DeferredHolder<FluidType, FluidType> type,
             List<Property<?>> properties,
             int color
     )
     {
 
-        public static final List<RegistryObject<BucketItem>> ALL_BUCKETS = new ArrayList<>();
+        public static final List<DeferredItem<BucketItem>> ALL_BUCKETS = new ArrayList<>();
 
         public static FluidEntry makeAcid(AcidDefinition acid) {
             return make(acid.name,0, rl("block/material/fluid/liquid_still"), rl("block/material/fluid/liquid_flow"), liquidBuilder(acid.temperature), acid.color, false);
@@ -407,7 +410,7 @@ public class NCFluids {
             }
             if(buildAttributes!=null)
                 buildAttributes.accept(builder);
-            RegistryObject<FluidType> type;
+            DeferredHolder<FluidType, FluidType> type;
             if(color == 0xFFFFFFFF) {
                 type = FLUID_TYPES.register(
                         name, () -> makeTypeWithTextures(builder, stillTex, flowingTex)
@@ -419,20 +422,21 @@ public class NCFluids {
             }
 
             Mutable<FluidEntry> thisMutable = new MutableObject<>();
-            RegistryObject<NCFluid> still = FLUIDS.register(name, () -> NCFluid.makeFluid(
+            DeferredHolder<Fluid, NCFluid> still = NCRegistration.registerFluid(FLUIDS, name, () -> NCFluid.makeFluid(
                     makeStill, thisMutable.getValue()
             ));
 
-            RegistryObject<NCFluid> flowing = FLUIDS.register(name+"_flowing", () -> NCFluid.makeFluid(
+            DeferredHolder<Fluid, NCFluid> flowing = NCRegistration.registerFluid(FLUIDS, name+"_flowing", () -> NCFluid.makeFluid(
                     makeFlowing, thisMutable.getValue()
             ));
 
             NCBlocks.BlockEntry<NCFluidBlock> block = new NCBlocks.BlockEntry<>(
                     name+"_fluid_block",
-                    () -> BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable().noCollission(),
+                    () -> NCBlockProperties.copy(Blocks.WATER).noLootTable().noCollission(),
                     p -> new NCFluidBlock(thisMutable.getValue(), p)
             );
-            RegistryObject<BucketItem> bucket = ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));
+            @SuppressWarnings("unchecked")
+            DeferredItem<BucketItem> bucket = (DeferredItem<BucketItem>) (DeferredItem<?>) ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));
             ALL_BUCKETS.add(bucket);
             FluidEntry entry = new FluidEntry(flowing, still, block, bucket, type, properties, color);
             thisMutable.setValue(entry);
@@ -520,7 +524,7 @@ public class NCFluids {
             return bucket.get();
         }
 
-        private static BucketItem makeBucket(RegistryObject<NCFluid> still, int burnTime)
+        private static BucketItem makeBucket(DeferredHolder<Fluid, NCFluid> still, int burnTime)
         {
             return new NCBucketItem(
                     still, new Item.Properties()
@@ -535,7 +539,7 @@ public class NCFluids {
             };
         }
 
-        public RegistryObject<NCFluid> getStillGetter()
+        public DeferredHolder<Fluid, NCFluid> getStillGetter()
         {
             return still;
         }

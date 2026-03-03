@@ -7,7 +7,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -78,6 +78,6 @@ public class DataGenUtil
 	{
 		String basePath = base.getPath();
 		String lastDir = basePath.substring(0, basePath.lastIndexOf('/')+1);
-		return ResourceLocation.tryBuild(base.getNamespace(), lastDir+relativePath);
+		return ResourceLocation.fromNamespaceAndPath(base.getNamespace(), lastDir+relativePath);
 	}
 }

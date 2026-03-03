@@ -1,9 +1,7 @@
 package igentuman.nc.entity;
 
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -11,14 +9,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import static igentuman.nc.setup.registration.Entities.WASTELAND_PROJECTILE;
-import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
 
 public class EntityWastelandProjectile extends ThrowableProjectile {
 
@@ -35,7 +31,7 @@ public class EntityWastelandProjectile extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         // No additional data needed
     }
 
@@ -72,7 +68,7 @@ public class EntityWastelandProjectile extends ThrowableProjectile {
             this.level().broadcastEntityEvent(this, (byte)3);
 
             // Play sound
-            this.playSound(SoundEvents.GENERIC_EXPLODE, 0.8F, 0.6F / (this.random.nextFloat() * 0.2F + 0.9F));
+            this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 0.8F, 0.6F / (this.random.nextFloat() * 0.2F + 0.9F));
 
             this.discard();
         }
@@ -91,11 +87,9 @@ public class EntityWastelandProjectile extends ThrowableProjectile {
 
             // Apply radiation if it's a player
             if (livingTarget.equals(this.level().getNearestPlayer(this, 64))) {
-                livingTarget.getCapability(igentuman.nc.radiation.data.PlayerRadiationProvider.PLAYER_RADIATION)
-                    .ifPresent(radiation -> {
-                        long currentRadiation = radiation.getRadiation();
-                        radiation.setRadiation((long) (currentRadiation + RADIATION_AMOUNT));
-                    });
+                var radiation = livingTarget.getData(igentuman.nc.setup.registration.NCAttachments.PLAYER_RADIATION.get());
+                long currentRadiation = radiation.getRadiation();
+                radiation.setRadiation((long) (currentRadiation + RADIATION_AMOUNT));
             }
 
             // Apply knockback
@@ -136,10 +130,5 @@ public class EntityWastelandProjectile extends ThrowableProjectile {
         } else {
             super.handleEntityEvent(id);
         }
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return new ClientboundAddEntityPacket(this);
     }
 }

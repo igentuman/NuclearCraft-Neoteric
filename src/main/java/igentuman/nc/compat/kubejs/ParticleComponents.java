@@ -8,7 +8,6 @@ import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
 import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.util.TinyMap;
-import com.google.gson.JsonObject;
 
 import java.util.Map;
 

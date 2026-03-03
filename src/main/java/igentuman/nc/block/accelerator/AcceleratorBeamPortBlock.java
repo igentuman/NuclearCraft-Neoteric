@@ -6,10 +6,12 @@ import igentuman.nc.util.PortMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -51,18 +53,23 @@ public class AcceleratorBeamPortBlock extends HorizontalDirectionalBlock impleme
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return simpleCodec(AcceleratorBeamPortBlock::new);
+    }
+
+    @Override
+    protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
-            if(isMultiTool(player.getItemInHand(hand))) {
+            if(isMultiTool(stack)) {
                 PortMode.Mode mode = state.getValue(PORT_MODE);
                 PortMode.Mode newMode = mode.next();
                 MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(pos);
                 level.setBlockAndUpdate(pos, state.setValue(PORT_MODE, newMode));
                 player.sendSystemMessage(__("message.nc.switch_side.mode", newMode));
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

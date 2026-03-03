@@ -4,8 +4,8 @@ import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.FluidTagsProvider;
-import net.minecraftforge.common.Tags.Fluids;
-import net.minecraftforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.common.Tags.Fluids;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCFluids.NC_GASES;

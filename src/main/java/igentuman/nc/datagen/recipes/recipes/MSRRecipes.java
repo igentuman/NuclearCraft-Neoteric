@@ -6,20 +6,19 @@ import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.setup.registration.FissionFuel;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.rl;
 
 public class MSRRecipes {
 
 
-    public static Consumer<FinishedRecipe> consumer;
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static RecipeOutput consumer;
+    public static void generate(RecipeOutput consumer) {
         MSRRecipes.consumer = consumer;
         recipes();
     }

@@ -8,10 +8,10 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import net.minecraftforge.client.model.geometry.IGeometryLoader;
-import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
+import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,15 +31,15 @@ public class BatteryBlockLoader implements IGeometryLoader<BatteryBlockLoader.Ba
         String side = jsonObject.get("textures").getAsJsonObject().get("down").getAsString();
         String up = jsonObject.get("textures").getAsJsonObject().get("up").getAsString();
 
-        Material sideDefault = ForgeHooksClient.getBlockMaterial(rlFromString(side));
-        Material sideIn = ForgeHooksClient.getBlockMaterial(rlFromString(side+ "_in"));
-        Material sideOut = ForgeHooksClient.getBlockMaterial(rlFromString(side+ "_out"));
-        Material sideNone = ForgeHooksClient.getBlockMaterial(rlFromString(side+ "_non"));
+        Material sideDefault = ClientHooks.getBlockMaterial(rlFromString(side));
+        Material sideIn = ClientHooks.getBlockMaterial(rlFromString(side+ "_in"));
+        Material sideOut = ClientHooks.getBlockMaterial(rlFromString(side+ "_out"));
+        Material sideNone = ClientHooks.getBlockMaterial(rlFromString(side+ "_non"));
 
-        Material topDefault = ForgeHooksClient.getBlockMaterial(rlFromString(up));
-        Material topIn = ForgeHooksClient.getBlockMaterial(rlFromString(up+ "_in"));
-        Material topOut = ForgeHooksClient.getBlockMaterial(rlFromString(up+ "_out"));
-        Material topNone = ForgeHooksClient.getBlockMaterial(rlFromString(up+ "_non"));
+        Material topDefault = ClientHooks.getBlockMaterial(rlFromString(up));
+        Material topIn = ClientHooks.getBlockMaterial(rlFromString(up+ "_in"));
+        Material topOut = ClientHooks.getBlockMaterial(rlFromString(up+ "_out"));
+        Material topNone = ClientHooks.getBlockMaterial(rlFromString(up+ "_non"));
 
         return new BatteryModelGeometry(sideDefault, sideIn, sideOut, sideNone, topDefault, topIn, topOut, topNone);
     }
@@ -67,7 +67,7 @@ public class BatteryBlockLoader implements IGeometryLoader<BatteryBlockLoader.Ba
         }
 
         @Override
-        public BakedModel bake(IGeometryBakingContext iGeometryBakingContext, ModelBaker modelBaker, Function<Material, TextureAtlasSprite> function, ModelState modelState, ItemOverrides itemOverrides, ResourceLocation resourceLocation) {
+        public BakedModel bake(IGeometryBakingContext iGeometryBakingContext, ModelBaker modelBaker, Function<Material, TextureAtlasSprite> function, ModelState modelState, ItemOverrides itemOverrides) {
              return new BatteryBlockBakedModel(modelState, function, itemOverrides, iGeometryBakingContext.getTransforms(), this);
         }
     }

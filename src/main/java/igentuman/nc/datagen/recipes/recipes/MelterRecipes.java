@@ -9,11 +9,10 @@ import igentuman.nc.content.materials.Materials;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.NCMaterial;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_NUGGET;
@@ -22,7 +21,7 @@ import static net.minecraft.world.item.Items.*;
 
 public class MelterRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         MelterRecipes.consumer = consumer;
         ID = Processors.MELTER;
         for(String name: Materials.all().keySet()) {

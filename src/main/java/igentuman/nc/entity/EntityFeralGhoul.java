@@ -1,6 +1,6 @@
 package igentuman.nc.entity;
 
-import igentuman.nc.radiation.data.PlayerRadiationProvider;
+import igentuman.nc.setup.registration.NCAttachments;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -162,10 +162,9 @@ public class EntityFeralGhoul extends Zombie {
 
         // Add radiation to player when attacked
         if (attackResult && pEntity instanceof Player player) {
-            player.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).ifPresent(radiation -> {
-                long currentRadiation = radiation.getRadiation();
-                radiation.setRadiation(currentRadiation + RADIATION_AMOUNT);
-            });
+            var radiation = player.getData(NCAttachments.PLAYER_RADIATION.get());
+            long currentRadiation = radiation.getRadiation();
+            radiation.setRadiation(currentRadiation + RADIATION_AMOUNT);
 
             // Play radiation effect sound
             this.playSound(SoundEvents.GENERIC_DRINK, 0.2F, 0.8F);

@@ -1,5 +1,6 @@
 package igentuman.nc.recipes;
 
+import igentuman.api.platform.NCRecipes;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.entity.processor.NuclearFurnaceBE;
 import igentuman.nc.block.fission.entity.MSRControllerBE;
@@ -12,14 +13,13 @@ import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.registry.RecipeTypeDeferredRegister;
 import igentuman.nc.registry.RecipeTypeRegistryObject;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.api.distmarker.Dist;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
@@ -103,18 +103,18 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
             return Collections.emptyList();
         }
         if (world == null) {
-            world = DistExecutor.unsafeRunForDist(() -> NcClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
+            world = FMLEnvironment.dist == Dist.CLIENT ? NcClient.tryGetClientWorld() : ServerLifecycleHooks.getCurrentServer().overworld();
             if (world == null) {
                 return cachedRecipes;
             }
         }
         if (cachedRecipes.isEmpty()) {
             RecipeManager recipeManager = world.getRecipeManager();
-            List<RECIPE> recipes = new ArrayList<>();
+            List<RECIPE> recipes;
             if(this.registryName.getPath().equals("nuclear_furnace")) {
-                recipes = getSmeltingRecipes(recipeManager);
+                recipes = getSmeltingRecipes(recipeManager, world);
             } else {
-                recipes = recipeManager.getAllRecipesFor(this);
+                recipes = NCRecipes.getAllRecipesFor(recipeManager, this);
             }
             cachedRecipes = recipes.stream()
                     .filter(recipe -> !recipe.isIncomplete())
@@ -123,39 +123,43 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         return cachedRecipes;
     }
 
-    private List<RECIPE> getSmeltingRecipes(RecipeManager recipeManager) {
-        List<SmeltingRecipe> smelting = recipeManager.getAllRecipesFor(SMELTING);
+    private List<RECIPE> getSmeltingRecipes(RecipeManager recipeManager, Level level) {
+        List<RecipeHolder<SmeltingRecipe>> smelting = NCRecipes.getVanillaRecipes(recipeManager, RecipeType.SMELTING);
         List<RECIPE> recipes = new ArrayList<>();
-        for(SmeltingRecipe recipe: smelting) {
+        for(RecipeHolder<SmeltingRecipe> holder: smelting) {
+            SmeltingRecipe recipe = holder.value();
             if(recipe.isIncomplete()) {
                 continue;
             }
-            ItemStack result = recipe.getResultItem(RegistryAccess.EMPTY);
+            ItemStack result = recipe.getResultItem(level.registryAccess());
             Ingredient input = recipe.getIngredients().get(0);
             if (result.isEmpty() || input.isEmpty()) {
                 continue;
             }
             ItemStackIngredient output = IngredientCreatorAccess.item().from(result);
-            recipes.add((RECIPE) new NuclearFurnaceBE.Recipe(
-                    rl(getNFRecipeId(recipe)),
+            NuclearFurnaceBE.Recipe nfRecipe = new NuclearFurnaceBE.Recipe(
+                    "nuclear_furnace",
                     new ItemStackIngredient[]{IngredientCreatorAccess.item().from(input)},
                     new ItemStackIngredient[]{output},
                     new FluidStackIngredient[0],
                     new FluidStackIngredient[0],
-                    recipe.getCookingTime()/2000D, 1, 1, 1));
+                    recipe.getCookingTime()/2000D, 1, 1, 1);
+            nfRecipe.setId(rl(getNFRecipeId(holder)));
+            recipes.add((RECIPE) nfRecipe);
         }
         return recipes;
     }
 
-    private String getNFRecipeId(SmeltingRecipe recipe) {
-        return recipe.getId().toString().replaceAll("[^a-z0-9/._-]", "_") + "_nf";
+    private String getNFRecipeId(RecipeHolder<SmeltingRecipe> holder) {
+        return holder.id().toString().replaceAll("[^a-z0-9/._-]", "_") + "_nf";
     }
 
     /**
      * Helper for getting a recipe from a world's recipe manager.
      */
-    public static <C extends Container, RECIPE_TYPE extends Recipe<C>> Optional<RECIPE_TYPE> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, C inventory, Level level) {
-        return level.getRecipeManager().getRecipeFor(recipeType, inventory, level)
+    public static <I extends RecipeInput, RECIPE_TYPE extends Recipe<I>> Optional<RECIPE_TYPE> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, I input, Level level) {
+        return level.getRecipeManager().getRecipeFor(recipeType, input, level)
+              .map(RecipeHolder::value)
               .filter(recipe -> !recipe.isIncomplete());
     }
 
@@ -163,7 +167,8 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
      * Helper for getting a recipe from a world's recipe manager.
      */
     public static Optional<? extends Recipe<?>> byKey(Level level, ResourceLocation id) {
-        return level.getRecipeManager().byKey(id)
+        return NCRecipes.byKey(level.getRecipeManager(), id)
+              .map(RecipeHolder::value)
               .filter(recipe -> !recipe.isIncomplete());
     }
     public boolean isLoaded = false;
@@ -179,7 +184,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
     }
 
     private void getRecipes(RecipeManager manager) {
-        List<RECIPE> recipes = manager.getAllRecipesFor(this);
+        List<RECIPE> recipes = NCRecipes.getAllRecipesFor(manager, this);
         cachedRecipes = recipes.stream()
                 .filter(recipe -> !recipe.isIncomplete())
                 .toList();

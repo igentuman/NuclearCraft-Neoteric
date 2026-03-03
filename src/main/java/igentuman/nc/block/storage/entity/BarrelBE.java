@@ -1,26 +1,25 @@
 package igentuman.nc.block.storage.entity;
 
+import igentuman.api.platform.NCLevels;
+import igentuman.api.platform.NCSerialization;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.handler.sided.capability.NcFluidTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,7 +28,6 @@ import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BE;
 public class BarrelBE extends NuclearCraftBE implements SideModeToggleable {
 
     public final NcFluidTank fluidTank;
-    protected final LazyOptional<IFluidHandler> fluidHandler;
     public static final ModelProperty<HashMap<Integer, SideMode>> SIDE_CONFIG = new ModelProperty<>();
 
     public BarrelBE(BlockPos pPos, BlockState pBlockState) {
@@ -38,7 +36,6 @@ public class BarrelBE extends NuclearCraftBE implements SideModeToggleable {
             sideConfig.put(direction.ordinal(), SideMode.DEFAULT);
         }
         fluidTank = createTank();
-        fluidHandler = LazyOptional.of(() -> fluidTank);
     }
 
     private NcFluidTank createTank() {
@@ -51,11 +48,7 @@ public class BarrelBE extends NuclearCraftBE implements SideModeToggleable {
         };
     }
 
-    public LazyOptional<IFluidHandler> getFluidHandler() {
-        return fluidHandler;
-    }
 
-    @Nonnull
     @Override
     public @NotNull ModelData getModelData() {
         return ModelData.builder()
@@ -82,9 +75,9 @@ public class BarrelBE extends NuclearCraftBE implements SideModeToggleable {
                     sideConfig.get(direction.ordinal()) == SideMode.DISABLED ||
                     sideConfig.get(direction.ordinal()) == SideMode.DEFAULT
             ) continue;
-            BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
+            BlockEntity be = NCLevels.getExistingBlockEntity(level, worldPosition.relative(direction));
             if (be != null) {
-                IFluidHandler sideHandler = be.getCapability(ForgeCapabilities.FLUID_HANDLER, direction.getOpposite()).orElse(null);
+                IFluidHandler sideHandler = level.getCapability(Capabilities.FluidHandler.BLOCK, worldPosition.relative(direction), direction.getOpposite());
                 if(sideHandler == null) continue;
                 if (currentAmount.get() > 0 && sideConfig.get(direction.ordinal()) == SideMode.OUT) {
                     int accepted = sideHandler.fill(fluidTank.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE);
@@ -119,34 +112,29 @@ public class BarrelBE extends NuclearCraftBE implements SideModeToggleable {
         return BarrelBlocks.all().get(getName()).config().getCapacity();
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER && (side != null && sideConfig.get(side.ordinal()) != SideMode.DISABLED)) {
-            return getFluidHandler().cast();
-        }
-        return super.getCapability(cap, side);
-    }
 
-    protected void saveClientData(CompoundTag tag) {
-        CompoundTag tank = new CompoundTag();
-        tag.put("Fluid", fluidTank.getFluid().writeToNBT(tank));
+    @Override
+    protected void saveClientData(CompoundTag tag, HolderLookup.Provider registries) {
+        if (!fluidTank.getFluid().isEmpty()) {
+            tag.put("Fluid", NCSerialization.saveFluidStack(fluidTank.getFluid(), registries));
+        }
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 
-    public void loadClientData(CompoundTag tag) {
+    @Override
+    public void loadClientData(CompoundTag tag, HolderLookup.Provider registries) {
         if(tag.contains("Fluid")) {
-            fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(tag.getCompound("Fluid")));
+            fluidTank.setFluid(NCSerialization.loadFluidStack(registries, tag.getCompound("Fluid")));
         }
         if (!tag.contains("sideConfig")) return;
         loadSideConfig(tag.getIntArray("sideConfig"));
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         if(tag.contains("Fluid")) {
-            fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(tag.getCompound("Fluid")));
+            fluidTank.setFluid(NCSerialization.loadFluidStack(registries, tag.getCompound("Fluid")));
         }
         if(!tag.contains("sideConfig")) return;
         loadSideConfig(tag.getIntArray("sideConfig"));
@@ -172,10 +160,11 @@ public class BarrelBE extends NuclearCraftBE implements SideModeToggleable {
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        CompoundTag tank = new CompoundTag();
-        tag.put("Fluid", fluidTank.getFluid().writeToNBT(tank));
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        if (!fluidTank.getFluid().isEmpty()) {
+            tag.put("Fluid", NCSerialization.saveFluidStack(fluidTank.getFluid(), registries));
+        }
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 

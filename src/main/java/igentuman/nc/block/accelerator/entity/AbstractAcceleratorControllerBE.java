@@ -12,27 +12,23 @@ import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
-import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
+import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
 
@@ -77,9 +73,7 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     @NBTField
     public double redstoneLevel = 0;
 
-    protected final LazyOptional<IParticleStackHandler> particleHandler;
     protected final ParticleStorage particleStorage;
-    protected final LazyOptional<IEnergyStorage> energy;
     public final SidedContentHandler contentHandler;
     public final CustomEnergyStorage energyStorage;
     private List<ItemStack> allowedInputs;
@@ -97,7 +91,6 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
                 .setOutputEnergyTier(0)
                 .setInputAmperage(16)
                 .setOutputAmperage(0);
-        energy = LazyOptional.of(() -> energyStorage);
         contentHandler = new SidedContentHandler(
                 1, 1,
                 1, 3, 1000);
@@ -120,11 +113,14 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         contentHandler().fluidHandler.tanks.get(3).setCapacity(100000);
         particleStorage = new ParticleStorage();
         particleStorage.setTileEntity(this);
-        particleHandler = CapabilityParticleStackHandler.createHandler(particleStorage);
     }
 
     public ParticleStack getParticleStack() {
         return particleStorage.getParticle();
+    }
+
+    public ParticleStorage getParticleStorage() {
+        return particleStorage;
     }
 
     public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier() {
@@ -178,7 +174,7 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     {
         if(allowedInputs == null) {
             allowedInputs = new ArrayList<>();
-            for(RegistryObject<Item> item: ION_SOURCES.values()) {
+            for(DeferredHolder<Item, Item> item: ION_SOURCES.values()) {
                 allowedInputs.add(new ItemStack(item.get()));
             }
         }
@@ -190,10 +186,6 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         return 0;
     }
 
-    @Override
-    public LazyOptional<IEnergyStorage> getEnergy() {
-        return energy;
-    }
 
     private CustomEnergyStorage createEnergy() {
         return new CustomEnergyStorage(100000000, 100000000, 0) {
@@ -206,8 +198,8 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
 
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             particleStorage.readFromNBT(infoTag.getCompound("particle_storage"));
@@ -215,8 +207,8 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
@@ -225,16 +217,16 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     }
 
     @Override
-    public void loadClientData(CompoundTag tag) {
-        super.loadClientData(tag);
+    public void loadClientData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadClientData(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             particleStorage.readFromNBT(infoTag.getCompound("particle_storage"));
         }
     }
     @Override
-    protected void saveClientData(CompoundTag tag) {
-        super.saveClientData(tag);
+    protected void saveClientData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveClientData(tag, registries);
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
@@ -347,11 +339,5 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         return false;
     }
 
-    public <T> LazyOptional<T>  getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return LazyOptional.empty();
-    }
 
-    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
-        return LazyOptional.empty();
-    }
 }

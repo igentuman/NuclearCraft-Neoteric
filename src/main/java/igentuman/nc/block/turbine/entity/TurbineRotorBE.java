@@ -1,11 +1,13 @@
 package igentuman.nc.block.turbine.entity;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,7 +32,7 @@ public class TurbineRotorBE extends TurbineBE {
         connectedToBearing = false;
         Direction facing = getBlockState().getValue(TurbineRotorBlock.FACING);
         for(Direction dir: List.of(facing, facing.getOpposite())) {
-            BlockEntity be = getLevel().getExistingBlockEntity(getBlockPos().relative(dir));
+            BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), getBlockPos().relative(dir));
             BlockState bs = getLevel().getBlockState(getBlockPos().relative(dir));
             if(be instanceof TurbineRotorBE rotor) {
                 connectedToBearing = rotor.hasBearingConnection(dir);
@@ -44,12 +46,12 @@ public class TurbineRotorBE extends TurbineBE {
     }
 
     @Override
-    protected void saveClientData(CompoundTag tag) {
+    protected void saveClientData(CompoundTag tag, HolderLookup.Provider registries) {
         saveFullTagData(tag);
     }
 
     @Override
-    public void loadClientData(CompoundTag tag) {
+    public void loadClientData(CompoundTag tag, HolderLookup.Provider registries) {
         readTagData(tag);
     }
 
@@ -79,7 +81,7 @@ public class TurbineRotorBE extends TurbineBE {
 
     private boolean hasBearingConnection(Direction dir) {
         if(connectedToBearing) return true;
-        BlockEntity be = getLevel().getExistingBlockEntity(getBlockPos().relative(dir));
+        BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), getBlockPos().relative(dir));
         BlockState bs = getLevel().getBlockState(getBlockPos().relative(dir));
         if(be instanceof TurbineRotorBE rotor) {
             connectedToBearing = rotor.hasBearingConnection(dir);
@@ -92,7 +94,7 @@ public class TurbineRotorBE extends TurbineBE {
 
     public TurbineControllerBE getController() {
         if(controllerPos == BlockPos.ZERO) return controller();
-        BlockEntity be = getLevel().getExistingBlockEntity(controllerPos);
+        BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
         if(be instanceof TurbineControllerBE controller) {
             return controller;
         }

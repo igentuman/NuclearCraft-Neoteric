@@ -1,8 +1,11 @@
 package igentuman.nc.util.insitu_leaching;
 
+import igentuman.api.platform.NCRecipes;
 import igentuman.nc.recipes.NcRecipeType;
+import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
@@ -21,8 +24,9 @@ public class OreVeinProvider {
     @SuppressWarnings("unchecked")
     private OreVeinProvider(ServerLevel level) {
         this.level = level;
-        recipes = (List<OreVeinRecipe>) level.getRecipeManager()
-                .getAllRecipesFor(NcRecipeType.ALL_RECIPES.get("nc_ore_veins").getRecipeType());
+        NcRecipeType<OreVeinRecipe> recipeType = (NcRecipeType<OreVeinRecipe>) (NcRecipeType<?>)
+                NcRecipeType.ALL_RECIPES.get("nc_ore_veins").getRecipeType();
+        recipes = NCRecipes.getAllRecipesFor(level.getRecipeManager(), recipeType);
     }
 
     public boolean chunkContainsVein(int chunkX, int chunkZ)

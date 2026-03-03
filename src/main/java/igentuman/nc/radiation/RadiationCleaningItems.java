@@ -2,12 +2,13 @@ package igentuman.nc.radiation;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.NuclearCraft.forgeRl;
+import static igentuman.nc.NuclearCraft.neoforgeRl;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.util.NcUtils.rlFromString;
 import static net.minecraft.world.item.Items.AIR;
@@ -62,7 +63,7 @@ public class RadiationCleaningItems {
             name = MODID +":" + name;
         }
         ResourceLocation itemKey = rlFromString(name.replace("/", "_"));
-        return ForgeRegistries.ITEMS.getValue(itemKey);
+        return BuiltInRegistries.ITEM.get(itemKey);
     }
 
     public static long byItem(Item item) {

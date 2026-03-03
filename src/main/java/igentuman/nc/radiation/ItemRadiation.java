@@ -8,7 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.AirItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.HashMap;
 import java.util.List;
@@ -156,7 +157,7 @@ public class ItemRadiation {
             name = MODID +":" + name;
         }
         ResourceLocation itemKey = rlFromString(name.replace("/", "_"));
-        return ForgeRegistries.ITEMS.getValue(itemKey);
+        return BuiltInRegistries.ITEM.get(itemKey);
     }
 
     public static double byItem(Item item) {

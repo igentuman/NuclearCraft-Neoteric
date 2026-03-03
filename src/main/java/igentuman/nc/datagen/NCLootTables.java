@@ -1,8 +1,9 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.setup.registration.NCItems;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -21,6 +22,10 @@ import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class NCLootTables extends BaseLootTableProvider {
+
+    public NCLootTables(HolderLookup.Provider registries) {
+        super(registries);
+    }
 
     private void ores() {
         for(String ore: ORE_BLOCKS.keySet()) {
@@ -49,7 +54,7 @@ public class NCLootTables extends BaseLootTableProvider {
         add(PORTAL_BLOCK.get(), block -> createSimpleTable("block", PORTAL_BLOCK.get()));
     }
 
-    private void add(RegistryObject<Block> regBlock) {
+    private void add(DeferredHolder<Block, Block> regBlock) {
         add(regBlock.get(), block -> createSimpleTable("block", regBlock.get()));
     }
 
@@ -83,21 +88,21 @@ public class NCLootTables extends BaseLootTableProvider {
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
         List<Block> all = new ArrayList<>();
-        all.addAll(ORE_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(NC_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(NC_MATERIAL_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(FISSION_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(FUSION_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(TURBINE_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        List<Block> kugelblitzBlocks = KUGELBLITZ_BLOCKS.values().stream().map(RegistryObject::get).toList();
+        all.addAll(ORE_BLOCKS.values().stream().map(DeferredHolder::get).toList());
+        all.addAll(NC_BLOCKS.values().stream().map(DeferredHolder::get).toList());
+        all.addAll(NC_MATERIAL_BLOCKS.values().stream().map(DeferredHolder::get).toList());
+        all.addAll(FISSION_BLOCKS.values().stream().map(DeferredHolder::get).toList());
+        all.addAll(FUSION_BLOCKS.values().stream().map(DeferredHolder::get).toList());
+        all.addAll(TURBINE_BLOCKS.values().stream().map(DeferredHolder::get).toList());
+        List<Block> kugelblitzBlocks = KUGELBLITZ_BLOCKS.values().stream().map(DeferredHolder::get).toList();
         all.addAll(kugelblitzBlocks.stream().filter(block -> !block.asItem().toString().contains("black_hole")).toList());
-        all.addAll(ACCELERATOR_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(TARGET_CHAMBER_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(PROCESSORS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(ENERGY_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(STORAGE_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(NC_ELECTROMAGNETS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(NC_RF_AMPLIFIERS.values().stream().map(RegistryObject::get).toList());
+        all.addAll(ACCELERATOR_BLOCKS.values().stream().map(DeferredHolder::get).toList());
+        all.addAll(TARGET_CHAMBER_BLOCKS.values().stream().map(DeferredHolder::get).toList());
+        all.addAll(PROCESSORS.values().stream().map(DeferredHolder::get).toList());
+        all.addAll(ENERGY_BLOCKS.values().stream().map(DeferredHolder::get).toList());
+        all.addAll(STORAGE_BLOCKS.values().stream().map(DeferredHolder::get).toList());
+        all.addAll(NC_ELECTROMAGNETS.values().stream().map(DeferredHolder::get).toList());
+        all.addAll(NC_RF_AMPLIFIERS.values().stream().map(DeferredHolder::get).toList());
         all.add(EXPL_PROXY_BLOCK.get());
         all.add(EXPL_BLOCK.get());
         all.add(MUSHROOM_BLOCK.get());

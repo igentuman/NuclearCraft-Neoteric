@@ -1,5 +1,6 @@
 package igentuman.nc.block.turbine.entity;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.multiblock.turbine.BladeDef;
@@ -56,7 +57,7 @@ public class TurbineBladeBE extends TurbineBE {
     }
 
     public boolean isValid() {
-        BlockEntity be = getLevel().getExistingBlockEntity(getBlockPos().relative(getFacing()));
+        BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), getBlockPos().relative(getFacing()));
         if(be instanceof TurbineRotorBE rotor) {
             return rotor.connectedToBearing;
         }

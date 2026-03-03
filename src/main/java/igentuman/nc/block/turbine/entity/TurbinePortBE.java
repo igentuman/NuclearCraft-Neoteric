@@ -1,5 +1,6 @@
 package igentuman.nc.block.turbine.entity;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
@@ -10,25 +11,24 @@ import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.currentTick;
-import static igentuman.nc.compat.gregtech.GTUtils.*;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.transferEU;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class TurbinePortBE extends MultiblockPortBE {
     public static String NAME = "turbine_port";
@@ -125,7 +125,7 @@ public class TurbinePortBE extends MultiblockPortBE {
             return; // No energy to transfer
         }
         int wasEnergy = getEnergyStored();
-        BlockEntity be = level.getExistingBlockEntity(worldPosition.relative(direction));
+        BlockEntity be = NCLevels.getExistingBlockEntity(level, worldPosition.relative(direction));
         if (be == null || be instanceof TurbinePortBE || be instanceof TurbineControllerBE) {
             return;
         }
@@ -143,17 +143,12 @@ public class TurbinePortBE extends MultiblockPortBE {
             return;
         }
         int canExtract = Math.min(controller().energyStorage().getMaxExtract() - extracted, getEnergyStored());
-        be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).map(handler -> {
-                    if (handler.canReceive()) {
-                        int received = handler.receiveEnergy(canExtract, false);
-                        controller().energyStorage().consumeEnergy(received);
-                        controller().setChanged();
-                        return getEnergyStored() > 0;
-                    } else {
-                        return true;
-                    }
-                }
-        );
+        IEnergyStorage handler = level.getCapability(Capabilities.EnergyStorage.BLOCK, worldPosition.relative(direction), direction.getOpposite());
+        if (handler != null && handler.canReceive()) {
+            int received = handler.receiveEnergy(canExtract, false);
+            controller().energyStorage().consumeEnergy(received);
+            controller().setChanged();
+        }
     }
     private void updateAnalogSignal() {
         if(controller() == null) {
@@ -186,35 +181,6 @@ public class TurbinePortBE extends MultiblockPortBE {
         return controller().contentHandler().fluidHandler;
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(controller() == null) return super.getCapability(cap, side);
-
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return controller().getCapability(cap, side);
-        }
-        if(isGtLoaded()) {
-            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                if (isGTEUCapEnabled()) {
-                    return getGTEnergy(controller(), side).cast();
-                }
-            }
-        }
-        if (cap == ENERGY) {
-            if(!isOnlyGTCEUCapEnabled()) {
-                return controller().getEnergy().cast();
-            } else {
-                return LazyOptional.empty();
-            }
-        }
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return controller().getPeripheral(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
 
     @Override
@@ -226,7 +192,7 @@ public class TurbinePortBE extends MultiblockPortBE {
     public TurbineControllerBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controller == null && controllerPos != null) {
-            BlockEntity be = getLevel().getExistingBlockEntity(controllerPos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
             if(be instanceof TurbineControllerBE controllerBE) {
                 controller = controllerBE;
                 return controller;
@@ -237,30 +203,30 @@ public class TurbinePortBE extends MultiblockPortBE {
             return  getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                return (TurbineControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+                return (TurbineControllerBE) NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
             }
             return null;
         }
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             readTagData(infoTag);
         }
-        super.load(tag);
+        super.loadAdditional(tag, registries);
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         CompoundTag infoTag = new CompoundTag();
         saveFullTagData(infoTag);
         tag.put("Info", infoTag);
     }
 
     @Override
-    public void loadClientData(CompoundTag tag) {
+    public void loadClientData(CompoundTag tag, HolderLookup.Provider registries) {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             readTagData(infoTag);
@@ -268,7 +234,7 @@ public class TurbinePortBE extends MultiblockPortBE {
     }
 
     @Override
-    protected void saveClientData(CompoundTag tag) {
+    protected void saveClientData(CompoundTag tag, HolderLookup.Provider registries) {
         CompoundTag infoTag = new CompoundTag();
         tag.put("Info", infoTag);
         saveFullTagData(infoTag);

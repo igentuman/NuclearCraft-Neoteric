@@ -1,48 +1,51 @@
 package igentuman.nc.setup.registration;
 
-import igentuman.nc.content.ArmorMaterials;
+import igentuman.api.platform.NCArmorMaterials;
+import igentuman.api.platform.NCMusicDiscs;
 import igentuman.nc.content.materials.*;
 import igentuman.nc.item.*;
 import igentuman.nc.item.Tiers;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
+import igentuman.api.platform.NCFood;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.ForgeSpawnEggItem;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static igentuman.nc.content.particles.ParticleSources.sources;
 import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL;
-import static igentuman.nc.setup.registration.NCSounds.SOUND_MAP;
 import static igentuman.nc.setup.registration.Registries.ITEMS;
 import static igentuman.nc.setup.registration.Tags.*;
 
 public class NCItems {
 
-    public static HashMap<String, RegistryObject<Item>> NC_FOOD = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> ALL_NC_ITEMS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_FOOD = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> ALL_NC_ITEMS = new HashMap<>();
 
-    public static HashMap<String, RegistryObject<Item>> NC_RECORDS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_PARTS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> ION_SOURCES = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_SHIELDING = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_ITEMS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_GEMS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_INGOTS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_CHUNKS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_NUGGETS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_PLATES = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_DUSTS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> ORE_BLOCK_ITEMS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_BLOCKS_ITEMS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_ELECTROMAGNETS_ITEMS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> NC_RF_AMPLIFIERS_ITEMS = new HashMap<>();
-    public static HashMap<String, RegistryObject<Item>> MULTIBLOCK_ITEMS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_RECORDS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_PARTS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> ION_SOURCES = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_SHIELDING = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_ITEMS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_GEMS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_INGOTS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_CHUNKS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_NUGGETS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_PLATES = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_DUSTS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> ORE_BLOCK_ITEMS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_BLOCKS_ITEMS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_ELECTROMAGNETS_ITEMS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> NC_RF_AMPLIFIERS_ITEMS = new HashMap<>();
+    public static HashMap<String, DeferredHolder<Item, Item>> MULTIBLOCK_ITEMS = new HashMap<>();
     public static final Item.Properties ITEM_PROPERTIES = new Item.Properties();
     public static final Item.Properties ONE_ITEM_PROPERTIES = new Item.Properties().stacksTo(1).setNoRepair();
     public static final Item.Properties THORIUM_PAXEL_PROPS = new Item.Properties().stacksTo(1).durability(5000).fireResistant();
@@ -50,75 +53,75 @@ public class NCItems {
     public static final Item.Properties HAZMAT_PROPS = new Item.Properties().stacksTo(1).durability(250);
     public static final Item.Properties TOUGH_PROPS = new Item.Properties().stacksTo(1).durability(2500).fireResistant();
     public static final Item.Properties HEV_PROPS = new Item.Properties().stacksTo(1).durability(5500).fireResistant();
-    public static final RegistryObject<Item> FERAL_GHOUL_SPAWN_EGG = ITEMS.register("feral_ghoul_spawn_egg",
-            () -> new ForgeSpawnEggItem(FERAL_GHOUL, 0x7e9680, 0xc5d1c5, new Item.Properties()));
-    public static final RegistryObject<Item> HAZMAT_MASK =
-            ITEMS.register("hazmat_mask", () -> new HazmatItem(ArmorMaterials.HAZMAT, ArmorItem.Type.HELMET, HAZMAT_PROPS));
-    public static final RegistryObject<Item> HAZMAT_CHEST =
-            ITEMS.register("hazmat_chest", () -> new HazmatItem(ArmorMaterials.HAZMAT, ArmorItem.Type.CHESTPLATE, HAZMAT_PROPS));
-    public static final RegistryObject<Item> HAZMAT_BOOTS =
-            ITEMS.register("hazmat_boots", () -> new HazmatItem(ArmorMaterials.HAZMAT, ArmorItem.Type.BOOTS, HAZMAT_PROPS));
-    public static final RegistryObject<Item> HAZMAT_PANTS =
-            ITEMS.register("hazmat_pants", () -> new HazmatItem(ArmorMaterials.HAZMAT, ArmorItem.Type.LEGGINGS, HAZMAT_PROPS));
+    public static final DeferredHolder<Item, Item> FERAL_GHOUL_SPAWN_EGG = ITEMS.register("feral_ghoul_spawn_egg",
+            () -> new DeferredSpawnEggItem(FERAL_GHOUL, 0x7e9680, 0xc5d1c5, new Item.Properties()));
+    public static final DeferredHolder<Item, Item> HAZMAT_MASK =
+            ITEMS.register("hazmat_mask", () -> new HazmatItem(NCArmorMaterials.HAZMAT, ArmorItem.Type.HELMET, HAZMAT_PROPS));
+    public static final DeferredHolder<Item, Item> HAZMAT_CHEST =
+            ITEMS.register("hazmat_chest", () -> new HazmatItem(NCArmorMaterials.HAZMAT, ArmorItem.Type.CHESTPLATE, HAZMAT_PROPS));
+    public static final DeferredHolder<Item, Item> HAZMAT_BOOTS =
+            ITEMS.register("hazmat_boots", () -> new HazmatItem(NCArmorMaterials.HAZMAT, ArmorItem.Type.BOOTS, HAZMAT_PROPS));
+    public static final DeferredHolder<Item, Item> HAZMAT_PANTS =
+            ITEMS.register("hazmat_pants", () -> new HazmatItem(NCArmorMaterials.HAZMAT, ArmorItem.Type.LEGGINGS, HAZMAT_PROPS));
 
 
-    public static final RegistryObject<Item> HEV_HELMET =
-            ITEMS.register("hev_helmet", () -> new HEVItem(ArmorMaterials.HEV, ArmorItem.Type.HELMET, HEV_PROPS));
-    public static final RegistryObject<Item> HEV_CHEST =
-            ITEMS.register("hev_chest", () -> new HEVItem(ArmorMaterials.HEV, ArmorItem.Type.CHESTPLATE, HEV_PROPS));
-    public static final RegistryObject<Item> HEV_BOOTS =
-            ITEMS.register("hev_boots", () -> new HEVItem(ArmorMaterials.HEV, ArmorItem.Type.BOOTS, HEV_PROPS));
-    public static final RegistryObject<Item> HEV_PANTS =
-            ITEMS.register("hev_pants", () -> new HEVItem(ArmorMaterials.HEV, ArmorItem.Type.LEGGINGS, HEV_PROPS));
+    public static final DeferredHolder<Item, Item> HEV_HELMET =
+            ITEMS.register("hev_helmet", () -> new HEVItem(NCArmorMaterials.HEV, ArmorItem.Type.HELMET, HEV_PROPS));
+    public static final DeferredHolder<Item, Item> HEV_CHEST =
+            ITEMS.register("hev_chest", () -> new HEVItem(NCArmorMaterials.HEV, ArmorItem.Type.CHESTPLATE, HEV_PROPS));
+    public static final DeferredHolder<Item, Item> HEV_BOOTS =
+            ITEMS.register("hev_boots", () -> new HEVItem(NCArmorMaterials.HEV, ArmorItem.Type.BOOTS, HEV_PROPS));
+    public static final DeferredHolder<Item, Item> HEV_PANTS =
+            ITEMS.register("hev_pants", () -> new HEVItem(NCArmorMaterials.HEV, ArmorItem.Type.LEGGINGS, HEV_PROPS));
 
-    public static final RegistryObject<Item> TOUGH_HELMET =
-            ITEMS.register("tough_helmet", () -> new ArmorItem(ArmorMaterials.TOUGH, ArmorItem.Type.HELMET, TOUGH_PROPS));
-    public static final RegistryObject<Item> TOUGH_CHEST =
-            ITEMS.register("tough_chest", () -> new ArmorItem(ArmorMaterials.TOUGH, ArmorItem.Type.CHESTPLATE, TOUGH_PROPS));
-    public static final RegistryObject<Item> TOUGH_BOOTS =
-            ITEMS.register("tough_boots", () -> new ArmorItem(ArmorMaterials.TOUGH, ArmorItem.Type.BOOTS, TOUGH_PROPS));
-    public static final RegistryObject<Item> TOUGH_PANTS =
-            ITEMS.register("tough_pants", () -> new ArmorItem(ArmorMaterials.TOUGH, ArmorItem.Type.LEGGINGS, TOUGH_PROPS));
+    public static final DeferredHolder<Item, Item> TOUGH_HELMET =
+            ITEMS.register("tough_helmet", () -> new ArmorItem(NCArmorMaterials.TOUGH, ArmorItem.Type.HELMET, TOUGH_PROPS));
+    public static final DeferredHolder<Item, Item> TOUGH_CHEST =
+            ITEMS.register("tough_chest", () -> new ArmorItem(NCArmorMaterials.TOUGH, ArmorItem.Type.CHESTPLATE, TOUGH_PROPS));
+    public static final DeferredHolder<Item, Item> TOUGH_BOOTS =
+            ITEMS.register("tough_boots", () -> new ArmorItem(NCArmorMaterials.TOUGH, ArmorItem.Type.BOOTS, TOUGH_PROPS));
+    public static final DeferredHolder<Item, Item> TOUGH_PANTS =
+            ITEMS.register("tough_pants", () -> new ArmorItem(NCArmorMaterials.TOUGH, ArmorItem.Type.LEGGINGS, TOUGH_PROPS));
 
-    public static final RegistryObject<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter", () -> new GeigerCounterItem(ONE_ITEM_PROPERTIES));
-    public static final RegistryObject<Item> LITHIUM_ION_CELL = ITEMS.register("lithium_ion_cell", () -> new BatteryItem(ONE_ITEM_PROPERTIES));
-    public static final RegistryObject<Item> SPAXELHOE_TOUGH = ITEMS.register("spaxelhoe_tough", () -> new PaxelItem(7, 2, Tiers.TOUGH, TOUGH_PAXEL_PROPS));
-    public static final RegistryObject<Item> SPAXELHOE_THORIUM = ITEMS.register("spaxelhoe_thorium", () -> new PaxelItem(3, 1, Tiers.THORIUM, THORIUM_PAXEL_PROPS));
-    public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 11, 2F, ONE_ITEM_PROPERTIES));
-    public static final RegistryObject<Item> MULTITOOL = ITEMS.register("multitool", () -> new MultitoolItem(ONE_ITEM_PROPERTIES));
-    public static final RegistryObject<Item> UNKNOWN_INGREDIENT = ITEMS.register("unknown_ingredient", () -> new Item(ONE_ITEM_PROPERTIES));
+    public static final DeferredHolder<Item, Item> GEIGER_COUNTER = ITEMS.register("geiger_counter", () -> new GeigerCounterItem(ONE_ITEM_PROPERTIES));
+    public static final DeferredHolder<Item, Item> LITHIUM_ION_CELL = ITEMS.register("lithium_ion_cell", () -> new BatteryItem(ONE_ITEM_PROPERTIES));
+    public static final DeferredHolder<Item, Item> SPAXELHOE_TOUGH = ITEMS.register("spaxelhoe_tough", () -> new PaxelItem(Tiers.TOUGH, TOUGH_PAXEL_PROPS));
+    public static final DeferredHolder<Item, Item> SPAXELHOE_THORIUM = ITEMS.register("spaxelhoe_thorium", () -> new PaxelItem(Tiers.THORIUM, THORIUM_PAXEL_PROPS));
+    public static final DeferredHolder<Item, Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 11, 2F, ONE_ITEM_PROPERTIES));
+    public static final DeferredHolder<Item, Item> MULTITOOL = ITEMS.register("multitool", () -> new MultitoolItem(ONE_ITEM_PROPERTIES));
+    public static final DeferredHolder<Item, Item> UNKNOWN_INGREDIENT = ITEMS.register("unknown_ingredient", () -> new Item(ONE_ITEM_PROPERTIES));
     public static final TagKey<Item> AMPLIFIERS_ITEMS = itemTag("amplifiers");
     public static final TagKey<Item> ELECTROMAGNETS_ITEMS = itemTag("electromagnets");
-    public static RegistryObject<Item> registerItem(String name) {
+    public static DeferredHolder<Item, Item> registerItem(String name) {
         return ITEMS.register(name, () -> new Item(ITEM_PROPERTIES));
     }
 
-    public static RegistryObject<Item> registerIngot(String name) {
+    public static DeferredHolder<Item, Item> registerIngot(String name) {
         return ITEMS.register(name, () -> new NCIngotItem(ITEM_PROPERTIES));
     }
 
-    public static RegistryObject<Item> registerChunk(String name) {
+    public static DeferredHolder<Item, Item> registerChunk(String name) {
         return ITEMS.register(name, () -> new NCChunkItem(ITEM_PROPERTIES));
     }
 
-    public static RegistryObject<Item> registerNugget(String name) {
+    public static DeferredHolder<Item, Item> registerNugget(String name) {
         return ITEMS.register(name, () -> new NCNuggetItem(ITEM_PROPERTIES));
     }
 
-    public static RegistryObject<Item> registerPlate(String name) {
+    public static DeferredHolder<Item, Item> registerPlate(String name) {
         return ITEMS.register(name, () -> new NCPlateItem(ITEM_PROPERTIES));
     }
 
-    public static RegistryObject<Item> registerDust(String name) {
+    public static DeferredHolder<Item, Item> registerDust(String name) {
         return ITEMS.register(name, () -> new NCDustItem(ITEM_PROPERTIES));
     }
 
-    public static RegistryObject<Item> registerGem(String name) {
+    public static DeferredHolder<Item, Item> registerGem(String name) {
         return ITEMS.register(name, () -> new NCBGemItem(ITEM_PROPERTIES));
     }
 
 
-    public static RegistryObject<Item> registerBlockItem(String name) {
+    public static DeferredHolder<Item, Item> registerBlockItem(String name) {
         return ITEMS.register(name, () -> new NCBlockItem(ITEM_PROPERTIES));
     }
 
@@ -148,14 +151,15 @@ public class NCItems {
 
 
     private static void registerRecords() {
-        List<String> items = Arrays.asList(
-                "end_of_the_world",
-                "hyperspace",
-                "money_for_nothing",
-                "wanderer"
+        Map<String, ResourceKey<JukeboxSong>> songKeys = Map.of(
+                "end_of_the_world", NCMusicDiscs.END_OF_THE_WORLD,
+                "hyperspace",       NCMusicDiscs.HYPERSPACE,
+                "money_for_nothing", NCMusicDiscs.MONEY_FOR_NOTHING,
+                "wanderer",         NCMusicDiscs.WANDERER
         );
-        for(String name: items) {
-            NC_RECORDS.put(name, ITEMS.register(name, () -> new MusicDiscItem(15, SOUND_MAP.get(name), new Item.Properties(), 3600)));
+        for (String name : songKeys.keySet()) {
+            ResourceKey<JukeboxSong> songKey = songKeys.get(name);
+            NC_RECORDS.put(name, ITEMS.register(name, () -> NCMusicDiscs.createDisc(songKey)));
             ALL_NC_ITEMS.put(name, NC_RECORDS.get(name));
         }
     }
@@ -179,15 +183,13 @@ public class NCItems {
             int finalI = Math.max(i, 1);
 
             NC_FOOD.put(name, ITEMS.register(name, () -> new Item(new Item.Properties().food(
-                    new FoodProperties.Builder().nutrition(finalI)
-                            .saturationMod(finalI).build()
+                    NCFood.simple(finalI, finalI)
             ))));
             ALL_NC_ITEMS.put(name, NC_FOOD.get(name));
         }
         for(String name: List.of("rad_x","radaway","radaway_slow")) {
             NC_FOOD.put(name, ITEMS.register(name, () -> new RadAwayItem(new Item.Properties().food(
-                    new FoodProperties.Builder().nutrition(0)
-                            .saturationMod(0).alwaysEat().build()
+                    NCFood.alwaysEdible(0, 0)
             ))));
             ALL_NC_ITEMS.put(name, NC_FOOD.get(name));
         }

@@ -14,8 +14,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.registries.RegistryObject;
+import igentuman.api.platform.NCRegistration;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +31,9 @@ public class TargetChamberRegistration {
     public static final Item.Properties TARGET_CHAMBER_ITEM_PROPERTIES = new Item.Properties();
     public static final BlockBehaviour.Properties NO_OCCLUSION_BLOCK_PROPS = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
     public static final Block.Properties TARGET_CHAMBER_BLOCK_PROPERTIES =  BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();;
-    public static final HashMap<String, RegistryObject<Block>> TARGET_CHAMBER_BLOCKS = new HashMap<>();
-    public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> TARGET_CHAMBER_BE = new HashMap<>();
-    public static final HashMap<String, RegistryObject<Item>> TARGET_CHAMBER_ITEMS = new HashMap<>();
+    public static final HashMap<String, DeferredHolder<Block, Block>> TARGET_CHAMBER_BLOCKS = new HashMap<>();
+    public static final HashMap<String, DeferredHolder<BlockEntityType<?>, BlockEntityType<? extends BlockEntity>>> TARGET_CHAMBER_BE = new HashMap<>();
+    public static final HashMap<String, DeferredHolder<Item, Item>> TARGET_CHAMBER_ITEMS = new HashMap<>();
     public static final TagKey<Block> TARGET_CHAMBER_CASING_BLOCKS = blockTag("target_chamber_casing");
     public static final TagKey<Block> TARGET_CHAMBER_INNER_BLOCKS = blockTag("target_chamber_inner");
     public static final TagKey<Item> TARGET_CHAMBER_INNER_ITEMS = itemTag("target_chamber_inner");
@@ -41,12 +41,10 @@ public class TargetChamberRegistration {
     public static final Pattern TRANSPARENT_BLOCKS_PATTERN = Pattern.compile(".*glass.*");
     public static final HashMap<String, DetectorDef> TARGET_CHAMBER_DETECTORS = new HashMap<>();
 
-    public static final RegistryObject<MenuType<TargetChamberControllerContainer>> TARGET_CHAMBER_CONTROLLER_CONTAINER = CONTAINERS.register("target_chamber_controller",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new TargetChamberControllerContainer(windowId, data.readBlockPos(), inv))
-    );
-    public static final RegistryObject<MenuType<TargetChamberPortContainer>> TARGET_CHAMBER_PORT_CONTAINER = CONTAINERS.register("target_chamber_port",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new TargetChamberPortContainer(windowId, data.readBlockPos(), inv))
-    );
+    public static final DeferredHolder<MenuType<?>, MenuType<TargetChamberControllerContainer>> TARGET_CHAMBER_CONTROLLER_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "target_chamber_controller", (windowId, inv, data) -> new TargetChamberControllerContainer(windowId, data.readBlockPos(), inv));
+    public static final DeferredHolder<MenuType<?>, MenuType<TargetChamberPortContainer>> TARGET_CHAMBER_PORT_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "target_chamber_port", (windowId, inv, data) -> new TargetChamberPortContainer(windowId, data.readBlockPos(), inv));
 
     public static List<DetectorDef> detectors() {
         return List.of(

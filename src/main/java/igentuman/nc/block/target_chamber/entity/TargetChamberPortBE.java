@@ -1,5 +1,6 @@
 package igentuman.nc.block.target_chamber.entity;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.MultiblockPortBE;
@@ -17,22 +18,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.currentTick;
-import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
-import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
-import static igentuman.nc.compat.oc2.TargetChamberDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BE;
-import static igentuman.nc.util.ModUtil.*;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class TargetChamberPortBE extends MultiblockPortBE {
 
@@ -162,41 +153,6 @@ public class TargetChamberPortBE extends MultiblockPortBE {
         return controller().contentHandler().fluidHandler;
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (controller() == null) return super.getCapability(cap, side);
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return controller().getCapability(cap, side);
-        }
-        if(isGtLoaded()) {
-            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                if (isGTEUCapEnabled()) {
-                    return getGTEnergy(controller(), side).cast();
-                }
-            }
-        }
-        if (cap == ENERGY) {
-            if(!isOnlyGTCEUCapEnabled()) {
-                return controller().getEnergy().cast();
-            } else {
-                return LazyOptional.empty();
-            }
-        }
-
-        if (isOC2Loaded()) {
-            if (cap == DEVICE_CAPABILITY) {
-                return controller().getOCDevice(cap, side);
-            }
-        }
-
-        if (isCcLoaded()) {
-            if (cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return controller().getPeripheral(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
 
     @Override
     public boolean canInvalidateCache() {
@@ -220,7 +176,7 @@ public class TargetChamberPortBE extends MultiblockPortBE {
     public TargetChamberControllerBE controller() {
         if (NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if (controller == null && getLevel().isClientSide && controllerPos != null) {
-            BlockEntity be = getLevel().getExistingBlockEntity(controllerPos);
+            BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
             if (be instanceof TargetChamberControllerBE controllerBe) {
                 controller = controllerBe;
                 return  controller;
@@ -234,7 +190,7 @@ public class TargetChamberPortBE extends MultiblockPortBE {
             }
         } catch (NullPointerException e) {
             if (controllerPos != null) {
-                BlockEntity be = getLevel().getExistingBlockEntity(controllerPos);
+                BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), controllerPos);
                 if (be instanceof TargetChamberControllerBE controllerBe) {
                     controller = controllerBe;
                 }

@@ -26,7 +26,7 @@ import static net.minecraft.world.item.Items.BARRIER;
 @SuppressWarnings("removal")
 public class OreVeinCategoryWrapper<T extends OreVeinRecipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
-            new ResourceLocation(MODID, "textures/gui/ore_veins_jei.png");
+            ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ore_veins_jei.png");
 
     private final IDrawable background;
     private final IDrawable icon;

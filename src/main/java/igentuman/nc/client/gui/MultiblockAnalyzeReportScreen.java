@@ -1,7 +1,6 @@
 package igentuman.nc.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.button.Button;
@@ -14,7 +13,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.client.event.ContainerScreenEvent.Render.Background;
+import net.neoforged.neoforge.client.event.ContainerScreenEvent.Render.Background;
 
 import java.util.*;
 
@@ -72,25 +71,22 @@ public class MultiblockAnalyzeReportScreen<T extends MultiblockControllerContain
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(graphics);
+        this.renderBackground(graphics, mouseX, mouseY, partialTicks);
         int i = this.leftPos;
         int j = this.topPos;
         this.renderBg(graphics, partialTicks, mouseX, mouseY);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new Background(this, graphics, mouseX, mouseY));
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new Background(this, graphics, mouseX, mouseY));
         RenderSystem.disableDepthTest();
         for(Renderable widget : this.renderables) {
             widget.render(graphics, mouseX, mouseY, partialTicks);
         }
-        PoseStack posestack = RenderSystem.getModelViewStack();
-        posestack.pushPose();
-        posestack.translate((double)i, (double)j, 0.0D);
-        RenderSystem.applyModelViewMatrix();
+        graphics.pose().pushPose();
+        graphics.pose().translate((float)i, (float)j, 0.0F);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.hoveredSlot = null;
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.renderLabels(graphics, mouseX, mouseY);
-        posestack.popPose();
-        RenderSystem.applyModelViewMatrix();
+        graphics.pose().popPose();
         RenderSystem.enableDepthTest();
         this.renderTooltip(graphics, mouseX, mouseY);
     }
@@ -132,7 +128,6 @@ public class MultiblockAnalyzeReportScreen<T extends MultiblockControllerContain
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
         graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);

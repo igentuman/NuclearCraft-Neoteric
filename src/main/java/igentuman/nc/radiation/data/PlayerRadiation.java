@@ -1,8 +1,11 @@
 package igentuman.nc.radiation.data;
 
+import igentuman.api.platform.NCItemStacks;
 import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.ItemShielding;
+import igentuman.api.platform.NCSerialization;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -34,14 +37,14 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     public PlayerRadiation() {
     }
 
-    public static PlayerRadiation deserialize(CompoundTag radiation) {
+    public static PlayerRadiation deserialize(HolderLookup.Provider provider, CompoundTag radiation) {
         PlayerRadiation playerRadiation = new PlayerRadiation();
-        playerRadiation.deserializeNBT(radiation);
+        NCSerialization.deserialize(playerRadiation, provider, radiation);
         return playerRadiation;
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putLong("radiation", radiation);
         tag.putInt("timestamp", timestamp);
@@ -49,7 +52,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         radiation = nbt.getLong("radiation");
         timestamp = nbt.getInt("timestamp");
     }
@@ -84,12 +87,12 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
                 if(!hasMod) continue;
             }
             shielding += ItemShielding.byItem(stack.getItem());
-            if(stack.hasTag() && stack.getTag().contains("rad_shielding")) {
-                shielding += stack.getTag().getInt("rad_shielding");
+            if(NCItemStacks.contains(stack, "rad_shielding")) {
+                shielding += NCItemStacks.getInt(stack, "rad_shielding");
             }
         }
-        if(player.hasEffect(RADIATION_RESISTANCE.get())) {
-            int resistance = player.getEffect(RADIATION_RESISTANCE.get()).getAmplifier()+1;
+        if(player.hasEffect(RADIATION_RESISTANCE)) {
+            int resistance = player.getEffect(RADIATION_RESISTANCE).getAmplifier()+1;
             shielding += resistance*2;
         }
         return shielding;

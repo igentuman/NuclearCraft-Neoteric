@@ -1,5 +1,7 @@
 package igentuman.nc.block.storage;
 
+import igentuman.api.platform.NCItemStacks;
+import igentuman.api.platform.NCLevels;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.storage.entity.ContainerBE;
 import igentuman.nc.container.StorageContainerContainer;
@@ -14,17 +16,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -34,7 +36,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -62,7 +64,7 @@ public class ContainerBlock extends Block implements EntityBlock {
     }
 
     public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
-        BlockEntity blockEntity = pLevel.getExistingBlockEntity(pPos);
+        BlockEntity blockEntity = NCLevels.getExistingBlockEntity(pLevel, pPos);
         if (blockEntity instanceof ContainerBE containerBE) {
             return (int) ((containerBE.getLoadRate())*15);
         }
@@ -70,11 +72,10 @@ public class ContainerBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
-            ContainerBE be = (ContainerBE)level.getExistingBlockEntity(pos);
-            ItemStack handStack = player.getItemInHand(hand);
-            if(isMultiTool(handStack)) {
+            ContainerBE be = (ContainerBE)NCLevels.getExistingBlockEntity(level, pos);
+            if(isMultiTool(stack)) {
                 Direction dirToChange = result.getDirection();
                 if(player.isShiftKeyDown()) {
                     dirToChange = dirToChange.getOpposite();
@@ -93,10 +94,10 @@ public class ContainerBlock extends Block implements EntityBlock {
                         return new StorageContainerContainer<>(windowId, pos, playerInventory);
                     }
                 };
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+                ((ServerPlayer) player).openMenu(containerProvider, be.getBlockPos());
             }
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override
@@ -140,10 +141,10 @@ public class ContainerBlock extends Block implements EntityBlock {
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
 
-        if (stack.hasTag()) {
+        if (NCItemStacks.hasCustomData(stack)) {
             ContainerBE tileEntity = (ContainerBE) world.getBlockEntity(pos);
-            CompoundTag nbtData = stack.getTag();
-            tileEntity.load(nbtData);
+            CompoundTag nbtData = NCItemStacks.getTag(stack);
+            tileEntity.loadCustomOnly(nbtData, world.registryAccess());
         }
     }
 
@@ -152,9 +153,9 @@ public class ContainerBlock extends Block implements EntityBlock {
         pPlayer.awardStat(Stats.BLOCK_MINED.get(this));
         pPlayer.causeFoodExhaustion(0.005F);
         ContainerBE ContainerBE = (ContainerBE) pBlockEntity;
-        CompoundTag data = ContainerBE.getUpdateTag();
+        CompoundTag data = ContainerBE.getUpdateTag(pLevel.registryAccess());
         ItemStack drop = new ItemStack(this);
-        drop.setTag(data);
+        NCItemStacks.setTag(drop, data);
         if (!pLevel.isClientSide()) {
             ItemEntity itemEntity = new ItemEntity(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), drop);
             itemEntity.setDefaultPickUpDelay();
@@ -163,7 +164,7 @@ public class ContainerBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @javax.annotation.Nullable BlockGetter world, List<Component> list, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
     {
         list.add(__("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
     }

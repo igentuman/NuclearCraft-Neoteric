@@ -34,7 +34,7 @@ import static net.minecraft.world.item.Items.BARRIER;
 @SuppressWarnings("removal")
 public class MSRCategoryWrapper<T extends MSRControllerBE.Recipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
-            new ResourceLocation(MODID, "textures/gui/fission/jei.png");
+            ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/fission/jei.png");
 
     private final IDrawable background;
     private final IDrawable icon;

@@ -1,6 +1,8 @@
 package igentuman.nc.block.entity.processor;
 
 import com.mojang.authlib.GameProfile;
+import igentuman.api.platform.NCItemStacks;
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
@@ -16,7 +18,6 @@ import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -29,14 +30,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
@@ -138,11 +134,11 @@ public class LeacherBE extends NCProcessorBE {
 
     @NothingNullByDefault
     public static class Recipe extends NcRecipe {
-        public Recipe(ResourceLocation id,
+        public Recipe(String codeId,
                       ItemStackIngredient[] input, ItemStackIngredient[] output,
                       FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids,
                       double timeModifier, double powerModifier, double heatModifier, double rarity) {
-            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, 1);
+            super(codeId, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, 1);
         }
 
         @Override
@@ -157,7 +153,7 @@ public class LeacherBE extends NCProcessorBE {
 
     public boolean isPumpValid(BlockPosInstance pos, int id) {
         for (int y = 0; y < 2; y++) {
-            BlockEntity be = getLevel().getExistingBlockEntity(pos.below());
+            BlockEntity be = NCLevels.getExistingBlockEntity(getLevel(), pos.below());
             if (be instanceof PumpBE) {
                 pumps[id] = (PumpBE) be;
                 return pumps[id].isInSituValid();
@@ -263,12 +259,11 @@ public class LeacherBE extends NCProcessorBE {
 
 
     protected ItemStack useResearchPaper() {
-        CompoundTag tagData = catalyst.getOrCreateTag();
-        if(!tagData.contains("pos") || !tagData.contains("vein")) {
+        if(!NCItemStacks.contains(catalyst, "pos") || !NCItemStacks.contains(catalyst, "vein")) {
             leacherState = NO_SOURCE;
             return ItemStack.EMPTY;
         }
-        BlockPos mapPos = BlockPos.of(tagData.getLong("pos"));
+        BlockPos mapPos = BlockPos.of(NCItemStacks.getLong(catalyst, "pos"));
         ChunkPos chunkPos = new ChunkPos(mapPos);
         if(!chunkPos.equals(new ChunkPos(getBlockPos()))) {
             leacherState = WRONG_POSITION;
@@ -365,19 +360,12 @@ public class LeacherBE extends NCProcessorBE {
 
     private boolean isMinable(ItemStack toMine) {
         for(ItemStack stack: allMinableOres()) {
-            if(stack.equals(toMine, false)) return true;
+            if(ItemStack.isSameItem(stack, toMine)) return true;
         }
         return false;
     }
 
-    @Nonnull
-    @Override
-    public final <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) { //not letting to access item handler from outside
-            return LazyOptional.empty();
-        }
-        return super.getCapability(cap, side);
-    }
+
 
     @Override
     public List<Item> getAllowedCatalysts() {

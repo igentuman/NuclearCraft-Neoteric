@@ -14,8 +14,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.registries.RegistryObject;
+import igentuman.api.platform.NCRegistration;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import java.util.regex.Pattern;
 import java.util.HashMap;
 
@@ -30,45 +30,41 @@ public class KugelblitzRegistration {
     public static final BlockBehaviour.Properties NO_OCCLUSION_BLOCK_PROPS = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
     public static final Item.Properties KUGELBLITZ_ITEM_PROPERTIES = new Item.Properties();
     public static final Block.Properties KUGELBLITZ_BLOCK_PROPERTIES =  BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();;
-    public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> KUGELBLITZ_BE = new HashMap<>();
+    public static final HashMap<String, DeferredHolder<BlockEntityType<?>, BlockEntityType<? extends BlockEntity>>> KUGELBLITZ_BE = new HashMap<>();
 
-    public static final HashMap<String, RegistryObject<Item>> KUGELBLITZ_ITEMS = new HashMap<>();
-    public static final HashMap<String, RegistryObject<Block>> KUGELBLITZ_BLOCKS = new HashMap<>();
+    public static final HashMap<String, DeferredHolder<Item, Item>> KUGELBLITZ_ITEMS = new HashMap<>();
+    public static final HashMap<String, DeferredHolder<Block, Block>> KUGELBLITZ_BLOCKS = new HashMap<>();
     public static final TagKey<Block> CASING_BLOCKS = blockTag("kugelblitz_casing");
     public static final TagKey<Item> CASING_ITEMS = itemTag("kugelblitz_casing");
 
-    public static final RegistryObject<Block> EXPL_PROXY_BLOCK =
+    public static final DeferredHolder<Block, Block> EXPL_PROXY_BLOCK =
             BLOCKS.register("expl_proxy_block",
                     () -> new EXPLProxyBlock(NO_OCCLUSION_BLOCK_PROPS));
-    public static final RegistryObject<BlockEntityType<? extends BlockEntity>> EXPL_PROXY_BE =
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<? extends BlockEntity>> EXPL_PROXY_BE =
             BLOCK_ENTITIES.register("expl_proxy",
                     () -> BlockEntityType.Builder
                             .of(EXPLProxyBE::new, EXPL_PROXY_BLOCK.get())
                             .build(null));
 
-    public static final RegistryObject<Block> EXPL_BLOCK =
+    public static final DeferredHolder<Block, Block> EXPL_BLOCK =
             BLOCKS.register("expl",
                     () -> new EXPLBlock(NO_OCCLUSION_BLOCK_PROPS));
-    public static final RegistryObject<BlockEntityType<? extends BlockEntity>> EXPL_BE =
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<? extends BlockEntity>> EXPL_BE =
             BLOCK_ENTITIES.register("expl",
                     () -> BlockEntityType.Builder
                             .of(EXPLBE::new, EXPL_BLOCK.get())
                             .build(null));
 
-    public static final RegistryObject<Item> EXPL_ITEM =
+    public static final DeferredHolder<Item, Item> EXPL_ITEM =
             ITEMS.register("expl", () -> new BlockItem(EXPL_BLOCK.get(), KUGELBLITZ_ITEM_PROPERTIES));
 
-    public static final RegistryObject<MenuType<EXPLContainer>> EXPL_CONTAINER =
-            CONTAINERS.register("expl",
-                    () -> IForgeMenuType.create((windowId, inv, data) -> new EXPLContainer(windowId, data.readBlockPos(), inv))
-            );
+    public static final DeferredHolder<MenuType<?>, MenuType<EXPLContainer>> EXPL_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "expl", (windowId, inv, data) -> new EXPLContainer(windowId, data.readBlockPos(), inv));
 
-    public static final RegistryObject<MenuType<ChamberTerminalContainer>> CHAMBER_TERMINAL_CONTAINER = CONTAINERS.register("chamber_terminal",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new ChamberTerminalContainer(windowId, data.readBlockPos(), inv))
-    );
-    public static final RegistryObject<MenuType<ChamberPortContainer>> CHAMBER_PORT_CONTAINER = CONTAINERS.register("chamber_port",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new ChamberPortContainer(windowId, data.readBlockPos(), inv))
-    );
+    public static final DeferredHolder<MenuType<?>, MenuType<ChamberTerminalContainer>> CHAMBER_TERMINAL_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "chamber_terminal", (windowId, inv, data) -> new ChamberTerminalContainer(windowId, data.readBlockPos(), inv));
+    public static final DeferredHolder<MenuType<?>, MenuType<ChamberPortContainer>> CHAMBER_PORT_CONTAINER =
+            NCRegistration.registerMenu(CONTAINERS, "chamber_port", (windowId, inv, data) -> new ChamberPortContainer(windowId, data.readBlockPos(), inv));
 
     /*
     1. Photon Concentrator
@@ -130,7 +126,7 @@ public class KugelblitzRegistration {
         ALL_NC_ITEMS.put(key, KUGELBLITZ_ITEMS.get(key));
     }
 
-    public static <B extends Block> RegistryObject<Item> fromMultiblock(RegistryObject<B> block) {
+    public static <B extends Block> DeferredHolder<Item, Item> fromMultiblock(DeferredHolder<B, B> block) {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), KUGELBLITZ_ITEM_PROPERTIES));
     }
 }

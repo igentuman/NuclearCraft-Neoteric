@@ -1,6 +1,7 @@
 package igentuman.nc.world.placement;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import static net.minecraft.tags.BlockTags.*;
 import static net.minecraft.world.level.block.Blocks.WATER;
 
 public class HeightmapChunkPlacement extends PlacementModifier {
-    public static final Codec<HeightmapChunkPlacement> CODEC = RecordCodecBuilder.create((p_191701_) -> p_191701_.group(Types.CODEC.fieldOf("heightmap").forGetter((p_191705_) -> p_191705_.heightmap)).apply(p_191701_, HeightmapChunkPlacement::new));
+    public static final MapCodec<HeightmapChunkPlacement> CODEC = RecordCodecBuilder.mapCodec((p_191701_) -> p_191701_.group(Types.CODEC.fieldOf("heightmap").forGetter((p_191705_) -> p_191705_.heightmap)).apply(p_191701_, HeightmapChunkPlacement::new));
     private final Heightmap.Types heightmap;
 
     private HeightmapChunkPlacement(Heightmap.Types p_191699_) {

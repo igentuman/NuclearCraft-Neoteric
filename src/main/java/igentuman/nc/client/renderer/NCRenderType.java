@@ -24,7 +24,7 @@ public class NCRenderType extends RenderType {
                 .setLightmapState(NO_LIGHTMAP)
                 .setOverlayState(NO_OVERLAY)
                 .createCompositeState(true);
-        return create("nc_blackhole", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, true, true, state);
+        return create("nc_blackhole", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, true, true, state);
     });
 
 }

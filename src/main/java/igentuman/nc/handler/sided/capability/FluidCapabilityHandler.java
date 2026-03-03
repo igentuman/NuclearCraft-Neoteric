@@ -5,34 +5,33 @@ import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.SlotModePair.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.*;
 import java.util.function.Supplier;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 import static net.minecraft.world.item.Items.BUCKET;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER;
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER_ITEM;
-import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
-import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE;
+import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
+import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE;
 
 public class FluidCapabilityHandler extends AbstractCapabilityHandler implements INBTSerializable<CompoundTag> {
     public final NonNullList<NcFluidTank> tanks;
-    public final NonNullList<LazyOptional<IFluidHandler>> fluidCapabilites;
 
     protected FluidStack[] sortedFluids;
     public final List<FluidStack> holdedInputs = new ArrayList<>();
-    private final Map<Direction, LazyOptional<FluidHandlerWrapper>> handlerCache = new HashMap<>();
+    private final Map<Direction, FluidHandlerWrapper> handlerCache = new HashMap<>();
 
     public HashMap<Integer, Supplier<List<FluidStack>>> allowedFluids;
 
@@ -41,27 +40,21 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         tanks = NonNullList.create();
         this.inputSlots = inputSlots;
         this.outputSlots = outputSlots;
-        fluidCapabilites = NonNullList.create();
         for (int i = 0; i < inputSlots; i++) {
-            int finalI = i;
             tanks.add(new NcFluidTank(inputCapacity*1000));
-            fluidCapabilites.add(LazyOptional.of(() -> tanks.get(finalI)));
         }
         for (int i = inputSlots; i < inputSlots+outputSlots; i++) {
-            int finalI = i;
             tanks.add(new NcFluidTank(outputCapacity*1000));
-            fluidCapabilites.add(LazyOptional.of(() -> tanks.get(finalI)));
         }
         initDefault();
     }
 
-    public LazyOptional<FluidHandlerWrapper> getCapability(Direction side) {
-        if(side == null) return getCapability();
+    public FluidHandlerWrapper getCapability(Direction side) {
+        if(side == null) return getGlobalCapability();
 
         if(!handlerCache.containsKey(side)) {
             SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
-            handlerCache.put(side, LazyOptional.of(
-                    () -> new FluidHandlerWrapper(this, relativeDirection, (i, f) -> inputAllowed(i, f, side), (i) -> outputAllowed(i, side))));
+            handlerCache.put(side, new FluidHandlerWrapper(this, relativeDirection, (i, f) -> inputAllowed(i, f, side), (i) -> outputAllowed(i, side)));
         }
         return handlerCache.get(side);
     }
@@ -93,21 +86,16 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         return (mode == OUTPUT || mode == PUSH || mode == PUSH_EXCESS) && getFluidInSlot(i).getAmount() > 0;
     }
 
-    public <T> LazyOptional<T> getCapability() {
-        for(Direction side : Direction.values()) {
-            for (SlotModePair slotModePair : sideMap.get(side.ordinal())) {
-                if (slotModePair.getMode() != SlotMode.DISABLED)
-                    return fluidCapabilites.get(slotModePair.getSlot()).cast();
-            }
-        }
-        return LazyOptional.empty();
+    public FluidHandlerWrapper getGlobalCapability() {
+        // Return a wrapper that allows all operations (no side filtering)
+        return new FluidHandlerWrapper(this, null, (i, f) -> true, (i) -> true);
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         for (int i = 0; i < tanks.size(); i++) {
-            tag.put("tank" + i, tanks.get(i).writeToNBT(new CompoundTag()));
+            tag.put("tank" + i, tanks.get(i).writeToNBT(provider, new CompoundTag()));
         }
         tag.putInt("size", tanks.size());
         if(sideMapUpdated) {
@@ -117,10 +105,11 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         return tag;
     }
 
-    public void deserializeNBT(CompoundTag nbt) {
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         int size = nbt.getInt("size");
         for (int i = 0; i < size; i++) {
-            tanks.get(i).readFromNBT(nbt.getCompound("tank" + i));
+            tanks.get(i).readFromNBT(provider, nbt.getCompound("tank" + i));
         }
         if(!nbt.getCompound("sideMap").isEmpty()) {
             sideMap = SidedContentHandler.deserializeSideMap(nbt.getCompound("sideMap"));
@@ -133,20 +122,16 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         return pushFluids(dir, false, tile.getBlockPos());
     }
     public boolean pushFluids(Direction dir, boolean forceFlag, BlockPos pos) {
-        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
-        if(be == null) return false;
-        LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER, dir.getOpposite());
-        if(cap.isPresent()) {
-            IFluidHandler handler = cap.orElse(null);
-            SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
-            for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
-                if(pair.getMode() == SlotMode.PUSH || forceFlag) {
-                    NcFluidTank tank = tanks.get(pair.getSlot());
-                    if(tank.getFluidAmount() > 0) {
-                        int amount = handler.fill(tank.getFluid(), EXECUTE);
-                        tank.drain(amount, EXECUTE);
-                        return true;
-                    }
+        IFluidHandler handler = tile.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(dir), dir.getOpposite());
+        if(handler == null) return false;
+        SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
+        for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
+            if(pair.getMode() == SlotMode.PUSH || forceFlag) {
+                NcFluidTank tank = tanks.get(pair.getSlot());
+                if(tank.getFluidAmount() > 0) {
+                    int amount = handler.fill(tank.getFluid(), EXECUTE);
+                    tank.drain(amount, EXECUTE);
+                    return true;
                 }
             }
         }
@@ -158,13 +143,10 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     }
 
     public boolean pullFluids(Direction dir, boolean forceFlag, BlockPos pos) {
-        BlockEntity be = Objects.requireNonNull(tile.getLevel()).getBlockEntity(pos.relative(dir));
-        if(be == null) return false;
-        LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER, dir.getOpposite());
-        if (!cap.isPresent()) {
+        IFluidHandler sourceTank = Objects.requireNonNull(tile.getLevel()).getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(dir), dir.getOpposite());
+        if (sourceTank == null) {
             return false;
         }
-        IFluidHandler sourceTank = cap.orElse(null);
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
         for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
             if(pair.getMode() == SlotMode.PULL || forceFlag) {
@@ -218,19 +200,15 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
 
     public boolean canPushExcessFluid(int i, FluidStack outputFluid) {
         for(Direction dir: Direction.values()) {
-            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
-            if(be == null) continue;
-            LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER, dir.getOpposite());
-            if(cap.isPresent()) {
-                IFluidHandler handler = cap.orElse(null);
-                SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
-                for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
-                    if(pair.getSlot() != i) continue;
-                    if(pair.getMode() == PUSH  || pair.getMode() == PUSH_EXCESS) {
-                        int amount = handler.fill(outputFluid, SIMULATE);
-                        if(amount == outputFluid.getAmount()) {
-                            return true;
-                        }
+            IFluidHandler handler = tile.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, tile.getBlockPos().relative(dir), dir.getOpposite());
+            if(handler == null) continue;
+            SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
+            for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
+                if(pair.getSlot() != i) continue;
+                if(pair.getMode() == PUSH  || pair.getMode() == PUSH_EXCESS) {
+                    int amount = handler.fill(outputFluid, SIMULATE);
+                    if(amount == outputFluid.getAmount()) {
+                        return true;
                     }
                 }
             }
@@ -259,27 +237,20 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
 
     public FluidStack pushExcessFluid(int i, FluidStack toOutput) {
         for(Direction dir: Direction.values()) {
-            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
-            if(be == null) continue;
-            LazyOptional<IFluidHandler> cap = be.getCapability(FLUID_HANDLER, dir.getOpposite());
-            if(cap.isPresent()) {
-                IFluidHandler handler = cap.orElse(null);
-
-                SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
-                for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
-                    if(pair.getMode() == PUSH_EXCESS) {
-                        NcFluidTank tank = tanks.get(pair.getSlot());
-                        if(tank.getFluidAmount() > 0 && toOutput.getFluid().equals(tank.getFluid().getFluid())) {
-                            if(handler.fill(toOutput, SIMULATE) == toOutput.getAmount() ) {
-                                int amount = handler.fill(toOutput, EXECUTE);
-                                //tank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
-                                return FluidStack.EMPTY;
-                            }
+            IFluidHandler handler = tile.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, tile.getBlockPos().relative(dir), dir.getOpposite());
+            if(handler == null) continue;
+            SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
+            for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
+                if(pair.getMode() == PUSH_EXCESS) {
+                    NcFluidTank tank = tanks.get(pair.getSlot());
+                    if(tank.getFluidAmount() > 0 && toOutput.getFluid().equals(tank.getFluid().getFluid())) {
+                        if(handler.fill(toOutput, SIMULATE) == toOutput.getAmount() ) {
+                            int amount = handler.fill(toOutput, EXECUTE);
+                            return FluidStack.EMPTY;
                         }
                     }
                 }
             }
-
         }
         return toOutput;
     }
@@ -289,44 +260,43 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     }
 
     public void handleFluidItemClick(int slotId, ItemStack stack, ServerPlayer player) {
-        stack.getCapability(FLUID_HANDLER_ITEM).ifPresent(handler -> {
-            FluidStack fluidInItem = handler.getFluidInTank(0);
-            if(fluidInItem.isEmpty() && tanks.get(slotId).isEmpty()) return;
-            if(!fluidInItem.isEmpty() && isValidSlotFluid(slotId, fluidInItem) && isValidForInputSlot(slotId, fluidInItem)) {
-                FluidStack remaining = insertFluidInternal(slotId, fluidInItem, false);
-                if(!remaining.isEmpty() && handler.getContainer().is(BUCKET)) {
-                    return;
-                }
-                remaining = insertFluidInternal(slotId, fluidInItem.copy(), true);
-                handler.drain(fluidInItem.getAmount() - remaining.getAmount(), EXECUTE);
-                if(handler.getContainer().is(BUCKET)) {
-                    player.containerMenu.setCarried(new ItemStack(BUCKET));
-                    return;
-                }
-                player.containerMenu.setCarried(stack);
+        IFluidHandlerItem handler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+        if(handler == null) return;
+        FluidStack fluidInItem = handler.getFluidInTank(0);
+        if(fluidInItem.isEmpty() && tanks.get(slotId).isEmpty()) return;
+        if(!fluidInItem.isEmpty() && isValidSlotFluid(slotId, fluidInItem) && isValidForInputSlot(slotId, fluidInItem)) {
+            FluidStack remaining = insertFluidInternal(slotId, fluidInItem, false);
+            if(!remaining.isEmpty() && handler.getContainer().is(BUCKET)) {
                 return;
             }
-            if(fluidInItem.isEmpty() || (fluidInItem.isFluidEqual(tanks.get(slotId).getFluid()))) {
-                FluidStack tankFluid = tanks.get(slotId).getFluid();
-                if(tankFluid.isEmpty()) {
-                    return;
-                }
-                int filled = handler.fill(tankFluid, SIMULATE);
-                if(filled == 0 || (filled != 1000 && handler.getContainer().is(BUCKET))) {
-                    return;
-                }
-                filled = handler.fill(tankFluid, EXECUTE);
-                tanks.get(slotId).drain(filled, EXECUTE);
-                player.containerMenu.setCarried(handler.getContainer());
+            remaining = insertFluidInternal(slotId, fluidInItem.copy(), true);
+            handler.drain(fluidInItem.getAmount() - remaining.getAmount(), EXECUTE);
+            if(handler.getContainer().is(BUCKET)) {
+                player.containerMenu.setCarried(new ItemStack(BUCKET));
                 return;
             }
-        });
+            player.containerMenu.setCarried(stack);
+            return;
+        }
+        if(fluidInItem.isEmpty() || (fluidInItem.isFluidEqual(tanks.get(slotId).getFluid()))) {
+            FluidStack tankFluid = tanks.get(slotId).getFluid();
+            if(tankFluid.isEmpty()) {
+                return;
+            }
+            int filled = handler.fill(tankFluid, SIMULATE);
+            if(filled == 0 || (filled != 1000 && handler.getContainer().is(BUCKET))) {
+                return;
+            }
+            filled = handler.fill(tankFluid, EXECUTE);
+            tanks.get(slotId).drain(filled, EXECUTE);
+            player.containerMenu.setCarried(handler.getContainer());
+        }
     }
 
     public Object[] getSlotContent(int slotIdFromGlobalId) {
         FluidStack stack = tanks.get(slotIdFromGlobalId).getFluid();
         if(stack.isEmpty()) return new Object[]{};
-        return new Object[]{ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString(), stack.getAmount()};
+        return new Object[]{BuiltInRegistries.FLUID.getKey(stack.getFluid()).toString(), stack.getAmount()};
     }
 
     public boolean canPush() {

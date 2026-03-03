@@ -7,7 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
@@ -23,7 +22,7 @@ public class UpgradeItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
     {
         if(stack.is(NC_ITEMS.get("upgrade_energy").get()) && isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.upgrade_energy.tier", GTCEU_CONFIG.ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER.get()).withStyle(ChatFormatting.GOLD));

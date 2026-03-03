@@ -2,20 +2,21 @@ package igentuman.nc.handler.event.client;
 
 import igentuman.nc.recipes.NcRecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.recipes.NcRecipeType.ALL_RECIPES;
 
-@Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ServerLoad {
     public static void register(FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.addListener(ServerLoad::onLevelLoad);
+        NeoForge.EVENT_BUS.addListener(ServerLoad::onLevelLoad);
     }
     public static boolean initialized = false;
     public static void onLevelLoad(LevelEvent.Load event) {

@@ -2,7 +2,7 @@ package igentuman.nc.handler.config;
 
 import igentuman.nc.content.Electromagnets;
 import igentuman.nc.content.RFAmplifier;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,11 +13,11 @@ public class FusionConfig {
     {
         return new ArrayList<>(vals);
     }
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final FusionReactorConfig FUSION_CONFIG = new FusionReactorConfig(BUILDER);
     public static final ElectromagnetsConfig ELECTROMAGNETS_CONFIG = new ElectromagnetsConfig(BUILDER);
     public static final RFAmplifierConfig RF_AMPLIFIERS_CONFIG = new RFAmplifierConfig(BUILDER);
-    public static final ForgeConfigSpec spec = BUILDER.build();
+    public static final ModConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
 
@@ -39,12 +39,12 @@ public class FusionConfig {
     }
 
     public static class RFAmplifierConfig {
-        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTERED;
-        public final ForgeConfigSpec.ConfigValue<List<Integer>> POWER;
-        public final ForgeConfigSpec.ConfigValue<List<Integer>> HEAT;
-        public final ForgeConfigSpec.ConfigValue<List<Integer>> VOLTAGE;
+        public final ModConfigSpec.ConfigValue<List<Boolean>> REGISTERED;
+        public final ModConfigSpec.ConfigValue<List<Integer>> POWER;
+        public final ModConfigSpec.ConfigValue<List<Integer>> HEAT;
+        public final ModConfigSpec.ConfigValue<List<Integer>> VOLTAGE;
 
-        public RFAmplifierConfig(ForgeConfigSpec.Builder builder) {
+        public RFAmplifierConfig(ModConfigSpec.Builder builder) {
             builder.comment("Settings for RF Amplifiers").push("rf_amplifiers");
 
             REGISTERED = builder
@@ -69,12 +69,12 @@ public class FusionConfig {
     }
 
     public static class ElectromagnetsConfig {
-        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTERED;
-        public final ForgeConfigSpec.ConfigValue<List<Integer>> POWER;
-        public final ForgeConfigSpec.ConfigValue<List<Integer>> HEAT;
-        public final ForgeConfigSpec.ConfigValue<List<Double>> MAGNETIC_FIELD;
+        public final ModConfigSpec.ConfigValue<List<Boolean>> REGISTERED;
+        public final ModConfigSpec.ConfigValue<List<Integer>> POWER;
+        public final ModConfigSpec.ConfigValue<List<Integer>> HEAT;
+        public final ModConfigSpec.ConfigValue<List<Double>> MAGNETIC_FIELD;
 
-        public ElectromagnetsConfig(ForgeConfigSpec.Builder builder) {
+        public ElectromagnetsConfig(ModConfigSpec.Builder builder) {
             builder.comment("Settings for Electromagnets").push("electromagnets");
 
             REGISTERED = builder
@@ -99,14 +99,14 @@ public class FusionConfig {
     }
 
     public static class FusionReactorConfig {
-        public final ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
-        public final ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
-        public final ForgeConfigSpec.ConfigValue<Double> MINIMAL_MAGNETIC_FIELD;
-        public final ForgeConfigSpec.ConfigValue<Double> RF_AMPLIFICATION_MULTIPLIER;
-        public final ForgeConfigSpec.ConfigValue<Double> PLASMA_TO_ENERGY_CONVERTION;
-        public final ForgeConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
+        public final ModConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public final ModConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public final ModConfigSpec.ConfigValue<Double> MINIMAL_MAGNETIC_FIELD;
+        public final ModConfigSpec.ConfigValue<Double> RF_AMPLIFICATION_MULTIPLIER;
+        public final ModConfigSpec.ConfigValue<Double> PLASMA_TO_ENERGY_CONVERTION;
+        public final ModConfigSpec.ConfigValue<Double> EXPLOSION_RADIUS;
 
-        public FusionReactorConfig(ForgeConfigSpec.Builder builder) {
+        public FusionReactorConfig(ModConfigSpec.Builder builder) {
             builder.comment("Settings for Fusion Reactor").push("fusion_reactor");
 
             MIN_SIZE = builder

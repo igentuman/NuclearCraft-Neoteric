@@ -2,15 +2,14 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
-import net.minecraft.data.recipes.FinishedRecipe;
-import java.util.function.Consumer;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import static net.minecraft.world.item.Items.NETHERITE_INGOT;
 import static net.minecraft.world.item.Items.NETHERITE_SCRAP;
 
 public class AlloySmelterRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         AlloySmelterRecipes.consumer = consumer;
         ID = Processors.ALLOY_SMELTER;
         doubleToItem(ID, ingredient(NETHERITE_SCRAP, 3), dustIngredient(Materials.gold, 3),

@@ -1,19 +1,21 @@
 package igentuman.nc.handler.sided;
 
+import igentuman.api.platform.NCSerialization;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.handler.sided.capability.Gas2FluidConverter;
-import igentuman.nc.handler.sided.capability.Slurry2FluidConverter;
+import igentuman.nc.handler.sided.capability.Chemical2FluidConverter;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +30,6 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public final int inputFluidSlots;
     public final int outputFluidSlots;
     public final ItemCapabilityHandler itemHandler;
-    public final LazyOptional<ItemCapabilityHandler> itemCapability;
     public final FluidCapabilityHandler fluidHandler;
 
     public NuclearCraftBE blockEntity;
@@ -36,8 +37,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public boolean hasPull = false;
     private boolean updated = false;
 
-    private Gas2FluidConverter gasConverter;
-    private Slurry2FluidConverter slurryConverter;
+    private Chemical2FluidConverter chemicalConverter;
 
     public SidedContentHandler(int inputItemSlots, int outputItemSlots, int inputFluidSlots, int outputFluidSlots, int...tankCapacities) {
         this.inputItemSlots = inputItemSlots;
@@ -48,10 +48,8 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
             itemHandler = new ItemCapabilityHandler(inputItemSlots, outputItemSlots);
             itemHandler.tile = blockEntity;
             itemHandler.sidedContentHandler = this;
-            itemCapability = LazyOptional.of(() -> itemHandler);
         } else {
             itemHandler = null;
-            itemCapability = LazyOptional.empty();
         }
         if(inputFluidSlots + outputFluidSlots > 0) {
             int inputTankSize = 10;
@@ -85,36 +83,36 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     }
 
     @Override
-    public Tag serializeNBT() {
+    public Tag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
 
         if(itemHandler != null) {
-            nbt.put("itemHandler", itemHandler.serializeNBT());
+            nbt.put("itemHandler", NCSerialization.serialize(itemHandler, provider));
         }
         if(fluidHandler != null) {
-            nbt.put("fluidHandler", fluidHandler.serializeNBT());
+            nbt.put("fluidHandler", NCSerialization.serialize(fluidHandler, provider));
         }
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(Tag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, Tag nbt) {
         if(itemHandler != null) {
-            itemHandler.deserializeNBT(((CompoundTag) nbt).getCompound("itemHandler"));
+            NCSerialization.deserialize(itemHandler, provider, ((CompoundTag) nbt).getCompound("itemHandler"));
         }
         if(fluidHandler != null) {
-            fluidHandler.deserializeNBT(((CompoundTag) nbt).getCompound("fluidHandler"));
+            NCSerialization.deserialize(fluidHandler, provider, ((CompoundTag) nbt).getCompound("fluidHandler"));
         }
     }
 
-    public <T> LazyOptional<T> getItemCapability(Direction side) {
-        if(hasItemCapability(side)) return itemHandler.getCapability(side).cast();
-        return LazyOptional.empty();
+    public IItemHandler getItemCapability(Direction side) {
+        if(hasItemCapability(side)) return itemHandler.getCapability(side);
+        return null;
     }
 
-    public <T> LazyOptional<T> getFluidCapability(Direction side) {
-        if(hasFluidCapability(side)) return fluidHandler.getCapability(side).cast();
-        return LazyOptional.empty();
+    public IFluidHandler getFluidCapability(Direction side) {
+        if(hasFluidCapability(side)) return fluidHandler.getCapability(side);
+        return null;
     }
 
     public boolean hasFluidCapability(Direction side) {
@@ -126,10 +124,6 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(inputItemSlots+outputItemSlots == 0) return false;
         return side == null || itemHandler.sideMap.get(side.ordinal()).length > 0;
     }
-    public void invalidate() {
-        itemCapability.invalidate();
-    }
-
     public int toggleSideConfig(int slotId, int direction) {
         try {
             if (slotId < inputFluidSlots) {
@@ -344,20 +338,12 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         }
     }
 
-    public <T> T gasConverter(Direction side) {
-        if(gasConverter == null) {
-            gasConverter = new Gas2FluidConverter();
-            gasConverter.setFluidHandler(fluidHandler);
+    public <T> T chemicalConverter(Direction side) {
+        if(chemicalConverter == null) {
+            chemicalConverter = new Chemical2FluidConverter();
+            chemicalConverter.setFluidHandler(fluidHandler);
         }
-        return (T) gasConverter.forSide(side);
-    }
-
-    public <T> T getSlurryConverter(Direction side) {
-        if(slurryConverter == null) {
-            slurryConverter = new Slurry2FluidConverter();
-            slurryConverter.setFluidHandler(fluidHandler);
-        }
-        return (T) slurryConverter.forSide(side);
+        return (T) chemicalConverter.forSide(side);
     }
 
     public void voidFluidSlot(int slotId) {

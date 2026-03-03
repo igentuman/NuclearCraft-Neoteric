@@ -4,7 +4,8 @@ import igentuman.nc.multiblock.accelerator.CoolerDef;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class CoolerPlacementRecipe {
                     if (!blockName.contains(":")) {
                         blockName = MODID + ":" + blockName;
                     }
-                    Block block = ForgeRegistries.BLOCKS.getValue(rlFromString(blockName));
+                    Block block = BuiltInRegistries.BLOCK.get(rlFromString(blockName));
                     if (block != null) {
                         blockItems.add(new ItemStack(block));
                     }
@@ -75,7 +76,7 @@ public class CoolerPlacementRecipe {
         for (String blockName : blockNames) {
             if (!blockName.contains(":")) {
                 ResourceLocation res = rl(blockName);
-                Block block = ForgeRegistries.BLOCKS.getValue(res);
+                Block block = BuiltInRegistries.BLOCK.get(res);
                 if (block != null) {
                     displayNames.add(block.getName().getString());
                 }

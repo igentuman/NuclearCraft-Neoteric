@@ -1,13 +1,13 @@
 package igentuman.nc.handler.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.fml.config.ModConfig;
 
 public interface INCConfig {
 
     String getFileName();
 
-    ForgeConfigSpec getConfigSpec();
+    ModConfigSpec getConfigSpec();
 
     ModConfig.Type getConfigType();
 

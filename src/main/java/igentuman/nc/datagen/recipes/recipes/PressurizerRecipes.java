@@ -3,12 +3,11 @@ package igentuman.nc.datagen.recipes.recipes;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
-import java.util.function.Consumer;
 
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCItems.*;
@@ -18,7 +17,7 @@ import static net.minecraft.world.item.Items.*;
 
 public class PressurizerRecipes extends AbstractRecipeProvider {
 
-    public static void generate(Consumer<FinishedRecipe> consumer) {
+    public static void generate(RecipeOutput consumer) {
         ID = Processors.PRESSURIZER;
         PressurizerRecipes.consumer = consumer;
         for (String name : Materials.all().keySet()) {

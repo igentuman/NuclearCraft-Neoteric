@@ -44,7 +44,7 @@ public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         ItemStack core = new ItemStack(blockstate.getBlock().asItem());
         BakedModel center = blockRenderer.getBlockModel(blockstate.setValue(FusionCoreBlock.ACTIVE, true));
-        pPoseStack.clear();
+
         pPoseStack.pushPose();
         long time = Util.getMillis();
         float step = -0.08f;
@@ -65,7 +65,7 @@ public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
         pPoseStack.popPose();
 
         BakedModel base = itemRenderer.getModel(core, pBlockEntity.getLevel(), null, 0);
-        pPoseStack.clear();
+
         pPoseStack.pushPose();
         pPoseStack.translate(0.5, 1.35, 0.5);
         pPoseStack.scale(3.80F, 3.80F, 3.80F);

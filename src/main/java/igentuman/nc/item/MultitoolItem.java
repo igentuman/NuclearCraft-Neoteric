@@ -1,5 +1,6 @@
 package igentuman.nc.item;
 
+import igentuman.api.platform.NCLevels;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,7 +20,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static igentuman.nc.compat.mekanism.MekInteractions.handleMultitoolInteractionWithMek;
@@ -102,7 +102,7 @@ public class MultitoolItem extends Item
 		}
 		BlockPos pos = context.getClickedPos();
 		Direction side = context.getClickedFace();
-		BlockEntity be = world.getExistingBlockEntity(pos);
+		BlockEntity be = NCLevels.getExistingBlockEntity(world, pos);
 		if(isMekanismLoaded() && handleMultitoolInteractionWithMek(be, player, side)) {
 			return InteractionResult.SUCCESS;
 		}
@@ -110,7 +110,7 @@ public class MultitoolItem extends Item
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> list, TooltipFlag flag)
 	{
 		list.add(__("tooltip.nc.multitool.desc").withStyle(ChatFormatting.YELLOW));
 		list.add(__("tooltip.nc.multitool.shift.desc").withStyle(ChatFormatting.YELLOW));

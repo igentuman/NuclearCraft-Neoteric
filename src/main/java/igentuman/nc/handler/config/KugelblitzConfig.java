@@ -2,7 +2,7 @@ package igentuman.nc.handler.config;
 
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,9 +13,9 @@ public class KugelblitzConfig {
     {
         return new ArrayList<>(vals);
     }
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final GeneralConfig KUGELBLITZ_CONFIG = new GeneralConfig(BUILDER);
-    public static final ForgeConfigSpec spec = BUILDER.build();
+    public static final ModConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
 
@@ -37,13 +37,13 @@ public class KugelblitzConfig {
     }
 
     public static class GeneralConfig {
-        public final ForgeConfigSpec.ConfigValue<Integer> LASER_DISTANCE;
-        public final ForgeConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
-        public final ForgeConfigSpec.ConfigValue<Double> EVAPORATION_MULTIPLIER;
-        public final ForgeConfigSpec.ConfigValue<Long> EXPL_CHARGE;
-        public final ForgeConfigSpec.ConfigValue<Boolean> BLACKHOLE_SHADER;
+        public final ModConfigSpec.ConfigValue<Integer> LASER_DISTANCE;
+        public final ModConfigSpec.ConfigValue<Double> GENERATION_MULTIPLIER;
+        public final ModConfigSpec.ConfigValue<Double> EVAPORATION_MULTIPLIER;
+        public final ModConfigSpec.ConfigValue<Long> EXPL_CHARGE;
+        public final ModConfigSpec.ConfigValue<Boolean> BLACKHOLE_SHADER;
 
-        public GeneralConfig(ForgeConfigSpec.Builder builder) {
+        public GeneralConfig(ModConfigSpec.Builder builder) {
             builder.comment("Settings for Fusion Reactor").push("general");
 
             BLACKHOLE_SHADER = builder

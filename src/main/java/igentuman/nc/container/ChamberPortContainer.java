@@ -1,5 +1,6 @@
 package igentuman.nc.container;
 
+import igentuman.api.platform.NCLevels;
 import igentuman.nc.block.kugelblitz.entity.ChamberPortBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
@@ -10,11 +11,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -34,12 +34,15 @@ public class ChamberPortContainer extends AbstractContainerMenu {
         super(CHAMBER_PORT_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (ChamberPortBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
+        blockEntity = (ChamberPortBE) NCLevels.getExistingBlockEntity(playerEntity.getCommandSenderWorld(), pos);
         layoutPlayerInventorySlots();
-        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
-        });
+        if (blockEntity.controller() != null && blockEntity.controller().contentHandler() != null) {
+            IItemHandler h = blockEntity.controller().contentHandler().itemHandler;
+            if (h != null) {
+                addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
+                addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
+            }
+        }
     }
 
     @Override

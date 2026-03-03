@@ -17,11 +17,11 @@ public class MelterBE extends NCProcessorBE {
 
     @NothingNullByDefault
     public static class Recipe extends NcRecipe {
-        public Recipe(ResourceLocation id,
+        public Recipe(String codeId,
                       ItemStackIngredient[] input, ItemStackIngredient[] output,
                       FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids,
                       double timeModifier, double powerModifier, double heatModifier, double rarity) {
-            super(id, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, 1);
+            super(codeId, input, output, inputFluids, outputFluids, timeModifier, powerModifier, heatModifier, 1);
         }
 
         @Override

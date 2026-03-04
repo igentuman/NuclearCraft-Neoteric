@@ -52,6 +52,8 @@ import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 public class NCFluids {
 
     public static final HashMap<String, FluidEntry> ALL_FLUID_ENTRIES = new HashMap<>();
+    // Stores client extensions for registration via RegisterClientExtensionsEvent (initializeClient is deprecated in 1.21.1)
+    public static final HashMap<DeferredHolder<FluidType, FluidType>, IClientFluidTypeExtensions> CLIENT_EXTENSIONS = new HashMap<>();
     public static final Set<NCBlocks.BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
     public static HashMap<String, FluidEntry> NC_MATERIALS = new HashMap<>();
     public static HashMap<String, FluidEntry> NC_GASES = new HashMap<>();
@@ -410,16 +412,15 @@ public class NCFluids {
             }
             if(buildAttributes!=null)
                 buildAttributes.accept(builder);
-            DeferredHolder<FluidType, FluidType> type;
-            if(color == 0xFFFFFFFF) {
-                type = FLUID_TYPES.register(
-                        name, () -> makeTypeWithTextures(builder, stillTex, flowingTex)
-                );
-            } else {
-                type = FLUID_TYPES.register(
-                        name, () -> makeColoredTypeWithTextures(builder, stillTex, flowingTex, color)
-                );
-            }
+            DeferredHolder<FluidType, FluidType> type = FLUID_TYPES.register(
+                    name, () -> new FluidType(builder)
+            );
+
+            // Store client extensions for registration via RegisterClientExtensionsEvent
+            IClientFluidTypeExtensions extensions = (color == 0xFFFFFFFF)
+                    ? makeFluidExtensions(stillTex, flowingTex)
+                    : makeColoredFluidExtensions(stillTex, flowingTex, color);
+            CLIENT_EXTENSIONS.put(type, extensions);
 
             Mutable<FluidEntry> thisMutable = new MutableObject<>();
             DeferredHolder<Fluid, NCFluid> still = NCRegistration.registerFluid(FLUIDS, name, () -> NCFluid.makeFluid(
@@ -445,62 +446,22 @@ public class NCFluids {
             return entry;
         }
 
-        private static FluidType makeColoredTypeWithTextures(
-                FluidType.Properties builder, ResourceLocation stillTex, ResourceLocation flowingTex, int color
-        )
-        {
-            return new FluidType(builder)
-            {
-                @Override
-                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
-                {
-                    consumer.accept(new IClientFluidTypeExtensions()
-                    {
-                        @Override
-                        public ResourceLocation getStillTexture()
-                        {
-                            return stillTex;
-                        }
-
-                        @Override
-                        public ResourceLocation getFlowingTexture()
-                        {
-                            return flowingTex;
-                        }
-                        @Override
-                        public int getTintColor()
-                        {
-                            return color;
-                        }
-                    });
-                }
+        private static IClientFluidTypeExtensions makeColoredFluidExtensions(
+                ResourceLocation stillTex, ResourceLocation flowingTex, int color
+        ) {
+            return new IClientFluidTypeExtensions() {
+                @Override public ResourceLocation getStillTexture() { return stillTex; }
+                @Override public ResourceLocation getFlowingTexture() { return flowingTex; }
+                @Override public int getTintColor() { return color; }
             };
         }
 
-        private static FluidType makeTypeWithTextures(
-                FluidType.Properties builder, ResourceLocation stillTex, ResourceLocation flowingTex
-        )
-        {
-            return new FluidType(builder)
-            {
-                @Override
-                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
-                {
-                    consumer.accept(new IClientFluidTypeExtensions()
-                    {
-                        @Override
-                        public ResourceLocation getStillTexture()
-                        {
-                            return stillTex;
-                        }
-
-                        @Override
-                        public ResourceLocation getFlowingTexture()
-                        {
-                            return flowingTex;
-                        }
-                    });
-                }
+        private static IClientFluidTypeExtensions makeFluidExtensions(
+                ResourceLocation stillTex, ResourceLocation flowingTex
+        ) {
+            return new IClientFluidTypeExtensions() {
+                @Override public ResourceLocation getStillTexture() { return stillTex; }
+                @Override public ResourceLocation getFlowingTexture() { return flowingTex; }
             };
         }
 

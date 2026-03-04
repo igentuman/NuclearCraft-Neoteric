@@ -455,7 +455,14 @@ public class EMIPlugin implements EmiPlugin {
             var menuType = NCProcessors.PROCESSORS_CONTAINERS.get(name).get();
             registry.addRecipeHandler((MenuType) menuType, new ProcessorEmiRecipeHandler<>());
         }
-        // TODO: Refined Storage and AE2 EMI recipe handlers removed — waiting on RS and AE2 to port to NeoForge 1.21.1. Re-enable ProcessorEmiRecipeHandlerRS and ProcessorEmiRecipeHandlerAE2 when available.
+        // AE2 pattern encoding terminal handler
+        if (ModUtil.isAE2Loaded()) {
+            try {
+                registry.addRecipeHandler(appeng.menu.me.items.PatternEncodingTermMenu.TYPE,
+                        new igentuman.nc.compat.ae2.ProcessorEmiRecipeHandlerAE2<>());
+            } catch (NoClassDefFoundError ignored) {}
+        }
+        // TODO: Refined Storage EMI recipe handler — waiting on RS to port to NeoForge 1.21.1.
     }
     
     private List<ParticleRecipe> particleInfoRecipes() {

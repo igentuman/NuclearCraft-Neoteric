@@ -113,7 +113,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("emi.category.nuclearcraft.steam_turbine", "Steam Turbine");
         add("emi.category.nuclearcraft.leacher", "Leacher");
         add("emi.category.nuclearcraft.supercooler", "Supercooler");
-        add("emi.category.nuclearcraft.fuel_reprocessor", "");
+        add("emi.category.nuclearcraft.fuel_reprocessor", "Fuel Reprocessor");
         add("emi.category.nuclearcraft.particle_info", "Particle Info");
         add("emi.category.nuclearcraft.particle_source_info", "Particle Source");
         add("emi.category.nuclearcraft.kugelblitz_info", "Kugelblitz Info");

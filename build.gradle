@@ -57,8 +57,7 @@ sourceSets {
             exclude 'igentuman/nc/compat/tis3d/**'         // TIS-3D
             exclude 'igentuman/nc/compat/kubejs/**'        // KubeJS
             exclude 'igentuman/nc/compat/refined_storage/**' // Refined Storage
-            exclude 'igentuman/nc/compat/ae2/**'           // Applied Energistics 2
-            exclude 'igentuman/nc/network/toServer/PacketAE2PatternTransfer.java' // AE2 (packet is migrated, just not wired)
+            // AE2 compat re-enabled — AE2 19.x available for NeoForge 1.21.1
             exclude 'igentuman/nc/mixin/KubeJSRecipesEventJSMixin.java' // KubeJS mixin
         }
         resources { srcDir 'src/generated/resources' }
@@ -142,6 +141,10 @@ dependencies {
     // Mekanism
     implementation "mekanism:Mekanism:${mc_version}-${mekanism_version}"
     implementation "mekanism:Mekanism:${mc_version}-${mekanism_version}:generators"
+
+    // Applied Energistics 2
+    compileOnly("org.appliedenergistics:appliedenergistics2:${ae2_version}") { transitive = false }
+    localRuntime "org.appliedenergistics:appliedenergistics2:${ae2_version}"
 
     // GregTech CEu Modern
     compileOnly("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}") { transitive = false }

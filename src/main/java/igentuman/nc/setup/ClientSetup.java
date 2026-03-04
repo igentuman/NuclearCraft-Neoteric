@@ -151,7 +151,6 @@ public class ClientSetup {
 
     public static void registerEventHandlers(FMLClientSetupEvent event) {
         InputEvents.register(event);
-        ColorHandler.register(event);
         ServerLoad.register(event);
         RecipesUpdated.register(event);
         TagsUpdated.register(event);

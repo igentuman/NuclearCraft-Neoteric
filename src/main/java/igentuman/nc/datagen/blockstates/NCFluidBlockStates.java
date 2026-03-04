@@ -29,9 +29,8 @@ public class NCFluidBlockStates extends ExtendedBlockstateProvider {
         for(NCFluids.FluidEntry entry : NCFluids.ALL_FLUID_ENTRIES.values())
         {
             Fluid still = entry.getStill();
-            Mutable<IClientFluidTypeExtensions> box = new MutableObject<>();
-            still.getFluidType().initializeClient(box::setValue);
-            ResourceLocation stillTexture = box.getValue().getStillTexture();
+            IClientFluidTypeExtensions extensions = NCFluids.CLIENT_EXTENSIONS.get(entry.type());
+            ResourceLocation stillTexture = extensions.getStillTexture();
             String renderType = "minecraft:solid";
             if(still.getFluidType().getDensity() < 1000) {
                 renderType = "minecraft:translucent";

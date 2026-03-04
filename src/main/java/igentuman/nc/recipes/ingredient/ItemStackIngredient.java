@@ -3,6 +3,7 @@ package igentuman.nc.recipes.ingredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,8 @@ public abstract class ItemStackIngredient implements InputIngredient<@NotNull It
     protected int amount;
 
     public ItemStackIngredient copy() {
-        RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), RegistryAccess.EMPTY);
+        RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(),
+                RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
         this.write(buffer);
         return IngredientCreatorAccess.item().read(buffer);
     }

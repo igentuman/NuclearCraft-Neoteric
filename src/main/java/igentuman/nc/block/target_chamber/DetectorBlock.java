@@ -1,5 +1,6 @@
 package igentuman.nc.block.target_chamber;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.particle_chamber.DetectorDef;
@@ -49,7 +50,7 @@ public class DetectorBlock extends MultiblockBlock {
     }
 
     private void initParams() {
-        type = asItem().toString();
+        type = NCNames.of(asItem());
         def = TARGET_CHAMBER_DETECTORS.get(type);
         power = def.power;
         efficiency = def.efficiency;
@@ -58,7 +59,7 @@ public class DetectorBlock extends MultiblockBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
-        if(asItem().toString().contains("empty")) return;
+        if(NCNames.of(asItem()).contains("empty")) return;
         initParams();
         list.add(TextUtils.applyFormat(__("tooltip.detector.distance", distance), ChatFormatting.GOLD));
         list.add(TextUtils.applyFormat(__("tooltip.detector.power", power), ChatFormatting.GOLD));

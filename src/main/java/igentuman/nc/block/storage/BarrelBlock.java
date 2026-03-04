@@ -2,6 +2,7 @@ package igentuman.nc.block.storage;
 
 import igentuman.api.platform.NCItemStacks;
 import igentuman.api.platform.NCLevels;
+import igentuman.api.platform.NCNames;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.storage.entity.BarrelBE;
 import igentuman.nc.setup.registration.NCStorageBlocks;
@@ -160,7 +161,7 @@ public class BarrelBlock extends Block implements EntityBlock {
 
     public String code()
     {
-        return asItem().toString();
+        return NCNames.of(asItem());
     }
 
     @javax.annotation.Nullable

@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,12 +36,12 @@ public class MultiblockBlock extends Block {
     @Override
     @Deprecated
     public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
-        return adjacentBlockState.getBlock().equals(this) && TRANSPARENT_BLOCKS.matcher(asItem().toString()).matches();
+        return adjacentBlockState.getBlock().equals(this) && TRANSPARENT_BLOCKS.matcher(NCNames.of(asItem())).matches();
     }
 
     @Override
     public float getShadeBrightness(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
-        return TRANSPARENT_BLOCKS.matcher(asItem().toString()).matches() ? 1.0F : super.getShadeBrightness(pState, pLevel, pPos);
+        return TRANSPARENT_BLOCKS.matcher(NCNames.of(asItem())).matches() ? 1.0F : super.getShadeBrightness(pState, pLevel, pPos);
     }
 
     @Override
@@ -65,6 +66,6 @@ public class MultiblockBlock extends Block {
 
     @Override
     public boolean propagatesSkylightDown(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
-        return TRANSPARENT_BLOCKS.matcher(asItem().toString()).matches();
+        return TRANSPARENT_BLOCKS.matcher(NCNames.of(asItem())).matches();
     }
 }

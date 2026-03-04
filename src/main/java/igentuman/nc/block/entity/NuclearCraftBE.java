@@ -1,6 +1,7 @@
 package igentuman.nc.block.entity;
 
 import igentuman.api.platform.NCLevels;
+import igentuman.api.platform.NCNames;
 import igentuman.api.platform.NCSerialization;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.client.sound.SoundHandler;
@@ -264,7 +265,7 @@ public class NuclearCraftBE extends BlockEntity {
     }
 
     public static String getName(BlockState pBlockState) {
-        return pBlockState.getBlock().asItem().toString();
+        return NCNames.of(pBlockState.getBlock().asItem());
     }
 
     protected void trackChanges(boolean was, boolean now)

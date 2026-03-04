@@ -110,7 +110,9 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     }
 
     protected String recipeIdReplacements(String val) {
+        val = val.replace(":", "_");
         val = val.replace("nuclearcraft_", "");
+        val = val.replace("minecraft_", "mc_");
         val = val.replace("depleted_fuel", "d_f");
         return val;
     }
@@ -169,7 +171,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
 
             if(!inputItems.isEmpty()) {
                 for(NcIngredient in: inputItems) {
-                    inputJson.add(serializeIngredient(in.asIngredient()));
+                    inputJson.add(in.toJson());
                 }
                 json.add("input", inputJson);
             }
@@ -178,7 +180,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
 
             if(!outputItems.isEmpty()) {
                 for (NcIngredient out: outputItems) {
-                    outJson.add(serializeIngredient(out.asIngredient()));
+                    outJson.add(out.toJson());
                 }
                 json.add("output", outJson);
             }

@@ -86,7 +86,9 @@ public class TConstructRecipeBuilder extends RecipeBuilder<TConstructRecipeBuild
     }
 
     protected String recipeIdReplacements(String val) {
+        val = val.replace(":", "_");
         val = val.replace("nuclearcraft_", "");
+        val = val.replace("minecraft_", "mc_");
         val = val.replace("depleted_fuel", "d_f");
         return val;
     }
@@ -156,7 +158,7 @@ public class TConstructRecipeBuilder extends RecipeBuilder<TConstructRecipeBuild
             }
             if(!inputItems.isEmpty()) {
                 for(NcIngredient in: inputItems) {
-                    json.add("ingredient", serializeIngredient(in.asIngredient()));
+                    json.add("ingredient", in.toJson());
                     break;
                 }
             }
@@ -164,7 +166,7 @@ public class TConstructRecipeBuilder extends RecipeBuilder<TConstructRecipeBuild
 
             if(!outputItems.isEmpty()) {
                 for (NcIngredient out: outputItems) {
-                    json.add("result", serializeIngredient(out.asIngredient()));
+                    json.add("result", out.toJson());
                     break;
                 }
             }

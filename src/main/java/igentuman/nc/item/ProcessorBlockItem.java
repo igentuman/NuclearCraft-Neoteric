@@ -1,6 +1,7 @@
 package igentuman.nc.item;
 
 import igentuman.api.platform.NCItemStacks;
+import igentuman.api.platform.NCNames;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -49,7 +50,7 @@ public class ProcessorBlockItem extends BlockItem
 		if(NCItemStacks.hasCustomData(stack) && NCItemStacks.contains(stack, "energy")) {
 			list.add(__("tooltip.nc.content_saved").withStyle(ChatFormatting.GRAY));
 		}
-		if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
+		if(NCNames.of(asItem()).contains("empty") || this.asItem().equals(Items.AIR)) return;
 		if(isGtLoaded() && isGTEUCapEnabled()) {
 			list.add(__("tooltip.nc.energy_base_eu_tier", GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get()).withStyle(ChatFormatting.GOLD));
 		}

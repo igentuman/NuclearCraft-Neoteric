@@ -60,14 +60,14 @@ public class CreativeTabs {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> NC_BLOCKS_TAB = CREATIVE_TABS.register("nc_blocks",
             () ->  CreativeModeTab.builder()
-            .icon(() -> new ItemStack(getSingleBlockByTagKey("forge:storage_blocks/uranium")))
+            .icon(() -> new ItemStack(getSingleBlockByTagKey("c:storage_blocks/uranium")))
             .displayItems((displayParams, output) -> getBlocks().forEach(output::accept))
             .title(__("itemGroup.nuclearcraft_blocks"))
             .build());
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> NC_ITEMS_TAB = CREATIVE_TABS.register("nc_items",
             () ->  CreativeModeTab.builder()
-                    .icon(() -> new ItemStack(getItemsByTagKey("forge:ingots/uranium").get(0)))
+                    .icon(() -> new ItemStack(getItemsByTagKey("c:ingots/uranium").get(0)))
                     .displayItems((displayParams, output) -> getItems().forEach(output::accept))
                     .title(__("itemGroup.nuclearcraft_items"))
                     .build()

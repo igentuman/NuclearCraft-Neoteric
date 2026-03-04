@@ -1,6 +1,7 @@
 package igentuman.nc.item;
 
 import igentuman.api.platform.NCItemStacks;
+import igentuman.api.platform.NCNames;
 import igentuman.nc.container.StorageContainerItemContainer;
 import igentuman.nc.content.storage.ContainerBlocks;
 import net.minecraft.ChatFormatting;
@@ -82,7 +83,7 @@ public class ContainerBlockItem extends BlockItem
 
 	public String code()
 	{
-		return asItem().toString();
+		return NCNames.of(asItem());
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.content.energy.SolarPanels;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
@@ -60,7 +61,7 @@ public class SolarPanelBlock extends Block implements EntityBlock {
 
     public String code()
     {
-        return SolarPanels.getCode(asItem().toString());
+        return SolarPanels.getCode(NCNames.of(asItem()));
     }
 
     @javax.annotation.Nullable
@@ -82,10 +83,10 @@ public class SolarPanelBlock extends Block implements EntityBlock {
 
     public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag)
     {
-        int generation = SolarPanels.all().get(asItem().toString().replace("solar_panel_","")).getActualGeneration();
+        int generation = SolarPanels.all().get(NCNames.of(asItem()).replace("solar_panel_","")).getActualGeneration();
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.energy_eu_generation", formatEUEnergy(generation)).withStyle(ChatFormatting.GOLD));
-            list.add(__("tooltip.nc.energy_eu_tier", SolarPanels.all().get(asItem().toString().replace("solar_panel_","")).getEnergyTier()).withStyle(ChatFormatting.GOLD));
+            list.add(__("tooltip.nc.energy_eu_tier", SolarPanels.all().get(NCNames.of(asItem()).replace("solar_panel_","")).getEnergyTier()).withStyle(ChatFormatting.GOLD));
         }
         if(!isGtLoaded() || !isOnlyGTCEUCapEnabled()) {
             list.add(TextUtils.applyFormat(__("solar_panel.fe_generation", TextUtils.numberFormat(generation)), ChatFormatting.BLUE));

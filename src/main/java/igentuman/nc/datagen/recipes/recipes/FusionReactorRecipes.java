@@ -242,7 +242,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(fluidIngredient("lithium/6", MOLTEN_INGOT*4),
-                        fluidIngredient("xenorium298", MOLTEN_INGOT*4)
+                        fluidIngredient("xenorium/298", MOLTEN_INGOT*4)
                 ),
                 List.of(
                         fluidIngredient("helium", 1000*6/2),

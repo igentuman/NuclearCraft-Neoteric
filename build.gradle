@@ -123,7 +123,8 @@ dependencies {
     // JEI
     compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
     compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
-    localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
+    // JEI runtime disabled — EMI bridges JEI recipes; running both causes duplicate recipe warnings
+    // localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
 
     // EMI
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"

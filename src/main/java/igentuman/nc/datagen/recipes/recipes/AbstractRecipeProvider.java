@@ -21,6 +21,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.neoforgeRl;
+import static igentuman.nc.NuclearCraft.resourceLoc;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.FissionFuel.*;
 import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
@@ -254,7 +255,7 @@ public abstract class AbstractRecipeProvider {
     }
 
     public static TagKey<Fluid> forgeFluid(String name) {
-        String key = "forge";
+        String key = "neoforge";
         if(name.contains(":")) {
             key = name.split(":")[0];
             name = name.split(":")[1];
@@ -265,7 +266,7 @@ public abstract class AbstractRecipeProvider {
     public static Item blockItem(String name)
     {
         for(String key: List.of(name, "block_"+name, name+"_block")) {
-            if(ALL_NC_ITEMS.get(name) != null) {
+            if(ALL_NC_ITEMS.get(key) != null) {
                 return ALL_NC_ITEMS.get(key).get();
             }
         }
@@ -347,7 +348,7 @@ public abstract class AbstractRecipeProvider {
     {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];
-        return ingredient(TagKey.create(ITEM_REGISTRY, neoforgeRl(name)), count);
+        return ingredient(TagKey.create(ITEM_REGISTRY, resourceLoc(name)), count);
     }
 
     public static NcIngredient dustIngredient(String name, int...pCount)
@@ -361,7 +362,8 @@ public abstract class AbstractRecipeProvider {
     {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];
-        return IngredientCreatorAccess.fluid().from(ALL_FLUID_ENTRIES.get(fuelItem(name).toString()).getStill(), count);
+        String key = BuiltInRegistries.ITEM.getKey(fuelItem(name)).getPath();
+        return IngredientCreatorAccess.fluid().from(ALL_FLUID_ENTRIES.get(key).getStill(), count);
     }
 
     public static NcIngredient fuelIngredient(List<String> name, int...pCount)

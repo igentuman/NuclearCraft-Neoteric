@@ -45,7 +45,9 @@ public class TurbineCoilBE extends TurbineBE {
         Item item = getBlockState().getBlock().asItem();
         if(item.equals(AIR)) return null;
         if(def == null) {
-            setCoilDef(TurbineRegistration.coils().get(item.toString().replaceAll("turbine_|_coil", "")));
+            String name = item.toString();
+            if(name.contains(":")) name = name.substring(name.indexOf(':') + 1);
+            setCoilDef(TurbineRegistration.coils().get(name.replaceAll("turbine_|_coil", "")));
         }
         return def;
     }

@@ -14,7 +14,6 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ModSetup {
 
     public static void setup() {
@@ -23,10 +22,8 @@ public class ModSetup {
         Particles.init();
         // AttachCapabilitiesEvent handlers removed -- PlayerRadiation uses Data Attachments,
         // WorldRadiation uses RadiationManager (SavedData), WorldVeins uses WorldVeinsManager (SavedData)
-        bus.register(NuclearCraft.worldTickHandler);
-        bus.register(new PlayerEvents());
-        bus.register(new RadiationEvents());
-        bus.register(new ScientistHouseStructure());
+        // WorldEvents, PlayerEvents, ScientistHouseStructure registered via @EventBusSubscriber (static methods)
+        bus.register(new RadiationEvents()); // RadiationEvents has non-static handlers, needs instance registration
     }
 
     public static void init(FMLCommonSetupEvent event) {

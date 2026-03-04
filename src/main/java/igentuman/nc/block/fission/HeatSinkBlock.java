@@ -1,5 +1,6 @@
 package igentuman.nc.block.fission;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
@@ -119,9 +120,10 @@ public class HeatSinkBlock extends MultiblockBlock {
 
     private void initParams() {
         Item item = Item.byBlock(this);
-        if(item.toString().isEmpty()) return;
-        if(item.toString().contains("empty")) return;
-        type = item.toString().replace("_heat_sink", "");
+        String name = NCNames.of(item);
+        if(name.isEmpty()) return;
+        if(name.contains("empty")) return;
+        type = name.replace("_heat_sink", "");
         def = heatsinks.get(type);
         heat = def.getHeat();
     }
@@ -151,7 +153,7 @@ public class HeatSinkBlock extends MultiblockBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
-        if(asItem().toString().contains("empty")) return;
+        if(NCNames.of(asItem()).contains("empty")) return;
         initParams();
         list.add(TextUtils.applyFormat(__("heat_sink.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
 

@@ -161,10 +161,13 @@ public class CommonConfig {
         }
 
         public int getCapacityFor(String code) {
+            if(code.contains(":")) code = code.substring(code.indexOf(':') + 1);
             if(code.equals("lithium_ion_cell")) {
                 return LITHIUM_ION_BATTERY_STORAGE.get();
             }
-            return BatteryBlocks.all().get(code).config().getStorage();
+            BatteryBlocks.BatteryBlockPrefab prefab = BatteryBlocks.all().get(code);
+            if(prefab == null) return 0;
+            return prefab.config().getStorage();
         }
     }
 

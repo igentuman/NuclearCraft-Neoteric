@@ -2,7 +2,6 @@ package igentuman.nc;
 
 import igentuman.nc.handler.command.*;
 import igentuman.nc.handler.config.*;
-import igentuman.nc.handler.event.server.WorldEvents;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.network.PacketHandler;
 import igentuman.nc.radiation.data.RadiationEvents;
@@ -38,7 +37,6 @@ public class NuclearCraft {
 
     public static final Logger LOGGER = LogManager.getLogger();
     public boolean isNcBeStopped = false;
-    public static final WorldEvents worldTickHandler = new WorldEvents();
     public static final String MODID = "nuclearcraft";
     public static NuclearCraft instance;
     private final PacketHandler packetHandler;

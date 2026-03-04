@@ -1,10 +1,10 @@
 {
-  "type": "forge:conditional",
+  "type": "neoforge:conditional",
   "recipes": [
     {
       "conditions": [
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "thermal_expansion"
         }
       ],
@@ -13,7 +13,7 @@
         "inputFluids": [
           {
             "amount": 1000,
-            "tag": "forge:crude_oil"
+            "tag": "neoforge:crude_oil"
           }
         ],
         "outputFluids": [

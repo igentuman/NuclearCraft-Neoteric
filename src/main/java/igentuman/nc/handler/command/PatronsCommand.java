@@ -13,7 +13,6 @@ public class PatronsCommand {
     private PatronsCommand() {}
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
-        NeoForge.EVENT_BUS.register(PatronsCommand.class);
         return Commands.literal("nc_patrons")
                 .executes(ctx -> {
             return execute(ctx.getSource());

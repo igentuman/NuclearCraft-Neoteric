@@ -2,6 +2,7 @@ package igentuman.nc.block.storage;
 
 import igentuman.api.platform.NCItemStacks;
 import igentuman.api.platform.NCLevels;
+import igentuman.api.platform.NCNames;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.storage.entity.BatteryBE;
 import igentuman.nc.block.entity.energy.NCEnergy;
@@ -88,7 +89,7 @@ public class BatteryBlock extends Block implements EntityBlock {
 
     public String code()
     {
-        return asItem().toString();
+        return NCNames.of(asItem());
     }
 
     @javax.annotation.Nullable

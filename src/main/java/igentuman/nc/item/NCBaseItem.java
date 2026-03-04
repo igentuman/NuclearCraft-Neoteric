@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 
 public class NCBaseItem extends Item
 {
-	private int burnTime = -1;
+	private int burnTime = 0;
 	private boolean isHidden = false;
 
 	public NCBaseItem()

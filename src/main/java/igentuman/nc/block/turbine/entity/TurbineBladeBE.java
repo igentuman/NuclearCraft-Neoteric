@@ -43,7 +43,9 @@ public class TurbineBladeBE extends TurbineBE {
         Item item = getBlockState().getBlock().asItem();
         if(item.equals(AIR)) return null;
         if(def == null) {
-            setBladeDef(TurbineRegistration.blades().get(item.toString().replaceAll("turbine_", "")));
+            String name = item.toString();
+            if(name.contains(":")) name = name.substring(name.indexOf(':') + 1);
+            setBladeDef(TurbineRegistration.blades().get(name.replaceAll("turbine_", "")));
         }
         return def;
     }

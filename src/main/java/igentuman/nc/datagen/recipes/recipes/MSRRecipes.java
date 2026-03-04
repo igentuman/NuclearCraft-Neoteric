@@ -35,7 +35,7 @@ public class MSRRecipes {
         NcRecipeBuilder.get(id)
                 .items(List.of(input), List.of(output))
                 .modifiers(timeModifier, radiation, powerModifier)
-                .build(consumer, rl(id+"/"+output.getName().replace("depleted_fuel_", "")));
+                .build(consumer, rl(id+"/"+output.getName().replace(":", "_").replace("nuclearcraft_", "").replace("depleted_fuel_", "")));
     }
 
     private static void recipes() {

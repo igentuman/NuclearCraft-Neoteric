@@ -27,3 +27,6 @@ type = "required"
 versionRange = "${mc_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+[[mixins]]
+config = "nuclearcraft.mixins.json"

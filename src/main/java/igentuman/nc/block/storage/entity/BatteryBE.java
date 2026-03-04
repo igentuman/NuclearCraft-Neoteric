@@ -1,5 +1,6 @@
 package igentuman.nc.block.storage.entity;
 
+import igentuman.api.platform.NCNames;
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.energy.NCEnergy;
@@ -35,7 +36,7 @@ public class BatteryBE extends NCEnergy {
     }
 
     public static String getName(BlockState pBlockState) {
-        return pBlockState.getBlock().asItem().toString();
+        return NCNames.of(pBlockState.getBlock().asItem());
     }
 
     @Override
@@ -79,16 +80,16 @@ public class BatteryBE extends NCEnergy {
 
     @Override
     public long getInputEnergyTier() {
-        return BatteryBlocks.all().get(getBlockState().getBlock().asItem().toString()).getEnergyTier().ordinal();
+        return BatteryBlocks.all().get(NCNames.of(getBlockState().getBlock().asItem())).getEnergyTier().ordinal();
     }
 
     @Override
     public long getOutputEnergyTier() {
-        return BatteryBlocks.all().get(getBlockState().getBlock().asItem().toString()).getEnergyTier().ordinal();
+        return BatteryBlocks.all().get(NCNames.of(getBlockState().getBlock().asItem())).getEnergyTier().ordinal();
     }
 
     protected int getEnergyMaxStorage() {
-        return BatteryBlocks.all().get(getBlockState().getBlock().asItem().toString()).getStorage();
+        return BatteryBlocks.all().get(NCNames.of(getBlockState().getBlock().asItem())).getStorage();
     }
 
 

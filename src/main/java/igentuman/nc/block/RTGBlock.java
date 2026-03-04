@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.content.energy.RTGs;
 import igentuman.nc.content.energy.SolarPanels;
@@ -53,7 +54,7 @@ public class RTGBlock extends Block implements EntityBlock {
 
     public String code()
     {
-        return asItem().toString();
+        return NCNames.of(asItem());
     }
 
     @javax.annotation.Nullable

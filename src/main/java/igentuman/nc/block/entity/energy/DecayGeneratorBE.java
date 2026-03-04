@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.energy;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.content.energy.RTGs;
 import igentuman.nc.radiation.ItemRadiation;
@@ -31,12 +32,12 @@ public class DecayGeneratorBE extends NCEnergy {
     }
 
     public static String getName(BlockState pBlockState) {
-        return pBlockState.getBlock().asItem().toString();
+        return NCNames.of(pBlockState.getBlock().asItem());
     }
 
     @Override
     public String getName() {
-        return getBlockState().getBlock().asItem().toString();
+        return NCNames.of(getBlockState().getBlock().asItem());
     }
 
     private List<Block> allowedBlocks = new ArrayList<>();
@@ -54,7 +55,7 @@ public class DecayGeneratorBE extends NCEnergy {
      */
     private Block getLeadBlock() {
         if(leadBlock == null) {
-            leadBlock = getSingleBlockByTagKey("forge:storage_blocks/lead");
+            leadBlock = getSingleBlockByTagKey("c:storage_blocks/lead");
         }
         return leadBlock;
     }

@@ -1,5 +1,6 @@
 package igentuman.nc.block.accelerator;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.MultiblockBlock;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -29,12 +30,12 @@ public class AcceleratorBlock extends MultiblockBlock {
 
     @Override
     public boolean propagatesSkylightDown(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
-        return asItem().toString().matches(".*glass.*");
+        return NCNames.of(asItem()).matches(".*glass.*");
     }
 
     @Override
     public float getShadeBrightness(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
-        return asItem().toString().matches(".*glass.*") ? 1.0F : 0.2F;
+        return NCNames.of(asItem()).matches(".*glass.*") ? 1.0F : 0.2F;
     }
 
     @Override

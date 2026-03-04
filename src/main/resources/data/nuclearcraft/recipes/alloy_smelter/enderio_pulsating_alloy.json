@@ -1,10 +1,10 @@
 {
-  "type": "forge:conditional",
+  "type": "neoforge:conditional",
   "recipes": [
     {
       "conditions": [
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "enderio"
         }
       ],
@@ -12,10 +12,10 @@
         "type": "nuclearcraft:alloy_smelter",
         "input": [
           {
-            "tag": "forge:ingots/iron"
+            "tag": "c:ingots/iron"
           },
           {
-            "tag": "forge:ender_pearls"
+            "tag": "c:ender_pearls"
           }
         ],
         "output": [

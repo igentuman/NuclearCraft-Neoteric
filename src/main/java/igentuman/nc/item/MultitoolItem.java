@@ -28,7 +28,7 @@ import static igentuman.nc.util.TextUtils.__;
 
 public class MultitoolItem extends Item
 {
-	private int burnTime = -1;
+	private int burnTime = 0;
 	private boolean isHidden = false;
 
 	public MultitoolItem()

@@ -1,5 +1,6 @@
 package igentuman.nc.block.kugelblitz;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.MultiblockBlock;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -27,12 +28,12 @@ public class ChamberBlock extends MultiblockBlock {
 
     @Override
     public boolean propagatesSkylightDown(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
-        return asItem().toString().matches(".*photon.*");
+        return NCNames.of(asItem()).matches(".*photon.*");
     }
 
     @Override
     public float getShadeBrightness(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
-        return asItem().toString().matches(".*photon.*") ? 1.0F : 0.2F;
+        return NCNames.of(asItem()).matches(".*photon.*") ? 1.0F : 0.2F;
     }
 
     @Override

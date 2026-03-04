@@ -52,8 +52,11 @@ public class TurbineCoilBlock extends Block implements EntityBlock {
     private void initParams() {
         Item item = Item.byBlock(this);
         if(item.toString().isEmpty()) return;
-        type = item.toString().replaceAll("_coil|turbine_", "");
+        String name = item.toString();
+        if(name.contains(":")) name = name.substring(name.indexOf(':') + 1);
+        type = name.replaceAll("_coil|turbine_", "");
         def = TurbineRegistration.coils.get(type);
+        if(def == null) return;
         efficiency = def.getEfficiency();
     }
 
@@ -167,6 +170,7 @@ public class TurbineCoilBlock extends Block implements EntityBlock {
     @Override
     public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
         initParams();
+        if(def == null) return;
         if(DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(getPlacementRule(), ChatFormatting.AQUA));
             list.add(TextUtils.applyFormat(

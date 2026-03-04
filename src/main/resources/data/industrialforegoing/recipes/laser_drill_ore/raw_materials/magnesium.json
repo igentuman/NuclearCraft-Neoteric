@@ -1,17 +1,17 @@
 {
-  "type": "forge:conditional",
+  "type": "neoforge:conditional",
   "recipes": [
     {
       "conditions": [
         {
-          "type": "forge:not",
+          "type": "neoforge:not",
           "value": {
-            "type": "forge:tag_empty",
-            "tag": "forge:raw_materials/magnesium"
+            "type": "neoforge:tag_empty",
+            "tag": "c:raw_materials/magnesium"
           }
         },
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "industrialforegoing"
         }
       ],
@@ -21,7 +21,7 @@
           "item": "industrialforegoing:laser_lens14"
         },
         "output": {
-          "tag": "forge:raw_materials/magnesium"
+          "tag": "c:raw_materials/magnesium"
         },
         "pointer": 0,
         "rarity": [

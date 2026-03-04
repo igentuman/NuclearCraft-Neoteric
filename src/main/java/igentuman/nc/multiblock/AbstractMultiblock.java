@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock;
 
+import igentuman.api.platform.NCNames;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.api.nc.multiblock.Multiblock;
 import igentuman.api.nc.multiblock.MultiblockController;
@@ -183,7 +184,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public boolean isPort(BlockState bs) {
-        return bs.getBlock().asItem().toString().contains("port");
+        return NCNames.of(bs.getBlock().asItem()).contains("port");
     }
 
     @Override
@@ -661,7 +662,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected void processOuterBlock(BlockPos pos) {
         attachMultiblock(pos);
         addIfNotExists(pos, allBlocks);
-        if (CONTROLLERS.matcher(getBlockState(pos).getBlock().asItem().toString()).matches()) {
+        if (CONTROLLERS.matcher(NCNames.of(getBlockState(pos).getBlock().asItem())).matches()) {
             controllers.add(pos);
         }
         if (isPort(getBlockState(pos))) {

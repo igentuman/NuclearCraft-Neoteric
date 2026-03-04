@@ -27,7 +27,7 @@ public class NuclearFurnaceBE extends NCProcessorBE {
 
     private List<Item> getFuelItems() {
         if (ingots == null) {
-            ingots = getItemsByTagKey("forge:ingots/uranium");
+            ingots = getItemsByTagKey("c:ingots/uranium");
         }
         return ingots;
     }

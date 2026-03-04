@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.content.energy.RTGs;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
@@ -54,7 +55,7 @@ public class DecayGeneratorBlock extends Block implements EntityBlock {
 
     public String code()
     {
-        return asItem().toString();
+        return NCNames.of(asItem());
     }
 
     @javax.annotation.Nullable

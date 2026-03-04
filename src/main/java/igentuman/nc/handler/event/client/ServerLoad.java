@@ -13,7 +13,6 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.recipes.NcRecipeType.ALL_RECIPES;
 
-@EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ServerLoad {
     public static void register(FMLClientSetupEvent event) {
         NeoForge.EVENT_BUS.addListener(ServerLoad::onLevelLoad);

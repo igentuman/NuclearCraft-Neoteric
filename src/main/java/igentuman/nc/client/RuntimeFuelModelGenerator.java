@@ -449,7 +449,8 @@ public class RuntimeFuelModelGenerator {
         try {
             Path gameDir = FMLPaths.GAMEDIR.get();
             Path readmePath = gameDir.resolve(TEXTURES_PATH).resolve("readme.txt");
-            
+            Files.createDirectories(readmePath.getParent());
+
             StringBuilder content = new StringBuilder();
             content.append("NuclearCraft Custom Fuel Textures\n");
             content.append("=".repeat(50)).append("\n\n");

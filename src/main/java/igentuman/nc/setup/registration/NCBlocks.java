@@ -91,7 +91,7 @@ public class NCBlocks {
 
     private static void registerOres() {
         for(String name: Ores.all().keySet()) {
-            ORE_TAGS.put(name, TagKey.create(BLOCK_REGISTRY, ResourceLocation.fromNamespaceAndPath("forge", "ores/"+name)));
+            ORE_TAGS.put(name, TagKey.create(BLOCK_REGISTRY, ResourceLocation.fromNamespaceAndPath("c", "ores/"+name)));
             addOreTag(name);
             if(Materials.ores().get(name).normal_ore) {
                 ORE_BLOCKS.put(name, BLOCKS.register(name + "_ore", () -> new Block(ORE_BLOCK_PROPERTIES)));
@@ -137,8 +137,8 @@ public class NCBlocks {
 
     private static void registerBlocks() {
         for(String name: Blocks.get().all().keySet()) {
-            BLOCK_TAGS.put(name, TagKey.create(BLOCK_REGISTRY, ResourceLocation.fromNamespaceAndPath("forge","storage_blocks/"+name)));
-            BLOCK_ITEM_TAGS.put(name, TagKey.create(ITEM_REGISTRY, ResourceLocation.fromNamespaceAndPath("forge", "storage_blocks/"+name)));
+            BLOCK_TAGS.put(name, TagKey.create(BLOCK_REGISTRY, ResourceLocation.fromNamespaceAndPath("c","storage_blocks/"+name)));
+            BLOCK_ITEM_TAGS.put(name, TagKey.create(ITEM_REGISTRY, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/"+name)));
             NC_MATERIAL_BLOCKS.put(name, BLOCKS.register(name + "_block", () -> new Block(NC_BLOCKS_PROPERTIES)));
             NC_BLOCKS_ITEMS.put(name, fromBlock(NC_MATERIAL_BLOCKS.get(name)));
             ALL_NC_ITEMS.put(name+"_block", NC_BLOCKS_ITEMS.get(name));

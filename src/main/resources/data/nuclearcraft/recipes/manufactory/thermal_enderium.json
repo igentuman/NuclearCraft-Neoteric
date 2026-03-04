@@ -1,17 +1,17 @@
 {
-  "type": "forge:conditional",
+  "type": "neoforge:conditional",
   "recipes": [
     {
       "conditions": [
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "thermal_expansion"
         }
       ],
       "recipe": {
         "type": "nuclearcraft:manufactory",
         "input": [{
-          "tag": "forge:ingots/enderium"
+          "tag": "c:ingots/enderium"
         }],
         "output": [
           {

@@ -40,8 +40,7 @@ public class TargetChamberSerializer<RECIPE extends TargetChamberRecipe> extends
 
     @Override
     protected @NotNull RECIPE fromJson(@NotNull JsonObject json) {
-        String type = GsonHelper.getAsString(json, "type");
-
+        // "type" is stripped by the MapCodec dispatch layer in NeoForge 1.21.1
         ParticleStack[] inputParticles = particleStacksFromJson(json, "inputParticles");
         ParticleStack[] outputParticles = particleStacksFromJson(json, "outputParticles");
         ItemStackIngredient[] inputItems = inputItemsFromJson(json);

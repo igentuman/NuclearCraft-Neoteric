@@ -207,7 +207,9 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> implements RecipeSerial
     // --- JSON deserialization ---
 
     protected @NotNull RECIPE fromJson(@NotNull JsonObject json) {
-        String type = GsonHelper.getAsString(json, "type");
+        // In NeoForge 1.21.1, "type" is stripped from the MapCodec input by the dispatch layer.
+        // Use getCodeId() (the serializer's registry path) instead.
+        String type = getCodeId();
         if(Processors.all().containsKey(type) && !Processors.all().get(type).config().isRegistered()) {
             return emptyRecipe();
         }

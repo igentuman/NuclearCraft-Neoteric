@@ -1,17 +1,17 @@
 {
-  "type": "forge:conditional",
+  "type": "neoforge:conditional",
   "recipes": [
     {
       "conditions": [
         {
-          "type": "forge:not",
+          "type": "neoforge:not",
           "value": {
-            "type": "forge:tag_empty",
-            "tag": "forge:raw_materials/zinc"
+            "type": "neoforge:tag_empty",
+            "tag": "c:raw_materials/zinc"
           }
         },
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "industrialforegoing"
         }
       ],
@@ -21,7 +21,7 @@
           "item": "industrialforegoing:laser_lens4"
         },
         "output": {
-          "tag": "forge:raw_materials/zinc"
+          "tag": "c:raw_materials/zinc"
         },
         "pointer": 0,
         "rarity": [

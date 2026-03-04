@@ -443,55 +443,63 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
         );
 
         // Alloy smelter recipe analogs - molten metal reactions
-        add(
-                List.of(
-                        fluidIngredient(Materials.iron, MOLTEN_INGOT),
-                        fluidIngredient(Materials.chromium, MOLTEN_INGOT*4)
-                ),
-                List.of(
-                        fluidIngredient(Materials.nichrome, MOLTEN_INGOT*5)
-                ), 0.5D, 0.5D
-        );
+        // TODO: These materials don't have fluid forms registered. Re-enable if/when
+        // fluid definitions are added to these materials in Materials.java.
 
-        add(
-                List.of(
-                        fluidIngredient(Materials.osmium, MOLTEN_INGOT*3),
-                        fluidIngredient(Materials.iridium, MOLTEN_INGOT)
-                ),
-                List.of(
-                        fluidIngredient(Materials.osmiridium, MOLTEN_INGOT*4)
-                ), 0.5D, 0.5D
-        );
+        // iron + chromium -> nichrome (chromium, nichrome have no fluid)
+        // add(
+        //         List.of(
+        //                 fluidIngredient(Materials.iron, MOLTEN_INGOT),
+        //                 fluidIngredient(Materials.chromium, MOLTEN_INGOT*4)
+        //         ),
+        //         List.of(
+        //                 fluidIngredient(Materials.nichrome, MOLTEN_INGOT*5)
+        //         ), 0.5D, 0.5D
+        // );
 
-        add(
-                List.of(
-                        fluidIngredient(Materials.carbon_manganese, MOLTEN_INGOT),
-                        fluidIngredient(Materials.titanium, MOLTEN_INGOT*11)
-                ),
-                List.of(
-                        fluidIngredient(Materials.sic_sic_cmc, MOLTEN_INGOT*12)
-                ), 0.5D, 0.5D
-        );
+        // osmium + iridium -> osmiridium (all three have no fluid)
+        // add(
+        //         List.of(
+        //                 fluidIngredient(Materials.osmium, MOLTEN_INGOT*3),
+        //                 fluidIngredient(Materials.iridium, MOLTEN_INGOT)
+        //         ),
+        //         List.of(
+        //                 fluidIngredient(Materials.osmiridium, MOLTEN_INGOT*4)
+        //         ), 0.5D, 0.5D
+        // );
 
-        add(
-                List.of(
-                        fluidIngredient(Materials.niobium, MOLTEN_INGOT),
-                        fluidIngredient(Materials.titanium, MOLTEN_INGOT)
-                ),
-                List.of(
-                        fluidIngredient(Materials.niobium_titanium, MOLTEN_INGOT)
-                ), 0.5D, 0.5D
-        );
+        // carbon_manganese + titanium -> sic_sic_cmc (titanium has no fluid)
+        // add(
+        //         List.of(
+        //                 fluidIngredient(Materials.carbon_manganese, MOLTEN_INGOT),
+        //                 fluidIngredient(Materials.titanium, MOLTEN_INGOT*11)
+        //         ),
+        //         List.of(
+        //                 fluidIngredient(Materials.sic_sic_cmc, MOLTEN_INGOT*12)
+        //         ), 0.5D, 0.5D
+        // );
 
-        add(
-                List.of(
-                        fluidIngredient(Materials.niobium, MOLTEN_INGOT*2),
-                        fluidIngredient(Materials.tin, MOLTEN_INGOT)
-                ),
-                List.of(
-                        fluidIngredient(Materials.niobium_tin, MOLTEN_INGOT*3)
-                ), 0.5D, 0.5D
-        );
+        // niobium + titanium -> niobium_titanium (all three have no fluid)
+        // add(
+        //         List.of(
+        //                 fluidIngredient(Materials.niobium, MOLTEN_INGOT),
+        //                 fluidIngredient(Materials.titanium, MOLTEN_INGOT)
+        //         ),
+        //         List.of(
+        //                 fluidIngredient(Materials.niobium_titanium, MOLTEN_INGOT)
+        //         ), 0.5D, 0.5D
+        // );
+
+        // niobium + tin -> niobium_tin (niobium, niobium_tin have no fluid)
+        // add(
+        //         List.of(
+        //                 fluidIngredient(Materials.niobium, MOLTEN_INGOT*2),
+        //                 fluidIngredient(Materials.tin, MOLTEN_INGOT)
+        //         ),
+        //         List.of(
+        //                 fluidIngredient(Materials.niobium_tin, MOLTEN_INGOT*3)
+        //         ), 0.5D, 0.5D
+        // );
 
         add(
                 List.of(
@@ -503,15 +511,16 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                 ), 0.5D, 0.5D
         );
 
-        add(
-                List.of(
-                        fluidIngredient(Materials.steel, MOLTEN_INGOT),
-                        fluidIngredient(Materials.chromium, MOLTEN_INGOT)
-                ),
-                List.of(
-                        fluidIngredient(Materials.stainless_steel, MOLTEN_INGOT*2)
-                ), 0.5D, 0.5D
-        );
+        // steel + chromium -> stainless_steel (chromium, stainless_steel have no fluid)
+        // add(
+        //         List.of(
+        //                 fluidIngredient(Materials.steel, MOLTEN_INGOT),
+        //                 fluidIngredient(Materials.chromium, MOLTEN_INGOT)
+        //         ),
+        //         List.of(
+        //                 fluidIngredient(Materials.stainless_steel, MOLTEN_INGOT*2)
+        //         ), 0.5D, 0.5D
+        // );
 
         add(
                 List.of(
@@ -523,15 +532,16 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                 ), 0.5D, 0.5D
         );
 
-        add(
-                List.of(
-                        fluidIngredient(Materials.coal, MOLTEN_INGOT*3),
-                        fluidIngredient(Materials.iron, MOLTEN_INGOT)
-                ),
-                List.of(
-                        fluidIngredient(Materials.steel, MOLTEN_INGOT)
-                ), 0.5D, 0.5D
-        );
+        // coal + iron -> steel (coal has no fluid)
+        // add(
+        //         List.of(
+        //                 fluidIngredient(Materials.coal, MOLTEN_INGOT*3),
+        //                 fluidIngredient(Materials.iron, MOLTEN_INGOT)
+        //         ),
+        //         List.of(
+        //                 fluidIngredient(Materials.steel, MOLTEN_INGOT)
+        //         ), 0.5D, 0.5D
+        // );
 
         add(
                 List.of(
@@ -553,15 +563,16 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                 ), 0.5D, 0.5D
         );
 
-        add(
-                List.of(
-                        fluidIngredient(Materials.graphite, MOLTEN_INGOT),
-                        fluidIngredient(Materials.diamond, MOLTEN_INGOT)
-                ),
-                List.of(
-                        fluidIngredient(Materials.hard_carbon, MOLTEN_INGOT*2)
-                ), 0.5D, 0.5D
-        );
+        // graphite + diamond -> hard_carbon (graphite, diamond have no fluid)
+        // add(
+        //         List.of(
+        //                 fluidIngredient(Materials.graphite, MOLTEN_INGOT),
+        //                 fluidIngredient(Materials.diamond, MOLTEN_INGOT)
+        //         ),
+        //         List.of(
+        //                 fluidIngredient(Materials.hard_carbon, MOLTEN_INGOT*2)
+        //         ), 0.5D, 0.5D
+        // );
 
         add(
                 List.of(
@@ -633,25 +644,27 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                 ), 0.5D, 0.5D
         );
 
-        add(
-                List.of(
-                        fluidIngredient(Materials.silicon, MOLTEN_INGOT),
-                        fluidIngredient(Materials.graphite, MOLTEN_INGOT)
-                ),
-                List.of(
-                        fluidIngredient(Materials.silicon_carbide, MOLTEN_INGOT*2)
-                ), 0.5D, 0.5D
-        );
+        // silicon + graphite -> silicon_carbide (silicon, graphite have no fluid)
+        // add(
+        //         List.of(
+        //                 fluidIngredient(Materials.silicon, MOLTEN_INGOT),
+        //                 fluidIngredient(Materials.graphite, MOLTEN_INGOT)
+        //         ),
+        //         List.of(
+        //                 fluidIngredient(Materials.silicon_carbide, MOLTEN_INGOT*2)
+        //         ), 0.5D, 0.5D
+        // );
 
-        add(
-                List.of(
-                        fluidIngredient(Materials.manganese, MOLTEN_INGOT),
-                        fluidIngredient(Materials.graphite, MOLTEN_INGOT)
-                ),
-                List.of(
-                        fluidIngredient(Materials.carbon_manganese, MOLTEN_INGOT*2)
-                ), 1.5D, 1.5D
-        );
+        // manganese + graphite -> carbon_manganese (graphite has no fluid)
+        // add(
+        //         List.of(
+        //                 fluidIngredient(Materials.manganese, MOLTEN_INGOT),
+        //                 fluidIngredient(Materials.graphite, MOLTEN_INGOT)
+        //         ),
+        //         List.of(
+        //                 fluidIngredient(Materials.carbon_manganese, MOLTEN_INGOT*2)
+        //         ), 1.5D, 1.5D
+        // );
 
         add(
                 List.of(
@@ -692,6 +705,9 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                         FuelManager.all().get(name).get(subType).getDefault().isotopes[0] + "",
                         FuelManager.all().get(name).get(subType).getDefault().isotopes[1] + ""
                 );
+
+                // xenorium and quantite only have base isotope form — no ox/ni/za variants
+                if(name.matches("xenorium.*|quantite.*")) continue;
 
                 fuelMixRecipe(name, subType + "_ox",
                         FuelManager.all().get(name).get(subType).getOxide().isotopes[0] + "_ox",

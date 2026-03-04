@@ -2,6 +2,7 @@ package igentuman.nc.block.turbine;
 
 import igentuman.api.platform.NCBlockProperties;
 import igentuman.api.platform.NCLevels;
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.turbine.entity.TurbineBE;
 import igentuman.nc.block.turbine.entity.TurbineBladeBE;
 import igentuman.nc.multiblock.turbine.BladeDef;
@@ -76,8 +77,9 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
     private void initParams() {
         Item item = Item.byBlock(this);
-        if(item.toString().isEmpty()) return;
-        type = item.toString().replaceAll("turbine_", "");
+        String name = NCNames.of(item);
+        if(name.isEmpty()) return;
+        type = name.replaceAll("turbine_", "");
         def = TurbineRegistration.blades().get(type);
         efficiency = def.getEfficiency();
         expansion = def.getExpansion();
@@ -160,7 +162,7 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
     private String blockEntityCode()
     {
-        return asItem().toString();
+        return NCNames.of(asItem());
     }
 
     @javax.annotation.Nullable

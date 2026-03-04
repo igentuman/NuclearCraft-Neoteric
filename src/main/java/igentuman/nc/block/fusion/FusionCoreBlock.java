@@ -2,6 +2,7 @@ package igentuman.nc.block.fusion;
 
 import igentuman.api.platform.NCItemStacks;
 import igentuman.api.platform.NCLevels;
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
@@ -180,7 +181,7 @@ public class FusionCoreBlock extends FusionBeBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
-        if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
+        if(NCNames.of(asItem()).contains("empty") || this.asItem().equals(Items.AIR)) return;
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.energy_eu_tier", getTier(pStack)).withStyle(ChatFormatting.GOLD));
         }

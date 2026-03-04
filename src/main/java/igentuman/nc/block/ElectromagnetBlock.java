@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.content.Electromagnets;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -21,7 +22,7 @@ public class ElectromagnetBlock extends MultiblockBlock {
 
     public String name()
     {
-        return asItem().toString().replace("_slope", "");
+        return NCNames.of(asItem()).replace("_slope", "");
     }
 
     public Electromagnets.MagnetPrefab prefab()

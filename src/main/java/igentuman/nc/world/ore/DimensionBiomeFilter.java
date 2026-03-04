@@ -27,9 +27,13 @@ public class DimensionBiomeFilter extends PlacementFilter {
     @Override
     protected boolean shouldPlace(PlacementContext context, RandomSource random, BlockPos pos) {
         if (levelTest.test(context.getLevel().getLevel().dimension())) {
-            PlacedFeature placedfeature = context.topFeature().orElseThrow(() -> new IllegalStateException("Tried to biome check an unregistered feature"));
-            Holder<Biome> biome = context.getLevel().getBiome(pos);
-            return biome.value().getGenerationSettings().hasFeature(placedfeature);
+            try {
+                PlacedFeature placedfeature = context.topFeature().orElseThrow(() -> new IllegalStateException("Tried to biome check an unregistered feature"));
+                Holder<Biome> biome = context.getLevel().getBiome(pos);
+                return biome.value().getGenerationSettings().hasFeature(placedfeature);
+            } catch (Exception e) {
+                return false;
+            }
         } else {
             return false;
         }

@@ -1,5 +1,6 @@
 package igentuman.nc.datagen;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.setup.registration.NCItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.Block;
@@ -19,7 +20,6 @@ import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
-import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class NCLootTables extends BaseLootTableProvider {
 
@@ -42,7 +42,7 @@ public class NCLootTables extends BaseLootTableProvider {
         ACCELERATOR_BLOCKS.values().forEach(this::add);
         TARGET_CHAMBER_BLOCKS.values().forEach(this::add);
         KUGELBLITZ_BLOCKS.values().forEach(block -> {
-            if (!block.get().asItem().toString().equals("black_hole")) {
+            if (!NCNames.of(block.get().asItem()).contains("black_hole")) {
                 add(block);
             }
         });
@@ -75,7 +75,7 @@ public class NCLootTables extends BaseLootTableProvider {
             add(NC_RF_AMPLIFIERS.get(name).get(), block -> createSimpleTable("block", NC_RF_AMPLIFIERS.get(name).get()));
         }
         add(EXPL_BLOCK.get(), block -> createSimpleTable("block", EXPL_BLOCK.get()));
-        add(EXPL_PROXY_BLOCK.get(), block -> createSimpleTable("block", AIR));
+        add(EXPL_PROXY_BLOCK.get(), noDrop());
     }
 
     @Override
@@ -95,7 +95,7 @@ public class NCLootTables extends BaseLootTableProvider {
         all.addAll(FUSION_BLOCKS.values().stream().map(DeferredHolder::get).toList());
         all.addAll(TURBINE_BLOCKS.values().stream().map(DeferredHolder::get).toList());
         List<Block> kugelblitzBlocks = KUGELBLITZ_BLOCKS.values().stream().map(DeferredHolder::get).toList();
-        all.addAll(kugelblitzBlocks.stream().filter(block -> !block.asItem().toString().contains("black_hole")).toList());
+        all.addAll(kugelblitzBlocks.stream().filter(block -> !NCNames.of(block.asItem()).contains("black_hole")).toList());
         all.addAll(ACCELERATOR_BLOCKS.values().stream().map(DeferredHolder::get).toList());
         all.addAll(TARGET_CHAMBER_BLOCKS.values().stream().map(DeferredHolder::get).toList());
         all.addAll(PROCESSORS.values().stream().map(DeferredHolder::get).toList());

@@ -8,6 +8,7 @@ import net.minecraft.world.level.material.Fluid;
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.neoforgeRl;
+import static igentuman.nc.NuclearCraft.resourceLoc;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Registries.BLOCK_REGISTRY;
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
@@ -27,7 +28,7 @@ public class Tags {
     public final static HashMap<String, TagKey<Block>> BLOCK_TAGS = new HashMap<>();
     public final static HashMap<String, TagKey<Fluid>> GASES_TAG = new HashMap<>();
     public final static HashMap<String, TagKey<Fluid>> LIQUIDS_TAG = new HashMap<>();
-    public final static TagKey<Item> PLATE_TAG = TagKey.create(ITEM_REGISTRY, neoforgeRl("plates"));
+    public final static TagKey<Item> PLATE_TAG = TagKey.create(ITEM_REGISTRY, resourceLoc("plates"));
     public final static TagKey<Item> PARTS_TAG = itemTag("parts");
     public final static HashMap<String, TagKey<Item>> NC_ISOTOPE_TAG = new HashMap<>();
     public final static HashMap<String, TagKey<Item>> NC_WASTE_TAG = new HashMap<>();
@@ -90,54 +91,54 @@ public class Tags {
 
     public static TagKey<Item> forgeIngot(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, neoforgeRl("ingots/"+name));
+        return TagKey.create(ITEM_REGISTRY, resourceLoc("ingots/"+name));
     }
 
     public static TagKey<Item> forgeGem(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, neoforgeRl("gems/"+name));
+        return TagKey.create(ITEM_REGISTRY, resourceLoc("gems/"+name));
     }
 
     public static TagKey<Item> forgeNugget(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, neoforgeRl("nuggets/"+name));
+        return TagKey.create(ITEM_REGISTRY, resourceLoc("nuggets/"+name));
     }
 
     public static TagKey<Item> forgeBlock(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, neoforgeRl("storage_blocks/"+name));
+        return TagKey.create(ITEM_REGISTRY, resourceLoc("storage_blocks/"+name));
     }
 
     public static TagKey<Item> forgeOre(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, neoforgeRl("ores/"+name));
+        return TagKey.create(ITEM_REGISTRY, resourceLoc("ores/"+name));
     }
 
     public static TagKey<Item> forgeBucket(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, neoforgeRl("buckets/"+name));
+        return TagKey.create(ITEM_REGISTRY, resourceLoc("buckets/"+name));
     }
 
     public static TagKey<Item> forgeChunk(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, neoforgeRl("raw_materials/"+name));
+        return TagKey.create(ITEM_REGISTRY, resourceLoc("raw_materials/"+name));
     }
 
     public static TagKey<Item> forgeIonSource(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, neoforgeRl("ion_source/"+name));
+        return TagKey.create(ITEM_REGISTRY, resourceLoc("ion_source/"+name));
     }
 
     public static TagKey<Item> forgeDust(String name)
     {
-        return TagKey.create(ITEM_REGISTRY, neoforgeRl("dusts/"+name));
+        return TagKey.create(ITEM_REGISTRY, resourceLoc("dusts/"+name));
     }
 
     public static TagKey<Item> forgePlate(String name) {
-        return TagKey.create(ITEM_REGISTRY, neoforgeRl("plates/"+name));
+        return TagKey.create(ITEM_REGISTRY, resourceLoc("plates/"+name));
     }
 
     public static TagKey<Item> forgeDye(String name) {
-        return TagKey.create(ITEM_REGISTRY, neoforgeRl("dye/"+name));
+        return TagKey.create(ITEM_REGISTRY, resourceLoc("dye/"+name));
     }
 }

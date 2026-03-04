@@ -1,6 +1,7 @@
 package igentuman.nc.block.kugelblitz;
 
 import igentuman.api.platform.NCLevels;
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.kugelblitz.entity.EXPLBE;
 import igentuman.nc.block.kugelblitz.entity.EXPLProxyBE;
 import igentuman.nc.container.EXPLContainer;
@@ -288,7 +289,7 @@ public class EXPLBlock extends DirectionalBlock implements EntityBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
-        if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
+        if(NCNames.of(asItem()).contains("empty") || this.asItem().equals(Items.AIR)) return;
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.energy_eu_tier", GTCEU_CONFIG.KUGELBLITZ_ENERGY_TIER.get()).withStyle(ChatFormatting.GOLD));
         }

@@ -64,15 +64,16 @@ public class OrePlacementModifier extends PlacementModifier {
     @Override
     public @NotNull Stream<BlockPos> getPositions(PlacementContext context, RandomSource random, BlockPos pos) {
         int actualCount = determinePlacementCount(context, random);
-        int x = (pos.getX() >> 4 << 4) + random.nextInt(16);
-        int z = (pos.getZ() >> 4 << 4) + random.nextInt(16);
         if(actualCount == 0) {
             return Stream.empty();
         }
+        // Pass through the input pos X,Z — InSquarePlacement.spread() in the
+        // placement chain handles the in-chunk randomization.  Double-randomizing
+        // here pushed positions outside the WorldGenRegion and crashed BiomeFilter.
         return Stream.generate(() -> new BlockPos(
-                x,
+                pos.getX(),
                 minHeight + random.nextInt(maxHeight - Math.max(minHeight, context.getMinGenY()) + 1),
-                z
+                pos.getZ()
         )).limit(actualCount);
     }
 

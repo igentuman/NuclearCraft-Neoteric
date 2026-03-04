@@ -1,5 +1,6 @@
 package igentuman.nc.radiation;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.energy.RTGs;
@@ -70,8 +71,8 @@ public class ItemRadiation {
                 if(name.matches("xenorium.*|quantite.*")) break;
             }
         }
-        for(Block block: getBlocksByTagKey("forge:storage_blocks/uranium")) {
-            add(block.asItem().toString(), 0.00004D);
+        for(Block block: getBlocksByTagKey("c:storage_blocks/uranium")) {
+            add(NCNames.of(block.asItem()), 0.00004D);
         }
 
         add(getNCBlock("americium241").asItem(), 0.05D);

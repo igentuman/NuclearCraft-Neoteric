@@ -1,5 +1,6 @@
 package igentuman.nc.item;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.content.materials.Ingots;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
@@ -12,6 +13,6 @@ public class NCIngotItem extends Item {
 
     @Override
     public boolean isEnabled(@NotNull FeatureFlagSet pEnabledFeatures) {
-        return Ingots.get().registered().containsKey(this.toString().replace("_ingot", ""));
+        return Ingots.get().registered().containsKey(NCNames.of(this).replace("_ingot", ""));
     }
 }

@@ -1,5 +1,6 @@
 package igentuman.nc.util.capability;
 
+import igentuman.nc.compat.gregtech.GTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
@@ -7,7 +8,6 @@ import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
-import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 
@@ -36,7 +36,12 @@ public class CustomEnergyStorage extends EnergyStorage {
     }
 
     public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract) {
-        this(capacity, maxTransfer, maxExtract, tierByFe(maxExtract), tierByFe(maxExtract), tierByFe(maxTransfer), tierByFe(maxTransfer));
+        this(capacity, maxTransfer, maxExtract, defaultTier(maxExtract), defaultTier(maxExtract), defaultTier(maxTransfer), defaultTier(maxTransfer));
+    }
+
+    /** GT-independent tier calculation. Avoids loading GTUtils (and its GregTech imports) at construction time. */
+    private static long defaultTier(int fe) {
+        return 3L;
     }
 
     public CustomEnergyStorage(int capacity, int maxTransfer, int maxExtract, boolean limit) {
@@ -52,7 +57,7 @@ public class CustomEnergyStorage extends EnergyStorage {
     public CustomEnergyStorage setOutputAmperage(long value) {
         //as only multiblock storages calls this method, we are applying limit for multiblock storages only
         if(isGtLoaded() && isGTEUCapEnabled() && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
-            maxExtract = convert2FE(value * outputVoltage);
+            maxExtract = GTUtils.convert2FE(value * outputVoltage);
         }
         this.outputAmperage = value;
         return this;
@@ -182,7 +187,7 @@ public class CustomEnergyStorage extends EnergyStorage {
 
     public int getMaxExtract() {
         if(isGtLoaded() && isGTEUCapEnabled()) {
-            return convert2FE(outputAmperage * outputVoltage);
+            return GTUtils.convert2FE(outputAmperage * outputVoltage);
         }
         return maxExtract;
     }

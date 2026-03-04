@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.entity.MultiblockBuilderBE;
 import igentuman.nc.container.MultiblockBuilderContainer;
 import igentuman.nc.util.TextUtils;
@@ -135,7 +136,7 @@ public class MultiblockBuilderBlock extends HorizontalDirectionalBlock implement
 
     @Override
     public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
-        if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
+        if(NCNames.of(asItem()).contains("empty") || this.asItem().equals(Items.AIR)) return;
         list.add(TextUtils.applyFormat(__("nc.multiblock_builder.description"), ChatFormatting.AQUA));
     }
 

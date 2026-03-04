@@ -1,10 +1,10 @@
 {
-  "type": "forge:conditional",
+  "type": "neoforge:conditional",
   "recipes": [
     {
       "conditions": [
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "ae2"
         }
       ],
@@ -15,7 +15,7 @@
             "item": "ae2:printed_engineering_processor"
           },
           {
-            "tag": "forge:dusts/energetic_blend"
+            "tag": "c:dusts/energetic_blend"
           },
           {
             "item": "ae2:printed_silicon"

@@ -1,5 +1,6 @@
 package igentuman.nc.item;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.content.storage.BarrelBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -60,7 +61,7 @@ public class BarrelBlockItem extends BlockItem
 
 	public String code()
 	{
-		return asItem().toString();
+		return NCNames.of(asItem());
 	}
 
 	@Override

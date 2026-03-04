@@ -1,6 +1,7 @@
 package igentuman.nc.block;
 
 import igentuman.api.platform.NCLevels;
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.entity.RedstoneDimmerBE;
 import igentuman.nc.container.RedstoneDImmerContainer;
 import igentuman.nc.util.TextUtils;
@@ -152,7 +153,7 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock implements E
 
     @Override
     public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
-        if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
+        if(NCNames.of(asItem()).contains("empty") || this.asItem().equals(Items.AIR)) return;
         list.add(TextUtils.applyFormat(__("nc.redstone_dimmer.description"), ChatFormatting.AQUA));
     }
 

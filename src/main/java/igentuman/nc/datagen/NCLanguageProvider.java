@@ -115,6 +115,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("emi.category.nuclearcraft.supercooler", "Supercooler");
         add("emi.category.nuclearcraft.fuel_reprocessor", "");
         add("emi.category.nuclearcraft.particle_info", "Particle Info");
+        add("emi.category.nuclearcraft.particle_source_info", "Particle Source");
         add("emi.category.nuclearcraft.kugelblitz_info", "Kugelblitz Info");
         add("gui.nuclearcraft.jei.particle.mass", "Mass: %s");
         add("jei.category.nuclearcraft.particle_info", "Particle Info");
@@ -303,6 +304,14 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("sound_event.nuclearcraft.fission_reactor", "Fission Reactor Ticking");
         add("sound_event.nuclearcraft.turbine", "Turbine is spinning");
+
+        add("sound_event.nuclearcraft.boss_idle", "Boss of the Wasteland Idle");
+        add("sound_event.nuclearcraft.boss_hit", "Boss of the Wasteland Hit");
+        add("sound_event.nuclearcraft.boss_angry", "Boss of the Wasteland Angry");
+        add("sound_event.nuclearcraft.boss_action", "Boss of the Wasteland Action");
+        add("sound_event.nuclearcraft.blackhole.idle", "Black Hole Hums");
+        add("sound_event.nuclearcraft.blackhole.spawn", "Black Hole Spawns");
+        add("sound_event.nuclearcraft.laser.shoot", "Laser Shoots");
     }
 
     private void advancements() {

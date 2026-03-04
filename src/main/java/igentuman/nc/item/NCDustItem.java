@@ -1,5 +1,6 @@
 package igentuman.nc.item;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.content.materials.Dusts;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
@@ -12,6 +13,6 @@ public class NCDustItem extends Item {
 
     @Override
     public boolean isEnabled(@NotNull FeatureFlagSet pEnabledFeatures) {
-        return Dusts.get().registered().containsKey(this.toString().replace("_dust", ""));
+        return Dusts.get().registered().containsKey(NCNames.of(this).replace("_dust", ""));
     }
 }

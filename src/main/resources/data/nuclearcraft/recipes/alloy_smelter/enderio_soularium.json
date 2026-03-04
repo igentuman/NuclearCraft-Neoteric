@@ -1,10 +1,10 @@
 {
-  "type": "forge:conditional",
+  "type": "neoforge:conditional",
   "recipes": [
     {
       "conditions": [
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "enderio"
         }
       ],
@@ -15,7 +15,7 @@
             "item": "minecraft:soul_sand"
           },
           {
-            "tag": "forge:ingots/gold"
+            "tag": "c:ingots/gold"
           }
         ],
         "output": [

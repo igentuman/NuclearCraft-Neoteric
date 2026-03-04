@@ -127,7 +127,7 @@ public class HeatSinkDef {
 
     public List<FluidStack> getAllowedFluids() {
         if(allowedFluids == null) {
-            allowedFluids = getFluidByTagKey("forge:"+name);
+            allowedFluids = getFluidByTagKey("c:"+name);
         }
         return allowedFluids;
     }

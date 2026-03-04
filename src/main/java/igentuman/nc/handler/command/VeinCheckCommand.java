@@ -17,7 +17,6 @@ public class VeinCheckCommand {
     private VeinCheckCommand() {}
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
-        NeoForge.EVENT_BUS.register(VeinCheckCommand.class);
         return Commands.literal("nc_vein_check")
                 .requires(cs -> cs.hasPermission(3))
                 .executes(ctx -> {

@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.content.RFAmplifier;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -24,7 +25,7 @@ public class RFAmplifierBlock extends MultiblockBlock {
 
     public String name()
     {
-        return asItem().toString();
+        return NCNames.of(asItem());
     }
 
     public RFAmplifier.RFAmplifierPrefab prefab()

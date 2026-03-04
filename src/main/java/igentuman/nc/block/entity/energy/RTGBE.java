@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity.energy;
 
+import igentuman.api.platform.NCNames;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.content.energy.RTGs;
@@ -15,12 +16,12 @@ public class RTGBE extends NCEnergy {
     }
 
     public static String getName(BlockState pBlockState) {
-        return pBlockState.getBlock().asItem().toString();
+        return NCNames.of(pBlockState.getBlock().asItem());
     }
 
     @Override
     public String getName() {
-        return getBlockState().getBlock().asItem().toString();
+        return NCNames.of(getBlockState().getBlock().asItem());
     }
 
     @Override

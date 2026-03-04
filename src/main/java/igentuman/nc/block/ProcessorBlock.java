@@ -2,6 +2,7 @@ package igentuman.nc.block;
 
 import igentuman.api.platform.NCItemStacks;
 import igentuman.api.platform.NCLevels;
+import igentuman.api.platform.NCNames;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -95,7 +96,7 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
 
     public String processorCode()
     {
-        return asItem().toString();
+        return NCNames.of(asItem());
     }
 
     @Override

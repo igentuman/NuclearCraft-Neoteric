@@ -1,10 +1,10 @@
 {
-  "type": "forge:conditional",
+  "type": "neoforge:conditional",
   "recipes": [
     {
       "conditions": [
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "thermal_expansion"
         }
       ],
@@ -12,10 +12,10 @@
         "type": "nuclearcraft:alloy_smelter",
         "input": [
           {
-            "tag": "forge:ingots/hard_carbon"
+            "tag": "c:ingots/hard_carbon"
           },
           {
-            "tag": "forge:ender_pearls",
+            "tag": "c:ender_pearls",
             "count": 2
           }
         ],

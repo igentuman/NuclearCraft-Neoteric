@@ -201,7 +201,9 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
         long elapsedTime = System.currentTimeMillis() - startTime;
         isFormed = outerValid && innerValid;
         focus = quadStrength + dipoleStrength/2D;
+
         if (isFormed) {
+            maxHeat = (beamLength + 5) * 10000;
             validationResult = ValidationResult.VALID;
             errorBlockPos = BlockPos.ZERO;
             controllerBE().ionSourcePos = ionSourcePos;
@@ -212,6 +214,7 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
             controllerBE().dipoles = dipolesCount;
             controllerBE().focus = focus;
             controllerBE().maxTemperature = maxTemperature;
+            controllerBE().heatMax = maxHeat;
             controllerBE().heatRate = heatRate;
             controllerBE().efficiency = efficiency/(amplifiers.size() + electromagnets.size());
             controllerBE().quadStrength = quadStrength;

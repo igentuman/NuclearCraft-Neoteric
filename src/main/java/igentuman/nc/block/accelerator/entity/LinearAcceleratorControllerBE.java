@@ -144,6 +144,9 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
     }
 
     private boolean accelerateParticle() {
+        if (isAcceleratorTooHot()) {
+            return false;
+        }
         hasParticle = false;
         if(energyStorage().getEnergyStored() < energyRequired) {
             return false;

@@ -340,4 +340,7 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     }
 
 
+    public boolean isAcceleratorTooHot() {
+        return (heatRate - coolingRate) > maxTemperature;
+    }
 }

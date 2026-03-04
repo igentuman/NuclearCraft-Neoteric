@@ -1760,7 +1760,7 @@
   "item.nuclearcraft.gelatin_bucket": "Ведро Желатина",
   "item.nuclearcraft.germanium_dust": "Германиевая пыль",
   "item.nuclearcraft.glowstone_bucket": "Ведро светокамня",
-  "item.nuclearcraft.glueballs": "Клеевые шарики",
+  "item.nuclearcraft.glueballs": "Глюоны",
   "item.nuclearcraft.gold_bucket": "Ведро Золота",
   "item.nuclearcraft.gold_clean_slurry_bucket": "Ведро Чистого Золотого Раствора",
   "item.nuclearcraft.gold_dust": "Золотая пыль",
@@ -2757,5 +2757,6 @@
   "tooltip.nc.magnet.disable": "Выключить автоподбор",
   "tooltip.nc.magnet.enable": "Включить автоподбор",
   "tooltip.nc.wasteland.disabled": "Пустоши отключены",
-  "tooltip.nc.wasteland.portal.descr": "Телепортирует игрока в пустоши"
+  "tooltip.nc.wasteland.portal.descr": "Телепортирует игрока в пустоши",
+  "tooltip.nc.accelerator.too_hot": "Ускоритель слишком горячий"
 }

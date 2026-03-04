@@ -113,7 +113,7 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
     }
 
     public int getMaxHeat() {
-        return blockEntity.maxTemperature;
+        return blockEntity.heatMax;
     }
 
     public double getFocus() {
@@ -178,5 +178,9 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
 
     public int getNetHeat() {
         return blockEntity.heatRate - blockEntity.coolingRate;
+    }
+
+    public boolean isAcceleratorTooHot() {
+        return blockEntity.isAcceleratorTooHot();
     }
 }

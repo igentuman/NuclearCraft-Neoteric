@@ -49,19 +49,19 @@ public class FusionConfig {
 
             REGISTERED = builder
                     .comment("If RF Amplifier are registered.")
-                    .define("registered", RFAmplifier.initialRegistered(), o -> o instanceof ArrayList);
+                    .define("registered", RFAmplifier.initialRegistered(), o -> o instanceof List);
 
             POWER = builder
                     .comment("Power consumption (FE/t): " + String.join(", ", RFAmplifier.all().keySet()))
-                    .define("power", toList(RFAmplifier.initialPower()), o -> o instanceof ArrayList);
+                    .define("power", toList(RFAmplifier.initialPower()), o -> o instanceof List);
 
             HEAT = builder
                     .comment("Heat generation: " + String.join(", ", RFAmplifier.all().keySet()))
-                    .define("heat", toList(RFAmplifier.initialHeat()), o -> o instanceof ArrayList);
+                    .define("heat", toList(RFAmplifier.initialHeat()), o -> o instanceof List);
 
             VOLTAGE = builder
                     .comment("Amplification Voltage: " + String.join(", ", RFAmplifier.all().keySet()))
-                    .define("voltage", toList(RFAmplifier.initialVoltage()), o -> o instanceof ArrayList);
+                    .define("voltage", toList(RFAmplifier.initialVoltage()), o -> o instanceof List);
 
             builder.pop();
         }
@@ -79,19 +79,19 @@ public class FusionConfig {
 
             REGISTERED = builder
                     .comment("If Electromagnets are registered.")
-                    .define("registered", Electromagnets.initialRegistered(), o -> o instanceof ArrayList);
+                    .define("registered", Electromagnets.initialRegistered(), o -> o instanceof List);
 
             POWER = builder
                     .comment("Power consumption (FE/t): " + String.join(", ", Electromagnets.all().keySet()))
-                    .define("power", toList(Electromagnets.initialPower()), o -> o instanceof ArrayList);
+                    .define("power", toList(Electromagnets.initialPower()), o -> o instanceof List);
 
             HEAT = builder
                     .comment("Heat generation: " + String.join(", ", Electromagnets.all().keySet()))
-                    .define("heat", toList(Electromagnets.initialHeat()), o -> o instanceof ArrayList);
+                    .define("heat", toList(Electromagnets.initialHeat()), o -> o instanceof List);
 
             MAGNETIC_FIELD = builder
                     .comment("Magnetic field strength: " + String.join(", ", Electromagnets.all().keySet()))
-                    .define("heat", toList(Electromagnets.initialMagneticField()), o -> o instanceof ArrayList);
+                    .define("heat", toList(Electromagnets.initialMagneticField()), o -> o instanceof List);
 
             builder.pop();
         }

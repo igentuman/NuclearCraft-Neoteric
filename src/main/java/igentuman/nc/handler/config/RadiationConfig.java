@@ -119,7 +119,7 @@ public class RadiationConfig {
                             "nuclearcraft:moresmore|2500000000",
                             "nuclearcraft:evenmoresmore|1000000000",
                             "nuclearcraft:radaway|5000000000"
-                    ), o -> o instanceof ArrayList);
+                    ), o -> o instanceof List);
 
             ITEM_RADIATION = builder
                     .comment("List of items what have radiation (pRad). Format: item_id|radiation")
@@ -128,7 +128,7 @@ public class RadiationConfig {
                             "mekanism:pellet_polonium|4000000",
                             "mekanism:pellet_plutonium|2500000",
                             "mekanism:reprocessed_fissile_fragment|1800000"
-                    ), o -> o instanceof ArrayList);
+                    ), o -> o instanceof List);
 
             ARMOR_PROTECTION = builder
                     .comment("List of armor items and default shielding lvl. Format: item_id|radiation")
@@ -149,15 +149,15 @@ public class RadiationConfig {
                             "nuclearcraft:hev_chest|7",
                             "nuclearcraft:hev_pants|6",
                             "nuclearcraft:hev_boots|5"
-                    ), o -> o instanceof ArrayList);
+                    ), o -> o instanceof List);
 
             BIOME_RADIATION = builder
                     .comment("Natural radiation per biome: uRad", "Format: biome_id|radiation")
-                    .define("biome_radiation", List.of("nuclearcraft:wasteland|40000", "minecraft:nether_wastes|10000"), o -> o instanceof ArrayList);
+                    .define("biome_radiation", List.of("nuclearcraft:wasteland|40000", "minecraft:nether_wastes|10000"), o -> o instanceof List);
 
             DIMENSION_RADIATION = builder
                     .comment("Natural radiation per dimension: uRad", "Format: dim_id|radiation")
-                    .define("dimension_radiation", List.of("nuclearcraft:wasteland|50000", "minecraft:the_nether|5000"), o -> o instanceof ArrayList);
+                    .define("dimension_radiation", List.of("nuclearcraft:wasteland|50000", "minecraft:the_nether|5000"), o -> o instanceof List);
 
             RADIATION_UPDATE_INTERVAL = builder
                     .comment("Interval between radiation updates in ticks. 20 ticks = 1 second.", "Bigger interval - less lag, but less accurate radiation decay.")

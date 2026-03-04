@@ -54,7 +54,7 @@ public class OreGenConfig {
 
             OreGenSpec(ModConfigSpec.Builder builder, boolean register, List<String> dimensions, int veinSize, int min_height, int max_height) {
                 this.register = builder.define("register", register);
-                this.dimensions = builder.define("gen_dimensions", dimensions, o -> o instanceof ArrayList<?>);
+                this.dimensions = builder.define("gen_dimensions", dimensions, o -> o instanceof List<?>);
                 this.veinSize = builder.defineInRange("vein_size", veinSize, 0, 64);
                 this.min_height = builder.defineInRange("min_height", min_height, -64, 255);
                 this.max_height = builder.defineInRange("max_height", max_height, -64, 255);

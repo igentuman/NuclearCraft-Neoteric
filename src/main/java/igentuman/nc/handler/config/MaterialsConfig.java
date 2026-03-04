@@ -56,7 +56,7 @@ public class MaterialsConfig {
             MODS_PRIORITY = builder
                     .push("forge_tag_priority")
                     .comment("Priority of mods to resolve forge tags to itemstack and fluidstack.")
-                    .define("mods_priority", List.of("minecraft", "nuclearcraft", "mekanism", "immersiveengineering", "tconstruct"), o -> o instanceof ArrayList);
+                    .define("mods_priority", List.of("minecraft", "nuclearcraft", "mekanism", "immersiveengineering", "tconstruct"), o -> o instanceof List);
         }
 
         private List<ModConfigSpec.ConfigValue<Boolean>> registrationList(ModConfigSpec.Builder builder, String subCategory, Set<String> items) {

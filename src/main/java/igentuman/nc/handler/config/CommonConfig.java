@@ -69,23 +69,23 @@ public class CommonConfig {
 
             REGISTER_SOLAR_PANELS = builder
                     .comment("Allow solar panel registration: " + String.join(", ", SolarPanels.all().keySet()))
-                    .define("register_panel", SolarPanels.initialRegistered(), o -> o instanceof ArrayList);
+                    .define("register_panel", SolarPanels.initialRegistered(), o -> o instanceof List);
 
             SOLAR_PANELS_GENERATION = builder
                     .comment("Solar panel power generation: " + String.join(", ", SolarPanels.all().keySet()))
-                    .define("panel_power", SolarPanels.initialPower(), o -> o instanceof ArrayList);
+                    .define("panel_power", SolarPanels.initialPower(), o -> o instanceof List);
 
             REGISTER_RTG = builder
                     .comment("Allow rtg registration: " + String.join(", ", RTGs.all().keySet()))
-                    .define("register_rtg", RTGs.initialRegistered(), o -> o instanceof ArrayList);
+                    .define("register_rtg", RTGs.initialRegistered(), o -> o instanceof List);
 
             RTG_GENERATION = builder
                     .comment("rtg generation: " + String.join(", ", RTGs.all().keySet()))
-                    .define("rtg_power", RTGs.initialPower(), o -> o instanceof ArrayList);
+                    .define("rtg_power", RTGs.initialPower(), o -> o instanceof List);
 
             RTG_RADIATION = builder
                     .comment("rtg radiation: " + String.join(", ", RTGs.all().keySet()))
-                    .define("rtg_radiation", RTGs.initialRadiation(), o -> o instanceof ArrayList);
+                    .define("rtg_radiation", RTGs.initialRadiation(), o -> o instanceof List);
 
             STEAM_TURBINE = builder
                     .comment("Steam turbine (one block) base power gen")
@@ -111,15 +111,15 @@ public class CommonConfig {
 
             REGISTER_CONTAINER = builder
                     .comment("Allow container registration: " + String.join(", ", BarrelBlocks.all().keySet()))
-                    .define("container_block_registration", ContainerBlocks.initialRegistered(), o -> o instanceof ArrayList);
+                    .define("container_block_registration", ContainerBlocks.initialRegistered(), o -> o instanceof List);
 
             REGISTER_BARREL = builder
                     .comment("Allow barrel registration: " + String.join(", ", BarrelBlocks.all().keySet()))
-                    .define("barrel_block_registration", BarrelBlocks.initialRegistered(), o -> o instanceof ArrayList);
+                    .define("barrel_block_registration", BarrelBlocks.initialRegistered(), o -> o instanceof List);
 
             BARREL_CAPACITY = builder
                     .comment("Barrel capacity in Buckets: " + String.join(", ", BarrelBlocks.all().keySet()))
-                    .define("barrel_capacity", BarrelBlocks.initialCapacity(), o -> o instanceof ArrayList);
+                    .define("barrel_capacity", BarrelBlocks.initialCapacity(), o -> o instanceof List);
 
             builder.pop();
         }
@@ -142,11 +142,11 @@ public class CommonConfig {
 
             REGISTER_ENERGY_BLOCK = builder
                     .comment("Allow block registration: " + String.join(", ", BatteryBlocks.all().keySet()))
-                    .define("energy_block_registration", BatteryBlocks.initialRegistered(), o -> o instanceof ArrayList);
+                    .define("energy_block_registration", BatteryBlocks.initialRegistered(), o -> o instanceof List);
 
             ENERGY_BLOCK_STORAGE = builder
                     .comment("Storage: " + String.join(", ", BatteryBlocks.all().keySet()))
-                    .define("energy_block_storage", BatteryBlocks.initialPower(), o -> o instanceof ArrayList);
+                    .define("energy_block_storage", BatteryBlocks.initialPower(), o -> o instanceof List);
 
             LITHIUM_ION_BATTERY_STORAGE = builder
                     .define("lithium_ion_battery_storage", 1048576);
@@ -201,15 +201,15 @@ public class CommonConfig {
             }
         }
 
-        public final ModConfigSpec.ConfigValue<GTCEUCompatibility> COMPATIBILITY;
+        public final ModConfigSpec.EnumValue<GTCEUCompatibility> COMPATIBILITY;
         public final ModConfigSpec.ConfigValue<Boolean> OVERCHARGE_EXPLOSIONS;
         public final ModConfigSpec.ConfigValue<Boolean> LIMIT_FE_OUTPUT;
-        public final ModConfigSpec.ConfigValue<GTCEUTier> FISSION_REACTOR_TIER;
-        public final ModConfigSpec.ConfigValue<GTCEUTier> TURBINE_ENERGY_TIER;
-        public final ModConfigSpec.ConfigValue<GTCEUTier> FUSION_REACTOR_ENERGY_TIER;
-        public final ModConfigSpec.ConfigValue<GTCEUTier> KUGELBLITZ_ENERGY_TIER;
-        public final ModConfigSpec.ConfigValue<GTCEUTier> ACCELERATORS_ENERGY_TIER;
-        public final ModConfigSpec.ConfigValue<GTCEUTier> PROCESSOR_ENERGY_TIER;
+        public final ModConfigSpec.EnumValue<GTCEUTier> FISSION_REACTOR_TIER;
+        public final ModConfigSpec.EnumValue<GTCEUTier> TURBINE_ENERGY_TIER;
+        public final ModConfigSpec.EnumValue<GTCEUTier> FUSION_REACTOR_ENERGY_TIER;
+        public final ModConfigSpec.EnumValue<GTCEUTier> KUGELBLITZ_ENERGY_TIER;
+        public final ModConfigSpec.EnumValue<GTCEUTier> ACCELERATORS_ENERGY_TIER;
+        public final ModConfigSpec.EnumValue<GTCEUTier> PROCESSOR_ENERGY_TIER;
         public final ModConfigSpec.ConfigValue<Integer> ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER;
 
         public GTCEUCompatibilityConfig(ModConfigSpec.Builder builder) {
@@ -227,7 +227,7 @@ public class CommonConfig {
 
             FISSION_REACTOR_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("fission_reactor_energy_tier", EV);
+                    .defineEnum("fission_reactor_energy_tier", EV);
             
             OVERCHARGE_EXPLOSIONS = builder
                     .comment("This only counts if GTCEU is supported")
@@ -243,23 +243,23 @@ public class CommonConfig {
 
             TURBINE_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("turbine_energy_tier", EV);
+                    .defineEnum("turbine_energy_tier", EV);
 
             FUSION_REACTOR_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("fusion_reactor_energy_tier", IV);
+                    .defineEnum("fusion_reactor_energy_tier", IV);
 
             KUGELBLITZ_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("kugelblitz_energy_tier", LuV);
+                    .defineEnum("kugelblitz_energy_tier", LuV);
 
             ACCELERATORS_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("accelerators_energy_tier", LuV);
+                    .defineEnum("accelerators_energy_tier", LuV);
 
             PROCESSOR_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("processor_energy_tier", MV);
+                    .defineEnum("processor_energy_tier", MV);
 
             ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER = builder
                     .comment("This only counts if GTCEU is supported")

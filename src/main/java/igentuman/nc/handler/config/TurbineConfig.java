@@ -69,7 +69,7 @@ public class TurbineConfig {
 
             EFFICIENCY = builder
                     .comment("Efficiency %: " + String.join(", ", TurbineRegistration.initialEfficiency().keySet()))
-                    .define("efficiency", toList(TurbineRegistration.initialEfficiency().values()), o -> o instanceof ArrayList);
+                    .define("efficiency", toList(TurbineRegistration.initialEfficiency().values()), o -> o instanceof List);
 
             builder
                     .comment("You can define blocks by block_name. So copper_turbine_coil will fall back to nuclearcraft:copper_turbine_coil. Or qualify it with namespace like some_mod:some_block.")
@@ -88,7 +88,7 @@ public class TurbineConfig {
             for(String name: TurbineRegistration.coils().keySet()) {
                 if(name.contains("empty")) continue;
                 PLACEMENT_RULES.put(name, builder
-                        .define(name, TurbineRegistration.initialPlacementRules(name), o -> o instanceof ArrayList));
+                        .define(name, TurbineRegistration.initialPlacementRules(name), o -> o instanceof List));
             }
 
             builder.pop();
@@ -110,23 +110,23 @@ public class TurbineConfig {
 
             REGISTER_SOLAR_PANELS = builder
                     .comment("Allow panel registration: " + String.join(", ", SolarPanels.all().keySet()))
-                    .define("register_panel", SolarPanels.initialRegistered(), o -> o instanceof ArrayList);
+                    .define("register_panel", SolarPanels.initialRegistered(), o -> o instanceof List);
 
             SOLAR_PANELS_GENERATION = builder
                     .comment("Panel power generation: " + String.join(", ", SolarPanels.all().keySet()))
-                    .define("panel_power", SolarPanels.initialPower(), o -> o instanceof ArrayList);
+                    .define("panel_power", SolarPanels.initialPower(), o -> o instanceof List);
 
             REGISTER_RTG = builder
                     .comment("Allow rtg registration: " + String.join(", ", RTGs.all().keySet()))
-                    .define("register_panel", RTGs.initialRegistered(), o -> o instanceof ArrayList);
+                    .define("register_panel", RTGs.initialRegistered(), o -> o instanceof List);
 
             RTG_GENERATION = builder
                     .comment("rtg generation: " + String.join(", ", RTGs.all().keySet()))
-                    .define("rtg_power", RTGs.initialPower(), o -> o instanceof ArrayList);
+                    .define("rtg_power", RTGs.initialPower(), o -> o instanceof List);
 
             RTG_RADIATION = builder
                     .comment("rtg radiation: " + String.join(", ", RTGs.all().keySet()))
-                    .define("rtg_radiation", RTGs.initialRadiation(), o -> o instanceof ArrayList);
+                    .define("rtg_radiation", RTGs.initialRadiation(), o -> o instanceof List);
 
             STEAM_TURBINE = builder
                     .comment("Steam turbine (one block) base power gen")
@@ -146,11 +146,11 @@ public class TurbineConfig {
 
             REGISTER_BARREL = builder
                     .comment("Allow barrel registration: " + String.join(", ", BarrelBlocks.all().keySet()))
-                    .define("energy_block_registration", BarrelBlocks.initialRegistered(), o -> o instanceof ArrayList);
+                    .define("energy_block_registration", BarrelBlocks.initialRegistered(), o -> o instanceof List);
 
             BARREL_CAPACITY = builder
                     .comment("Barrel capacity in Buckets: " + String.join(", ", BarrelBlocks.all().keySet()))
-                    .define("barrel_capacity", BarrelBlocks.initialCapacity(), o -> o instanceof ArrayList);
+                    .define("barrel_capacity", BarrelBlocks.initialCapacity(), o -> o instanceof List);
 
 
             builder.pop();
@@ -173,11 +173,11 @@ public class TurbineConfig {
 
             REGISTER_ENERGY_BLOCK = builder
                     .comment("Allow block registration: " + String.join(", ", BatteryBlocks.all().keySet()))
-                    .define("energy_block_registration", BatteryBlocks.initialRegistered(), o -> o instanceof ArrayList);
+                    .define("energy_block_registration", BatteryBlocks.initialRegistered(), o -> o instanceof List);
 
             ENERGY_BLOCK_STORAGE = builder
                     .comment("Storage: " + String.join(", ", BatteryBlocks.all().keySet()))
-                    .define("energy_block_storage", BatteryBlocks.initialPower(), o -> o instanceof ArrayList);
+                    .define("energy_block_storage", BatteryBlocks.initialPower(), o -> o instanceof List);
 
             LITHIUM_ION_BATTERY_STORAGE = builder
                     .define("lithium_ion_battery_storage", 1000000);

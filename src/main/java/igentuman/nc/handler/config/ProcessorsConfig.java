@@ -56,7 +56,7 @@ public class ProcessorsConfig {
             VEIN_BLOCKS_AMOUNT = builder
                     .comment("Min and max values of blocks per vein.")
                     .comment("Result amount will be random value in this range.")
-                    .define("blocks_per_vein", List.of(30000, 70000), o -> o instanceof ArrayList);
+                    .define("blocks_per_vein", List.of(30000, 70000), o -> o instanceof List);
 
             VEINS_RARITY = builder
                     .comment("Veins rarity. Bigger value - less veins.")

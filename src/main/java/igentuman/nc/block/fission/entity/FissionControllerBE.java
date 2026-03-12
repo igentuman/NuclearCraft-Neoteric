@@ -176,6 +176,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         contentHandler().setAllowedInputFluids(0, this::getAllowedCoolants);
         contentHandler().setAllowedInputFluids(1, this::getAllowedCoolantsOutput);
         for(String type: activeCoolersTypes()) {
+            contentHandler().fluidHandler.tanks.get(2+activeCoolersTypes().indexOf(type)).setCapacity(1000*FISSION_CONFIG.ACTIVE_HEATSINK_COOLANT_PER_TICK.get());
             contentHandler().setAllowedInputFluids(
                     2+activeCoolersTypes().indexOf(type),
                     () -> heatsinks.get(type).getAllowedFluids()

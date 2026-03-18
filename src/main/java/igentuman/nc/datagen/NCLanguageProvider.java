@@ -40,6 +40,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("entity.nuclearcraft.feral_ghoul", "Feral Ghoul");
         add("entity.nuclearcraft.feral_ghoul_boss", "Boss of the Wasteland");
         add("biome.nuclearcraft.wasteland", "Wasteland");
+        ponders();
         ores();
         ingots();
         plates();
@@ -71,6 +72,46 @@ public class NCLanguageProvider extends LanguageProvider {
         sounds();
         advancements();
         particles();
+    }
+
+    private void ponders() {
+        add("nuclearcraft.ponder.fission_reactor.header", "Fission Reactor");
+        add("nuclearcraft.ponder.fission_reactor.text_1", "Walls are mainly made of Fission Reactor Casing or Reactor Glass.");
+        add("nuclearcraft.ponder.fission_reactor.text_2", "Place the Fission Reactor Controller anywhere you like to form the structure.");
+        add("nuclearcraft.ponder.fission_reactor.text_3", "The Reactor Port is a universal block allowing you to load/unload fuel and liquids, read or send redstone signals, and attach computers.");
+        add("nuclearcraft.ponder.fission_reactor.text_4", "Use as many ports as you like.");
+        add("nuclearcraft.ponder.fission_reactor.text_5", "Start the reactor with a redstone signal to the controller or port (make sure to select redstone mode in the port GUI).");
+        add("nuclearcraft.ponder.fission_reactor.text_6", "There are no strict requirements for how internal reactor blocks must be placed.");
+        add("nuclearcraft.ponder.fission_reactor.text_7", "The Fuel Cell block is used for energy and heat generation.");
+        add("nuclearcraft.ponder.fission_reactor.text_8", "Place as many fuel cells as you like anywhere inside the reactor.");
+        add("nuclearcraft.ponder.fission_reactor.text_9", "The resulting energy and heat generation is multiplied by the number of fuel cells.");
+        add("nuclearcraft.ponder.fission_reactor.text_10", "It affects the fuel depletion speed at the same rate.");
+        add("nuclearcraft.ponder.fission_reactor.text_11", "Another way to get more energy and heat is to attach moderator blocks to fuel cells.");
+        add("nuclearcraft.ponder.fission_reactor.text_12", "Each moderator block face connected to a fuel cell increases FE generation by 17 % and the heat rate by 33 %.");
+        add("nuclearcraft.ponder.fission_reactor.text_13", "Moderators between two fuel cells give an additional bonus.");
+        add("nuclearcraft.ponder.fission_reactor.text_14", "The reactor will meltdown if you don't use heatsinks.");
+        add("nuclearcraft.ponder.fission_reactor.text_15", "Each heatsink has specific placement rules to be active.");
+        add("nuclearcraft.ponder.fission_reactor.text_16", "You are free to design your reactor as you like. Just make sure you place heatsinks according to their placement rules.");
+        add("nuclearcraft.ponder.fission_reactor.text_17", "Fission Reactor irradiation feature.");
+        add("nuclearcraft.ponder.fission_reactor.text_18", "An irradiation line is a set of three blocks in a row: Fuel Cell -> Moderator -> Irradiation Chamber.");
+        add("nuclearcraft.ponder.fission_reactor.text_19", "Up to six irradiation lines for each Irradiation Chamber block.");
+        add("nuclearcraft.ponder.fission_reactor.text_20", "Place the Irradiator anywhere in the reactor wall.");
+        add("nuclearcraft.ponder.fission_reactor.text_21", "When the reactor is up and running, the Irradiator will use all irradiation lines to produce recipes.");
+        add("nuclearcraft.ponder.fusion_reactor.header", "Fusion Reactor");
+        add("nuclearcraft.ponder.fusion_reactor.text_1", "The Fusion Core is the central part of the reactor.");
+        add("nuclearcraft.ponder.fusion_reactor.text_2", "It automatically occupies a 3x3x3 volume around it.");
+        add("nuclearcraft.ponder.fusion_reactor.text_3", "Add one Fusion Reactor Connector in each horizontal direction.");
+        add("nuclearcraft.ponder.fusion_reactor.text_4", "You can have up to 10 connectors in each horizontal direction.");
+        add("nuclearcraft.ponder.fusion_reactor.text_5", "Bigger ring - more energy and heat.");
+        add("nuclearcraft.ponder.fusion_reactor.text_6", "Finally, build the Ring Chamber with a 3x3 cross-section.");
+        add("nuclearcraft.ponder.fusion_reactor.text_7", "The chamber must be hollow to allow plasma to circulate.");
+        add("nuclearcraft.ponder.fusion_reactor.text_8", "Fusion reactor functional blocks.");
+        add("nuclearcraft.ponder.fusion_reactor.text_9", "Functional blocks must be placed anywhere in the corners of reactor ring.");
+        add("nuclearcraft.ponder.fusion_reactor.text_10", "RF Amplifiers used to heat the plasma. You don't have enough RF amplification, reaction might not start");
+        add("nuclearcraft.ponder.fusion_reactor.text_11", "Electromagnets used to increase cross-section. Make reaction more stable");
+        add("nuclearcraft.ponder.fusion_reactor.text_12", "When reactor is ready, you need to charge it, pump fuel and coolant.");
+        add("nuclearcraft.ponder.fusion_reactor.text_13", "Start reactor with input redstone signal to Fusion Core. Redstone signal strength directly affects RF amplification.");
+        add("nuclearcraft.ponder.fusion_reactor.text_14", "On top of this you can adjust RF amplification in reactor GUI.");
     }
 
     private void particles() {

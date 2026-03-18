@@ -12,6 +12,8 @@ archivesBaseName = "NuclearCraft-${mc_version}"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+jarJar.enable()
+
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 idea {
     module {
@@ -105,12 +107,30 @@ repositories {
             includeGroup 'com.gregtechceu.gtceu'
         }
     }
+    maven { url = "https://maven.createmod.net" }
 }
 
 dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     implementation 'org.spongepowered:mixin:0.8.5'
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+
+    implementation fg.deobf("dev.engine-room.flywheel:flywheel-forge-${mc_version}:${flywheel_version}")
+    jarJar("dev.engine-room.flywheel:flywheel-forge-${mc_version}:${flywheel_version}") {
+        version {
+            strictly("[1.0,2.0)")
+            prefer("${flywheel_version}")
+        }
+    }
+
+    implementation fg.deobf("net.createmod.ponder:Ponder-Forge-${mc_version}:${ponder_version}")
+
+    jarJar("net.createmod.ponder:Ponder-Forge-${mc_version}:${ponder_version}") {
+        version {
+            strictly("[1.0,2.0)")
+            prefer("${ponder_version}")
+        }
+    }
 
     compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
         transitive = false
@@ -285,6 +305,15 @@ reobf {
 
 afterEvaluate {
     tasks.reobfJar.enabled = false
+}
+
+tasks.named('jarJar') {
+    it.archiveClassifier.set("");
+    dependsOn('reobfShadowJar')
+}
+
+tasks.matching { it.name == 'reobfJarJar' }.configureEach {
+    dependsOn('jarJar')
 }
 
 tasks.assemble.dependsOn reobfShadowJar

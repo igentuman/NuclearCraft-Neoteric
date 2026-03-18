@@ -24,6 +24,7 @@ import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.client.renderer.FeralGhoulRenderer;
 import igentuman.nc.client.renderer.WastelandProjectileRenderer;
 import igentuman.nc.client.sound.SoundHandler;
+import igentuman.nc.compat.ponder.PonderUtil;
 import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.event.client.*;
@@ -127,6 +128,7 @@ public class ClientSetup {
                 return 0;
             });
         });*/
+        PonderUtil.initPlugin();
     }
 
 

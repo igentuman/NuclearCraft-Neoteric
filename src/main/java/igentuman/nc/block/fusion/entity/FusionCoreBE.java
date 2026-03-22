@@ -127,7 +127,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
     protected boolean initialized = false;
     protected boolean refreshCacheFlag;
-    protected List<FluidStack> allowedInputs;
+    protected List<FluidStack> allowedInputFluidsFirstTank;
+    protected List<FluidStack> allowedInputFluidsSecondTank;
     protected FusionCoreProxyBE[] proxyBES;
 
     public FusionCoreBE(BlockPos pPos, BlockState pBlockState) {
@@ -155,8 +156,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
         contentHandler().fluidHandler.setGlobalMode(6, SlotModePair.SlotMode.OUTPUT);
         //hot coolant
         contentHandler().fluidHandler.setGlobalMode(7, SlotModePair.SlotMode.OUTPUT);
-        contentHandler().setAllowedInputFluids(0, this::getAllowedInputFluids);
-        contentHandler().setAllowedInputFluids(1, this::getAllowedInputFluids);
+        contentHandler().setAllowedInputFluids(0, this::getAllowedInputFluidsFirstTank);
+        contentHandler().setAllowedInputFluids(1, this::getAllowedInputFluidsSecondTank);
         contentHandler().setAllowedInputFluids(2, this::getAllowedCoolants);
         contentHandler().setAllowedInputFluids(7, this::getAllowedCoolantsOutput);
         contentHandler().fluidHandler.tanks.get(2).setCapacity(100000);
@@ -389,7 +390,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
             changePlasmaTemperature(-(long) (plasmaTemperature / 10D));
             changed = true;
         }
-        if(refreshCacheFlag || changed) {
+        if(refreshCacheFlag || changed || currentTick % 5 == 0) {
             if(currentTick % 10 == 0) {
                 updateAnalogSignal();
             }
@@ -532,17 +533,36 @@ public class FusionCoreBE extends MultiblockControllerBE {
         return proxyBES;
     }
 
-    public List<FluidStack> getAllowedInputFluids()
+    public List<FluidStack> getAllowedInputFluidsFirstTank()
     {
-        if(allowedInputs == null) {
-            allowedInputs = new ArrayList<>();
+        if(allowedInputFluidsFirstTank == null) {
+            allowedInputFluidsFirstTank = new ArrayList<>();
             for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
                 for(FluidStackIngredient ingredient: recipe.getInputFluids()) {
-                    allowedInputs.addAll(ingredient.getRepresentations());
+                    allowedInputFluidsFirstTank.addAll(ingredient.getRepresentations());
+                    break;
                 }
             }
         }
-        return allowedInputs;
+        return allowedInputFluidsFirstTank;
+    }
+
+    public List<FluidStack> getAllowedInputFluidsSecondTank()
+    {
+        if(allowedInputFluidsSecondTank == null) {
+            allowedInputFluidsSecondTank = new ArrayList<>();
+            for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
+                boolean skipFirst = true;
+                for(FluidStackIngredient ingredient: recipe.getInputFluids()) {
+                    if(skipFirst) {
+                        skipFirst = false;
+                        continue;
+                    }
+                    allowedInputFluidsSecondTank.addAll(ingredient.getRepresentations());
+                }
+            }
+        }
+        return allowedInputFluidsSecondTank;
     }
 
     protected void simulateReaction() {

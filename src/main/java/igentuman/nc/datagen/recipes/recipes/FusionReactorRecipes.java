@@ -32,8 +32,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         
         add(
                 List.of(
-                        fluidIngredient("hydrogen", 1000),
-                        fluidIngredient("deuterium", 1000)
+                        fluidIngredient("deuterium", 1000),
+                        fluidIngredient("hydrogen", 1000)
                 ),
                 List.of(
                         fluidIngredient("helium_3", 250),

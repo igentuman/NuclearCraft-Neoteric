@@ -169,7 +169,10 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         boolean wasFormed = isInternalValid && isCasingValid;
         getMultiblock().controller().setControllerBe(this);
         validationResult = getMultiblock().validationResult;
-        if(errorBlockPos == null || !errorBlockPos.equals(getMultiblock().errorBlockPos)) {
+        if(
+                errorBlockPos == null ||
+                (!errorBlockPos.equals(getMultiblock().errorBlockPos) && getMultiblock().errorBlockPos != null))
+        {
             errorBlockPos = getMultiblock().errorBlockPos;
             changed = true;
         }

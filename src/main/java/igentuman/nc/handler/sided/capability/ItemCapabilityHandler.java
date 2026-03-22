@@ -34,8 +34,9 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     protected NonNullList<ItemStack> stacks;
     protected ItemStack[] sortedStacks;
     private final Map<Direction, LazyOptional<ItemHandlerWrapper>> handlerCache = new HashMap<>();
-    public final List<ItemStack> holdedInputs = new ArrayList<>();
+    public final LinkedList<ItemStack> holdedInputs = new LinkedList<>();
 
+    public ItemCapabilityHandler() {}
     public ItemCapabilityHandler(int input, int output) {
         this.inputSlots = input;
         this.outputSlots = output;

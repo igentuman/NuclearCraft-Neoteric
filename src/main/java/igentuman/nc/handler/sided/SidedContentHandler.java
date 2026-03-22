@@ -36,6 +36,10 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public boolean hasPull = false;
     private boolean updated = false;
 
+    //if block fails to push/pull, we'll skip some ticks
+    public long pushTimeout = 0;
+    public long pullTimeout = 0;
+
     private Gas2FluidConverter gasConverter;
     private Slurry2FluidConverter slurryConverter;
 
@@ -200,12 +204,30 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(!canPush() && !canPull()) {
             return updated;
         }
-        push(lastPushSide);
-        pull(lastPullSide);
+        boolean pushed = false;
+        boolean pulled = false;
+
+        if(pushTimeout-- <= 0) {
+            pushed = push(lastPushSide);
+        }
+        if(pullTimeout-- <= 0) {
+            pulled = pull(lastPullSide);
+        }
 
         for(Direction dir: Direction.values()) {
-            push(dir);
-            pull(dir);
+            if(pushTimeout <= 0) {
+                pushed |= push(dir);
+            }
+            if(pushTimeout <= 0) {
+                pulled |= pull(dir);
+            }
+
+        }
+        if(!pushed && pushTimeout <= 0) {
+            pushTimeout = 5;
+        }
+        if(!pulled && pullTimeout <= 0) {
+            pullTimeout = 5;
         }
         return updated;
     }
@@ -242,26 +264,34 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         return hasPull && (itemHandler != null && itemHandler.canPull() || fluidHandler != null && fluidHandler.canPull());
     }
 
-    public void push(Direction side) {
-        if(!canPush()) return;
+    public boolean push(Direction side) {
+        if(!canPush()) return false;
+        boolean pushedItems = false;
+        boolean pushedFluids = false;
         if(itemHandler != null) {
-            updated = itemHandler.pushItems(side) || updated;
+            pushedItems = itemHandler.pushItems(side);
         }
         if(fluidHandler != null) {
-            updated = fluidHandler.pushFluids(side) || updated;
+            pushedFluids = fluidHandler.pushFluids(side);
         }
-        if(updated) lastPushSide = side;
+        updated |= pushedItems || pushedFluids;
+        if(pushedItems || pushedFluids) lastPushSide = side;
+        return pushedItems || pushedFluids;
     }
 
-    public void pull(Direction side) {
-        if(!canPull()) return;
+    public boolean pull(Direction side) {
+        if(!canPull()) return false;
+        boolean pulledItems = false;
+        boolean pulledFluids = false;
         if(itemHandler != null) {
-            updated = itemHandler.pullItems(side) || updated;
+            pulledItems = itemHandler.pullItems(side) || updated;
         }
         if(fluidHandler != null) {
-            updated = fluidHandler.pullFluids(side) || updated;
+            pulledFluids = fluidHandler.pullFluids(side) || updated;
         }
-        if(updated) lastPullSide = side;
+        updated |= pulledItems || pulledFluids;
+        if(pulledItems || pulledFluids) lastPullSide = side;
+        return pulledItems || pulledFluids;
     }
 
     public void clearHolded() {

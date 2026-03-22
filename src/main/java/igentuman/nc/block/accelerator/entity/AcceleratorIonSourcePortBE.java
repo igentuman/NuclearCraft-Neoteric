@@ -1,7 +1,7 @@
 package igentuman.nc.block.accelerator.entity;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.MultiblockPortBE;
+import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;

@@ -1,7 +1,7 @@
 package igentuman.nc.block.fission.entity;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.MultiblockPortBE;
+import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;

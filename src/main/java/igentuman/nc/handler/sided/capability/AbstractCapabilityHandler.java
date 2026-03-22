@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import java.util.HashMap;
 
 public abstract class AbstractCapabilityHandler {
+
     public int inputSlots;
     public int outputSlots;
     public BlockEntity tile;

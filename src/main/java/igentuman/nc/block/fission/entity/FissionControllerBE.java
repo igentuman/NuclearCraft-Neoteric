@@ -1,7 +1,7 @@
 package igentuman.nc.block.fission.entity;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.MultiblockPortBE;
+import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.compat.cc.SolidFissionReactorPeripheral;
 import igentuman.nc.compat.oc2.FissionReactorDevice;

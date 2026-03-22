@@ -1,7 +1,7 @@
 package igentuman.nc.block.accelerator.entity;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.MultiblockPortBE;
+import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;

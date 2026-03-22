@@ -1,9 +1,7 @@
 package igentuman.nc.block.kugelblitz.entity;
 
-import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.MultiblockPortBE;
-import igentuman.nc.block.entity.NuclearCraftBE;
+import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;

@@ -132,6 +132,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
     public boolean pushFluids(Direction dir) {
         return pushFluids(dir, false, tile.getBlockPos());
     }
+
     public boolean pushFluids(Direction dir, boolean forceFlag, BlockPos pos) {
         BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
         if(be == null) return false;

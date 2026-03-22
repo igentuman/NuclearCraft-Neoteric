@@ -3,7 +3,7 @@ package igentuman.nc.multiblock;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.api.nc.multiblock.Multiblock;
 import igentuman.api.nc.multiblock.MultiblockController;
-import igentuman.nc.block.MultiblockPortBE;
+import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.math.MathUtils;
@@ -27,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import static igentuman.nc.NuclearCraft.debugLog;
-import static igentuman.nc.handler.config.CommonConfig.MISC_CONFIG;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
 public abstract class AbstractMultiblock implements Multiblock {

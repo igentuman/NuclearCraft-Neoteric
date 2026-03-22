@@ -5,6 +5,7 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
@@ -75,7 +76,8 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         //upadteMultiblockConnection();
         if (controller() != null && controller().isProcessing() && controller().efficiency > 0) {
             irradiativeFlux = controller().irradiationLines;
-            fuelMultiplier = Math.log(controller().recipeInfo.recipe().getRadiation()*10000)*6;
+            FissionControllerBE.Recipe recipe1 = (FissionControllerBE.Recipe) controller().recipeInfo().recipe();
+            fuelMultiplier = Math.log((recipe1.getRadiation()*20+0.01)*10000)*(Math.pow(recipe1.getHeat() / 100 +  200 / (double)recipe1.getDepletionTime() + 0.5, 1.5)*2);
         }
         if(speedMultiplier() > 0) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());

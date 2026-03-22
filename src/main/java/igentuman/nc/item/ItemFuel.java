@@ -1,6 +1,7 @@
 package igentuman.nc.item;
 import igentuman.nc.content.fuel.FuelDef;
 import igentuman.nc.content.fuel.FuelManager;
+import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class ItemFuel extends Item {
 
@@ -61,6 +63,7 @@ public class ItemFuel extends Item {
         }
         list.add(TextUtils.applyFormat(__("fuel.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
         list.add(TextUtils.applyFormat(__("fuel.depletion.descr", depletion()), ChatFormatting.GREEN));
+        list.add(TextUtils.applyFormat(__("fuel.irradiation.descr", TextUtils.numberFormat(Math.log((ItemRadiation.byItem(this)+0.01)*10000)*(Math.pow(heat / 100 +  200 / (double)depletion + 0.5, 1.5)*2))), ChatFormatting.LIGHT_PURPLE));
 
         if(!DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(__("tooltip.toggle_description_keys"), ChatFormatting.GRAY));

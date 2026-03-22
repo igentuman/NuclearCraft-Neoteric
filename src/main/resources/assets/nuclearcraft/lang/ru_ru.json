@@ -2771,7 +2771,7 @@
   "nuclearcraft.ponder.fission_reactor.text_9": "Результирующая генерация энергии и тепла умножается на количество топливных ячеек.",
   "nuclearcraft.ponder.fission_reactor.text_10": "Это влияет на скорость истощения топлива с той же интенсивностью.",
   "nuclearcraft.ponder.fission_reactor.text_11": "Другой способ получить больше энергии и тепла — прикрепить блоки модераторов к топливным ячейкам.",
-  "nuclearcraft.ponder.fission_reactor.text_12": "Каждая грань модератора, соединенная с топливной ячейкой, увеличивает генерацию FE на 17 % и скорость нагрева на 33 %.",
+  "nuclearcraft.ponder.fission_reactor.text_12": "Каждая грань модератора, соединенная с топливной ячейкой, увеличивает генерацию FE на 1.7 и скорость нагрева на 3.3.",
   "nuclearcraft.ponder.fission_reactor.text_13": "Модераторы между двумя топливными ячейками дают дополнительный бонус.",
   "nuclearcraft.ponder.fission_reactor.text_14": "Реактор расплавится, если вы не будете использовать радиаторы.",
   "nuclearcraft.ponder.fission_reactor.text_15": "Каждый радиатор имеет определенные правила размещения для активации.",
@@ -2823,5 +2823,6 @@
   "nuclearcraft.ponder.kugelblitz_chamber.text_8": "Квантовые трансформаторы повышают эффективность процессов трансформации.",
   "nuclearcraft.ponder.kugelblitz_chamber.text_9": "Наконец, все 6 лазеров возбужденных фотонов (EXPL) должны выстрелить одновременно.",
   "nuclearcraft.ponder.kugelblitz_chamber.text_10": "Все они должны быть полностью заряжены, а затем активированы редстоуном или через их интерфейс (GUI).",
-  "nuclearcraft.ponder.kugelblitz_chamber.text_11": "Когда все 6 лазеров выстрелят одновременно, внутри камеры будет создана черная дыра."
+  "nuclearcraft.ponder.kugelblitz_chamber.text_11": "Когда все 6 лазеров выстрелят одновременно, внутри камеры будет создана черная дыра.",
+  "fuel.irradiation.descr": "Обогащение: %s"
 }

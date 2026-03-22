@@ -2796,7 +2796,7 @@
   "nuclearcraft.ponder.fission_reactor.text_9": "The resulting energy and heat generation is multiplied by the number of fuel cells.",
   "nuclearcraft.ponder.fission_reactor.text_10": "It affects the fuel depletion speed at the same rate.",
   "nuclearcraft.ponder.fission_reactor.text_11": "Another way to get more energy and heat is to attach moderator blocks to fuel cells.",
-  "nuclearcraft.ponder.fission_reactor.text_12": "Each moderator block face connected to a fuel cell increases FE generation by 17 % and the heat rate by 33 %.",
+  "nuclearcraft.ponder.fission_reactor.text_12": "Each moderator block face connected to a fuel cell increases FE generation by 1.7 and the heat rate by 3.3",
   "nuclearcraft.ponder.fission_reactor.text_13": "Moderators between two fuel cells give an additional bonus.",
   "nuclearcraft.ponder.fission_reactor.text_14": "The reactor will meltdown if you don't use heatsinks.",
   "nuclearcraft.ponder.fission_reactor.text_15": "Each heatsink has specific placement rules to be active.",
@@ -2847,5 +2847,7 @@
   "nuclearcraft.ponder.kugelblitz_chamber.text_8": "Quantum Transformers improve the efficiency of transformation processes.",
   "nuclearcraft.ponder.kugelblitz_chamber.text_9": "Finally, all 6 Excited Photon Lasers (EXPL) must be burst at the same time.",
   "nuclearcraft.ponder.kugelblitz_chamber.text_10": "They all need to be fully charged and then activated with redstone or in their GUI.",
-  "nuclearcraft.ponder.kugelblitz_chamber.text_11": "When all 6 lasers burst simultaneously, this will create a Blackhole inside the chamber."
+  "nuclearcraft.ponder.kugelblitz_chamber.text_11": "When all 6 lasers burst simultaneously, this will create a Blackhole inside the chamber.",
+  "fuel.irradiation.descr": "Irradiation rate: %s",
+  "nuclearcraft.ponder.fusion_reactor.header": "Fusion Reactor"
 }

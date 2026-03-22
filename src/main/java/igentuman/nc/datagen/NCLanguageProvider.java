@@ -112,6 +112,34 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.ponder.fusion_reactor.text_12", "When reactor is ready, you need to charge it, pump fuel and coolant.");
         add("nuclearcraft.ponder.fusion_reactor.text_13", "Start reactor with input redstone signal to Fusion Core. Redstone signal strength directly affects RF amplification.");
         add("nuclearcraft.ponder.fusion_reactor.text_14", "On top of this you can adjust RF amplification in reactor GUI.");
+        add("nuclearcraft.ponder.target_chamber.text_1", "Target Chamber size can be from 5x5x5 up to 11x11x11.");
+        add("nuclearcraft.ponder.target_chamber.text_2", "The center of the structure must be a Target Chamber Camera.");
+        add("nuclearcraft.ponder.target_chamber.text_3", "Beam blocks must connect the camera to the beam ports in all 4 horizontal directions.");
+        add("nuclearcraft.ponder.target_chamber.text_4", "Structure needs at least 1 input beam port and 3 output beam ports.");
+        add("nuclearcraft.ponder.target_chamber.text_5", "Use a Multitool to change the port mode.");
+        add("nuclearcraft.ponder.target_chamber.text_6", "Detectors must be placed around the camera to collect data.");
+        add("nuclearcraft.ponder.target_chamber.text_7", "Add Target Chamber Ports for energy and item/fluid transport.");
+        add("nuclearcraft.ponder.target_chamber.text_8", "Place the Target Chamber Controller on the casing.");
+        add("nuclearcraft.ponder.target_chamber.text_9", "When the structure is valid, start it with redstone signal to controller block.");
+        add("nuclearcraft.ponder.linear_accelerator.text_1", "One end needs an Ion Source Port or Particle Beam Port (Input).");
+        add("nuclearcraft.ponder.linear_accelerator.text_2", "The opposite end needs a Beam Port (Output).");
+        add("nuclearcraft.ponder.linear_accelerator.text_3", "RF Amplifiers increase particle energy. Place 8 blocks around a beam block.");
+        add("nuclearcraft.ponder.linear_accelerator.text_4", "Electromagnets increase beam focus. Place 4 blocks around a beam block.");
+        add("nuclearcraft.ponder.linear_accelerator.text_5", "Accelerator Coolers must be placed inside to regulate temperature.");
+        add("nuclearcraft.ponder.linear_accelerator.text_6", "Finalize with Casing, Glass, Ports and a Controller.");
+        add("nuclearcraft.ponder.linear_accelerator.text_7", "Connect beamline from beam output port to other structure.");
+        add("nuclearcraft.ponder.linear_accelerator.text_8", "Provide redstone signal to controller block. Signal strength affects acceleration energy.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_1", "Kugelblitz Chamber size is 11x11x11.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_2", "All 6 walls must be perfectly symmetric.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_3", "The Kugelblitz Chamber Terminal is the main control block.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_4", "Chamber Ports are used for energy and item transport. Redstone input/output and computers.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_5", "Photon Concentrators must be placed at the center of all 6 walls.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_6", "Quantum Flux Regulators affect the Forge Energy output rate.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_7", "Event Horizon Stabilizers help maintain black hole stability.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_8", "Quantum Transformers improve the efficiency of transformation processes.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_9", "Finally, all 6 Excited Photon Lasers (EXPL) must be burst at the same time.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_10", "They all need to be fully charged and then activated with redstone or in their GUI.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_11", "When all 6 lasers burst simultaneously, this will create a Blackhole inside the chamber.");
     }
 
     private void particles() {

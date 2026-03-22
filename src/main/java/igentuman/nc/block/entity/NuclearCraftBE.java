@@ -68,6 +68,7 @@ public class NuclearCraftBE extends BlockEntity {
     public HashMap<String, NcRecipe> cachedRecipes = new HashMap<>();
     protected LazyOptional<IEnergyStorage> energy;
     protected long lastTickTime = 0;
+    public boolean needToUpdate = false;
     //all fields
     private final List<Field> booleanFields;
     private final List<Field> intFields;

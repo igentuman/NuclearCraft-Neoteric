@@ -66,8 +66,7 @@ public class ChamberPortBE extends MultiblockPortBE {
         if (this.multiblock != null) {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
             controller = (ChamberTerminalBE) this.multiblock.controller().controllerBE();
-            setChanged();
-            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+            markDirty();
         }
     }
 
@@ -118,7 +117,8 @@ public class ChamberPortBE extends MultiblockPortBE {
             }
         }
 
-        if(updated) {
+        if(updated || needToUpdate) {
+            needToUpdate = false;
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);

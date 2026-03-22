@@ -59,6 +59,7 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
         this.multiblock = (AbstractAcceleratorMultiblock) multiblock;
+        markDirty();
     }
 
     @Override
@@ -101,7 +102,8 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
             updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
         }
 
-        if(updated) {
+        if(updated || needToUpdate) {
+            needToUpdate = false;
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);

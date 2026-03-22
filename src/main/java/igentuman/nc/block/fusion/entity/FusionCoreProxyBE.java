@@ -47,6 +47,7 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
     @Override
     public void setMultiblock(FusionReactorMultiblock multiblock) {
         this.multiblock = multiblock;
+        needToUpdate = true;
     }
 
     public FusionReactorMultiblock getMultiblock() {
@@ -97,7 +98,8 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
         if(currentTick % 5 == 0 && !core.hasRecipe()) {
             return;
         }
-        if(wasSignal != core.analogSignal) {
+        if(wasSignal != core.analogSignal || needToUpdate) {
+            needToUpdate = false;
             wasSignal = core.analogSignal;
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();

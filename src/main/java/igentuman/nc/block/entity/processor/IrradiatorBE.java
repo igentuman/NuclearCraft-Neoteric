@@ -15,7 +15,10 @@ import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+
+import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 
 public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable {
 
@@ -47,6 +50,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         } else {
             controller = null;
         }
+        needToUpdate = true;
     }
 
     @Override
@@ -83,7 +87,10 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             super.tickServer();
         }
-        if(wasFlux != irradiativeFlux || wasFuel != fuelMultiplier) {
+        if(wasFlux != irradiativeFlux || wasFuel != fuelMultiplier || needToUpdate) {
+            needToUpdate = false;
+            MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_NEIGHBORS);
             setChanged();
         }
     }

@@ -116,7 +116,8 @@ public class FissionPortBE extends MultiblockPortBE {
             return;
         }
         connected = getMultiblock() != null && getMultiblock().isFormed();
-        if (updated || wasConnected != connected) {
+        if (updated || wasConnected != connected || needToUpdate) {
+            needToUpdate = false;
             if(connected) {
                 MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             }
@@ -283,10 +284,10 @@ public class FissionPortBE extends MultiblockPortBE {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
             controller = (FissionControllerBE) this.multiblock.controller().controllerBE();
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
-            setChanged();
-            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+            markDirty();
         }
     }
+
 
     @Override
     public FissionControllerBE controller() {

@@ -53,8 +53,7 @@ public class TurbinePortBE extends MultiblockPortBE {
         if (this.multiblock != null) {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
             controller = this.multiblock.controller().controllerBE();
-            setChanged();
-            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+            markDirty();
         }
     }
 
@@ -98,7 +97,8 @@ public class TurbinePortBE extends MultiblockPortBE {
             updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
         }
 
-        if(updated || (currentTick % 40 == 0 && controller() != null && controller().controllerEnabled)) {
+        if(needToUpdate || updated || (currentTick % 40 == 0 && controller() != null && controller().controllerEnabled)) {
+            needToUpdate = false;
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());

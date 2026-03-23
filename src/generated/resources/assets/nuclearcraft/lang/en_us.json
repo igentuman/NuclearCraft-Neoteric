@@ -2729,7 +2729,7 @@
   "tooltip.nc.reactor.plasma_optimal": "Optimal: %s K",
   "tooltip.nc.reactor.ready": "Ready",
   "tooltip.nc.reactor.running": "Activation: %s",
-  "tooltip.nc.report_issue": "Copy link to post a bug",
+  "tooltip.nc.report_issue": "Post a bug",
   "tooltip.nc.rf_amplifier.efficiency": "Efficiency: %s%%",
   "tooltip.nc.rf_amplifier.heat": "Heat: %s H/t",
   "tooltip.nc.rf_amplifier.max_temp": "Max Temperature: %s K",

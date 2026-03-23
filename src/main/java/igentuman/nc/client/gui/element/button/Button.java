@@ -43,13 +43,20 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     protected Component tooltipKey = Component.empty();
 
     /**
-     * Safely opens a URL using multiple fallback methods
+     * Safely opens a URL using Minecraft's utility method
      * @param url The URL to open
      * @return true if successful, false otherwise
      */
     public static boolean openUrl(String url) {
         try {
-            // Method 1: Try Desktop API (most reliable)
+            net.minecraft.Util.getPlatform().openUri(url);
+            return true;
+        } catch (Exception e) {
+            debugLog("Minecraft platform method failed: " + e.getMessage());
+        }
+
+        try {
+            // Method 2: Try Desktop API as fallback
             if (Desktop.isDesktopSupported()) {
                 Desktop desktop = Desktop.getDesktop();
                 if (desktop.isSupported(Desktop.Action.BROWSE)) {
@@ -62,18 +69,10 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
 
         try {
-            // Method 2: Try Minecraft's platform method as fallback
-            net.minecraft.Util.getPlatform().openUri(url);
-            return true;
-        } catch (Exception e) {
-            debugLog("Minecraft platform method failed: " + e.getMessage());
-        }
-
-        try {
             // Method 3: Try system-specific commands as last resort
             String os = System.getProperty("os.name").toLowerCase();
             Runtime runtime = Runtime.getRuntime();
-            
+
             if (os.contains("win")) {
                 runtime.exec("rundll32 url.dll,FileProtocolHandler " + url);
             } else if (os.contains("mac")) {
@@ -342,25 +341,10 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             width = 8;
             String link = "https://github.com/igentuman/NuclearCraft-Neoteric/issues/new?template=bug_report.md";
             btn = new ImageButton(X(), Y(), width, height, 0, 0, 8, BTN_TEXTURE, 8, 16, pButton -> {
-                if (!copyToBuffer(link)) {
+                if (!openUrl(link)) {
                     //debugLog("Failed to open link: " + link);
                 }
             });
-        }
-
-        private boolean copyToBuffer(String link) {
-            try {
-                // Get the system clipboard
-                java.awt.datatransfer.Clipboard clipboard = java.awt.Toolkit.getDefaultToolkit().getSystemClipboard();
-                // Create a string selection with the link
-                java.awt.datatransfer.StringSelection stringSelection = new java.awt.datatransfer.StringSelection(link);
-                // Set the clipboard contents
-                clipboard.setContents(stringSelection, null);
-                return true;
-            } catch (Exception e) {
-                debugLog("Failed to copy link to clipboard: " + e.getMessage());
-                return false;
-            }
         }
 
         public List<Component> getTooltips() {

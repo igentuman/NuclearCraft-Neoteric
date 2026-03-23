@@ -81,7 +81,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         if (controller() != null && controller().isProcessing() && controller().efficiency > 0) {
             irradiativeFlux = controller().irradiationLines;
             FissionControllerBE.Recipe recipe1 = (FissionControllerBE.Recipe) controller().recipeInfo().recipe();
-            fuelMultiplier = Math.log((recipe1.getRadiation()*20+0.01)*10000)*(Math.pow(recipe1.getHeat() / 100 +  200 / (double)recipe1.getDepletionTime() + 0.5, 1.5)*2);
+            fuelMultiplier = recipe1 != null ? recipe1.irradiationRate : 0;
         }
         if(speedMultiplier() > 0) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());

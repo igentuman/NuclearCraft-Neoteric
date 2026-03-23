@@ -43,7 +43,7 @@ public class FusionReactorPonderScenes {
         scene.overlay().showOutline(PonderPalette.GREEN, new Object(), util.select().fromTo(cx - 1, 0, cz - 1, cx + 1, 2, cz + 1), 30);
         scene.overlay().showText(30)
                 .text("It automatically occupies a 3x3x3 volume around it.");
-        scene.idle(35);
+        scene.idle(55);
 
         // 2. Connectors
         scene.addKeyframe();
@@ -54,13 +54,13 @@ public class FusionReactorPonderScenes {
         scene.idle(20);
         scene.overlay().showText(30)
                 .text("Add one Fusion Reactor Connector in each horizontal direction.");
-        scene.idle(35);
+        scene.idle(55);
         scene.overlay().showText(30)
                 .text("You can have up to 10 connectors in each horizontal direction.");
-        scene.idle(35);
+        scene.idle(55);
         scene.overlay().showText(30)
                 .text("Bigger ring - more energy and heat.");
-        scene.idle(35);
+        scene.idle(55);
         // 3. Ring Chamber
         scene.addKeyframe();
         scene.overlay().showText(30)
@@ -122,18 +122,18 @@ public class FusionReactorPonderScenes {
         }
 
         scene.idle(10);
-        scene.overlay().showText(30)
+        scene.overlay().showText(55)
                 .text("The chamber must be hollow to allow plasma to circulate.");
-        scene.idle(35);
+        scene.idle(55);
 
         scene.addKeyframe();
-        scene.overlay().showText(30)
+        scene.overlay().showText(55)
                 .text("Fusion reactor functional blocks.");
         scene.world().restoreBlocks(util.select().fromTo(0,0,0,10, 2, 10));
-        scene.idle(35);
-        scene.overlay().showText(30)
+        scene.idle(55);
+        scene.overlay().showText(55)
                 .text("Functional blocks must be placed anywhere in the corners of reactor ring.");
-        scene.idle(35);
+        scene.idle(55);
         scene.world().showSection(util.select().fromTo(0,0,0,10, 2, 10), null);
         scene.overlay().showText(50)
                 .pointAt(util.vector().blockSurface(util.grid().at(2, 2, 2), Direction.UP))
@@ -146,17 +146,17 @@ public class FusionReactorPonderScenes {
 
         scene.addKeyframe();
 
-        scene.overlay().showText(30)
+        scene.overlay().showText(55)
                 .text("When reactor is ready, you need to charge it, pump fuel and coolant.");
-        scene.idle(35);
+        scene.idle(55);
         scene.addInstruction(new RotateSceneInstruction(-35, -45, true));
-        scene.overlay().showText(30)
+        scene.overlay().showText(55)
                 .text("Start reactor with input redstone signal to Fusion Core. Redstone signal strength directly affects RF amplification.");
-        scene.overlay().showControls(util.vector().topOf(3, 3, 6), Pointing.LEFT, 30).withItem(new ItemStack(LEVER)).rightClick();
-        scene.idle(35);
+        scene.overlay().showControls(util.vector().topOf(3, 3, 6), Pointing.LEFT, 55).withItem(new ItemStack(LEVER)).rightClick();
+        scene.idle(55);
 
-        scene.overlay().showText(30)
+        scene.overlay().showText(55)
                 .text("On top of this you can adjust RF amplification in reactor GUI.");
-        scene.idle(35);
+        scene.idle(55);
     }
 }

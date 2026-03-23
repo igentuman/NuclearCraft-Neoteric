@@ -38,33 +38,33 @@ public class FissionReactorPonderScenes {
                 .pointAt(util.vector().blockSurface(util.grid().at(1, 1, 1), Direction.UP))
                 .text("Walls are mainly made of Fission Reactor Casing or Reactor Glass.");
 
-        scene.idle(35);
+        scene.idle(55);
         scene.addKeyframe();
-        scene.overlay().showOutline(PonderPalette.WHITE, new Object(), util.select().fromTo(2, 1, 0, 2, 1, 0), 30);
-        scene.overlay().showText(30)
+        scene.overlay().showOutline(PonderPalette.WHITE, new Object(), util.select().fromTo(2, 1, 0, 2, 1, 0), 55);
+        scene.overlay().showText(55)
                 .pointAt(util.vector().blockSurface(util.grid().at(1, 2, -2), Direction.UP))
                 .text("Place the Fission Reactor Controller anywhere you like to form the structure.");
 
-        scene.idle(35);
+        scene.idle(55);
         scene.addKeyframe();
         scene.world().setBlock(util.grid().at(0, 1, 1), FISSION_BLOCKS.get("fission_reactor_port").get().defaultBlockState().setValue(HORIZONTAL_FACING, Direction.EAST), true);
 
-        scene.overlay().showOutline(PonderPalette.WHITE, new Object(), util.select().fromTo(0, 1, 1, 0, 1, 1), 30);
+        scene.overlay().showOutline(PonderPalette.WHITE, new Object(), util.select().fromTo(0, 1, 1, 0, 1, 1), 55);
         scene.overlay().showText(50)
                 .pointAt(util.vector().blockSurface(util.grid().at(1, -1, 3), Direction.UP))
                 .text("The Reactor Port is a universal block allowing you to load/unload fuel and liquids, read or send redstone signals, and attach computers.");
         scene.idle(50);
         scene.world().setBlock(util.grid().at(4, 1, 1), FISSION_BLOCKS.get("fission_reactor_port").get().defaultBlockState().setValue(HORIZONTAL_FACING, Direction.WEST), true);
-        scene.overlay().showText(30)
+        scene.overlay().showText(55)
                 .pointAt(util.vector().blockSurface(util.grid().at(4, 1, 1), Direction.UP))
                 .text("Use as many ports as you like.");
         scene.idle(5);
         scene.overlay().showOutline(PonderPalette.WHITE, new Object(), util.select().fromTo(4, 1, 1, 4, 1, 1), 15);
-        scene.idle(35);
-        scene.overlay().showText(30).text("Start the reactor with a redstone signal to the controller or port (make sure to select redstone mode in the port GUI).");
-        scene.overlay().showControls(util.vector().topOf(2, 1, 0), Pointing.LEFT, 30).withItem(new ItemStack(LEVER)).rightClick();
+        scene.idle(55);
+        scene.overlay().showText(55).text("Start the reactor with a redstone signal to the controller or port (make sure to select redstone mode in the port GUI).");
+        scene.overlay().showControls(util.vector().topOf(2, 1, 0), Pointing.LEFT, 55).withItem(new ItemStack(LEVER)).rightClick();
 
-        scene.idle(35);
+        scene.idle(55);
         scene.addKeyframe();
         scene.world().hideSection(util.select().fromTo(1,4, 1, 3, 5, 3), Direction.UP);
         scene.world().hideSection(util.select().fromTo(1,1, 0, 3, 5, 0), Direction.NORTH);
@@ -73,9 +73,9 @@ public class FissionReactorPonderScenes {
         scene.overlay().showText(40).text("There are no strict requirements for how internal reactor blocks must be placed.");
         scene.idle(40);
         scene.world().showSection(util.select().position(2,1, 2), Direction.DOWN);
-        scene.overlay().showText(30).pointAt(util.vector().topOf(2,1, 2)).text("The Fuel Cell block is used for energy and heat generation.");
-        scene.idle(35);
-        scene.overlay().showText(30).text("Place as many fuel cells as you like anywhere inside the reactor.");
+        scene.overlay().showText(55).pointAt(util.vector().topOf(2,1, 2)).text("The Fuel Cell block is used for energy and heat generation.");
+        scene.idle(55);
+        scene.overlay().showText(55).text("Place as many fuel cells as you like anywhere inside the reactor.");
         scene.world().showSection(util.select().position(1,1, 1), Direction.DOWN);
         scene.idle(10);
         scene.world().showSection(util.select().position(3,1, 3), Direction.DOWN);
@@ -113,12 +113,12 @@ public class FissionReactorPonderScenes {
         scene.overlay().showText(50).text("Each heatsink has specific placement rules to be active.");
         scene.idle(50);
         scene.overlay().showText(50).text("You are free to design your reactor as you like. Just make sure you place heatsinks according to their placement rules.");
-        scene.idle(30);
+        scene.idle(55);
         scene.world().showSection(util.select().fromTo(1,3, 1, 3, 3, 3), Direction.DOWN);
 
-        scene.idle(35);
+        scene.idle(55);
         scene.addKeyframe();
-        scene.overlay().showText(30).text("Fission Reactor irradiation feature.");
+        scene.overlay().showText(55).text("Fission Reactor irradiation feature.");
         scene.world().hideSection(util.select().fromTo(1,1, 1, 3, 3, 3), Direction.UP);
         scene.idle(10);
         scene.world().showSection(util.select().position(2,1, 2), Direction.DOWN);
@@ -126,16 +126,16 @@ public class FissionReactorPonderScenes {
         scene.world().showSection(util.select().position(2,2, 2), Direction.DOWN);
         scene.idle(10);
         scene.world().showSection(util.select().position(2,3, 2), Direction.DOWN);
-        scene.overlay().showText(30).pointAt(util.vector().topOf(2,3, 2)).text("An irradiation line is a set of three blocks in a row: Fuel Cell -> Moderator -> Irradiation Chamber.");
-        scene.idle(35);
-        scene.overlay().showText(30).text("Up to six irradiation lines for each Irradiation Chamber block.");
+        scene.overlay().showText(55).pointAt(util.vector().topOf(2,3, 2)).text("An irradiation line is a set of three blocks in a row: Fuel Cell -> Moderator -> Irradiation Chamber.");
+        scene.idle(55);
+        scene.overlay().showText(55).text("Up to six irradiation lines for each Irradiation Chamber block.");
         scene.idle(15);
         scene.world().showSection(util.select().fromTo(1,1, 0, 3, 5, 0), Direction.SOUTH);
         scene.idle(15);
         scene.world().setBlock(util.grid().at(2, 4, 0), PROCESSORS.get("irradiator").get().defaultBlockState().setValue(HORIZONTAL_FACING, Direction.NORTH), true);
-        scene.overlay().showText(30).pointAt(util.vector().topOf(2, 4, 0)).text("Place the Irradiator anywhere in the reactor wall.");
-        scene.idle(35);
-        scene.overlay().showText(30).text("When the reactor is up and running, the Irradiator will use all irradiation lines to produce recipes.");
+        scene.overlay().showText(55).pointAt(util.vector().topOf(2, 4, 0)).text("Place the Irradiator anywhere in the reactor wall.");
+        scene.idle(55);
+        scene.overlay().showText(55).text("When the reactor is up and running, the Irradiator will use all irradiation lines to produce recipes.");
         scene.world().showSection(util.select().fromTo(0, 0, 0, 4, 4, 4), null);
         scene.world().setBlock(util.grid().at(2, 4, 0), PROCESSORS.get("irradiator").get().defaultBlockState().setValue(HORIZONTAL_FACING, Direction.NORTH).setValue(POWERED, true), false);
         scene.world().setBlock(util.grid().at(2, 1, 0), FISSION_BLOCKS.get("fission_reactor_controller").get().defaultBlockState().setValue(HORIZONTAL_FACING, Direction.NORTH).setValue(POWERED, true), false);

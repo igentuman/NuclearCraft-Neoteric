@@ -48,7 +48,7 @@ public class LinearAcceleratorPonderScenes {
         scene.world().setBlock(util.grid().at(length - 1, 2, 2), ACCELERATOR_BLOCKS.get("accelerator_beam_port").get().defaultBlockState().setValue(HORIZONTAL_FACING, Direction.EAST).setValue(PORT_MODE, PortMode.Mode.OUTPUT), false);
         scene.world().showSection(util.select().position(length - 1, 2, 2), Direction.WEST);
         scene.overlay().showText(40).pointAt(util.vector().centerOf(length - 1, 2, 2)).text("The opposite end needs a Beam Port (Output).");
-        scene.overlay().showControls(util.vector().topOf(length - 1, 2, 2), Pointing.RIGHT, 30).withItem(new ItemStack(MULTITOOL.get())).rightClick();
+        scene.overlay().showControls(util.vector().topOf(length - 1, 2, 2), Pointing.RIGHT, 55).withItem(new ItemStack(MULTITOOL.get())).rightClick();
         scene.idle(45);
 
         // RF Amplifiers (around beam)
@@ -127,10 +127,10 @@ public class LinearAcceleratorPonderScenes {
         
         scene.overlay().showText(60).text("Finalize with Casing, Glass, Ports and a Controller.");
         scene.rotateCameraY(90);
-        scene.idle(35);
-        scene.overlay().showText(30).pointAt(util.vector().centerOf(length, 2, 2)).text("Connect beamline from beam output port to other structure.");
-        scene.idle(35);
-        scene.overlay().showControls(util.vector().topOf(length / 2, 2, 0), Pointing.LEFT, 30).withItem(new ItemStack(LEVER)).rightClick();
+        scene.idle(55);
+        scene.overlay().showText(55).pointAt(util.vector().centerOf(length, 2, 2)).text("Connect beamline from beam output port to other structure.");
+        scene.idle(55);
+        scene.overlay().showControls(util.vector().topOf(length / 2, 2, 0), Pointing.LEFT, 55).withItem(new ItemStack(LEVER)).rightClick();
         scene.overlay().showText(60).text("Provide redstone signal to controller block. Signal strength affects acceleration energy.");
         scene.idle(60);
 

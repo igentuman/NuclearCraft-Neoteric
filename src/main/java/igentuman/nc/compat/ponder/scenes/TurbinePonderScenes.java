@@ -39,30 +39,30 @@ public class TurbinePonderScenes {
         scene.world().showSection(util.select().fromTo(1, 6, 1, 7, 6, 5), Direction.DOWN);
         scene.idle(10);
 
-        scene.overlay().showText(30)
+        scene.overlay().showText(55)
                 .pointAt(util.vector().blockSurface(util.grid().at(4, 0, 3), Direction.UP))
                 .text("Walls are mainly made of Turbine Casing or Turbine Glass.");
 
-        scene.idle(35);
-        scene.overlay().showText(30)
+        scene.idle(55);
+        scene.overlay().showText(55)
                 .pointAt(util.vector().blockSurface(util.grid().at(4, 0, 3), Direction.UP))
                 .text("Turbine can have vertical or horizontal orientation.");
 
-        scene.idle(35);
+        scene.idle(55);
         scene.addKeyframe();
-        scene.overlay().showOutline(PonderPalette.WHITE, new Object(), util.select().fromTo(4, 3, 0, 4, 3, 0), 30);
-        scene.overlay().showText(30)
+        scene.overlay().showOutline(PonderPalette.WHITE, new Object(), util.select().fromTo(4, 3, 0, 4, 3, 0), 55);
+        scene.overlay().showText(55)
                 .pointAt(util.vector().blockSurface(util.grid().at(4, 3, 0), Direction.UP))
                 .text("Place the Turbine Controller anywhere in the casing to form the structure.");
 
-        scene.idle(35);
+        scene.idle(55);
         scene.addKeyframe();
         scene.world().setBlock(util.grid().at(4, 1, 0), TURBINE_BLOCKS.get("turbine_port").get().defaultBlockState().setValue(HORIZONTAL_FACING, Direction.NORTH), true);
-        scene.overlay().showOutline(PonderPalette.WHITE, new Object(), util.select().fromTo(4, 1, 0, 4, 1, 0), 30);
+        scene.overlay().showOutline(PonderPalette.WHITE, new Object(), util.select().fromTo(4, 1, 0, 4, 1, 0), 55);
         scene.overlay().showText(50)
                 .pointAt(util.vector().blockSurface(util.grid().at(4, 1, 0), Direction.UP))
                 .text("Turbine Ports allow fluid and energy transfer.");
-        scene.idle(35);
+        scene.idle(55);
 
         scene.addKeyframe();
         // Hide some casing to show internals
@@ -105,7 +105,7 @@ public class TurbinePonderScenes {
             scene.world().showSection(util.select().position(0, 3 + offset[0], 3 + offset[1]), Direction.EAST);
             scene.idle(5);
         }
-        scene.idle(35);
+        scene.idle(55);
 
         scene.world().showSection(util.select().fromTo(0, 1, 0, 8, 6, 0), Direction.SOUTH);
         scene.world().showSection(util.select().fromTo(1, 6, 1, 7, 6, 5), Direction.DOWN);
@@ -114,6 +114,6 @@ public class TurbinePonderScenes {
 
         scene.addKeyframe();
         scene.overlay().showText(40).text("When turbine is ready, you can start it with redstone signal to controller.");
-        scene.idle(30);
+        scene.idle(55);
     }
 }

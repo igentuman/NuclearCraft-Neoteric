@@ -31,7 +31,7 @@ public class KugelblitzChamberPonderScenes {
                 .pointAt(util.vector().blockSurface(util.grid().at(10, 5, 10), Direction.UP))
                 .text("Kugelblitz Chamber size is 11x11x11.");
         
-        scene.idle(35);
+        scene.idle(55);
         scene.rotateCameraY(90);
         scene.idle(20);
         
@@ -104,11 +104,11 @@ public class KugelblitzChamberPonderScenes {
                 .pointAt(util.vector().blockSurface(util.grid().at(20, 10, 10), Direction.WEST))
                 .text("Finally, all 6 Excited Photon Lasers (EXPL) must be burst at the same time.");
 
-        scene.idle(35);
-        scene.overlay().showText(30)
+        scene.idle(55);
+        scene.overlay().showText(55)
                 .text("They all need to be fully charged and then activated with redstone or in their GUI.");
         scene.addInstruction(new RotateSceneInstruction(35, 15, true));
-        scene.idle(35);
+        scene.idle(55);
         // Activate terminal state to show success
         scene.world().setBlock(terminalPos, KUGELBLITZ_BLOCKS.get("chamber_terminal").get().defaultBlockState().setValue(HORIZONTAL_FACING, Direction.EAST).setValue(POWERED, true), false);
         scene.overlay().showText(60)

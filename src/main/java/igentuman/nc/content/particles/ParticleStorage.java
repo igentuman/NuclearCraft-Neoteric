@@ -17,6 +17,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 
 	protected ParticleStack particleStack;
 	public List<ParticleStack> outputParticles = new ArrayList<>();
+	protected ParticleStack clientParticle;
 	protected BlockEntity tile;
 	protected long maxEnergy;
 	protected long minEnergy;
@@ -59,11 +60,11 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 	{
 		if (nbt.contains("particle_stack"))
 		{
-			this.particleStack = ParticleStack.loadParticleStackFromNBT(nbt.getCompound("particle_stack"));
+			this.clientParticle = ParticleStack.loadParticleStackFromNBT(nbt.getCompound("particle_stack"));
 		}
 		else
 		{
-			this.particleStack = null;
+			this.clientParticle = null;
 		}
 		
 		this.maxEnergy = nbt.getLong("maxEnergy");
@@ -92,9 +93,9 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 	public CompoundTag writeToNBT(CompoundTag nbt)
 	{
 		CompoundTag tag = new CompoundTag();
-		if (particleStack != null)
+		if (clientParticle != null)
 		{
-			particleStack.writeToNBT(tag);
+			clientParticle.writeToNBT(tag);
 		} else {
 			new ParticleStack().writeToNBT(tag);
 		}
@@ -250,7 +251,6 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		this.minEnergy = minEnergy;
 	}
 
-
 	@Override
 	public ParticleStack extractParticle(Direction side)
 	{
@@ -323,8 +323,22 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		return particleStack == null || particleStack.getParticle() == null ? "" : particleStack.getParticle().getName();
     }
 
+	public void clearClient() {
+		clientParticle = null;
+	}
+
+	public void clearServer() {
+		clientParticle = particleStack;
+		particleStack = null;
+		outputParticles.clear();
+	}
+
 	public void clear() {
 		particleStack = null;
 		outputParticles.clear();
+	}
+
+	public ParticleStack getClientParticleStack() {
+		return clientParticle;
 	}
 }

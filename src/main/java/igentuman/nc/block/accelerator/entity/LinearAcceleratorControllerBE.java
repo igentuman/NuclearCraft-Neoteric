@@ -131,7 +131,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         super.tickServer();
         boolean wasEnabled = controllerEnabled;
         handleValidation();
-        if(redstoneLevel < 1) {
+        if(level.getGameTime() % 10 == 0) {
             redstoneLevel = getRedstoneSignal();
         }
         controllerEnabled = getMultiblock().isFormed() && redstoneLevel > 0;
@@ -147,9 +147,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         // Coolant cooling
         coolantCoolDown();
         refreshCacheFlag = !getMultiblock().isFormed();
-        if(wasEnabled != controllerEnabled) {
-           setChanged();
-        }
+        changed |= wasEnabled != controllerEnabled;
         if(refreshCacheFlag || changed || currentTick % 20 == 0) {
             try {
                 setChanged();

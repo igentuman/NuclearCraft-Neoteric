@@ -31,7 +31,7 @@ public class ParticleSources {
         initialized = true;
         sources.put("source_calcium_48", new ParticleStack(calcium_48_ion, 5 * moleAmount, 0,0));
         sources.put("source_iridium_192", new ParticleStack(positron, moleAmount, 0,0));
-        sources.put("tungsten_filament", new ParticleStack(photon, 50 * moleAmount, 0,0));
+        sources.put("tungsten_filament", new ParticleStack(electron, 50 * moleAmount, 0,0));
         sources.put("antideuterium", new ParticleStack(antideuteron, 50 * moleAmount, 0,0));
         sources.put("antihelium", new ParticleStack(antialpha, 50 * moleAmount, 0,0));
         sources.put("antihelium3", new ParticleStack(antihelion, 50 * moleAmount, 0,0));

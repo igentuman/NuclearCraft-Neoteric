@@ -196,7 +196,7 @@ public class TargetChamberControllerContainer extends AbstractContainerMenu {
     }
 
     public ParticleStack getParticleStack() {
-        return blockEntity.getParticleStack();
+        return blockEntity.getClientParticleStack();
     }
 
     public ParticleStack getOutputParticle(int i) {

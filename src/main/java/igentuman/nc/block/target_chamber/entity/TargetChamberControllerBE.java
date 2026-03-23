@@ -263,6 +263,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
             controllerEnabled = false;
             return;
         }
+        particleStorage.clearClient();
         //Disallow boosters like torcherino
         if(lastTickTime == level.getGameTime()) {
             return;
@@ -301,8 +302,7 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
 
             } catch (NullPointerException ignored) {}
         }
-        particleStorage.setParticleStack(null);
-        particleStorage.outputParticles.clear();
+        particleStorage.clearServer();
     }
 
     @Override
@@ -541,6 +541,10 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
             return null;
         }
         return ((Recipe)recipeInfo().recipe).outputParticles.length > i ? ((Recipe)recipeInfo().recipe).outputParticles[i] : null;
+    }
+
+    public ParticleStack getClientParticleStack() {
+        return particleStorage.getClientParticleStack();
     }
 
     public static class Recipe extends TargetChamberRecipe {

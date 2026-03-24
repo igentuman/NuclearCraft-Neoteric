@@ -53,9 +53,10 @@ public class TurbinePortBE extends MultiblockPortBE {
         if (this.multiblock != null) {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
             controller = this.multiblock.controller().controllerBE();
-            setChanged();
-            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
+        setChanged();
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
     }
 
 

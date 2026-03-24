@@ -40,13 +40,15 @@ public class AcceleratorPortContainer extends AbstractContainerMenu {
         this.playerInventory =  new InvWrapper(playerInventory);
         portBE = (AcceleratorPortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
+        IItemHandler h = null;
         if (portBE.controller() != null && portBE.controller().contentHandler() != null) {
-            IItemHandler h = portBE.controller().contentHandler().itemHandler;
-            if (h != null) {
-                addSlot(new NCSlotItemHandler.Input(h, 0, 71, 26));
-                addSlot(new NCSlotItemHandler.Output(h, 1, 89, 26));
-            }
+            h = portBE.controller().contentHandler().itemHandler;
         }
+        if (h == null) {
+            h = new net.neoforged.neoforge.items.ItemStackHandler(2);
+        }
+        addSlot(new NCSlotItemHandler.Input(h, 0, 71, 26));
+        addSlot(new NCSlotItemHandler.Output(h, 1, 89, 26));
     }
 
     public BlockPos getPosition() {

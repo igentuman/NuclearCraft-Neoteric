@@ -35,13 +35,17 @@ public class FissionPortContainer extends AbstractContainerMenu {
         portBE = (FissionPortBE) NCLevels.getExistingBlockEntity(playerEntity.getCommandSenderWorld(), pos);
         slotIndex = 0;
         layoutPlayerInventorySlots();
+        // Always add fuel slots to keep server/client slot counts in sync.
+        // Use a dummy handler if the controller isn't available yet (client-side race).
+        IItemHandler h = null;
         if (portBE.controller() != null && portBE.controller().contentHandler() != null) {
-            IItemHandler h = portBE.controller().contentHandler().itemHandler;
-            if (h != null) {
-                addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-                addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
-            }
+            h = portBE.controller().contentHandler().itemHandler;
         }
+        if (h == null) {
+            h = new net.neoforged.neoforge.items.ItemStackHandler(2);
+        }
+        addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
+        addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
     }
 
     public BlockPos getPosition() {

@@ -66,11 +66,21 @@ public class TagUtil {
     public static HashSet<Block> getBlocksByTagKey(String key) {
         HashSet<Block> tmp = new HashSet<>();
         TagKey<Block> tag = TagKey.create(BLOCK_REGISTRY, rlFromString(key));
-        BuiltInRegistries.BLOCK.getTag(tag).ifPresent(holders -> {
-            for (Holder<Block> holder : holders) {
-                tmp.add(holder.value());
+        // NeoForge 1.21.1: iterate all registered block holders and check tag membership
+        // This is more reliable than Registry.getTag() which may return empty
+        for (Holder.Reference<Block> ref : BuiltInRegistries.BLOCK.holders().toList()) {
+            if (ref.is(tag)) {
+                tmp.add(ref.value());
             }
-        });
+        }
+        // Fallback: try the direct Registry.getTag() approach
+        if (tmp.isEmpty()) {
+            BuiltInRegistries.BLOCK.getTag(tag).ifPresent(holders -> {
+                for (Holder<Block> holder : holders) {
+                    tmp.add(holder.value());
+                }
+            });
+        }
         return tmp;
     }
 
@@ -92,11 +102,20 @@ public class TagUtil {
     public static List<Item> getItemsByTagKey(String key) {
         List<Item> tmp = new ArrayList<>();
         TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(key));
-        BuiltInRegistries.ITEM.getTag(tag).ifPresent(holders -> {
-            for (Holder<Item> holder : holders) {
-                tmp.add(holder.value());
+        // NeoForge 1.21.1: iterate all registered item holders and check tag membership
+        for (Holder.Reference<Item> ref : BuiltInRegistries.ITEM.holders().toList()) {
+            if (ref.is(tag)) {
+                tmp.add(ref.value());
             }
-        });
+        }
+        // Fallback: try the direct Registry.getTag() approach
+        if (tmp.isEmpty()) {
+            BuiltInRegistries.ITEM.getTag(tag).ifPresent(holders -> {
+                for (Holder<Item> holder : holders) {
+                    tmp.add(holder.value());
+                }
+            });
+        }
         return tmp;
     }
 

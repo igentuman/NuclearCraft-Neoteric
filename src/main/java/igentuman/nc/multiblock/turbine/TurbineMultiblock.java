@@ -24,7 +24,6 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
-import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class TurbineMultiblock extends AbstractMultiblock {
 
@@ -67,8 +66,8 @@ public class TurbineMultiblock extends AbstractMultiblock {
 
     public TurbineMultiblock(TurbineControllerBE turbineControllerBE) {
         super(
-                getBlocksByTagKey(CASING_BLOCKS.location().toString()),
-                getBlocksByTagKey(INNER_TURBINE_BLOCKS.location().toString()),
+                CASING_BLOCKS, null,
+                INNER_TURBINE_BLOCKS, null,
                 new TurbineController(turbineControllerBE)
         );
         id = "turbine_"+turbineControllerBE.getBlockPos().toShortString();

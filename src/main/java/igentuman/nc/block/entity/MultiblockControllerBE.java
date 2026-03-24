@@ -94,9 +94,11 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         if(getLevel().isClientSide()) {
             return;
         }
+        // Only flag the multiblock for re-validation.
+        // Don't reset isCasingValid/isInternalValid here — let handleValidation()
+        // update them when the async re-validation actually completes.
+        // Resetting eagerly causes the client to briefly see "incomplete".
         getMultiblock().hasToRefresh = true;
-        isCasingValid = false;
-        isInternalValid = false;
     }
 
     public int getDepth() {
@@ -134,7 +136,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         }
         assert level != null;
         if(level.getGameTime() % 5 == 0) {
-            MultiblockHandler.tickMultiblockAsync((ServerLevel) level, getMultiblock());
+            MultiblockHandler.tickMultiblock((ServerLevel) level, getMultiblock());
             if(multiblock != null && multiblock.isMarkedForRemoval()) {
                 multiblock = null;
             }
@@ -162,8 +164,8 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     }
 
     protected void handleValidation() {
-        boolean wasFormed = isInternalValid && isCasingValid;
         getMultiblock().controller().setControllerBe(this);
+        boolean wasFormed = isInternalValid && isCasingValid;
         validationResult = getMultiblock().validationResult;
         if(errorBlockPos == null || !errorBlockPos.equals(getMultiblock().errorBlockPos)) {
             errorBlockPos = getMultiblock().errorBlockPos;

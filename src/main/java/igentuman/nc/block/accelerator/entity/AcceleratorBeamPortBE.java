@@ -52,6 +52,9 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
         this.multiblock = (AbstractAcceleratorMultiblock) multiblock;
+        setChanged();
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
     }
 
     @Override

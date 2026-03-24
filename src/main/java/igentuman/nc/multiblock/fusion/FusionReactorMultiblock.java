@@ -19,7 +19,6 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
-import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static net.minecraft.core.Direction.*;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
@@ -45,8 +44,8 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
 
     public FusionReactorMultiblock(FusionCoreBE core) {
         super(
-                getBlocksByTagKey(FusionReactorRegistration.CASING_BLOCKS.location().toString()),
-                new HashSet<>(List.of(AIR)),
+                FusionReactorRegistration.CASING_BLOCKS, null,
+                null, new HashSet<>(List.of(AIR)),
                 new FusionReactorController(core));
         controllerBE = core;
         id = "fusion_reactor_"+controllerBE.getBlockPos().toShortString();

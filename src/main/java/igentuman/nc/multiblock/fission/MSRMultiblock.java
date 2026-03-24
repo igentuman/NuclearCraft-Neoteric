@@ -14,7 +14,6 @@ import java.util.HashSet;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
-import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class MSRMultiblock extends AbstractMultiblock {
 
@@ -24,8 +23,8 @@ public class MSRMultiblock extends AbstractMultiblock {
 
     public MSRMultiblock(MSRControllerBE msrControllerBE) {
         super(
-                getBlocksByTagKey(FissionReactorRegistration.CASING_BLOCKS.location().toString()),
-                getInnerBlocks(),
+                FissionReactorRegistration.CASING_BLOCKS, null,
+                null, getInnerBlocks(),
                 new MSRController(msrControllerBE)
         );
         id = "msr_" + msrControllerBE.getBlockPos().toShortString();

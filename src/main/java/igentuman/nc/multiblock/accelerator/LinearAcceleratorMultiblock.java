@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.*;
-import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
 
@@ -19,8 +18,8 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
 
     public LinearAcceleratorMultiblock(LinearAcceleratorControllerBE controller) {
         super(
-                getBlocksByTagKey(ACCELERATOR_CASING_BLOCKS.location().toString()),
-                getBlocksByTagKey(ACCELERATOR_INNER_BLOCKS.location().toString()),
+                ACCELERATOR_CASING_BLOCKS, null,
+                ACCELERATOR_INNER_BLOCKS, null,
                 new LinearAcceleratorController(controller)
         );
         id = "linear_accelerator_"+controller.getBlockPos().toShortString();

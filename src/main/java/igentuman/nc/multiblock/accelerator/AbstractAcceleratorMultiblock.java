@@ -18,6 +18,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.minecraft.tags.TagKey;
+
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -56,6 +58,12 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
 
     protected AbstractAcceleratorMultiblock(HashSet<Block> validOuterBlocks, HashSet<Block> validInnerBlocks, MultiblockController controller) {
         super(validOuterBlocks, validInnerBlocks, controller);
+    }
+
+    protected AbstractAcceleratorMultiblock(TagKey<Block> outerTag, HashSet<Block> extraOuterBlocks,
+                                            TagKey<Block> innerTag, HashSet<Block> extraInnerBlocks,
+                                            MultiblockController controller) {
+        super(outerTag, extraOuterBlocks, innerTag, extraInnerBlocks, controller);
     }
 
     @Override

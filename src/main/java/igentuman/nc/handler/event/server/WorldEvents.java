@@ -1,7 +1,6 @@
 package igentuman.nc.handler.event.server;
 
 import igentuman.nc.block.turbine.TurbineBladeBlock;
-import igentuman.nc.multiblock.MultiblockExecutorManager;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.util.RadiationExecutorManager;
@@ -100,8 +99,6 @@ public class WorldEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void worldLoadEvent(LevelEvent.Load event) {
         if (!event.getLevel().isClientSide()) {
-            // Ensure the executor is initialized when a world is loaded
-            MultiblockExecutorManager.getExecutor();
             RadiationExecutorManager.getExecutor();
         }
     }
@@ -117,14 +114,12 @@ public class WorldEvents {
         if(currentTick % 5 != 0 || event.getLevel().getChunkSource().getLoadedChunksCount() < 1) return;
         final ServerLevel level = (ServerLevel) event.getLevel();
         RadiationEvents.tickAsync(event);
-        MultiblockHandler.trackChangesAsync(level);
+        MultiblockHandler.trackChanges(level);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerStopping(ServerStoppingEvent event) {
         MultiblockHandler.clearAll();
-        // Shutdown the executor service gracefully when the server is stopping
-        MultiblockExecutorManager.shutdown();
         RadiationExecutorManager.shutdown();
     }
 }

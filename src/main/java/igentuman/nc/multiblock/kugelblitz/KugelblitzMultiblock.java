@@ -24,7 +24,6 @@ import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.kugelblitz.entity.BlackHoleBE.MIN_MASS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.CASING_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
-import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class KugelblitzMultiblock extends AbstractMultiblock {
@@ -76,7 +75,9 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
     }
 
     public KugelblitzMultiblock(ChamberTerminalBE be) {
-        super(getBlocksByTagKey(CASING_BLOCKS.location().toString()), new HashSet<>(List.of(KUGELBLITZ_BLOCKS.get("black_hole").get(), AIR)), new KugelblitzController(be));
+        super(CASING_BLOCKS, null,
+                null, new HashSet<>(List.of(KUGELBLITZ_BLOCKS.get("black_hole").get(), AIR)),
+                new KugelblitzController(be));
         id = "chamber_"+be.getBlockPos().toShortString();
         MultiblockHandler.get(be.getLevel().dimension()).addMultiblock(this);
         validCornerBlocks = new HashSet<>(List.of(KUGELBLITZ_BLOCKS.get("neutronium_frame").get(), KUGELBLITZ_BLOCKS.get("chamber_terminal").get(), KUGELBLITZ_BLOCKS.get("chamber_port").get()));

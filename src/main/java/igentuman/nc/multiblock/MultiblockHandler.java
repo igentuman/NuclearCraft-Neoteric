@@ -8,7 +8,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static igentuman.nc.NuclearCraft.debugLog;
@@ -21,7 +20,6 @@ public class MultiblockHandler {
     private final Set<String> toRemove = Collections.synchronizedSet(new HashSet<>());
     public final Set<Long> ignoreUpdate = Collections.synchronizedSet(new HashSet<>());
     public final Set<Long> changedBlocks = Collections.synchronizedSet(new HashSet<>());
-    private CompletableFuture<Void> validationFuture;
 
 
     private MultiblockHandler() {
@@ -36,57 +34,25 @@ public class MultiblockHandler {
         return handler;
     }
 
-    public static void tickMultiblockAsync(ServerLevel level, AbstractMultiblock multiblock) {
+    public static void tickMultiblock(ServerLevel level, AbstractMultiblock multiblock) {
         MultiblockHandler handler = get(level.dimension());
         if(multiblock.isMarkedForRemoval()) {
             multiblock.dispose();
             return;
         }
-        if (multiblock.getValidationFuture() != null && !multiblock.getValidationFuture().isDone()) {
-            return;
+        try {
+            handler.tick(level, multiblock);
+        } catch (Exception e) {
+            debugLog("Exception in multiblock tick: " + e.getMessage());
         }
-        // Reset future reference if it completed exceptionally
-        if (multiblock.getValidationFuture() != null && multiblock.getValidationFuture().isCompletedExceptionally()) {
-            multiblock.setValidationFuture(null);
-        }
-        multiblock.setValidationFuture(CompletableFuture.runAsync(
-                () -> {
-                    try {
-                        handler.tick(level, multiblock);
-                    } catch (Exception e) {
-                        debugLog("Exception in multiblock async tick: " + e.getMessage());
-                    }
-                },
-                MultiblockExecutorManager.getExecutor()
-        ).exceptionally(throwable -> {
-            debugLog("Unhandled exception in multiblock async tick: " + throwable.getMessage());
-            return null;
-        }));
     }
 
-    public static void trackChangesAsync(ServerLevel level) {
-        if (get(level.dimension()).validationFuture != null && !get(level.dimension()).validationFuture.isDone()) {
-            return;
+    public static void trackChanges(ServerLevel level) {
+        try {
+            MultiblockHandler.get(level.dimension()).trackAllChanges();
+        } catch (Exception e) {
+            debugLog("Exception in trackChanges: " + e.getMessage());
         }
-        if (get(level.dimension()).validationFuture != null && get(level.dimension()).validationFuture.isCompletedExceptionally()) {
-            get(level.dimension()).validationFuture = null;
-        }
-        get(level.dimension()).validationFuture = CompletableFuture.runAsync(
-                () -> {
-                    try {
-                        MultiblockHandler.get(level.dimension()).trackAllChanges();
-                    } catch (Exception e) {
-                        debugLog("Exception in async trackChangesAsync: " + e.getMessage());
-                        for(StackTraceElement element : e.getStackTrace()) {
-                            debugLog(element.toString());
-                        }
-                    }
-                },
-                MultiblockExecutorManager.getExecutor()
-        ).exceptionally(throwable -> {
-            debugLog("Unhandled exception in trackChangesAsync: " + throwable.getMessage());
-            return null;
-        });
     }
 
     public void addMultiblock(AbstractMultiblock multiblock) {
@@ -272,11 +238,6 @@ public class MultiblockHandler {
     }
 
     public void clear() {
-        // Cancel any running futures to prevent memory leaks
-        if (validationFuture != null && !validationFuture.isDone()) {
-            validationFuture.cancel(true);
-        }
-        
         for (AbstractMultiblock multiblock : multiblocks.values()) {
             if (multiblock != null) {
                 multiblock.dispose();
@@ -287,9 +248,6 @@ public class MultiblockHandler {
         toRemove.clear();
         ignoreUpdate.clear();
         changedBlocks.clear();
-        
-        // Clear future references
-        validationFuture = null;
     }
 
     public void onControllerRemoved(BlockPos pos) {

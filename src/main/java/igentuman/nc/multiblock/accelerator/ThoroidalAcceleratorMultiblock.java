@@ -13,7 +13,6 @@ import net.minecraft.world.phys.AABB;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.*;
-import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
 
@@ -21,8 +20,8 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
 
     public ThoroidalAcceleratorMultiblock(RingAcceleratorControllerBE controller) {
         super(
-                getBlocksByTagKey(ACCELERATOR_CASING_BLOCKS.location().toString()),
-                getBlocksByTagKey(ACCELERATOR_INNER_BLOCKS.location().toString()),
+                ACCELERATOR_CASING_BLOCKS, null,
+                ACCELERATOR_INNER_BLOCKS, null,
                 new ThoroidalAcceleratorController(controller)
         );
         id = "ring_accelerator_"+controller.getBlockPos().toShortString();

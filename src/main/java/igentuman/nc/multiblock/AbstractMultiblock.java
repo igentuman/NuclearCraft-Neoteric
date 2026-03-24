@@ -17,16 +17,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import net.minecraft.tags.TagKey;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.concurrent.CompletableFuture;
+import java.util.List;
 import java.util.regex.Pattern;
 
+import static igentuman.nc.NuclearCraft.LOGGER;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.CommonConfig.MISC_CONFIG;
 import static net.minecraft.world.level.block.Blocks.AIR;
@@ -55,11 +57,12 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected boolean innerValid = false;
     protected final HashSet<Block> validOuterBlocks;
     protected final HashSet<Block> validInnerBlocks;
+    protected final List<TagKey<Block>> outerTags = new ArrayList<>();
+    protected final List<TagKey<Block>> innerTags = new ArrayList<>();
     protected final HashSet<BlockPos> controllers = new HashSet<>();
     protected final HashSet<BlockPos> updatedBlocks = new HashSet<>();
     protected final HashMap<Long, BlockEntity> beCache = new HashMap<>();
     protected final HashMap<Long, BlockState> bsCache = new HashMap<>(10000);
-    protected final HashMap<Long, ChunkAccess> chunkCache = new HashMap<>();
     protected final HashSet<Long> allBlocks = new HashSet<>(10000);
     protected BlockPosInstance controllerPos;
     protected BlockPosInstance initialPos;
@@ -69,7 +72,6 @@ public abstract class AbstractMultiblock implements Multiblock {
     private static final Pattern CONTROLLERS = Pattern.compile(".*(controller|terminal).*");
     private Level level;
     protected AABB structureBounds;
-    private CompletableFuture<Void> validationFuture;
     public boolean isValidating = true;
     protected boolean fullValidation = true;
     public final HashSet<MultiblockPortBE> ports = new HashSet<>();
@@ -78,10 +80,26 @@ public abstract class AbstractMultiblock implements Multiblock {
         this.validInnerBlocks = validInnerBlocks;
         this.controller = controller;
         controllerPos = BlockPosInstance.of(controller().controllerBE().getBlockPos());
-        
-        debugLog("Created " + getClass().getSimpleName() + " at " + controllerPos.toShortString() + 
-                " with " + validOuterBlocks.size() + " valid outer blocks and " + 
+
+        debugLog("Created " + getClass().getSimpleName() + " at " + controllerPos.toShortString() +
+                " with " + validOuterBlocks.size() + " valid outer blocks and " +
                 validInnerBlocks.size() + " valid inner blocks");
+    }
+
+    protected AbstractMultiblock(TagKey<Block> outerTag, HashSet<Block> extraOuterBlocks,
+                                 TagKey<Block> innerTag, HashSet<Block> extraInnerBlocks,
+                                 MultiblockController controller) {
+        this.validOuterBlocks = extraOuterBlocks != null ? extraOuterBlocks : new HashSet<>();
+        this.validInnerBlocks = extraInnerBlocks != null ? extraInnerBlocks : new HashSet<>();
+        if (outerTag != null) this.outerTags.add(outerTag);
+        if (innerTag != null) this.innerTags.add(innerTag);
+        this.controller = controller;
+        controllerPos = BlockPosInstance.of(controller().controllerBE().getBlockPos());
+
+        debugLog("Created " + getClass().getSimpleName() + " at " + controllerPos.toShortString() +
+                " with outer tag " + (outerTag != null ? outerTag.location() : "none") +
+                " and inner tag " + (innerTag != null ? innerTag.location() : "none") +
+                " (+" + validOuterBlocks.size() + " explicit outer, +" + validInnerBlocks.size() + " explicit inner)");
     }
 
     public boolean isMarkedForRemoval() {
@@ -95,57 +113,17 @@ public abstract class AbstractMultiblock implements Multiblock {
     public void dispose() {
         debugLog("Disposing multiblock " + getClass().getSimpleName() + " at " + controllerPos.toShortString());
         
-        // Cancel any running validation future to prevent memory leaks
-        if (validationFuture != null && !validationFuture.isDone()) {
-            validationFuture.cancel(true);
-        }
-        validationFuture = null;
-        
-        // Clear caches to prevent memory leaks
         clearCaches();
         
         MultiblockHandler.get(getLevel().dimension()).removeMultiblock(this);
     }
 
-    /**
-     * Clears all caches including the new chunk cache
-     */
     public void clearCaches() {
         bsCache.clear();
         beCache.clear();
-        chunkCache.clear();
         allBlocks.clear();
     }
-
-    /**
-     * Clears chunk cache for a specific chunk position
-     */
-    public void clearChunkCache(int chunkX, int chunkZ) {
-        chunkCache.remove(ChunkPos.asLong(chunkX, chunkZ));
-    }
-
-    /**
-     * Clears chunk cache for the chunk containing the given block position
-     */
-    public void clearChunkCacheForBlock(BlockPos pos) {
-        int chunkX = pos.getX() >> 4;
-        int chunkZ = pos.getZ() >> 4;
-        clearChunkCache(chunkX, chunkZ);
-    }
     
-    /**
-     * Gets the validation future for this multiblock
-     */
-    public CompletableFuture<Void> getValidationFuture() {
-        return validationFuture;
-    }
-    
-    /**
-     * Sets the validation future for this multiblock
-     */
-    public void setValidationFuture(CompletableFuture<Void> validationFuture) {
-        this.validationFuture = validationFuture;
-    }
     
     public HashSet<Block> validCornerBlocks() {
         return validOuterBlocks;
@@ -248,15 +226,9 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (cached != null) {
             return cached;
         }
-        
-        // Use chunk cache approach instead of getLevel().getBlockState(pos)
+
         BlockPos blockPos = BlockPos.of(pos);
-        BlockState state = getBlockStateFromChunk(blockPos);
-        if (state == null) {
-            // Fallback to level.getBlockState if chunk approach fails
-            state = getLevel().getBlockState(blockPos);
-        }
-        
+        BlockState state = getLevel().getBlockState(blockPos);
         bsCache.put(pos, state);
         return state;
     }
@@ -264,14 +236,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected BlockState getBlockState(BlockPosInstance relative, boolean force) {
         BlockState bs = getBlockState(relative);
         if(bs.isAir() && force) {
-            // Use chunk cache approach instead of getLevel().getBlockState(relative)
-            BlockState state = getBlockStateFromChunk(relative);
-            if (state != null) {
-                bs = state;
-            } else {
-                // Fallback to level.getBlockState if chunk approach fails
-                bs = getLevel().getBlockState(relative);
-            }
+            bs = getLevel().getBlockState(relative);
         }
         return bs;
     }
@@ -283,85 +248,14 @@ public abstract class AbstractMultiblock implements Multiblock {
         return null;
     }
 
-    /**
-     * Gets a chunk from cache or loads it if not cached
-     */
-    protected ChunkAccess getChunkFromCache(int chunkX, int chunkZ) {
-        long chunkPos = ChunkPos.asLong(chunkX, chunkZ);
-        ChunkAccess chunk = chunkCache.get(chunkPos);
-        if (chunk == null) {
-            ServerLevel serverLevel = (ServerLevel) getLevel();
-            if (serverLevel != null) {
-                chunk = serverLevel.getChunkSource().getChunk(chunkX, chunkZ, true);
-                if (chunk != null) {
-                    chunkCache.put(chunkPos, chunk);
-                }
-            }
-        }
-        return chunk;
-    }
-
-    protected BlockState getBlockStateFromChunk(BlockPos pos) {
-        ServerLevel serverLevel = (ServerLevel) getLevel();
-        if (serverLevel == null) {
-            return null;
-        }
-
-        int chunkX = pos.getX() >> 4;
-        int chunkZ = pos.getZ() >> 4;
-        ChunkAccess chunk = getChunkFromCache(chunkX, chunkZ);
-        
-        if (chunk == null) {
-            return null;
-        }
-
-        int sectionIndex = serverLevel.getSectionIndex(pos.getY());
-        if (sectionIndex < 0 || sectionIndex >= chunk.getSections().length) {
-            return null;
-        }
-        
-        LevelChunkSection section = chunk.getSections()[sectionIndex];
-        if (section == null || section.hasOnlyAir()) {
-            return AIR.defaultBlockState();
-        }
-
-        int localX = pos.getX() & 15;
-        int localY = pos.getY() & 15;
-        int localZ = pos.getZ() & 15;
-        
-        return section.getBlockState(localX, localY, localZ);
-    }
-
-    protected BlockEntity getBlockEntityFromChunk(BlockPos pos) {
-        ServerLevel serverLevel = (ServerLevel) getLevel();
-        if (serverLevel == null) {
-            return null;
-        }
-
-        int chunkX = pos.getX() >> 4;
-        int chunkZ = pos.getZ() >> 4;
-        ChunkAccess chunk = getChunkFromCache(chunkX, chunkZ);
-        
-        if (chunk == null) {
-            return null;
-        }
-
-        return chunk.getBlockEntity(pos);
-    }
 
     public BlockState getBlockState(BlockPos pos) {
         final long packedPos = pos.asLong();
         if (bsCache.containsKey(packedPos)) {
             return bsCache.get(packedPos);
         }
-        
-        // Use chunk cache approach instead of getLevel().getBlockState(pos)
-        BlockState state = getBlockStateFromChunk(pos);
-        if (state == null) {
-            // Fallback to level.getBlockState if chunk approach fails
-            state = getLevel().getBlockState(pos);
-        }
-        
+
+        BlockState state = getLevel().getBlockState(pos);
         bsCache.put(packedPos, state);
         return state;
     }
@@ -369,13 +263,16 @@ public abstract class AbstractMultiblock implements Multiblock {
     public boolean isValidForOuter(BlockPos pos)
     {
         if (getLevel() == null) {
-            debugLog("Level is null when checking outer block at " + pos.toShortString());
             return false;
         }
         try {
-            Block block = getBlockState(pos).getBlock();
-            return validOuterBlocks().contains(block);
-        } catch (NullPointerException e) { 
+            BlockState state = getBlockState(pos);
+            Block block = state.getBlock();
+            if (validOuterBlocks().contains(block)) return true;
+            for (TagKey<Block> tag : outerTags) {
+                if (state.is(tag)) return true;
+            }
+        } catch (NullPointerException e) {
             debugLog("NullPointerException when checking outer block at " + pos.toShortString() + ": " + e.getMessage());
         }
         return false;
@@ -384,14 +281,26 @@ public abstract class AbstractMultiblock implements Multiblock {
     public boolean isValidCorner(BlockPos pos)
     {
         try {
-            return  validCornerBlocks().contains(getBlockState(pos).getBlock());
+            BlockState state = getBlockState(pos);
+            Block block = state.getBlock();
+            if (validCornerBlocks().contains(block)) return true;
+            // NeoForge 1.21.1: check outer tags for corners too (corners are a subset of outer)
+            for (TagKey<Block> tag : outerTags) {
+                if (state.is(tag)) return true;
+            }
         } catch (NullPointerException ignored) { }
         return false;
     }
 
     public boolean isValidForInner(BlockState bs)
     {
-        return bs.isAir() || validInnerBlocks().contains(bs.getBlock());
+        if (bs.isAir()) return true;
+        if (validInnerBlocks().contains(bs.getBlock())) return true;
+        // NeoForge 1.21.1: check tag membership via BlockState.is(TagKey)
+        for (TagKey<Block> tag : innerTags) {
+            if (bs.is(tag)) return true;
+        }
+        return false;
     }
 
     public boolean isValidForInner(BlockPos pos)
@@ -415,114 +324,96 @@ public abstract class AbstractMultiblock implements Multiblock {
         int maxX = topRight.getX();
         int maxY = topRight.getY();
         int maxZ = topRight.getZ();
-        
+
         debugLog("Caching block states for area: " + minX + "," + minY + "," + minZ + " to " + maxX + "," + maxY + "," + maxZ);
-        
-        ServerLevel serverLevel = (ServerLevel) getLevel();
-        ChunkAccess currentChunk = null;
-        int lastChunkX = Integer.MIN_VALUE;
-        int lastChunkZ = Integer.MIN_VALUE;
+
+        Level level = getLevel();
         int cachedBlocks = 0;
-        int chunksProcessed = 0;
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
 
         for (int x = minX; x <= maxX; x++) {
-            int chunkX = x >> 4;
             for (int z = minZ; z <= maxZ; z++) {
-                int chunkZ = z >> 4;
-                if (chunkX != lastChunkX || chunkZ != lastChunkZ) {
-                    currentChunk = getChunkFromCache(chunkX, chunkZ);
-                    lastChunkX = chunkX;
-                    lastChunkZ = chunkZ;
-                    chunksProcessed++;
-                }
-                if (currentChunk == null) continue;
-
                 for (int y = minY; y <= maxY; y++) {
-                    int sectionIndex = serverLevel.getSectionIndex(y);
-                    LevelChunkSection section = currentChunk.getSections()[sectionIndex];
-                    if (section == null || section.hasOnlyAir()) continue;
-
-                    int localX = x & 15;
-                    int localY = y & 15;
-                    int localZ = z & 15;
                     if(excludeArea != null && excludeArea.contains(new Vec3(x,y,z))) {
                         continue;
                     }
-                    BlockState state = section.getBlockState(localX, localY, localZ);
-
+                    mutablePos.set(x, y, z);
+                    BlockState state = level.getBlockState(mutablePos);
                     bsCache.put(BlockPos.asLong(x, y, z), state);
                     cachedBlocks++;
                 }
             }
         }
-        
+
         long elapsedTime = System.currentTimeMillis() - startTime;
-        debugLog("Cached " + cachedBlocks + " block states from " + chunksProcessed + " chunks in " + elapsedTime + "ms");
+        debugLog("Cached " + cachedBlocks + " block states in " + elapsedTime + "ms");
     }
 
     public int resolveHeight()
     {
-        debugLog("Resolving height from position " + initialPos().toShortString());
-        
+        BlockPos start = immutableInitialPos();
         for (int i = 1; i <= maxHeight()+2; i++) {
-            if (!isValidForOuter(initialPos().above(i))) {
+            BlockPos probe = start.above(i);
+            if (!isValidForOuter(probe)) {
                 topCasing = i - 1;
                 height = i;
-                debugLog("Found top boundary at offset " + i + ", topCasing=" + topCasing);
+                LOGGER.info("[NC-DIAG] Height UP: {} valid, stopped at {} ({})",
+                        i - 1, probe.toShortString(), getBlockState(probe).getBlock().getDescriptionId());
                 break;
             }
         }
         for (int i = 1; i <= maxHeight()+2; i++) {
-            if (!isValidForOuter(initialPos().below(i))) {
+            BlockPos probe = start.below(i);
+            if (!isValidForOuter(probe)) {
                 bottomCasing = i - 1;
                 height += i - 1;
-                debugLog("Found bottom boundary at offset " + i + ", bottomCasing=" + bottomCasing);
+                LOGGER.info("[NC-DIAG] Height DOWN: {} valid, stopped at {} ({})",
+                        i - 1, probe.toShortString(), getBlockState(probe).getBlock().getDescriptionId());
                 break;
             }
         }
-
-        debugLog("Resolved height: " + height + " (top=" + topCasing + ", bottom=" + bottomCasing + ")");
+        LOGGER.info("[NC-DIAG] Height resolved: {} (top={}, bottom={})", height, topCasing, bottomCasing);
         return height;
     }
 
     public int resolveWidth()
     {
-        debugLog("Resolving width from position " + initialPos().toShortString());
-        
         for(int i = 1; i <= maxWidth()+2; i++) {
-            if (!isValidForOuter(getLeftPos(i).above(topCasing))) {
+            BlockPos probe = getLeftPos(i).above(topCasing);
+            if (!isValidForOuter(probe)) {
                 leftCasing = i-1;
                 width = i;
-                debugLog("Found left boundary at offset " + i + ", leftCasing=" + leftCasing);
+                LOGGER.info("[NC-DIAG] Width LEFT: {} valid, stopped at {} ({})",
+                        i - 1, probe.toShortString(), getBlockState(probe).getBlock().getDescriptionId());
                 break;
             }
         }
         for(int i = 1; i <= maxWidth()+2; i++) {
-            if (!isValidForOuter(getRightPos(i).above(topCasing))) {
+            BlockPos probe = getRightPos(i).above(topCasing);
+            if (!isValidForOuter(probe)) {
                 rightCasing = i-1;
                 width += i-1;
-                debugLog("Found right boundary at offset " + i + ", rightCasing=" + rightCasing);
+                LOGGER.info("[NC-DIAG] Width RIGHT: {} valid, stopped at {} ({})",
+                        i - 1, probe.toShortString(), getBlockState(probe).getBlock().getDescriptionId());
                 break;
             }
         }
-        
-        debugLog("Resolved width: " + width + " (left=" + leftCasing + ", right=" + rightCasing + ")");
+        LOGGER.info("[NC-DIAG] Width resolved: {} (left={}, right={})", width, leftCasing, rightCasing);
         return width;
     }
 
     public int resolveDepth()
     {
-        debugLog("Resolving depth from position " + initialPos().toShortString());
-        
         for(int i = 1; i <= maxDepth()+2; i++) {
-            if (!isValidForOuter(getForwardPos(i).below(bottomCasing))) {
+            BlockPos probe = getForwardPos(i).below(bottomCasing);
+            if (!isValidForOuter(probe)) {
                 depth = i;
-                debugLog("Found depth boundary at offset " + i);
+                LOGGER.info("[NC-DIAG] Depth FORWARD: {} valid, stopped at {} ({})",
+                        i - 1, probe.toShortString(), getBlockState(probe).getBlock().getDescriptionId());
                 break;
             }
         }
-        
-        debugLog("Resolved depth: " + depth);
+        LOGGER.info("[NC-DIAG] Depth resolved: {}", depth);
         return depth;
     }
 
@@ -578,7 +469,8 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (width < minWidth() || height < minHeight() || depth < minDepth())
         {
             validationResult = ValidationResult.TOO_SMALL;
-            debugLog("Validation failed - TOO_SMALL: " + width + "x" + height + "x" + depth + " below min " + minWidth() + "x" + minHeight() + "x" + minDepth());
+            LOGGER.info("[NC-DIAG] TOO_SMALL: resolved {}W x {}H x {}D, min is {}W x {}H x {}D",
+                    width, height, depth, minWidth(), minHeight(), minDepth());
             return;
         }
 
@@ -732,11 +624,10 @@ public abstract class AbstractMultiblock implements Multiblock {
     protected BlockEntity getBlockEntity(BlockPos pos, boolean...forceFlag) {
         boolean force = forceFlag.length > 0 && forceFlag[0];
         final long packedPos = pos.asLong();
-        
+
         if (beCache.containsKey(packedPos)) {
             if(force) {
-                // Use chunk cache approach instead of getLevel().getExistingBlockEntity(pos)
-                BlockEntity be = getBlockEntityFromChunk(pos);
+                BlockEntity be = getLevel().getBlockEntity(pos);
                 if(be != null) {
                     beCache.put(packedPos, be);
                 } else {
@@ -745,9 +636,8 @@ public abstract class AbstractMultiblock implements Multiblock {
             }
             return beCache.get(packedPos);
         }
-        
-        // Use chunk cache approach instead of getLevel().getExistingBlockEntity(pos)
-        BlockEntity be = getBlockEntityFromChunk(pos);
+
+        BlockEntity be = getLevel().getBlockEntity(pos);
         if(be != null) {
             beCache.put(packedPos, be);
         }
@@ -785,8 +675,13 @@ public abstract class AbstractMultiblock implements Multiblock {
         return be;
     }
 
+    private BlockPos immutableInitialPos() {
+        BlockPosInstance p = initialPos();
+        return new BlockPos(p.getX(), p.getY(), p.getZ());
+    }
+
     public BlockPos getForwardPos(int i) {
-        return initialPos().relative(getControllerDirection(), -i);
+        return immutableInitialPos().relative(getControllerDirection(), -i);
     }
 
     public BlockPos getLeftPos(int i)
@@ -800,11 +695,12 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public BlockPos getSidePos(int i) {
+        BlockPos pos = immutableInitialPos();
         return switch (getMultiblockDirection().ordinal()) {
-            case 3 -> initialPos().east(i);
-            case 5 -> initialPos().north(i);
-            case 2 -> initialPos().west(i);
-            case 4 -> initialPos().south(i);
+            case 3 -> pos.east(i);
+            case 5 -> pos.north(i);
+            case 2 -> pos.west(i);
+            case 4 -> pos.south(i);
             default -> null;
         };
     }
@@ -828,13 +724,17 @@ public abstract class AbstractMultiblock implements Multiblock {
         isValidating = true;
         connectedPorts = 0;
         long startTime = System.currentTimeMillis();
-        debugLog("=== Starting full validation for " + getClass().getSimpleName() + " at " + initialPos().toShortString() + " ===");
-        
+        LOGGER.info("[NC-DIAG] === Validation #{} for {} at {} === thread={}, outerTags={}, innerTags={}, explicitOuter={}, explicitInner={}, controllerBlock={}",
+                failedValidations, getClass().getSimpleName(), initialPos().toShortString(),
+                Thread.currentThread().getName(),
+                outerTags.size(), innerTags.size(), validOuterBlocks.size(), validInnerBlocks.size(),
+                getLevel() != null ? getLevel().getBlockState(initialPos()).getBlock().getDescriptionId() : "null-level");
+
         topRight = null;
         bottomLeft = null;
         validationResult = ValidationResult.INCOMPLETE;
         controllers.clear();
-        
+
         debugLog("Cleared validation caches and reset state");
 
         validateOuter();
@@ -842,22 +742,26 @@ public abstract class AbstractMultiblock implements Multiblock {
             debugLog("Outer validation passed, proceeding to inner validation");
             validateInner();
         } else{
-            debugLog("Outer validation failed with result: " + validationResult + 
+            LOGGER.info("[NC-DIAG] Outer validation FAILED: {} at {}", validationResult,
+                    errorBlockPos != null ? errorBlockPos.toShortString() : "unknown");
+            debugLog("Outer validation failed with result: " + validationResult +
                     (errorBlockPos != null ? " at " + errorBlockPos.toShortString() : ""));
             innerValid = false;
             clearStats();
         }
-        
+
         innerValid = validationResult.isValid;
         isFormed = outerValid && innerValid;
-        
+
         if (isFormed) {
             failedValidations--;
             validationResult = ValidationResult.VALID;
             fullValidation = false;
+            LOGGER.info("[NC-DIAG] Multiblock FORMED: {} at {}", getClass().getSimpleName(), initialPos().toShortString());
             debugLog("Multiblock formation successful!");
         } else {
             controller.clearStats();
+            LOGGER.info("[NC-DIAG] Multiblock FAILED: {} - result={}", getClass().getSimpleName(), validationResult);
             debugLog("Multiblock formation failed - Outer valid: " + outerValid + ", Inner valid: " + innerValid);
         }
 
@@ -939,19 +843,10 @@ public abstract class AbstractMultiblock implements Multiblock {
             }
         }
         if (bsCache.containsKey(pos.asLong())) {
-            // Use chunk cache approach instead of getLevel().getBlockState(pos)
-            BlockState bs = getBlockStateFromChunk(pos);
-            if (bs == null) {
-                // Fallback to level.getBlockState if chunk approach fails
-                bs = getLevel().getBlockState(pos);
-            }
+            BlockState bs = getLevel().getBlockState(pos);
             BlockState cachedBs = bsCache.get(pos.asLong());
             if(cachedBs == null || !bs.is(cachedBs.getBlock())) {
                 bsCache.remove(pos.asLong());
-                // Also clear chunk cache for this chunk since block changed
-                int chunkX = pos.getX() >> 4;
-                int chunkZ = pos.getZ() >> 4;
-                chunkCache.remove(ChunkPos.asLong(chunkX, chunkZ));
                 hasToRefresh = true;
             }
         }

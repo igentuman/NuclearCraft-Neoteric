@@ -79,8 +79,8 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
 
     public FissionReactorMultiblock(FissionControllerBE fissionControllerBE) {
         super(
-                getBlocksByTagKey(FissionReactorRegistration.CASING_BLOCKS.location().toString()),
-                getBlocksByTagKey(FissionReactorRegistration.INNER_REACTOR_BLOCKS.location().toString()),
+                FissionReactorRegistration.CASING_BLOCKS, null,
+                FissionReactorRegistration.INNER_REACTOR_BLOCKS, null,
                 new FissionReactorController(fissionControllerBE)
         );
         id = "fission_reactor_"+fissionControllerBE.getBlockPos().toShortString();
@@ -469,14 +469,14 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     public void removeFromCacheIfChanged(BlockPos pos) {
         long packedPos = pos.asLong();
         if (beCache.containsKey(packedPos)) {
-            BlockEntity be = getBlockEntityFromChunk(pos);
+            BlockEntity be = getLevel().getBlockEntity(pos);
             if(be != beCache.get(packedPos) || (be != null && be.isRemoved())) {
                 beCache.remove(packedPos);
                 hasToRefresh = true;
             }
         }
         if (bsCache.containsKey(packedPos)) {
-            BlockState bs = getBlockStateFromChunk(pos);
+            BlockState bs = getLevel().getBlockState(pos);
             BlockState cachedState = bsCache.get(packedPos);
             if(cachedState == null || !bs.is(bsCache.get(packedPos).getBlock())) {
                 hasToRefresh = true;

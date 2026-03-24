@@ -109,10 +109,8 @@ public class FissionPortBE extends MultiblockPortBE {
                 case SignalSource.MODERATOR -> controller().adjustModerator(analogSignal);
             }
         }
-        //if no recipe - tick only 5 times per second
-        if(currentTick % 5 == 0 && controller() != null && !controller().hasRecipe()) {
-            return;
-        }
+        // Always update connected state and sync before throttling —
+        // otherwise the client never learns the reactor formed until a recipe loads
         connected = getMultiblock() != null && getMultiblock().isFormed();
         if (updated || wasConnected != connected) {
             if(connected) {
@@ -223,9 +221,11 @@ public class FissionPortBE extends MultiblockPortBE {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
             controller = (FissionControllerBE) this.multiblock.controller().controllerBE();
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
-            setChanged();
-            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
+        // Sync controllerPos and connected state to client immediately
+        setChanged();
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
     }
 
     @Override

@@ -167,9 +167,10 @@ public class TargetChamberPortBE extends MultiblockPortBE {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
             controller = (TargetChamberControllerBE) this.multiblock.controller().controllerBE();
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
-            setChanged();
-            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
+        setChanged();
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
     }
 
     @Override

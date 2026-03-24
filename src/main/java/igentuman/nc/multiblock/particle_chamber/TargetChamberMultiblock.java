@@ -27,7 +27,6 @@ import static igentuman.nc.handler.config.AcceleratorConfig.PARTICLE_CHAMBER_CON
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.*;
 import static igentuman.nc.util.PortMode.PORT_MODE;
-import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class TargetChamberMultiblock extends AbstractMultiblock {
 
@@ -65,8 +64,8 @@ public class TargetChamberMultiblock extends AbstractMultiblock {
 
     public TargetChamberMultiblock(TargetChamberControllerBE TargetChamberControllerBE) {
         super(
-                getBlocksByTagKey(TARGET_CHAMBER_CASING_BLOCKS.location().toString()),
-                getBlocksByTagKey(TARGET_CHAMBER_INNER_BLOCKS.location().toString()),
+                TARGET_CHAMBER_CASING_BLOCKS, null,
+                TARGET_CHAMBER_INNER_BLOCKS, null,
                 new TargetChamberController(TargetChamberControllerBE)
         );
         id = "target_chamber_"+TargetChamberControllerBE.getBlockPos().toShortString();

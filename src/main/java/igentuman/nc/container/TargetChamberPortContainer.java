@@ -37,13 +37,15 @@ public class TargetChamberPortContainer extends AbstractContainerMenu {
         portBE = (TargetChamberPortBE) NCLevels.getExistingBlockEntity(playerEntity.getCommandSenderWorld(), pos);
         slotIndex = 0;
         layoutPlayerInventorySlots();
+        IItemHandler h = null;
         if (portBE.controller() != null && portBE.controller().contentHandler() != null) {
-            IItemHandler h = portBE.controller().contentHandler().itemHandler;
-            if (h != null) {
-                addSlot(new NCSlotItemHandler.Input(h, 0, 53, 38));
-                addSlot(new NCSlotItemHandler.Output(h, 1, 111, 38));
-            }
+            h = portBE.controller().contentHandler().itemHandler;
         }
+        if (h == null) {
+            h = new net.neoforged.neoforge.items.ItemStackHandler(2);
+        }
+        addSlot(new NCSlotItemHandler.Input(h, 0, 53, 38));
+        addSlot(new NCSlotItemHandler.Output(h, 1, 111, 38));
     }
 
     public BlockPos getPosition() {

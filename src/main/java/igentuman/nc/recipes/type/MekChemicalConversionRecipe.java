@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static igentuman.nc.NuclearCraft.neoforgeRl;
+import static igentuman.nc.NuclearCraft.commonRl;
 import static net.minecraft.world.item.Items.BUCKET;
 
 public class MekChemicalConversionRecipe extends NcRecipe {
@@ -44,7 +44,7 @@ public class MekChemicalConversionRecipe extends NcRecipe {
 
     public static FluidStack getStackByTagCode(String name)
     {
-        TagKey<Fluid> key = TagUtil.createKey(BuiltInRegistries.FLUID, neoforgeRl(name));
+        TagKey<Fluid> key = TagUtil.createKey(BuiltInRegistries.FLUID, commonRl(name));
         if(TagUtil.isTagEmpty(BuiltInRegistries.FLUID, key)) {
             return FluidStack.EMPTY;
         }

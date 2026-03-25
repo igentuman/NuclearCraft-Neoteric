@@ -255,7 +255,7 @@ public abstract class AbstractRecipeProvider {
     }
 
     public static TagKey<Fluid> forgeFluid(String name) {
-        String key = "neoforge";
+        String key = "c";
         if(name.contains(":")) {
             key = name.split(":")[0];
             name = name.split(":")[1];

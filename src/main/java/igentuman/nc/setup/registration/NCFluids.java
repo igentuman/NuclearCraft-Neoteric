@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static igentuman.nc.NuclearCraft.neoforgeRl;
+import static igentuman.nc.NuclearCraft.commonRl;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.content.materials.Materials.slurries;
 import static igentuman.nc.content.materials.Materials.subliquid_matter;
@@ -136,11 +136,11 @@ public class NCFluids {
         items.put(Materials.irradiated_sodium, new LiquidDefinition(Materials.irradiated_sodium, 0x90CDBEE7));
 
         for(LiquidDefinition liquid: items.values()) {
-            LIQUIDS_TAG.put(liquid.name, NCTagFactory.fluidTag(neoforgeRl(liquid.name)));
+            LIQUIDS_TAG.put(liquid.name, NCTagFactory.fluidTag(commonRl(liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
 
             if (!liquid.name.matches(".*_solution|.*_water|.*_liquor|.*_chocolate|.*_milk|.*_coolant.*")) {
-                LIQUIDS_TAG.put("molten_" + liquid.name, NCTagFactory.fluidTag(neoforgeRl("molten_" + liquid.name)));
+                LIQUIDS_TAG.put("molten_" + liquid.name, NCTagFactory.fluidTag(commonRl("molten_" + liquid.name)));
             }
         }
     }
@@ -154,7 +154,7 @@ public class NCFluids {
         items.put(subliquid_matter, new LiquidDefinition(subliquid_matter, 0x50C90076));
 
         for(LiquidDefinition liquid: items.values()) {
-            LIQUIDS_TAG.put(liquid.name, NCTagFactory.fluidTag(neoforgeRl(liquid.name)));
+            LIQUIDS_TAG.put(liquid.name, NCTagFactory.fluidTag(commonRl(liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid));
         }
     }
@@ -180,7 +180,7 @@ public class NCFluids {
             items.put(material+"_clean_slurry", new AcidDefinition(material+"_clean_slurry", TextureUtil.rgbaToInt(rgba)));
         }
         for(AcidDefinition acid: items.values()) {
-            LIQUIDS_TAG.put(acid.name, NCTagFactory.fluidTag(neoforgeRl(acid.name)));
+            LIQUIDS_TAG.put(acid.name, NCTagFactory.fluidTag(commonRl(acid.name)));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
         }
     }
@@ -195,19 +195,19 @@ public class NCFluids {
         items.put("aqua_regia_acid", new AcidDefinition("aqua_regia_acid", 0XCCFFBB99));
 
         for(AcidDefinition acid: items.values()) {
-            LIQUIDS_TAG.put(acid.name, NCTagFactory.fluidTag(neoforgeRl(acid.name)));
+            LIQUIDS_TAG.put(acid.name, NCTagFactory.fluidTag(commonRl(acid.name)));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
         }
     }
 
     private static void materialFluids() {
         for (String name: Materials.fluids().keySet()) {
-            LIQUIDS_TAG.put(name, NCTagFactory.fluidTag(neoforgeRl(name)));
+            LIQUIDS_TAG.put(name, NCTagFactory.fluidTag(commonRl(name)));
             NC_MATERIALS.put(name, FluidEntry.makeMoltenLiquid(name, Materials.fluids().get(name).color));
-            LIQUIDS_TAG.put("molten_" + name, NCTagFactory.fluidTag(neoforgeRl("molten_" + name)));
+            LIQUIDS_TAG.put("molten_" + name, NCTagFactory.fluidTag(commonRl("molten_" + name)));
         }
-        LIQUIDS_TAG.put("aluminium", NCTagFactory.fluidTag(neoforgeRl("aluminium")));
-        LIQUIDS_TAG.put("molten_aluminium", NCTagFactory.fluidTag(neoforgeRl("molten_aluminium")));
+        LIQUIDS_TAG.put("aluminium", NCTagFactory.fluidTag(commonRl("aluminium")));
+        LIQUIDS_TAG.put("molten_aluminium", NCTagFactory.fluidTag(commonRl("molten_aluminium")));
     }
 
     private static void fuel() {
@@ -225,10 +225,10 @@ public class NCFluids {
                     NC_MATERIALS.put(key,
                             FluidEntry.makeMoltenLiquid(key.replace("-","_"),
                                     colorFuel));
-                    LIQUIDS_TAG.put(key, NCTagFactory.fluidTag(neoforgeRl(key.replace("-","_"))));
+                    LIQUIDS_TAG.put(key, NCTagFactory.fluidTag(commonRl(key.replace("-","_"))));
                     NC_MATERIALS.put("depleted_"+key,
                             FluidEntry.makeMoltenLiquid("depleted_"+key.replace("-","_"), colorDepleted));
-                    LIQUIDS_TAG.put("depleted_"+key, NCTagFactory.fluidTag(neoforgeRl("depleted_"+key.replace("-","_"))));
+                    LIQUIDS_TAG.put("depleted_"+key, NCTagFactory.fluidTag(commonRl("depleted_"+key.replace("-","_"))));
                     if(name.matches("xenorium.*|quantite.*|")) break;
                 }
             }
@@ -270,8 +270,8 @@ public class NCFluids {
         items.put("radon", new GasDefinition("radon", 0xFFFFFFFF, 260));
 
         for(GasDefinition gas: items.values()) {
-            LIQUIDS_TAG.put(gas.name, NCTagFactory.fluidTag(neoforgeRl(gas.name)));
-            GASES_TAG.put(gas.name, NCTagFactory.fluidTag(neoforgeRl("gases/"+gas.name)));
+            LIQUIDS_TAG.put(gas.name, NCTagFactory.fluidTag(commonRl(gas.name)));
+            GASES_TAG.put(gas.name, NCTagFactory.fluidTag(commonRl("gases/"+gas.name)));
             NC_GASES.put(gas.name, FluidEntry.makeGas(gas));
         }
     }
@@ -290,7 +290,7 @@ public class NCFluids {
                 }
                 NC_MATERIALS.put(name+type,
                         FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,color));
-                LIQUIDS_TAG.put(name+type, NCTagFactory.fluidTag(neoforgeRl(name+type)));
+                LIQUIDS_TAG.put(name+type, NCTagFactory.fluidTag(commonRl(name+type)));
                 if(name.matches("xenorium.*|quantite.*|")) break;
             }
         }

@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-import static igentuman.nc.NuclearCraft.neoforgeRl;
+import static igentuman.nc.NuclearCraft.commonRl;
 
 /**
  * Unified chemical-to-fluid converter for Mekanism 10.7.x+.
@@ -75,7 +75,7 @@ public class Chemical2FluidConverter implements IChemicalHandler {
         }
         String name = stack.getTypeRegistryName().getPath();
         name = specialConvertRules(name);
-        TagKey<Fluid> key = TagUtil.createKey(BuiltInRegistries.FLUID, neoforgeRl(name));
+        TagKey<Fluid> key = TagUtil.createKey(BuiltInRegistries.FLUID, commonRl(name));
         if (TagUtil.isTagEmpty(BuiltInRegistries.FLUID, key)) {
             return FluidStack.EMPTY;
         }

@@ -112,6 +112,10 @@ public class NuclearCraft {
         return ResourceLocation.fromNamespaceAndPath("neoforge", path);
     }
 
+    public static ResourceLocation commonRl(String path) {
+        return ResourceLocation.fromNamespaceAndPath("c", path);
+    }
+
     public static ResourceLocation resourceLoc(String path) {
         return ResourceLocation.fromNamespaceAndPath("c", path);
     }

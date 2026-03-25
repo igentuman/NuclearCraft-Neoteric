@@ -188,7 +188,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
         }
         MultiblockHandler.get(getLevel().dimension()).addIgnoreToUpdate(getBlockPos());
         setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
+        syncToTrackingClients();
     }
 
     public List<FusionCoolantRecipe> getCoolantRecipes() {

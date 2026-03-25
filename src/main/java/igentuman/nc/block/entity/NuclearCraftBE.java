@@ -612,6 +612,21 @@ public class NuclearCraftBE extends BlockEntity {
         }
     }
 
+    /**
+     * Sends BE data directly to tracking players without going through
+     * sendBlockUpdated / ChunkHolder dirty flag system.
+     * Thread-safe: Netty handles concurrent packet sends.
+     */
+    public void syncToTrackingClients() {
+        if (level == null || level.isClientSide()) return;
+        ClientboundBlockEntityDataPacket packet = getUpdatePacket();
+        if (packet == null) return;
+        net.minecraft.server.level.ServerLevel serverLevel = (net.minecraft.server.level.ServerLevel) level;
+        net.minecraft.world.level.ChunkPos chunkPos = new net.minecraft.world.level.ChunkPos(worldPosition);
+        serverLevel.getChunkSource().chunkMap.getPlayers(chunkPos, false)
+                .forEach(player -> player.connection.send(packet));
+    }
+
     public void setPlayer(ServerPlayer player) {
         playerUID = player.getUUID();
     }

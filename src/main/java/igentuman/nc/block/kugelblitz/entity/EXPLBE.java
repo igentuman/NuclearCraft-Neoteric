@@ -161,7 +161,7 @@ public class EXPLBE extends NuclearCraftBE {
         }
         if(pulseTime > 0) {
             level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
+            syncToTrackingClients();
             pulseTime--;
             setChanged();
             if(pulseTime < 35) {
@@ -181,7 +181,7 @@ public class EXPLBE extends NuclearCraftBE {
             activated = false;
             setChanged();
             level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
+            syncToTrackingClients();
         }
     }
 

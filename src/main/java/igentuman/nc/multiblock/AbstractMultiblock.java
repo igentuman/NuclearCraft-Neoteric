@@ -808,7 +808,6 @@ public abstract class AbstractMultiblock implements Multiblock {
         }
         return true;
     }
-    protected boolean canTick = true;
 
     public void tick(Level level) {
         if(controllerBE() != null) {
@@ -819,19 +818,13 @@ public abstract class AbstractMultiblock implements Multiblock {
         for(BlockPos pos: changedBlocks) {
             removeFromCacheIfChanged(pos);
         }
-        if(!canTick || !hasToRefresh) return;
+        if(!hasToRefresh) return;
         this.level = level;
-        canTick = false;
-        
-        debugLog("Tick triggered validation for " + getClass().getSimpleName() + " at " + controllerPos.toShortString());
-        
-        validationResult = ValidationResult.INCOMPLETE;
-        innerValid = false;
-        outerValid = false;
-        isFormed = false;
         hasToRefresh = false;
+
+        debugLog("Tick triggered validation for " + getClass().getSimpleName() + " at " + controllerPos.toShortString());
+
         validate();
-        canTick = true;
     }
 
     public void removeFromCacheIfChanged(BlockPos pos) {

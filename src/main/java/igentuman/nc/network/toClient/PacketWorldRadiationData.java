@@ -26,7 +26,7 @@ public class PacketWorldRadiationData implements CustomPacketPayload {
     }
 
     public PacketWorldRadiationData(HashMap<Long, Long> radiation) {
-        this.radiation = radiation;
+        this.radiation = new HashMap<>(radiation);
     }
 
     @Override

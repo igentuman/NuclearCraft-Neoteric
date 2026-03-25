@@ -71,7 +71,7 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
         if(wasRate != loadRate) {
             setChanged();
             level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
+            syncToTrackingClients();
         }
     }
 
@@ -163,7 +163,7 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
             //requestModelDataUpdate();
             if(level == null) return;
             level.setBlockAndUpdate(worldPosition, getBlockState());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
+            syncToTrackingClients();
         }
     }
 
@@ -178,7 +178,7 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
         sideConfig.put(direction, SideMode.values()[(sideConfig.get(direction).ordinal() + 1) % 4]);
         setChanged();
         level.setBlockAndUpdate(worldPosition, getBlockState());
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_NEIGHBORS);
+        syncToTrackingClients();
         return sideConfig.get(direction);
     }
 

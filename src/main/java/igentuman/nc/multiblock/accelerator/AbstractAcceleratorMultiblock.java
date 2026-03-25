@@ -402,18 +402,9 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
         for(BlockPos pos: changedBlocks) {
             removeFromCacheIfChanged(pos);
         }
-        if(!canTick || !hasToRefresh) return;
-
-        canTick = false;
-        validationResult = ValidationResult.INCOMPLETE;
-        if(stage == 0) {
-            innerValid = false;
-            outerValid = false;
-            isFormed = false;
-        }
+        if(!hasToRefresh) return;
         hasToRefresh = false;
         validate();
-        canTick = true;
     }
 
     protected void veryfyCoolers() {

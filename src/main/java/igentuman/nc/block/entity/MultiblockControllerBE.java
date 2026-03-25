@@ -7,6 +7,7 @@ import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
+import static igentuman.nc.NuclearCraft.LOGGER;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
@@ -165,6 +166,11 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
 
     protected void handleValidation() {
         getMultiblock().controller().setControllerBe(this);
+        // Skip reading if multiblock is mid-validation (another SpeedChunk thread
+        // may be running validate() concurrently on the shared multiblock object)
+        if (getMultiblock().isValidating()) {
+            return;
+        }
         boolean wasFormed = isInternalValid && isCasingValid;
         validationResult = getMultiblock().validationResult;
         if(errorBlockPos == null || !errorBlockPos.equals(getMultiblock().errorBlockPos)) {
@@ -172,12 +178,19 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
             changed = true;
         }
 
-        isInternalValid = getMultiblock().isInnerValid();
-        isCasingValid = getMultiblock().isOuterValid();
+        boolean newInner = getMultiblock().isInnerValid();
+        boolean newOuter = getMultiblock().isOuterValid();
+        boolean newFormed = getMultiblock().isFormed();
+        if (wasFormed != newFormed) {
+            LOGGER.info("[NC-DIAG] handleValidation: formation changed {} -> {} (outer={}, inner={}, result={})",
+                    wasFormed, newFormed, newOuter, newInner, validationResult);
+        }
+        isInternalValid = newInner;
+        isCasingValid = newOuter;
         height = getMultiblock().height();
         width = getMultiblock().width();
         depth = getMultiblock().depth();
-        trackChanges(wasFormed, getMultiblock().isFormed());
+        trackChanges(wasFormed, newFormed);
     }
 
     @Override

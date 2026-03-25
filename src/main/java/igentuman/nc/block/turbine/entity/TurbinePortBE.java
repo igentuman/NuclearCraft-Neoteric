@@ -56,7 +56,7 @@ public class TurbinePortBE extends MultiblockPortBE {
         }
         setChanged();
         level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        syncToTrackingClients();
     }
 
 
@@ -103,7 +103,7 @@ public class TurbinePortBE extends MultiblockPortBE {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+            syncToTrackingClients();
         }
     }
 
@@ -268,7 +268,7 @@ public class TurbinePortBE extends MultiblockPortBE {
             comparatorMode = SignalSource.ENERGY;
         }
         setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        syncToTrackingClients();
     }
 
     public static class SignalSource {

@@ -285,7 +285,7 @@ public class MSRControllerBE extends MultiblockControllerBE {
 
     private void updateState() {
         setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        syncToTrackingClients();
     }
 
     public void consumeInputs() {

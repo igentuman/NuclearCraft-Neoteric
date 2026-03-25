@@ -1,6 +1,7 @@
 package igentuman.nc.block.fission.entity;
 
 import igentuman.nc.NuclearCraft;
+import static igentuman.nc.NuclearCraft.LOGGER;
 import igentuman.nc.block.MultiblockPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
@@ -409,8 +410,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
                 if(powered != wasPowered) {
                     level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
                 }
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
-
+                syncToTrackingClients();
             } catch (NullPointerException ignored) {}
         }
         irradiationHeat = 0;

@@ -468,7 +468,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     public int toggleSideConfig(int slotId, int direction) {
         setChanged();
         saveSideMapFlag = true;
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        syncToTrackingClients();
         return contentHandler().toggleSideConfig(slotId, direction);
     }
 
@@ -488,7 +488,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         redstoneMode++;
         if (redstoneMode > 1) redstoneMode = 0;
         setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        syncToTrackingClients();
     }
 
     public CompoundTag getTagForStack() {

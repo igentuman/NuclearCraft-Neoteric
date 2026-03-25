@@ -68,7 +68,7 @@ public class ChamberPortBE extends MultiblockPortBE {
         }
         setChanged();
         level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        syncToTrackingClients();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class ChamberPortBE extends MultiblockPortBE {
         if(updated) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+            syncToTrackingClients();
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
     }
@@ -248,7 +248,7 @@ public class ChamberPortBE extends MultiblockPortBE {
         }
         MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
         setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        syncToTrackingClients();
     }
 
     public FluidTank getFluidTank(int i) {

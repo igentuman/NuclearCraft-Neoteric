@@ -58,7 +58,7 @@ public class AcceleratorIonSourcePortBE extends MultiblockPortBE {
         }
         setChanged();
         level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        syncToTrackingClients();
     }
 
     @Override
@@ -104,7 +104,7 @@ public class AcceleratorIonSourcePortBE extends MultiblockPortBE {
         if(updated || currentTick % 20 == 0) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            syncToTrackingClients();
         }
     }
 
@@ -187,7 +187,7 @@ public class AcceleratorIonSourcePortBE extends MultiblockPortBE {
         }
         MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
         setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        syncToTrackingClients();
     }
 
     public FluidTank getFluidTank(int i) {

@@ -138,7 +138,7 @@ public class BatteryBE extends NCEnergy {
     public SideModeToggleable.SideMode toggleSideConfig(int direction) {
         sideConfig.put(direction, SideModeToggleable.SideMode.values()[(sideConfig.get(direction).ordinal() + 1) % 4]);
         setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        syncToTrackingClients();
         return sideConfig.get(direction);
     }
 

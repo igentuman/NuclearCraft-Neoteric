@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:dusts/graphite"
+    },
+    "L": {
+      "tag": "c:ingots/lead"
+    }
+  },
+  "pattern": [
+    "LG",
+    "GL"
+  ],
+  "result": {
+    "count": 2,
+    "id": "nuclearcraft:plate_basic"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "nuclearcraft:assembler",
+  "input": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:fuel_plutonium_lep_241"
+    },
+    {
+      "tag": "c:dusts/graphite"
+    },
+    {
+      "tag": "c:ingots/pyrolitic_carbon"
+    },
+    {
+      "tag": "c:ingots/silicon_carbide"
+    }
+  ],
+  "output": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:fuel_plutonium_lep_241_tr"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

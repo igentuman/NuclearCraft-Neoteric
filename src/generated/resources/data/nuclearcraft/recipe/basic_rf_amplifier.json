@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "S": {
+      "tag": "c:ingots/stainless_steel"
+    },
+    "W": {
+      "item": "nuclearcraft:coil_copper"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "SWS",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:basic_rf_amplifier"
+  }
+}

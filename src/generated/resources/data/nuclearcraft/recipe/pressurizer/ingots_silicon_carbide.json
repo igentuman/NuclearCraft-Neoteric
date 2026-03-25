@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "input": [
+    {
+      "count": 3,
+      "tag": "c:ingots/silicon_carbide"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:silicon_boule"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

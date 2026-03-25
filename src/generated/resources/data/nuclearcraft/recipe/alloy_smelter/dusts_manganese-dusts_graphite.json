@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "input": [
+    {
+      "tag": "c:dusts/manganese"
+    },
+    {
+      "tag": "c:dusts/graphite"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:carbon_manganese_ingot"
+    }
+  ],
+  "powerModifier": 5.0,
+  "radiation": 1.0,
+  "timeModifier": 5.0
+}

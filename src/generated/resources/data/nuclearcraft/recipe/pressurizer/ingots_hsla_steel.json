@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "input": [
+    {
+      "tag": "c:ingots/hsla_steel"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:hsla_steel_plate"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "c:ores/tough_alloy"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 240,
+      "tag": "c:molten_tough_alloy"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

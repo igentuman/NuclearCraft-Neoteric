@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_kugelblitz",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:basic_electric_circuit"
+    },
+    "D": {
+      "tag": "c:dusts/dimensional_blend"
+    },
+    "E": {
+      "item": "nuclearcraft:plate_extreme"
+    },
+    "N": {
+      "item": "nuclearcraft:neutronium_frame"
+    }
+  },
+  "pattern": [
+    "DCD",
+    "ENE",
+    "DCD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:quantum_transformer"
+  }
+}

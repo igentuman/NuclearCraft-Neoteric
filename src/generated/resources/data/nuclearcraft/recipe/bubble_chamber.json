@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_target_chamber",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:empty_detector"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "GCG",
+    "GGG"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:bubble_chamber"
+  }
+}

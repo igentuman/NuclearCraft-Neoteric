@@ -331,7 +331,7 @@
   "emi.category.nuclearcraft.fission_reactor_controller": "Fission Reactor",
   "emi.category.nuclearcraft.fluid_enricher": "Fluid Enricher",
   "emi.category.nuclearcraft.fluid_infuser": "Fluid Infuser",
-  "emi.category.nuclearcraft.fuel_reprocessor": "",
+  "emi.category.nuclearcraft.fuel_reprocessor": "Fuel Reprocessor",
   "emi.category.nuclearcraft.fusion_coolant": "Fusion Reactor Coolant",
   "emi.category.nuclearcraft.fusion_core": "Fusion Reactor",
   "emi.category.nuclearcraft.gas_scrubber": "Gas Scrubber",
@@ -2673,6 +2673,7 @@
   "tooltip.nc.accelerator.focus": "Focus: %s",
   "tooltip.nc.accelerator.quadroupoles": "Quadrupoles: %s",
   "tooltip.nc.accelerator.strength": "Magnet Strength: %s T",
+  "tooltip.nc.accelerator.too_hot": "Accelerator is too hot",
   "tooltip.nc.accelerator.voltage": "Voltage: %sV",
   "tooltip.nc.analyze": "Analyze structure",
   "tooltip.nc.analyze.descr": "Refresh multiblock data, analyze and provide more details",
@@ -2791,6 +2792,5 @@
   "validation.structure.wrong_corner": "Wrong corner block at: %s",
   "validation.structure.wrong_inner": "Wrong Block at: %s",
   "validation.structure.wrong_outer": "Wrong Casing at: %s",
-  "validation.structure.wrong_proportions": "Wrong proportions",
-  "tooltip.nc.accelerator.too_hot": "Accelerator is too hot"
+  "validation.structure.wrong_proportions": "Wrong proportions"
 }

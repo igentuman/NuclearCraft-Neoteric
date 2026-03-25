@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_turbine",
+  "key": {
+    "S": {
+      "tag": "c:ingots/hsla_steel"
+    },
+    "T": {
+      "tag": "c:ingots/zinc"
+    }
+  },
+  "pattern": [
+    "STS",
+    "STS",
+    "STS"
+  ],
+  "result": {
+    "count": 4,
+    "id": "nuclearcraft:turbine_rotor_shaft"
+  }
+}

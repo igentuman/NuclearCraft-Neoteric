@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "c:ingots/tough_alloy"
+    },
+    "C": {
+      "item": "nuclearcraft:coil_copper"
+    },
+    "S": {
+      "tag": "c:ingots/stainless_steel"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "SBS",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:basic_electromagnet"
+  }
+}

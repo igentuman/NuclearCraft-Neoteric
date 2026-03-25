@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "A": {
+      "item": "nuclearcraft:advanced_processor"
+    },
+    "C": {
+      "item": "nuclearcraft:empty_detector"
+    },
+    "W": {
+      "item": "nuclearcraft:wire_gold_tungsten"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "ACA",
+    "WWW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:wire_chamber_casing"
+  }
+}

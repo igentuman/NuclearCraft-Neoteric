@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "c:ores/manganese_dioxide"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 240,
+      "tag": "c:molten_manganese_dioxide"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

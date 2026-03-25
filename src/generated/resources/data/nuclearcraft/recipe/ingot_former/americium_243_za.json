@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:americium/243_za"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:americium_243_za"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

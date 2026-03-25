@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_processors",
+  "key": {
+    "F": {
+      "item": "nuclearcraft:servo"
+    },
+    "L": {
+      "item": "nuclearcraft:chassis"
+    },
+    "P": {
+      "item": "nuclearcraft:chemical_reactor"
+    },
+    "R": {
+      "item": "nuclearcraft:centrifuge"
+    },
+    "S": {
+      "item": "nuclearcraft:pump"
+    }
+  },
+  "pattern": [
+    "LRL",
+    "FPF",
+    "LSL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:leacher"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:beryllium_from_nugget"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nuclearcraft:beryllium_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "ingot"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:beryllium_from_nugget"
+    ]
+  }
+}

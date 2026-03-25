@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_kugelblitz",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:elite_lithium_ion_battery"
+    },
+    "C": {
+      "item": "nuclearcraft:niobium_titanium_electromagnet"
+    },
+    "L": {
+      "tag": "c:plates/cobalt"
+    },
+    "M": {
+      "item": "nuclearcraft:niobium_titanium_rf_amplifier"
+    },
+    "P": {
+      "item": "nuclearcraft:laser_assembly"
+    }
+  },
+  "pattern": [
+    " P ",
+    "CMC",
+    "LBL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:expl"
+  }
+}

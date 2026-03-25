@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "c:dusts/sic_sic_cmc"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:molten_sic_sic_cmc"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

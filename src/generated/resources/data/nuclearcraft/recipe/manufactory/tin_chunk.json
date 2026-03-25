@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "item": "nuclearcraft:tin_chunk"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "tag": "c:dusts/tin"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

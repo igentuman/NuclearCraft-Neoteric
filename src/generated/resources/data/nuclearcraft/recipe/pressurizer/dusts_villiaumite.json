@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "input": [
+    {
+      "tag": "c:dusts/villiaumite"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:villiaumite_gem"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

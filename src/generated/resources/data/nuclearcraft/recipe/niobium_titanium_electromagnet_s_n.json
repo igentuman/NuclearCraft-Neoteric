@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:niobium_titanium_electromagnet_slope"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:niobium_titanium_electromagnet"
+  }
+}

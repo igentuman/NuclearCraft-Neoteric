@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:berkelium/248_za"
+    },
+    {
+      "amount": 180,
+      "tag": "c:berkelium/247_za"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:fuel_berkelium_heb_248_za"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

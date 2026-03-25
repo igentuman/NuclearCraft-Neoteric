@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:fusion_coolant",
+  "coolingRate": 2500.0,
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:technical_water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:high_pressure_steam"
+    }
+  ]
+}

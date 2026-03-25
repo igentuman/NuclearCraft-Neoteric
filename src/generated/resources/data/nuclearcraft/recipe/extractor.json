@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "item": "nuclearcraft:chassis"
+    },
+    "M": {
+      "tag": "c:ingots/magnesium"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "S": {
+      "item": "nuclearcraft:servo"
+    }
+  },
+  "pattern": [
+    "PMP",
+    "BCB",
+    "PSP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:extractor"
+  }
+}

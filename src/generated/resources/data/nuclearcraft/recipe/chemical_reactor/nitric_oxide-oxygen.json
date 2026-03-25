@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 500,
+      "tag": "c:nitric_oxide"
+    },
+    {
+      "amount": 250,
+      "tag": "c:oxygen"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 750,
+      "tag": "c:nitrogen_dioxide"
+    }
+  ],
+  "powerModifier": 0.6,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

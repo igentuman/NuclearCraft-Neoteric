@@ -1,0 +1,33 @@
+{
+  "type": "nuclearcraft:fuel_reprocessor",
+  "input": [
+    {
+      "item": "nuclearcraft:depleted_fuel_americium_hea_242"
+    }
+  ],
+  "output": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:americium_243"
+    },
+    {
+      "item": "nuclearcraft:americium_242"
+    },
+    {
+      "count": 2,
+      "item": "nuclearcraft:curium_246"
+    },
+    {
+      "item": "nuclearcraft:berkelium_247"
+    },
+    {
+      "tag": "c:dusts/molybdenum"
+    },
+    {
+      "tag": "c:dusts/promethium_147"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

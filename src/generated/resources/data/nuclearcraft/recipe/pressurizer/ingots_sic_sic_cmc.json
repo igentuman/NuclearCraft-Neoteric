@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "input": [
+    {
+      "tag": "c:ingots/sic_sic_cmc"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:sic_sic_cmc_plate"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

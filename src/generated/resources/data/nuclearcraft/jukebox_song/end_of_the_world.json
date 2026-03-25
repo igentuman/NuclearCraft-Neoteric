@@ -1,0 +1,8 @@
+{
+  "comparator_output": 15,
+  "description": {
+    "translate": "item.nuclearcraft.end_of_the_world"
+  },
+  "length_in_seconds": 3600.0,
+  "sound_event": "nuclearcraft:music.end_of_the_world"
+}

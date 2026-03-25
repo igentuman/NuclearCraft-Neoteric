@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_machines",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:chassis"
+    },
+    "D": {
+      "tag": "c:ingots/magnesium_diboride"
+    },
+    "H": {
+      "tag": "c:ingots/hard_carbon"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "S": {
+      "item": "nuclearcraft:servo"
+    }
+  },
+  "pattern": [
+    "PDP",
+    "HCH",
+    "PSP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:supercooler"
+  }
+}

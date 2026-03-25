@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "item": "minecraft:raw_iron"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "tag": "c:dusts/iron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

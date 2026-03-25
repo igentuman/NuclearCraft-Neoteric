@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "input": [
+    {
+      "tag": "c:dusts/uranium"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:oxygen"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 270,
+      "tag": "c:uranium_oxide"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

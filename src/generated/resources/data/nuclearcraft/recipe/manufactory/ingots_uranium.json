@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "tag": "c:ingots/uranium"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/uranium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "c:ingots/boron"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_du"
+    },
+    "R": {
+      "tag": "c:dusts/crystal_binder"
+    }
+  },
+  "pattern": [
+    "RBR",
+    "BPB",
+    "RBR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:plate_elite"
+  }
+}

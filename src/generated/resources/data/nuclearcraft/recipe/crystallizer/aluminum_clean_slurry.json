@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "inputFluids": [
+    {
+      "amount": 400,
+      "tag": "c:aluminum_clean_slurry"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "tag": "c:dusts/aluminum"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

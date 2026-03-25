@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_solar_panels",
+  "key": {
+    "G": {
+      "tag": "c:dusts/energetic_blend"
+    },
+    "M": {
+      "item": "nuclearcraft:coil_magnesium_diboride"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_du"
+    },
+    "S": {
+      "item": "nuclearcraft:solar_panel_advanced"
+    }
+  },
+  "pattern": [
+    "PGP",
+    "SSS",
+    "PMP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:solar_panel_du"
+  }
+}

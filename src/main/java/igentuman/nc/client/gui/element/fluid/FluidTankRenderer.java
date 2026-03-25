@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import igentuman.api.platform.NCRendering;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.network.toServer.PacketFlushSlotContent;
 import igentuman.nc.network.toServer.PacketHandleFluidSlotClick;
@@ -188,6 +189,13 @@ public class FluidTankRenderer extends NCGuiElement {
 
     private int getColorTint(FluidStack ingredient) {
         Fluid fluid = ingredient.getFluid();
+        // Try direct NC color lookup first (IClientFluidTypeExtensions resolution is broken in 1.21.1)
+        for (NCFluids.FluidEntry entry : NCFluids.ALL_FLUID_ENTRIES.values()) {
+            if (entry.getStill() == fluid) {
+                return entry.color() | 0xFF000000;
+            }
+        }
+        // Fallback to standard path for non-NC fluids
         IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
         return renderProperties.getTintColor(ingredient);
     }

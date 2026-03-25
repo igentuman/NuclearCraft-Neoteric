@@ -1,0 +1,36 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.5,
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:tritium"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 2000000,
+      "focus": 1.0,
+      "meanEnergy": 2400,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 3600,
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "helion"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

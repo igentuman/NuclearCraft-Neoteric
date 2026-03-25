@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:assembler",
+  "input": [
+    {
+      "item": "nuclearcraft:silicon_n_doped"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:redstone"
+    },
+    {
+      "tag": "c:ingots/gold"
+    },
+    {
+      "tag": "c:ingots/silver"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:basic_processor"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

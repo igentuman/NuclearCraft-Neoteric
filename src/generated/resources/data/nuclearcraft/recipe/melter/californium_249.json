@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "item": "nuclearcraft:californium_249"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:californium/249"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

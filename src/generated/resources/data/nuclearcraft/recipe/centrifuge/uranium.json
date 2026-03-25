@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 160,
+      "tag": "c:uranium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:uranium/238"
+    },
+    {
+      "amount": 10,
+      "tag": "c:uranium/235"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.9
+}

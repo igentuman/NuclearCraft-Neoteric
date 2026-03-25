@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:bioplastic"
+    },
+    "I": {
+      "tag": "c:dusts/potassium_iodide"
+    },
+    "R": {
+      "item": "nuclearcraft:radaway"
+    }
+  },
+  "pattern": [
+    "BIB",
+    "IRI",
+    "BIB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:rad_x"
+  }
+}

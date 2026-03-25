@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "input": [
+    {
+      "tag": "c:dusts/thorium"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/tbp"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

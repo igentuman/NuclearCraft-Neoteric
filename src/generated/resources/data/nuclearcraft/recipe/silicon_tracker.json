@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_target_chamber",
+  "key": {
+    "A": {
+      "item": "nuclearcraft:advanced_processor"
+    },
+    "B": {
+      "item": "nuclearcraft:basic_processor"
+    },
+    "C": {
+      "item": "nuclearcraft:empty_detector"
+    }
+  },
+  "pattern": [
+    "BAB",
+    "ACA",
+    "BAB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:silicon_tracker"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "c:raw_materials/silicon_carbide"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 120,
+      "tag": "c:molten_silicon_carbide"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

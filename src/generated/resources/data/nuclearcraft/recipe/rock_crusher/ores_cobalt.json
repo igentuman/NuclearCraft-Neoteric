@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "input": [
+    {
+      "count": 4,
+      "tag": "c:ores/cobalt"
+    }
+  ],
+  "output": [
+    {
+      "count": 3,
+      "tag": "c:dusts/cobalt"
+    },
+    {
+      "tag": "c:dusts/osmium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

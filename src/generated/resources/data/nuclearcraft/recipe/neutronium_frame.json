@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_kugelblitz",
+  "key": {
+    "E": {
+      "tag": "c:ingots/extreme"
+    },
+    "P": {
+      "tag": "c:ingots/neutronium"
+    },
+    "T": {
+      "tag": "c:ingots/platinum"
+    }
+  },
+  "pattern": [
+    "ETE",
+    "TPT",
+    "ETE"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:neutronium_frame"
+  }
+}

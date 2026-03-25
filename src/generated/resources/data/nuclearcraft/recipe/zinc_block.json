@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "c:ingots/zinc"
+    },
+    {
+      "tag": "c:ingots/zinc"
+    },
+    {
+      "tag": "c:ingots/zinc"
+    },
+    {
+      "tag": "c:ingots/zinc"
+    },
+    {
+      "tag": "c:ingots/zinc"
+    },
+    {
+      "tag": "c:ingots/zinc"
+    },
+    {
+      "tag": "c:ingots/zinc"
+    },
+    {
+      "tag": "c:ingots/zinc"
+    },
+    {
+      "tag": "c:ingots/zinc"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:zinc_block"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:decay_hastener",
+  "input": [
+    {
+      "tag": "c:dusts/ruthenium_106"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/palladium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

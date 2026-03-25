@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "T": {
+      "tag": "c:ingots/zirconium"
+    }
+  },
+  "pattern": [
+    "TGT",
+    "G G",
+    "TGT"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:fission_reactor_solid_fuel_cell"
+  }
+}

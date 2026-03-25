@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#nuclearcraft:wasteland",
+  "features": "nuclearcraft:cobalt_wasteland_placed",
+  "step": "underground_ores"
+}

@@ -74,8 +74,18 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
             if(stack.isFluidEqual(fluid)) {
                 return true;
             }
+            // Check if fluids share a common tag (e.g. c:oxygen matches both
+            // nuclearcraft:oxygen and mekanism:oxygen)
+            if(sharesFluidTag(stack, fluid)) {
+                return true;
+            }
         }
         return allowedFluids.isEmpty() || !allowedFluids.containsKey(id);
+    }
+
+    private boolean sharesFluidTag(FluidStack a, FluidStack b) {
+        return a.getFluid().builtInRegistryHolder().tags()
+                .anyMatch(tag -> b.getFluid().defaultFluidState().is(tag));
     }
 
 
@@ -125,17 +135,20 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         IFluidHandler handler = tile.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(dir), dir.getOpposite());
         if(handler == null) return false;
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
+        boolean pushed = false;
         for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
             if(pair.getMode() == SlotMode.PUSH || forceFlag) {
                 NcFluidTank tank = tanks.get(pair.getSlot());
                 if(tank.getFluidAmount() > 0) {
                     int amount = handler.fill(tank.getFluid(), EXECUTE);
-                    tank.drain(amount, EXECUTE);
-                    return true;
+                    if(amount > 0) {
+                        tank.drain(amount, EXECUTE);
+                        pushed = true;
+                    }
                 }
             }
         }
-        return false;
+        return pushed;
     }
 
     public boolean pullFluids(Direction dir) {

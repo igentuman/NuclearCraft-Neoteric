@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:decay_hastener",
+  "input": [
+    {
+      "tag": "c:dusts/europium_155"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/gadolinium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

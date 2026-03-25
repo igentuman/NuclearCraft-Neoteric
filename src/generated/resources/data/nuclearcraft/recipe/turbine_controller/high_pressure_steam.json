@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:turbine_controller",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:high_pressure_steam"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:exhaust_steam"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

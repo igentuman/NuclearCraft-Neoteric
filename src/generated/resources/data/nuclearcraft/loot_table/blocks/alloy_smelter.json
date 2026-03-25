@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "nuclearcraft:alloy_smelter"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "nuclearcraft:blocks/alloy_smelter"
+}

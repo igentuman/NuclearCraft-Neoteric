@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "input": [
+    {
+      "tag": "c:dusts/bismuth"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/polonium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 2.0
+}

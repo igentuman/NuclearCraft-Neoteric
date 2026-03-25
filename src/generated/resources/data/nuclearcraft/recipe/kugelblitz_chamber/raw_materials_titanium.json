@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": [
+    {
+      "tag": "c:raw_materials/titanium"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:raw_materials/titanium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

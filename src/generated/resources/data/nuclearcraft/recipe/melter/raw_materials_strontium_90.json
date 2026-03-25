@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "c:raw_materials/strontium_90"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 120,
+      "tag": "c:molten_strontium_90"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

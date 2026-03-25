@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:empty_heat_sink"
+    },
+    "I": {
+      "item": "nuclearcraft:motor"
+    },
+    "T": {
+      "tag": "c:plates/thermoconducting"
+    }
+  },
+  "pattern": [
+    "TIT",
+    "IBI",
+    "TIT"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:empty_active_heat_sink"
+  }
+}

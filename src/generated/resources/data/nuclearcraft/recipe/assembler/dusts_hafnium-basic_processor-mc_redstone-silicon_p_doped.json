@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:assembler",
+  "input": [
+    {
+      "tag": "c:dusts/hafnium"
+    },
+    {
+      "item": "nuclearcraft:basic_processor"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "nuclearcraft:silicon_p_doped"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:advanced_processor"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

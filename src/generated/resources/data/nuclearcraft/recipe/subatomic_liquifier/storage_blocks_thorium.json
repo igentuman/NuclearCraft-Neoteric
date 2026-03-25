@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:subatomic_liquifier",
+  "input": [
+    {
+      "tag": "c:storage_blocks/thorium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 4050,
+      "tag": "c:subliquid_matter"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 4.0
+}

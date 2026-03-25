@@ -1,0 +1,46 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 1.0,
+  "input": [
+    {
+      "tag": "c:ingots/osmium"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 1000000,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "antideuteron"
+    }
+  ],
+  "maxEnergy": 10000000,
+  "output": [
+    {
+      "item": "nuclearcraft:osmium_spallation_waste"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 4,
+      "particle": "pion_plus"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 4,
+      "particle": "pion_naught"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 4,
+      "particle": "pion_minus"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

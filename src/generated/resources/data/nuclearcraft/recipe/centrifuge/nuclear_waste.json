@@ -1,0 +1,34 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 50,
+      "tag": "c:nuclear_waste"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 5,
+      "tag": "c:polonium"
+    },
+    {
+      "amount": 5,
+      "tag": "c:plutonium/238"
+    },
+    {
+      "amount": 5,
+      "tag": "c:plutonium/242"
+    },
+    {
+      "amount": 5,
+      "tag": "c:plutonium/241"
+    },
+    {
+      "amount": 1,
+      "tag": "c:spent_nuclear_waste"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 15.0
+}

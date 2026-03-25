@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "tag": "c:nuggets/magnesium"
+    },
+    {
+      "tag": "c:nuggets/magnesium"
+    },
+    {
+      "tag": "c:nuggets/magnesium"
+    },
+    {
+      "tag": "c:nuggets/magnesium"
+    },
+    {
+      "tag": "c:nuggets/magnesium"
+    },
+    {
+      "tag": "c:nuggets/magnesium"
+    },
+    {
+      "tag": "c:nuggets/magnesium"
+    },
+    {
+      "tag": "c:nuggets/magnesium"
+    },
+    {
+      "tag": "c:nuggets/magnesium"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:magnesium_ingot"
+  }
+}

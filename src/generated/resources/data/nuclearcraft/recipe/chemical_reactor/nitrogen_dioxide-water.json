@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 750,
+      "tag": "c:nitrogen_dioxide"
+    },
+    {
+      "amount": 250,
+      "tag": "minecraft:water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:nitric_acid"
+    }
+  ],
+  "powerModifier": 0.4,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

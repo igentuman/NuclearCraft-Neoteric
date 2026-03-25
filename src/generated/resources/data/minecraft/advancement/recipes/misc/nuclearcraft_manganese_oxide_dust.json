@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:dusts/manganese_oxide"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:nuclearcraft_manganese_oxide_dust"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ore"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:nuclearcraft_manganese_oxide_dust"
+    ]
+  }
+}

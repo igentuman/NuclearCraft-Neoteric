@@ -1,0 +1,27 @@
+{
+  "type": "nuclearcraft:fusion_core",
+  "inputFluids": [
+    {
+      "amount": 630,
+      "tag": "c:lithium/6"
+    },
+    {
+      "amount": 630,
+      "tag": "c:quantite"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 2000,
+      "tag": "c:helium"
+    },
+    {
+      "amount": 2000,
+      "tag": "c:helium"
+    }
+  ],
+  "powerModifier": 1231400.0,
+  "radiation": 1.5,
+  "temperature": 37048.0,
+  "timeModifier": 85.0
+}

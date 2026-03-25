@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_machines",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:chemical_reactor"
+    },
+    "M": {
+      "item": "nuclearcraft:centrifuge"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_extreme"
+    },
+    "Y": {
+      "item": "nuclearcraft:centrifuge"
+    }
+  },
+  "pattern": [
+    "PYP",
+    "PCP",
+    "PMP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:subatomic_liquifier"
+  }
+}

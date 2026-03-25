@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "tag": "c:gems/villiaumite"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/sodium_fluoride"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "c:ores/sodium_hydroxide"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 240,
+      "tag": "c:molten_sodium_hydroxide"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,6 +1,0 @@
-{
-  "type": "forge:add_features",
-  "biomes": "#nuclearcraft:wasteland",
-  "features": "nuclearcraft:wasteland_portal",
-  "step": "surface_structures"
-}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_kugelblitz",
+  "key": {
+    "B": {
+      "tag": "c:plates/platinum"
+    },
+    "E": {
+      "item": "nuclearcraft:plate_elite"
+    },
+    "N": {
+      "item": "nuclearcraft:neutronium_frame"
+    },
+    "Q": {
+      "tag": "c:dusts/cobalt"
+    }
+  },
+  "pattern": [
+    "BQB",
+    "ENE",
+    "BQB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:event_horizon_stabilizer"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:supercooler",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:oxygen"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 100,
+      "tag": "c:liquid_oxygen"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

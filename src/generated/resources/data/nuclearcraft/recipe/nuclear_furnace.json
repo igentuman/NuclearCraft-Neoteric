@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_machines",
+  "key": {
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "T": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "PTP",
+    "TFT",
+    "PTP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:nuclear_furnace"
+  }
+}

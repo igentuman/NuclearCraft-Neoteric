@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "A": {
+      "item": "minecraft:iron_bars"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "I": {
+      "tag": "c:plates/thermoconducting"
+    },
+    "T": {
+      "tag": "c:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    "TIT",
+    "ABA",
+    "TIT"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:empty_heat_sink"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 250,
+      "tag": "c:diborane"
+    },
+    {
+      "amount": 750,
+      "tag": "minecraft:water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 500,
+      "tag": "c:boric_acid"
+    },
+    {
+      "amount": 500,
+      "tag": "c:hydrogen"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

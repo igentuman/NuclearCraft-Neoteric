@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "input": [
+    {
+      "item": "minecraft:cobblestone"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 45,
+      "tag": "c:redstone"
+    }
+  ],
+  "output": [
+    {
+      "item": "minecraft:netherrack"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

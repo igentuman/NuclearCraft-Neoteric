@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "c:storage_blocks/silver"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "nuclearcraft:silver_ingot"
+  }
+}

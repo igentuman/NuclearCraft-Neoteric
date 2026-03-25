@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fusion",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:chemical_reactor"
+    },
+    "L": {
+      "item": "nuclearcraft:plate_elite"
+    },
+    "M": {
+      "item": "nuclearcraft:chassis"
+    },
+    "P": {
+      "item": "nuclearcraft:silicon_n_doped"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "CMC",
+    "LPL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:fusion_core"
+  }
+}

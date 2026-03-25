@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "tag": "c:ingots/sic_sic_cmc"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/sic_sic_cmc"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

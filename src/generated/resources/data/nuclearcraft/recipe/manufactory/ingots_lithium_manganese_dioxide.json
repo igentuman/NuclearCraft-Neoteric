@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "tag": "c:ingots/lithium_manganese_dioxide"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/lithium_manganese_dioxide"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -75,6 +75,19 @@ public class Chemical2FluidConverter implements IChemicalHandler {
         }
         String name = stack.getTypeRegistryName().getPath();
         name = specialConvertRules(name);
+
+        // Look up by direct registry name first — the chemical's name
+        // usually matches the fluid's name (e.g., oxygen → nuclearcraft:oxygen)
+        for (String ns : new String[]{"nuclearcraft", "mekanism"}) {
+            Fluid direct = BuiltInRegistries.FLUID.get(
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(ns, name));
+            if (direct != null && !(direct instanceof EmptyFluid)) {
+                chemicalFluidMap.put(chemical, direct);
+                return new FluidStack(direct, amount);
+            }
+        }
+
+        // Fallback to c: tag lookup
         TagKey<Fluid> key = TagUtil.createKey(BuiltInRegistries.FLUID, commonRl(name));
         if (TagUtil.isTagEmpty(BuiltInRegistries.FLUID, key)) {
             return FluidStack.EMPTY;

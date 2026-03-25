@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "c:raw_materials/caesium_137"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 120,
+      "tag": "c:molten_caesium_137"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

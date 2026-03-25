@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "input": [
+    {
+      "tag": "c:dusts/iodine"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 4000,
+      "tag": "c:potassium_hydroxide"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:potassium_iodide"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

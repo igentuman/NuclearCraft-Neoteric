@@ -1,0 +1,27 @@
+{
+  "type": "nuclearcraft:fusion_core",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:deuterium"
+    },
+    {
+      "amount": 90,
+      "tag": "c:quantite"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1500,
+      "tag": "c:helium"
+    },
+    {
+      "amount": 1500,
+      "tag": "c:helium"
+    }
+  ],
+  "powerModifier": 452200.0,
+  "radiation": 1.5,
+  "temperature": 16883.0,
+  "timeModifier": 65.0
+}

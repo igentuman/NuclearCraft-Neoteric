@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:irradiated_boron"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 500,
+      "tag": "c:boron/10"
+    },
+    {
+      "amount": 500,
+      "tag": "c:boron/11"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "input": [
+    {
+      "count": 7,
+      "item": "minecraft:deepslate"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/iodine"
+    },
+    {
+      "tag": "c:dusts/obsidian"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

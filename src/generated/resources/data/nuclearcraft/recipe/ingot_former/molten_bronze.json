@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:molten_bronze"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:ingots/bronze"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 270,
+      "tag": "c:copper"
+    },
+    {
+      "amount": 90,
+      "tag": "c:silver"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 360,
+      "tag": "c:shibuichi"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

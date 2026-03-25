@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "item": "nuclearcraft:chassis"
+    },
+    "G": {
+      "tag": "c:ingots/gold"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "S": {
+      "item": "nuclearcraft:servo"
+    }
+  },
+  "pattern": [
+    "PBP",
+    "GCG",
+    "PSP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:fluid_infuser"
+  }
+}

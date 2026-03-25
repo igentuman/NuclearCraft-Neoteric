@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 250,
+      "tag": "c:ethene"
+    },
+    {
+      "amount": 250,
+      "tag": "c:sulfuric_acid"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 250,
+      "tag": "c:ethanol"
+    },
+    {
+      "amount": 250,
+      "tag": "c:sulfur_trioxide"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

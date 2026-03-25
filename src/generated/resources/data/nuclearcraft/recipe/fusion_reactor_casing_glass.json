@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fusion",
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "M": {
+      "item": "nuclearcraft:fusion_reactor_casing"
+    }
+  },
+  "pattern": [
+    " G ",
+    "GMG",
+    " G "
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:fusion_reactor_casing_glass"
+  }
+}

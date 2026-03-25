@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:plates/graphite"
+    },
+    "I": {
+      "tag": "c:plates/iron"
+    },
+    "L": {
+      "tag": "c:plates/lead"
+    }
+  },
+  "pattern": [
+    "III",
+    "CCC",
+    "LLL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:light"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:fuel_reprocessor",
+  "input": [
+    {
+      "item": "nuclearcraft:depleted_fuel_plutonium_lep_241_tr"
+    }
+  ],
+  "output": [
+    {
+      "count": 5,
+      "item": "nuclearcraft:plutonium_242"
+    },
+    {
+      "item": "nuclearcraft:americium_243"
+    },
+    {
+      "item": "nuclearcraft:curium_246"
+    },
+    {
+      "item": "nuclearcraft:berkelium_247"
+    },
+    {
+      "tag": "c:dusts/promethium_147"
+    },
+    {
+      "tag": "c:dusts/strontium_90"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "inputFluids": [
+    {
+      "amount": 250,
+      "tag": "c:calcium_sulfate_solution"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/calcium_sulfate"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

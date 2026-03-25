@@ -322,6 +322,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         IItemHandler handler = tile.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, pos.relative(dir), dir.getOpposite());
         if(handler == null) return false;
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
+        boolean pushed = false;
         for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
             if(pair.getMode() == PUSH || (forceFlag && pair.getMode() == OUTPUT)) {
                 ItemStack stack = getStackInSlot(pair.getSlot());
@@ -329,11 +330,11 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
                 ItemStack remainder = ItemHandlerHelper.insertItem(handler, stack, false);
                 if(remainder.getCount() != stack.getCount()) {
                     setStackInSlot(pair.getSlot(), remainder);
-                    return true;
+                    pushed = true;
                 }
             }
         }
-        return false;
+        return pushed;
     }
     public boolean pullItems(Direction dir) {
        return pullItems(dir, false, tile.getBlockPos());

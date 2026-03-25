@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "T": {
+      "tag": "c:ingots/tungsten"
+    },
+    "W": {
+      "item": "nuclearcraft:wire_gold_tungsten"
+    }
+  },
+  "pattern": [
+    "TTT",
+    "TWT",
+    "TTT"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:tungsten_filament"
+  }
+}

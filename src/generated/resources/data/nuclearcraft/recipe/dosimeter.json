@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:bioplastic"
+    },
+    "G": {
+      "item": "nuclearcraft:gelatin"
+    },
+    "L": {
+      "tag": "c:plates/lead"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    " G ",
+    "SBS",
+    " L "
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:dosimeter"
+  }
+}

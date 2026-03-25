@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:lithium_ion_cell"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "S": {
+      "item": "nuclearcraft:coil_copper"
+    }
+  },
+  "pattern": [
+    "PCP",
+    "CSC",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:basic_lithium_ion_battery"
+  }
+}

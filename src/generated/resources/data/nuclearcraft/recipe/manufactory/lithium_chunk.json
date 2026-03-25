@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "item": "nuclearcraft:lithium_chunk"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "tag": "c:dusts/lithium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

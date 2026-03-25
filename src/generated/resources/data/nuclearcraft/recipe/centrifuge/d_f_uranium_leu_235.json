@@ -1,0 +1,38 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 810,
+      "fluid": "nuclearcraft:depleted_fuel_uranium_leu_235"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 360,
+      "tag": "c:uranium/238"
+    },
+    {
+      "amount": 90,
+      "tag": "c:plutonium/239"
+    },
+    {
+      "amount": 90,
+      "tag": "c:plutonium/242"
+    },
+    {
+      "amount": 90,
+      "tag": "c:americium/243"
+    },
+    {
+      "amount": 90,
+      "tag": "c:strontium_90"
+    },
+    {
+      "amount": 90,
+      "tag": "c:caesium_137"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

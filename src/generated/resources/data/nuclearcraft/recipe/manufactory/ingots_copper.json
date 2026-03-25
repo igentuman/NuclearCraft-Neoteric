@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "tag": "c:ingots/copper"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/copper"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.2
+}

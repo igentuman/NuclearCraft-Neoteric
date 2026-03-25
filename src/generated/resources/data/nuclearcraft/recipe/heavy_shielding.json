@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "c:plates/beryllium"
+    },
+    "H": {
+      "tag": "c:plates/hard_carbon"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_du"
+    },
+    "R": {
+      "item": "nuclearcraft:medium"
+    }
+  },
+  "pattern": [
+    "BBB",
+    "RHR",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:heavy"
+  }
+}

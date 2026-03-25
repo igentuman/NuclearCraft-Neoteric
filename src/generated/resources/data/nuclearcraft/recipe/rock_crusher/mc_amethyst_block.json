@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "input": [
+    {
+      "count": 32,
+      "item": "minecraft:amethyst_block"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/yttrium"
+    },
+    {
+      "tag": "c:dusts/hafnium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

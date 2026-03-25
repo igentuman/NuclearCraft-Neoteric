@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:electrolyzer",
+  "inputFluids": [
+    {
+      "amount": 500,
+      "tag": "c:heavy_water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 500,
+      "tag": "c:deuterium"
+    },
+    {
+      "amount": 250,
+      "tag": "c:oxygen"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

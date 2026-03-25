@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_target_chamber",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:empty_detector"
+    },
+    "S": {
+      "item": "nuclearcraft:scintillator_plastic"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SCS",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:hadron_calorimeter"
+  }
+}

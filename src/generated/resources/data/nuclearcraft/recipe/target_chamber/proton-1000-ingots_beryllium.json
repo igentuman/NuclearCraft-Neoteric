@@ -1,0 +1,34 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.625,
+  "input": [
+    {
+      "tag": "c:ingots/beryllium"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 1600000,
+      "focus": 1.0,
+      "meanEnergy": 1000,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 7500,
+  "output": [
+    {
+      "tag": "c:ingots/lithium/6"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "alpha"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

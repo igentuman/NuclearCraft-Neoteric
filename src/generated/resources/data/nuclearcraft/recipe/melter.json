@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_processors",
+  "key": {
+    "L": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "P": {
+      "item": "nuclearcraft:chassis"
+    },
+    "S": {
+      "item": "nuclearcraft:servo"
+    },
+    "X": {
+      "tag": "c:bricks/nether"
+    }
+  },
+  "pattern": [
+    "LXL",
+    "XPX",
+    "LSL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:melter"
+  }
+}

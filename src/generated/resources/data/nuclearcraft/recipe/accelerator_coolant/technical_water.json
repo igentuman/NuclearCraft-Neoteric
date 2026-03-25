@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:accelerator_coolant",
+  "coolingRate": 25.0,
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:technical_water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:high_pressure_steam"
+    }
+  ]
+}

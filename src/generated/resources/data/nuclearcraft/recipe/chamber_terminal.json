@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_kugelblitz",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:basic_electric_circuit"
+    },
+    "E": {
+      "tag": "c:ingots/extreme"
+    },
+    "N": {
+      "item": "nuclearcraft:neutronium_frame"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_extreme"
+    }
+  },
+  "pattern": [
+    "CPC",
+    "ENE",
+    "CPC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:chamber_terminal"
+  }
+}

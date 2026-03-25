@@ -1,0 +1,34 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.32,
+  "input": [
+    {
+      "tag": "c:ingots/uranium238"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 3125000,
+      "focus": 1.0,
+      "meanEnergy": 12000,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 16500,
+  "output": [
+    {
+      "item": "nuclearcraft:neptunium_237"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 2,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

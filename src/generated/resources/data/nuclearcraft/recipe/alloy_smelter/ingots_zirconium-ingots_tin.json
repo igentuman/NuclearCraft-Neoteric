@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "input": [
+    {
+      "count": 7,
+      "tag": "c:ingots/zirconium"
+    },
+    {
+      "tag": "c:ingots/tin"
+    }
+  ],
+  "output": [
+    {
+      "count": 8,
+      "item": "nuclearcraft:zircaloy_ingot"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

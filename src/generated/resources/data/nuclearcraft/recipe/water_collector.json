@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:nautilus_shell"
+    },
+    "G": {
+      "tag": "c:plates/thermoconducting"
+    },
+    "I": {
+      "item": "minecraft:water_bucket"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    }
+  },
+  "pattern": [
+    "PIP",
+    "GBG",
+    "PIP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:water_collector"
+  }
+}

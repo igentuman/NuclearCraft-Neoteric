@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:potassium_iodide"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/potassium_iodide"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

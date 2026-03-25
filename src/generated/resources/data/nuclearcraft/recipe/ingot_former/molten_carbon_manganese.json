@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:molten_carbon_manganese"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:ingots/carbon_manganese"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:fusion_core",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:hydrogen"
+    },
+    {
+      "amount": 90,
+      "tag": "c:lithium/6"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 500,
+      "tag": "c:tritium"
+    },
+    {
+      "amount": 500,
+      "tag": "c:tritium"
+    },
+    {
+      "amount": 500,
+      "tag": "c:helium"
+    },
+    {
+      "amount": 500,
+      "tag": "c:helium"
+    }
+  ],
+  "powerModifier": 270200.0,
+  "radiation": 1.5,
+  "temperature": 7278.0,
+  "timeModifier": 35.0
+}

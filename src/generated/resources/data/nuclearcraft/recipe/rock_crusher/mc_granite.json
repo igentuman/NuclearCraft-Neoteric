@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "input": [
+    {
+      "count": 4,
+      "item": "minecraft:granite"
+    }
+  ],
+  "output": [
+    {
+      "count": 2,
+      "tag": "c:dusts/rhodochrosite"
+    },
+    {
+      "tag": "c:dusts/villiaumite"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

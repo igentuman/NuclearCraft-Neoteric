@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:irradiated_lithium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 250,
+      "tag": "c:lithium/6"
+    },
+    {
+      "amount": 250,
+      "tag": "c:lithium/7"
+    },
+    {
+      "amount": 500,
+      "tag": "c:tritium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

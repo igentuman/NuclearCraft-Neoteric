@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "nuclearcraft:lithium_6_ox"
+  },
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:lithium_6"
+  }
+}

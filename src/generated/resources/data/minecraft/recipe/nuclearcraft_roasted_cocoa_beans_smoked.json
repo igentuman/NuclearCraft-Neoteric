@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "minecraft:cocoa_beans"
+  },
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:roasted_cocoa_beans"
+  }
+}

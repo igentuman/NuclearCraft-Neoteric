@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": [
+    {
+      "tag": "c:ingots/netherite"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:ingots/netherite"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

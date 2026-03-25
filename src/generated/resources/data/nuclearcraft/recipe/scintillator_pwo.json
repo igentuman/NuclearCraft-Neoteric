@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "P": {
+      "tag": "c:dusts/lead"
+    },
+    "W": {
+      "tag": "c:dusts/tungsten"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PWP",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:scintillator_pwo"
+  }
+}

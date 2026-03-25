@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_processors",
+  "key": {
+    "F": {
+      "tag": "c:dusts/redstone"
+    },
+    "L": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "P": {
+      "item": "minecraft:blast_furnace"
+    },
+    "S": {
+      "item": "nuclearcraft:coil_copper"
+    },
+    "X": {
+      "tag": "c:bricks/normal"
+    }
+  },
+  "pattern": [
+    "LFL",
+    "XPX",
+    "LSL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:alloy_smelter"
+  }
+}

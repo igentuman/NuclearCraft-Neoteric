@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_turbine",
+  "key": {
+    "B": {
+      "tag": "c:ingots/aluminum"
+    },
+    "S": {
+      "tag": "c:ingots/stainless_steel"
+    }
+  },
+  "pattern": [
+    "SBS",
+    "SBS",
+    "SBS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:turbine_aluminum_coil"
+  }
+}

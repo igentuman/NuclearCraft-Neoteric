@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:plates/steel"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "U": {
+      "item": "nuclearcraft:coil_copper"
+    }
+  },
+  "pattern": [
+    "PGP",
+    "GUG",
+    "PGP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:decay_generator"
+  }
+}

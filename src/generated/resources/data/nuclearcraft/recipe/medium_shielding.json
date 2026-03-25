@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:bioplastic"
+    },
+    "F": {
+      "tag": "c:ingots/ferroboron"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "R": {
+      "item": "nuclearcraft:light"
+    }
+  },
+  "pattern": [
+    "BBB",
+    "RFR",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:medium"
+  }
+}

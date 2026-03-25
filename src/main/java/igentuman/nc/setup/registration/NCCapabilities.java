@@ -169,6 +169,20 @@ public class NCCapabilities {
                 return null;
             }
         );
+
+        // Mekanism chemical handler capability — converts chemicals to NC fluids
+        if (net.neoforged.fml.ModList.get().isLoaded("mekanism")) {
+            event.registerBlockEntity(
+                mekanism.common.capabilities.Capabilities.CHEMICAL.block(),
+                beType,
+                (be, side) -> {
+                    if (be.contentHandler() != null && be.contentHandler().getFluidCapability(side) != null) {
+                        return be.contentHandler().chemicalConverter(side);
+                    }
+                    return null;
+                }
+            );
+        }
     }
 
     /**

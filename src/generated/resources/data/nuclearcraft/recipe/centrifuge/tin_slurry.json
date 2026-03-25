@@ -1,0 +1,30 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "c:tin_slurry"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 800,
+      "tag": "c:tin_clean_slurry"
+    },
+    {
+      "amount": 50,
+      "tag": "c:hydrochloric_acid"
+    },
+    {
+      "amount": 50,
+      "tag": "c:nitric_acid"
+    },
+    {
+      "amount": 10,
+      "tag": "c:calcium_sulfate_solution"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:sulfur"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/sulfur"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

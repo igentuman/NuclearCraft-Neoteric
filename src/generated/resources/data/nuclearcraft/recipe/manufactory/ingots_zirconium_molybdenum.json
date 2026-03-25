@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "input": [
+    {
+      "tag": "c:ingots/zirconium_molybdenum"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/zirconium_molybdenum"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

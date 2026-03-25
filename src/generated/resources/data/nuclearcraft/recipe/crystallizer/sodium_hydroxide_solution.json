@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "inputFluids": [
+    {
+      "amount": 250,
+      "tag": "c:sodium_hydroxide_solution"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:dusts/sodium_hydroxide"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "nuclearcraft:dummy_turbine_blade"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "nuclearcraft:blocks/dummy_turbine_blade"
+}

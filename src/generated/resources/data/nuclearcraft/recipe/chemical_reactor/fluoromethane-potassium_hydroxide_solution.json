@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 250,
+      "tag": "c:fluoromethane"
+    },
+    {
+      "amount": 45,
+      "tag": "c:potassium_hydroxide_solution"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 250,
+      "tag": "c:ethene"
+    },
+    {
+      "amount": 250,
+      "tag": "c:potassium_fluoride_solution"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

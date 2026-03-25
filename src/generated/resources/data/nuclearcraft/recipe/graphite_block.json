@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "c:ingots/graphite"
+    },
+    {
+      "tag": "c:ingots/graphite"
+    },
+    {
+      "tag": "c:ingots/graphite"
+    },
+    {
+      "tag": "c:ingots/graphite"
+    },
+    {
+      "tag": "c:ingots/graphite"
+    },
+    {
+      "tag": "c:ingots/graphite"
+    },
+    {
+      "tag": "c:ingots/graphite"
+    },
+    {
+      "tag": "c:ingots/graphite"
+    },
+    {
+      "tag": "c:ingots/graphite"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:graphite_block"
+  }
+}

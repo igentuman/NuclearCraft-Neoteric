@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:assembler",
+  "input": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:upgrade_speed"
+    },
+    {
+      "tag": "c:plates/cobalt"
+    },
+    {
+      "tag": "c:dusts/uranium"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:upgrade_stack"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

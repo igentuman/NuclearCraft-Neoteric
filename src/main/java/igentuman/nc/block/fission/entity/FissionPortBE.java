@@ -47,6 +47,8 @@ public class FissionPortBE extends MultiblockPortBE {
 
     public FissionPortBE(BlockPos pPos, BlockState pBlockState) {
         super(FissionReactorRegistration.FISSION_BE.get(NAME).get(), pPos, pBlockState);
+        // Default empty storage so cables detect the capability before formation
+        energyStorage = new igentuman.nc.util.capability.CustomEnergyStorage(0, 0, 0);
     }
     public Direction getFacing() {
         return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
@@ -220,11 +222,23 @@ public class FissionPortBE extends MultiblockPortBE {
         if (this.multiblock != null) {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
             controller = (FissionControllerBE) this.multiblock.controller().controllerBE();
+            // Share controller's energy and content handlers so capability queries work directly
+            if (controller.energyStorage() != null) {
+                energyStorage = controller.energyStorage();
+            }
+            if (controller.contentHandler() != null) {
+                contentHandler = controller.contentHandler();
+            }
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+        } else {
+            // Multiblock unformed — revert to empty storage, clear content handler
+            energyStorage = new igentuman.nc.util.capability.CustomEnergyStorage(0, 0, 0);
+            contentHandler = null;
         }
-        // Sync controllerPos and connected state to client immediately
+        // Sync and invalidate capabilities so cables re-query
         setChanged();
         level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        level.invalidateCapabilities(worldPosition);
         syncToTrackingClients();
     }
 

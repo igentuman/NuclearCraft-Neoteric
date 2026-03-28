@@ -116,6 +116,12 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         radiation -= (int) decaySpeed;
         radiation = Math.min(maxPlayerRadiation, Math.max(0, radiation));
         assert player instanceof Player;
+        // When Mekanism radiation integration is active, let Mekanism handle
+        // player effects — NC just emits into Mekanism's system
+        if (net.neoforged.fml.ModList.get().isLoaded("mekanism")
+                && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
+            return;
+        }
         updateContaminationStage((Player) player);
     }
 

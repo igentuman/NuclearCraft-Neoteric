@@ -256,6 +256,14 @@ public class FissionControllerBE extends MultiblockControllerBE {
             protected void onEnergyChanged() {
                 setChanged();
             }
+            @Override
+            public int extractEnergy(int maxExtract, boolean simulate) {
+                int rc = super.extractEnergy(maxExtract, simulate);
+                if (rc > 0 && !simulate) {
+                    LOGGER.info("[NC-DIAG] extractEnergy: extracted={}, remaining={}", rc, getEnergyStored());
+                }
+                return rc;
+            }
         };
     }
 
@@ -347,9 +355,9 @@ public class FissionControllerBE extends MultiblockControllerBE {
                 BlockOverlayHandler.reactors.add(this);
             }
             spawnParticles();
-            playSound(FISSION_REACTOR, 0.2f);
+            try { playSound(FISSION_REACTOR, 0.2f); } catch (Throwable ignored) {}
         } else {
-            stopSound();
+            try { stopSound(); } catch (Throwable ignored) {}
         }
     }
 

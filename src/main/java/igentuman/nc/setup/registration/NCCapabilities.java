@@ -122,6 +122,21 @@ public class NCCapabilities {
     }
 
     @SuppressWarnings("unchecked")
+    private static NuclearCraftBE getPortController(NuclearCraftBE be) {
+        try {
+            var method = be.getClass().getMethod("controller");
+            Object result = method.invoke(be);
+            if (result instanceof NuclearCraftBE controller) {
+                return controller;
+            }
+            NuclearCraft.LOGGER.warn("[NC-DIAG] getPortController: controller() returned {} for {}",
+                    result == null ? "null" : result.getClass().getSimpleName(), be.getClass().getSimpleName());
+        } catch (Exception e) {
+            // Not a port BE — no controller() method, expected
+        }
+        return null;
+    }
+
     private static void addIfPresent(List<BlockEntityType<? extends NuclearCraftBE>> list, Object holder) {
         if (holder instanceof DeferredHolder<?, ?> dh) {
             try {
@@ -139,7 +154,14 @@ public class NCCapabilities {
         event.registerBlockEntity(
             Capabilities.EnergyStorage.BLOCK,
             beType,
-            (be, side) -> be.energyStorage() != null ? be.energyStorage() : null
+            (be, side) -> {
+                var es = be.energyStorage();
+                if (es != null) {
+                    NuclearCraft.LOGGER.info("[NC-DIAG] Energy cap queried: {} stored={} canExtract={} maxExtract={}",
+                            be.getClass().getSimpleName(), es.getEnergyStored(), es.canExtract(), es.getMaxExtract());
+                }
+                return es;
+            }
         );
 
         // Item handler capability
@@ -149,7 +171,7 @@ public class NCCapabilities {
             beType,
             (be, side) -> {
                 if (be instanceof LeacherBE) {
-                    return null; // Leacher blocks item handler from outside
+                    return null;
                 }
                 if (be.contentHandler() != null) {
                     return be.contentHandler().getItemCapability(side);

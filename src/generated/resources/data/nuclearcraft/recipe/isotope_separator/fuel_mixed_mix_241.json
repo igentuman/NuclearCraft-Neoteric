@@ -8,11 +8,11 @@
   ],
   "output": [
     {
-      "item": "nuclearcraft:plutonium_241_ni"
+      "item": "nuclearcraft:plutonium_241"
     },
     {
       "count": 8,
-      "item": "nuclearcraft:plutonium_238_ni"
+      "item": "nuclearcraft:uranium_238"
     }
   ],
   "powerModifier": 1.0,

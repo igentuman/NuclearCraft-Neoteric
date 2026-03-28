@@ -108,10 +108,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
             tag.put("tank" + i, tanks.get(i).writeToNBT(provider, new CompoundTag()));
         }
         tag.putInt("size", tanks.size());
-        if(sideMapUpdated) {
-            sideMapUpdated = false;
-            tag.put("sideMap", SidedContentHandler.serializeSideMap(sideMap));
-        }
+        tag.put("sideMap", SidedContentHandler.serializeSideMap(sideMap));
         return tag;
     }
 

@@ -221,10 +221,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         CompoundTag nbt = new CompoundTag();
         nbt.put("Items", nbtTagList);
         nbt.putInt("Size", stacks.size());
-        if (sideMapUpdated) {
-            sideMapUpdated = false;
-            nbt.put("sideMap", SidedContentHandler.serializeSideMap(sideMap));
-        }
+        nbt.put("sideMap", SidedContentHandler.serializeSideMap(sideMap));
         return nbt;
     }
 

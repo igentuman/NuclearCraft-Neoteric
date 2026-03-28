@@ -487,6 +487,14 @@ public abstract class AbstractRecipeProvider {
         if(!type.isEmpty()) {
             type = "_"+type;
         }
+        // MOX (mixed) fuel: primary isotope is plutonium, secondary (238) is uranium
+        if(name.equals("mixed")) {
+            if(id.equals("238")) {
+                name = "uranium";
+            } else {
+                name = "plutonium";
+            }
+        }
         if(!FissionFuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
             for(String isotope: FissionFuel.NC_ISOTOPES.keySet()) {
                 if(isotope.contains(id)) {

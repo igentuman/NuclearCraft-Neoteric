@@ -103,6 +103,9 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(fluidHandler != null) {
             NCSerialization.deserialize(fluidHandler, provider, ((CompoundTag) nbt).getCompound("fluidHandler"));
         }
+        // Recalculate push/pull flags after loading side config from NBT
+        hasPush = hasPush();
+        hasPull = hasPull();
     }
 
     public IItemHandler getItemCapability(Direction side) {
@@ -204,7 +207,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         return updated;
     }
 
-    private boolean hasPush() {
+    public boolean hasPush() {
         boolean result = false;
         if(fluidHandler != null) {
             result = fluidHandler.hasPush();
@@ -215,7 +218,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         return result;
     }
 
-    private boolean hasPull() {
+    public boolean hasPull() {
         boolean result = false;
         if(fluidHandler != null) {
             result = fluidHandler.hasPull();

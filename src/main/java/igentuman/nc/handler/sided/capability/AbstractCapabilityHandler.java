@@ -57,8 +57,9 @@ public abstract class AbstractCapabilityHandler {
                 case PUSH_EXCESS -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
             }
         }
-        sidedContentHandler.hasPush = hasPush();
-        sidedContentHandler.hasPull = hasPull();
+        // Recalculate from both handlers — can't just check this handler alone
+        sidedContentHandler.hasPush = sidedContentHandler.hasPush();
+        sidedContentHandler.hasPull = sidedContentHandler.hasPull();
         return sideSlots[slot].getMode().ordinal();
     }
 
@@ -109,7 +110,8 @@ public abstract class AbstractCapabilityHandler {
     }
 
     protected void onLoad() {
-        sidedContentHandler.hasPush = hasPush();
-        sidedContentHandler.hasPull = hasPull();
+        // OR with existing flags — don't overwrite a previous handler's result
+        sidedContentHandler.hasPush = sidedContentHandler.hasPush || hasPush();
+        sidedContentHandler.hasPull = sidedContentHandler.hasPull || hasPull();
     }
 }

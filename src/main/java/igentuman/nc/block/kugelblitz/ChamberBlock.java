@@ -44,7 +44,8 @@ public class ChamberBlock extends MultiblockBlock {
 
     @Override
     public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> list, TooltipFlag pFlag) {
-        list.add(__("tooltip.kugelblitz.block_" + pStack.getItem()).withStyle(ChatFormatting.AQUA));
+        String name = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(pStack.getItem()).getPath();
+        list.add(__("tooltip.kugelblitz.block_" + name).withStyle(ChatFormatting.AQUA));
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
     }
 }

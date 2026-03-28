@@ -54,6 +54,7 @@ public class ProcessorBlockItem extends BlockItem
 		if(isGtLoaded() && isGTEUCapEnabled()) {
 			list.add(__("tooltip.nc.energy_base_eu_tier", GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get()).withStyle(ChatFormatting.GOLD));
 		}
-		list.add(TextUtils.applyFormat(__("processor.description."+toString()), ChatFormatting.AQUA));
+		String name = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(this).getPath();
+		list.add(TextUtils.applyFormat(__("processor.description."+name), ChatFormatting.AQUA));
 	}
 }

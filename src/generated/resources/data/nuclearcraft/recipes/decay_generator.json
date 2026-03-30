@@ -3,12 +3,12 @@
   "category": "misc",
   "key": {
     "G": {
-      "tag": "forge:plates/steel"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
+      "item": "minecraft:redstone"
     },
     "U": {
+      "tag": "forge:blocks/iron"
+    },
+    "P": {
       "item": "nuclearcraft:coil_copper"
     }
   },

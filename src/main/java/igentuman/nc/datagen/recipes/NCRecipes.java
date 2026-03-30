@@ -701,10 +701,10 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("PGP")
                 .pattern("GUG")
                 .pattern("PGP")
-                .define('G', forgePlate(Materials.steel))
-                .define('P', NC_PARTS.get("plate_basic").get())
-                .define('U', NC_PARTS.get("coil_copper").get())
-                .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
+                .define('G', REDSTONE)
+                .define('P', NC_PARTS.get("coil_copper").get())
+                .define('U', IRON_BLOCK)
+                .unlockedBy("item", has(NC_PARTS.get("coil_copper").get()))
                 .save(consumer, rl("decay_generator"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("uranium_rtg").get())

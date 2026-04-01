@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 120,
-      "tag": "c:molten_hsla_steel"
+      "fluid": "nuclearcraft:molten_hsla_steel"
     }
   ],
   "powerModifier": 1.0,

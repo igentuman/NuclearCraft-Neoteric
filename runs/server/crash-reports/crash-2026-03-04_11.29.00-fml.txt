@@ -1,0 +1,107 @@
+---- Minecraft Crash Report ----
+// I bet Cylons wouldn't have this problem.
+
+Time: 2026-03-04 11:29:00
+Description: Mod loading failures have occurred; consult the issue messages for more details
+
+net.neoforged.neoforge.logging.CrashReportExtender$ModLoadingCrashException: Mod loading has failed
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: main
+Stacktrace:
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.util.FileExtractor.unpackFilesFromFolderToConfig(FileExtractor.java:132) ~[%23190!/:?] {re:classloading}
+-- Mod loading issue for: nuclearcraft --
+Details:
+	Mod file: /Users/caliane/Sources/nuclearcraft/build/resources/main
+	Failure message: Nuclearcraft Neoteric (nuclearcraft) has failed to load correctly
+		java.lang.NullPointerException: Cannot read the array length because "<local11>" is null
+	Mod version: 1.3.0
+	Mod issues URL: https://github.com/igentuman/NuclearCraft-Neoteric/issues
+	Exception message: java.lang.NullPointerException: Cannot read the array length because "<local11>" is null
+Stacktrace:
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.util.FileExtractor.unpackFilesFromFolderToConfig(FileExtractor.java:132) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.NuclearCraft.registerConfigs(NuclearCraft.java:48) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.NuclearCraft.<init>(NuclearCraft.java:68) ~[%23190!/:?] {re:classloading}
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62) ~[?:?] {}
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502) ~[?:?] {}
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486) ~[?:?] {}
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.javafmlmod.FMLModContainer.constructMod(FMLModContainer.java:115) ~[loader-4.0.42.jar%23142!/:4.0] {}
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.ModLoader.lambda$constructMods$3(ModLoader.java:153) ~[loader-4.0.42.jar%23142!/:4.0] {}
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.ModLoader.lambda$dispatchParallelTask$7(ModLoader.java:231) ~[loader-4.0.42.jar%23142!/:4.0] {}
+	at java.base/java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:934) ~[?:?] {}
+	at java.base/java.util.concurrent.CompletableFuture$UniHandle.tryFire(CompletableFuture.java:911) ~[?:?] {}
+	at java.base/java.util.concurrent.CompletableFuture$Completion.exec(CompletableFuture.java:483) ~[?:?] {}
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:387) ~[?:?] {}
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1312) ~[?:?] {}
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1843) ~[?:?] {}
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1808) ~[?:?] {}
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:188) ~[?:?] {}
+
+
+-- System Details --
+Details:
+	Minecraft Version: 1.21.1
+	Minecraft Version ID: 1.21.1
+	Operating System: Mac OS X (aarch64) version 26.2
+	Java Version: 21.0.10, Homebrew
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), Homebrew
+	Memory: 234689832 bytes (223 MiB) / 687865856 bytes (656 MiB) up to 31675383808 bytes (30208 MiB)
+	CPUs: 32
+	Processor Vendor: Apple Inc.
+	Processor Name: Apple M3 Ultra
+	Identifier: Apple Inc. Family 0x8765edea Model 0 Stepping 0
+	Microarchitecture: ARM64 SoC: Everest + Sawtooth
+	Frequency (GHz): 4.06
+	Number of physical packages: 1
+	Number of physical CPUs: 32
+	Number of logical CPUs: 32
+	Graphics card #0 name: Apple M3 Ultra
+	Graphics card #0 vendor: Apple (0x106b)
+	Graphics card #0 VRAM (MiB): 0.00
+	Graphics card #0 deviceId: unknown
+	Graphics card #0 versionInfo: unknown
+	Memory slot #0 capacity (MiB): 0.00
+	Memory slot #0 clockSpeed (GHz): 0.00
+	Memory slot #0 type: unknown
+	Virtual memory max (MiB): 524288.00
+	Virtual memory used (MiB): 87122.33
+	Swap memory total (MiB): 0.00
+	Swap memory used (MiB): 0.00
+	Space in storage for jna.tmpdir (MiB): <path not set>
+	Space in storage for org.lwjgl.system.SharedLibraryExtractPath (MiB): <path not set>
+	Space in storage for io.netty.native.workdir (MiB): <path not set>
+	Space in storage for java.io.tmpdir (MiB): available: 4713184.50, total: 7628013.50
+	Space in storage for workdir (MiB): available: 4713184.50, total: 7628013.50
+	JVM Flags: 0 total; 
+	ModLauncher: 11.0.5+main.901c6ea8
+	ModLauncher launch target: forgeserverdev
+	ModLauncher services: 
+		sponge-mixin-0.15.2+mixin.0.8.7.jar mixin PLUGINSERVICE 
+		loader-4.0.42.jar slf4jfixer PLUGINSERVICE 
+		loader-4.0.42.jar runtime_enum_extender PLUGINSERVICE 
+		at-modlauncher-10.0.1.jar accesstransformer PLUGINSERVICE 
+		loader-4.0.42.jar runtimedistcleaner PLUGINSERVICE 
+		modlauncher-11.0.5.jar mixin TRANSFORMATIONSERVICE 
+		modlauncher-11.0.5.jar fml TRANSFORMATIONSERVICE 
+	FML Language Providers: 
+		javafml@4.0
+		lowcodefml@4.0
+		minecraft@4.0
+	Mod List: 
+		architectury-neoforge-13.0.8.jar                  |Architectury                  |architectury                  |13.0.8              |Manifest: NOSIGNATURE
+		cc-tweaked-1.21.1-forge-1.117.0.jar               |CC: Tweaked                   |computercraft                 |1.117.0             |Manifest: NOSIGNATURE
+		emi-neoforge-1.1.21+1.21.1.jar                    |EMI                           |emi                           |1.1.21+1.21.1+neofor|Manifest: NOSIGNATURE
+		Mekanism-1.21.1-10.7.18.84.jar                    |Mekanism                      |mekanism                      |10.7.18             |Manifest: NOSIGNATURE
+		Mekanism-1.21.1-10.7.18.84-generators.jar         |Mekanism: Generators          |mekanismgenerators            |10.7.18             |Manifest: NOSIGNATURE
+		neoforge-21.1.219.jar                             |Minecraft                     |minecraft                     |1.21.1              |Manifest: NOSIGNATURE
+		neoforge-21.1.219.jar                             |NeoForge                      |neoforge                      |21.1.219            |Manifest: NOSIGNATURE
+		main                                              |Nuclearcraft Neoteric         |nuclearcraft                  |1.3.0               |Manifest: NOSIGNATURE
+		Patchouli-1.21.1-92-NEOFORGE.jar                  |Patchouli                     |patchouli                     |1.21.1-92-NEOFORGE  |Manifest: NOSIGNATURE
+		theoneprobe-1.21_neo-12.0.3-5.jar                 |The One Probe                 |theoneprobe                   |1.21_neo-12.0.3-5   |Manifest: NOSIGNATURE
+	Crash Report UUID: 711fdf1c-c351-4a29-bb0a-fe3223953af3
+	FML: 4.0.42
+	NeoForge: 21.1.219

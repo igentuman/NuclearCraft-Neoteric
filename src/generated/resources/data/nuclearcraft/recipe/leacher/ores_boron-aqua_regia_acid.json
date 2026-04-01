@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "tag": "c:boron_slurry"
+      "fluid": "nuclearcraft:boron_slurry"
     }
   ],
   "powerModifier": 1.0,

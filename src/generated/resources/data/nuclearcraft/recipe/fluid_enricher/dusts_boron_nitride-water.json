@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 250,
-      "tag": "c:boron_nitride_solution"
+      "fluid": "nuclearcraft:boron_nitride_solution"
     }
   ],
   "powerModifier": 1.0,

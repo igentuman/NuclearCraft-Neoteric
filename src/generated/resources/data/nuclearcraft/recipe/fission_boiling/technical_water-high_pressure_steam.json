@@ -10,7 +10,7 @@
   "outputFluids": [
     {
       "amount": 10,
-      "tag": "c:high_pressure_steam"
+      "fluid": "nuclearcraft:high_pressure_steam"
     }
   ]
 }

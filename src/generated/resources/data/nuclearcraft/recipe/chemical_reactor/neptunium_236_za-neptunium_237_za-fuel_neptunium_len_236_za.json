@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:fuel_neptunium_len_236_za"
+      "fluid": "nuclearcraft:fuel_neptunium_len_236_za"
     }
   ],
   "powerModifier": 1.0,

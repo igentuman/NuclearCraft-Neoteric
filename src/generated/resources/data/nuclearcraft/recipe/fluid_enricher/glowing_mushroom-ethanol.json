@@ -15,7 +15,7 @@
   "outputFluids": [
     {
       "amount": 250,
-      "tag": "c:radaway"
+      "fluid": "nuclearcraft:radaway"
     }
   ],
   "powerModifier": 1.0,

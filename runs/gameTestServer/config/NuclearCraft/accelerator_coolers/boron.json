@@ -1,0 +1,5 @@
+[{
+  "type": "boron",
+  "heat": 105,
+  "placement_rule": ["electromagnet_yoke", "#nuclearcraft:amplifiers"]
+}]

@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 2000,
-      "tag": "c:ethanol"
+      "fluid": "nuclearcraft:ethanol"
     },
     {
       "amount": 1000,
-      "tag": "c:carbon_dioxide"
+      "fluid": "nuclearcraft:carbon_dioxide"
     }
   ],
   "powerModifier": 0.5,

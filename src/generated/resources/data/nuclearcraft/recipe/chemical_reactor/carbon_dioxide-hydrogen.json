@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 250,
-      "tag": "c:carbon_monoxide"
+      "fluid": "nuclearcraft:carbon_monoxide"
     },
     {
       "amount": 250,
-      "tag": "minecraft:water"
+      "fluid": "nuclearcraft:minecraft:water"
     }
   ],
   "powerModifier": 0.5,

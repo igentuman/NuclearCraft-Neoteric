@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 270,
-      "tag": "c:magnesium_diboride"
+      "fluid": "nuclearcraft:magnesium_diboride"
     }
   ],
   "powerModifier": 0.5,

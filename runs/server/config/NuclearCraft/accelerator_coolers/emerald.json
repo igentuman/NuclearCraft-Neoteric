@@ -1,0 +1,5 @@
+[{
+  "type": "emerald",
+  "heat": 135,
+  "placement_rule": ["#nuclearcraft:amplifiers", "prismarine_cooler"]
+}]

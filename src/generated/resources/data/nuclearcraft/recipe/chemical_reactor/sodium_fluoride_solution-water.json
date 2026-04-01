@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 45,
-      "tag": "c:sodium_hydroxide_solution"
+      "fluid": "nuclearcraft:sodium_hydroxide_solution"
     },
     {
       "amount": 500,
-      "tag": "c:hydrofluoric_acid"
+      "fluid": "nuclearcraft:hydrofluoric_acid"
     }
   ],
   "powerModifier": 0.5,

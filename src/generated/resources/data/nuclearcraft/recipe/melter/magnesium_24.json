@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:magnesium_24"
+      "fluid": "nuclearcraft:magnesium_24"
     }
   ],
   "powerModifier": 1.0,

@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 180,
-      "tag": "c:ferroboron"
+      "fluid": "nuclearcraft:ferroboron"
     }
   ],
   "powerModifier": 0.5,

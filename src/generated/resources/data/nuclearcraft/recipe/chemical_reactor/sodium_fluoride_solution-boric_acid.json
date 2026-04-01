@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 45,
-      "tag": "c:borax_solution"
+      "fluid": "nuclearcraft:borax_solution"
     },
     {
       "amount": 1500,
-      "tag": "c:hydrofluoric_acid"
+      "fluid": "nuclearcraft:hydrofluoric_acid"
     }
   ],
   "powerModifier": 0.5,

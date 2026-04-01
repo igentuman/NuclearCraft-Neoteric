@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:iridium_192"
+      "fluid": "nuclearcraft:iridium_192"
     }
   ],
   "powerModifier": 1.0,

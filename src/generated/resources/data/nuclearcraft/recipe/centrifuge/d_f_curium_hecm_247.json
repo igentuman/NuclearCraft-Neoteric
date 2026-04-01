@@ -3,33 +3,33 @@
   "inputFluids": [
     {
       "amount": 810,
-      "fluid": "nuclearcraft:depleted_fuel_curium_hecm_247"
+      "tag": "c:depleted_fuel_curium_hecm_247"
     }
   ],
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:californium/251"
+      "fluid": "nuclearcraft:californium/251"
     },
     {
       "amount": 90,
-      "tag": "c:californium/249"
+      "fluid": "nuclearcraft:californium/249"
     },
     {
       "amount": 360,
-      "tag": "c:berkelium/247"
+      "fluid": "nuclearcraft:berkelium/247"
     },
     {
       "amount": 90,
-      "tag": "c:berkelium/248"
+      "fluid": "nuclearcraft:berkelium/248"
     },
     {
       "amount": 90,
-      "tag": "c:molybdenum"
+      "fluid": "nuclearcraft:molybdenum"
     },
     {
       "amount": 90,
-      "tag": "c:europium_155"
+      "fluid": "nuclearcraft:europium_155"
     }
   ],
   "powerModifier": 1.0,

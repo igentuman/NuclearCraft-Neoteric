@@ -1,0 +1,101 @@
+[04Mar2026 15:24:20.160] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0).
+[04Mar2026 15:24:23.595] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[04Mar2026 15:24:23.596] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[04Mar2026 15:24:23.599] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[04Mar2026 15:24:23.600] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[04Mar2026 15:24:23.601] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[04Mar2026 15:24:23.652] [modloading-worker-0/INFO] [igentuman.nc.NuclearCraft/]: JAR file path: /Users/caliane/Sources/nuclearcraft/build/resources/main
+[04Mar2026 15:24:23.652] [modloading-worker-0/INFO] [igentuman.nc.NuclearCraft/]: JAR file path: /Users/caliane/Sources/nuclearcraft/build/resources/main
+[04Mar2026 15:24:23.654] [modloading-worker-0/INFO] [igentuman.nc.NuclearCraft/]: JAR file path: /Users/caliane/Sources/nuclearcraft/build/resources/main
+[04Mar2026 15:24:23.667] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.219, for MC 1.21.1
+[04Mar2026 15:24:25.603] [modloading-sync-worker/WARN] [net.neoforged.fml.config.ConfigTracker/CONFIG]: Configuration file /Users/caliane/Sources/nuclearcraft/runs/server/config/NuclearCraft/common.toml is not correct. Correcting
+[04Mar2026 15:24:25.619] [modloading-worker-0/INFO] [mekanism.common.Mekanism/]: Version 10.7.18 initializing...
+[04Mar2026 15:24:25.691] [modloading-worker-0/INFO] [mekanism.common.Mekanism/]: Initialized HolidayManager.
+[04Mar2026 15:24:25.714] [modloading-worker-0/INFO] [mekanism.common.Mekanism/]: Fake player readout: UUID = 46e82cd0-d480-3d48-800a-77431ede078e, name = [Mekanism]
+[04Mar2026 15:24:25.714] [modloading-worker-0/INFO] [mekanism.common.Mekanism/]: Mod loaded.
+[04Mar2026 15:24:25.715] [modloading-worker-0/INFO] [mekanism.common.Mekanism/]: Loaded 'Mekanism: Generators' module.
+[04Mar2026 15:24:25.894] [NeoForge Version Check/INFO] [net.neoforged.fml.VersionChecker/]: [computercraft] Starting version check at https://api.modrinth.com/updates/cc-tweaked/forge_updates.json
+[04Mar2026 15:24:26.086] [main/INFO] [com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService/]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
+[04Mar2026 15:24:26.164] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/Users/caliane/Sources/nuclearcraft/.gradle/repositories/ng_dummy_ng/net/neoforged/neoforge/21.1.219/neoforge-21.1.219.jar%23188!/assets/.mcassetsroot' uses unexpected schema
+[04Mar2026 15:24:26.164] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/Users/caliane/Sources/nuclearcraft/.gradle/repositories/ng_dummy_ng/net/neoforged/neoforge/21.1.219/neoforge-21.1.219.jar%23188!/data/.mcassetsroot' uses unexpected schema
+[04Mar2026 15:24:26.514] [NeoForge Version Check/INFO] [net.neoforged.fml.VersionChecker/]: [computercraft] Found status: BETA Current: 1.117.0 Target: null
+[04Mar2026 15:24:26.894] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.AutoCraftingTestPlots for plots
+[04Mar2026 15:24:26.896] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.SpawnExtraGridTestTools for plots
+[04Mar2026 15:24:26.897] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.PatternProviderPlots for plots
+[04Mar2026 15:24:26.897] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.CrystalResonanceGeneratorTestPlots for plots
+[04Mar2026 15:24:26.897] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.InterfaceTestPlots for plots
+[04Mar2026 15:24:26.897] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.PatternProviderLockModePlots for plots
+[04Mar2026 15:24:26.897] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.ItemP2PTestPlots for plots
+[04Mar2026 15:24:26.897] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.InvalidPatternTestPlot for plots
+[04Mar2026 15:24:26.897] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.MemoryCardTestPlots for plots
+[04Mar2026 15:24:26.898] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.AnnihilationPlaneTests for plots
+[04Mar2026 15:24:26.898] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.InscriberTestPlots for plots
+[04Mar2026 15:24:26.902] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.GuidebookPlot for plots
+[04Mar2026 15:24:26.902] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.SubnetPlots for plots
+[04Mar2026 15:24:26.902] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.P2PTestPlots for plots
+[04Mar2026 15:24:26.903] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.QnbTestPlots for plots
+[04Mar2026 15:24:26.903] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.ExternalEnergyTestPlots for plots
+[04Mar2026 15:24:26.903] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.ChannelTests for plots
+[04Mar2026 15:24:26.903] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.TestPlots for plots
+[04Mar2026 15:24:26.904] [Worker-Main-3/INFO] [AE2:C/]: Scanning class appeng.server.testplots.SpatialTestPlots for plots
+[04Mar2026 15:24:27.394] [main/INFO] [net.minecraft.world.item.crafting.RecipeManager/]: Loaded 6562 recipes
+[04Mar2026 15:24:27.580] [main/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 2838 advancements
+[04Mar2026 15:24:28.056] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting minecraft server version 1.21.1
+[04Mar2026 15:24:28.057] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Loading properties
+[04Mar2026 15:24:28.057] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Default game type: CREATIVE
+[04Mar2026 15:24:28.057] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Generating keypair
+[04Mar2026 15:24:28.140] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting Minecraft server on *:25565
+[04Mar2026 15:24:28.168] [Server thread/INFO] [net.minecraft.server.network.ServerConnectionListener/]: Using default channel type
+[04Mar2026 15:24:28.199] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+[04Mar2026 15:24:28.199] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: The server will make no attempt to authenticate usernames. Beware.
+[04Mar2026 15:24:28.199] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+[04Mar2026 15:24:28.199] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: To change this, set "online-mode" to "true" in the server.properties file.
+[04Mar2026 15:24:28.268] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Preparing level "world"
+[04Mar2026 15:24:29.034] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
+[04Mar2026 15:24:29.322] [worldgen/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 0%
+[04Mar2026 15:24:29.488] [Server thread/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Time elapsed: 453 ms
+[04Mar2026 15:24:29.488] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Done (1.281s)! For help, type "help"
+[04Mar2026 15:24:29.488] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting remote control listener
+[04Mar2026 15:24:29.490] [Server thread/INFO] [net.minecraft.server.rcon.thread.GenericThread/]: Thread RCON Listener started
+[04Mar2026 15:24:29.490] [Server thread/INFO] [net.minecraft.server.rcon.thread.RconThread/]: RCON running on 0.0.0.0:25575
+[04Mar2026 15:24:29.539] [Server thread/INFO] [net.neoforged.neoforge.gametest.GameTestHooks/]: Enabled Gametest Namespaces: [nuclearcraft]
+[04Mar2026 15:24:29.545] [Server thread/INFO] [net.neoforged.neoforge.server.permission.PermissionAPI/]: Successfully initialized permission handler neoforge:default_handler
+[04Mar2026 15:24:29.547] [Server thread/WARN] [net.neoforged.neoforge.common.TagConventionLogWarning/]: 
+   Dev warning - Legacy Tags detected. Please migrate your 'forge' namespace tags to the 'c' namespace! See net.neoforged.neoforge.common.Tags.java for all tags.
+   NOTE: Many tags have been moved around or renamed. Some new ones were added so please review the new tags.
+    And make sure you follow tag conventions for new tags! The convention is `c` with nouns generally being plural and adjectives being singular.
+   You can disable this message in NeoForge's common config by setting `logLegacyTagWarnings` to "SILENCED" or see individual tags with "DEV_VERBOSE".
+
+[04Mar2026 15:24:29.760] [Server thread/INFO] [patchouli/]: Sending reload packet to clients
+[04Mar2026 15:24:48.572] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: Dev[/127.0.0.1:61275] logged in with entity id 93 at (256.1689761736045, 61.0, -95.85671308579958)
+[04Mar2026 15:24:48.592] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
+[04Mar2026 15:31:22.276] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Dev lost connection: Disconnected
+[04Mar2026 15:31:22.276] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game
+[04Mar2026 15:34:35.995] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: Dev[/127.0.0.1:62145] logged in with entity id 859 at (253.80085565190222, 62.0, -90.40465463544729)
+[04Mar2026 15:34:36.004] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
+[04Mar2026 15:36:30.725] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Dev lost connection: Disconnected
+[04Mar2026 15:36:30.727] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game
+[04Mar2026 15:37:11.937] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: Dev[/127.0.0.1:62387] logged in with entity id 1184 at (254.68711504407742, 62.0, -90.2012957425091)
+[04Mar2026 15:37:11.946] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
+[04Mar2026 15:52:32.378] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Dev lost connection: Disconnected
+[04Mar2026 15:52:32.379] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game
+[04Mar2026 16:10:00.664] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: Dev[/127.0.0.1:65273] logged in with entity id 2987 at (256.19909407132263, 61.0, -90.57300435434104)
+[04Mar2026 16:10:00.681] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
+[04Mar2026 16:12:54.680] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Dev lost connection: Disconnected
+[04Mar2026 16:12:54.680] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game
+[04Mar2026 16:13:42.285] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: Dev[/127.0.0.1:49496] logged in with entity id 3394 at (256.19909407132263, 61.0, -90.57300435434104)
+[04Mar2026 16:13:42.291] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
+[04Mar2026 16:15:14.882] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Dev lost connection: Disconnected
+[04Mar2026 16:15:14.882] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game
+[04Mar2026 16:15:56.422] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: Dev[/127.0.0.1:50316] logged in with entity id 3673 at (258.6508983827947, 61.0, -86.13367431999819)
+[04Mar2026 16:15:56.425] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
+[04Mar2026 16:17:02.233] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Dev lost connection: Disconnected
+[04Mar2026 16:17:02.233] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game
+[04Mar2026 16:17:25.540] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: Dev[/127.0.0.1:51050] logged in with entity id 3875 at (258.6508983827947, 61.0, -86.13367431999819)
+[04Mar2026 16:17:25.542] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
+[04Mar2026 16:19:24.731] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Dev lost connection: Disconnected
+[04Mar2026 16:19:24.732] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game
+[04Mar2026 16:19:39.394] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: Dev[/127.0.0.1:51791] logged in with entity id 4184 at (258.6508983827947, 61.0, -86.13367431999819)
+[04Mar2026 16:19:39.396] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
+[04Mar2026 16:35:15.483] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Dev lost connection: Disconnected
+[04Mar2026 16:35:15.483] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game

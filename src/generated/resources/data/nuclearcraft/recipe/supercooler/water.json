@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 500,
-      "tag": "c:ice"
+      "fluid": "nuclearcraft:ice"
     }
   ],
   "powerModifier": 1.0,

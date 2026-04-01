@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 500,
-      "tag": "c:irradiated_lithium"
+      "fluid": "nuclearcraft:irradiated_lithium"
     }
   ],
   "powerModifier": 1.0,

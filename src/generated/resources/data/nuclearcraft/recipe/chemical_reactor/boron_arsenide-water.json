@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 360,
-      "tag": "c:boron_arsenide_solution"
+      "fluid": "nuclearcraft:boron_arsenide_solution"
     }
   ],
   "powerModifier": 1.0,

@@ -10,7 +10,7 @@
   "outputFluids": [
     {
       "amount": 10,
-      "tag": "c:nitrogen"
+      "fluid": "nuclearcraft:nitrogen"
     }
   ]
 }

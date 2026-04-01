@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:molten_purpur"
+      "fluid": "nuclearcraft:molten_purpur"
     }
   ],
   "powerModifier": 1.0,

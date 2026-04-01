@@ -9,15 +9,15 @@
   "outputFluids": [
     {
       "amount": 250,
-      "tag": "c:lithium/6"
+      "fluid": "nuclearcraft:lithium/6"
     },
     {
       "amount": 250,
-      "tag": "c:lithium/7"
+      "fluid": "nuclearcraft:lithium/7"
     },
     {
       "amount": 500,
-      "tag": "c:tritium"
+      "fluid": "nuclearcraft:tritium"
     }
   ],
   "powerModifier": 1.0,

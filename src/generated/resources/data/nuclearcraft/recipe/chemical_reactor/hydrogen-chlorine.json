@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 250,
-      "tag": "c:hydrogen_chloride"
+      "fluid": "nuclearcraft:hydrogen_chloride"
     }
   ],
   "powerModifier": 0.5,

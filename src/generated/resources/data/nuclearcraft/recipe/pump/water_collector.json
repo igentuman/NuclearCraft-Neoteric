@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 200,
-      "tag": "minecraft:water"
+      "fluid": "nuclearcraft:minecraft:water"
     }
   ],
   "powerModifier": 1.0,

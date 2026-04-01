@@ -112,6 +112,11 @@ public abstract class AbstractRecipeProvider {
         return IngredientCreatorAccess.fluid().from(forgeFluid(name), amount);
     }
 
+    /**
+     * Creates a SPECIFIC fluid ingredient (serializes as "fluid": "modid:name").
+     * Use for recipe OUTPUTS where a concrete fluid must be produced.
+     * For INPUTS, use fluidIngredient() which creates tag-based ingredients.
+     */
     protected static FluidStackIngredient fluidStackIngredient(String name, int amount) {
         return IngredientCreatorAccess.fluid().from(fluidStack(name, amount));
     }
@@ -363,7 +368,7 @@ public abstract class AbstractRecipeProvider {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];
         String key = BuiltInRegistries.ITEM.getKey(fuelItem(name)).getPath();
-        return IngredientCreatorAccess.fluid().from(ALL_FLUID_ENTRIES.get(key).getStill(), count);
+        return IngredientCreatorAccess.fluid().from(forgeFluid(key), count);
     }
 
     public static NcIngredient fuelIngredient(List<String> name, int...pCount)

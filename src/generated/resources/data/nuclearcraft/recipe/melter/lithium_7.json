@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:lithium/7"
+      "fluid": "nuclearcraft:lithium/7"
     }
   ],
   "powerModifier": 1.0,

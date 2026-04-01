@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "tag": "c:platinum_slurry"
+      "fluid": "nuclearcraft:platinum_slurry"
     }
   ],
   "powerModifier": 1.0,

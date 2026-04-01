@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:cocoa_butter"
+      "fluid": "nuclearcraft:cocoa_butter"
     }
   ],
   "powerModifier": 0.5,

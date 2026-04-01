@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 270,
-      "tag": "c:uranium_oxide"
+      "fluid": "nuclearcraft:uranium_oxide"
     }
   ],
   "powerModifier": 1.0,

@@ -1,0 +1,115 @@
+{
+  "favorites": [],
+  "lookup_history": [
+    "item:nuclearcraft:depleted_fuel_xenorium_xen_298",
+    "item:nuclearcraft:fuel_xenorium_xen_298",
+    {
+      "type": "fluid",
+      "id": "nuclearcraft:fuel_xenorium_xen_298",
+      "amount": 90
+    },
+    "item:nuclearcraft:unknown_ingredient",
+    "item:nuclearcraft:xenorium_298",
+    "item:mekanism:ultimate_mechanical_pipe",
+    "item:mekanism:ultimate_fluid_tank",
+    "item:mekanism:ultimate_pressurized_tube",
+    "item:mekanism:uranium_ore",
+    {
+      "type": "item",
+      "id": "nuclearcraft:uranium_dust",
+      "amount": 2
+    },
+    {
+      "type": "fluid",
+      "id": "nuclearcraft:uranium_clean_slurry",
+      "amount": 800
+    },
+    {
+      "type": "fluid",
+      "id": "nuclearcraft:uranium_slurry",
+      "amount": 1000
+    },
+    "item:mekanism:deepslate_uranium_ore",
+    "item:mekanism:basic_energy_cube",
+    "item:mekanism:enrichment_chamber",
+    "item:mekanism:deepslate_osmium_ore",
+    "item:mekanism:ultimate_universal_cable",
+    "item:mekanism:basic_universal_cable",
+    "item:nuclearcraft:californium_rtg",
+    {
+      "type": "fluid",
+      "id": "nuclearcraft:thorium_230_ox",
+      "amount": 0
+    },
+    {
+      "type": "fluid",
+      "id": "nuclearcraft:thorium_232",
+      "amount": 0
+    },
+    {
+      "type": "fluid",
+      "id": "nuclearcraft:berkelium_248",
+      "amount": 0
+    },
+    {
+      "type": "fluid",
+      "id": "nuclearcraft:lithium_6",
+      "amount": 0
+    },
+    "item:nuclearcraft:hsla_steel_dust",
+    "item:nuclearcraft:enderium_dust",
+    "item:nuclearcraft:potassium_dust",
+    "item:nuclearcraft:villiaumite_dust",
+    "item:nuclearcraft:boron_dust",
+    "item:nuclearcraft:basic_lithium_ion_battery",
+    "item:mekanism:advanced_induction_cell",
+    "item:nuclearcraft:tin_dust",
+    "item:mekanism:dust_tin",
+    "item:nuclearcraft:silver_dust",
+    "item:nuclearcraft:tin_silver_dust",
+    "item:mekanism:dirty_dust_tin",
+    "item:nuclearcraft:thermoconducting_dust",
+    "item:nuclearcraft:protactinium_233_dust",
+    "item:nuclearcraft:lead_platinum_dust",
+    "item:nuclearcraft:platinum_dust",
+    "item:mekanism:basic_crushing_factory",
+    "item:mekanism:elite_sawing_factory",
+    "item:mekanism:advanced_crushing_factory",
+    "item:mekanism:basic_sawing_factory",
+    "item:minecraft:red_bed",
+    "item:nuclearcraft:supercooler",
+    "item:nuclearcraft:thorium_232_ox",
+    "item:nuclearcraft:magnesium_nugget",
+    "item:nuclearcraft:tin_nugget",
+    "item:nuclearcraft:thorium_nugget",
+    "item:nuclearcraft:hsla_steel_ingot",
+    "item:nuclearcraft:lead_platinum_ingot",
+    "item:nuclearcraft:chromium_ingot",
+    "item:nuclearcraft:tough_alloy_ingot",
+    "item:nuclearcraft:uranium_ingot",
+    "item:nuclearcraft:silver_ingot",
+    "item:computercraft:wired_modem_full",
+    "item:computercraft:pocket_computer_advanced{\"computercraft:pocket_upgrade\":{id:\"computercraft:speaker\"}}",
+    "item:computercraft:monitor_normal",
+    "item:mekanism:module_hydrostatic_repulsor_unit",
+    "item:minecraft:netherite_scrap",
+    "item:minecraft:soul_lantern",
+    "item:minecraft:dragon_egg",
+    "item:minecraft:creeper_head",
+    "item:minecraft:ender_eye",
+    "item:minecraft:warped_fungus_on_a_stick",
+    "item:minecraft:acacia_door",
+    "item:minecraft:birch_pressure_plate",
+    "item:minecraft:spruce_fence",
+    "item:minecraft:birch_door",
+    "item:minecraft:chorus_flower"
+  ],
+  "craft_history": [],
+  "recipe_defaults": {
+    "added": [],
+    "tags": {},
+    "resolutions": {},
+    "disabled": []
+  },
+  "hidden_stacks": []
+}

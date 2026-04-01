@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 240,
-      "tag": "c:molten_shibuichi"
+      "fluid": "nuclearcraft:molten_shibuichi"
     }
   ],
   "powerModifier": 1.0,

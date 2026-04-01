@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 45,
-      "tag": "c:boron_nitride_solution"
+      "fluid": "nuclearcraft:boron_nitride_solution"
     },
     {
       "amount": 1000,
-      "tag": "minecraft:water"
+      "fluid": "nuclearcraft:minecraft:water"
     }
   ],
   "powerModifier": 0.5,

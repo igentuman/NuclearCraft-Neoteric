@@ -182,8 +182,6 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         boolean newOuter = getMultiblock().isOuterValid();
         boolean newFormed = getMultiblock().isFormed();
         if (wasFormed != newFormed) {
-            LOGGER.info("[NC-DIAG] handleValidation: formation changed {} -> {} (outer={}, inner={}, result={})",
-                    wasFormed, newFormed, newOuter, newInner, validationResult);
         }
         isInternalValid = newInner;
         isCasingValid = newOuter;

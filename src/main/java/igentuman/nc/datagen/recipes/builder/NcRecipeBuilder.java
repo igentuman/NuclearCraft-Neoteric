@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.recipes.builder;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -8,6 +9,7 @@ import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -213,7 +215,22 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             outJson = new JsonArray();
             if(!outputFluids.isEmpty()) {
                 for (FluidStackIngredient out: outputFluids) {
-                    outJson.add(out.serialize());
+                    // Outputs must be specific fluids, not tags.
+                    // If the ingredient is tag-based, resolve tag name to nuclearcraft: fluid ID.
+                    // Cannot use getRepresentations() during datagen (config not loaded).
+                    JsonElement serialized = out.serialize();
+                    if (serialized.isJsonObject() && serialized.getAsJsonObject().has("tag")) {
+                        JsonObject tagObj = serialized.getAsJsonObject();
+                        String tagName = tagObj.get("tag").getAsString();
+                        int amount = tagObj.has("amount") ? tagObj.get("amount").getAsInt() : 1;
+                        // c:hydrogen -> nuclearcraft:hydrogen
+                        String fluidName = tagName.startsWith("c:") ? tagName.substring(2) : tagName;
+                        JsonObject specific = new JsonObject();
+                        specific.addProperty("amount", amount);
+                        specific.addProperty("fluid", "nuclearcraft:" + fluidName);
+                        serialized = specific;
+                    }
+                    outJson.add(serialized);
                 }
                 json.add("outputFluids", outJson);
             }

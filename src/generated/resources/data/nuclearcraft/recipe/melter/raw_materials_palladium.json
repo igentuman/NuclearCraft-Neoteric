@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 120,
-      "tag": "c:molten_palladium"
+      "fluid": "nuclearcraft:molten_palladium"
     }
   ],
   "powerModifier": 1.0,

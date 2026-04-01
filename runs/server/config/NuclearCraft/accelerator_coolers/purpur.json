@@ -1,0 +1,5 @@
+[{
+  "type": "purpur",
+  "heat": 100,
+  "placement_rule": ["end_stone_cooler>2"]
+}]

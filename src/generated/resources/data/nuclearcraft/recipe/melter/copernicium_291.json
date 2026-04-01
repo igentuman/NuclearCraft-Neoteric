@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:copernicium/291"
+      "fluid": "nuclearcraft:copernicium/291"
     }
   ],
   "powerModifier": 1.0,

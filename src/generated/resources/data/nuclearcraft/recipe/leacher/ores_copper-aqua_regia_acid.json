@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "tag": "c:copper_slurry"
+      "fluid": "nuclearcraft:copper_slurry"
     }
   ],
   "powerModifier": 1.0,

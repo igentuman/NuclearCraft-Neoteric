@@ -357,8 +357,6 @@ public abstract class AbstractMultiblock implements Multiblock {
             if (!isValidForOuter(probe)) {
                 topCasing = i - 1;
                 height = i;
-                LOGGER.info("[NC-DIAG] Height UP: {} valid, stopped at {} ({})",
-                        i - 1, probe.toShortString(), getBlockState(probe).getBlock().getDescriptionId());
                 break;
             }
         }
@@ -367,12 +365,9 @@ public abstract class AbstractMultiblock implements Multiblock {
             if (!isValidForOuter(probe)) {
                 bottomCasing = i - 1;
                 height += i - 1;
-                LOGGER.info("[NC-DIAG] Height DOWN: {} valid, stopped at {} ({})",
-                        i - 1, probe.toShortString(), getBlockState(probe).getBlock().getDescriptionId());
                 break;
             }
         }
-        LOGGER.info("[NC-DIAG] Height resolved: {} (top={}, bottom={})", height, topCasing, bottomCasing);
         return height;
     }
 
@@ -383,8 +378,6 @@ public abstract class AbstractMultiblock implements Multiblock {
             if (!isValidForOuter(probe)) {
                 leftCasing = i-1;
                 width = i;
-                LOGGER.info("[NC-DIAG] Width LEFT: {} valid, stopped at {} ({})",
-                        i - 1, probe.toShortString(), getBlockState(probe).getBlock().getDescriptionId());
                 break;
             }
         }
@@ -393,12 +386,9 @@ public abstract class AbstractMultiblock implements Multiblock {
             if (!isValidForOuter(probe)) {
                 rightCasing = i-1;
                 width += i-1;
-                LOGGER.info("[NC-DIAG] Width RIGHT: {} valid, stopped at {} ({})",
-                        i - 1, probe.toShortString(), getBlockState(probe).getBlock().getDescriptionId());
                 break;
             }
         }
-        LOGGER.info("[NC-DIAG] Width resolved: {} (left={}, right={})", width, leftCasing, rightCasing);
         return width;
     }
 
@@ -408,12 +398,9 @@ public abstract class AbstractMultiblock implements Multiblock {
             BlockPos probe = getForwardPos(i).below(bottomCasing);
             if (!isValidForOuter(probe)) {
                 depth = i;
-                LOGGER.info("[NC-DIAG] Depth FORWARD: {} valid, stopped at {} ({})",
-                        i - 1, probe.toShortString(), getBlockState(probe).getBlock().getDescriptionId());
                 break;
             }
         }
-        LOGGER.info("[NC-DIAG] Depth resolved: {}", depth);
         return depth;
     }
 
@@ -469,8 +456,6 @@ public abstract class AbstractMultiblock implements Multiblock {
         if (width < minWidth() || height < minHeight() || depth < minDepth())
         {
             validationResult = ValidationResult.TOO_SMALL;
-            LOGGER.info("[NC-DIAG] TOO_SMALL: resolved {}W x {}H x {}D, min is {}W x {}H x {}D",
-                    width, height, depth, minWidth(), minHeight(), minDepth());
             return;
         }
 
@@ -724,11 +709,6 @@ public abstract class AbstractMultiblock implements Multiblock {
         isValidating = true;
         connectedPorts = 0;
         long startTime = System.currentTimeMillis();
-        LOGGER.info("[NC-DIAG] === Validation #{} for {} at {} === thread={}, outerTags={}, innerTags={}, explicitOuter={}, explicitInner={}, controllerBlock={}",
-                failedValidations, getClass().getSimpleName(), initialPos().toShortString(),
-                Thread.currentThread().getName(),
-                outerTags.size(), innerTags.size(), validOuterBlocks.size(), validInnerBlocks.size(),
-                getLevel() != null ? getLevel().getBlockState(initialPos()).getBlock().getDescriptionId() : "null-level");
 
         topRight = null;
         bottomLeft = null;
@@ -742,8 +722,6 @@ public abstract class AbstractMultiblock implements Multiblock {
             debugLog("Outer validation passed, proceeding to inner validation");
             validateInner();
         } else{
-            LOGGER.info("[NC-DIAG] Outer validation FAILED: {} at {}", validationResult,
-                    errorBlockPos != null ? errorBlockPos.toShortString() : "unknown");
             debugLog("Outer validation failed with result: " + validationResult +
                     (errorBlockPos != null ? " at " + errorBlockPos.toShortString() : ""));
             innerValid = false;
@@ -757,11 +735,9 @@ public abstract class AbstractMultiblock implements Multiblock {
             failedValidations--;
             validationResult = ValidationResult.VALID;
             fullValidation = false;
-            LOGGER.info("[NC-DIAG] Multiblock FORMED: {} at {}", getClass().getSimpleName(), initialPos().toShortString());
             debugLog("Multiblock formation successful!");
         } else {
             controller.clearStats();
-            LOGGER.info("[NC-DIAG] Multiblock FAILED: {} - result={}", getClass().getSimpleName(), validationResult);
             debugLog("Multiblock formation failed - Outer valid: " + outerValid + ", Inner valid: " + innerValid);
         }
 

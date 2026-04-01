@@ -62,8 +62,8 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
         add(ingredient(IRON_INGOT), fluidIngredient("molten_"+Materials.iron, MOLTEN_INGOT));
         add(ingredient(GOLD_INGOT), fluidIngredient("molten_"+Materials.gold, MOLTEN_INGOT));
 
-        add(gemStack(Materials.boron_arsenide), fluidStack(Materials.boron_arsenide, MOLTEN_INGOT));
-        add(ingredient(OBSIDIAN), fluidStack(Materials.obsidian, MOLTEN_INGOT*2), 2D, 2D);
+        add(gemStack(Materials.boron_arsenide), fluidIngredient("molten_"+Materials.boron_arsenide, MOLTEN_INGOT));
+        add(ingredient(OBSIDIAN), fluidIngredient("molten_"+Materials.obsidian, MOLTEN_INGOT*2), 2D, 2D);
 
         add(ingredient(NCItems.NC_ITEMS.get("ground_cocoa_nibs").get()), fluidIngredient("chocolate_liquor", MOLTEN_INGOT), 0.25D, 0.5D);
         add(ingredient(NCItems.NC_ITEMS.get("cocoa_butter").get()), fluidIngredient("cocoa_butter", MOLTEN_INGOT), 0.25D, 0.5D);

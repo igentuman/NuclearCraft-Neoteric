@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:fuel_americium_lea_242_ni"
+      "fluid": "nuclearcraft:fuel_americium_lea_242_ni"
     }
   ],
   "powerModifier": 1.0,

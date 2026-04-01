@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:fuel_plutonium_lep_239_ni"
+      "fluid": "nuclearcraft:fuel_plutonium_lep_239_ni"
     }
   ],
   "powerModifier": 1.0,

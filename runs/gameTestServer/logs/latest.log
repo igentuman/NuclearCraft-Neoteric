@@ -1,0 +1,120 @@
+[03Mar2026 18:14:09.963] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgeserverdev, --gameDir, ., --fml.fmlVersion, 4.0.42, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.219, --fml.neoFormVersion, 20240808.144430]
+[03Mar2026 18:14:09.964] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Homebrew OpenJDK 64-Bit Server VM 21.0.10
+[03Mar2026 18:14:09.964] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.10 by Homebrew; OS Mac OS X arch aarch64 version 26.2
+[03Mar2026 18:14:10.012] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgeserverdev
+[03Mar2026 18:14:10.042] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/Users/caliane/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23134!/ Service=ModLauncher Env=SERVER
+[03Mar2026 18:14:10.087] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "neoforge-21.1.219.jar" [locator: neoforge devenv provider ([/Users/caliane/Sources/nuclearcraft/.gradle/repositories/ng_dummy_ng/net/neoforged/neoforge/21.1.219/neoforge-21.1.219.jar])]
+[03Mar2026 18:14:10.101] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "neoforge-21.1.219.jar" [locator: neoforge devenv provider ([/Users/caliane/Sources/nuclearcraft/.gradle/repositories/ng_dummy_ng/net/neoforged/neoforge/21.1.219/neoforge-21.1.219.jar])]
+[03Mar2026 18:14:10.106] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "main" [locator: userdev mods and services, reader: mod manifest]
+[03Mar2026 18:14:10.113] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "neoforge-21.1.219.jar" [locator: userdev mods and services, reader: mod manifest]
+[03Mar2026 18:14:10.120] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Mekanism-1.21.1-10.7.18.84.jar" [locator: userdev mods and services, reader: mod manifest]
+[03Mar2026 18:14:10.122] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Mekanism-1.21.1-10.7.18.84-generators.jar" [locator: userdev mods and services, reader: mod manifest]
+[03Mar2026 18:14:10.124] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "architectury-neoforge-13.0.8.jar" [locator: userdev mods and services, reader: mod manifest]
+[03Mar2026 18:14:10.127] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "jei-1.21.1-neoforge-19.21.2.313.jar" [locator: userdev mods and services, reader: mod manifest]
+[03Mar2026 18:14:10.129] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "emi-neoforge-1.1.21+1.21.1.jar" [locator: userdev mods and services, reader: mod manifest]
+[03Mar2026 18:14:10.133] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "theoneprobe-1.21_neo-12.0.3-5.jar" [locator: userdev mods and services, reader: mod manifest]
+[03Mar2026 18:14:10.135] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "cc-tweaked-1.21.1-forge-1.117.0.jar" [locator: userdev mods and services, reader: mod manifest]
+[03Mar2026 18:14:10.137] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Patchouli-1.21.1-92-NEOFORGE.jar" [locator: userdev mods and services, reader: mod manifest]
+[03Mar2026 18:14:10.149] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found gamelibrary file "mixinextras-neoforge-0.5.0.jar" [locator: userdev mods and services, reader: mod manifest]
+[03Mar2026 18:14:10.199] [main/WARN] [net.neoforged.jarjar.selection.JarSelector/]: Attempted to select a dependency jar for JarJar which was passed in as source: library:mixinextras.neoforge. Using Mod File: /Users/caliane/.gradle/caches/modules-2/files-2.1/io.github.llamalad7/mixinextras-neoforge/0.5.0/d734b83ce6542bb70ea31755c1595b88992dbe65/mixinextras-neoforge-0.5.0.jar
+[03Mar2026 18:14:10.199] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 3 dependencies adding them to mods collection
+[03Mar2026 18:14:10.199] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found library file "cobalt-0.9.7.jar" [parent: cc-tweaked-1.21.1-forge-1.117.0.jar, locator: jarinjar]
+[03Mar2026 18:14:10.199] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found library file "jzlib-1.1.3.jar" [parent: cc-tweaked-1.21.1-forge-1.117.0.jar, locator: jarinjar]
+[03Mar2026 18:14:10.199] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found library file "net.neoforged.neoforge-coremods-21.1.219.jar" [parent: neoforge-21.1.219.jar, locator: jarinjar, reader: mod manifest]
+[03Mar2026 18:14:10.200] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
+     Mod List:
+		Name Version (Mod Id)
+
+		Architectury 13.0.8 (architectury)
+		CC: Tweaked 1.117.0 (computercraft)
+		EMI 1.1.21+1.21.1+neoforge (emi)
+		Just Enough Items 19.21.2.313 (jei)
+		Mekanism 10.7.18 (mekanism)
+		Mekanism: Generators 10.7.18 (mekanismgenerators)
+		Minecraft 1.21.1 (minecraft)
+		NeoForge 21.1.219 (neoforge)
+		Nuclearcraft Neoteric 1.3.0 (nuclearcraft)
+		Patchouli 1.21.1-92-NEOFORGE (patchouli)
+		The One Probe 1.21_neo-12.0.3-5 (theoneprobe)
+[03Mar2026 18:14:10.472] [main/INFO] [mixin/]: Compatibility level set to JAVA_17
+[03Mar2026 18:14:10.474] [main/INFO] [mixin/]: Compatibility level set to JAVA_21
+[03Mar2026 18:14:10.481] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgeserverdev' with arguments [--gameDir, .]
+[03Mar2026 18:14:10.514] [main/WARN] [mixin/]: Reference map 'patchouli.refmap.json' for patchouli_xplat.mixins.json could not be read. If this is a development environment you can ignore this message
+[03Mar2026 18:14:12.279] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0).
+[03Mar2026 18:14:14.550] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[03Mar2026 18:14:14.551] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[03Mar2026 18:14:14.553] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[03Mar2026 18:14:14.553] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[03Mar2026 18:14:14.554] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[03Mar2026 18:14:14.585] [modloading-worker-0/INFO] [igentuman.nc.NuclearCraft/]: JAR file path: /Users/caliane/Sources/nuclearcraft/build/resources/main
+[03Mar2026 18:14:14.585] [modloading-worker-0/INFO] [igentuman.nc.NuclearCraft/]: JAR file path: /Users/caliane/Sources/nuclearcraft/build/resources/main
+[03Mar2026 18:14:14.586] [modloading-worker-0/INFO] [igentuman.nc.NuclearCraft/]: JAR file path: /Users/caliane/Sources/nuclearcraft/build/resources/main
+[03Mar2026 18:14:14.594] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.219, for MC 1.21.1
+[03Mar2026 18:14:15.849] [modloading-sync-worker/WARN] [net.neoforged.neoforge.common.ModConfigSpec/CORE]: Configuration LoadedConfig[config=SynchronizedConfig{DataHolder:{Energy=SynchronizedConfig{DataHolder:{generation_multiplier=1.0, register_panel=[true, true, true, true], panel_power=[448, 1792, 112, 28], register_rtg=[true, true, true, true], rtg_power=[112, 448, 1792, 4096], rtg_radiation=[560, 57800, 200000, 1900000], steam_turbine_power_gen=80, decay_generator_power_gen=128}}, energy_storage=SynchronizedConfig{DataHolder:{ligtning_rod_charge=1048576, energy_block_registration=[true, true, true, true, true, true, true, true], energy_block_storage=[1600000, 102400000, 6400000, 32000000, 2048000000, 512000000, 25600000, 128000000], lithium_ion_battery_storage=1048576, qnp_energy_storage=2097152, qnp_energy_per_block=200}}, Misc=SynchronizedConfig{DataHolder:{debug_logging=false}}, GregTech Energy Compatibility=SynchronizedConfig{DataHolder:{gregtech_energy_compatibility=GTCEU_AND_FE, fission_reactor_energy_tier=EV, gregtech_energy_overcharge_explosions=true, limit_fe_output=false, turbine_energy_tier=EV, fusion_reactor_energy_tier=IV, kugelblitz_energy_tier=LuV, accelerators_energy_tier=LuV, processor_energy_tier=MV, energy_upgrades_for_next_tier=16}}, storage_blocks=SynchronizedConfig{DataHolder:{container_block_registration=[true, true, true, true], barrel_block_registration=[true, true, true, true], barrel_capacity=[512, 128, 8192, 2048]}}}}, path=/Users/caliane/Sources/nuclearcraft/runs/gameTestServer/config/NuclearCraft/common.toml, modConfig=net.neoforged.fml.config.ModConfig@644f8b96] is not correct. Correcting
+[03Mar2026 18:14:15.849] [modloading-sync-worker/WARN] [net.neoforged.neoforge.common.ModConfigSpec/CORE]: Incorrect key GregTech Energy Compatibility.fission_reactor_energy_tier was corrected from EV to its default, EV. 
+[03Mar2026 18:14:15.849] [modloading-sync-worker/WARN] [net.neoforged.neoforge.common.ModConfigSpec/CORE]: Incorrect key GregTech Energy Compatibility.turbine_energy_tier was corrected from EV to its default, EV. 
+[03Mar2026 18:14:15.849] [modloading-sync-worker/WARN] [net.neoforged.neoforge.common.ModConfigSpec/CORE]: Incorrect key GregTech Energy Compatibility.fusion_reactor_energy_tier was corrected from IV to its default, IV. 
+[03Mar2026 18:14:15.849] [modloading-sync-worker/WARN] [net.neoforged.neoforge.common.ModConfigSpec/CORE]: Incorrect key GregTech Energy Compatibility.kugelblitz_energy_tier was corrected from LuV to its default, LuV. 
+[03Mar2026 18:14:15.849] [modloading-sync-worker/WARN] [net.neoforged.neoforge.common.ModConfigSpec/CORE]: Incorrect key GregTech Energy Compatibility.accelerators_energy_tier was corrected from LuV to its default, LuV. 
+[03Mar2026 18:14:15.849] [modloading-sync-worker/WARN] [net.neoforged.neoforge.common.ModConfigSpec/CORE]: Incorrect key GregTech Energy Compatibility.processor_energy_tier was corrected from MV to its default, MV. 
+[03Mar2026 18:14:15.852] [modloading-sync-worker/WARN] [net.neoforged.fml.config.ConfigTracker/CONFIG]: Configuration file /Users/caliane/Sources/nuclearcraft/runs/gameTestServer/config/NuclearCraft/processors.toml is not correct. Correcting
+[03Mar2026 18:14:15.861] [modloading-worker-0/INFO] [mekanism.common.Mekanism/]: Version 10.7.18 initializing...
+[03Mar2026 18:14:15.897] [modloading-worker-0/INFO] [mekanism.common.Mekanism/]: Initialized HolidayManager.
+[03Mar2026 18:14:15.901] [modloading-worker-0/INFO] [mekanism.common.Mekanism/]: Fake player readout: UUID = 46e82cd0-d480-3d48-800a-77431ede078e, name = [Mekanism]
+[03Mar2026 18:14:15.901] [modloading-worker-0/INFO] [mekanism.common.Mekanism/]: Mod loaded.
+[03Mar2026 18:14:15.902] [modloading-worker-0/INFO] [mekanism.common.Mekanism/]: Loaded 'Mekanism: Generators' module.
+[03Mar2026 18:14:15.978] [NeoForge Version Check/INFO] [net.neoforged.fml.VersionChecker/]: [computercraft] Starting version check at https://api.modrinth.com/updates/cc-tweaked/forge_updates.json
+[03Mar2026 18:14:16.039] [main/ERROR] [net.minecraft.server.dedicated.Settings/]: Failed to load properties from file: server.properties
+java.nio.file.NoSuchFileException: server.properties
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92) ~[?:?]
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106) ~[?:?]
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111) ~[?:?]
+	at java.base/sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:261) ~[?:?]
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:380) ~[?:?]
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:432) ~[?:?]
+	at java.base/java.nio.file.spi.FileSystemProvider.newInputStream(FileSystemProvider.java:420) ~[?:?]
+	at java.base/java.nio.file.Files.newInputStream(Files.java:160) ~[?:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.dedicated.Settings.loadFromFile(Settings.java:38) ~[neoforge-21.1.219.jar%23188!/:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.dedicated.DedicatedServerProperties.fromFile(DedicatedServerProperties.java:132) ~[neoforge-21.1.219.jar%23188!/:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.dedicated.DedicatedServerSettings.<init>(DedicatedServerSettings.java:12) ~[neoforge-21.1.219.jar%23188!/:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.Main.main(Main.java:125) ~[neoforge-21.1.219.jar%23188!/:?]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[?:?]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.runTarget(CommonLaunchHandler.java:136) ~[loader-4.0.42.jar%23142!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.serverService(CommonLaunchHandler.java:128) ~[loader-4.0.42.jar%23142!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.NeoForgeServerDevLaunchHandler.runService(NeoForgeServerDevLaunchHandler.java:23) ~[loader-4.0.42.jar%23142!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.lambda$launchService$4(CommonLaunchHandler.java:118) ~[loader-4.0.42.jar%23142!/:4.0]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.run(Launcher.java:103) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.main(Launcher.java:74) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) [modlauncher-11.0.5.jar%23124!/:?]
+	at cpw.mods.bootstraplauncher@2.0.2/cpw.mods.bootstraplauncher.BootstrapLauncher.run(BootstrapLauncher.java:210) [bootstraplauncher-2.0.2.jar:?]
+	at cpw.mods.bootstraplauncher@2.0.2/cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:69) [bootstraplauncher-2.0.2.jar:?]
+[03Mar2026 18:14:16.051] [main/INFO] [com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService/]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
+[03Mar2026 18:14:16.082] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/Users/caliane/Sources/nuclearcraft/.gradle/repositories/ng_dummy_ng/net/neoforged/neoforge/21.1.219/neoforge-21.1.219.jar%23188!/assets/.mcassetsroot' uses unexpected schema
+[03Mar2026 18:14:16.083] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/Users/caliane/Sources/nuclearcraft/.gradle/repositories/ng_dummy_ng/net/neoforged/neoforge/21.1.219/neoforge-21.1.219.jar%23188!/data/.mcassetsroot' uses unexpected schema
+[03Mar2026 18:14:16.085] [main/INFO] [net.neoforged.neoforge.gametest.GameTestHooks/]: Enabled Gametest Namespaces: []
+[03Mar2026 18:14:16.091] [main/ERROR] [net.minecraft.server.Main/FATAL]: Failed to start the minecraft server
+java.lang.IllegalArgumentException: No test functions were given!
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.gametest.framework.GameTestServer.create(GameTestServer.java:78) ~[neoforge-21.1.219.jar%23188!/:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.Main.lambda$main$0(Main.java:195) ~[neoforge-21.1.219.jar%23188!/:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.spin(MinecraftServer.java:273) ~[neoforge-21.1.219.jar%23188!/:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.Main.main(Main.java:195) ~[neoforge-21.1.219.jar%23188!/:?]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[?:?]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.runTarget(CommonLaunchHandler.java:136) ~[loader-4.0.42.jar%23142!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.serverService(CommonLaunchHandler.java:128) ~[loader-4.0.42.jar%23142!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.NeoForgeServerDevLaunchHandler.runService(NeoForgeServerDevLaunchHandler.java:23) ~[loader-4.0.42.jar%23142!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.lambda$launchService$4(CommonLaunchHandler.java:118) ~[loader-4.0.42.jar%23142!/:4.0]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.run(Launcher.java:103) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.main(Launcher.java:74) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) [modlauncher-11.0.5.jar%23124!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) [modlauncher-11.0.5.jar%23124!/:?]
+	at cpw.mods.bootstraplauncher@2.0.2/cpw.mods.bootstraplauncher.BootstrapLauncher.run(BootstrapLauncher.java:210) [bootstraplauncher-2.0.2.jar:?]
+	at cpw.mods.bootstraplauncher@2.0.2/cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:69) [bootstraplauncher-2.0.2.jar:?]

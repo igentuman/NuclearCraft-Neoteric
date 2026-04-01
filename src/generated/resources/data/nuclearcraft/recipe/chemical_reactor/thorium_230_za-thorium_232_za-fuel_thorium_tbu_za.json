@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:fuel_thorium_tbu_za"
+      "fluid": "nuclearcraft:fuel_thorium_tbu_za"
     }
   ],
   "powerModifier": 1.0,

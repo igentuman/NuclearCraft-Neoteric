@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 180,
-      "tag": "c:obsidian"
+      "fluid": "nuclearcraft:obsidian"
     }
   ],
   "powerModifier": 2.0,

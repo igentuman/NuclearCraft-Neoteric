@@ -1,0 +1,5 @@
+[{
+  "type": "cryotheum",
+  "heat": 205,
+  "placement_rule": ["tin_cooler>3"]
+}]

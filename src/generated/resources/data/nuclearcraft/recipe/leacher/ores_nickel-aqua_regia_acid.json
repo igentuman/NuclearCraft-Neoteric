@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "tag": "c:nickel_slurry"
+      "fluid": "nuclearcraft:nickel_slurry"
     }
   ],
   "powerModifier": 1.0,

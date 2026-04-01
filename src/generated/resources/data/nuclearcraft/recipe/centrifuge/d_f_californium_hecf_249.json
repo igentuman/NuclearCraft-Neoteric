@@ -3,25 +3,25 @@
   "inputFluids": [
     {
       "amount": 810,
-      "fluid": "nuclearcraft:depleted_fuel_californium_hecf_249"
+      "tag": "c:depleted_fuel_californium_hecf_249"
     }
   ],
   "outputFluids": [
     {
       "amount": 540,
-      "tag": "c:californium/252"
+      "fluid": "nuclearcraft:californium/252"
     },
     {
       "amount": 180,
-      "tag": "c:californium/250"
+      "fluid": "nuclearcraft:californium/250"
     },
     {
       "amount": 90,
-      "tag": "c:ruthenium_106"
+      "fluid": "nuclearcraft:ruthenium_106"
     },
     {
       "amount": 90,
-      "tag": "c:promethium_147"
+      "fluid": "nuclearcraft:promethium_147"
     }
   ],
   "powerModifier": 1.0,

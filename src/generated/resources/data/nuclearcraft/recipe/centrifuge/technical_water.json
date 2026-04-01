@@ -9,11 +9,11 @@
   "outputFluids": [
     {
       "amount": 750,
-      "tag": "c:deuterium"
+      "fluid": "nuclearcraft:deuterium"
     },
     {
       "amount": 250,
-      "tag": "c:oxygen"
+      "fluid": "nuclearcraft:oxygen"
     }
   ],
   "powerModifier": 1.0,

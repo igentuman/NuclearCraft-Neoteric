@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 180,
-      "tag": "c:hydrated_gelatin"
+      "fluid": "nuclearcraft:hydrated_gelatin"
     }
   ],
   "powerModifier": 0.5,

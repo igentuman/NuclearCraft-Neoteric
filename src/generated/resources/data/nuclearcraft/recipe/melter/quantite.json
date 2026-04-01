@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:quantite"
+      "fluid": "nuclearcraft:quantite"
     }
   ],
   "powerModifier": 1.0,

@@ -15,7 +15,7 @@
   "outputFluids": [
     {
       "amount": 500,
-      "tag": "c:chlorine"
+      "fluid": "nuclearcraft:chlorine"
     }
   ],
   "powerModifier": 2.0,

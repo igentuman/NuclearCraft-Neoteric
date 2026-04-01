@@ -1,0 +1,79 @@
+---- Minecraft Crash Report ----
+// Would you like a cupcake?
+
+Time: 2026-03-04 11:44:10
+Description: Mod loading failures have occurred; consult the issue messages for more details
+
+net.neoforged.neoforge.logging.CrashReportExtender$ModLoadingCrashException: Mod loading has failed
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Mod loading issue --
+Details:
+	Mod file: <No mod information provided>
+	Failure message: File /Users/caliane/Sources/nuclearcraft/build/resources/main is not a valid mod file
+	Mod version: <No mod information provided>
+	Mod issues URL: <No issues URL found>
+	Exception message: <No associated exception found>
+
+-- System Details --
+Details:
+	Minecraft Version: 1.21.1
+	Minecraft Version ID: 1.21.1
+	Operating System: Mac OS X (aarch64) version 26.2
+	Java Version: 21.0.10, Homebrew
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), Homebrew
+	Memory: 271588184 bytes (259 MiB) / 989855744 bytes (944 MiB) up to 31675383808 bytes (30208 MiB)
+	CPUs: 32
+	Processor Vendor: Apple Inc.
+	Processor Name: Apple M3 Ultra
+	Identifier: Apple Inc. Family 0x8765edea Model 0 Stepping 0
+	Microarchitecture: ARM64 SoC: Everest + Sawtooth
+	Frequency (GHz): 4.06
+	Number of physical packages: 1
+	Number of physical CPUs: 32
+	Number of logical CPUs: 32
+	Graphics card #0 name: Apple M3 Ultra
+	Graphics card #0 vendor: Apple (0x106b)
+	Graphics card #0 VRAM (MiB): 0.00
+	Graphics card #0 deviceId: unknown
+	Graphics card #0 versionInfo: unknown
+	Memory slot #0 capacity (MiB): 0.00
+	Memory slot #0 clockSpeed (GHz): 0.00
+	Memory slot #0 type: unknown
+	Virtual memory max (MiB): 524288.00
+	Virtual memory used (MiB): 90097.61
+	Swap memory total (MiB): 0.00
+	Swap memory used (MiB): 0.00
+	Space in storage for jna.tmpdir (MiB): <path not set>
+	Space in storage for org.lwjgl.system.SharedLibraryExtractPath (MiB): <path not set>
+	Space in storage for io.netty.native.workdir (MiB): <path not set>
+	Space in storage for java.io.tmpdir (MiB): available: 4713035.50, total: 7628013.50
+	Space in storage for workdir (MiB): available: 4713035.50, total: 7628013.50
+	JVM Flags: 0 total; 
+	ModLauncher: 11.0.5+main.901c6ea8
+	ModLauncher launch target: forgeclientdev
+	ModLauncher services: 
+		sponge-mixin-0.15.2+mixin.0.8.7.jar mixin PLUGINSERVICE 
+		loader-4.0.42.jar slf4jfixer PLUGINSERVICE 
+		loader-4.0.42.jar runtime_enum_extender PLUGINSERVICE 
+		at-modlauncher-10.0.1.jar accesstransformer PLUGINSERVICE 
+		loader-4.0.42.jar runtimedistcleaner PLUGINSERVICE 
+		modlauncher-11.0.5.jar mixin TRANSFORMATIONSERVICE 
+		modlauncher-11.0.5.jar fml TRANSFORMATIONSERVICE 
+	FML Language Providers: 
+		javafml@4.0
+		lowcodefml@4.0
+		minecraft@4.0
+	Mod List: 
+		architectury-neoforge-13.0.8.jar                  |Architectury                  |architectury                  |13.0.8              |Manifest: NOSIGNATURE
+		cc-tweaked-1.21.1-forge-1.117.0.jar               |CC: Tweaked                   |computercraft                 |1.117.0             |Manifest: NOSIGNATURE
+		emi-neoforge-1.1.21+1.21.1.jar                    |EMI                           |emi                           |1.1.21+1.21.1+neofor|Manifest: NOSIGNATURE
+		Mekanism-1.21.1-10.7.18.84.jar                    |Mekanism                      |mekanism                      |10.7.18             |Manifest: NOSIGNATURE
+		Mekanism-1.21.1-10.7.18.84-generators.jar         |Mekanism: Generators          |mekanismgenerators            |10.7.18             |Manifest: NOSIGNATURE
+		neoforge-21.1.219.jar                             |Minecraft                     |minecraft                     |1.21.1              |Manifest: NOSIGNATURE
+		neoforge-21.1.219.jar                             |NeoForge                      |neoforge                      |21.1.219            |Manifest: NOSIGNATURE
+		Patchouli-1.21.1-92-NEOFORGE.jar                  |Patchouli                     |patchouli                     |1.21.1-92-NEOFORGE  |Manifest: NOSIGNATURE
+		theoneprobe-1.21_neo-12.0.3-5.jar                 |The One Probe                 |theoneprobe                   |1.21_neo-12.0.3-5   |Manifest: NOSIGNATURE

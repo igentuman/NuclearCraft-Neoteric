@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:calcium_48"
+      "fluid": "nuclearcraft:calcium_48"
     }
   ],
   "powerModifier": 1.0,

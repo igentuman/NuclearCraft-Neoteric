@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 5000,
-      "tag": "c:technical_water"
+      "fluid": "nuclearcraft:technical_water"
     }
   ],
   "powerModifier": 1.0,

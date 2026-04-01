@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 250,
-      "tag": "c:fluorite_water"
+      "fluid": "nuclearcraft:fluorite_water"
     }
   ],
   "powerModifier": 1.0,

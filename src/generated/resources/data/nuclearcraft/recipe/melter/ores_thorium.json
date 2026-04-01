@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 240,
-      "tag": "c:molten_thorium"
+      "fluid": "nuclearcraft:molten_thorium"
     }
   ],
   "powerModifier": 1.0,

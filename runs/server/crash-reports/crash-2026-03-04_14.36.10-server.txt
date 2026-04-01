@@ -1,0 +1,193 @@
+---- Minecraft Crash Report ----
+// This doesn't make any sense!
+
+Time: 2026-03-04 14:36:10
+Description: Ticking block entity
+
+java.lang.IllegalStateException: Missing registry: ResourceKey[minecraft:root / minecraft:item]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.core.RegistryAccess.lambda$registryOrThrow$0(RegistryAccess.java:37) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,re:mixin}
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403) ~[?:?] {}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.core.RegistryAccess.registryOrThrow(RegistryAccess.java:37) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,re:mixin}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.codec.ByteBufCodecs$25.getRegistryOrThrow(ByteBufCodecs.java:466) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.codec.ByteBufCodecs$25.encode(ByteBufCodecs.java:479) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.codec.ByteBufCodecs$25.encode(ByteBufCodecs.java:464) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.ItemStack$1.encode(ItemStack.java:150) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.ItemStack$1.encode(ItemStack.java:131) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.ItemStack$2.encode(ItemStack.java:169) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.ItemStack$2.encode(ItemStack.java:155) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.codec.ByteBufCodecs$21.encode(ByteBufCodecs.java:374) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.codec.ByteBufCodecs$21.encode(ByteBufCodecs.java:358) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.crafting.Ingredient$1.encode(Ingredient.java:39) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.crafting.Ingredient$1.encode(Ingredient.java:32) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.api.platform.NCIngredients.toNetwork(NCIngredients.java:55) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.recipes.ingredient.creator.ItemStackIngredientCreator$SingleItemStackIngredient.write(ItemStackIngredientCreator.java:221) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.recipes.ingredient.ItemStackIngredient.copy(ItemStackIngredient.java:20) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.recipes.AbstractRecipe.hasEnoughToConsume(AbstractRecipe.java:329) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.recipes.AbstractRecipe.consumeInputs(AbstractRecipe.java:348) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.recipes.RecipeInfo.consumeInputs(RecipeInfo.java:171) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.block.entity.processor.NCProcessorBE.updateRecipe(NCProcessorBE.java:167) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.block.entity.processor.NCProcessorBE.processRecipe(NCProcessorBE.java:418) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.block.entity.processor.NCProcessorBE.tickServer(NCProcessorBE.java:349) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.block.ProcessorBlock.lambda$getTicker$1(ProcessorBlock.java:171) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.level.chunk.LevelChunk$BoundTickingBlockEntity.tick(LevelChunk.java:711) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.level.chunk.LevelChunk$RebindableTickingBlockEntityWrapper.tick(LevelChunk.java:788) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.level.Level.tickBlockEntities(Level.java:599) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B,re:mixin,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.level.ServerLevel.tick(ServerLevel.java:431) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B,re:mixin,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickChildren(MinecraftServer.java:1052) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.dedicated.DedicatedServer.tickChildren(DedicatedServer.java:317) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickServer(MinecraftServer.java:932) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:713) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:267) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Server thread
+Stacktrace:
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.core.RegistryAccess.lambda$registryOrThrow$0(RegistryAccess.java:37) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,re:mixin}
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403) ~[?:?] {}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.core.RegistryAccess.registryOrThrow(RegistryAccess.java:37) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,re:mixin}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.codec.ByteBufCodecs$25.getRegistryOrThrow(ByteBufCodecs.java:466) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.codec.ByteBufCodecs$25.encode(ByteBufCodecs.java:479) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.codec.ByteBufCodecs$25.encode(ByteBufCodecs.java:464) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.ItemStack$1.encode(ItemStack.java:150) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.ItemStack$1.encode(ItemStack.java:131) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.ItemStack$2.encode(ItemStack.java:169) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.ItemStack$2.encode(ItemStack.java:155) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.codec.ByteBufCodecs$21.encode(ByteBufCodecs.java:374) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.network.codec.ByteBufCodecs$21.encode(ByteBufCodecs.java:358) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.crafting.Ingredient$1.encode(Ingredient.java:39) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.item.crafting.Ingredient$1.encode(Ingredient.java:32) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.api.platform.NCIngredients.toNetwork(NCIngredients.java:55) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.recipes.ingredient.creator.ItemStackIngredientCreator$SingleItemStackIngredient.write(ItemStackIngredientCreator.java:221) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.recipes.ingredient.ItemStackIngredient.copy(ItemStackIngredient.java:20) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.recipes.AbstractRecipe.hasEnoughToConsume(AbstractRecipe.java:329) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.recipes.AbstractRecipe.consumeInputs(AbstractRecipe.java:348) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.recipes.RecipeInfo.consumeInputs(RecipeInfo.java:171) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.block.entity.processor.NCProcessorBE.updateRecipe(NCProcessorBE.java:167) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.block.entity.processor.NCProcessorBE.processRecipe(NCProcessorBE.java:418) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.block.entity.processor.NCProcessorBE.tickServer(NCProcessorBE.java:349) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/nuclearcraft@1.3.0/igentuman.nc.block.ProcessorBlock.lambda$getTicker$1(ProcessorBlock.java:171) ~[%23190!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.level.chunk.LevelChunk$BoundTickingBlockEntity.tick(LevelChunk.java:711) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.level.chunk.LevelChunk$RebindableTickingBlockEntityWrapper.tick(LevelChunk.java:788) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.level.Level.tickBlockEntities(Level.java:599) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B,re:mixin,pl:accesstransformer:B}
+-- Block entity being ticked --
+Details:
+	Name: nuclearcraft:melter // igentuman.nc.block.entity.processor.MelterBE
+	Block: Block{nuclearcraft:melter}[facing=east,powered=false]
+	Block location: World: (254,61,-98), Section: (at 14,13,14 in 15,3,-7; chunk contains blocks 240,-64,-112 to 255,319,-97), Region: (0,-1; contains chunks 0,-32 to 31,-1, blocks 0,-64,-512 to 511,319,-1)
+	Block: Block{nuclearcraft:melter}[facing=east,powered=false]
+	Block location: World: (254,61,-98), Section: (at 14,13,14 in 15,3,-7; chunk contains blocks 240,-64,-112 to 255,319,-97), Region: (0,-1; contains chunks 0,-32 to 31,-1, blocks 0,-64,-512 to 511,319,-1)
+Stacktrace:
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.level.chunk.LevelChunk$BoundTickingBlockEntity.tick(LevelChunk.java:711) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.level.chunk.LevelChunk$RebindableTickingBlockEntityWrapper.tick(LevelChunk.java:788) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.world.level.Level.tickBlockEntities(Level.java:599) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B,re:mixin,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.level.ServerLevel.tick(ServerLevel.java:431) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B,re:mixin,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickChildren(MinecraftServer.java:1052) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.dedicated.DedicatedServer.tickChildren(DedicatedServer.java:317) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickServer(MinecraftServer.java:932) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:713) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:267) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?] {}
+
+
+-- Affected level --
+Details:
+	All players: 1 total; [ServerPlayer['Dev'/86, l='ServerLevel[world]', x=256.42, y=61.00, z=-97.06]]
+	Chunk stats: 2209
+	Level dimension: minecraft:overworld
+	Level spawn location: World: (256,65,-64), Section: (at 0,1,0 in 16,4,-4; chunk contains blocks 256,-64,-64 to 271,319,-49), Region: (0,-1; contains chunks 0,-32 to 31,-1, blocks 0,-64,-512 to 511,319,-1)
+	Level time: 224341 game time, 224341 day time
+	Level name: world
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Commands: false
+	Level weather: Rain time: 19655 (now: false), thunder time: 110395 (now: false)
+	Known server brands: neoforge
+	Removed feature flags: 
+	Level was modded: true
+	Level storage version: 0x04ABD - Anvil
+	Loaded entity count: 175
+Stacktrace:
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.level.ServerLevel.fillReportDetails(ServerLevel.java:1745) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B,re:mixin,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickChildren(MinecraftServer.java:1055) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.dedicated.DedicatedServer.tickChildren(DedicatedServer.java:317) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.tickServer(MinecraftServer.java:932) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:713) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:267) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?] {}
+
+
+-- System Details --
+Details:
+	Minecraft Version: 1.21.1
+	Minecraft Version ID: 1.21.1
+	Operating System: Mac OS X (aarch64) version 26.2
+	Java Version: 21.0.10, Homebrew
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), Homebrew
+	Memory: 1277624112 bytes (1218 MiB) / 2298478592 bytes (2192 MiB) up to 31675383808 bytes (30208 MiB)
+	CPUs: 32
+	Processor Vendor: Apple Inc.
+	Processor Name: Apple M3 Ultra
+	Identifier: Apple Inc. Family 0x8765edea Model 0 Stepping 0
+	Microarchitecture: ARM64 SoC: Everest + Sawtooth
+	Frequency (GHz): 4.06
+	Number of physical packages: 1
+	Number of physical CPUs: 32
+	Number of logical CPUs: 32
+	Graphics card #0 name: Apple M3 Ultra
+	Graphics card #0 vendor: Apple (0x106b)
+	Graphics card #0 VRAM (MiB): 0.00
+	Graphics card #0 deviceId: unknown
+	Graphics card #0 versionInfo: unknown
+	Memory slot #0 capacity (MiB): 0.00
+	Memory slot #0 clockSpeed (GHz): 0.00
+	Memory slot #0 type: unknown
+	Virtual memory max (MiB): 524288.00
+	Virtual memory used (MiB): 87768.06
+	Swap memory total (MiB): 0.00
+	Swap memory used (MiB): 0.00
+	Space in storage for jna.tmpdir (MiB): <path not set>
+	Space in storage for org.lwjgl.system.SharedLibraryExtractPath (MiB): <path not set>
+	Space in storage for io.netty.native.workdir (MiB): <path not set>
+	Space in storage for java.io.tmpdir (MiB): available: 4713292.00, total: 7628013.50
+	Space in storage for workdir (MiB): available: 4713292.00, total: 7628013.50
+	JVM Flags: 0 total; 
+	Server Running: true
+	Player Count: 1 / 20; [ServerPlayer['Dev'/86, l='ServerLevel[world]', x=256.42, y=61.00, z=-97.06]]
+	Active Data Packs: vanilla, mod_data, mod/emi (incompatible), mod/theoneprobe (incompatible), mod/mekanism, mod/patchouli (incompatible), mod/architectury (incompatible), mod/computercraft (incompatible), mod/neoforge, mod/nuclearcraft (incompatible), mod/mekanismgenerators
+	Available Data Packs: bundle, trade_rebalance, vanilla, mod/architectury (incompatible), mod/computercraft (incompatible), mod/emi (incompatible), mod/mekanism, mod/mekanismgenerators, mod/neoforge, mod/nuclearcraft (incompatible), mod/patchouli (incompatible), mod/theoneprobe (incompatible), mod_data
+	Enabled Feature Flags: minecraft:vanilla
+	World Generation: Experimental
+	World Seed: -9198682570649250417
+	Is Modded: Definitely; Server brand changed to 'neoforge'
+	Type: Dedicated Server (map_server.txt)
+	ModLauncher: 11.0.5+main.901c6ea8
+	ModLauncher launch target: forgeserverdev
+	ModLauncher services: 
+		sponge-mixin-0.15.2+mixin.0.8.7.jar mixin PLUGINSERVICE 
+		loader-4.0.42.jar slf4jfixer PLUGINSERVICE 
+		loader-4.0.42.jar runtime_enum_extender PLUGINSERVICE 
+		at-modlauncher-10.0.1.jar accesstransformer PLUGINSERVICE 
+		loader-4.0.42.jar runtimedistcleaner PLUGINSERVICE 
+		modlauncher-11.0.5.jar mixin TRANSFORMATIONSERVICE 
+		modlauncher-11.0.5.jar fml TRANSFORMATIONSERVICE 
+	FML Language Providers: 
+		javafml@4.0
+		lowcodefml@4.0
+		minecraft@4.0
+	Mod List: 
+		architectury-neoforge-13.0.8.jar                  |Architectury                  |architectury                  |13.0.8              |Manifest: NOSIGNATURE
+		cc-tweaked-1.21.1-forge-1.117.0.jar               |CC: Tweaked                   |computercraft                 |1.117.0             |Manifest: NOSIGNATURE
+		emi-neoforge-1.1.21+1.21.1.jar                    |EMI                           |emi                           |1.1.21+1.21.1+neofor|Manifest: NOSIGNATURE
+		Mekanism-1.21.1-10.7.18.84.jar                    |Mekanism                      |mekanism                      |10.7.18             |Manifest: NOSIGNATURE
+		Mekanism-1.21.1-10.7.18.84-generators.jar         |Mekanism: Generators          |mekanismgenerators            |10.7.18             |Manifest: NOSIGNATURE
+		neoforge-21.1.219.jar                             |Minecraft                     |minecraft                     |1.21.1              |Manifest: NOSIGNATURE
+		neoforge-21.1.219.jar                             |NeoForge                      |neoforge                      |21.1.219            |Manifest: NOSIGNATURE
+		main                                              |Nuclearcraft Neoteric         |nuclearcraft                  |1.3.0               |Manifest: NOSIGNATURE
+		Patchouli-1.21.1-92-NEOFORGE.jar                  |Patchouli                     |patchouli                     |1.21.1-92-NEOFORGE  |Manifest: NOSIGNATURE
+		theoneprobe-1.21_neo-12.0.3-5.jar                 |The One Probe                 |theoneprobe                   |1.21_neo-12.0.3-5   |Manifest: NOSIGNATURE
+	Crash Report UUID: 289c14da-a77f-4619-8fda-8cff2c203410
+	FML: 4.0.42
+	NeoForge: 21.1.219

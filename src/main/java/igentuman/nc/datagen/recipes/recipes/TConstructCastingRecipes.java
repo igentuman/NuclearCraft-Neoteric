@@ -56,7 +56,7 @@ public class TConstructCastingRecipes extends AbstractRecipeProvider {
         }
 
 
-        add(gemStack(Materials.boron_arsenide), fluidStack(Materials.boron_arsenide, MOLTEN_INGOT), 57);
+        add(gemStack(Materials.boron_arsenide), fluidIngredient("molten_"+Materials.boron_arsenide, MOLTEN_INGOT), 57);
 
         add(ingredient(NCItems.NC_ITEMS.get("ground_cocoa_nibs").get()), fluidIngredient("chocolate_liquor", MOLTEN_INGOT), 20);
         add(ingredient(NCItems.NC_ITEMS.get("cocoa_butter").get()), fluidIngredient("cocoa_butter", MOLTEN_INGOT), 20);

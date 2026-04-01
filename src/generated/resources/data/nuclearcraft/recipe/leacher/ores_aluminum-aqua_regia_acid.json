@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "tag": "c:aluminum_slurry"
+      "fluid": "nuclearcraft:aluminum_slurry"
     }
   ],
   "powerModifier": 1.0,

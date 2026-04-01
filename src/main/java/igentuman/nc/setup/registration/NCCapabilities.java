@@ -129,8 +129,6 @@ public class NCCapabilities {
             if (result instanceof NuclearCraftBE controller) {
                 return controller;
             }
-            NuclearCraft.LOGGER.warn("[NC-DIAG] getPortController: controller() returned {} for {}",
-                    result == null ? "null" : result.getClass().getSimpleName(), be.getClass().getSimpleName());
         } catch (Exception e) {
             // Not a port BE — no controller() method, expected
         }
@@ -155,12 +153,7 @@ public class NCCapabilities {
             Capabilities.EnergyStorage.BLOCK,
             beType,
             (be, side) -> {
-                var es = be.energyStorage();
-                if (es != null) {
-                    NuclearCraft.LOGGER.info("[NC-DIAG] Energy cap queried: {} stored={} canExtract={} maxExtract={}",
-                            be.getClass().getSimpleName(), es.getEnergyStored(), es.canExtract(), es.getMaxExtract());
-                }
-                return es;
+                return be.energyStorage();
             }
         );
 

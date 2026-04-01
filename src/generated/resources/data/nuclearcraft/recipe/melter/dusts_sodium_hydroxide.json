@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:molten_sodium_hydroxide"
+      "fluid": "nuclearcraft:molten_sodium_hydroxide"
     }
   ],
   "powerModifier": 1.0,

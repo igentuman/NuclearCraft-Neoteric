@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 180,
-      "tag": "c:extreme"
+      "fluid": "nuclearcraft:extreme"
     }
   ],
   "powerModifier": 0.5,

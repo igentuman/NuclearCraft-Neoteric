@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:boron/11_ni"
+      "fluid": "nuclearcraft:boron/11_ni"
     }
   ],
   "powerModifier": 1.0,

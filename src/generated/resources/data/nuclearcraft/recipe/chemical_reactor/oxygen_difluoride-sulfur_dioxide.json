@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 250,
-      "tag": "c:sulfur_trioxide"
+      "fluid": "nuclearcraft:sulfur_trioxide"
     },
     {
       "amount": 250,
-      "tag": "c:fluorite_water"
+      "fluid": "nuclearcraft:fluorite_water"
     }
   ],
   "powerModifier": 0.5,

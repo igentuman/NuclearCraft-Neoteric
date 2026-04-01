@@ -1,0 +1,100 @@
+[01Apr2026 21:46:59.818] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--mod, nuclearcraft, --all, --output, /Users/caliane/Sources/nuclearcraft/src/generated/resources, --existing, /Users/caliane/Sources/nuclearcraft/src/main/resources, --launchTarget, forgedatadev, --assetIndex, asset-index, --assetsDir, /Users/caliane/.gradle/caches/minecraft/assets, --gameDir, ., --fml.fmlVersion, 4.0.42, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.219, --fml.neoFormVersion, 20240808.144430]
+[01Apr2026 21:46:59.819] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Homebrew OpenJDK 64-Bit Server VM 21.0.10
+[01Apr2026 21:46:59.820] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.10 by Homebrew; OS Mac OS X arch aarch64 version 26.2
+[01Apr2026 21:46:59.864] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatadev
+[01Apr2026 21:46:59.891] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/Users/caliane/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23134!/ Service=ModLauncher Env=CLIENT
+[01Apr2026 21:46:59.932] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "neoforge-21.1.219.jar" [locator: neoforge devenv provider ([/Users/caliane/Sources/nuclearcraft/.gradle/repositories/ng_dummy_ng/net/neoforged/neoforge/21.1.219/neoforge-21.1.219.jar])]
+[01Apr2026 21:46:59.944] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "neoforge-21.1.219.jar" [locator: neoforge devenv provider ([/Users/caliane/Sources/nuclearcraft/.gradle/repositories/ng_dummy_ng/net/neoforged/neoforge/21.1.219/neoforge-21.1.219.jar])]
+[01Apr2026 21:46:59.950] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "main" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:46:59.956] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "neoforge-21.1.219.jar" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:46:59.961] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Mekanism-1.21.1-10.7.18.84.jar" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:46:59.963] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Mekanism-1.21.1-10.7.18.84-generators.jar" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:46:59.965] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "architectury-neoforge-13.0.8.jar" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:46:59.967] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "emi-neoforge-1.1.21+1.21.1.jar" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:46:59.970] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "theoneprobe-1.21_neo-12.0.3-5.jar" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:46:59.971] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "cc-tweaked-1.21.1-forge-1.117.0.jar" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:46:59.974] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "appliedenergistics2-19.2.17.jar" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:46:59.975] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "Patchouli-1.21.1-92-NEOFORGE.jar" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:46:59.977] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "guideme-21.1.1.jar" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:46:59.987] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found gamelibrary file "mixinextras-neoforge-0.5.0.jar" [locator: userdev mods and services, reader: mod manifest]
+[01Apr2026 21:47:00.029] [main/WARN] [net.neoforged.jarjar.selection.JarSelector/]: Attempted to select a dependency jar for JarJar which was passed in as source: library:mixinextras.neoforge. Using Mod File: /Users/caliane/.gradle/caches/modules-2/files-2.1/io.github.llamalad7/mixinextras-neoforge/0.5.0/d734b83ce6542bb70ea31755c1595b88992dbe65/mixinextras-neoforge-0.5.0.jar
+[01Apr2026 21:47:00.029] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 3 dependencies adding them to mods collection
+[01Apr2026 21:47:00.029] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found library file "cobalt-0.9.7.jar" [parent: cc-tweaked-1.21.1-forge-1.117.0.jar, locator: jarinjar]
+[01Apr2026 21:47:00.029] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found library file "jzlib-1.1.3.jar" [parent: cc-tweaked-1.21.1-forge-1.117.0.jar, locator: jarinjar]
+[01Apr2026 21:47:00.029] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found library file "net.neoforged.neoforge-coremods-21.1.219.jar" [parent: neoforge-21.1.219.jar, locator: jarinjar, reader: mod manifest]
+[01Apr2026 21:47:00.029] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
+     Mod List:
+		Name Version (Mod Id)
+
+		Applied Energistics 2 19.2.17 (ae2)
+		Architectury 13.0.8 (architectury)
+		CC: Tweaked 1.117.0 (computercraft)
+		EMI 1.1.21+1.21.1+neoforge (emi)
+		GuideME 21.1.1 (guideme)
+		Mekanism 10.7.18 (mekanism)
+		Mekanism: Generators 10.7.18 (mekanismgenerators)
+		Minecraft 1.21.1 (minecraft)
+		NeoForge 21.1.219 (neoforge)
+		Nuclearcraft Neoteric 1.3.0 (nuclearcraft)
+		Patchouli 1.21.1-92-NEOFORGE (patchouli)
+		The One Probe 1.21_neo-12.0.3-5 (theoneprobe)
+[01Apr2026 21:47:00.308] [main/INFO] [mixin/]: Compatibility level set to JAVA_17
+[01Apr2026 21:47:00.310] [main/INFO] [mixin/]: Compatibility level set to JAVA_21
+[01Apr2026 21:47:00.319] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatadev' with arguments [--gameDir, ., --assetsDir, /Users/caliane/.gradle/caches/minecraft/assets, --mod, nuclearcraft, --all, --output, /Users/caliane/Sources/nuclearcraft/src/generated/resources, --existing, /Users/caliane/Sources/nuclearcraft/src/main/resources, --assetIndex, asset-index]
+[01Apr2026 21:47:00.348] [main/WARN] [mixin/]: Reference map 'patchouli.refmap.json' for patchouli_xplat.mixins.json could not be read. If this is a development environment you can ignore this message
+[01Apr2026 21:47:00.439] [main/WARN] [mixin/]: Error loading class: mezz/jei/library/load/PluginCaller (java.lang.ClassNotFoundException: mezz.jei.library.load.PluginCaller)
+[01Apr2026 21:47:00.661] [main/INFO] [net.neoforged.neoforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [nuclearcraft]
+[01Apr2026 21:47:00.675] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0).
+[01Apr2026 21:47:02.635] [modloading-worker-0/INFO] [igentuman.nc.NuclearCraft/]: JAR file path: /Users/caliane/Sources/nuclearcraft/build/resources/main
+[01Apr2026 21:47:02.636] [modloading-worker-0/INFO] [igentuman.nc.NuclearCraft/]: JAR file path: /Users/caliane/Sources/nuclearcraft/build/resources/main
+[01Apr2026 21:47:02.637] [modloading-worker-0/INFO] [igentuman.nc.NuclearCraft/]: JAR file path: /Users/caliane/Sources/nuclearcraft/build/resources/main
+[01Apr2026 21:47:02.651] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.219, for MC 1.21.1
+[01Apr2026 21:47:02.691] [modloading-worker-0/WARN] [AE2:C/]: Unable to find class com.simibubi.create.foundation.ponder.PonderWorld. Integration with PonderJS disabled.
+[01Apr2026 21:47:04.047] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/Users/caliane/Sources/nuclearcraft/.gradle/repositories/ng_dummy_ng/net/neoforged/neoforge/21.1.219/neoforge-21.1.219.jar%23188!/assets/.mcassetsroot' uses unexpected schema
+[01Apr2026 21:47:04.047] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/Users/caliane/Sources/nuclearcraft/.gradle/repositories/ng_dummy_ng/net/neoforged/neoforge/21.1.219/neoforge-21.1.219.jar%23188!/data/.mcassetsroot' uses unexpected schema
+[01Apr2026 21:47:04.059] [main/WARN] [net.minecraft.server.packs.PathPackResources/]: Non [a-z0-9_.-] character in namespace .DS_Store in pack /Users/caliane/Sources/nuclearcraft/src/main/resources, ignoring
+[01Apr2026 21:47:04.060] [main/WARN] [net.minecraft.server.packs.PathPackResources/]: Non [a-z0-9_.-] character in namespace .DS_Store in pack /Users/caliane/Sources/nuclearcraft/src/main/resources, ignoring
+[01Apr2026 21:47:04.079] [main/WARN] [net.minecraft.server.packs.PathPackResources/]: Non [a-z0-9_.-] character in namespace .DS_Store in pack /Users/caliane/Sources/nuclearcraft/src/main/resources, ignoring
+[01Apr2026 21:47:04.079] [main/WARN] [net.minecraft.server.packs.PathPackResources/]: Non [a-z0-9_.-] character in namespace .DS_Store in pack /Users/caliane/Sources/nuclearcraft/src/main/resources, ignoring
+[01Apr2026 21:47:04.142] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
+[01Apr2026 21:47:04.399] [Worker-Main-1/WARN] [igentuman.nc.NuclearCraft/]: Error while loading dimensions ore config for lithium!
+[01Apr2026 21:47:04.399] [Worker-Main-1/WARN] [igentuman.nc.NuclearCraft/]: Error while loading dimensions ore config for platinum!
+[01Apr2026 21:47:04.399] [Worker-Main-1/WARN] [igentuman.nc.NuclearCraft/]: Error while loading dimensions ore config for thorium!
+[01Apr2026 21:47:04.399] [Worker-Main-1/WARN] [igentuman.nc.NuclearCraft/]: Error while loading dimensions ore config for tin!
+[01Apr2026 21:47:04.399] [Worker-Main-1/WARN] [igentuman.nc.NuclearCraft/]: Error while loading dimensions ore config for magnesium!
+[01Apr2026 21:47:04.399] [Worker-Main-1/WARN] [igentuman.nc.NuclearCraft/]: Error while loading dimensions ore config for silver!
+[01Apr2026 21:47:04.399] [Worker-Main-1/WARN] [igentuman.nc.NuclearCraft/]: Error while loading dimensions ore config for cobalt!
+[01Apr2026 21:47:04.400] [Worker-Main-1/WARN] [igentuman.nc.NuclearCraft/]: Error while loading dimensions ore config for uranium!
+[01Apr2026 21:47:04.400] [Worker-Main-1/WARN] [igentuman.nc.NuclearCraft/]: Error while loading dimensions ore config for zinc!
+[01Apr2026 21:47:04.400] [Worker-Main-1/WARN] [igentuman.nc.NuclearCraft/]: Error while loading dimensions ore config for boron!
+[01Apr2026 21:47:04.400] [Worker-Main-1/WARN] [igentuman.nc.NuclearCraft/]: Error while loading dimensions ore config for lead!
+[01Apr2026 21:47:04.416] [Worker-Main-1/ERROR] [net.minecraft.Util/]: Placed feature nuclearcraft:wasteland_surface in biome nuclearcraft:wasteland is missing BiomeFilter.biome()
+[01Apr2026 21:47:04.582] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 439 ms
+[01Apr2026 21:47:04.582] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Loot Tables
+[01Apr2026 21:47:04.600] [main/INFO] [net.minecraft.data.DataGenerator/]: Loot Tables finished after 17 ms
+[01Apr2026 21:47:04.600] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: NuclearCraft Block Tags
+[01Apr2026 21:47:04.605] [main/INFO] [net.minecraft.data.DataGenerator/]: NuclearCraft Block Tags finished after 5 ms
+[01Apr2026 21:47:04.605] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: NuclearCraft Item Tags
+[01Apr2026 21:47:04.610] [main/INFO] [net.minecraft.data.DataGenerator/]: NuclearCraft Item Tags finished after 4 ms
+[01Apr2026 21:47:04.610] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:fluid mod id nuclearcraft
+[01Apr2026 21:47:04.614] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:fluid mod id nuclearcraft finished after 3 ms
+[01Apr2026 21:47:04.614] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: NuclearCraft Structure Tags
+[01Apr2026 21:47:04.614] [main/INFO] [net.minecraft.data.DataGenerator/]: NuclearCraft Structure Tags finished after 0 ms
+[01Apr2026 21:47:04.614] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Block States: nuclearcraft
+[01Apr2026 21:47:04.663] [main/INFO] [net.minecraft.data.DataGenerator/]: Block States: nuclearcraft finished after 48 ms
+[01Apr2026 21:47:04.663] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Block States: nuclearcraft_fluids
+[01Apr2026 21:47:04.674] [main/INFO] [net.minecraft.data.DataGenerator/]: Block States: nuclearcraft_fluids finished after 10 ms
+[01Apr2026 21:47:04.674] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Item Models: nuclearcraft
+[01Apr2026 21:47:04.745] [main/INFO] [net.minecraft.data.DataGenerator/]: Item Models: nuclearcraft finished after 71 ms
+[01Apr2026 21:47:04.745] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Languages: en_us for mod: nuclearcraft
+[01Apr2026 21:47:04.753] [main/INFO] [net.minecraft.data.DataGenerator/]: Languages: en_us for mod: nuclearcraft finished after 8 ms
+[01Apr2026 21:47:04.753] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Languages: en_gb for mod: emi
+[01Apr2026 21:47:04.758] [main/INFO] [net.minecraft.data.DataGenerator/]: Languages: en_gb for mod: emi finished after 4 ms
+[01Apr2026 21:47:04.758] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: NuclearCraft Biome Tags
+[01Apr2026 21:47:04.759] [main/INFO] [net.minecraft.data.DataGenerator/]: NuclearCraft Biome Tags finished after 0 ms
+[01Apr2026 21:47:04.759] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Registries
+[01Apr2026 21:47:04.768] [main/INFO] [net.minecraft.data.DataGenerator/]: Registries finished after 8 ms
+[01Apr2026 21:47:04.768] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:point_of_interest_type mod id nuclearcraft
+[01Apr2026 21:47:04.768] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:point_of_interest_type mod id nuclearcraft finished after 0 ms
+[01Apr2026 21:47:04.768] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 626 ms
+[01Apr2026 21:47:04.847] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 8470, old count: 8363, new count: 8364, removed stale: 107, written: 1072

@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 120,
-      "tag": "c:molten_thermoconducting"
+      "fluid": "nuclearcraft:molten_thermoconducting"
     }
   ],
   "powerModifier": 1.0,

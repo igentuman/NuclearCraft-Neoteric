@@ -10,7 +10,7 @@
   "outputFluids": [
     {
       "amount": 10,
-      "tag": "c:steam"
+      "fluid": "nuclearcraft:steam"
     }
   ]
 }

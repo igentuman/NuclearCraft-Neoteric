@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:molten_zirconium"
+      "fluid": "nuclearcraft:molten_zirconium"
     }
   ],
   "powerModifier": 1.0,

@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 240,
-      "tag": "c:molten_beryllium"
+      "fluid": "nuclearcraft:molten_beryllium"
     }
   ],
   "powerModifier": 1.0,

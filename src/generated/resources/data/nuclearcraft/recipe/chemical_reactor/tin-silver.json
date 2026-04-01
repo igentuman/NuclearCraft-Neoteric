@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 360,
-      "tag": "c:tin_silver"
+      "fluid": "nuclearcraft:tin_silver"
     }
   ],
   "powerModifier": 0.5,

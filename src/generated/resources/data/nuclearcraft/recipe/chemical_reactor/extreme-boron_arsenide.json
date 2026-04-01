@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 180,
-      "tag": "c:thermoconducting"
+      "fluid": "nuclearcraft:thermoconducting"
     }
   ],
   "powerModifier": 0.5,

@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 180,
-      "tag": "c:electrum"
+      "fluid": "nuclearcraft:electrum"
     }
   ],
   "powerModifier": 0.5,

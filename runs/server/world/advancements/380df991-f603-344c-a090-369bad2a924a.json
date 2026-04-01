@@ -1,0 +1,238 @@
+{
+  "minecraft:recipes/decorations/crafting_table": {
+    "criteria": {
+      "unlock_right_away": "2026-03-04 10:27:53 +1100"
+    },
+    "done": true
+  },
+  "mekanism:root": {
+    "criteria": {
+      "automatic": "2026-03-04 10:27:53 +1100"
+    },
+    "done": true
+  },
+  "minecraft:adventure/adventuring_time": {
+    "criteria": {
+      "minecraft:beach": "2026-03-04 10:27:54 +1100",
+      "minecraft:dark_forest": "2026-03-04 10:28:36 +1100"
+    },
+    "done": false
+  },
+  "minecraft:recipes/building_blocks/light_gray_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/pink_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/red_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/brown_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/light_blue_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/glass": {
+    "criteria": {
+      "has_smelts_to_glass": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/green_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/blue_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/white_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/lime_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/orange_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/magenta_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/yellow_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/sandstone": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/gray_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/black_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/purple_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/cyan_concrete_powder": {
+    "criteria": {
+      "has_sand": "2026-03-04 13:56:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/charcoal": {
+    "criteria": {
+      "has_log": "2026-03-04 13:56:26 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/oak_planks": {
+    "criteria": {
+      "has_logs": "2026-03-04 13:56:26 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/oak_wood": {
+    "criteria": {
+      "has_log": "2026-03-04 13:56:26 +1100"
+    },
+    "done": true
+  },
+  "nuclearcraft:recipes/misc/expl": {
+    "criteria": {
+      "item": "2026-03-04 13:59:20 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/chest": {
+    "criteria": {
+      "has_lots_of_items": "2026-03-04 14:03:36 +1100"
+    },
+    "done": true
+  },
+  "nuclearcraft:recipes/misc/leacher": {
+    "criteria": {
+      "item": "2026-03-04 14:03:36 +1100"
+    },
+    "done": true
+  },
+  "nuclearcraft:recipes/misc/basic_storage_container": {
+    "criteria": {
+      "item": "2026-03-04 14:06:18 +1100"
+    },
+    "done": true
+  },
+  "nuclearcraft:recipes/misc/solar_panel_du": {
+    "criteria": {
+      "item": "2026-03-04 14:06:35 +1100"
+    },
+    "done": true
+  },
+  "nuclearcraft:recipes/misc/solar_panel_advanced": {
+    "criteria": {
+      "item": "2026-03-04 14:06:35 +1100"
+    },
+    "done": true
+  },
+  "nuclearcraft:recipes/misc/solar_panel_elite": {
+    "criteria": {
+      "item": "2026-03-04 14:06:35 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/coal_from_blasting_coal_ore": {
+    "criteria": {
+      "has_coal_ore": "2026-03-04 14:30:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/coal_from_smelting_coal_ore": {
+    "criteria": {
+      "has_coal_ore": "2026-03-04 14:30:19 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/gold_ingot_from_smelting_gold_ore": {
+    "criteria": {
+      "has_gold_ore": "2026-03-04 14:30:20 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/nuclearcraft_gold_ingot": {
+    "criteria": {
+      "has_ore": "2026-03-04 14:30:20 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/gold_ingot_from_blasting_gold_ore": {
+    "criteria": {
+      "has_gold_ore": "2026-03-04 14:30:20 +1100"
+    },
+    "done": true
+  },
+  "nuclearcraft:recipes/misc/blast_gold_ingot": {
+    "criteria": {
+      "has_ore": "2026-03-04 14:30:20 +1100"
+    },
+    "done": true
+  },
+  "nuclearcraft:recipes/misc/blast_uranium_ore": {
+    "criteria": {
+      "has_ore": "2026-03-04 14:30:29 +1100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/nuclearcraft_uranium_ore": {
+    "criteria": {
+      "has_ore": "2026-03-04 14:30:29 +1100"
+    },
+    "done": true
+  },
+  "DataVersion": 3955
+}

@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:californium/250_ox"
+      "fluid": "nuclearcraft:californium/250_ox"
     }
   ],
   "powerModifier": 1.0,

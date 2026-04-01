@@ -3,33 +3,33 @@
   "inputFluids": [
     {
       "amount": 810,
-      "fluid": "nuclearcraft:depleted_fuel_uranium_heu_233"
+      "tag": "c:depleted_fuel_uranium_heu_233"
     }
   ],
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:uranium/235"
+      "fluid": "nuclearcraft:uranium/235"
     },
     {
       "amount": 180,
-      "tag": "c:uranium/238"
+      "fluid": "nuclearcraft:uranium/238"
     },
     {
       "amount": 270,
-      "tag": "c:plutonium/242"
+      "fluid": "nuclearcraft:plutonium/242"
     },
     {
       "amount": 90,
-      "tag": "c:americium/243"
+      "fluid": "nuclearcraft:americium/243"
     },
     {
       "amount": 90,
-      "tag": "c:strontium_90"
+      "fluid": "nuclearcraft:strontium_90"
     },
     {
       "amount": 90,
-      "tag": "c:caesium_137"
+      "fluid": "nuclearcraft:caesium_137"
     }
   ],
   "powerModifier": 1.0,

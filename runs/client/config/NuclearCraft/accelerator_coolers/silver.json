@@ -1,0 +1,5 @@
+[{
+  "type": "silver",
+  "heat": 160,
+  "placement_rule": ["arsenic_cooler>2"]
+}]

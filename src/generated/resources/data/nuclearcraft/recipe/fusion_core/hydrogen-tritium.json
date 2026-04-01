@@ -13,19 +13,19 @@
   "outputFluids": [
     {
       "amount": 250,
-      "tag": "c:helium_3"
+      "fluid": "nuclearcraft:helium_3"
     },
     {
       "amount": 250,
-      "tag": "c:helium_3"
+      "fluid": "nuclearcraft:helium_3"
     },
     {
       "amount": 250,
-      "tag": "c:helium_3"
+      "fluid": "nuclearcraft:helium_3"
     },
     {
       "amount": 250,
-      "tag": "c:helium_3"
+      "fluid": "nuclearcraft:helium_3"
     }
   ],
   "powerModifier": 380000.0,

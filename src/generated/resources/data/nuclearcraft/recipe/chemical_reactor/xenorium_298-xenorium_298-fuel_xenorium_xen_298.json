@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:fuel_xenorium_xen_298"
+      "fluid": "nuclearcraft:fuel_xenorium_xen_298"
     }
   ],
   "powerModifier": 1.0,

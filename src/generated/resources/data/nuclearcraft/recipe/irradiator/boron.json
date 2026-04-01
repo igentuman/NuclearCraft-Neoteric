@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 500,
-      "tag": "c:irradiated_boron"
+      "fluid": "nuclearcraft:irradiated_boron"
     }
   ],
   "powerModifier": 1.0,

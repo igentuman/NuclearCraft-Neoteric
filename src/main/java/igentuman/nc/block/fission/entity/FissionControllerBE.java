@@ -258,11 +258,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
             }
             @Override
             public int extractEnergy(int maxExtract, boolean simulate) {
-                int rc = super.extractEnergy(maxExtract, simulate);
-                if (rc > 0 && !simulate) {
-                    LOGGER.info("[NC-DIAG] extractEnergy: extracted={}, remaining={}", rc, getEnergyStored());
-                }
-                return rc;
+                return super.extractEnergy(maxExtract, simulate);
             }
         };
     }

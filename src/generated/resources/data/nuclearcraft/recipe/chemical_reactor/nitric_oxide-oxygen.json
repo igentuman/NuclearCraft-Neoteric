@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 750,
-      "tag": "c:nitrogen_dioxide"
+      "fluid": "nuclearcraft:nitrogen_dioxide"
     }
   ],
   "powerModifier": 0.6,

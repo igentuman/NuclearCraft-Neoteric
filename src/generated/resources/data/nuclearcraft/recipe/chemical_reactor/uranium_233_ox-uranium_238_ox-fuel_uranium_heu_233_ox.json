@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:fuel_uranium_heu_233_ox"
+      "fluid": "nuclearcraft:fuel_uranium_heu_233_ox"
     }
   ],
   "powerModifier": 1.0,

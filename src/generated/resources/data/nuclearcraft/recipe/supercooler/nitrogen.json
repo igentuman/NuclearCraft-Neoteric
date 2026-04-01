@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 100,
-      "tag": "c:liquid_nitrogen"
+      "fluid": "nuclearcraft:liquid_nitrogen"
     }
   ],
   "powerModifier": 1.0,

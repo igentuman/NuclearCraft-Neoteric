@@ -1,0 +1,86 @@
+---- Minecraft Crash Report ----
+// I blame Dinnerbone.
+
+Time: 2026-03-04 12:28:56
+Description: Exception in server tick loop
+
+java.lang.IllegalStateException: Failed to initialize server
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:677) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:267) ~[neoforge-21.1.219.jar%23188!/:?] {re:classloading,pl:accesstransformer:B}
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- System Details --
+Details:
+	Minecraft Version: 1.21.1
+	Minecraft Version ID: 1.21.1
+	Operating System: Mac OS X (aarch64) version 26.2
+	Java Version: 21.0.10, Homebrew
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), Homebrew
+	Memory: 229610520 bytes (218 MiB) / 805306368 bytes (768 MiB) up to 31675383808 bytes (30208 MiB)
+	CPUs: 32
+	Processor Vendor: Apple Inc.
+	Processor Name: Apple M3 Ultra
+	Identifier: Apple Inc. Family 0x8765edea Model 0 Stepping 0
+	Microarchitecture: ARM64 SoC: Everest + Sawtooth
+	Frequency (GHz): 4.06
+	Number of physical packages: 1
+	Number of physical CPUs: 32
+	Number of logical CPUs: 32
+	Graphics card #0 name: Apple M3 Ultra
+	Graphics card #0 vendor: Apple (0x106b)
+	Graphics card #0 VRAM (MiB): 0.00
+	Graphics card #0 deviceId: unknown
+	Graphics card #0 versionInfo: unknown
+	Memory slot #0 capacity (MiB): 0.00
+	Memory slot #0 clockSpeed (GHz): 0.00
+	Memory slot #0 type: unknown
+	Virtual memory max (MiB): 524288.00
+	Virtual memory used (MiB): 96964.19
+	Swap memory total (MiB): 0.00
+	Swap memory used (MiB): 0.00
+	Space in storage for jna.tmpdir (MiB): <path not set>
+	Space in storage for org.lwjgl.system.SharedLibraryExtractPath (MiB): <path not set>
+	Space in storage for io.netty.native.workdir (MiB): <path not set>
+	Space in storage for java.io.tmpdir (MiB): available: 4713499.50, total: 7628013.50
+	Space in storage for workdir (MiB): available: 4713499.50, total: 7628013.50
+	JVM Flags: 0 total; 
+	Server Running: true
+	Active Data Packs: vanilla, mod_data, mod/emi (incompatible), mod/theoneprobe (incompatible), mod/mekanism, mod/patchouli (incompatible), mod/architectury (incompatible), mod/computercraft (incompatible), mod/neoforge, mod/nuclearcraft (incompatible), mod/mekanismgenerators
+	Available Data Packs: bundle, trade_rebalance, vanilla, mod/architectury (incompatible), mod/computercraft (incompatible), mod/emi (incompatible), mod/mekanism, mod/mekanismgenerators, mod/neoforge, mod/nuclearcraft (incompatible), mod/patchouli (incompatible), mod/theoneprobe (incompatible), mod_data
+	Enabled Feature Flags: minecraft:vanilla
+	World Generation: Experimental
+	World Seed: -9198682570649250417
+	Is Modded: Definitely; Server brand changed to 'neoforge'
+	Type: Dedicated Server (map_server.txt)
+	ModLauncher: 11.0.5+main.901c6ea8
+	ModLauncher launch target: forgeserverdev
+	ModLauncher services: 
+		sponge-mixin-0.15.2+mixin.0.8.7.jar mixin PLUGINSERVICE 
+		loader-4.0.42.jar slf4jfixer PLUGINSERVICE 
+		loader-4.0.42.jar runtime_enum_extender PLUGINSERVICE 
+		at-modlauncher-10.0.1.jar accesstransformer PLUGINSERVICE 
+		loader-4.0.42.jar runtimedistcleaner PLUGINSERVICE 
+		modlauncher-11.0.5.jar mixin TRANSFORMATIONSERVICE 
+		modlauncher-11.0.5.jar fml TRANSFORMATIONSERVICE 
+	FML Language Providers: 
+		javafml@4.0
+		lowcodefml@4.0
+		minecraft@4.0
+	Mod List: 
+		architectury-neoforge-13.0.8.jar                  |Architectury                  |architectury                  |13.0.8              |Manifest: NOSIGNATURE
+		cc-tweaked-1.21.1-forge-1.117.0.jar               |CC: Tweaked                   |computercraft                 |1.117.0             |Manifest: NOSIGNATURE
+		emi-neoforge-1.1.21+1.21.1.jar                    |EMI                           |emi                           |1.1.21+1.21.1+neofor|Manifest: NOSIGNATURE
+		Mekanism-1.21.1-10.7.18.84.jar                    |Mekanism                      |mekanism                      |10.7.18             |Manifest: NOSIGNATURE
+		Mekanism-1.21.1-10.7.18.84-generators.jar         |Mekanism: Generators          |mekanismgenerators            |10.7.18             |Manifest: NOSIGNATURE
+		neoforge-21.1.219.jar                             |Minecraft                     |minecraft                     |1.21.1              |Manifest: NOSIGNATURE
+		neoforge-21.1.219.jar                             |NeoForge                      |neoforge                      |21.1.219            |Manifest: NOSIGNATURE
+		main                                              |Nuclearcraft Neoteric         |nuclearcraft                  |1.3.0               |Manifest: NOSIGNATURE
+		Patchouli-1.21.1-92-NEOFORGE.jar                  |Patchouli                     |patchouli                     |1.21.1-92-NEOFORGE  |Manifest: NOSIGNATURE
+		theoneprobe-1.21_neo-12.0.3-5.jar                 |The One Probe                 |theoneprobe                   |1.21_neo-12.0.3-5   |Manifest: NOSIGNATURE
+	Crash Report UUID: f2cff514-f355-40f5-97de-3dbcc21ef8ed
+	FML: 4.0.42
+	NeoForge: 21.1.219

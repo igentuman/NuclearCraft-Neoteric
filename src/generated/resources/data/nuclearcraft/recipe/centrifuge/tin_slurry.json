@@ -9,19 +9,19 @@
   "outputFluids": [
     {
       "amount": 800,
-      "tag": "c:tin_clean_slurry"
+      "fluid": "nuclearcraft:tin_clean_slurry"
     },
     {
       "amount": 50,
-      "tag": "c:hydrochloric_acid"
+      "fluid": "nuclearcraft:hydrochloric_acid"
     },
     {
       "amount": 50,
-      "tag": "c:nitric_acid"
+      "fluid": "nuclearcraft:nitric_acid"
     },
     {
       "amount": 10,
-      "tag": "c:calcium_sulfate_solution"
+      "fluid": "nuclearcraft:calcium_sulfate_solution"
     }
   ],
   "powerModifier": 1.0,

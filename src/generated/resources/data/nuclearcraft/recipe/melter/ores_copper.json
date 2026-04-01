@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 240,
-      "tag": "c:molten_copper"
+      "fluid": "nuclearcraft:molten_copper"
     }
   ],
   "powerModifier": 1.0,

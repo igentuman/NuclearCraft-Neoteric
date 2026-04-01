@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 500,
-      "tag": "c:diborane"
+      "fluid": "nuclearcraft:diborane"
     }
   ],
   "powerModifier": 1.0,

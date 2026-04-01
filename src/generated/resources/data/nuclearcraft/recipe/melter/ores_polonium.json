@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 240,
-      "tag": "c:molten_polonium"
+      "fluid": "nuclearcraft:molten_polonium"
     }
   ],
   "powerModifier": 1.0,

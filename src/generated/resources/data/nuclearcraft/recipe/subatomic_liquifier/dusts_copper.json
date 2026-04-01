@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 450,
-      "tag": "c:subliquid_matter"
+      "fluid": "nuclearcraft:subliquid_matter"
     }
   ],
   "powerModifier": 1.0,

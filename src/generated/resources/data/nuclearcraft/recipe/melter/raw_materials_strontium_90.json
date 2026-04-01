@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 120,
-      "tag": "c:molten_strontium_90"
+      "fluid": "nuclearcraft:molten_strontium_90"
     }
   ],
   "powerModifier": 1.0,

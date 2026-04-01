@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 120,
-      "tag": "c:molten_lapis"
+      "fluid": "nuclearcraft:molten_lapis"
     }
   ],
   "powerModifier": 1.0,

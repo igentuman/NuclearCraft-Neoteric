@@ -19,7 +19,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "tag": "c:oxygen"
+      "fluid": "nuclearcraft:oxygen"
     }
   ],
   "outputParticles": [

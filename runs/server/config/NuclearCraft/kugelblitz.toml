@@ -1,0 +1,20 @@
+#Settings for Fusion Reactor
+[general]
+	#Enable blachole dstortion shader.
+	blackhole_shader = true
+	#EXPL FE requirement.
+	# Default: 10240000000
+	# Range: 2048000000 ~ 20480000000
+	expl_fe = 10240000000
+	#Laser burst distance.
+	# Default: 32
+	# Range: 8 ~ 64
+	min_size = 32
+	#Multiplier for kugelblitz chamber FE generation.
+	# Default: 1.0
+	# Range: 0.001 ~ 1000.0
+	fe_generation_multiplier = 1.0
+	#Adjust rate of blackhole evaporation.
+	# Default: 1.0
+	# Range: 0.001 ~ 1000.0
+	blackhole_evaporation_rate = 1.0

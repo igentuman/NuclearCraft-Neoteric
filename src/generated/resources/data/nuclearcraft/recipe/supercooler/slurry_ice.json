@@ -9,7 +9,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "tag": "c:cryotheum"
+      "fluid": "nuclearcraft:cryotheum"
     }
   ],
   "powerModifier": 1.0,

@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:fuel_berkelium_heb_248_ox"
+      "fluid": "nuclearcraft:fuel_berkelium_heb_248_ox"
     }
   ],
   "powerModifier": 1.0,

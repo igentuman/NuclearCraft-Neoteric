@@ -1,0 +1,153 @@
+[lithium]
+	#Ore generation settings for lithium
+	register = true
+	gen_dimensions = ["minecraft:overworld", "nuclearcraft:wasteland"]
+	# Default: 7
+	# Range: 0 ~ 64
+	vein_size = 7
+	# Default: -60
+	# Range: -64 ~ 255
+	min_height = -60
+	# Default: 60
+	# Range: -64 ~ 255
+	max_height = 60
+
+[platinum]
+	#Ore generation settings for platinum
+	register = true
+	gen_dimensions = ["minecraft:overworld", "nuclearcraft:wasteland"]
+	# Default: 3
+	# Range: 0 ~ 64
+	vein_size = 3
+	# Default: -60
+	# Range: -64 ~ 255
+	min_height = -60
+	# Default: 0
+	# Range: -64 ~ 255
+	max_height = 0
+
+[thorium]
+	#Ore generation settings for thorium
+	register = true
+	gen_dimensions = ["minecraft:overworld", "nuclearcraft:wasteland"]
+	# Default: 7
+	# Range: 0 ~ 64
+	vein_size = 7
+	# Default: -60
+	# Range: -64 ~ 255
+	min_height = -60
+	# Default: 60
+	# Range: -64 ~ 255
+	max_height = 60
+
+[tin]
+	#Ore generation settings for tin
+	register = true
+	gen_dimensions = ["minecraft:overworld", "nuclearcraft:wasteland"]
+	# Default: 7
+	# Range: 0 ~ 64
+	vein_size = 7
+	# Default: 4
+	# Range: -64 ~ 255
+	min_height = 4
+	# Default: 60
+	# Range: -64 ~ 255
+	max_height = 60
+
+[magnesium]
+	#Ore generation settings for magnesium
+	register = true
+	gen_dimensions = ["minecraft:overworld", "nuclearcraft:wasteland"]
+	# Default: 7
+	# Range: 0 ~ 64
+	vein_size = 7
+	# Default: -60
+	# Range: -64 ~ 255
+	min_height = -60
+	# Default: 60
+	# Range: -64 ~ 255
+	max_height = 60
+
+[silver]
+	#Ore generation settings for silver
+	register = true
+	gen_dimensions = ["minecraft:overworld", "nuclearcraft:wasteland"]
+	# Default: 7
+	# Range: 0 ~ 64
+	vein_size = 7
+	# Default: -60
+	# Range: -64 ~ 255
+	min_height = -60
+	# Default: 60
+	# Range: -64 ~ 255
+	max_height = 60
+
+[cobalt]
+	#Ore generation settings for cobalt
+	register = true
+	gen_dimensions = ["minecraft:overworld", "nuclearcraft:wasteland"]
+	# Default: 7
+	# Range: 0 ~ 64
+	vein_size = 7
+	# Default: -60
+	# Range: -64 ~ 255
+	min_height = -60
+	# Default: 60
+	# Range: -64 ~ 255
+	max_height = 60
+
+[uranium]
+	#Ore generation settings for uranium
+	register = true
+	gen_dimensions = ["minecraft:overworld", "nuclearcraft:wasteland"]
+	# Default: 7
+	# Range: 0 ~ 64
+	vein_size = 7
+	# Default: -60
+	# Range: -64 ~ 255
+	min_height = -60
+	# Default: 60
+	# Range: -64 ~ 255
+	max_height = 60
+
+[zinc]
+	#Ore generation settings for zinc
+	register = true
+	gen_dimensions = ["minecraft:overworld", "nuclearcraft:wasteland"]
+	# Default: 7
+	# Range: 0 ~ 64
+	vein_size = 7
+	# Default: 4
+	# Range: -64 ~ 255
+	min_height = 4
+	# Default: 60
+	# Range: -64 ~ 255
+	max_height = 60
+
+[boron]
+	#Ore generation settings for boron
+	register = true
+	gen_dimensions = ["minecraft:overworld", "nuclearcraft:wasteland"]
+	# Default: 7
+	# Range: 0 ~ 64
+	vein_size = 7
+	# Default: -60
+	# Range: -64 ~ 255
+	min_height = -60
+	# Default: 60
+	# Range: -64 ~ 255
+	max_height = 60
+
+[lead]
+	#Ore generation settings for lead
+	register = true
+	gen_dimensions = ["minecraft:overworld", "nuclearcraft:wasteland"]
+	# Default: 7
+	# Range: 0 ~ 64
+	vein_size = 7
+	# Default: 4
+	# Range: -64 ~ 255
+	min_height = 4
+	# Default: 60
+	# Range: -64 ~ 255
+	max_height = 60

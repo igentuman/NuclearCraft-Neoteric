@@ -3,33 +3,33 @@
   "inputFluids": [
     {
       "amount": 810,
-      "fluid": "nuclearcraft:depleted_fuel_berkelium_leb_248"
+      "tag": "c:depleted_fuel_berkelium_leb_248"
     }
   ],
   "outputFluids": [
     {
       "amount": 450,
-      "tag": "c:berkelium/247"
+      "fluid": "nuclearcraft:berkelium/247"
     },
     {
       "amount": 90,
-      "tag": "c:berkelium/248"
+      "fluid": "nuclearcraft:berkelium/248"
     },
     {
       "amount": 90,
-      "tag": "c:californium/249"
+      "fluid": "nuclearcraft:californium/249"
     },
     {
       "amount": 90,
-      "tag": "c:californium/251"
+      "fluid": "nuclearcraft:californium/251"
     },
     {
       "amount": 90,
-      "tag": "c:ruthenium_106"
+      "fluid": "nuclearcraft:ruthenium_106"
     },
     {
       "amount": 90,
-      "tag": "c:promethium_147"
+      "fluid": "nuclearcraft:promethium_147"
     }
   ],
   "powerModifier": 1.0,

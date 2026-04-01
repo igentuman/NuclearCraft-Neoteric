@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:fuel_curium_lecm_245_ox"
+      "fluid": "nuclearcraft:fuel_curium_lecm_245_ox"
     }
   ],
   "powerModifier": 1.0,

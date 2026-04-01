@@ -1,0 +1,5 @@
+[{
+  "type": "slime",
+  "heat": 165,
+  "placement_rule": ["lead_cooler>2", "water_cooler"]
+}]

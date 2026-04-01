@@ -9,11 +9,11 @@
   "outputFluids": [
     {
       "amount": 250,
-      "tag": "c:hydrogen"
+      "fluid": "nuclearcraft:hydrogen"
     },
     {
       "amount": 250,
-      "tag": "c:fluorine"
+      "fluid": "nuclearcraft:fluorine"
     }
   ],
   "powerModifier": 1.0,

@@ -13,11 +13,11 @@
   "outputFluids": [
     {
       "amount": 250,
-      "tag": "c:ethene"
+      "fluid": "nuclearcraft:ethene"
     },
     {
       "amount": 250,
-      "tag": "c:potassium_fluoride_solution"
+      "fluid": "nuclearcraft:potassium_fluoride_solution"
     }
   ],
   "powerModifier": 1.0,

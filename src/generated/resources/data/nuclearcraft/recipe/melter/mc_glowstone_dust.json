@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:glowstone"
+      "fluid": "nuclearcraft:glowstone"
     }
   ],
   "powerModifier": 1.0,

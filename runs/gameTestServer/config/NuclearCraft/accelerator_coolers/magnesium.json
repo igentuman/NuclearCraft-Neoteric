@@ -1,0 +1,5 @@
+[{
+  "type": "magnesium",
+  "heat": 150,
+  "placement_rule": ["end_stone_cooler","prismarine_cooler"]
+}]

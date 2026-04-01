@@ -14,7 +14,7 @@
   "outputFluids": [
     {
       "amount": 1000,
-      "tag": "c:magnesium_slurry"
+      "fluid": "nuclearcraft:magnesium_slurry"
     }
   ],
   "powerModifier": 1.0,

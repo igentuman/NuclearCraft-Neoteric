@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 720,
-      "tag": "c:zircaloy"
+      "fluid": "nuclearcraft:zircaloy"
     }
   ],
   "powerModifier": 0.5,

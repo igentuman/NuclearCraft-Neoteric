@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 360,
-      "tag": "c:lead_platinum"
+      "fluid": "nuclearcraft:lead_platinum"
     }
   ],
   "powerModifier": 0.5,

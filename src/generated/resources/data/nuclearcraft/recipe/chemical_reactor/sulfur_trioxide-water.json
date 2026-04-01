@@ -13,7 +13,7 @@
   "outputFluids": [
     {
       "amount": 250,
-      "tag": "c:sulfuric_acid"
+      "fluid": "nuclearcraft:sulfuric_acid"
     }
   ],
   "powerModifier": 0.5,

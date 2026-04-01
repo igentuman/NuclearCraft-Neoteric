@@ -10,7 +10,7 @@
   "outputFluids": [
     {
       "amount": 10,
-      "tag": "c:helium"
+      "fluid": "nuclearcraft:helium"
     }
   ]
 }

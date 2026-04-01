@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "tag": "c:molten_obsidian"
+      "fluid": "nuclearcraft:molten_obsidian"
     }
   ],
   "powerModifier": 1.0,

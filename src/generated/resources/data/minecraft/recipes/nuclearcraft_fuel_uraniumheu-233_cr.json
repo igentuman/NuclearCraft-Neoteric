@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:uranium_233"
+    },
+    {
+      "item": "nuclearcraft:uranium_233"
+    },
+    {
+      "item": "nuclearcraft:uranium_233"
+    },
+    {
+      "item": "nuclearcraft:uranium_238"
+    },
+    {
+      "item": "nuclearcraft:uranium_238"
+    },
+    {
+      "item": "nuclearcraft:uranium_238"
+    },
+    {
+      "item": "nuclearcraft:uranium_238"
+    },
+    {
+      "item": "nuclearcraft:uranium_238"
+    },
+    {
+      "item": "nuclearcraft:uranium_238"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "item": "nuclearcraft:fuel_uranium_heu_233"
+  }
+}

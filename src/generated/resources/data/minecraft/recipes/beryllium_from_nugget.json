@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "tag": "forge:nuggets/beryllium"
+    },
+    {
+      "tag": "forge:nuggets/beryllium"
+    },
+    {
+      "tag": "forge:nuggets/beryllium"
+    },
+    {
+      "tag": "forge:nuggets/beryllium"
+    },
+    {
+      "tag": "forge:nuggets/beryllium"
+    },
+    {
+      "tag": "forge:nuggets/beryllium"
+    },
+    {
+      "tag": "forge:nuggets/beryllium"
+    },
+    {
+      "tag": "forge:nuggets/beryllium"
+    },
+    {
+      "tag": "forge:nuggets/beryllium"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:beryllium_ingot"
+  }
+}

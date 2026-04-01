@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:americium_242_za"
+    },
+    {
+      "item": "nuclearcraft:americium_243_za"
+    },
+    {
+      "item": "nuclearcraft:americium_243_za"
+    },
+    {
+      "item": "nuclearcraft:americium_243_za"
+    },
+    {
+      "item": "nuclearcraft:americium_243_za"
+    },
+    {
+      "item": "nuclearcraft:americium_243_za"
+    },
+    {
+      "item": "nuclearcraft:americium_243_za"
+    },
+    {
+      "item": "nuclearcraft:americium_243_za"
+    },
+    {
+      "item": "nuclearcraft:americium_243_za"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "item": "nuclearcraft:fuel_americium_lea_242_za"
+  }
+}

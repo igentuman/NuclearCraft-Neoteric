@@ -1,0 +1,45 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:uranium/235_ni"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:uranium/238_ni"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:fuel_uranium_leu_235_ni"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 30,
+      "tag": "forge:uranium/235_ni"
+    },
+    {
+      "amount": 270,
+      "tag": "forge:uranium/238_ni"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_uranium_leu_235_ni"
+  },
+  "temperature": 800
+}

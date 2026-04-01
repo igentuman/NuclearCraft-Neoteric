@@ -1,0 +1,27 @@
+{
+  "type": "tconstruct:casting_table",
+  "cast": {
+    "tag": "tconstruct:casts/multi_use/ingot"
+  },
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:curium/243"
+      }
+    }
+  ],
+  "cooling_time": 40,
+  "fluid": {
+    "amount": 90,
+    "tag": "forge:curium/243"
+  },
+  "result": {
+    "item": "nuclearcraft:curium_243"
+  }
+}

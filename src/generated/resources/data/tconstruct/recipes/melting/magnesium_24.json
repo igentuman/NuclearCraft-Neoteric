@@ -1,0 +1,25 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:magnesium_24"
+      }
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:magnesium_24"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:magnesium_24"
+  },
+  "temperature": 700,
+  "time": 30
+}

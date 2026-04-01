@@ -1,0 +1,25 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:lithium/7_ni"
+      }
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:lithium_7_ni"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:lithium/7_ni"
+  },
+  "temperature": 700,
+  "time": 30
+}

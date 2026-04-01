@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:plutonium_241_ox"
+    },
+    {
+      "item": "nuclearcraft:plutonium_242_ox"
+    },
+    {
+      "item": "nuclearcraft:plutonium_242_ox"
+    },
+    {
+      "item": "nuclearcraft:plutonium_242_ox"
+    },
+    {
+      "item": "nuclearcraft:plutonium_242_ox"
+    },
+    {
+      "item": "nuclearcraft:plutonium_242_ox"
+    },
+    {
+      "item": "nuclearcraft:plutonium_242_ox"
+    },
+    {
+      "item": "nuclearcraft:plutonium_242_ox"
+    },
+    {
+      "item": "nuclearcraft:plutonium_242_ox"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "item": "nuclearcraft:fuel_plutonium_lep_241_ox"
+  }
+}

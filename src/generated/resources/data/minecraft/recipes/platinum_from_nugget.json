@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "tag": "forge:nuggets/platinum"
+    },
+    {
+      "tag": "forge:nuggets/platinum"
+    },
+    {
+      "tag": "forge:nuggets/platinum"
+    },
+    {
+      "tag": "forge:nuggets/platinum"
+    },
+    {
+      "tag": "forge:nuggets/platinum"
+    },
+    {
+      "tag": "forge:nuggets/platinum"
+    },
+    {
+      "tag": "forge:nuggets/platinum"
+    },
+    {
+      "tag": "forge:nuggets/platinum"
+    },
+    {
+      "tag": "forge:nuggets/platinum"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:platinum_ingot"
+  }
+}

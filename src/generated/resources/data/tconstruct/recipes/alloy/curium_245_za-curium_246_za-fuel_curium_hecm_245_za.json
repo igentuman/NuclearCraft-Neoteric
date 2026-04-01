@@ -1,0 +1,45 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:curium/245_za"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:curium/246_za"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:fuel_curium_hecm_245_za"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 90,
+      "tag": "forge:curium/245_za"
+    },
+    {
+      "amount": 180,
+      "tag": "forge:curium/246_za"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_curium_hecm_245_za"
+  },
+  "temperature": 800
+}

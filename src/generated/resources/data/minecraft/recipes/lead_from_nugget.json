@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "tag": "forge:nuggets/lead"
+    },
+    {
+      "tag": "forge:nuggets/lead"
+    },
+    {
+      "tag": "forge:nuggets/lead"
+    },
+    {
+      "tag": "forge:nuggets/lead"
+    },
+    {
+      "tag": "forge:nuggets/lead"
+    },
+    {
+      "tag": "forge:nuggets/lead"
+    },
+    {
+      "tag": "forge:nuggets/lead"
+    },
+    {
+      "tag": "forge:nuggets/lead"
+    },
+    {
+      "tag": "forge:nuggets/lead"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:lead_ingot"
+  }
+}

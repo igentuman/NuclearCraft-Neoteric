@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:berkelium_248_ox"
+    },
+    {
+      "item": "nuclearcraft:berkelium_247_ox"
+    },
+    {
+      "item": "nuclearcraft:berkelium_247_ox"
+    },
+    {
+      "item": "nuclearcraft:berkelium_247_ox"
+    },
+    {
+      "item": "nuclearcraft:berkelium_247_ox"
+    },
+    {
+      "item": "nuclearcraft:berkelium_247_ox"
+    },
+    {
+      "item": "nuclearcraft:berkelium_247_ox"
+    },
+    {
+      "item": "nuclearcraft:berkelium_247_ox"
+    },
+    {
+      "item": "nuclearcraft:berkelium_247_ox"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "item": "nuclearcraft:fuel_berkelium_leb_248_ox"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:sulfur"
+      }
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:dusts/sulfur"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:sulfur"
+  },
+  "temperature": 500,
+  "time": 40
+}

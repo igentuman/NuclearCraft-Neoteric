@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 1.0,
+  "ingredient": {
+    "tag": "forge:plates/hsla_steel"
+  },
+  "result": "nuclearcraft:hsla_steel_ingot"
+}

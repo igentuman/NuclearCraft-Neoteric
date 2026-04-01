@@ -1,0 +1,45 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:dark_chocolate"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:pasteurized_milk"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:milk_chocolate"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 90,
+      "tag": "forge:dark_chocolate"
+    },
+    {
+      "amount": 250,
+      "tag": "forge:pasteurized_milk"
+    }
+  ],
+  "result": {
+    "amount": 180,
+    "tag": "forge:milk_chocolate"
+  },
+  "temperature": 200
+}

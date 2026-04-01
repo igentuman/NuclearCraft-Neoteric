@@ -1,0 +1,45 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:thorium/230_ni"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:thorium/232_ni"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:fuel_thorium_tbu_ni"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 30,
+      "tag": "forge:thorium/230_ni"
+    },
+    {
+      "amount": 270,
+      "tag": "forge:thorium/232_ni"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_thorium_tbu_ni"
+  },
+  "temperature": 800
+}

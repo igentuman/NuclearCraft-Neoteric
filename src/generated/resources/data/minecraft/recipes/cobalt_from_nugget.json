@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "tag": "forge:nuggets/cobalt"
+    },
+    {
+      "tag": "forge:nuggets/cobalt"
+    },
+    {
+      "tag": "forge:nuggets/cobalt"
+    },
+    {
+      "tag": "forge:nuggets/cobalt"
+    },
+    {
+      "tag": "forge:nuggets/cobalt"
+    },
+    {
+      "tag": "forge:nuggets/cobalt"
+    },
+    {
+      "tag": "forge:nuggets/cobalt"
+    },
+    {
+      "tag": "forge:nuggets/cobalt"
+    },
+    {
+      "tag": "forge:nuggets/cobalt"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:cobalt_ingot"
+  }
+}

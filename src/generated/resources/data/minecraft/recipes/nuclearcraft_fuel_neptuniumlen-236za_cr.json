@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:neptunium_236_za"
+    },
+    {
+      "item": "nuclearcraft:neptunium_237_za"
+    },
+    {
+      "item": "nuclearcraft:neptunium_237_za"
+    },
+    {
+      "item": "nuclearcraft:neptunium_237_za"
+    },
+    {
+      "item": "nuclearcraft:neptunium_237_za"
+    },
+    {
+      "item": "nuclearcraft:neptunium_237_za"
+    },
+    {
+      "item": "nuclearcraft:neptunium_237_za"
+    },
+    {
+      "item": "nuclearcraft:neptunium_237_za"
+    },
+    {
+      "item": "nuclearcraft:neptunium_237_za"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "item": "nuclearcraft:fuel_neptunium_len_236_za"
+  }
+}

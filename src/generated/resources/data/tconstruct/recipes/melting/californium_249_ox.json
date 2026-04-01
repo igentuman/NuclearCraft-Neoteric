@@ -1,0 +1,25 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:californium/249_ox"
+      }
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:californium_249_ox"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:californium/249_ox"
+  },
+  "temperature": 700,
+  "time": 30
+}

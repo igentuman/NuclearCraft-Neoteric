@@ -1,0 +1,25 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:uranium/233"
+      }
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:uranium_233"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:uranium/233"
+  },
+  "temperature": 700,
+  "time": 30
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "forge:storage_blocks/thorium"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "nuclearcraft:thorium_ingot"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:uranium/235_ox"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:uranium/238_ox"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:fuel_uranium_leu_235_ox"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 30,
+      "tag": "forge:uranium/235_ox"
+    },
+    {
+      "amount": 270,
+      "tag": "forge:uranium/238_ox"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_uranium_leu_235_ox"
+  },
+  "temperature": 800
+}

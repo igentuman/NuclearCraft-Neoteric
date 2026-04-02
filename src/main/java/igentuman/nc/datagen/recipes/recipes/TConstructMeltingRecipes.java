@@ -24,8 +24,8 @@ public class TConstructMeltingRecipes extends AbstractRecipeProvider {
         TConstructMeltingRecipes.consumer = consumer;
         ID = "melting";
         for(String name: List.of("tough_alloy")) {
-            add(dustIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT),800, 40);
-            add(ingotIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT),800, 40);
+            add(dustIngredient(name), fluidIngredient(name, MOLTEN_INGOT),800, 40);
+            add(ingotIngredient(name), fluidIngredient(name, MOLTEN_INGOT),800, 40);
         }
 
         add(dustIngredient(Materials.polonium), fluidIngredient(Materials.polonium, MOLTEN_INGOT), 700, 40);

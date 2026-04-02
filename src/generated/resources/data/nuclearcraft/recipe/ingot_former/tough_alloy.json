@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "c:tough_alloy"
+    }
+  ],
+  "output": [
+    {
+      "tag": "c:ingots/tough_alloy"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

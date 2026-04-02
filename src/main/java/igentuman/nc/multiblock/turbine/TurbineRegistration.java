@@ -55,7 +55,7 @@ public class TurbineRegistration {
         tmp.put("silver", new CoilDef("silver", 112, "turbine_magnesium_coil|turbine_gold_coil"));
         tmp.put("gold", new CoilDef("gold", 104, "turbine_beryllium_coil"));
         tmp.put("beryllium", new CoilDef("beryllium", 90, "turbine_magnesium_coil"));
-        tmp.put("aluminum", new CoilDef("aluminum", 98, "turbine_gold_coil|turbine_magnesium_coil|turbine_beryllium_coil|turbine_gold_coil|turbine_copper_coil"));
+        tmp.put("aluminium", new CoilDef("aluminium", 98, "turbine_gold_coil|turbine_magnesium_coil|turbine_beryllium_coil|turbine_gold_coil|turbine_copper_coil"));
         return tmp;
     }
 

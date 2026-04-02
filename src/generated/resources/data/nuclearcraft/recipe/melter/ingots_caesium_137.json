@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_caesium_137"
+      "fluid": "nuclearcraft:caesium_137"
     }
   ],
   "powerModifier": 1.0,

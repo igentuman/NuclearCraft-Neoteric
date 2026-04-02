@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 120,
-      "fluid": "nuclearcraft:molten_cobalt"
+      "fluid": "nuclearcraft:cobalt"
     }
   ],
   "powerModifier": 1.0,

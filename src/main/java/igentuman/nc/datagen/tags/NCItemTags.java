@@ -130,7 +130,7 @@ public class NCItemTags extends ItemTagsProvider {
             TagKey<Item> C_INGOTS = TagKey.create(ITEM_REGISTRY, resourceLoc("ingots/"+name));
             tag(C_INGOTS).add(NC_INGOTS.get(name).get());
         }
-        tag(INGOTS_TAG.get("aluminium")).add(NC_INGOTS.get("aluminum").get());
+        tag(INGOTS_TAG.get("aluminum")).add(NC_INGOTS.get("aluminium").get());
     }
 
     private void nuggets() {
@@ -140,7 +140,7 @@ public class NCItemTags extends ItemTagsProvider {
             TagKey<Item> C_NUGGETS = TagKey.create(ITEM_REGISTRY, resourceLoc("nuggets/"+name));
             tag(C_NUGGETS).add(NC_NUGGETS.get(name).get());
         }
-        tag(NUGGETS_TAG.get("aluminium")).add(NC_NUGGETS.get("aluminum").get());
+        tag(NUGGETS_TAG.get("aluminum")).add(NC_NUGGETS.get("aluminium").get());
     }
 
     private void plates() {
@@ -150,7 +150,7 @@ public class NCItemTags extends ItemTagsProvider {
             TagKey<Item> C_PLATES = TagKey.create(ITEM_REGISTRY, resourceLoc("plates/"+name));
             tag(C_PLATES).add(NC_PLATES.get(name).get());
         }
-        tag(PLATES_TAG.get("aluminium")).add(NC_PLATES.get("aluminum").get());
+        tag(PLATES_TAG.get("aluminum")).add(NC_PLATES.get("aluminium").get());
     }
 
     private void dusts() {
@@ -160,7 +160,7 @@ public class NCItemTags extends ItemTagsProvider {
             TagKey<Item> C_DUSTS = TagKey.create(ITEM_REGISTRY, resourceLoc("dusts/"+name));
             tag(C_DUSTS).add(NC_DUSTS.get(name).get());
         }
-        tag(DUSTS_TAG.get("aluminium")).add(NC_DUSTS.get("aluminum").get());
+        tag(DUSTS_TAG.get("aluminum")).add(NC_DUSTS.get("aluminium").get());
         tag(DUSTS_TAG.get("salt")).add(NC_ITEMS.get("salt").get());
         tag(DUSTS_TAG.get("sodium_chloride")).add(NC_ITEMS.get("salt").get());
     }

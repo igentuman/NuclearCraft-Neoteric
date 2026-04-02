@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 240,
-      "fluid": "nuclearcraft:molten_silicon_carbide"
+      "fluid": "nuclearcraft:silicon_carbide"
     }
   ],
   "powerModifier": 1.0,

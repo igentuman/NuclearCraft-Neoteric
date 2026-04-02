@@ -1,0 +1,34 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.02,
+  "input": [
+    {
+      "tag": "c:ingots/aluminium"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 50000000,
+      "focus": 1.0,
+      "meanEnergy": 1500,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 2000,
+  "output": [
+    {
+      "tag": "c:ingots/silicon"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "photon"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

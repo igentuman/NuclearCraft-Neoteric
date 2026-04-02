@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "tag": "c:nuggets/aluminium"
+    },
+    {
+      "tag": "c:nuggets/aluminium"
+    },
+    {
+      "tag": "c:nuggets/aluminium"
+    },
+    {
+      "tag": "c:nuggets/aluminium"
+    },
+    {
+      "tag": "c:nuggets/aluminium"
+    },
+    {
+      "tag": "c:nuggets/aluminium"
+    },
+    {
+      "tag": "c:nuggets/aluminium"
+    },
+    {
+      "tag": "c:nuggets/aluminium"
+    },
+    {
+      "tag": "c:nuggets/aluminium"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:aluminium_ingot"
+  }
+}

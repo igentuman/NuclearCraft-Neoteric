@@ -50,7 +50,7 @@ public class Materials extends MaterialsManager {
     public final static String bronze = "bronze";
     public final static String corium = "corium";
     public final static String electrum = "electrum";
-    public final static String aluminum = "aluminum";
+    public final static String aluminium = "aluminium";
     public final static String graphite = "graphite";
     public final static String pyrolitic_carbon = "pyrolitic_carbon";
     public final static String hsla_steel = "hsla_steel";
@@ -258,7 +258,7 @@ public class Materials extends MaterialsManager {
             all.put(bronze, NCMaterial.alloy(bronze).color(0xFFC78C47));
             all.put(corium, NCMaterial.alloy(corium).define("fluid").fluid(true, 3000).color(0xFF7C7C6F));
             all.put(electrum, NCMaterial.alloy(electrum).color(0xFFA0A15D));
-            all.put(aluminum, NCMaterial.alloy(aluminum).color(0xFFABEBCB));
+            all.put(aluminium, NCMaterial.alloy(aluminium).color(0xFFABEBCB));
             all.put(graphite, NCMaterial.get(graphite).define("ingot", "dust", "block", "plate").color(0xFF292929));
             all.put(pyrolitic_carbon, NCMaterial.get(pyrolitic_carbon).define("ingot", "dust").color(0xFF292929));
             all.put(hsla_steel, NCMaterial.alloy(hsla_steel).define("ingot", "plate", "dust", "fluid").color(0xFF8174B0));
@@ -393,7 +393,7 @@ public class Materials extends MaterialsManager {
 
     public static List<String> slurries() {
         if(slurries == null) slurries = List.of(
-                "uranium", "iron", "gold", "aluminum", "thorium", "boron", "silver",
+                "uranium", "iron", "gold", "aluminium", "thorium", "boron", "silver",
                 "lead", "tin", "copper", "zinc", "cobalt", "platinum", "lithium", "magnesium", "nickel"
         );
         return slurries;

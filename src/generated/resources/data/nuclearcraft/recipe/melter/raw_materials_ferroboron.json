@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 120,
-      "fluid": "nuclearcraft:molten_ferroboron"
+      "fluid": "nuclearcraft:ferroboron"
     }
   ],
   "powerModifier": 1.0,

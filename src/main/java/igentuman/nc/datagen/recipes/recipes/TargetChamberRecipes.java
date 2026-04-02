@@ -74,7 +74,7 @@ public class TargetChamberRecipes extends AbstractRecipeProvider {
         targetChamberItems(ingotIngredient("beryllium"), particles(1000, 1.0, 1, proton),
             List.of(particles(1, 1.0, 1, alpha)), ingotIngredient(lithium6), 7500, 0.625);
 
-        targetChamberItems(ingotIngredient("aluminum"), particles(1500, 1.0, 1, proton),
+        targetChamberItems(ingotIngredient("aluminium"), particles(1500, 1.0, 1, proton),
             List.of(particles(1, 1.0, 1, photon)), ingotIngredient("silicon"), 2000, 0.02);
 
         targetChamberFluids(List.of(fluidIngredient("tritium", 1000)), particles(2400, 1.0, 1, proton),
@@ -179,7 +179,7 @@ public class TargetChamberRecipes extends AbstractRecipeProvider {
             List.of(particles(1, 1.0, 1, electron)), isotopeIngredient(berkelium247), 10500, 0.01);
 
         // Pion reactions
-        targetChamberItems(ingotIngredient("aluminum"), particles(150000, 1.0, 1, pion_minus),
+        targetChamberItems(ingotIngredient("aluminium"), particles(150000, 1.0, 1, pion_minus),
             List.of(particles(1, 1.0, 1, proton), particles(1, 1.0, 1, neutron)), isotopeIngredient(sodium_22), 250000, 0.025);
             
         // Antiproton reactions

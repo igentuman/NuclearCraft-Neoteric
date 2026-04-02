@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_boron"
+      "fluid": "nuclearcraft:boron"
     }
   ],
   "powerModifier": 1.0,

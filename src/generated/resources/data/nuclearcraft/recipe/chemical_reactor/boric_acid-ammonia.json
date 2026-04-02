@@ -17,7 +17,7 @@
     },
     {
       "amount": 1000,
-      "fluid": "nuclearcraft:minecraft:water"
+      "fluid": "minecraft:water"
     }
   ],
   "powerModifier": 0.5,

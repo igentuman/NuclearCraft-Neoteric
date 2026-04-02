@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 120,
-      "fluid": "nuclearcraft:molten_tough_alloy"
+      "fluid": "nuclearcraft:tough_alloy"
     }
   ],
   "powerModifier": 1.0,

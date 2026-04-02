@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 120,
-      "fluid": "nuclearcraft:molten_molybdenum"
+      "fluid": "nuclearcraft:molybdenum"
     }
   ],
   "powerModifier": 1.0,

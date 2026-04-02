@@ -139,9 +139,6 @@ public class NCFluids {
             LIQUIDS_TAG.put(liquid.name, NCTagFactory.fluidTag(commonRl(liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
 
-            if (!liquid.name.matches(".*_solution|.*_water|.*_liquor|.*_chocolate|.*_milk|.*_coolant.*")) {
-                LIQUIDS_TAG.put("molten_" + liquid.name, NCTagFactory.fluidTag(commonRl("molten_" + liquid.name)));
-            }
         }
     }
 
@@ -204,10 +201,8 @@ public class NCFluids {
         for (String name: Materials.fluids().keySet()) {
             LIQUIDS_TAG.put(name, NCTagFactory.fluidTag(commonRl(name)));
             NC_MATERIALS.put(name, FluidEntry.makeMoltenLiquid(name, Materials.fluids().get(name).color));
-            LIQUIDS_TAG.put("molten_" + name, NCTagFactory.fluidTag(commonRl("molten_" + name)));
         }
-        LIQUIDS_TAG.put("aluminium", NCTagFactory.fluidTag(commonRl("aluminium")));
-        LIQUIDS_TAG.put("molten_aluminium", NCTagFactory.fluidTag(commonRl("molten_aluminium")));
+        LIQUIDS_TAG.put("aluminum", NCTagFactory.fluidTag(commonRl("aluminum")));
     }
 
     private static void fuel() {

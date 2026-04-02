@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_platinum"
+      "fluid": "nuclearcraft:platinum"
     }
   ],
   "powerModifier": 1.0,

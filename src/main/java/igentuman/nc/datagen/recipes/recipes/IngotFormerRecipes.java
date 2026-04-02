@@ -27,7 +27,7 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
         for(String name: Materials.all().keySet()) {
             NCMaterial material = Materials.all().get(name);
             if(material.fluid && !material.isGas && material.ingot) {
-                add(ingotIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT));
+                add(ingotIngredient(name), fluidIngredient(name, MOLTEN_INGOT));
             }
         }
 
@@ -58,12 +58,12 @@ public class IngotFormerRecipes extends AbstractRecipeProvider {
             }
         }
 
-        add(ingredient(COPPER_INGOT), fluidIngredient("molten_"+Materials.copper, MOLTEN_INGOT));
-        add(ingredient(IRON_INGOT), fluidIngredient("molten_"+Materials.iron, MOLTEN_INGOT));
-        add(ingredient(GOLD_INGOT), fluidIngredient("molten_"+Materials.gold, MOLTEN_INGOT));
+        add(ingredient(COPPER_INGOT), fluidIngredient(Materials.copper, MOLTEN_INGOT));
+        add(ingredient(IRON_INGOT), fluidIngredient(Materials.iron, MOLTEN_INGOT));
+        add(ingredient(GOLD_INGOT), fluidIngredient(Materials.gold, MOLTEN_INGOT));
 
-        add(gemStack(Materials.boron_arsenide), fluidIngredient("molten_"+Materials.boron_arsenide, MOLTEN_INGOT));
-        add(ingredient(OBSIDIAN), fluidIngredient("molten_"+Materials.obsidian, MOLTEN_INGOT*2), 2D, 2D);
+        add(gemStack(Materials.boron_arsenide), fluidIngredient(Materials.boron_arsenide, MOLTEN_INGOT));
+        add(ingredient(OBSIDIAN), fluidIngredient(Materials.obsidian, MOLTEN_INGOT*2), 2D, 2D);
 
         add(ingredient(NCItems.NC_ITEMS.get("ground_cocoa_nibs").get()), fluidIngredient("chocolate_liquor", MOLTEN_INGOT), 0.25D, 0.5D);
         add(ingredient(NCItems.NC_ITEMS.get("cocoa_butter").get()), fluidIngredient("cocoa_butter", MOLTEN_INGOT), 0.25D, 0.5D);

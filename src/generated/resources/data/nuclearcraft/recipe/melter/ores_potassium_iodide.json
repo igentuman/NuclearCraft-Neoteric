@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 240,
-      "fluid": "nuclearcraft:molten_potassium_iodide"
+      "fluid": "nuclearcraft:potassium_iodide"
     }
   ],
   "powerModifier": 1.0,

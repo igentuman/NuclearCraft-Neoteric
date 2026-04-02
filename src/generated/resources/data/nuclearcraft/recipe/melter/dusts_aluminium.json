@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "c:dusts/aluminium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:aluminium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

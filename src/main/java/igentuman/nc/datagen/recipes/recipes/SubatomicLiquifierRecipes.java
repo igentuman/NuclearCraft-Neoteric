@@ -38,7 +38,7 @@ public class SubatomicLiquifierRecipes extends AbstractRecipeProvider {
                     List.of(fluidIngredient(isotope, MOLTEN_INGOT)),
                     List.of(fluidIngredient(subliquid_matter, MOLTEN_INGOT*10)), 3.0D);
         }
-        for(String type: List.of(potassium,"iron", "copper", "tin", "lead", "gold", "silver", "aluminum", "aluminium", "uranium", "thorium", "cobalt", "magnesium", "boron", "lithium")) {
+        for(String type: List.of(potassium,"iron", "copper", "tin", "lead", "gold", "silver", "aluminium", "uranium", "thorium", "cobalt", "magnesium", "boron", "lithium")) {
             itemsAndFluids(
                     List.of(dustIngredient(type)),
                     List.of(),

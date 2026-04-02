@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "input": [
+    {
+      "tag": "c:ores/aluminium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 240,
+      "fluid": "nuclearcraft:aluminium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -27,10 +27,10 @@ public class MelterRecipes extends AbstractRecipeProvider {
         for(String name: Materials.all().keySet()) {
             NCMaterial material = Materials.all().get(name);
             if(material.fluid && !material.isGas) {
-                add(dustIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT));
-                add(ingotIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT));
-                add(oreIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT*2+MOLTEN_NUGGET*6));
-                add(chunkIngredient(name), fluidIngredient("molten_"+name, MOLTEN_INGOT+MOLTEN_NUGGET*3));
+                add(dustIngredient(name), fluidIngredient(name, MOLTEN_INGOT));
+                add(ingotIngredient(name), fluidIngredient(name, MOLTEN_INGOT));
+                add(oreIngredient(name), fluidIngredient(name, MOLTEN_INGOT*2+MOLTEN_NUGGET*6));
+                add(chunkIngredient(name), fluidIngredient(name, MOLTEN_INGOT+MOLTEN_NUGGET*3));
             }
         }
 

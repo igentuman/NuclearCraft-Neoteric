@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_enderium"
+      "fluid": "nuclearcraft:enderium"
     }
   ],
   "powerModifier": 1.0,

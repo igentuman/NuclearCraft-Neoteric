@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 120,
-      "fluid": "nuclearcraft:molten_lithium_manganese_dioxide"
+      "fluid": "nuclearcraft:lithium_manganese_dioxide"
     }
   ],
   "powerModifier": 1.0,

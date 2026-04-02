@@ -66,7 +66,7 @@ public class OreVeinsRecipes extends AbstractRecipeProvider {
             new HashMap<>() {
                 {
                     put("lithium", 95);
-                    put("aluminum", 5);
+                    put("aluminium", 5);
                 }
             },
             "spodumene"

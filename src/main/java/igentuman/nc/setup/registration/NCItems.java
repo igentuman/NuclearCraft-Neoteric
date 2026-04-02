@@ -198,7 +198,8 @@ public class NCItems {
         List<String> items = Arrays.asList(
                 "upgrade_energy",
                 "upgrade_speed",
-                "upgrade_stack"
+                "upgrade_stack",
+                "upgrade_quantum"
         );
         for(String name: items) {
             NC_ITEMS.put(name, ITEMS.register(name, () -> new UpgradeItem(ITEM_PROPERTIES)));

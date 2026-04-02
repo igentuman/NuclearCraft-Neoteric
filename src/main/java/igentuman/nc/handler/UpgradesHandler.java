@@ -36,9 +36,12 @@ public class UpgradesHandler extends ItemStackHandler {
         }
 
         if(be.prefab().supportSpeedUpgrade && slot == 1) {
-            return stack.is(NCItems.NC_ITEMS.get("upgrade_speed").get()) || stack.is(NCItems.NC_ITEMS.get("upgrade_stack").get());
+            return stack.is(NCItems.NC_ITEMS.get("upgrade_speed").get())
+                            || stack.is(NCItems.NC_ITEMS.get("upgrade_stack").get())
+                            || stack.is(NCItems.NC_ITEMS.get("upgrade_quantum").get());
         }
 
-        return be.prefab().getUpgradesSlots() == 1 && (stack.is(NCItems.NC_ITEMS.get("upgrade_speed").get()) || stack.is(NCItems.NC_ITEMS.get("upgrade_stack").get()));
+        return be.prefab().getUpgradesSlots() == 1
+                && (stack.is(NCItems.NC_ITEMS.get("upgrade_speed").get()) || stack.is(NCItems.NC_ITEMS.get("upgrade_stack").get()) || stack.is(NCItems.NC_ITEMS.get("upgrade_quantum").get()));
     }
 }

@@ -102,7 +102,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         if(getProcessor().supportSpeedUpgrade) {
             int idx = i;
             addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, ux, 77)
-                    .allowed(NC_ITEMS.get("upgrade_speed").get(), NC_ITEMS.get("upgrade_stack").get()));
+                    .allowed(NC_ITEMS.get("upgrade_speed").get(), NC_ITEMS.get("upgrade_stack").get(), NC_ITEMS.get("upgrade_quantum").get()));
             ux -= 18;
         }
 

@@ -262,6 +262,9 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         if (upgrade.is(NC_ITEMS.get("upgrade_stack").get())) {
             return (int) (Math.min(32, Math.ceil(upgrade.getCount() / 4D)));
         }
+        if (upgrade.is(NC_ITEMS.get("upgrade_quantum").get())) {
+            return upgrade.getCount();
+        }
         return 1;
     }
 
@@ -270,6 +273,9 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         if(!prefab().supportSpeedUpgrade) return 1;
         int id = prefab().supportEnergyUpgrade ? 1 : 0;
         speedMultiplier = upgradesHandler().getStackInSlot(id).getCount()+1;
+        if (upgradesHandler().getStackInSlot(id).is(NC_ITEMS.get("upgrade_quantum").get())) {
+            return speedMultiplier*5;
+        }
         return speedMultiplier;
     }
 
@@ -504,7 +510,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     }
 
     public int energyMultiplier() {
-        double speedMult = speedMultiplier() + ((parallelRecipes()-1) / 2D);
+        double speedMult = Math.min(speedMultiplier() + ((parallelRecipes()-1) / 2D), 100);
         energyMultiplier = (int) Math.max(speedMult, Math.pow(speedMult-1, 2)+speedMult-Math.pow(getEnergyUpgrades(),2));
         return energyMultiplier;
     }

@@ -14,7 +14,7 @@ public class PumpBE extends NCProcessorBE {
 
     public PumpBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.PUMP);
-        contentHandler().fluidHandler.tanks.get(0).setCapacity(100000);
+        contentHandler().fluidHandler.tanks.get(0).setCapacity(1000000);
     }
 
     @Override
@@ -22,6 +22,7 @@ public class PumpBE extends NCProcessorBE {
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo().setRecipe(recipe);
+            recipeInfo().setParallelProcessing(parallelRecipes());
             recipeInfo().ticks = (int) (getBaseProcessTime() * recipe.getTimeModifier());
             recipeInfo().energy = getBasePower() * recipe.getEnergy();
             recipeInfo().radiation = recipeInfo.recipe.getRadiation();

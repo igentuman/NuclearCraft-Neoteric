@@ -13,15 +13,15 @@
     },
     {
       "amount": 5,
-      "fluid": "nuclearcraft:plutonium/238"
+      "fluid": "nuclearcraft:plutonium_238"
     },
     {
       "amount": 5,
-      "fluid": "nuclearcraft:plutonium/242"
+      "fluid": "nuclearcraft:plutonium_242"
     },
     {
       "amount": 5,
-      "fluid": "nuclearcraft:plutonium/241"
+      "fluid": "nuclearcraft:plutonium_241"
     },
     {
       "amount": 1,

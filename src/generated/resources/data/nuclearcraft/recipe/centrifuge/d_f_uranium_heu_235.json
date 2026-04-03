@@ -9,19 +9,19 @@
   "outputFluids": [
     {
       "amount": 180,
-      "fluid": "nuclearcraft:uranium/238"
+      "fluid": "nuclearcraft:uranium_238"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:plutonium/239"
+      "fluid": "nuclearcraft:plutonium_239"
     },
     {
       "amount": 270,
-      "fluid": "nuclearcraft:plutonium/242"
+      "fluid": "nuclearcraft:plutonium_242"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:americium/243"
+      "fluid": "nuclearcraft:americium_243"
     },
     {
       "amount": 90,

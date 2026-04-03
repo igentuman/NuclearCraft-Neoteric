@@ -224,10 +224,11 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
                         String tagName = tagObj.get("tag").getAsString();
                         int amount = tagObj.has("amount") ? tagObj.get("amount").getAsInt() : 1;
                         // c:hydrogen -> nuclearcraft:hydrogen
+                        // c:uranium/233 -> nuclearcraft:uranium_233 (slash to underscore, matches fluid registry)
                         // c:minecraft:water -> minecraft:water (already namespaced)
                         String fluidName = tagName.startsWith("c:") ? tagName.substring(2) : tagName;
                         if (!fluidName.contains(":")) {
-                            fluidName = "nuclearcraft:" + fluidName;
+                            fluidName = "nuclearcraft:" + fluidName.replace("/", "_");
                         }
                         JsonObject specific = new JsonObject();
                         specific.addProperty("amount", amount);

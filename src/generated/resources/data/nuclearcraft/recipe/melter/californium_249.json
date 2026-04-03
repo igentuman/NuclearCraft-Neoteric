@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:californium/249"
+      "fluid": "nuclearcraft:californium_249"
     }
   ],
   "powerModifier": 1.0,

@@ -9,19 +9,19 @@
   "outputFluids": [
     {
       "amount": 270,
-      "fluid": "nuclearcraft:americium/243"
+      "fluid": "nuclearcraft:americium_243"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:curium/243"
+      "fluid": "nuclearcraft:curium_243"
     },
     {
       "amount": 180,
-      "fluid": "nuclearcraft:curium/246"
+      "fluid": "nuclearcraft:curium_246"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:berkelium/247"
+      "fluid": "nuclearcraft:berkelium_247"
     },
     {
       "amount": 90,

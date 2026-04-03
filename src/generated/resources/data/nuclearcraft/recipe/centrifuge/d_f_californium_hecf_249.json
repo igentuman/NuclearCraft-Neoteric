@@ -9,11 +9,11 @@
   "outputFluids": [
     {
       "amount": 540,
-      "fluid": "nuclearcraft:californium/252"
+      "fluid": "nuclearcraft:californium_252"
     },
     {
       "amount": 180,
-      "fluid": "nuclearcraft:californium/250"
+      "fluid": "nuclearcraft:californium_250"
     },
     {
       "amount": 90,

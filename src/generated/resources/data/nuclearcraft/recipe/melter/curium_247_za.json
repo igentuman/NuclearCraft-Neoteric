@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:curium/247_za"
+      "fluid": "nuclearcraft:curium_247_za"
     }
   ],
   "powerModifier": 1.0,

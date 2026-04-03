@@ -8,7 +8,7 @@
   "outputFluids": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:neptunium/236_ni"
+      "fluid": "nuclearcraft:neptunium_236_ni"
     }
   ],
   "powerModifier": 1.0,

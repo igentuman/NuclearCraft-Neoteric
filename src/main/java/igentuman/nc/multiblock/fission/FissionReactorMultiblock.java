@@ -125,7 +125,10 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     }
 
     public boolean isIrradiator(BlockPos pos) {
-        return getBlockState(pos).getBlock() instanceof IrradiationChamberBlock;
+        // The irradiator processor block (nuclearcraft:irradiator) is placed in the
+        // reactor wall. Check by registry identity against the processor registration.
+        var block = getBlockState(pos).getBlock();
+        return block == igentuman.nc.setup.registration.NCProcessors.PROCESSORS.get("irradiator").get();
     }
 
     protected boolean isHeatSink(BlockState bs) {
@@ -199,10 +202,13 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 ", Cells energy mult: " + String.format("%.2f", cellsEnergyMult));
         
         //Stage 3: index irradiators and count irradiation lines
-        debugLog("Stage 3: Indexing irradiators");
+        igentuman.nc.NuclearCraft.LOGGER.info("[Fission] Stage 3: Indexing irradiators. irradiators set size={}", irradiators.size());
+        for (long irrPos : irradiators) {
+            igentuman.nc.NuclearCraft.LOGGER.info("[Fission]   Irradiator registered at {}", net.minecraft.core.BlockPos.of(irrPos));
+        }
         indexIrradiators();
-        debugLog("Stage 3 complete - Irradiation lines: " + irradiationLines + 
-                ", Valid irradiators: " + validIrradiators.size() + "/" + irradiators.size());
+        igentuman.nc.NuclearCraft.LOGGER.info("[Fission] Stage 3 complete - irradiationLines={}, validIrradiators={}/{}",
+                irradiationLines, validIrradiators.size(), irradiators.size());
 
         //Stage 4: count heat sinks and their cooling
         debugLog("Stage 4: Indexing heat sinks");
@@ -262,10 +268,26 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         irradiationLines = 0;
         for(long pos: irradiators) {
             BlockPos toCheck = BlockPos.of(pos);
+            boolean foundLine = false;
             for(Direction d: Direction.values()) {
-                if(isModerator(toCheck.relative(d)) && isFuelCell(toCheck.relative(d, 2))) {
+                BlockPos modPos = toCheck.relative(d);
+                BlockPos fuelPos = toCheck.relative(d, 2);
+                boolean isMod = isModerator(modPos);
+                boolean isFuel = isFuelCell(fuelPos);
+                if(isMod && isFuel) {
                     irradiationLines++;
                     addIfNotExists(pos, validIrradiators);
+                    foundLine = true;
+                }
+            }
+            if(!foundLine) {
+                igentuman.nc.NuclearCraft.LOGGER.info("Irradiator at {} has no valid line. Neighbors:", toCheck);
+                for(Direction d: Direction.values()) {
+                    BlockPos modPos = toCheck.relative(d);
+                    BlockPos fuelPos = toCheck.relative(d, 2);
+                    igentuman.nc.NuclearCraft.LOGGER.info("  {}: {} mod={} ({}) | {} fuel={} ({})",
+                        d, modPos, isModerator(modPos), getBlockState(modPos).getBlock(),
+                        fuelPos, isFuelCell(fuelPos), getBlockState(fuelPos).getBlock());
                 }
             }
         }
@@ -374,6 +396,17 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
 
 
     @Override
+    protected void processOuterBlock(BlockPos pos) {
+        super.processOuterBlock(pos);
+        if (isIrradiator(pos)) {
+            igentuman.nc.NuclearCraft.LOGGER.info("[Fission] processOuterBlock found irradiator at {} (block={})",
+                    pos, getBlockState(pos).getBlock());
+            addIfNotExists(pos, irradiators);
+            attachMultiblock(pos);
+        }
+    }
+
+    @Override
     protected boolean processInnerBlock(BlockPos toCheck) {
         addIfNotExists(toCheck, allBlocks);
         final BlockState bs = getBlockState(toCheck);
@@ -395,6 +428,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
         }
         if(isIrradiator(toCheck)) {
             addIfNotExists(toCheck, irradiators);
+            attachMultiblock(toCheck);
             return true;
         }
 

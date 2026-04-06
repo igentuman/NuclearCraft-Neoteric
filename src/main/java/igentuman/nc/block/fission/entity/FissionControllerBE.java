@@ -351,9 +351,13 @@ public class FissionControllerBE extends MultiblockControllerBE {
                 BlockOverlayHandler.reactors.add(this);
             }
             spawnParticles();
-            try { playSound(FISSION_REACTOR, 0.2f); } catch (Throwable ignored) {}
+            try { playSound(FISSION_REACTOR, 0.2f); } catch (Throwable e) {
+                LOGGER.error("Fission reactor playSound failed", e);
+            }
         } else {
-            try { stopSound(); } catch (Throwable ignored) {}
+            try { stopSound(); } catch (Throwable e) {
+                LOGGER.error("Fission reactor stopSound failed", e);
+            }
         }
     }
 
@@ -371,6 +375,12 @@ public class FissionControllerBE extends MultiblockControllerBE {
         }
         lastTickTime = level.getGameTime();
         changed = false;
+        // Periodic diagnostic (every 100 ticks ≈ 5 seconds)
+        if (level.getGameTime() % 100 == 0) {
+            LOGGER.info("[FissionCtrl] {} formed={} processing={} efficiency={} irradLines={} heat={} fuelCells={} moderators={}",
+                    worldPosition, getMultiblock().isFormed(), isProcessing(), efficiency,
+                    irradiationLines, heat, fuelCellsCount, moderatorsCount);
+        }
         super.tickServer();
         boilingPenalty = 0;
         hopToggleMode();

@@ -42,14 +42,25 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         if (multiblock != null) {
             if(multiblock.controller() != null) {
                 controller = (FissionControllerBE) multiblock.controller().controllerBE();
+                igentuman.nc.NuclearCraft.LOGGER.info("[Irradiator] {} attached to multiblock, controller={} @{}",
+                        worldPosition, controller != null ? controller.getClass().getSimpleName() : "null",
+                        controller != null ? controller.getBlockPos() : "?");
+            } else {
+                igentuman.nc.NuclearCraft.LOGGER.info("[Irradiator] {} attached to multiblock but controller() is null", worldPosition);
             }
         } else {
+            igentuman.nc.NuclearCraft.LOGGER.info("[Irradiator] {} detached from multiblock", worldPosition);
             controller = null;
         }
     }
 
     @Override
     public FissionControllerBE controller() {
+        // Always resolve from the live multiblock to avoid stale references
+        // after reactor reform or chunk reload.
+        if (multiblock != null && multiblock.controller() != null) {
+            controller = (FissionControllerBE) multiblock.controller().controllerBE();
+        }
         return controller;
     }
 
@@ -76,6 +87,20 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         if (controller() != null && controller().isProcessing() && controller().efficiency > 0) {
             irradiativeFlux = controller().irradiationLines;
             fuelMultiplier = Math.log(controller().recipeInfo.recipe().getRadiation()*10000)*6;
+        }
+        // Periodic diagnostic (every 100 ticks ≈ 5 seconds)
+        if (level.getGameTime() % 100 == 0) {
+            var ctrl = controller();
+            if (ctrl != null) {
+                igentuman.nc.NuclearCraft.LOGGER.info(
+                    "[Irradiator] {} ctrl@{} processing={} efficiency={} irradLines={} heat={} | flux={} fuelMult={} speed={}",
+                    worldPosition, ctrl.getBlockPos(), ctrl.isProcessing(), ctrl.efficiency,
+                    ctrl.irradiationLines, ctrl.heat, irradiativeFlux, fuelMultiplier, speedMultiplier());
+            } else {
+                igentuman.nc.NuclearCraft.LOGGER.info(
+                    "[Irradiator] {} multiblock={} controller=null",
+                    worldPosition, multiblock != null ? "present" : "null");
+            }
         }
         if(speedMultiplier() > 0) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());

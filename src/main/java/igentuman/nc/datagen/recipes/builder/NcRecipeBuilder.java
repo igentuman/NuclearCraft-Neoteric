@@ -181,10 +181,19 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             JsonArray outJson = new JsonArray();
 
             if(!outputItems.isEmpty()) {
+                // Skip empty ingredients — they would serialize as `[]` and produce the
+                // non-standard `"output": [[]]` shape that downstream recipe consumers
+                // (KubeJS schema codecs, etc.) cannot parse. NC's own runtime loader
+                // tolerated this via a catch in NcRecipeSerializer.outputItemsFromJson,
+                // but writing clean JSON is better than relying on that safety net.
                 for (NcIngredient out: outputItems) {
-                    outJson.add(out.toJson());
+                    if (!out.isEmpty()) {
+                        outJson.add(out.toJson());
+                    }
                 }
-                json.add("output", outJson);
+                if (outJson.size() > 0) {
+                    json.add("output", outJson);
+                }
             }
 
             if(!outputItemsText.isEmpty()) {

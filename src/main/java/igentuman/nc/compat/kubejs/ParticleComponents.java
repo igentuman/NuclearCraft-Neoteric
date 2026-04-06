@@ -1,211 +1,119 @@
 package igentuman.nc.compat.kubejs;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
-import dev.latvian.mods.kubejs.recipe.RecipeKey;
-import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
-import dev.latvian.mods.kubejs.recipe.component.*;
-import dev.latvian.mods.kubejs.util.TinyMap;
+import com.mojang.serialization.Codec;
+import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
+import dev.latvian.mods.kubejs.recipe.filter.RecipeMatchContext;
+import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
+import dev.latvian.mods.rhino.type.TypeInfo;
+import igentuman.nc.NuclearCraft;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.Map;
+/**
+ * KubeJS recipe components for NC's target chamber particle inputs and outputs.
+ *
+ * <p>Particles have no {@link net.minecraft.world.item.crafting.Ingredient} equivalent, so these
+ * components are custom — they round-trip the four-field particle JSON shape
+ * ({@code particle}/{@code amount}/{@code meanEnergy}/{@code focus}) via a direct codec on
+ * {@link InputParticle} and {@link OutputParticle}. Matching participates in KubeJS's replacement
+ * machinery via {@link ParticleMatch}.
+ *
+ * <p>The two {@link RecipeComponentType} handles are registered by
+ * {@link NuclearCraftKubeJSPlugin#registerRecipeComponents}.
+ */
+public final class ParticleComponents {
 
-public interface ParticleComponents {
-	RecipeComponent<InputParticle> INPUT = new RecipeComponent<>() {
+	private ParticleComponents() {}
+
+	/** Input-side particle component record. Immutable; the type reference is injected at registration time. */
+	public record Input(RecipeComponentType<?> type) implements RecipeComponent<InputParticle> {
+
+		public static final RecipeComponentType<InputParticle> TYPE = RecipeComponentType.unit(
+				ResourceLocation.fromNamespaceAndPath(NuclearCraft.MODID, "input_particle"),
+				Input::new);
+
 		@Override
-		public String componentType() {
-			return "input_particle";
+		public Codec<InputParticle> codec() {
+			return InputParticle.CODEC;
 		}
 
 		@Override
-		public ComponentRole role() {
-			return ComponentRole.INPUT;
+		public TypeInfo typeInfo() {
+			return TypeInfo.of(InputParticle.class);
 		}
 
 		@Override
-		public Class<?> componentClass() {
-			return InputParticle.class;
-		}
-
-		@Override
-		public boolean hasPriority(RecipeJS recipe, Object from) {
-			return recipe.inputItemHasPriority(from);
-		}
-
-		@Override
-		public JsonElement write(RecipeJS recipe, InputParticle value) {
-			return value.toJsonJS();
-		}
-
-		@Override
-		public InputParticle read(RecipeJS recipe, Object from) {
+		public InputParticle wrap(RecipeScriptContext cx, Object from) {
 			return InputParticle.of(from);
 		}
 
 		@Override
-		public boolean isInput(RecipeJS recipe, InputParticle value, ReplacementMatch match) {
-			return match instanceof ParticleMatch m && value.validForMatching() && m.contains(value.ingredient);
+		public boolean matches(RecipeMatchContext cx, InputParticle value, ReplacementMatchInfo match) {
+			return match.match() instanceof ParticleMatch m
+					&& value.validForMatching()
+					&& m.contains(value.ingredient);
 		}
 
 		@Override
-		public String checkEmpty(RecipeKey<InputParticle> key, InputParticle value) {
-			if (value.isEmpty()) {
-				return "Ingredient '" + key.name + "' can't be empty!";
-			}
-
-			return "";
+		public boolean isEmpty(InputParticle value) {
+			return value.isEmpty();
 		}
 
 		@Override
-		public RecipeComponent<TinyMap<Character, InputParticle>> asPatternKey() {
-			// Particles don't have pattern keys like items, return null or create a custom one
-			return null;
-		}
-
-		@Override
-		public String toString() {
-			return componentType();
-		}
-	};
-
-	RecipeComponent<InputParticle[]> INPUT_ARRAY = INPUT.asArray();
-
-	RecipeComponent<InputParticle[]> UNWRAPPED_INPUT_ARRAY = new RecipeComponentWithParent<>() {
-		@Override
-		public RecipeComponent<InputParticle[]> parentComponent() {
-			return ParticleComponents.INPUT_ARRAY;
-		}
-
-		@Override
-		public JsonElement write(RecipeJS recipe, InputParticle[] value) {
-			var json = new JsonArray();
-
-			for (var in : value) {
-				for (var in1 : in.unwrap()) {
-					json.add(ParticleComponents.INPUT.write(recipe, in1));
-				}
-			}
-
-			return json;
+		public boolean allowEmpty() {
+			// Target chamber recipes may omit input particles entirely.
+			return true;
 		}
 
 		@Override
 		public String toString() {
-			return parentComponent().toString();
+			return type.toString();
 		}
-	};
+	}
 
-	RecipeComponent<OutputParticle> OUTPUT = new RecipeComponent<>() {
-		@Override
-		public String componentType() {
-			return "output_particle";
-		}
+	/** Output-side particle component record. */
+	public record Output(RecipeComponentType<?> type) implements RecipeComponent<OutputParticle> {
 
-		@Override
-		public ComponentRole role() {
-			return ComponentRole.OUTPUT;
-		}
+		public static final RecipeComponentType<OutputParticle> TYPE = RecipeComponentType.unit(
+				ResourceLocation.fromNamespaceAndPath(NuclearCraft.MODID, "output_particle"),
+				Output::new);
 
 		@Override
-		public Class<?> componentClass() {
-			return OutputParticle.class;
+		public Codec<OutputParticle> codec() {
+			return OutputParticle.CODEC;
 		}
 
 		@Override
-		public boolean hasPriority(RecipeJS recipe, Object from) {
-			return recipe.outputItemHasPriority(from);
+		public TypeInfo typeInfo() {
+			return TypeInfo.of(OutputParticle.class);
 		}
 
 		@Override
-		public JsonElement write(RecipeJS recipe, OutputParticle value) {
-			return writeParticleToJson(value);
-		}
-
-		@Override
-		public OutputParticle read(RecipeJS recipe, Object from) {
+		public OutputParticle wrap(RecipeScriptContext cx, Object from) {
 			return OutputParticle.of(from);
 		}
 
 		@Override
-		public boolean isOutput(RecipeJS recipe, OutputParticle value, ReplacementMatch match) {
-			return match instanceof ParticleMatch m && !value.isEmpty() && m.contains(value.item);
+		public boolean matches(RecipeMatchContext cx, OutputParticle value, ReplacementMatchInfo match) {
+			return match.match() instanceof ParticleMatch m
+					&& !value.isEmpty()
+					&& m.contains(value.item);
 		}
 
 		@Override
-		public String checkEmpty(RecipeKey<OutputParticle> key, OutputParticle value) {
-			if (value.isEmpty()) {
-				return "ItemStack '" + key.name + "' can't be empty!";
-			}
-
-			return "";
+		public boolean isEmpty(OutputParticle value) {
+			return value.isEmpty();
 		}
 
 		@Override
-		public String toString() {
-			return componentType();
-		}
-	};
-
-	RecipeComponent<OutputParticle[]> OUTPUT_ARRAY = OUTPUT.asArray();
-
-	RecipeComponent<OutputParticle> OUTPUT_ID_WITH_COUNT = new RecipeComponentWithParent<>() {
-		@Override
-		public RecipeComponent<OutputParticle> parentComponent() {
-			return OUTPUT;
-		}
-
-		@Override
-		public void writeToJson(RecipeJS recipe, RecipeComponentValue<OutputParticle> cv, JsonObject json) {
-			if (cv.value.item.getParticle() != null) {
-				json.addProperty(cv.key.name, cv.value.item.getParticle().getName());
-			}
-			json.addProperty("count", cv.value.item.getAmount());
-		}
-
-		@Override
-		public void readFromJson(RecipeJS recipe, RecipeComponentValue<OutputParticle> cv, JsonObject json) {
-			RecipeComponentWithParent.super.readFromJson(recipe, cv, json);
-
-			if (cv.value != null && json.has("count")) {
-				cv.value.item.setAmount(json.get("count").getAsInt());
-			}
-		}
-
-		@Override
-		public void readFromMap(RecipeJS recipe, RecipeComponentValue<OutputParticle> cv, Map<?, ?> map) {
-			RecipeComponentWithParent.super.readFromMap(recipe, cv, map);
-
-			if (cv.value != null && map.containsKey("count")) {
-				cv.value.item.setAmount(((Number) map.get("count")).intValue());
-			}
+		public boolean allowEmpty() {
+			return true;
 		}
 
 		@Override
 		public String toString() {
-			return parentComponent().toString();
+			return type.toString();
 		}
-	};
-
-	static JsonElement writeParticleToJson(OutputParticle value) {
-		if (value.isEmpty()) {
-			return null;
-		}
-		
-		JsonObject json = new JsonObject();
-		if (value.item.getParticle() != null) {
-			json.addProperty("particle", value.item.getParticle().getName());
-		}
-		json.addProperty("amount", value.item.getAmount());
-		json.addProperty("meanEnergy", value.item.getMeanEnergy());
-		json.addProperty("focus", value.item.getFocus());
-		
-		// Note: chance and rolls are typically handled at recipe level, not particle level
-		// but we can include them if needed for compatibility
-		if (value.hasChance()) {
-			json.addProperty("chance", value.getChance());
-		}
-		
-		return json;
 	}
 }

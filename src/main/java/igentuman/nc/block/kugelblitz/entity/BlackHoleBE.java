@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.Event;
+import net.neoforged.fml.ModList;
 
 import java.util.List;
 
@@ -227,7 +228,9 @@ public class BlackHoleBE extends NuclearCraftBE {
             if (livingEntity instanceof ServerPlayer) {
                 PlayerEnterBlackholeEvent event = new PlayerEnterBlackholeEvent((ServerPlayer) livingEntity, getBlockPos(), getLevel());
                 NeoForge.EVENT_BUS.post(event);
-                // TODO: KubeJS integration removed — waiting on KubeJS to port to NeoForge 1.21.1. Re-enable NCKubeJsEvents.onPlayerEnterBlackhole(event) when available.
+                if (ModList.get().isLoaded("kubejs")) {
+                    igentuman.nc.compat.kubejs.NCKubeJsEvents.onPlayerEnterBlackhole(event);
+                }
                 if(event.isCanceled()) return;
                 entity.kill();
 

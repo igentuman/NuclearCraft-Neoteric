@@ -1,5 +1,3 @@
-// TODO: Mixin not registered in nuclearcraft.mixins.json — waiting on KubeJS to port to NeoForge 1.21.1.
-// Re-add "ParticleStackKubeJSMixin" to nuclearcraft.mixins.json "mixins" array when KubeJS is available.
 package igentuman.nc.mixin;
 
 import igentuman.nc.content.particles.ParticleStack;

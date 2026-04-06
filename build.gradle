@@ -55,10 +55,9 @@ sourceSets {
             // TODO: Compat modules excluded — waiting on these mods to port to NeoForge 1.21.1. Remove exclusions when available.
             exclude 'igentuman/nc/compat/oc2/**'           // Open Computers 2
             exclude 'igentuman/nc/compat/tis3d/**'         // TIS-3D
-            exclude 'igentuman/nc/compat/kubejs/**'        // KubeJS
             exclude 'igentuman/nc/compat/refined_storage/**' // Refined Storage
             // AE2 compat re-enabled — AE2 19.x available for NeoForge 1.21.1
-            exclude 'igentuman/nc/mixin/KubeJSRecipesEventJSMixin.java' // KubeJS mixin
+            // KubeJS compat re-enabled — KubeJS 2101.7.2 (NeoForge 1.21.1) available
         }
         resources { srcDir 'src/generated/resources' }
     }
@@ -152,6 +151,8 @@ dependencies {
     // KubeJS
     compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}") { transitive = false }
     compileOnly("dev.latvian.mods:rhino:${rhino_version}") { transitive = false }
+    localRuntime("dev.latvian.mods:kubejs-neoforge:${kubejs_version}") { transitive = false }
+    localRuntime("dev.latvian.mods:rhino:${rhino_version}") { transitive = false }
 
     // Architectury
     implementation "dev.architectury:architectury-neoforge:${architectury_version}"

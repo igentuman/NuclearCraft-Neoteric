@@ -15,9 +15,6 @@
     }
   ],
   "maxEnergy": 900,
-  "output": [
-    []
-  ],
   "outputParticles": [
     {
       "amount": 3,

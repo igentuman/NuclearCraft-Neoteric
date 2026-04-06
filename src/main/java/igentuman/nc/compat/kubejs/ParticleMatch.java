@@ -1,6 +1,6 @@
 package igentuman.nc.compat.kubejs;
 
-import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
+import dev.latvian.mods.kubejs.recipe.match.ReplacementMatch;
 import igentuman.nc.content.particles.ParticleStack;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;

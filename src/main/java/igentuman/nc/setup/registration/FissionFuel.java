@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
@@ -55,8 +56,10 @@ public class FissionFuel {
         RegisterFissionFuelEvent event = new RegisterFissionFuelEvent(customFuels);
         NeoForge.EVENT_BUS.post(event);
 
-        // TODO: KubeJS integration removed — waiting on KubeJS to port to NeoForge 1.21.1. Re-enable NCKubeJsEvents.onFissionFuelRegister(event) when available.
-        
+        if (ModList.get().isLoaded("kubejs")) {
+            igentuman.nc.compat.kubejs.NCKubeJsEvents.onFissionFuelRegister(event);
+        }
+
         // Register items and recipes for custom fuels
         for (FuelDef fuelDef : event.getFuels()) {
             registerCustomFuel(fuelDef);

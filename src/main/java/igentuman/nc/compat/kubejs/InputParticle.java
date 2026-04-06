@@ -2,20 +2,14 @@ package igentuman.nc.compat.kubejs;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.kubejs.core.IngredientSupplierKJS;
-import dev.latvian.mods.kubejs.item.ItemStackJS;
-import dev.latvian.mods.kubejs.item.ingredient.IngredientJS;
-import dev.latvian.mods.kubejs.platform.IngredientPlatformHelper;
-import dev.latvian.mods.kubejs.platform.RecipePlatformHelper;
-import dev.latvian.mods.kubejs.recipe.InputReplacement;
-import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
-import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
-import dev.latvian.mods.rhino.mod.util.JsonSerializable;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
+import dev.latvian.mods.kubejs.util.JsonSerializable;
+import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.util.RemapForJS;
 import igentuman.nc.content.particles.ParticleStack;
-import igentuman.nc.content.particles.Particles;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -24,27 +18,59 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InputParticle implements IngredientSupplierKJS, InputReplacement, JsonSerializable {
-	public static final InputParticle EMPTY = new InputParticle(Ingredient.EMPTY, 0);
+/**
+ * KubeJS input-side representation of a particle ingredient for NC's target chamber recipes.
+ *
+ * <p>Particles have no true {@link Ingredient} equivalent — the {@link #ingredient} field is always
+ * a {@link Items#BARRIER} placeholder, kept only so this type can plug into KubeJS's ingredient-supplier
+ * machinery. All real matching lives on {@link ParticleMatch}.
+ */
+public class InputParticle implements IngredientSupplierKJS, JsonSerializable {
+	public static final InputParticle EMPTY = new InputParticle(Ingredient.EMPTY, 0, "", 0L, 0.0);
 	public static final Map<String, InputParticle> PARSE_CACHE = new HashMap<>();
 
+	/**
+	 * JSON codec for round-tripping particle input data through KubeJS list components.
+	 * Shape: {@code {"particle": "proton", "amount": 100, "meanEnergy": 1000000, "focus": 0.5}}.
+	 * All four fields are required — matches {@code ParticleStack.fromJSON} semantics (no defaults).
+	 */
+	public static final Codec<InputParticle> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.STRING.fieldOf("particle").forGetter(ip -> ip.particleName),
+			Codec.INT.fieldOf("amount").forGetter(ip -> ip.count),
+			Codec.LONG.fieldOf("meanEnergy").forGetter(ip -> ip.meanEnergy),
+			Codec.DOUBLE.fieldOf("focus").forGetter(ip -> ip.focus)
+	).apply(instance, (name, count, meanEnergy, focus) ->
+			count <= 0 ? EMPTY : new InputParticle(placeholder(), count, name, meanEnergy, focus)));
+
 	public static InputParticle of(Ingredient ingredient, int count) {
-		return count <= 0 || ingredient == Ingredient.EMPTY ? EMPTY : new InputParticle(ingredient, count);
+		return count <= 0 || ingredient == Ingredient.EMPTY ? EMPTY : new InputParticle(ingredient, count, "", 0L, 0.0);
 	}
-	
-	private static Ingredient createIngredientFromParticle(ParticleStack stack) {
-		// Since particles don't have direct item equivalents, we'll create a placeholder ingredient
-		// This is a simplified approach - you might want to create actual particle items or use a different approach
-		return Ingredient.of(Items.BARRIER); // Placeholder - replace with actual particle item if available
+
+	public static InputParticle of(String particleName, int count) {
+		return count <= 0 ? EMPTY : new InputParticle(placeholder(), count, particleName, 0L, 0.0);
+	}
+
+	public static InputParticle of(String particleName, int count, long meanEnergy, double focus) {
+		return count <= 0 ? EMPTY : new InputParticle(placeholder(), count, particleName, meanEnergy, focus);
+	}
+
+	/** Placeholder ingredient for particles — they have no real item representation. */
+	static Ingredient placeholder() {
+		return Ingredient.of(Items.BARRIER);
 	}
 
 	public static InputParticle of(Object o) {
 		if (o instanceof InputParticle in) {
 			return in;
 		} else if (o instanceof ParticleStack stack) {
-			return stack.isEmpty() ? EMPTY : of(createIngredientFromParticle(stack), stack.getAmount());
+			if (stack.isEmpty()) return EMPTY;
+			var name = stack.getParticle() != null ? stack.getParticle().getName() : "";
+			return of(name, stack.getAmount(), stack.getMeanEnergy(), stack.getFocus());
 		} else if (o instanceof OutputParticle out) {
-			return out.isEmpty() ? EMPTY : of(createIngredientFromParticle(out.item), out.getCount());
+			if (out.isEmpty()) return EMPTY;
+			var ps = out.item;
+			var name = ps.getParticle() != null ? ps.getParticle().getName() : "";
+			return of(name, out.getCount(), ps.getMeanEnergy(), ps.getFocus());
 		} else if (o instanceof CharSequence) {
 			var str = o.toString();
 
@@ -58,27 +84,21 @@ public class InputParticle implements IngredientSupplierKJS, InputReplacement, J
 				return cached;
 			}
 
-			// parse "Nx ID"
-
+			// parse "Nx particleName"
 			int x = str.indexOf('x');
 
 			if (x > 0 && x < str.length() - 2 && str.charAt(x + 1) == ' ') {
 				try {
-					var ingredient = IngredientJS.of(str.substring(x + 2));
-
-					if (ingredient == Ingredient.EMPTY) {
-						return EMPTY;
-					}
-
 					int count = Integer.parseInt(str.substring(0, x));
-					cached = of(IngredientJS.of(str.substring(x + 2)), count);
+					var name = str.substring(x + 2).trim();
+					cached = of(name, count);
 				} catch (Exception ignore) {
-					throw new RecipeExceptionJS("Invalid particle input: " + str);
+					throw new KubeRuntimeException("Invalid particle input: " + str);
 				}
 			}
 
 			if (cached == null) {
-				cached = of(IngredientJS.of(str), 1);
+				cached = of(str, 1);
 			}
 
 			PARSE_CACHE.put(str, cached);
@@ -89,7 +109,7 @@ public class InputParticle implements IngredientSupplierKJS, InputReplacement, J
 			return ofJson(json);
 		}
 
-		return of(IngredientJS.of(o), 1);
+		return of(placeholder(), 1);
 	}
 
 	static InputParticle ofJson(JsonElement json) {
@@ -99,44 +119,32 @@ public class InputParticle implements IngredientSupplierKJS, InputReplacement, J
 			return of(json.getAsString());
 		} else if (json.isJsonObject()) {
 			var o = json.getAsJsonObject();
-			var val = o.has("value");
-			var count = o.has("amount") ? o.get("amount").getAsInt() : (o.has("count") ? o.get("count").getAsInt() : 1);
 
-			// Check if this is a particle JSON format
 			if (o.has("particle")) {
-				var particle = Particles.getParticleFromName(o.get("particle").getAsString());
-				if (particle != null) {
-					long energy = o.has("meanEnergy") ? o.get("meanEnergy").getAsLong() : 0;
-					double focus = o.has("focus") ? o.get("focus").getAsDouble() : 0.0;
-					var particleStack = new ParticleStack(particle, count, energy, focus);
-					return of(createIngredientFromParticle(particleStack), count);
-				}
-			} else if (o.has("type")) {
-				try {
-					return of(RecipePlatformHelper.get().getCustomIngredient(o), count);
-				} catch (Exception ex) {
-					throw new RecipeExceptionJS("Failed to parse custom ingredient (" + o.get("type") + ") from " + o + ": " + ex);
-				}
-			} else if (val || o.has("ingredient")) {
-				return of(IngredientJS.ofJson(val ? o.get("value") : o.get("ingredient")), count);
-			} else if (o.has("tag")) {
-				return of(IngredientPlatformHelper.get().tag(o.get("tag").getAsString()), count);
-			} else if (o.has("item")) {
-				return of(Ingredient.of(ItemStackJS.of(o.get("item").getAsString())), count);
+				var count = o.has("amount") ? o.get("amount").getAsInt() : (o.has("count") ? o.get("count").getAsInt() : 1);
+				var meanEnergy = o.has("meanEnergy") ? o.get("meanEnergy").getAsLong() : 0L;
+				var focus = o.has("focus") ? o.get("focus").getAsDouble() : 0.0;
+				return of(o.get("particle").getAsString(), count, meanEnergy, focus);
 			}
 
 			return EMPTY;
-		} else {
-			return of(Ingredient.fromJson(json), 1);
 		}
+
+		return EMPTY;
 	}
 
 	public final Ingredient ingredient;
 	public final int count;
+	public final String particleName;
+	public final long meanEnergy;
+	public final double focus;
 
-	protected InputParticle(Ingredient ingredient, int count) {
+	protected InputParticle(Ingredient ingredient, int count, String particleName, long meanEnergy, double focus) {
 		this.ingredient = ingredient;
 		this.count = count;
+		this.particleName = particleName == null ? "" : particleName;
+		this.meanEnergy = meanEnergy;
+		this.focus = focus;
 	}
 
 	@Override
@@ -145,7 +153,7 @@ public class InputParticle implements IngredientSupplierKJS, InputReplacement, J
 	}
 
 	public InputParticle withCount(int count) {
-		return count == this.count ? this : new InputParticle(ingredient, count);
+		return count == this.count ? this : new InputParticle(ingredient, count, particleName, meanEnergy, focus);
 	}
 
 	public boolean isEmpty() {
@@ -180,31 +188,20 @@ public class InputParticle implements IngredientSupplierKJS, InputReplacement, J
 		return ingredient.toString();
 	}
 
-	// This method is intended to be used as a *sane default* for what input items might look like represented as JSON.
-	// As the name implies, this is only intended to be used from KubeJS scripts, and should not be used for serialization purposes.
 	@Override
-	public JsonElement toJsonJS() {
+	public JsonElement toJson(Context cx) {
 		return toJsonJS(true);
 	}
 
 	@RemapForJS("toJson")
 	public JsonElement toJsonJS(boolean alwaysNest) {
 		if (!alwaysNest && count == 1) {
-			return ingredient.toJson();
+			return Ingredient.CODEC.encodeStart(com.mojang.serialization.JsonOps.INSTANCE, ingredient).getOrThrow();
 		} else {
 			var o = new JsonObject();
 			o.addProperty("count", count);
-			o.add("ingredient", ingredient.toJson());
+			o.add("ingredient", Ingredient.CODEC.encodeStart(com.mojang.serialization.JsonOps.INSTANCE, ingredient).getOrThrow());
 			return o;
 		}
-	}
-
-	@Override
-	public Object replaceInput(RecipeJS recipe, ReplacementMatch match, InputReplacement original) {
-		if (original instanceof InputParticle o) {
-			return withCount(o.count);
-		}
-
-		return this;
 	}
 }

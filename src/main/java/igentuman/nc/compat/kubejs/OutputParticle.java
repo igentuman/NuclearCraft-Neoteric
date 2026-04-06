@@ -1,13 +1,9 @@
 package igentuman.nc.compat.kubejs;
 
 import com.google.gson.JsonObject;
-import dev.latvian.mods.kubejs.item.InputItem;
-import dev.latvian.mods.kubejs.item.ItemStackJS;
-import dev.latvian.mods.kubejs.platform.IngredientPlatformHelper;
-import dev.latvian.mods.kubejs.recipe.OutputReplacement;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
-import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
-import dev.latvian.mods.kubejs.util.ConsoleJS;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.kubejs.script.ConsoleJS;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.Particles;
 import net.minecraft.nbt.CompoundTag;
@@ -15,11 +11,33 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-
 import org.jetbrains.annotations.Nullable;
 
-public class OutputParticle implements OutputReplacement {
+/**
+ * KubeJS output-side representation of a particle for NC's target chamber recipes.
+ *
+ * <p>Like {@link InputParticle}, particles have no real item equivalent; this class only carries
+ * particle metadata (type, amount, energy, focus) and an optional chance/rolls modifier.
+ */
+public class OutputParticle {
 	public static final OutputParticle EMPTY = new OutputParticle(ParticleStack.EMPTY, Double.NaN, null);
+
+	/**
+	 * JSON codec for round-tripping particle output data through KubeJS list components.
+	 * Shape: {@code {"particle": "proton", "amount": 100, "meanEnergy": 1000000, "focus": 0.5}}.
+	 * NC's {@code ParticleStack.fromJSON} reads only these four fields — {@link #chance} and {@link #rolls}
+	 * are JS-side-only modifiers and do not round-trip to NC.
+	 */
+	public static final Codec<OutputParticle> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.STRING.fieldOf("particle").forGetter(op -> op.item.getParticle() != null ? op.item.getParticle().getName() : ""),
+			Codec.INT.fieldOf("amount").forGetter(op -> op.item.getAmount()),
+			Codec.LONG.fieldOf("meanEnergy").forGetter(op -> op.item.getMeanEnergy()),
+			Codec.DOUBLE.fieldOf("focus").forGetter(op -> op.item.getFocus())
+	).apply(instance, (name, count, meanEnergy, focus) -> {
+		var particle = Particles.getParticleFromName(name);
+		if (particle == null || count <= 0) return EMPTY;
+		return new OutputParticle(new ParticleStack(particle, count, meanEnergy, focus), Double.NaN, null);
+	}));
 
 	public static OutputParticle of(ParticleStack item, double chance) {
 		return item.isEmpty() ? EMPTY : new OutputParticle(item, chance, null);
@@ -33,16 +51,12 @@ public class OutputParticle implements OutputReplacement {
 		}
 
 		var item = ParticleStack.EMPTY;
-		
-		// Try to convert from various input types
+
 		if (from instanceof String str) {
-			// Parse particle string format
 			item = parseParticleFromString(str);
 		} else if (from instanceof JsonObject json) {
-			// Parse JSON particle format
 			item = parseParticleFromJson(json);
 		} else {
-			// For now, return empty for unsupported types
 			return EMPTY;
 		}
 
@@ -65,9 +79,9 @@ public class OutputParticle implements OutputReplacement {
 
 		return new OutputParticle(item, chance, rolls);
 	}
-	
+
 	private static ParticleStack parseParticleFromString(String str) {
-		// Parse particle string format like "proton:100:1000:0.5" (particle:amount:energy:focus)
+		// "proton:100:1000:0.5" → (particle:amount:energy:focus)
 		String[] parts = str.split(":");
 		if (parts.length >= 1) {
 			var particle = Particles.getParticleFromName(parts[0]);
@@ -80,9 +94,9 @@ public class OutputParticle implements OutputReplacement {
 		}
 		return ParticleStack.EMPTY;
 	}
-	
+
 	private static ParticleStack parseParticleFromJson(JsonObject json) {
-		// Parse JSON particle format: {"particle": "proton", "amount": 100, "meanEnergy": 1000, "focus": 0.5}
+		// {"particle": "proton", "amount": 100, "meanEnergy": 1000, "focus": 0.5}
 		if (json.has("particle")) {
 			var particle = Particles.getParticleFromName(json.get("particle").getAsString());
 			if (particle != null) {
@@ -157,36 +171,21 @@ public class OutputParticle implements OutputReplacement {
 		return this == EMPTY;
 	}
 
-	@Override
-	public Object replaceOutput(RecipeJS recipe, ReplacementMatch match, OutputReplacement original) {
-		if (original instanceof OutputParticle o) {
-			var replacement = new OutputParticle(item.copy(), o.chance, o.rolls);
-			replacement.item.setAmount(o.getCount());
-			return replacement;
-		}
-
-		return new OutputParticle(item.copy(), Double.NaN, null);
-	}
-
 	@Deprecated
 	public InputParticle ignoreNBT() {
-		var console = ConsoleJS.getCurrent(ConsoleJS.SERVER);
-		console.warn("Particles don't have NBT data like items!");
-		return InputParticle.of(createIngredientFromParticle(item), item.getAmount());
+		ConsoleJS.SERVER.warn("Particles don't have NBT data like items!");
+		return InputParticle.of(placeholder(), item.getAmount());
 	}
 
 	public InputParticle weakNBT() {
-		// Particles don't have NBT, return equivalent InputParticle
-		return InputParticle.of(createIngredientFromParticle(item), item.getAmount());
+		return InputParticle.of(placeholder(), item.getAmount());
 	}
 
 	public InputParticle strongNBT() {
-		// Particles don't have NBT, return equivalent InputParticle
-		return InputParticle.of(createIngredientFromParticle(item), item.getAmount());
+		return InputParticle.of(placeholder(), item.getAmount());
 	}
-	
-	private static Ingredient createIngredientFromParticle(ParticleStack stack) {
-		// Since particles don't have direct item equivalents, we'll create a placeholder ingredient
-		return Ingredient.of(Items.BARRIER); // Placeholder - replace with actual particle item if available
+
+	private static Ingredient placeholder() {
+		return Ingredient.of(Items.BARRIER);
 	}
 }

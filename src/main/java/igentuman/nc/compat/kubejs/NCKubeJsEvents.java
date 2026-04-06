@@ -1,13 +1,14 @@
 package igentuman.nc.compat.kubejs;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.latvian.mods.kubejs.bindings.event.ServerEvents;
-import dev.latvian.mods.kubejs.event.*;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
-import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
+import dev.latvian.mods.kubejs.event.EventGroup;
+import dev.latvian.mods.kubejs.event.EventHandler;
+import dev.latvian.mods.kubejs.event.EventResult;
+import dev.latvian.mods.kubejs.event.KubeEvent;
+import dev.latvian.mods.kubejs.event.KubeStartupEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
-import dev.latvian.mods.kubejs.server.ServerScriptManager;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.kugelblitz.entity.BlackHoleBE;
 import igentuman.nc.content.fuel.FuelDef;
@@ -16,208 +17,182 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import static igentuman.nc.NuclearCraft.MODID;
+/**
+ * KubeJS event bridges for NuclearCraft.
+ *
+ * <p>This class declares a custom {@link EventGroup} ({@code NCKJSEvents}) that scripts can
+ * subscribe to via e.g. {@code NCKJSEvents.playerEnterBlackhole(event => ...)}. The static
+ * methods {@link #onPlayerEnterBlackhole} and {@link #onFissionFuelRegister} are called from
+ * NC's own Java code (guarded by {@code ModList.isLoaded("kubejs")}) to forward NeoForge-bus
+ * events into the KubeJS script environment.
+ *
+ * <p>{@link #generateCustomFuelRecipes} is invoked from
+ * {@link NuclearCraftKubeJSPlugin#beforeRecipeLoading} and writes synthesized fission-fuel
+ * recipes directly into the JSON recipe map that KubeJS hands to the vanilla recipe loader.
+ */
+public final class NCKubeJsEvents {
 
+	public static final EventGroup GROUP = EventGroup.of("NCKJSEvents");
 
-public class NCKubeJsEvents {
-    public static final EventGroup GROUP = EventGroup.of("NCKJSEvents");
-    public static final EventHandler PLAYER_ENTER_BLACKHOLE = GROUP.server("PlayerEnterBlackhole", () -> PlayerEnterBlackholeEventJS.class);
-    public static final EventHandler REGISTER_FISSION_FUEL = GROUP.startup("RegisterFissionFuel", () -> RegisterFissionFuelEventJS.class);
+	public static final EventHandler PLAYER_ENTER_BLACKHOLE = GROUP.server(
+			"playerEnterBlackhole", () -> PlayerEnterBlackholeEventJS.class);
 
-    public static void onPlayerEnterBlackhole(BlackHoleBE.PlayerEnterBlackholeEvent event) {
-        PlayerEnterBlackholeEventJS evenjs = new PlayerEnterBlackholeEventJS(event.getPlayer(), event.getBlackholePos(), event.getLevel());
-        EventResult result = PLAYER_ENTER_BLACKHOLE.post(ScriptType.SERVER, evenjs);
-        event.setCanceled(result.interruptDefault() || result.interruptFalse() || result.interruptTrue());
-    }
+	public static final EventHandler REGISTER_FISSION_FUEL = GROUP.startup(
+			"registerFissionFuel", () -> RegisterFissionFuelEventJS.class);
 
-    public static void onFissionFuelRegister(FissionFuel.RegisterFissionFuelEvent event) {
-        RegisterFissionFuelEventJS eventJS = new RegisterFissionFuelEventJS(event);
-        REGISTER_FISSION_FUEL.post(ScriptType.STARTUP, eventJS);
-        System.out.println("Registered custom fission fuels via KubeJS");
-    }
-    
-    /**
-     * Automatically generate fission reactor recipes for custom fuels
-     * This should be called during recipe loading
-     */
-    public static List<RecipeJS> generateCustomFuelRecipes(RecipesEventJS event) {
-        List<RecipeJS> addedRecipes = new ArrayList<>();
-        if(event == null) {
-            NuclearCraft.LOGGER.warn("RecipesEventJS instance is null, cannot generate custom fuel recipes");
-            return addedRecipes;
-        }
-        List<FuelDef> customFuels = FissionFuel.getCustomFuels();
-        
-        for (FuelDef fuelDef : customFuels) {
-            String group = fuelDef.group;
-            String name = fuelDef.name;
-            
-            // Generate recipe for base fuel
-            addedRecipes.add(generateFuelRecipe(event, group, name, "", fuelDef));
+	private NCKubeJsEvents() {}
 
-            addedRecipes.add(generateFuelRecipe(event, group, name, "_ox", fuelDef));
-            addedRecipes.add(generateFuelRecipe(event, group, name, "_ni", fuelDef));
-            addedRecipes.add(generateFuelRecipe(event, group, name, "_za", fuelDef));
-        }
-        return addedRecipes;
-    }
-    
-    private static RecipeJS generateFuelRecipe(RecipesEventJS event, String group, String name,
-                                               String variant, FuelDef fuelDef) {
-        NuclearCraft.LOGGER.warn("Generating recipe for fuel: " + group + " " + name + variant);
-        String fuelItem = "nuclearcraft:fuel_" + group + "_" + name + variant;
-        String depletedItem = "nuclearcraft:depleted_fuel_" + group + "_" + name + variant;
-        String recipeId = "nuclearcraft:fission_reactor_controller/" + group + "_" + name + variant;
-        
-        // Create recipe JSON
-        JsonObject recipe = new JsonObject();
-        recipe.addProperty("type", "nuclearcraft:fission_reactor_controller");
-        
-        JsonArray input = new JsonArray();
-        JsonObject inputItem = new JsonObject();
-        inputItem.addProperty("item", fuelItem);
-        input.add(inputItem);
-        recipe.add("input", input);
-        
-        JsonArray output = new JsonArray();
-        JsonObject outputItem = new JsonObject();
-        outputItem.addProperty("item", depletedItem);
-        output.add(outputItem);
-        recipe.add("output", output);
-        
-        recipe.addProperty("timeModifier", fuelDef.timeModifier);
-        recipe.addProperty("powerModifier", fuelDef.powerModifier);
-        recipe.addProperty("radiation", fuelDef.radiationModifier);
-        
-        return event.custom(recipe).id(ResourceLocation.tryParse(recipeId));
-    }
+	/** Forward a {@link BlackHoleBE.PlayerEnterBlackholeEvent} from NC's NeoForge bus into KubeJS scripts. */
+	public static void onPlayerEnterBlackhole(BlackHoleBE.PlayerEnterBlackholeEvent event) {
+		var eventJS = new PlayerEnterBlackholeEventJS(event.getPlayer(), event.getBlackholePos(), event.getLevel());
+		EventResult result = PLAYER_ENTER_BLACKHOLE.post(ScriptType.SERVER, eventJS);
+		// Any script-side interrupt (cancel / success / exit) suppresses the default kill —
+		// the script is claiming responsibility for the outcome.
+		if (result.interruptFalse() || result.interruptTrue() || result.interruptDefault()) {
+			event.setCanceled(true);
+		}
+	}
 
-    public static class PlayerEnterBlackholeEventJS extends EventJS {
-        public ServerPlayer getPlayer() {
-            return player;
-        }
+	/** Forward a {@link FissionFuel.RegisterFissionFuelEvent} into KubeJS startup scripts. */
+	public static void onFissionFuelRegister(FissionFuel.RegisterFissionFuelEvent event) {
+		var eventJS = new RegisterFissionFuelEventJS(event);
+		REGISTER_FISSION_FUEL.post(ScriptType.STARTUP, eventJS);
+	}
 
-        public BlockPos getBlackholePos() {
-            return blackholePos;
-        }
+	/**
+	 * Synthesize fission reactor recipes for every fuel definition added via the
+	 * {@link RegisterFissionFuelEventJS} JS API, and inject them into the recipe JSON map
+	 * handed to KubeJS's {@code beforeRecipeLoading} hook.
+	 */
+	public static void generateCustomFuelRecipes(Map<ResourceLocation, JsonElement> recipeJsons) {
+		List<FuelDef> customFuels = FissionFuel.getCustomFuels();
+		if (customFuels.isEmpty()) {
+			return;
+		}
 
-        public Level getLevel() {
-            return level;
-        }
+		NuclearCraft.LOGGER.info("Injecting {} custom fission fuel recipe groups from KubeJS", customFuels.size());
 
-        private final ServerPlayer player;
-        private final BlockPos blackholePos;
-        private final Level level;
+		for (FuelDef fuelDef : customFuels) {
+			addFuelRecipe(recipeJsons, fuelDef, "");
+			addFuelRecipe(recipeJsons, fuelDef, "_ox");
+			addFuelRecipe(recipeJsons, fuelDef, "_ni");
+			addFuelRecipe(recipeJsons, fuelDef, "_za");
+		}
+	}
 
-        public PlayerEnterBlackholeEventJS(ServerPlayer player, BlockPos blackholePos, Level level) {
-            this.player = player;
-            this.blackholePos = blackholePos;
-            this.level = level;
-        }
-    }
-    
-    public static class RegisterFissionFuelEventJS extends StartupEventJS {
-        private final FissionFuel.RegisterFissionFuelEvent event;
+	private static void addFuelRecipe(Map<ResourceLocation, JsonElement> recipeJsons, FuelDef fuelDef, String variant) {
+		String group = fuelDef.group;
+		String name = fuelDef.name;
+		String fuelItem = "nuclearcraft:fuel_" + group + "_" + name + variant;
+		String depletedItem = "nuclearcraft:depleted_fuel_" + group + "_" + name + variant;
+		ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(
+				NuclearCraft.MODID, "fission_reactor_controller/" + group + "_" + name + variant);
 
-        public RegisterFissionFuelEventJS(FissionFuel.RegisterFissionFuelEvent event) {
-            this.event = event;
-        }
+		JsonObject recipe = new JsonObject();
+		recipe.addProperty("type", "nuclearcraft:fission_reactor_controller");
 
-        /**
-         * Register a custom fission fuel with automatic recipe generation
-         * @param group The fuel group (e.g., "tbu", "leu235")
-         * @param name The fuel name/subtype (e.g., "oxide", "le")
-         * @param forgeEnergy Energy produced per tick
-         * @param heat Heat generated
-         * @param criticality Criticality value
-         * @param depletion Depletion rate
-         * @param efficiency Efficiency value
-         * @param isotope1 First isotope ID
-         * @param isotope2 Second isotope ID
-         */
-        public void registerFuel(String group, String name, int forgeEnergy, double heat, 
-                                int criticality, int depletion, int efficiency, 
-                                int isotope1, int isotope2) {
-            FuelDef fuelDef = new FuelDef(group, name, forgeEnergy, heat, criticality, depletion, efficiency);
-            fuelDef.isotopes(isotope1, isotope2);
-            event.addFuel(fuelDef);
-        }
-        
-        /**
-         * Register a custom fission fuel with double values and automatic recipe generation
-         * @param group The fuel group (e.g., "tbu", "leu235")
-         * @param name The fuel name/subtype (e.g., "oxide", "le")
-         * @param forgeEnergy Energy produced per tick
-         * @param heat Heat generated
-         * @param criticality Criticality value
-         * @param depletion Depletion rate
-         * @param efficiency Efficiency value
-         * @param isotope1 First isotope ID
-         * @param isotope2 Second isotope ID
-         */
-        public void registerFuel(String group, String name, int forgeEnergy, double heat, 
-                                double criticality, double depletion, double efficiency, 
-                                int isotope1, int isotope2) {
-            FuelDef fuelDef = new FuelDef(group, name, forgeEnergy, heat, criticality, depletion, efficiency);
-            fuelDef.isotopes(isotope1, isotope2);
-            event.addFuel(fuelDef);
-        }
-        
-        /**
-         * Register a custom fission fuel with custom recipe modifiers
-         * @param group The fuel group (e.g., "tbu", "leu235")
-         * @param name The fuel name/subtype (e.g., "oxide", "le")
-         * @param forgeEnergy Energy produced per tick
-         * @param heat Heat generated
-         * @param criticality Criticality value
-         * @param depletion Depletion rate
-         * @param efficiency Efficiency value
-         * @param isotope1 First isotope ID
-         * @param isotope2 Second isotope ID
-         * @param timeModifier Time modifier for recipe (default: 1.0)
-         * @param powerModifier Power modifier for recipe (default: 1.0)
-         * @param radiationModifier Radiation modifier for recipe (default: 1.0)
-         */
-        public void registerFuel(String group, String name, int forgeEnergy, double heat, 
-                                int criticality, int depletion, int efficiency, 
-                                int isotope1, int isotope2,
-                                double timeModifier, double powerModifier, double radiationModifier) {
-            FuelDef fuelDef = new FuelDef(group, name, forgeEnergy, heat, criticality, depletion, efficiency);
-            fuelDef.isotopes(isotope1, isotope2);
-            fuelDef.recipeModifiers(timeModifier, powerModifier, radiationModifier);
-            event.addFuel(fuelDef);
-        }
-        
-        /**
-         * Register a custom fission fuel with double values and custom recipe modifiers
-         * @param group The fuel group (e.g., "tbu", "leu235")
-         * @param name The fuel name/subtype (e.g., "oxide", "le")
-         * @param forgeEnergy Energy produced per tick
-         * @param heat Heat generated
-         * @param criticality Criticality value
-         * @param depletion Depletion rate
-         * @param efficiency Efficiency value
-         * @param isotope1 First isotope ID
-         * @param isotope2 Second isotope ID
-         * @param timeModifier Time modifier for recipe (default: 1.0)
-         * @param powerModifier Power modifier for recipe (default: 1.0)
-         * @param radiationModifier Radiation modifier for recipe (default: 1.0)
-         */
-        public void registerFuel(String group, String name, int forgeEnergy, double heat, 
-                                double criticality, double depletion, double efficiency, 
-                                int isotope1, int isotope2,
-                                double timeModifier, double powerModifier, double radiationModifier) {
-            FuelDef fuelDef = new FuelDef(group, name, forgeEnergy, heat, criticality, depletion, efficiency);
-            fuelDef.isotopes(isotope1, isotope2);
-            fuelDef.recipeModifiers(timeModifier, powerModifier, radiationModifier);
-            event.addFuel(fuelDef);
-        }
-    }
+		JsonArray input = new JsonArray();
+		JsonObject inputItem = new JsonObject();
+		inputItem.addProperty("item", fuelItem);
+		input.add(inputItem);
+		recipe.add("input", input);
+
+		JsonArray output = new JsonArray();
+		JsonObject outputItem = new JsonObject();
+		outputItem.addProperty("item", depletedItem);
+		output.add(outputItem);
+		recipe.add("output", output);
+
+		recipe.addProperty("timeModifier", fuelDef.timeModifier);
+		recipe.addProperty("powerModifier", fuelDef.powerModifier);
+		recipe.addProperty("radiation", fuelDef.radiationModifier);
+
+		recipeJsons.put(recipeId, recipe);
+	}
+
+	// ---- KubeEvent implementations ----
+
+	public static class PlayerEnterBlackholeEventJS implements KubeEvent {
+		private final ServerPlayer player;
+		private final BlockPos blackholePos;
+		private final Level level;
+
+		public PlayerEnterBlackholeEventJS(ServerPlayer player, BlockPos blackholePos, Level level) {
+			this.player = player;
+			this.blackholePos = blackholePos;
+			this.level = level;
+		}
+
+		public ServerPlayer getPlayer() {
+			return player;
+		}
+
+		public BlockPos getBlackholePos() {
+			return blackholePos;
+		}
+
+		public Level getLevel() {
+			return level;
+		}
+	}
+
+	public static class RegisterFissionFuelEventJS implements KubeStartupEvent {
+		private final FissionFuel.RegisterFissionFuelEvent event;
+
+		public RegisterFissionFuelEventJS(FissionFuel.RegisterFissionFuelEvent event) {
+			this.event = event;
+		}
+
+		/**
+		 * Register a custom fission fuel with integer properties and default recipe modifiers.
+		 */
+		public void registerFuel(String group, String name, int forgeEnergy, double heat,
+		                         int criticality, int depletion, int efficiency,
+		                         int isotope1, int isotope2) {
+			FuelDef fuelDef = new FuelDef(group, name, forgeEnergy, heat, criticality, depletion, efficiency);
+			fuelDef.isotopes(isotope1, isotope2);
+			event.addFuel(fuelDef);
+		}
+
+		/**
+		 * Register a custom fission fuel with double properties and default recipe modifiers.
+		 */
+		public void registerFuel(String group, String name, int forgeEnergy, double heat,
+		                         double criticality, double depletion, double efficiency,
+		                         int isotope1, int isotope2) {
+			FuelDef fuelDef = new FuelDef(group, name, forgeEnergy, heat, criticality, depletion, efficiency);
+			fuelDef.isotopes(isotope1, isotope2);
+			event.addFuel(fuelDef);
+		}
+
+		/**
+		 * Register a custom fission fuel with integer properties and explicit recipe modifiers.
+		 */
+		public void registerFuel(String group, String name, int forgeEnergy, double heat,
+		                         int criticality, int depletion, int efficiency,
+		                         int isotope1, int isotope2,
+		                         double timeModifier, double powerModifier, double radiationModifier) {
+			FuelDef fuelDef = new FuelDef(group, name, forgeEnergy, heat, criticality, depletion, efficiency);
+			fuelDef.isotopes(isotope1, isotope2);
+			fuelDef.recipeModifiers(timeModifier, powerModifier, radiationModifier);
+			event.addFuel(fuelDef);
+		}
+
+		/**
+		 * Register a custom fission fuel with double properties and explicit recipe modifiers.
+		 */
+		public void registerFuel(String group, String name, int forgeEnergy, double heat,
+		                         double criticality, double depletion, double efficiency,
+		                         int isotope1, int isotope2,
+		                         double timeModifier, double powerModifier, double radiationModifier) {
+			FuelDef fuelDef = new FuelDef(group, name, forgeEnergy, heat, criticality, depletion, efficiency);
+			fuelDef.isotopes(isotope1, isotope2);
+			fuelDef.recipeModifiers(timeModifier, powerModifier, radiationModifier);
+			event.addFuel(fuelDef);
+		}
+	}
 }

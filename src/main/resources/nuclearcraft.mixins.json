@@ -8,7 +8,8 @@
     "OverworldBiomeBuilderInvoker",
     "OverworldBiomeBuilderMixin",
     "MekRadiationManager",
-    "MekRadiationUtil"
+    "MekRadiationUtil",
+    "ParticleStackKubeJSMixin"
   ],
   "server": [
   ],

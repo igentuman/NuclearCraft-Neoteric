@@ -137,6 +137,9 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         controllerEnabled = getMultiblock().isFormed() && redstoneLevel > 0;
 
         if (controllerEnabled) {
+            if(!hasEnoughEnergy()) {
+                return;
+            }
             trackChanges(contentHandler().tick());
             handleMeltdown();
             trackChanges(accelerateParticle());
@@ -157,6 +160,8 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         }
         //particleStorage.clear();
     }
+
+
 
 
     @Override

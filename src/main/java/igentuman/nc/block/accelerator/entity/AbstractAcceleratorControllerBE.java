@@ -279,7 +279,7 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         if(energyStorage().getEnergyStored() < energyRequired) {
             return false;
         }
-        energyStorage().extractEnergy(energyRequired, false);
+        energyStorage().consumeEnergy(energyRequired);
         return true;
     }
 
@@ -304,6 +304,10 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
             }
         }
         return coolantRecipe instanceof LinearAcceleratorControllerBE.CoolantRecipe;
+    }
+
+    protected boolean hasEnoughEnergy() {
+        return energyStorage().getEnergyStored() < energyRequired;
     }
 
     protected void coolantCoolDown() {

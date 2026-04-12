@@ -36,10 +36,6 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
     public boolean hasPull = false;
     private boolean updated = false;
 
-    //if block fails to push/pull, we'll skip some ticks
-    public long pushTimeout = 0;
-    public long pullTimeout = 0;
-
     private Gas2FluidConverter gasConverter;
     private Slurry2FluidConverter slurryConverter;
 
@@ -204,31 +200,15 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         if(!canPush() && !canPull()) {
             return updated;
         }
-        boolean pushed = false;
-        boolean pulled = false;
 
-        if(pushTimeout-- <= 0) {
-            pushed = push(lastPushSide);
-        }
-        if(pullTimeout-- <= 0) {
-            pulled = pull(lastPullSide);
-        }
+        push(lastPushSide);
+        pull(lastPullSide);
 
         for(Direction dir: Direction.values()) {
-            if(pushTimeout <= 0) {
-                pushed |= push(dir);
-            }
-            if(pushTimeout <= 0) {
-                pulled |= pull(dir);
-            }
+            push(dir);
+            pull(dir);
+        }
 
-        }
-        if(!pushed && pushTimeout <= 0) {
-            pushTimeout = 5;
-        }
-        if(!pulled && pullTimeout <= 0) {
-            pullTimeout = 5;
-        }
         return updated;
     }
 

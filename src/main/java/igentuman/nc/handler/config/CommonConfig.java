@@ -138,7 +138,7 @@ public class CommonConfig {
             builder.push("energy_storage");
 
             LIGHTNING_ROD_CHARGE = builder
-                    .define("ligtning_rod_charge", 1048576);
+                    .define("lightning_rod_charge", 1048576);
 
             REGISTER_ENERGY_BLOCK = builder
                     .comment("Allow block registration: " + String.join(", ", BatteryBlocks.all().keySet()))

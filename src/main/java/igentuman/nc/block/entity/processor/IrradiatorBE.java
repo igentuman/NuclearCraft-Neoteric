@@ -71,30 +71,37 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
     public void tickServer() {
         int wasFlux = irradiativeFlux;
         double wasFuel = fuelMultiplier;
+        boolean wasActive = isActive;
         irradiativeFlux = 0;
         fuelMultiplier = 0;
         //allow only partial updates when irradiator boosted by torcherino
         if(lastTickTime == level.getGameTime() && level.getRandom().nextDouble() < 0.05) {
             return;
         }
+        isActive = isActive();
         //upadteMultiblockConnection();
-        if (controller() != null && controller().isProcessing() && controller().efficiency > 0) {
+        if (isActive) {
             irradiativeFlux = controller().irradiationLines;
             FissionControllerBE.Recipe recipe1 = (FissionControllerBE.Recipe) controller().recipeInfo().recipe();
             fuelMultiplier = recipe1 != null ? recipe1.irradiationRate : 0;
         }
-        if(speedMultiplier() > 0) {
+        if(isActive && speedMultiplier() > 0) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             super.tickServer();
         } else {
             contentHandler().tick();
         }
+        needToUpdate |= isActive != wasActive;
         if(wasFlux != irradiativeFlux || wasFuel != fuelMultiplier || needToUpdate) {
             needToUpdate = false;
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_NEIGHBORS);
             setChanged();
         }
+    }
+
+    protected boolean isActive() {
+        return controller() != null && !controller().isRemoved() && controller().isProcessing() && controller().efficiency > 0;
     }
 
     @Override

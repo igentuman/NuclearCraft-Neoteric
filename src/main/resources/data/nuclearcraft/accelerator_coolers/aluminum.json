@@ -1,0 +1,5 @@
+[{
+  "type": "aluminum",
+  "heat": 175,
+  "placement_rule": ["quartz_cooler", "tin_cooler"]
+}]

@@ -202,13 +202,7 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
                 ", Cells energy mult: " + String.format("%.2f", cellsEnergyMult));
         
         //Stage 3: index irradiators and count irradiation lines
-        igentuman.nc.NuclearCraft.LOGGER.info("[Fission] Stage 3: Indexing irradiators. irradiators set size={}", irradiators.size());
-        for (long irrPos : irradiators) {
-            igentuman.nc.NuclearCraft.LOGGER.info("[Fission]   Irradiator registered at {}", net.minecraft.core.BlockPos.of(irrPos));
-        }
         indexIrradiators();
-        igentuman.nc.NuclearCraft.LOGGER.info("[Fission] Stage 3 complete - irradiationLines={}, validIrradiators={}/{}",
-                irradiationLines, validIrradiators.size(), irradiators.size());
 
         //Stage 4: count heat sinks and their cooling
         debugLog("Stage 4: Indexing heat sinks");
@@ -399,8 +393,6 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     protected void processOuterBlock(BlockPos pos) {
         super.processOuterBlock(pos);
         if (isIrradiator(pos)) {
-            igentuman.nc.NuclearCraft.LOGGER.info("[Fission] processOuterBlock found irradiator at {} (block={})",
-                    pos, getBlockState(pos).getBlock());
             addIfNotExists(pos, irradiators);
             attachMultiblock(pos);
         }

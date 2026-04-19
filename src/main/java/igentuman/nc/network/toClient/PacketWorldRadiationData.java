@@ -25,7 +25,7 @@ public class PacketWorldRadiationData implements CustomPacketPayload {
         radiation.put(id, aLong);
     }
 
-    public PacketWorldRadiationData(HashMap<Long, Long> radiation) {
+    public PacketWorldRadiationData(Map<Long, Long> radiation) {
         this.radiation = new HashMap<>(radiation);
     }
 

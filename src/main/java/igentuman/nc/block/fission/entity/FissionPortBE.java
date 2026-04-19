@@ -290,9 +290,16 @@ public class FissionPortBE extends MultiblockPortBE {
     }
 
     public void toggleRedstoneMode() {
+        byte wasMode = redstoneMode;
         redstoneMode++;
         if (redstoneMode > SignalSource.MODERATOR) {
             redstoneMode = SignalSource.ENERGY;
+        }
+        // If leaving MODERATOR mode, reset moderation level to full so
+        // briefly cycling through it doesn't permanently zero the reactor's
+        // moderator efficiency.
+        if (wasMode == SignalSource.MODERATOR && redstoneMode != SignalSource.MODERATOR && controller() != null) {
+            controller().adjustModerator(15);
         }
         analogSignal = 0;
         MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());

@@ -46,6 +46,7 @@ import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
@@ -992,7 +993,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
             super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
             CATALYSTS.put(codeId, List.of(getToastSymbol()));
             irradiationRate = Math.log((getRadiation()*20+0.01)*10000)*(Math.pow(getHeat() / 100 +  200 / (double)getDepletionTime() + 0.5, 1.5)*2);
-            radiation = ItemRadiation.byItem(getFuelItem())/20;
+            radiation = () -> ItemRadiation.byItem(getFuelItem())/20;
         }
 
         @Override
@@ -1004,7 +1005,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
         public double irradiationRate = 1;
 
-        protected double radiation = 0;
+        protected Supplier<Double> radiation;
 
         public ItemFuel getFuelItem() {
             if(fuelItem == null) {
@@ -1050,7 +1051,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         }
 
         public double getRadiation() {
-            return radiation;
+            return radiation.get();
         }
     }
 

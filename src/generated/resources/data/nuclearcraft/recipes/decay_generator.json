@@ -6,7 +6,7 @@
       "item": "minecraft:redstone"
     },
     "U": {
-      "tag": "forge:blocks/iron"
+      "tag": "forge:storage_blocks/iron"
     },
     "P": {
       "item": "nuclearcraft:coil_copper"

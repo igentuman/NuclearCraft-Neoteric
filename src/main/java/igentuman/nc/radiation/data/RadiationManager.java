@@ -19,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class RadiationManager extends SavedData {
 
     private WorldRadiation worldRadiation;
     private int tickCounter = RADIATION_CONFIG.RADIATION_UPDATE_INTERVAL.get();
-    private static final HashMap<ResourceKey<Level>, RadiationManager> instances = new HashMap<>();
+    private static final Map<ResourceKey<Level>, RadiationManager> instances = new ConcurrentHashMap<>();
     public static void clear(Level level) {
         get(level).worldRadiation.chunkRadiation.clear();
         get(level).worldRadiation.updatedChunks.clear();

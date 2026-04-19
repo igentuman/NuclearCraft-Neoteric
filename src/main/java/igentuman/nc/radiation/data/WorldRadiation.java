@@ -8,6 +8,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
@@ -15,16 +17,16 @@ import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 public class WorldRadiation {
 
     private final double decaySpeed = ((double) RADIATION_CONFIG.DECAY_SPEED.get())/10000;
-    public HashMap<Long, Long> chunkRadiation = new HashMap<>();
-    public HashMap<Long, Long> updatedChunks = new HashMap<>();
-    public HashMap<Long, Long> newChunks = new HashMap<>();
+    public Map<Long, Long> chunkRadiation = new ConcurrentHashMap<>();
+    public Map<Long, Long> updatedChunks = new ConcurrentHashMap<>();
+    public Map<Long, Long> newChunks = new ConcurrentHashMap<>();
     public Level level;
 
     public WorldRadiation() {
     }
 
-    public WorldRadiation(HashMap<Long, Long> radiation) {
-        this.chunkRadiation = radiation;
+    public WorldRadiation(Map<Long, Long> radiation) {
+        this.chunkRadiation = new ConcurrentHashMap<>(radiation);
     }
 
     public static WorldRadiation deserialize(CompoundTag radiation) {

@@ -121,7 +121,7 @@ public class WorldEvents {
         if (event.side.isServer() && event.phase == Phase.START) {
             if(currentTick % 5 != 0 || event.level.getChunkSource().getLoadedChunksCount() < 1) return;
             final ServerLevel level = (ServerLevel) event.level;
-            RadiationEvents.tick(event);
+            RadiationEvents.tickAsync(event);
             MultiblockHandler.trackChangesAsync(level);
         }
     }

@@ -1,11 +1,13 @@
 package igentuman.nc.radiation.data;
 
 import igentuman.nc.compat.mekanism.MekanismRadiation;
-import igentuman.nc.handler.config.RadiationConfig;
+import igentuman.nc.multiblock.MultiblockExecutorManager;
 import igentuman.nc.radiation.FluidRadiation;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.RadiationCleaningItems;
 import igentuman.nc.util.ModUtil;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,9 +25,9 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.rl;
@@ -36,12 +38,20 @@ import static igentuman.nc.setup.Registration.RADIATION_RESISTANCE;
 public class RadiationEvents {
 
     public static boolean isTracking = false;
-    private static final HashMap<Level, List<ItemEntity>> droppedRadioactiveItems = new HashMap<>();
+    private static final Map<Level, List<ItemEntity>> droppedRadioactiveItems = new ConcurrentHashMap<>();
+    private static final Map<ResourceKey<Level>, CompletableFuture<Void>> radiationFutures = new ConcurrentHashMap<>();
 
-    public static void tick(TickEvent.LevelTickEvent event) {
-        if(currentTick % 10 == 0 && RADIATION_CONFIG.ENABLED.get()) {
-            RadiationEvents.onWorldTick(event);
+    public static void tickAsync(TickEvent.LevelTickEvent level) {
+        if(currentTick % 10 != 0 || !RADIATION_CONFIG.ENABLED.get() || !isTracking) return;
+        ServerLevel serverLevel = (ServerLevel) level.level;
+        ResourceKey<Level> dimension = serverLevel.dimension();
+        if (radiationFutures.containsKey(dimension) && !radiationFutures.get(dimension).isDone()) {
+            return;
         }
+
+        RadiationManager.get(serverLevel);
+
+        radiationFutures.put(dimension, CompletableFuture.runAsync(() -> onWorldTick(serverLevel), MultiblockExecutorManager.getExecutor()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -93,9 +103,8 @@ public class RadiationEvents {
             double radiation = ItemRadiation.byItem(stack.getItem());
             if(radiation > 0.001) {
                 RadiationManager.get(event.getLevel()).addRadiation(event.getLevel(), stack.getCount()*radiation/5, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ());
-                List<ItemEntity> items = droppedRadioactiveItems.computeIfAbsent(event.getLevel(), k -> new LinkedList<>());
+                List<ItemEntity> items = droppedRadioactiveItems.computeIfAbsent(event.getLevel(), k -> Collections.synchronizedList(new LinkedList<>()));
                 items.add((ItemEntity) entity);
-                droppedRadioactiveItems.put(event.getLevel(), items);
             }
         }
     }
@@ -131,35 +140,37 @@ public class RadiationEvents {
         }
     }
 
-    public static void onWorldTick(TickEvent.LevelTickEvent event) {
-        if(!isTracking || event.level.isClientSide) {
+    public static void onWorldTick(Level world) {
+        if(!isTracking || world.isClientSide) {
             return;
         }
-        Level world = event.level;
-        if(!droppedRadioactiveItems.containsKey(world)) {
-            droppedRadioactiveItems.put(world, new LinkedList<>());
-        }
-        RadiationManager manager = RadiationManager.get(event.level);
-        int size = droppedRadioactiveItems.get(world).size();
-        for(int i = 0; i < size; i++) {
-            ItemEntity entity = droppedRadioactiveItems.get(world).get(i);
-            if(entity.isAlive()) {
-                double radiation = ItemRadiation.byItem(entity.getItem().getItem());
-                if(radiation > 0.001) {
-                    RadiationManager.get(world).addRadiation(world, radiation/5, entity.blockPosition());
+        List<ItemEntity> items = droppedRadioactiveItems.get(world);
+        if(items != null) {
+            synchronized (items) {
+                int size = items.size();
+                for (int i = 0; i < size; i++) {
+                    ItemEntity entity = items.get(i);
+                    if (entity.isAlive()) {
+                        double radiation = ItemRadiation.byItem(entity.getItem().getItem());
+                        if (radiation > 0.001) {
+                            RadiationManager.get(world).addRadiation(world, radiation / 5, entity.blockPosition());
+                        }
+                    } else {
+                        items.remove(i);
+                        i--;
+                        size--;
+                    }
                 }
-            } else {
-                droppedRadioactiveItems.get(world).remove(i);
-                i--;
-                size--;
             }
         }
-        manager.tick(event.level);
+        RadiationManager manager = RadiationManager.get(world);
+        manager.tick(world);
     }
 
     public static void stopTracking() {
         isTracking = false;
         droppedRadioactiveItems.clear();
+        radiationFutures.clear();
     }
 
     public static void startTracking() {

@@ -992,8 +992,6 @@ public class FissionControllerBE extends MultiblockControllerBE {
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {
             super(id, input, output, timeModifier, powerModifier, heatModifier, rarity);
             CATALYSTS.put(codeId, List.of(getToastSymbol()));
-            irradiationRate = Math.log((getRadiation()*20+0.01)*10000)*(Math.pow(getHeat() / 100 +  200 / (double)getDepletionTime() + 0.5, 1.5)*2);
-            radiation = () -> ItemRadiation.byItem(getFuelItem())/20;
         }
 
         @Override
@@ -1003,9 +1001,18 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
         protected ItemFuel fuelItem;
 
-        public double irradiationRate = 1;
+        protected double irradiationRate = 0;
 
-        protected Supplier<Double> radiation;
+        protected Supplier<Double> irradiationRateSupplier = () -> Math.log((getRadiation()*20+0.01)*10000)*(Math.pow(getHeat() / 100 +  200 / (double)getDepletionTime() + 0.5, 1.5)*2);;
+
+        protected Supplier<Double> radiation = () -> ItemRadiation.byItem(getFuelItem())/20;
+
+        public double getIrradiationRate() {
+            if(irradiationRate == 0) {
+                irradiationRate = irradiationRateSupplier.get();
+            }
+            return irradiationRate;
+        }
 
         public ItemFuel getFuelItem() {
             if(fuelItem == null) {

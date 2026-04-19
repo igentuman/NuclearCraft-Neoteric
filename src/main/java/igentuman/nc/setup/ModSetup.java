@@ -30,7 +30,6 @@ public class ModSetup {
         bus.addListener(RadiationEvents::onPlayerCloned);
         Particles.init();
         bus.addGenericListener(Entity.class, RadiationEvents::attachPlayerRadiation);
-        bus.addGenericListener(Level.class, RadiationEvents::attachWorldRadiation);
         bus.addGenericListener(Level.class, WorldVeinsProvider::attachVeinCapability);
         bus.register(NuclearCraft.worldTickHandler);
         bus.register(new PlayerEvents());

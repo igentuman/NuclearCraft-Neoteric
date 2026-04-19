@@ -149,6 +149,8 @@ public class NuclearCraft {
             MultiblockHandler.get(level.dimension()).clear();
             RadiationManager.clear(level);
         }
+        MultiblockHandler.clearAll();
+        RadiationManager.clearAll();
     }
     private void gameShuttingDownEvent(GameShuttingDownEvent event) {
         NuclearCraft.instance.isNcBeStopped = true;
@@ -163,7 +165,6 @@ public class NuclearCraft {
 
     @SubscribeEvent
     public void registerCaps(RegisterCapabilitiesEvent event) {
-        event.register(WorldRadiation.class);
         event.register(PlayerRadiation.class);
         event.register(WorldVeinOres.class);
         event.register(CapabilityParticleStackHandler.class);

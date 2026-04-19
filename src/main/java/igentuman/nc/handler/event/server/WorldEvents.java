@@ -4,7 +4,7 @@ import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.multiblock.MultiblockExecutorManager;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationEvents;
-import igentuman.nc.util.RadiationExecutorManager;
+import igentuman.nc.radiation.data.RadiationManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
@@ -105,7 +105,6 @@ public class WorldEvents {
         if (!event.getLevel().isClientSide()) {
             // Ensure the executor is initialized when a world is loaded
             MultiblockExecutorManager.getExecutor();
-            RadiationExecutorManager.getExecutor();
         }
     }
 
@@ -122,7 +121,7 @@ public class WorldEvents {
         if (event.side.isServer() && event.phase == Phase.START) {
             if(currentTick % 5 != 0 || event.level.getChunkSource().getLoadedChunksCount() < 1) return;
             final ServerLevel level = (ServerLevel) event.level;
-            RadiationEvents.tickAsync(event);
+            RadiationEvents.tick(event);
             MultiblockHandler.trackChangesAsync(level);
         }
     }
@@ -131,8 +130,8 @@ public class WorldEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerStopping(ServerStoppingEvent event) {
         MultiblockHandler.clearAll();
+        RadiationManager.clearAll();
         // Shutdown the executor service gracefully when the server is stopping
         MultiblockExecutorManager.shutdown();
-        RadiationExecutorManager.shutdown();
     }
 }

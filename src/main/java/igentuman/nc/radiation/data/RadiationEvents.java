@@ -6,7 +6,6 @@ import igentuman.nc.radiation.FluidRadiation;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.RadiationCleaningItems;
 import igentuman.nc.util.ModUtil;
-import igentuman.nc.util.RadiationExecutorManager;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,7 +26,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.rl;
@@ -39,23 +37,10 @@ public class RadiationEvents {
 
     public static boolean isTracking = false;
     private static final HashMap<Level, List<ItemEntity>> droppedRadioactiveItems = new HashMap<>();
-    private static CompletableFuture<Void> radiationFuture;
 
-    public static void attachWorldRadiation(final AttachCapabilitiesEvent<Level> event) {
-        if (!event.getObject().getCapability(WorldRadiationProvider.WORLD_RADIATION).isPresent()) {
-            event.addCapability(rl("radiation"), new WorldRadiationProvider());
-            isTracking = true;
-        }
-    }
-
-    public static void tickAsync(TickEvent.LevelTickEvent event) {
+    public static void tick(TickEvent.LevelTickEvent event) {
         if(currentTick % 10 == 0 && RADIATION_CONFIG.ENABLED.get()) {
-            if (radiationFuture == null || radiationFuture.isDone()) {
-                radiationFuture = CompletableFuture.runAsync(
-                        () -> RadiationEvents.onWorldTick(event),
-                        RadiationExecutorManager.getExecutor()
-                );
-            }
+            RadiationEvents.onWorldTick(event);
         }
     }
 
@@ -174,6 +159,7 @@ public class RadiationEvents {
 
     public static void stopTracking() {
         isTracking = false;
+        droppedRadioactiveItems.clear();
     }
 
     public static void startTracking() {

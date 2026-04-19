@@ -1,5 +1,6 @@
 package igentuman.nc.handler.event.client;
 
+import igentuman.nc.radiation.client.ClientRadiationData;
 import igentuman.nc.recipes.NcRecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,6 +17,7 @@ import static igentuman.nc.recipes.NcRecipeType.ALL_RECIPES;
 public class ServerLoad {
     public static void register(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(ServerLoad::onLevelLoad);
+        MinecraftForge.EVENT_BUS.addListener(ServerLoad::onLevelUnload);
     }
     public static boolean initialized = false;
     public static void onLevelLoad(LevelEvent.Load event) {
@@ -27,5 +29,12 @@ public class ServerLoad {
             recipeType.loadRecipes(level);
         }
         initialized = true;
+    }
+
+    public static void onLevelUnload(LevelEvent.Unload event) {
+        if(event.getLevel().isClientSide()) {
+            ClientRadiationData.clearAll();
+            initialized = false;
+        }
     }
 }

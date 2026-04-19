@@ -16,8 +16,12 @@ public class ClientRadiationData {
     protected static long playerRadiation = 0;
 
     public static void setWorldRadiation(HashMap<Long, Long> radiation) {
-        worldRadiation.remove(NcClient.tryGetClientWorld().dimension());
-        worldRadiation.put(NcClient.tryGetClientWorld().dimension(), new WorldRadiation(radiation));
+        Level world = NcClient.tryGetClientWorld();
+        if (world == null) return;
+        if (!worldRadiation.containsKey(world.dimension())) {
+            worldRadiation.put(world.dimension(), new WorldRadiation());
+        }
+        worldRadiation.get(world.dimension()).chunkRadiation.putAll(radiation);
     }
 
     public static int radiationStage() {
@@ -43,6 +47,12 @@ public class ClientRadiationData {
 
     public static void setPlayerRadiation(long radiation) {
         playerRadiation = radiation;
+    }
+
+    public static void clearAll() {
+        worldRadiation.clear();
+        currentRadiation = 0;
+        playerRadiation = 0;
     }
 
     public static long getPlayerRadiation() {

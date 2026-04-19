@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
-import static igentuman.nc.radiation.data.WorldRadiation.pack;
+import static igentuman.nc.radiation.data.WorldRadiation.packChunkPos;
 
 public class RadiationManager extends SavedData {
 
@@ -33,6 +33,11 @@ public class RadiationManager extends SavedData {
     public static void clear(Level level) {
         get(level).worldRadiation.chunkRadiation.clear();
         get(level).worldRadiation.updatedChunks.clear();
+        get(level).worldRadiation.newChunks.clear();
+    }
+
+    public static void clearAll() {
+        instances.clear();
     }
 
     public WorldRadiation getWorldRadiation() {
@@ -64,17 +69,43 @@ public class RadiationManager extends SavedData {
     public void tick(Level level) {
         if(!RADIATION_CONFIG.ENABLED.get()) return;
         level.players().forEach(player -> {
-            long wasRadiation = 0;
             long playerRadiation = 0;
             if (player instanceof ServerPlayer serverPlayer) {
                 PlayerRadiation playerRadiationCap = serverPlayer.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
                 if(playerRadiationCap != null) {
-                    wasRadiation = playerRadiationCap.getRadiation();
                     playerRadiationCap.updateRadiation(level, player);
                     playerRadiation = playerRadiationCap.getRadiation();
                 }
 
-                NuclearCraft.packetHandler().sendTo(new PacketWorldRadiationData(worldRadiation.chunkRadiation), serverPlayer);
+                // Sync nearby chunks
+                HashMap<Long, Long> nearbyRadiation = new HashMap<>();
+                int syncRadius = 8;
+                int px = player.chunkPosition().x;
+                int pz = player.chunkPosition().z;
+
+                for (int x = px - syncRadius; x <= px + syncRadius; x++) {
+                    for (int z = pz - syncRadius; z <= pz + syncRadius; z++) {
+                        long id = WorldRadiation.packChunkPos(x, z);
+                        if (worldRadiation.chunkRadiation.containsKey(id)) {
+                            nearbyRadiation.put(id, worldRadiation.chunkRadiation.get(id));
+                        }
+                    }
+                }
+                // Also sync recently updated chunks even if they are slightly further away, 
+                // but only if they belong to this world.
+                for (long id : worldRadiation.updatedChunks.keySet()) {
+                    if (!nearbyRadiation.containsKey(id)) {
+                        int cx = WorldRadiation.unpackX(id);
+                        int cz = WorldRadiation.unpackZ(id);
+                        if (Math.abs(cx - px) <= 16 && Math.abs(cz - pz) <= 16) {
+                            nearbyRadiation.put(id, worldRadiation.updatedChunks.get(id));
+                        }
+                    }
+                }
+
+                if (!nearbyRadiation.isEmpty()) {
+                    NuclearCraft.packetHandler().sendTo(new PacketWorldRadiationData(nearbyRadiation), serverPlayer);
+                }
                 NuclearCraft.packetHandler().sendTo(new PacketPlayerRadiationData(playerRadiation), serverPlayer);
             }
 
@@ -123,7 +154,7 @@ public class RadiationManager extends SavedData {
     }
 
     public void clearChunk(int x, int z) {
-        worldRadiation.chunkRadiation.remove(pack(x,z));
+        worldRadiation.chunkRadiation.remove(packChunkPos(x,z));
     }
 
     public void addRadiation(Level level, double v, BlockPos worldPosition) {

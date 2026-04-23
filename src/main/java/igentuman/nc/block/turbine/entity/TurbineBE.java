@@ -29,8 +29,7 @@ public class TurbineBE extends NuclearCraftBE implements MultiblockAttachable {
         if (this.multiblock != null) {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
             controller = this.multiblock.controller().controllerBE();
-            setChanged();
-            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+            markDirty();
         }
     }
 

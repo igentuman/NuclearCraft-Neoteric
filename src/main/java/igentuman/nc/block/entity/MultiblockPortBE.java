@@ -14,9 +14,4 @@ public abstract class MultiblockPortBE extends NuclearCraftBE implements Multibl
     public boolean pushPull() {
         return false;
     }
-
-
-    public void markDirty() {
-        needToUpdate = true;
-    }
 }

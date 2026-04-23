@@ -50,7 +50,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         } else {
             controller = null;
         }
-        needToUpdate = true;
+        markDirty();
     }
 
     @Override

@@ -2826,5 +2826,15 @@
   "nuclearcraft.ponder.kugelblitz_chamber.text_9": "Наконец, все 6 лазеров возбужденных фотонов (EXPL) должны выстрелить одновременно.",
   "nuclearcraft.ponder.kugelblitz_chamber.text_10": "Все они должны быть полностью заряжены, а затем активированы редстоуном или через их интерфейс (GUI).",
   "nuclearcraft.ponder.kugelblitz_chamber.text_11": "Когда все 6 лазеров выстрелят одновременно, внутри камеры будет создана черная дыра.",
+  "nuclearcraft.ponder.turbine.header": "Паровая турбина.",
+  "nuclearcraft.ponder.turbine.text_1": "Стены в основном состоят из Оболочки турбины или Стекла турбины.",
+  "nuclearcraft.ponder.turbine.text_2": "Турбина может иметь вертикальную или горизонтальную ориентацию.",
+  "nuclearcraft.ponder.turbine.text_3": "Разместите Контроллер турбины в любом месте оболочки, чтобы собрать структуру.",
+  "nuclearcraft.ponder.turbine.text_4": "Порты турбины позволяют передавать жидкости и энергию.",
+  "nuclearcraft.ponder.turbine.text_5": "Подшипники устанавливаются в центре торцов оболочки.",
+  "nuclearcraft.ponder.turbine.text_6": "Вал ротора соединяет два подшипника.",
+  "nuclearcraft.ponder.turbine.text_7": "Прикрепите Лопасти турбины к Валу ротора.",
+  "nuclearcraft.ponder.turbine.text_8": "Катушки должны быть размещены рядом с подшипником или другой активной катушкой.",
+  "nuclearcraft.ponder.turbine.text_9": "Когда турбина готова, её можно запустить, подав сигнал редстоуна на контроллер.",
   "fuel.irradiation.descr": "Обогащение: %s"
 }

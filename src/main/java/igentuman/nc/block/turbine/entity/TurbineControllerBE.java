@@ -529,7 +529,9 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         return (int) (((float) realFlow / maxFlow)*100);
     }
 
+    @Override
     public void refresh() {
+        needToUpdate = false;
         double multiplier = ((double) Math.round(Math.log(height*width*depth)*10)/10)-1;
         contentHandler().fluidHandler.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
         contentHandler().fluidHandler.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));

@@ -977,6 +977,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         return new AABB(bottomLeftInner, topRightInner);
     }
 
+    @Override
     public void refresh() {
         double multiplier = Math.max(1, ((double) Math.round(Math.log(height*width*depth)*10)/10)-1);
         maxHeat = FISSION_CONFIG.HEAT_CAPACITY.get()*multiplier;
@@ -985,6 +986,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         setChanged();
         level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, false));
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, false), Block.UPDATE_ALL);
+        needToUpdate = false;
     }
 
     public static class Recipe extends NcRecipe {

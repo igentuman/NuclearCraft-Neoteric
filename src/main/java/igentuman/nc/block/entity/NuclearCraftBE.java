@@ -126,6 +126,16 @@ public class NuclearCraftBE extends BlockEntity {
         recipeInfo = new RecipeInfo();
     }
 
+    public void markDirty() {
+        needToUpdate = true;
+    }
+
+    public void refresh() {
+        needToUpdate = false;
+        setChanged();
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+    }
+
     protected void sendOutPower() {
         for (Direction direction : Direction.values()) {
             transferEnergyToSide(direction);

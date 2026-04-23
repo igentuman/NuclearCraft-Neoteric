@@ -47,7 +47,7 @@ public class FusionCoreProxyBE extends NuclearCraftBE implements MultiblockAttac
     @Override
     public void setMultiblock(FusionReactorMultiblock multiblock) {
         this.multiblock = multiblock;
-        needToUpdate = true;
+        markDirty();
     }
 
     public FusionReactorMultiblock getMultiblock() {

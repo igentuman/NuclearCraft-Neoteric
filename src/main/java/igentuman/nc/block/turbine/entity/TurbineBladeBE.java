@@ -36,6 +36,9 @@ public class TurbineBladeBE extends TurbineBE {
         if(wasActive != isActive || currentTick % 20 == 0) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(HIDDEN, isActive));
         }
+        if (needToUpdate) {
+            refresh();
+        }
     }
 
     private BladeDef def() {

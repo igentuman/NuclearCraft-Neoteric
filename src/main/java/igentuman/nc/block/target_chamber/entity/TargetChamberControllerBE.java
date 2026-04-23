@@ -527,11 +527,6 @@ public class TargetChamberControllerBE extends MultiblockControllerBE {
         return Objects.requireNonNull(getLevel()).getBestNeighborSignal(worldPosition);
     }
 
-
-    public void refresh() {
-        setChanged();
-    }
-
     public ParticleStack getParticleStack() {
         return particleStorage.getParticle();
     }

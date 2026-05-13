@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_ITEM;
 import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
+import static net.minecraft.world.item.Items.REDSTONE;
 import static net.minecraft.world.level.material.Fluids.WATER;
 
 public class FluidEnricherRecipes extends AbstractRecipeProvider {
@@ -21,7 +22,11 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
     public static void generate(Consumer<FinishedRecipe> consumer) {
         FluidEnricherRecipes.consumer = consumer;
         ID = Processors.FLUID_ENRICHER;
-
+        add(
+                fluidIngredient("ethanol", 250),
+                ingredient(REDSTONE, 1),
+                fluidIngredient("redstone_ethanol", 250)
+        );
         add(
                 fluidIngredient(Materials.potassium_hydroxide, 4000),
                 dustIngredient(Materials.iodine),

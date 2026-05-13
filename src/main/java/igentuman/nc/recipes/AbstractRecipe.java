@@ -3,6 +3,7 @@ package igentuman.nc.recipes;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.handler.sided.capability.NcFluidTank;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -14,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -333,6 +335,40 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
                 if(!found) {
                     return false;
                 }
+            }
+        }
+        return true;
+    }
+
+    public boolean hasRoomForOutputs(SidedContentHandler contentHandler, int parallelProcessing) {
+        if (contentHandler.itemHandler != null) {
+            int slotIdx = contentHandler.inputItemSlots;
+            for (ItemStack outputItem : getResultItems()) {
+                if (outputItem.isEmpty()) { slotIdx++; continue; }
+                ItemStack existing = contentHandler.itemHandler.getStackInSlot(slotIdx);
+                int limit = Math.min(64, outputItem.getMaxStackSize());
+                int available;
+                if (existing.isEmpty()) {
+                    available = limit;
+                } else if (ItemHandlerHelper.canItemStacksStack(existing, outputItem)) {
+                    available = limit - existing.getCount();
+                } else {
+                    return false;
+                }
+                if (outputItem.getCount() * parallelProcessing > available) return false;
+                slotIdx++;
+            }
+        }
+        if (contentHandler.fluidHandler != null) {
+            int slotIdx = contentHandler.inputFluidSlots;
+            for (FluidStack outputFluid : getOutputFluids()) {
+                if (outputFluid.isEmpty()) { slotIdx++; continue; }
+                NcFluidTank tank = contentHandler.fluidHandler.tanks.get(slotIdx);
+                FluidStack existing = tank.getFluid();
+                if (!existing.isEmpty() && !existing.isFluidEqual(outputFluid)) return false;
+                int available = tank.getCapacity() - tank.getFluidAmount();
+                if ((long) outputFluid.getAmount() * parallelProcessing > available) return false;
+                slotIdx++;
             }
         }
         return true;

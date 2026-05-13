@@ -145,7 +145,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
         // Validate how many parallel recipes can actually be processed based on available inputs
         // Check from the requested amount down to find the maximum feasible parallel processing
         for(int attempt = i; attempt > 1; attempt--) {
-            if(recipe.hasEnoughToConsume(handler, attempt)) {
+            if(recipe.hasEnoughToConsume(handler, attempt) && recipe.hasRoomForOutputs(handler, attempt)) {
                 actualAmount = attempt;
                 break;
             }

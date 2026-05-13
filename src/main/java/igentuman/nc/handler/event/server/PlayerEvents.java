@@ -27,11 +27,10 @@ public class PlayerEvents {
         Player player = event.getEntity();
         ItemStack pickedUpItem = event.getItem().getItem();
         
-        // Skip if the picked up item is empty
-        if (pickedUpItem.isEmpty()) {
+        if (pickedUpItem.isEmpty() || pickedUpItem.getItem() instanceof ContainerBlockItem) {
             return;
         }
-        
+
         // Iterate through player inventory to find ContainerBlockItem
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack inventoryStack = player.getInventory().getItem(i);

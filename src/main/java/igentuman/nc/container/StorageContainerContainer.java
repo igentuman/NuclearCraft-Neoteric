@@ -1,6 +1,7 @@
 package igentuman.nc.container;
 
 import igentuman.nc.block.storage.entity.ContainerBE;
+import igentuman.nc.item.ContainerBlockItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -88,8 +89,13 @@ public class StorageContainerContainer<T extends AbstractContainerMenu> extends 
             if (!this.moveItemStackTo(itemstack1, this.containerInventory.getSlots(), this.slots.size(), true)) {
                return ItemStack.EMPTY;
             }
-         } else if (!this.moveItemStackTo(itemstack1, 0, this.containerInventory.getSlots(), false)) {
-            return ItemStack.EMPTY;
+         } else {
+            if (itemstack1.getItem() instanceof ContainerBlockItem) {
+               return ItemStack.EMPTY;
+            }
+            if (!this.moveItemStackTo(itemstack1, 0, this.containerInventory.getSlots(), false)) {
+               return ItemStack.EMPTY;
+            }
          }
 
          if (itemstack1.isEmpty()) {

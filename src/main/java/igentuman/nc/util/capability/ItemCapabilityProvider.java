@@ -1,5 +1,6 @@
 package igentuman.nc.util.capability;
 
+import igentuman.nc.item.ContainerBlockItem;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +21,11 @@ public class ItemCapabilityProvider implements ICapabilityProvider {
     public ItemCapabilityProvider(ItemStack stack, int inventorySize, int stackSize) {
         this.stack = stack;
         this.inventoryHandler = new ItemInventoryHandler(inventorySize, stackSize) {
+            @Override
+            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+                return !(stack.getItem() instanceof ContainerBlockItem);
+            }
+
             @Override
             public void setStackInSlot(int slot, @NotNull ItemStack stack) {
                 super.setStackInSlot(slot, stack);

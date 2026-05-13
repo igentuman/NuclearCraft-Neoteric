@@ -4,6 +4,7 @@ import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.ItemStorageCapabilityHandler;
 import igentuman.nc.content.storage.ContainerBlocks;
+import igentuman.nc.item.ContainerBlockItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +31,12 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
     private double loadRate = 0;
 
     private ItemStorageCapabilityHandler createInventory() {
-        return new ItemStorageCapabilityHandler(ContainerBlocks.all().get(getName()).getCapacity(), 64);
+        return new ItemStorageCapabilityHandler(ContainerBlocks.all().get(getName()).getCapacity(), 64) {
+            @Override
+            public boolean isItemValid(int slot, @org.jetbrains.annotations.NotNull ItemStack stack) {
+                return !(stack.getItem() instanceof ContainerBlockItem);
+            }
+        };
     }
 
     public LazyOptional<ItemStorageCapabilityHandler> getItemHandler() {

@@ -114,16 +114,18 @@ public class StorageContainerItemContainer<T extends AbstractContainerMenu> exte
       Slot slot = this.slots.get(pIndex);
       if (slot != null && slot.hasItem()) {
           ItemStack itemstack1 = slot.getItem();
-          if(pPlayer.getItemInHand(InteractionHand.MAIN_HAND).equals(itemstack1)) {
-              return ItemStack.EMPTY;
-          }
          itemstack = itemstack1.copy();
          if (pIndex < this.containerInventory.getSlots()) {
             if (!this.moveItemStackTo(itemstack1, this.containerInventory.getSlots(), this.slots.size(), true)) {
                return ItemStack.EMPTY;
             }
-         } else if (!this.moveItemStackTo(itemstack1, 0, this.containerInventory.getSlots(), false)) {
-            return ItemStack.EMPTY;
+         } else {
+            if (itemstack1.getItem() instanceof ContainerBlockItem) {
+               return ItemStack.EMPTY;
+            }
+            if (!this.moveItemStackTo(itemstack1, 0, this.containerInventory.getSlots(), false)) {
+               return ItemStack.EMPTY;
+            }
          }
 
          if (itemstack1.isEmpty()) {

@@ -75,12 +75,12 @@ public class WorldEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
-        if(event.getEntity().level().isClientSide()) return;
+        if(event.getLevel() == null || event.getLevel().isClientSide()) return;
         boolean placed = true;
         BlockState state = event.getState();
         if(state == null) return;
         if(trackingBlocks.contains(state.getBlock())) {
-            MultiblockHandler.get(event.getEntity().level().dimension()).trackBlockChange(event.getPos());
+            MultiblockHandler.get(((ServerLevel) event.getLevel()).dimension()).trackBlockChange(event.getPos());
         }
         if(state.getBlock() instanceof TurbineBladeBlock) {
             placed = TurbineBladeBlock.processBlockPlace(event.getLevel(), event.getPos(), event.getPlacedBlock(), state, event.getPlacedAgainst());

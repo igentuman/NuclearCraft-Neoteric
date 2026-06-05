@@ -14,6 +14,7 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.ReactorPebble;
 import igentuman.nc.util.annotation.NBTField;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -22,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +45,8 @@ import static net.minecraft.world.item.Items.AIR;
 public class MSRControllerBE extends MultiblockControllerBE {
 
     public static final String NAME = "msr_controller";
+    private static final int MIN_PEBBLES_FOR_CRITICALITY = 10;
+    private static final double MIN_SALT_FOR_CRITICALITY = 100;
     public final SidedContentHandler contentHandler;
     private Direction facing;
 
@@ -71,6 +75,8 @@ public class MSRControllerBE extends MultiblockControllerBE {
     @NBTField
     public int steamPerTick = 0;
 
+    @NBTField
+    public int energyPerTick = 0;
     @NBTField public int pebbleCount = 0;
     @NBTField public double saltVolume = 0.0;      // mB
     @NBTField public double coolantVolume = 0.0;   // mB
@@ -91,8 +97,12 @@ public class MSRControllerBE extends MultiblockControllerBE {
     public static final double PRESSURE_PER_DEPLETED_MB = 0.008;
     public static final double OPTIMAL_DENSITY = 0.025;
     public static final double CONCENTRATION_MODIFIER = 0.08;
-    public static final double MIN_SALT_FOR_CRITICALITY = 500.0;
-    public static final int MIN_PEBBLES_FOR_CRITICALITY = 20;
+    public double minSaltForCriticality = 500.0;
+    public int minPebblesForCriticality = 20;
+    public static final double COOLING_EFFICIENCY = 0.9;
+    public static final double THERMAL_MASS_BASE = 1000000.0;
+    public static final double SALT_PER_DEPLETED_PEBBLE = 10.0;
+    public static final double IMPURITY_RATE_PER_PEBBLE = 0.001;
 
     private HashSet<ReactorPebble> pebbles = new HashSet<>();
     
@@ -118,6 +128,28 @@ public class MSRControllerBE extends MultiblockControllerBE {
         for(int i = 0; i < 4; i++) {
             contentHandler().fluidHandler.tanks.get(i).setCapacity(50000);
         }
+
+        energyStorage = createEnergy();
+        energyStorage
+                .setInputEnergyTier(0)
+                .setOutputEnergyTier(getBaseGTEnergyTier())
+                .setInputAmperage(0)
+                .setOutputAmperage(64);
+        energy = LazyOptional.of(() -> energyStorage);
+    }
+
+    private CustomEnergyStorage createEnergy() {
+        return new CustomEnergyStorage(100000000, 0, 100000000) {
+            @Override
+            protected void onEnergyChanged() {
+                setChanged();
+            }
+        };
+    }
+
+    @Override
+    public int getBaseGTEnergyTier() {
+        return 4;
     }
 
     public void initializePorts() {
@@ -206,6 +238,8 @@ public class MSRControllerBE extends MultiblockControllerBE {
                      !portsLocked && enabledByController;
 
         // 2. Reactivity & Feedback
+        // thermalFeedback = 1.0 - (temperature - T_optimal) * temperatureFeedbackFactor
+        // Let's say T_optimal is 600C.
         double thermalFeedback = Math.max(0.1, Math.min(2.0, 1.0 - (temperature - 600.0) * 0.001));
         double impurityFeedback = 1.0 - impurity;
         reactivity = thermalFeedback * impurityFeedback * concentrationFactor;
@@ -222,19 +256,21 @@ public class MSRControllerBE extends MultiblockControllerBE {
                 
                 if (pebble.isDepleted()) {
                     pebbles.remove(pebble);
-                    depletedVolume += 10.0; // 10mB of waste per pebble
-                    impurity = Math.min(1.0, impurity + 0.001);
+                    depletedVolume += SALT_PER_DEPLETED_PEBBLE; 
+                    impurity = Math.min(1.0, impurity + IMPURITY_RATE_PER_PEBBLE);
                 }
             }
         }
         
         heatPerTick = totalHeatProduced;
-        //energyPerTick = (int) totalEnergyProduced;
+        energyPerTick = (int) (totalEnergyProduced * FISSION_CONFIG.FE_GENERATION_MULTIPLIER.get());
+        energyStorage.receiveEnergy(energyPerTick, false);
         
         // 4. Temperature update
-        double cooling = coolantVolume * 0.5 * (temperature - T_AMBIENT) / 100.0; // Simple cooling
-        double netHeat = totalHeatProduced - cooling;
-        temperature += netHeat / 1000.0; // Simplified thermal mass
+        // heatRemoved = coolantVolume * coolingEfficiency * coolantHeatCapacityFactor
+        double cooling = coolantVolume * COOLING_EFFICIENCY * (temperature - T_AMBIENT) / 10000.0;
+        double netHeat = heatPerTick - cooling;
+        temperature += netHeat / (THERMAL_MASS_BASE + saltVolume + coolantVolume);
         temperature = Math.max(T_AMBIENT, temperature);
         
         // 5. Pressure calculation
@@ -256,19 +292,32 @@ public class MSRControllerBE extends MultiblockControllerBE {
     private void handleIO() {
         if (!portsLocked) {
             consumeInputs();
-            drainWaste();
+            handleFluids();
         }
     }
 
-    private void drainWaste() {
+    private void handleFluids() {
+        // Drain Waste from internal depletedVolume to Tank 2
         if (depletedVolume > 0) {
-            // Attempt to drain depletedVolume to Tank 2
             int toDrain = (int) Math.min(depletedVolume, 1000.0);
-            if (toDrain <= 0) return;
-            FluidStack waste = new FluidStack(NC_MATERIALS.get("irradiated_sodium").getStill(), toDrain);
-            int filled = contentHandler().fluidHandler.tanks.get(2).fill(waste, IFluidHandler.FluidAction.EXECUTE);
-            depletedVolume -= filled;
-            if (filled > 0) changed = true;
+            if (toDrain > 0) {
+                FluidStack waste = new FluidStack(NC_MATERIALS.get("irradiated_sodium").getStill(), toDrain);
+                int filled = contentHandler().fluidHandler.tanks.get(2).fill(waste, IFluidHandler.FluidAction.EXECUTE);
+                depletedVolume -= filled;
+                if (filled > 0) changed = true;
+            }
+        }
+        
+        // Allow extracting active salt to Tank 3
+        // For simplicity, let's say it moves some salt from Tank 0 to Tank 3 if Tank 3 is not full
+        if (saltVolume > 1000) {
+            FluidStack activeSalt = contentHandler().fluidHandler.tanks.get(0).getFluid().copy();
+            activeSalt.setAmount(100); // 100mB per tick
+            int filled = contentHandler().fluidHandler.tanks.get(3).fill(activeSalt, IFluidHandler.FluidAction.EXECUTE);
+            if (filled > 0) {
+                contentHandler().fluidHandler.tanks.get(0).drain(filled, IFluidHandler.FluidAction.EXECUTE);
+                changed = true;
+            }
         }
     }
 

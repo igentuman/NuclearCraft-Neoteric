@@ -152,4 +152,44 @@ public class MSRControllerContainer extends AbstractContainerMenu {
     public String getHeating() {
         return roundFormat(blockEntity.heatPerTick);
     }
+
+    public boolean isCasingValid() {
+        return blockEntity.isCasingValid;
+    }
+
+    public boolean isInteriorValid() {
+        return blockEntity.isInternalValid;
+    }
+
+    public String getValidationResultKey() {
+        return blockEntity.validationResult.messageKey;
+    }
+
+    public BlockPos getValidationResultData() {
+        return blockEntity.errorBlockPos;
+    }
+
+    public int getHeight() {
+        return blockEntity.getHeight();
+    }
+
+    public int getWidth() {
+        return blockEntity.getWidth();
+    }
+
+    public int getDepth() {
+        return blockEntity.getDepth();
+    }
+
+    public boolean canAnalyze() {
+        return blockEntity.analyzeDelay < 1;
+    }
+
+    public BlockPos getPosition() {
+        return blockEntity.getBlockPos();
+    }
+
+    public int getFuelCellsCount() {
+        return blockEntity.fuelCellsCount;
+    }
 }

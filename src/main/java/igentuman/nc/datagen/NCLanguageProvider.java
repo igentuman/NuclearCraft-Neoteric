@@ -632,9 +632,15 @@ public class NCLanguageProvider extends LanguageProvider {
                 prefix = "Fission Reactor ";
             }
             if(name.contains("msr_")) {
-                prefix = "(WIP) ";
+                prefix = "";
             }
             String title = convertToName(name);
+            if(name.equals("msr_controller")) {
+                title = "MSR Controller";
+            }
+            if(name.equals("msr_fuel_cell")) {
+                title = "MSR Fuel Cell";
+            }
             add(FISSION_BLOCKS.get(name).get(), prefix+title);
         }
 

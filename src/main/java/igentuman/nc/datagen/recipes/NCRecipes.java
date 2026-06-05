@@ -1553,9 +1553,32 @@ public class NCRecipes extends RecipeProvider {
                 .pattern("G G")
                 .pattern("TGT")
                 .define('G', Tags.Items.GLASS)
-                .define('T', forgeIngot(Materials.tough_alloy))
+                .define('T', forgeIngot("tough_alloy"))
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(FISSION_BLOCKS.get("fission_reactor_casing").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_controller").get())
+                .pattern("LPL")
+                .pattern("TDT")
+                .pattern("LPL")
+                .define('P', NC_PARTS.get("plate_extreme").get())
+                .define('D', NCProcessors.PROCESSORS.get(Processors.FUEL_REPROCESSOR).get())
+                .define('T', NC_PARTS.get("advanced_electric_circuit").get())
+                .define('L', FISSION_BLOCKS.get("fission_reactor_casing").get())
+                .group(MODID+"_fission")
+                .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("heat_exchanger").get())
+                .pattern("LPL")
+                .pattern("PMP")
+                .pattern("LPL")
+                .define('M', NC_PARTS.get("chassis").get())
+                .define('P', forgePlate("boron"))
+                .define('L',  NC_PARTS.get("plate_advanced").get())
+                .group(MODID+"_fission")
+                .unlockedBy("item", has(NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("empty_heat_sink").get())

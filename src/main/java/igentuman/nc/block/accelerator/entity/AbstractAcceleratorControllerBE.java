@@ -307,7 +307,7 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     }
 
     protected boolean hasEnoughEnergy() {
-        return energyStorage().getEnergyStored() < energyRequired;
+        return energyStorage().getEnergyStored() >= energyRequired;
     }
 
     protected void coolantCoolDown() {

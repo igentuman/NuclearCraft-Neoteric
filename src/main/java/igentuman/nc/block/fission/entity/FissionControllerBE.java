@@ -563,7 +563,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
                 }
             }
 
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), 100000*fuelCellsCount, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), 200000*fuelCellsCount, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
             setRemoved();
         }
     }
@@ -1005,7 +1005,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
 
         protected double irradiationRate = 0;
 
-        protected Supplier<Double> irradiationRateSupplier = () -> Math.log((getRadiation()*20+0.01)*10000)*(Math.pow(getHeat() / 100 +  200 / (double)getDepletionTime() + 0.5, 1.5)*2);;
+        protected Supplier<Double> irradiationRateSupplier = () -> Math.log((getRadiation()*20+0.01)*10000)*(Math.pow(getHeat() / 100 +  200 / (double)getDepletionTime() + 0.5, 1.5)*2);
 
         protected Supplier<Double> radiation = () -> ItemRadiation.byItem(getFuelItem())/20;
 

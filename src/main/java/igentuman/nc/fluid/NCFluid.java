@@ -24,8 +24,6 @@ import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static net.minecraft.world.level.block.Blocks.AIR;
-
 
 public class NCFluid extends FlowingFluid
 {

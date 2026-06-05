@@ -5,6 +5,8 @@ import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
+import igentuman.nc.client.gui.element.button.Button;
+import igentuman.nc.client.gui.element.button.Checkbox;
 import igentuman.nc.container.MSRControllerContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.applyFormat;
 import static igentuman.nc.util.TextUtils.roundFormat;
 
 public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerContainer> implements IProgressScreen, IVerticalBarScreen {
@@ -30,8 +33,16 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
     private List<NCGuiElement> widgets = new ArrayList<>();
     private VerticalBar heatBar;
     private VerticalBar pressureBar;
-    private VerticalBar saltBar;
-    private VerticalBar depletedBar;
+    public Checkbox checkboxCasing;
+    public Checkbox checkboxInterior;
+    private Button.MultiblockAnalyze analyzeBtn;
+    private Button.Link linkBtn;
+    public Component casingTootip = Component.empty();
+    public Component interiorTootip = Component.empty();
+
+    public MSRControllerContainer container() {
+        return (MSRControllerContainer) menu;
+    }
 
     public MSRControllerScreen(MSRControllerContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -56,20 +67,48 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         heatBar = new VerticalBar.Heat(8, 16, this, (int) menu.getMaxHeat());
         pressureBar = new VerticalBar(17, 16, this, (int) menu.getMaxPressure());
         pressureBar.setTooltipKey("msr.pressure.bar.amount");
-        
-        saltBar = new VerticalBar.Coolant(imageWidth - 16, 16, this, 50000);
-        depletedBar = new VerticalBar.HotCoolant(imageWidth - 25, 16, this, 50000);
-        
+
+        checkboxCasing = new Checkbox(imageWidth - 19, 80, this, isCasingValid());
+        checkboxInterior = new Checkbox(imageWidth - 32, 80, this, isInteriorValid());
+        analyzeBtn = new Button.MultiblockAnalyze(150, 38, this, container().getPosition());
+        linkBtn = new Button.Link(150, 14, this, container().getPosition(),
+                "https://ftb.fandom.com/wiki/NuclearCraft:_Neoteric#Molten_Salt_Reactor",
+                List.of(__("tooltip.nc.wiki"))
+        );
+
         widgets.add(heatBar);
         widgets.add(pressureBar);
-        widgets.add(saltBar);
-        widgets.add(depletedBar);
+        widgets.add(new Button.ReportIssue(163, 6, this, container().getPosition()));
+        widgets.add(analyzeBtn);
+        widgets.add(linkBtn);
+    }
+
+    private boolean isCasingValid() {
+        return container().isCasingValid();
+    }
+
+    private boolean isInteriorValid() {
+        return container().isInteriorValid();
     }
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.drawCenteredString(font, menu.getTitle(), imageWidth / 2, titleLabelY, 0xffffff);
-        
+
+        if (isCasingValid()) {
+            casingTootip = applyFormat(__("tooltip.nc.structure.size", container().getHeight(), container().getWidth(), container().getDepth()), ChatFormatting.GOLD);
+        } else {
+            casingTootip = applyFormat(__(container().getValidationResultKey(), container().getValidationResultData().toShortString()), ChatFormatting.RED);
+        }
+
+        if (isCasingValid()) {
+            if (isInteriorValid()) {
+                interiorTootip = applyFormat(__("reactor.fuel_cells", container().getFuelCellsCount()), ChatFormatting.GOLD);
+            } else {
+                interiorTootip = applyFormat(__(container().getValidationResultKey(), container().getValidationResultData().toShortString()), ChatFormatting.RED);
+            }
+        }
+
         // Render stats
         graphics.pose().pushPose();
         graphics.pose().scale(0.7f, 0.7f, 0.7f);
@@ -88,11 +127,31 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         updateRelativeCords();
         renderBackground(graphics);
         graphics.blit(GUI, relX, relY, 0, 0, imageWidth, imageHeight);
-        
+
+        if (analyzeBtn != null) {
+            analyzeBtn.setEnabled(container().canAnalyze());
+        }
+
         for (NCGuiElement widget : widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTick);
         }
-        
+
+        checkboxCasing.setChecked(isCasingValid()).draw(graphics, mouseX, mouseY, partialTick);
+        if (isCasingValid()) {
+            checkboxCasing.setTooltipKey("multiblock.casing.complete");
+        } else {
+            checkboxCasing.setTooltipKey("multiblock.casing.incomplete");
+        }
+        checkboxCasing.addTooltip(casingTootip);
+
+        checkboxInterior.setChecked(isInteriorValid()).draw(graphics, mouseX, mouseY, partialTick);
+        if (isInteriorValid()) {
+            checkboxInterior.setTooltipKey("multiblock.interior.complete");
+        } else {
+            checkboxInterior.setTooltipKey("multiblock.interior.incomplete");
+        }
+        checkboxInterior.addTooltip(interiorTootip);
+
         renderBarTooltips(graphics, mouseX - relX, mouseY - relY);
     }
 
@@ -102,6 +161,22 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
                 graphics.renderTooltip(font, widget.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
             }
         }
+        if (checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
+            graphics.renderTooltip(font, checkboxCasing.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
+        }
+        if (checkboxInterior.isMouseOver(pMouseX, pMouseY)) {
+            graphics.renderTooltip(font, checkboxInterior.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
+        }
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        for (NCGuiElement widget : widgets) {
+            if (widget.mouseClicked(pMouseX, pMouseY, pButton)) {
+                return true;
+            }
+        }
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
     
     @Override

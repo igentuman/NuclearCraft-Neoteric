@@ -93,15 +93,7 @@ public class MSRMultiblock extends AbstractMultiblock {
             debugLog("Stage 1 FAILED - Invalid bounds: " + validationResult);
             return;
         }
-        debugLog("Stage 1 complete - Height: " + height + ", Width: " + width + ", Depth: " + depth);
-        
-        // Stage 2: Index fuel cells and heat exchangers
-        debugLog("Stage 2: Indexing fuel cells and heat exchangers");
-        indexInnerBlocks();
-        if(validationResult != ValidationResult.VALID) {
-            debugLog("Stage 2 FAILED - Invalid interior: " + validationResult);
-            return;
-        }
+
         debugLog("Stage 2 complete - Fuel cells found: " + fuelCellCount + ", Heat exchangers found: " + heatExchangerCount);
         
         // Stage 3: Update controller with calculated stats
@@ -111,45 +103,57 @@ public class MSRMultiblock extends AbstractMultiblock {
         debugLog("=== MSR MULTIBLOCK VALIDATION COMPLETE ===");
     }
 
-    private void indexInnerBlocks() {
+    @Override
+    public void validateInner(boolean force) {
+        if (!outerValid && !force) {
+            debugLog("VALIDATION FAILED - Outer structure invalid, clearing stats");
+            clearStats();
+            return;
+        }
         fuelCellCount = 0;
         heatExchangerCount = 0;
         heatExchangers.clear();
-        BlockPos thePos = initialPos().copy();
-        
         Block heatExchangerBlock = FissionReactorRegistration.FISSION_BLOCKS.get("heat_exchanger").get();
-        
-        // Iterate through interior blocks (excluding outer casing layer)
+        indexInnerBlocks();
+        bsCache.values().stream().filter(bs -> bs.getBlock() instanceof FissionFuelCellBlock).forEach(bs -> fuelCellCount++);
+        bsCache.values().stream().filter(bs -> bs.is(heatExchangerBlock)).forEach(bs -> heatExchangerCount++) ;
+    }
+
+    private void indexInnerBlocks() {
+        BlockPos thePos = initialPos().copy();
+        debugLog("height="+height+" width="+width+" depth="+depth);
         for(int y = 1; y < height - 1; y++) {
             for (int x = 1; x < width - 1; x++) {
                 for (int z = 1; z < depth - 1; z++) {
-                    BlockPos checkPos = new BlockPos(thePos.getX() + x, thePos.getY() + y, thePos.getZ() + z);
-                    
-                    BlockState state = getBlockState(checkPos);
-                    Block block = state.getBlock();
-                    
-                    // MSR interior can contain fuel cells and heat exchangers
-                    if(block instanceof FissionFuelCellBlock) {
-                        fuelCellCount++;
-                    } else if(block == heatExchangerBlock) {
-                        heatExchangerCount++;
-                        heatExchangers.add(checkPos.asLong());
-                    } else if(!state.isAir()) {
-                        // Invalid block in interior
+                    switch (getControllerDirection().ordinal()) {
+                        case 3 -> thePos = initialPos().copy().east(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
+                        case 5 -> thePos = initialPos().copy().north(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
+                        case 2 -> thePos = initialPos().copy().west(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
+                        case 4 -> thePos = initialPos().copy().south(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
+                    }
+                    if(!processInnerBlock(thePos)) {
                         validationResult = ValidationResult.WRONG_INNER;
-                        errorBlockPos = checkPos;
-                        outerValid = false;
-                        debugLog("INVALID INTERIOR at " + checkPos + ": Found " + block.getName().getString() + ", expected fuel cells or heat exchangers only");
+                        errorBlockPos = new BlockPos(thePos);
                         return;
                     }
                 }
             }
         }
+        validationResult = ValidationResult.VALID;
+        errorBlockPos = null;
+    }
+
+    protected boolean processInnerBlock(BlockPos toCheck) {
+        if(!isValidForInner(toCheck)) {
+            return false;
+        }
+        addIfNotExists(toCheck, allBlocks);
+        attachMultiblock(toCheck);
+        return true;
     }
 
     private void updateControllerStats() {
-        BlockEntity be = getLevel().getBlockEntity((BlockPos) controllerPos);
-        if(!(be instanceof MSRControllerBE controller)) {
+        if(!(beCache.getOrDefault(controllerPos.asLong(), null) instanceof MSRControllerBE controller)) {
             return;
         }
         
@@ -161,6 +165,8 @@ public class MSRMultiblock extends AbstractMultiblock {
         controller.fuelCellsCount = fuelCellCount;
         controller.heatExchangerCount = heatExchangerCount;
         controller.maxHeat = chamberVolume * 1000.0;
+        controller.minPebblesForCriticality = Math.max(20, chamberVolume * 5);
+        controller.minSaltForCriticality = Math.max(500, chamberVolume * 100);
         
         debugLog("  FuelCells: " + fuelCellCount);
         debugLog("  HeatExchangers: " + heatExchangerCount);

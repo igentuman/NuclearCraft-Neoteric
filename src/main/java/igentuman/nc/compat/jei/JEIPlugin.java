@@ -20,6 +20,8 @@ import igentuman.nc.content.particles.Particle;
 import igentuman.nc.content.particles.ParticleSources;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.Particles;
+import igentuman.nc.content.fuel.FuelManager;
+import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.config.ClientConfig;
 import igentuman.nc.recipes.AbstractRecipe;
@@ -32,7 +34,10 @@ import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
 import igentuman.nc.multiblock.accelerator.CoolerDef;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
+import igentuman.nc.setup.registration.FissionFuel;
+import igentuman.nc.setup.registration.NCFluids;
 import mezz.jei.api.IModPlugin;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
@@ -51,6 +56,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -129,6 +135,70 @@ public  class JEIPlugin implements IModPlugin {
             List<ParticleStack> particleStacks = ParticleStackListFactory.create();
             jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(ParticleType.Particle, particleStacks);
         }
+
+        hideFuelAndIsotopeVariants(jeiRuntime);
+    }
+
+    private static final String[] FUEL_VARIANT_SUFFIXES = {"_ox", "_ni", "_za", "_tr"};
+    private static final String[] ISOTOPE_VARIANT_SUFFIXES = {"_ox", "_ni", "_za"};
+
+    private void hideFuelAndIsotopeVariants(IJeiRuntime jeiRuntime) {
+        List<ItemStack> itemsToHide = new ArrayList<>();
+        List<FluidStack> fluidsToHide = new ArrayList<>();
+
+        for (Map.Entry<List<String>, net.minecraftforge.registries.RegistryObject<Item>> e : FissionFuel.NC_FUEL.entrySet()) {
+            String variant = e.getKey().get(3);
+            if (!variant.isEmpty()) itemsToHide.add(new ItemStack(e.getValue().get()));
+        }
+        for (Map.Entry<List<String>, net.minecraftforge.registries.RegistryObject<Item>> e : FissionFuel.NC_DEPLETED_FUEL.entrySet()) {
+            String variant = e.getKey().get(3);
+            if (!variant.isEmpty()) itemsToHide.add(new ItemStack(e.getValue().get()));
+        }
+        for (Map.Entry<String, net.minecraftforge.registries.RegistryObject<Item>> e : FissionFuel.NC_ISOTOPES.entrySet()) {
+            String key = e.getKey();
+            for (String suf : ISOTOPE_VARIANT_SUFFIXES) {
+                if (key.endsWith(suf)) {
+                    itemsToHide.add(new ItemStack(e.getValue().get()));
+                    break;
+                }
+            }
+        }
+
+        for (Map.Entry<String, NCFluids.FluidEntry> e : NCFluids.NC_MATERIALS.entrySet()) {
+            String key = e.getKey();
+            boolean isFuelFluid = key.startsWith("fuel_") || key.startsWith("depleted_fuel_");
+            boolean isIsotopeFluid = isKnownIsotopeFluid(key);
+            if (!isFuelFluid && !isIsotopeFluid) continue;
+            String suffixMatch = matchVariantSuffix(key, isFuelFluid ? FUEL_VARIANT_SUFFIXES : ISOTOPE_VARIANT_SUFFIXES);
+            if (suffixMatch == null) continue;
+            fluidsToHide.add(new FluidStack(e.getValue().getStill(), 1000));
+            net.minecraft.world.item.BucketItem bucket = e.getValue().getBucket();
+            if (bucket != null) itemsToHide.add(new ItemStack(bucket));
+        }
+
+        if (!itemsToHide.isEmpty()) {
+            jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemsToHide);
+        }
+        if (!fluidsToHide.isEmpty()) {
+            jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(ForgeTypes.FLUID_STACK, fluidsToHide);
+        }
+    }
+
+    private static String matchVariantSuffix(String key, String[] suffixes) {
+        for (String s : suffixes) {
+            if (key.endsWith(s)) return s;
+        }
+        return null;
+    }
+
+    private static boolean isKnownIsotopeFluid(String key) {
+        for (String iso : Materials.isotopes()) {
+            if (key.equals(iso)) return true;
+            for (String suf : ISOTOPE_VARIANT_SUFFIXES) {
+                if (key.equals(iso + suf)) return true;
+            }
+        }
+        return false;
     }
 
     public void registerCategories(@NotNull IRecipeCategoryRegistration registration) {
@@ -164,6 +234,12 @@ public  class JEIPlugin implements IModPlugin {
         );
         registration.addRecipeCategories(
                 new CoolerPlacementCategory(registration.getJeiHelpers().getGuiHelper())
+        );
+        registration.addRecipeCategories(
+                new FuelInfoCategory(registration.getJeiHelpers().getGuiHelper())
+        );
+        registration.addRecipeCategories(
+                new IsotopeInfoCategory(registration.getJeiHelpers().getGuiHelper())
         );
     }
 
@@ -230,6 +306,8 @@ public  class JEIPlugin implements IModPlugin {
             registration.addRecipes(ParticleSourceCategory.TYPE, particleSourceRecipes());
             registration.addRecipes(HeatSinkPlacementCategory.TYPE, heatSinkPlacementRecipes());
             registration.addRecipes(CoolerPlacementCategory.TYPE, coolerPlacementRecipes());
+            registration.addRecipes(FuelInfoCategory.TYPE, fuelInfoRecipes());
+            registration.addRecipes(IsotopeInfoCategory.TYPE, isotopeInfoRecipes());
             
             // Add ingredient info for chamber terminal
             registration.addIngredientInfo(
@@ -273,6 +351,26 @@ public  class JEIPlugin implements IModPlugin {
             recipes.add(new ParticleSourceRecipe(resLoc, null, IngredientCreatorAccess.fluid().from(fluid, 1).getRepresentations().get(0), ParticleSources.fluidSources.get(fluid).getParticle()));
         }
         return recipes;
+    }
+
+    private List<FuelInfoRecipe> fuelInfoRecipes() {
+        List<FuelInfoRecipe> out = new ArrayList<>();
+        for (String group : FuelManager.all().keySet()) {
+            for (String name : FuelManager.all().get(group).keySet()) {
+                FuelInfoRecipe r = new FuelInfoRecipe(group, name);
+                if (!r.getVariants().isEmpty()) out.add(r);
+            }
+        }
+        return out;
+    }
+
+    private List<IsotopeInfoRecipe> isotopeInfoRecipes() {
+        List<IsotopeInfoRecipe> out = new ArrayList<>();
+        for (String name : Materials.isotopes()) {
+            IsotopeInfoRecipe r = new IsotopeInfoRecipe(name);
+            if (!r.getVariants().isEmpty()) out.add(r);
+        }
+        return out;
     }
 
     private List<ParticleRecipe> particleRecipes() {

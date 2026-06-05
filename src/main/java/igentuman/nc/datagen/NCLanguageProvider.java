@@ -189,6 +189,18 @@ public class NCLanguageProvider extends LanguageProvider {
         add("jei.category.nuclearcraft.particle_info", "Particle Info");
         add("jei.category.nuclearcraft.heat_sink_placement", "Heat Sink Placement");
         add("jei.category.nuclearcraft.cooler_placement", "Cooler Placement");
+        add("jei.category.nuclearcraft.fuel_info", "Fuel Variants");
+        add("jei.category.nuclearcraft.isotope_info", "Isotope Forms");
+        add("jei.nuclearcraft.fuel_info.title", "%s - Available Forms");
+        add("jei.nuclearcraft.fuel_info.row", "FE/t %d | H/t %s | D %ds | Irrad. %s");
+        add("jei.nuclearcraft.fuel_info.row_triso", "Criticality %d | H/t %s | D %ds");
+        add("jei.nuclearcraft.isotope_info.title", "%s - Forms");
+        add("fuel.irradiation.descr", "Irradiation: %s");
+        add("fuel.variant.default", "Metal");
+        add("fuel.variant.oxide", "Oxide");
+        add("fuel.variant.nitride", "Nitride");
+        add("fuel.variant.zirconium_alloy", "Zr");
+        add("fuel.variant.triso", "TRISO");
         add("gui.nuclearcraft.jei.particle.charge", "Charge: %s");
         add("gui.nuclearcraft.jei.particle.spin", "Spin: %s");
         add("gui.nuclearcraft.jei.particle.colour", "Feels Strong Force: %s");

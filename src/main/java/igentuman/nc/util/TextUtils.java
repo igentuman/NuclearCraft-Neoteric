@@ -19,6 +19,20 @@ public class TextUtils
 		return Component.translatable(text, pArgs);
 	}
 
+	public static String capitalize(String text)
+	{
+		if(text == null) {
+			return text;
+		}
+		if(text.isEmpty()) {
+			return text;
+		}
+		if(text.length() == 1) {
+			return text.toUpperCase();
+		}
+		return text.substring(0, 1).toUpperCase() + text.substring(1);
+	}
+
 	public static MutableComponent applyFormat(Component component, ChatFormatting... color)
 	{
 		Style style = component.getStyle();

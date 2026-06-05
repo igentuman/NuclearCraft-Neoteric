@@ -299,7 +299,17 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
                     return;
                 }
                 remaining = insertFluidInternal(slotId, fluidInItem.copy(), true);
-                handler.drain(fluidInItem.getAmount() - remaining.getAmount(), EXECUTE);
+                int wasAmount = handler.getFluidInTank(0).getAmount();
+                int expectedAmount = wasAmount - (fluidInItem.getAmount() - remaining.getAmount());
+                int loopExit = 50;
+                //fix for mekanism tanks
+                while (handler.getFluidInTank(0).getAmount() > expectedAmount) {
+                    handler.drain(fluidInItem.getAmount() - remaining.getAmount(), EXECUTE);
+                    if (loopExit-- < 0) {
+                        break;
+                    }
+                }
+
                 if(handler.getContainer().is(BUCKET)) {
                     player.containerMenu.setCarried(new ItemStack(BUCKET));
                     return;

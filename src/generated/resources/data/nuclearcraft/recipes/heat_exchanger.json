@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "L": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "M": {
+      "item": "nuclearcraft:chassis"
+    },
+    "P": {
+      "tag": "forge:plates/boron"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "PMP",
+    "LPL"
+  ],
+  "result": {
+    "item": "nuclearcraft:heat_exchanger"
+  },
+  "show_notification": true
+}

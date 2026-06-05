@@ -17,21 +17,21 @@
       "type": "blocks/1",
       "header": "Turbine Controller",
       "block": "nuclearcraft:turbine_controller",
-      "text": "Without a controller, the turbine multiblock will not form. It's GUI will show information about the turbine, such as the averages of relevant components' stats."
+      "text": "Without a controller, the turbine multiblock will not form. Its GUI will show information about the turbine, such as the averages of relevant components' stats."
     },
     {
       "anchor": "port",
       "type": "blocks/1",
       "header": "Turbine Port",
       "block": "nuclearcraft:turbine_port",
-      "text": "Turbine Port used to transfer fluids, and energy into and out of the turbine. The port can be configured to input or output fluids, and energy. The port can also be used for redstone control and computers."
+      "text": "The Turbine Port is used to transfer fluids and energy into and out of the turbine. It can be configured to input or output fluids and energy. The port can also be used for redstone control and computers."
     },
     {
       "anchor": "coils",
       "type": "blocks/2",
       "block1": "nuclearcraft:turbine_copper_coil,nuclearcraft:turbine_magnesium_coil,nuclearcraft:turbine_silver_coil,nuclearcraft:turbine_gold_coil,nuclearcraft:turbine_beryllium_coil,nuclearcraft:turbine_aluminum_coil",
       "header": "Coils",
-      "text": "$(thing)Coils$() are used convert kinetic energy of rotor to energy. All coils have different efficiency and placement rules"
+      "text": "$(thing)Coils$() are used to convert the rotor's kinetic energy into electricity. All coils have different efficiencies and placement rules."
     },
     {
       "anchor": "simple_turbine",
@@ -107,7 +107,7 @@
         ],
         "symmetrical": true
       },
-      "text": "This is a simple turbine design. It has 1 fuel cell, 1 irradiation line. It's a good starting point for a turbine. Best fuel for this turbine is HEU-235."
+      "text": "This is a simple turbine design. A good starting point — pair it with steam from your reactor and watch the kilowatts roll in."
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
 	"name": "Accelerators",
-	"description": "Accelerating particles",
+	"description": "$(l)Accelerating particles. Slowly, then very, very fast.",
 	"icon": "nuclearcraft:linear_accelerator_controller",
   "parent": "nuclearcraft:multiblocks",
 	"sortnum": 0

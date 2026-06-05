@@ -1,5 +1,6 @@
 package igentuman.nc.radiation.data;
 
+import igentuman.nc.advancements.NCAdvancementTriggers;
 import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.ItemShielding;
@@ -113,6 +114,9 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         radiation -= (int) decaySpeed;
         radiation = Math.min(maxPlayerRadiation, Math.max(0, radiation));
         assert player instanceof Player;
+        if (wasRadiation < 1_000_000 && radiation >= 1_000_000 && player instanceof ServerPlayer sp) {
+            NCAdvancementTriggers.RADIATION_CONTAMINATION.trigger(sp, radiation / 1_000_000.0);
+        }
         updateContaminationStage((Player) player);
     }
 

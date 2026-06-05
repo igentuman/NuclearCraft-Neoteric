@@ -12,7 +12,7 @@
       "item2": "nuclearcraft:hazmat_chest",
       "item3": "nuclearcraft:hazmat_pants",
       "item4": "nuclearcraft:hazmat_boots",
-      "text": "The $(item)Hazmat Suit$() is used to lower radiation exposure. Each part of the set has a rad resistance which determines how much protection it provides from radiation."
+      "text": "The $(item)Hazmat Suit$() is used to lower radiation exposure. Each part of the set has a rad resistance value which determines how much protection it provides. A full set is strongly encouraged; partial coverage is exactly as effective as you would expect."
     }
   ]
 }

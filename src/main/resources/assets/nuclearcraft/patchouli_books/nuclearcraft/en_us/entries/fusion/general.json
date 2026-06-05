@@ -7,12 +7,12 @@
     {
       "anchor": "intro",
       "type": "text",
-      "text": "$(thing)Fusion reactors$() generates decent amounts of energy by fusing particles together. It can also boil coolants what must be supplied in order to cool down reactor function blocks."
+      "text": "$(thing)Fusion reactors$() generate decent amounts of energy by fusing particles together. They can also boil coolants, which must be supplied in order to cool down the reactor's function blocks."
     },
     {
       "anchor": "reactor_design",
       "type": "text",
-      "text": "Plasma in bigger reactors can reach higher temperatures. And as reaction chamber is bigger it can hold more fuel and produce more energy."
+      "text": "Plasma in bigger reactors can reach higher temperatures. A larger reaction chamber can also hold more fuel and produce more energy."
     },
     {
       "anchor": "casing",
@@ -20,7 +20,7 @@
       "header": "Reactor Casing",
       "block1": "nuclearcraft:fusion_reactor_casing",
       "block2": "nuclearcraft:fusion_reactor_casing_glass",
-      "text": "Reactor casing blocks used to build toroidal structure (Reaction chamber) around $(item)Fusion Core$()."
+      "text": "Reactor casing blocks are used to build the toroidal structure (Reaction Chamber) around the $(item)Fusion Core$()."
     },
     {
       "anchor": "toroidal_section",
@@ -51,27 +51,27 @@
         "symmetrical": true,
         "visualize": false
       },
-      "text": "You can use any casing block or combine them together to build toroidal section. Center of the section has to be empty."
+      "text": "You can use any casing block, or combine them, to build the toroidal section. The center of the section must be empty."
     },
     {
       "anchor": "controller",
       "type": "blocks/1",
       "header": "Reactor Core",
       "block": "nuclearcraft:fusion_core",
-      "text": "Without a controller, the reactor multiblock will not form. It's GUI will show information about the reactor, such as the averages of relevant components' stats."
+      "text": "Without a controller, the reactor multiblock will not form. Its GUI shows information about the reactor, such as the averages of relevant components' stats."
     },
     {
       "anchor": "connector",
       "type": "blocks/1",
       "header": "Fusion Connectors",
       "block": "nuclearcraft:fusion_reactor_connector",
-      "text": "$(item)Fusion Connectors$() are used to connect fusion core and toroidal reaction chamber. They transfer fuel, coolant and energy."
+      "text": "$(item)Fusion Connectors$() are used to connect the fusion core to the toroidal reaction chamber. They transfer fuel, coolant, and energy."
     },
     {
       "anchor": "function_blocks",
       "type": "patchouli:text",
       "header": "Functional Blocks",
-      "text": "$(thing)Fusion Reactor Chamber$() needs 2 kind of functional blocks: electromagnets and RF Amplifiers. These blocks requires some energy to operate and needs coolant to cool down. They must be placed in corners of toroidal reaction chamber section."
+      "text": "The $(thing)Fusion Reactor Chamber$() needs 2 kinds of functional blocks: Electromagnets and RF Amplifiers. These blocks require energy to operate and coolant to keep cool. They must be placed at the corners of the toroidal reaction chamber section."
     },
     {
       "anchor": "electormagnets",
@@ -79,14 +79,14 @@
       "header": "Electromagnets",
       "block1": "nuclearcraft:basic_electromagnet,nuclearcraft:bscco_electromagnet,nuclearcraft:magnesium_diboride_electromagnet,nuclearcraft:niobium_tin_electromagnet,nuclearcraft:niobium_titanium_electromagnet",
       "block2": "nuclearcraft:basic_electromagnet_slope,nuclearcraft:bscco_electromagnet_slope,nuclearcraft:magnesium_diboride_electromagnet_slope,nuclearcraft:niobium_tin_electromagnet_slope,nuclearcraft:niobium_titanium_electromagnet_slope",
-      "text": "$(item)Electromagnets$() are used sustain plasma in the reaction chamber. Bigger electromagnetic field means better plasma stability an cross-section. It also means less plasma heat loss."
+      "text": "$(item)Electromagnets$() are used to sustain plasma in the reaction chamber. A bigger electromagnetic field means better plasma stability and cross-section. It also means less plasma heat loss."
     },
     {
       "anchor": "rf_amplifiers",
       "type": "blocks/1",
       "header": "RF Amplifiers",
       "block": "nuclearcraft:basic_rf_amplifier,nuclearcraft:bscco_rf_amplifier,nuclearcraft:magnesium_diboride_rf_amplifier,nuclearcraft:niobium_tin_rf_amplifier,nuclearcraft:niobium_titanium_rf_amplifier",
-      "text": "$(item)RF Amplifiers$() are used increase plasma energy with Radio Frequency waves (Like microwave). In other words, heats up plasma."
+      "text": "$(item)RF Amplifiers$() are used to increase plasma energy with radio-frequency waves (like a microwave). In other words, they heat up the plasma. The leftovers do not reheat well."
     },
     {
       "anchor": "simple_reactor",
@@ -158,7 +158,7 @@
         ],
         "symmetrical": true
       },
-      "text": "This is a simple reactor design. Good to start with low temperature reactions."
+      "text": "This is a simple reactor design. Good for starting with low-temperature reactions."
     }
   ]
 }

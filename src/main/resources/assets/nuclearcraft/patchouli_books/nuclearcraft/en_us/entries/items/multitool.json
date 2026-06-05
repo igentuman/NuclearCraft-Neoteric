@@ -9,7 +9,7 @@
       "type": "items/1",
       "header": "Multitool",
       "item": "nuclearcraft:multitool",
-      "text": "The $(item)Multitool$() is used to interact and configure multiblocks in various ways. It is highly recommended to carry one with you."
+      "text": "The $(item)Multitool$() is used to interact with and configure multiblocks in various ways. It is highly recommended to carry one with you at all times."
     }
   ]
 }

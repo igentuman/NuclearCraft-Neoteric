@@ -7,7 +7,7 @@
     {
       "anchor": "intro",
       "type": "text",
-      "text": "These machines generate energy in relatively small quantities, but are also simple to operate."
+      "text": "These machines generate energy in relatively small quantities, but they are also simple to operate. Ideal for outposts where the grid is more of a rumor than a guarantee."
     },
     {
       "anchor": "solar_panel",
@@ -27,7 +27,7 @@
       "block2": "nuclearcraft:californium_rtg",
       "block3": "nuclearcraft:plutonium_rtg",
       "block4": "nuclearcraft:uranium_rtg",
-      "text": "The $(item)Decay Generator$() generates energy from the decay of adjacent radioactive blocks."
+      "text": "An $(item)RTG$() generates energy from the decay of its radioactive payload. Output is steady, modest, and continues whether you are paying attention or not."
     },
     {
       "anchor": "steam_turbine",

@@ -1558,7 +1558,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(FISSION_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_controller").get())
+        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_controller").get())
                 .pattern("LPL")
                 .pattern("TDT")
                 .pattern("LPL")
@@ -1568,7 +1568,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', FISSION_BLOCKS.get("fission_reactor_casing").get())
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
-                .save(consumer);
+                .save(consumer);*/
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("heat_exchanger").get())
                 .pattern("LPL")

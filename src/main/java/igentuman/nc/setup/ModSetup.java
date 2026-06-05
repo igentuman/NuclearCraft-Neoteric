@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.advancements.NCAdvancementTriggers;
 import igentuman.nc.content.particles.ParticleSources;
 import igentuman.nc.content.particles.Particles;
 import igentuman.nc.handler.event.server.PlayerEvents;
@@ -45,6 +46,7 @@ public class ModSetup {
             registerSpawnPlacements();
             GameEvents.commonSetup();
             ParticleSources.registerRuntimeSources();
+            NCAdvancementTriggers.register();
         });
         NuclearCraft.packetHandler().initialize();
     }

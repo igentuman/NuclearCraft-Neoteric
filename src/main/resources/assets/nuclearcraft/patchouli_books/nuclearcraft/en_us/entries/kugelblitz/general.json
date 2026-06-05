@@ -7,26 +7,26 @@
     {
       "anchor": "intro",
       "type": "text",
-      "text": "$(thing)Kugelblitz$() - it is a type of black hole that is formed from the energy of light, rather than from the collapse of a massive star. According to Einstein's theory of relativity, energy and mass are interchangeable, as described by the equation $$(m = \\frac{E}{c^2})$$. This means that a sufficiently concentrated beam of light can create a gravitational field strong enough to form a black hole."
+      "text": "A $(thing)Kugelblitz$() is a type of black hole formed from the energy of light, rather than from the collapse of a massive star. According to Einstein's theory of relativity, energy and mass are interchangeable, as described by the equation $$(m = \\frac{E}{c^2})$$. This means that a sufficiently concentrated beam of light can create a gravitational field strong enough to form a black hole."
     },
     {
       "anchor": "concept",
       "type": "text",
-      "text": "$(thing)Kugelblitz chamber$() is a symmetric 11x11x11 spherical multiblock structure. It is used to create a black hole by using $(thing)EXPL$() laser burst from all 6 sides at the same moment of time."
+      "text": "The $(thing)Kugelblitz chamber$() is a symmetric 11x11x11 spherical multiblock structure. It is used to create a black hole by firing an $(thing)EXPL$() laser burst from all 6 sides at the same moment in time. (Containment manual, page 1: do not improvise.)"
     },
     {
       "anchor": "corners",
       "type": "blocks/1",
       "header": "Corners",
       "block": "nuclearcraft:neutronium_frame",
-      "text": "Neutrotium Frame used mostly in corners of the chamber. It is a frame block that is used to hold the structure together."
+      "text": "Neutronium Frame is used mostly in the corners of the chamber. It is a frame block that holds the structure together."
     },
     {
       "anchor": "wall1",
       "type": "blocks/1",
       "header": "Walls",
       "block": "nuclearcraft:event_horizon_stabilizer",
-      "text": "Stabilizers allows chamber to keep blackhole stable as much as possible. It needs to be placed in the walls of the chamber."
+      "text": "Stabilizers allow the chamber to keep the black hole as stable as possible. They need to be placed in the walls of the chamber."
     },
     {
       "anchor": "wall2",
@@ -34,26 +34,26 @@
       "header": "Energy and Transformation",
       "block1": "nuclearcraft:quantum_flux_regulator",
       "block2": "nuclearcraft:quantum_transformer",
-      "text": "Chamber allows to use blackhole evaporation energy and quantum fields to gain energy and transform one items into another. More Flux regulators gives better energy output. More quantum transformers gives better transformation speed."
+      "text": "The chamber harnesses black hole evaporation energy and quantum fields to generate power and transform one item into another. More Flux Regulators give better energy output. More Quantum Transformers give better transformation speed."
     },
     {
       "anchor": "port",
       "type": "blocks/1",
       "header": "Chamber Port",
       "block": "nuclearcraft:chamber_port",
-      "text": "Chamber Port used to transfer items, fluids, and energy into and out of the reactor. The port can also be used for redstone control and computers."
+      "text": "The Chamber Port is used to transfer items, fluids, and energy into and out of the reactor. The port can also be used for redstone control and computers."
     },
     {
       "anchor": "evaporation",
       "type": "text",
       "header": "Evaporation and Feeding",
-      "text": "Blackhole loses it's mass during evaporation. To feed blackhole you need to supply Subliquid Matter. If blackhole mass is too low, it will evaporate. It it will too high, it will collapse."
+      "text": "A black hole loses its mass during evaporation. To feed the black hole you need to supply Subliquid Matter. If the black hole's mass gets too low, it will evaporate. If it gets too high, it will collapse."
     },
     {
       "anchor": "quantum_transformation",
       "type": "text",
       "header": "Quantum transformation",
-      "text": "In JEI you can see what items can be produced by quantum transformation process. Those products are also allowed as inputs. In order to start the transformation, you need to find correct quantum frequency. Player has to find out what items can be produced by quantum transformation process. Transformations pairs are bond to world seed."
+      "text": "In JEI you can see which items can be produced by the quantum transformation process. Those products are also allowed as inputs. To start the transformation, you need to find the correct quantum frequency. The player has to discover which items can be produced by the process. Transformation pairs are bound to the world seed."
     },
     {
       "anchor": "simple_reactor",
@@ -245,7 +245,7 @@
         ],
         "symmetrical": true
       },
-      "text": "This is a simple reactor design. It has 1 fuel cell, 1 irradiation line. It's a good starting point for a reactor. Best fuel for this reactor is HEU-235."
+      "text": "This is a simple chamber design. It is a good starting point. Best fuel for this chamber is HEU-235."
     },
     {
       "anchor": "planner",

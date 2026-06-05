@@ -89,7 +89,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.ponder.fission_reactor.text_11", "Another way to get more energy and heat is to attach moderator blocks to fuel cells.");
         add("nuclearcraft.ponder.fission_reactor.text_12", "Each moderator block face connected to a fuel cell increases FE generation by 17 % and the heat rate by 33 %.");
         add("nuclearcraft.ponder.fission_reactor.text_13", "Moderators between two fuel cells give an additional bonus.");
-        add("nuclearcraft.ponder.fission_reactor.text_14", "The reactor will meltdown if you don't use heatsinks.");
+        add("nuclearcraft.ponder.fission_reactor.text_14", "The reactor will melt down without heatsinks. SL-1 was an isolated incident; do not be the second.");
         add("nuclearcraft.ponder.fission_reactor.text_15", "Each heatsink has specific placement rules to be active.");
         add("nuclearcraft.ponder.fission_reactor.text_16", "You are free to design your reactor as you like. Just make sure you place heatsinks according to their placement rules.");
         add("nuclearcraft.ponder.fission_reactor.text_17", "Fission Reactor irradiation feature.");
@@ -107,11 +107,11 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.ponder.fusion_reactor.text_7", "The chamber must be hollow to allow plasma to circulate.");
         add("nuclearcraft.ponder.fusion_reactor.text_8", "Fusion reactor functional blocks.");
         add("nuclearcraft.ponder.fusion_reactor.text_9", "Functional blocks must be placed anywhere in the corners of reactor ring.");
-        add("nuclearcraft.ponder.fusion_reactor.text_10", "RF Amplifiers used to heat the plasma. You don't have enough RF amplification, reaction might not start");
-        add("nuclearcraft.ponder.fusion_reactor.text_11", "Electromagnets used to increase cross-section. Make reaction more stable");
-        add("nuclearcraft.ponder.fusion_reactor.text_12", "When reactor is ready, you need to charge it, pump fuel and coolant.");
-        add("nuclearcraft.ponder.fusion_reactor.text_13", "Start reactor with input redstone signal to Fusion Core. Redstone signal strength directly affects RF amplification.");
-        add("nuclearcraft.ponder.fusion_reactor.text_14", "On top of this you can adjust RF amplification in reactor GUI.");
+        add("nuclearcraft.ponder.fusion_reactor.text_10", "RF Amplifiers are used to heat the plasma. Insufficient amplification may prevent ignition.");
+        add("nuclearcraft.ponder.fusion_reactor.text_11", "Electromagnets increase the plasma cross-section and stabilize the reaction.");
+        add("nuclearcraft.ponder.fusion_reactor.text_12", "When the reactor is ready, charge it and pump in fuel and coolant.");
+        add("nuclearcraft.ponder.fusion_reactor.text_13", "Start the reactor with a redstone signal to the Fusion Core. Signal strength directly affects RF amplification.");
+        add("nuclearcraft.ponder.fusion_reactor.text_14", "RF amplification can also be adjusted in the reactor GUI.");
         add("nuclearcraft.ponder.target_chamber.text_1", "Target Chamber size can be from 5x5x5 up to 11x11x11.");
         add("nuclearcraft.ponder.target_chamber.text_2", "The center of the structure must be a Target Chamber Camera.");
         add("nuclearcraft.ponder.target_chamber.text_3", "Beam blocks must connect the camera to the beam ports in all 4 horizontal directions.");
@@ -139,7 +139,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.ponder.kugelblitz_chamber.text_8", "Quantum Transformers improve the efficiency of transformation processes.");
         add("nuclearcraft.ponder.kugelblitz_chamber.text_9", "Finally, all 6 Excited Photon Lasers (EXPL) must be burst at the same time.");
         add("nuclearcraft.ponder.kugelblitz_chamber.text_10", "They all need to be fully charged and then activated with redstone or in their GUI.");
-        add("nuclearcraft.ponder.kugelblitz_chamber.text_11", "When all 6 lasers burst simultaneously, this will create a Blackhole inside the chamber.");
+        add("nuclearcraft.ponder.kugelblitz_chamber.text_11", "When all 6 lasers burst simultaneously, a black hole forms inside the chamber. Containment is, optimistically, a solved problem.");
     }
 
     private void particles() {
@@ -270,7 +270,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.particle.up_quark.desc", "The Up Quark is the lightest quark. Up and Down quarks combine to form Protons and Neutrons");
         add("nuclearcraft.particle.antiup_quark.desc", "The Anti-Up Quark is the antimatter partner of the Up Quark.");
         add("nuclearcraft.particle.down_quark.desc", "The Down Quark is the second lightest quark. Up and Down quarks combine to form Protons and Neutrons");
-        add("nuclearcraft.particle.antidown_quark.desc", "The Anti-Down Quark is the antimatter partner of the Up Down.");
+        add("nuclearcraft.particle.antidown_quark.desc", "The Anti-Down Quark is the antimatter partner of the Down Quark.");
         add("nuclearcraft.particle.charm_quark.desc", "The Charm Quark is a heavy version of the Up Quark.");
         add("nuclearcraft.particle.anticharm_quark.desc", "The Anti-Charm Quark is the antimatter partner of the Charm Quark.");
         add("nuclearcraft.particle.strange_quark.desc", "The Strange Quark is a heavy version of the Down Quark.");
@@ -279,53 +279,53 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.particle.antitop_quark.desc", "The Anti-Top Quark is the antimatter partner of the Top Quark.");
         add("nuclearcraft.particle.bottom_quark.desc", "The Bottom Quark is a very heavy version of the Down Quark.");
         add("nuclearcraft.particle.antibottom_quark.desc", "The Anti-Bottom Quark is the antimatter partner of the Bottom Quark.");
-        add("nuclearcraft.particle.electron.desc", "The Electron is lightest charged lepton. It is commonly found in orbitals around nuclei, forming atoms.");
-        add("nuclearcraft.particle.positron.desc", "The positron is the Antimatter particle of the electron. When a electron and positron meet the annihilate resulting in all there mass being converted into energy in the form of 2 gamma rays.");
+        add("nuclearcraft.particle.electron.desc", "The Electron is the lightest charged lepton. It is commonly found in orbitals around nuclei, forming atoms.");
+        add("nuclearcraft.particle.positron.desc", "The Positron is the antimatter partner of the Electron. When an electron and positron meet they annihilate, converting all their mass into energy in the form of two gamma rays.");
         add("nuclearcraft.particle.electron_neutrino.desc", "The Electron Neutrino is the neutrino partner of the Electron.");
         add("nuclearcraft.particle.electron_antineutrino.desc", "The Electron Antineutrino is the antimatter partner of the Electron Neutrino.");
-        add("nuclearcraft.particle.muon.desc", "The Muon is basically a heavy electron.");
+        add("nuclearcraft.particle.muon.desc", "The Muon is essentially a heavy electron.");
         add("nuclearcraft.particle.antimuon.desc", "The Anti-Muon is the antimatter partner of the Muon.");
         add("nuclearcraft.particle.muon_neutrino.desc", "The Muon Neutrino is the neutrino partner of the Muon.");
         add("nuclearcraft.particle.muon_antineutrino.desc", "The Muon Antineutrino is the antimatter partner of the Muon Neutrino.");
-        add("nuclearcraft.particle.tau.desc", "The Tau is basically a really heavy electron");
+        add("nuclearcraft.particle.tau.desc", "The Tau is essentially a very heavy electron.");
         add("nuclearcraft.particle.antitau.desc", "The Anti-Tau is the antimatter partner of the Tau.");
         add("nuclearcraft.particle.tau_neutrino.desc", "The Tau Neutrino is the neutrino partner of the Tau.");
         add("nuclearcraft.particle.tau_antineutrino.desc", "The Tau Antineutrino is the antimatter partner of the Tau Neutrino.");
-        add("nuclearcraft.particle.photon.desc", "Photons are the particles that make up light. They are the carries of the electromagnetic force. High energy Photons are called gamma rays.");
-        add("nuclearcraft.particle.gluon.desc", "Gluons are the carries of the strong force. The strong force is what keeps quarks bound together to create composite particles like protons and neutrons.");
-        add("nuclearcraft.particle.w_plus_boson.desc", "The Z and W bosons are the carries of the weak force. The weak force is what allows some particles to decay and is responsible for beta decay.");
-        add("nuclearcraft.particle.w_minus_boson.desc", " The Z and W bosons are the carries of the weak force. The weak force is what allows some particles to decay and is responsible for beta decay.");
-        add("nuclearcraft.particle.z_boson.desc", "The Z and W bosons are the carries of the weak force. The weak force is what allows some particles to decay and is responsible for beta decay.");
+        add("nuclearcraft.particle.photon.desc", "Photons are the particles that make up light. They are the carriers of the electromagnetic force. High-energy Photons are called gamma rays.");
+        add("nuclearcraft.particle.gluon.desc", "Gluons are the carriers of the strong force. The strong force binds quarks together to create composite particles like protons and neutrons.");
+        add("nuclearcraft.particle.w_plus_boson.desc", "The Z and W bosons are the carriers of the weak force. The weak force allows certain particles to decay and is responsible for beta decay.");
+        add("nuclearcraft.particle.w_minus_boson.desc", "The Z and W bosons are the carriers of the weak force. The weak force allows certain particles to decay and is responsible for beta decay.");
+        add("nuclearcraft.particle.z_boson.desc", "The Z and W bosons are the carriers of the weak force. The weak force allows certain particles to decay and is responsible for beta decay.");
         add("nuclearcraft.particle.higgs_boson.desc", "The Higgs Boson is the boson of the Higgs Field which is responsible for giving particles their mass.");
-        add("nuclearcraft.particle.proton.desc", "The Proton is a Nucleon along with the Neutron make up the nucleus of atoms.");
+        add("nuclearcraft.particle.proton.desc", "The Proton is a nucleon. Together with the Neutron, it makes up the nucleus of atoms.");
         add("nuclearcraft.particle.antiproton.desc", "The Anti-Proton is the antimatter partner of the Proton.");
-        add("nuclearcraft.particle.neutron.desc", "The Neutron is a Nucleon along with the Protons make up the nucleus of atoms. The Neutron is used in nuclear fission to split fissile nuclei.");
+        add("nuclearcraft.particle.neutron.desc", "The Neutron is a nucleon. Together with the Proton, it makes up the nucleus of atoms. Neutrons are used in nuclear fission to split fissile nuclei.");
         add("nuclearcraft.particle.antineutron.desc", "The Anti-Neutron is the antimatter partner of the Neutron.");
         add("nuclearcraft.particle.deuteron.desc", "The Deuteron is the nucleus of a Deuterium Atom.");
         add("nuclearcraft.particle.antideuteron.desc", "The Anti-Deuteron is the antimatter partner of the Deuteron.");
         add("nuclearcraft.particle.alpha.desc", "Alpha Particle is another name for the nucleus of helium 4. It is commonly released in the decay of heavy elements like uranium and plutonium.");
         add("nuclearcraft.particle.antialpha.desc", "The Anti-Alpha Particle is the antimatter partner of the Alpha Particle.");
-        add("nuclearcraft.particle.pion_plus.desc", "Pions are the particles that are responsible for holding nuclei together. Although not colored themselves they distribute the \"residual\" strong force to keep nuclei together.");
-        add("nuclearcraft.particle.pion_naught.desc", "Pions are the particles that are responsible for holding nuclei together. Although not colored themselves they distribute the \"residual\" strong force to keep nuclei together.");
-        add("nuclearcraft.particle.pion_minus.desc", "Pions are the particles that are responsible for holding nuclei together. Although not colored themselves they distribute the \"residual\" strong force to keep nuclei together.");
+        add("nuclearcraft.particle.pion_plus.desc", "Pions are responsible for holding nuclei together. Although not colored themselves, they distribute the \"residual\" strong force that keeps nuclei bound.");
+        add("nuclearcraft.particle.pion_naught.desc", "Pions are responsible for holding nuclei together. Although not colored themselves, they distribute the \"residual\" strong force that keeps nuclei bound.");
+        add("nuclearcraft.particle.pion_minus.desc", "Pions are responsible for holding nuclei together. Although not colored themselves, they distribute the \"residual\" strong force that keeps nuclei bound.");
         add("nuclearcraft.particle.triton.desc", "The Triton is the nucleus of a Tritium Atom.");
         add("nuclearcraft.particle.antitriton.desc", "The Anti-Triton is the antimatter partner of the Triton.");
         add("nuclearcraft.particle.helion.desc", "The Helion is the nucleus of a Helium-3 Atom.");
         add("nuclearcraft.particle.antihelion.desc", "The Anti-Helion is the antimatter partner of the Helion.");
 
         add("nuclearcraft.particle.boron_ion.desc", "A Boron atom with one electron missing.");
-        add("nuclearcraft.particle.calcium_48_ion.desc", "A Calcium-48 atom with one electron missing. This is a particularly neutron rich atom useful for creating Super heavy elements.");
+        add("nuclearcraft.particle.calcium_48_ion.desc", "A Calcium-48 atom with one electron missing. A particularly neutron-rich atom, useful for creating superheavy elements.");
 
         add("nuclearcraft.particle.kaon_plus.desc", "The Kaon + is a meson with strangeness of 1.");
         add("nuclearcraft.particle.kaon_naught.desc", "The Kaon 0 is a meson with strangeness of 1.");
         add("nuclearcraft.particle.antikaon_naught.desc", "The Anti-Kaon 0 is a meson with strangeness of -1.");
         add("nuclearcraft.particle.kaon_minus.desc", "The Kaon - is a meson with strangeness of -1.");
 
-        add("nuclearcraft.particle.eta.desc", "Eta Mesons are flavourless mesons meaning their flavor numbers like strangeness and isospin are 0.");
-        add("nuclearcraft.particle.eta_prime.desc", "Eta Mesons are flavorless mesons meaning their flavor numbers like strangeness and isospin are 0.");
-        add("nuclearcraft.particle.charmed_eta.desc", "Eta Mesons are flavorless mesons meaning their flavor numbers like strangeness and isospin are 0.");
-        add("nuclearcraft.particle.bottom_eta.desc", "Eta Mesons are flavorless mesons meaning their flavor numbers like strangeness and isospin are 0.");
-        add("nuclearcraft.particle.glueball.desc", "Glueballs are particle made entirely out of gluons.");
+        add("nuclearcraft.particle.eta.desc", "Eta Mesons are flavorless mesons, meaning their flavor numbers like strangeness and isospin are 0.");
+        add("nuclearcraft.particle.eta_prime.desc", "Eta Mesons are flavorless mesons, meaning their flavor numbers like strangeness and isospin are 0.");
+        add("nuclearcraft.particle.charmed_eta.desc", "Eta Mesons are flavorless mesons, meaning their flavor numbers like strangeness and isospin are 0.");
+        add("nuclearcraft.particle.bottom_eta.desc", "Eta Mesons are flavorless mesons, meaning their flavor numbers like strangeness and isospin are 0.");
+        add("nuclearcraft.particle.glueball.desc", "Glueballs are particles made entirely out of gluons.");
 
         add("nuclearcraft.particle.sigma_plus.desc", "Sigma Baryons contain one Strange Quark. They are heavier than Protons and Neutrons.");
         add("nuclearcraft.particle.antisigma_plus.desc", "Anti-Sigma Baryons contain one Anti-Strange Quark. They are heavier than Anti-Protons and Anti-Neutrons.");
@@ -334,11 +334,11 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.particle.sigma_minus.desc", "Sigma Baryons contain one Strange Quark. They are heavier than Protons and Neutrons.");
         add("nuclearcraft.particle.antisigma_minus.desc", "Anti-Sigma Baryons contain one Anti-Strange Quark. They are heavier than Anti-Protons and Anti-Neutrons.");
 
-        add("nuclearcraft.particle.delta_plus_plus.desc", "Delta ++ is a baryon containing three Up Quarks. They quickly decay via the strong force.");
-        add("nuclearcraft.particle.antidelta_plus_plus.desc", "Anti-Delta ++ is a baryon containing three Anti-Up Quarks. They quickly decay via the strong force.");
+        add("nuclearcraft.particle.delta_plus_plus.desc", "Delta ++ is a baryon containing three Up Quarks. It quickly decays via the strong force.");
+        add("nuclearcraft.particle.antidelta_plus_plus.desc", "Anti-Delta ++ is a baryon containing three Anti-Up Quarks. It quickly decays via the strong force.");
 
-        add("nuclearcraft.particle.delta_minus.desc", "Delta - is a baryon containing three Down Quarks. They quickly decay via the strong force.");
-        add("nuclearcraft.particle.antidelta_minus.desc", "Anti-Delta - is a baryon containing three Anti-Down Quarks. They quickly decay via the strong force.");
+        add("nuclearcraft.particle.delta_minus.desc", "Delta - is a baryon containing three Down Quarks. It quickly decays via the strong force.");
+        add("nuclearcraft.particle.antidelta_minus.desc", "Anti-Delta - is a baryon containing three Anti-Down Quarks. It quickly decays via the strong force.");
     }
 
     private void messages() {
@@ -377,7 +377,7 @@ public class NCLanguageProvider extends LanguageProvider {
     private void advancements() {
         // Root advancement
         add("advancement.nc.root", "NuclearCraft");
-        add("advancement.nc.root.desc", "The beginning of your nuclear journey");
+        add("advancement.nc.root.desc", "The beginning of your nuclear career. Vault-Tec wishes you a long and productive tenure.");
 
         add("advancement.nc.basic_barrel", "Basic Barrel");
         add("advancement.nc.basic_barrel.desc", "Got the barrel");
@@ -421,7 +421,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("advancement.nc.decay_hastener.desc", "C'mon, hurry up!");
 
         add("advancement.nc.chemical_reactor", "Chemical Reactor");
-        add("advancement.nc.chemical_reactor.desc", "Mixing fuids and gases");
+        add("advancement.nc.chemical_reactor.desc", "Mixing fluids and gases");
 
         add("advancement.nc.analyzer", "Analyzer");
         add("advancement.nc.analyzer.desc", "It's time to analyze");
@@ -437,8 +437,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("advancement.nc.uranium_rtg.desc", "Radioisotope Thermoelectric generation");
 
         // Fission reactor
-        add("advancement.nc.fission_reactor_controller", "Fission Reactor Controller");
-        add("advancement.nc.fission_reactor_controller.desc", "Splitting the Atom");
+        add("advancement.nc.fission_reactor_controller", "Chicago Pile, Domestic Edition");
+        add("advancement.nc.fission_reactor_controller.desc", "Splitting the atom in the comfort of your own basement.");
 
         // Irradiation
         add("advancement.nc.irradiator", "Irradiator");
@@ -463,19 +463,22 @@ public class NCLanguageProvider extends LanguageProvider {
         add("advancement.nc.spaxelhoe_thorium.desc", "Craft a multi-tool made from Thorium");
 
         add("advancement.nc.expl", "EXPL");
-        add("advancement.nc.expl.desc", "Howbout making blackhole out of light?");
+        add("advancement.nc.expl.desc", "How about making a black hole out of light?");
 
         add("advancement.nc.light_shielding", "Light Radiation Shielding");
         add("advancement.nc.light_shielding.desc", "Your first step in radiation protection");
 
         add("advancement.nc.radaway", "RadAway");
-        add("advancement.nc.radaway.desc", "Remove radiation contamination from your body");
+        add("advancement.nc.radaway.desc", "Flush radiation contamination from your body. Side effects may include not glowing in the dark.");
 
         add("advancement.nc.hazmat_mask", "Hazmat Protection");
         add("advancement.nc.hazmat_mask.desc", "Full-body protection against radiation exposure");
 
         add("advancement.nc.hev_helmet", "Advanced Protection");
         add("advancement.nc.hev_helmet.desc", "High-tech suit with enhanced radiation shielding");
+
+        add("advancement.nc.contamination", "Acceptable Daily Intake");
+        add("advancement.nc.contamination.desc", "Accumulate 1 Rad of bodily contamination. Vault-Tec assures you this is well within tolerance.");
     }
 
     private void labels() {
@@ -513,9 +516,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("jei.recipe.nc.linear_accelerator", "Linear Accelerator");
         add("jei.recipe.nc.kugelblitz_chamber", "Kugelblitz Chamber");
         add("jei.recipe.nc.leacher", "Leacher Setup");
-        add("jei.info.nuclearcraft.kugelblitz.description", "Kugelblitz chamber allows to transform items using black hole quantum fields.");
-        add("jei.info.nuclearcraft.kugelblitz.problem", "The problem is, we don't know transformation recipes, we can only know what it can produce.");
-        add("jei.info.nuclearcraft.kugelblitz.input_output", "What kugelblitz transformation produce is what it can take as input");
+        add("jei.info.nuclearcraft.kugelblitz.description", "The Kugelblitz Chamber transforms items using black hole quantum fields.");
+        add("jei.info.nuclearcraft.kugelblitz.problem", "The catch: we don't know the transformation recipes. We only know what the chamber can produce.");
+        add("jei.info.nuclearcraft.kugelblitz.input_output", "Whatever a Kugelblitz transformation produces is also what it can take as input.");
         add("entity.minecraft.villager.nuclearcraft.nuclear_scientist", "Nuclear Scientist");
         add("block.nuclearcraft.expl", "EXPL");
         add("gui.nuclearcraft:button.burst", "Activate");
@@ -575,27 +578,27 @@ public class NCLanguageProvider extends LanguageProvider {
         add("processor_slot_mode.title", "Slot Mode");
 
         add("commands.nuclearcraft.no_permission", "No permissions");
-        add("message.heat_sink.valid0", "This one is looking good");
-        add("message.heat_sink.valid1", "I like this one");
-        add("message.heat_sink.valid2", "This heat sink design shows promise");
-        add("message.heat_sink.valid3", "The heat dissipation capability looks good");
-        add("message.heat_sink.valid4", "The thermal conductivity appears to be efficient");
-        add("message.heat_sink.valid5", "Attention to detail is evident in this design");
-        add("message.heat_sink.valid6", "This heat sink design seems promising for our project");
-        add("message.heat_sink.valid7", "Attention to detail is impressive");
-        add("message.heat_sink.valid8", "This is a perfect fit for our application");
-        add("message.heat_sink.valid9", "This meets our standards very well");
+        add("message.heat_sink.valid0", "This one is looking good.");
+        add("message.heat_sink.valid1", "I like this one.");
+        add("message.heat_sink.valid2", "This heat sink design shows promise.");
+        add("message.heat_sink.valid3", "The heat dissipation capability looks good.");
+        add("message.heat_sink.valid4", "The thermal conductivity appears efficient.");
+        add("message.heat_sink.valid5", "Attention to detail is evident in this design.");
+        add("message.heat_sink.valid6", "This heat sink design seems promising for our project.");
+        add("message.heat_sink.valid7", "Attention to detail is impressive. Operations would approve.");
+        add("message.heat_sink.valid8", "A perfect fit for our application.");
+        add("message.heat_sink.valid9", "Meets nominal standards. Nominal conditions sold separately.");
 
-        add("message.heat_sink.invalid0", "Not sure if it's valid");
-        add("message.heat_sink.invalid1", "Maybe you should check it again");
+        add("message.heat_sink.invalid0", "Not sure if it's valid.");
+        add("message.heat_sink.invalid1", "You should check it again.");
         add("message.heat_sink.invalid2", "Hm...");
-        add("message.heat_sink.invalid3", "Will it explode? -Shouldn't");
+        add("message.heat_sink.invalid3", "Will it explode? Probably not.");
         add("message.heat_sink.invalid4", "This doesn't seem to meet our standards.");
         add("message.heat_sink.invalid5", "There are some concerns about the validity of this.");
-        add("message.heat_sink.invalid6", "I have some reservations about this.");
+        add("message.heat_sink.invalid6", "I have some reservations about this. So would the safety inspector.");
         add("message.heat_sink.invalid7", "This may not be suitable for our project.");
-        add("message.heat_sink.invalid8", "This may need some significant revisions before it can be considered valid.");
-        add("message.heat_sink.invalid9", "More work may be needed before this can be considered valid.");
+        add("message.heat_sink.invalid8", "This will need significant revisions before it can be considered valid.");
+        add("message.heat_sink.invalid9", "More work needed before this can be considered valid.");
 
         add("nc_jei_cat.fission_reactor_controller", "Fission Reactor Fuel Depletion");
         add("nc_jei_cat.nc_ore_veins", "Ore Veins");
@@ -713,7 +716,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.wasteland.disabled", "Wasteland dimension is disabled");
         add("tooltip.nc.wasteland.portal.descr", "Teleport to Wasteland dimension");
         add("tooltip.ion_source.particle", "Particle: %s");
-        add("tooltip.nc.expl", "Produce powerful beam of light. Shooting 6 beams into single point can create black hole inside Kugelblitz Chamber.");
+        add("tooltip.nc.expl", "Produces a powerful beam of light. Converging 6 beams on a single point can create a black hole inside a Kugelblitz Chamber.");
         add("tooltip.nc.magnet.disable", "Disable Auto-pickup");
         add("tooltip.nc.magnet.enable", "Enable Auto-pickup");
         add("tooltip.ion_source.amount", "Amount: %spu / %spu");
@@ -762,10 +765,10 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("decay_generator.fe_generation", "Result FE generation depends on attached blocks radiation");
         add("tooltip.nc.lightning_rod_charge", "Can charge NC Energy blocks by %s FE");
-        add("tooltip.nc.jei.gas_to_fluid.desc","NC blocks automatically converts Mek Gasses into Fluids during input");
+        add("tooltip.nc.jei.gas_to_fluid.desc","NC blocks automatically convert Mek Gases into Fluids on input.");
 
         add("tooltip.nc.hev.desc","Grants additional protection and passive effects when charged");
-        add("tooltip.nc.moderator.desc","Fission Reactor moderator. Has to be placed next to fuel cell. \n Each adjacent with fuel cell adds +%s%% efficiency and +%s%% heat gen");
+        add("tooltip.nc.moderator.desc","Fission Reactor moderator. Must be placed adjacent to a fuel cell. \n Each face adjacent to a fuel cell adds +%s%% efficiency and +%s%% heat gen.");
 
         add("boiling.recipe.heat_required","Heat required: %s H");
 
@@ -784,7 +787,8 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("tooltip.upgrade_stack","Improved speed upgrade with parallel processing");
         add("tooltip.upgrade_speed","Increases recipe speed and energy consumption");
-        add("tooltip.upgrade_energy","Reduce energy consumption and increase energy buffer");
+        add("tooltip.upgrade_energy","Reduces energy consumption and increases energy buffer.");
+        add("tooltip.upgrade_quantum","Quantum tier: x5 speed and 1 parallel recipe per item");
 
         add("processor.recipe.power","Process Power: %s FE/t");
         add("processor.recipe.duration","Process Duration: %s t");
@@ -844,7 +848,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.description.efficiency","Efficiency: %s%%");
         add("tooltip.nc.description.expansion","Expansion: %s%%");
         add("tooltip.nc.electromagnet.heat","Heat: %s H/t");
-        add("tooltip.nc.electromagnet.max_temp","Max Temparature: %s K");
+        add("tooltip.nc.electromagnet.max_temp","Max Temperature: %s K");
         add("tooltip.nc.blade.desc","Converts the energy of the oncoming fluid flow into rotational energy in the rotor shaft. The expansion coefficient is larger than unity, so the volume of the fluid flow will increase each time it passes through a set. Must be placed in complete sets of four coplanar groups extending from the turbine shaft to the wall. Each blade block can process up to %s of oncoming fluid.");
         add("tooltip.nc.rotor_shaft.desc","Connects the rotor blades to the dynamo to convert the generated kinetic energy into electrical energy. Must be placed axially as a cuboid along the centre of the turbine interior.");
         add("tooltip.nc.bearing.desc","Connects the rotor shaft to the turbine wall and dynamo. Must cover the full area of each end of the shaft.");
@@ -858,32 +862,32 @@ public class NCLanguageProvider extends LanguageProvider {
         add("leacher.tooltip.valid_pump","Pump - Ok");
         add("leacher.tooltip.invalid_pump","Pump in the corner not found");
         add("tooltip.nc.target_chamber.camera","Center of Target Chamber structure");
-        add("processor.description.nuclear_furnace","Fast furnace what uses uranium ingots as fuel.");
+        add("processor.description.nuclear_furnace","Fast furnace that uses uranium ingots as fuel. Surprisingly safe, by furnace standards.");
         add("processor.description.alloy_smelter","Smelts and alloys items.");
         add("processor.description.centrifuge","Separates fluids into their components.");
-        add("processor.description.fuel_reprocessor","Separates depleted fuel into components.");
+        add("processor.description.fuel_reprocessor","Separates depleted fuel into its components.");
         add("processor.description.melter","Melts items into liquids.");
         add("processor.description.ingot_former","Forms solid items from molten liquids.");
         add("processor.description.crystallizer","Grows crystals from solutions.");
         add("processor.description.chemical_reactor","Mixes fluids and gases together.");
-        add("processor.description.assembler","Machine what assembles items.");
-        add("processor.description.decay_hastener","Accelerates decay speed of radioactive materials.");
+        add("processor.description.assembler","Assembles items from prepared components.");
+        add("processor.description.decay_hastener","Accelerates the decay of radioactive materials. Half-lives are merely a suggestion.");
         add("processor.description.electrolyzer","Separates fluids and gases into their components.");
         add("processor.description.extractor","Extracts liquids from solid items.");
         add("processor.description.fluid_enricher","Enriches fluids and gases with solid items.");
-        add("processor.description.fluid_infuser","Mixes fluids with items to get new items.");
-        add("processor.description.irradiator","Transform items and fluids with the power of Radiative Flux. Needs to be placed in reactor's wall.");
+        add("processor.description.fluid_infuser","Combines fluids with items to produce new items.");
+        add("processor.description.irradiator","Transforms items and fluids using radiative flux. Must be placed in the reactor wall.");
         add("processor.description.isotope_separator","Splits items into isotopes.");
         add("processor.description.manufactory","Crushes items into dusts and other materials.");
-        add("processor.description.pressurizer","Compresses items with high pressure.");
+        add("processor.description.pressurizer","Compresses items under high pressure.");
         add("processor.description.rock_crusher","Produces dusts from rocks.");
         add("processor.description.supercooler","Cools down fluids and gases.");
-        add("processor.description.steam_turbine","Produce energy with power of steam.");
-        add("processor.description.gas_scrubber","Сleansing ventilation.");
-        add("processor.description.pump","Pumps fluids and gasses from environment.");
-        add("processor.description.analyzer","Used to analyze environment and items.");
-        add("processor.description.leacher","Leaches undeground minerals with acids and pumps slurry back.");
-        add("processor.description.subatomic_liquifier","Decompose elements.");
+        add("processor.description.steam_turbine","Generates energy from steam pressure.");
+        add("processor.description.gas_scrubber","Cleans contaminants from ventilation. Recommended in the unlikely event of a release.");
+        add("processor.description.pump","Pumps fluids and gases from the environment.");
+        add("processor.description.analyzer","Analyzes items and environmental samples.");
+        add("processor.description.leacher","Leaches underground minerals with acids and pumps the slurry back to the surface.");
+        add("processor.description.subatomic_liquifier","Decomposes elements into their subatomic constituents.");
 
         add("amount","Amount: %s");
         add("sound_event.nuclearcraft.item.charged","Item Charged");
@@ -1021,10 +1025,10 @@ public class NCLanguageProvider extends LanguageProvider {
         add("validation.structure.wrong_proportions", "Wrong proportions");
         add("validation.structure.wrong_blades", "Wrong blades placement");
         add("validation.structure.photon_concentrator", "Incorrect Photon Concentrators placement");
-        add("validation.structure.asymetric_walls", "Walls are asymetric");
+        add("validation.structure.asymetric_walls", "Walls are asymmetric");
         add("solar_panel.fe_generation", "Daytime Gen: %s FE/t");
         add("fission_port.descr", "One port for everything: Fluids, items, redstone, computers, etc...");
-        add("irradiation_chamber.descr", "Irradiates items with neutron flux. \r\nHas to be placed in one line with moderator and fuel cell behind it.");
+        add("irradiation_chamber.descr", "Irradiates items with neutron flux. \r\nMust be placed in a straight line with a moderator and a fuel cell behind it.");
     }
 
     private void fuel() {

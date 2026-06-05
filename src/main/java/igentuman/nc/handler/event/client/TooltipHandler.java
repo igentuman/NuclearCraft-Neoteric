@@ -4,6 +4,7 @@ import igentuman.nc.handler.config.RadiationConfig;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.ItemShielding;
 import igentuman.nc.radiation.RadiationCleaningItems;
+import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -69,7 +70,7 @@ public class TooltipHandler {
     private static void addModeratorTooltip(ItemTooltipEvent event, ItemStack itemStack) {
         for(Block block: moderators()) {
             if(itemStack.is(block.asItem())) {
-                event.getToolTip().add(__("tooltip.nc.moderator.desc", FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get(), FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get()).withStyle(ChatFormatting.GOLD));
+                event.getToolTip().add(__("tooltip.nc.moderator.desc", TextUtils.numberFormat(FISSION_CONFIG.MODERATOR_FE_MULTIPLIER.get()), TextUtils.numberFormat(FISSION_CONFIG.MODERATOR_HEAT_MULTIPLIER.get())).withStyle(ChatFormatting.GOLD));
             }
         }
     }

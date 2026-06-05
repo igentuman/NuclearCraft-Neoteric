@@ -38,11 +38,11 @@
       "text": "The $(item)Fuel Reprocessor$() extracts materials from depleted fuel, allowing for the isolation of useful material from depleted fuel."
     },
     {
-      "anchor": "alloy_furnace",
+      "anchor": "alloy_smelter",
       "type": "blocks/1",
       "header": "Alloy Smelter",
       "block": "nuclearcraft:alloy_smelter",
-      "text": "The $(item)Alloy Smelter() combines base metals together into alloys."
+      "text": "The $(item)Alloy Smelter$() combines base metals together into alloys."
     },
     {
       "anchor": "fluid_infuser",
@@ -91,7 +91,7 @@
       "type": "blocks/1",
       "header": "Pressurizer",
       "block": "nuclearcraft:pressurizer",
-      "text": "The $(item)pressurizer$() processes materials under immense pressure."
+      "text": "The $(item)Pressurizer$() processes materials under immense pressure."
     },
     {
       "anchor": "chemical_reactor",

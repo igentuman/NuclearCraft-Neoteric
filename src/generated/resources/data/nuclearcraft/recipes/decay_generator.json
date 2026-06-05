@@ -5,11 +5,11 @@
     "G": {
       "item": "minecraft:redstone"
     },
-    "U": {
-      "tag": "forge:storage_blocks/iron"
-    },
     "P": {
       "item": "nuclearcraft:coil_copper"
+    },
+    "U": {
+      "item": "minecraft:iron_block"
     }
   },
   "pattern": [

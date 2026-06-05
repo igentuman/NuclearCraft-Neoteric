@@ -1,5 +1,5 @@
 {
-  "name": "Generator Machines",
+  "name": "Генераторы",
   "icon": "nuclearcraft:solar_panel_basic",
   "category": "nuclearcraft:machines",
   "sortnum": 1,
@@ -7,34 +7,34 @@
     {
       "anchor": "intro",
       "type": "text",
-      "text": "These machines generate energy in relatively small quantities, but are also simple to operate."
+      "text": "Эти машины вырабатывают относительно небольшие объёмы энергии, зато просты в эксплуатации."
     },
     {
       "anchor": "solar_panel",
       "type": "blocks/4",
-      "header": "Solar Panels",
+      "header": "Солнечные панели",
       "block1": "nuclearcraft:solar_panel_basic",
       "block2": "nuclearcraft:solar_panel_advanced",
       "block3": "nuclearcraft:solar_panel_du",
       "block4": "nuclearcraft:solar_panel_elite",
-      "text": "$(item)Solar Panels$() generate energy at a specific rate during the day."
+      "text": "$(item)Солнечные панели$() вырабатывают энергию с фиксированной скоростью в дневное время."
     },
     {
       "anchor": "rtg",
       "type": "blocks/4",
-      "header": "RTGs",
+      "header": "РИТЭГи",
       "block1": "nuclearcraft:americium_rtg",
       "block2": "nuclearcraft:californium_rtg",
       "block3": "nuclearcraft:plutonium_rtg",
       "block4": "nuclearcraft:uranium_rtg",
-      "text": "The $(item)Decay Generator$() generates energy from the decay of adjacent radioactive blocks."
+      "text": "$(item)Распадный генератор$() вырабатывает энергию за счёт распада соседних радиоактивных блоков. Тихо, надёжно, до неприличия долго — отрасль такие источники любит."
     },
     {
       "anchor": "steam_turbine",
       "type": "blocks/1",
-      "header": "Steam Turbine",
+      "header": "Паровая турбина",
       "block": "nuclearcraft:steam_turbine",
-      "text": "The $(item)Steam Turbine$() generates energy from steam produced by reactors."
+      "text": "$(item)Паровая турбина$() вырабатывает энергию из пара, поступающего от реакторов."
     }
   ]
 }

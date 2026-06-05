@@ -1,5 +1,5 @@
 {
-  "name": "Radaway",
+  "name": "RadAway",
   "icon": "nuclearcraft:radaway",
   "category": "nuclearcraft:items",
   "sortnum": 0,
@@ -7,10 +7,10 @@
     {
       "anchor": "radaway",
       "type": "items/2",
-      "header": "Radaway",
+      "header": "RadAway",
       "item1": "nuclearcraft:radaway",
       "item2": "nuclearcraft:radaway_slow",
-      "text": "$(item)RadAway$() и его медленный аналог $(item)Медленно-действующий RadAway$() удаляют радиацию у пользователя с заданной скоростью. Стандартный RadAway действует быстрее, чем медленно-действующий RadAway, но его действие длится меньше."
+      "text": "$(item)RadAway$() и его аналог пролонгированного действия $(item)Медленный RadAway$() выводят радиацию из организма с заданной скоростью. Обычный RadAway работает быстрее, но и заканчивается раньше; медленный — действует дольше при меньшей мощности. (Передозировка не предусмотрена политикой производителя.)"
     }
   ]
 }

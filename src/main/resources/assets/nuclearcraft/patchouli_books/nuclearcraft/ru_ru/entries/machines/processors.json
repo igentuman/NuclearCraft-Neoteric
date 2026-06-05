@@ -1,5 +1,5 @@
 {
-  "name": "Processing Machines",
+  "name": "Обрабатывающие машины",
   "icon": "nuclearcraft:manufactory",
   "category": "nuclearcraft:machines",
   "sortnum": 0,
@@ -7,133 +7,133 @@
     {
       "anchor": "intro",
       "type": "text",
-      "text": "These machines process materials, usually by the use of energy, to convert materials from one type to another."
+      "text": "Эти машины обрабатывают материалы — как правило, с расходом энергии — и превращают одни ресурсы в другие. (Без излишней романтики: производство есть производство.)"
     },
     {
       "anchor": "manufactory",
       "type": "blocks/1",
-      "header": "Manufactory",
+      "header": "Мануфактория",
       "block": "nuclearcraft:manufactory",
-      "text": "The $(item)Manufactory$() is a machine that has many uses, mainly in processing materials."
+      "text": "$(item)Мануфактория$() — машина широкого профиля, в основном для измельчения и подготовки материалов."
     },
     {
       "anchor": "separator",
       "type": "blocks/1",
-      "header": "Isotope Separator",
+      "header": "Изотопный сепаратор",
       "block": "nuclearcraft:isotope_separator",
-      "text": "The $(item)Separator$() separates materials into their constituent parts."
+      "text": "$(item)Сепаратор$() разделяет материалы на их составные части. Именно с таких машин начинается дорога от руды к боеголовке — об этом помнят и в Манхэттенском проекте, и в коммерческих ТЭО."
     },
     {
       "anchor": "decay_hastener",
       "type": "blocks/1",
-      "header": "Decay Hastener",
+      "header": "Ускоритель распада",
       "block": "nuclearcraft:decay_hastener",
-      "text": "The $(item)Decay Hastener$() forces radioactive materials to decay, resulting in the formation of a different isotope or material. Radiation is released during the decay process."
+      "text": "$(item)Ускоритель распада$() принудительно ускоряет распад радиоактивных материалов, превращая их в другие изотопы или вещества. В процессе работы выделяется радиация."
     },
     {
       "anchor": "fuel_reprocessor",
       "type": "blocks/1",
-      "header": "Fuel Reprocessor",
+      "header": "Переработчик топлива",
       "block": "nuclearcraft:fuel_reprocessor",
-      "text": "The $(item)Fuel Reprocessor$() extracts materials from depleted fuel, allowing for the isolation of useful material from depleted fuel."
+      "text": "$(item)Переработчик топлива$() извлекает полезные компоненты из отработанного ядерного топлива, позволяя вернуть в оборот то, что ещё не успело окончательно прийти в негодность."
     },
     {
       "anchor": "alloy_furnace",
       "type": "blocks/1",
-      "header": "Alloy Smelter",
+      "header": "Сплавильная печь",
       "block": "nuclearcraft:alloy_smelter",
-      "text": "The $(item)Alloy Smelter() combines base metals together into alloys."
+      "text": "$(item)Сплавильная печь$() сплавляет базовые металлы в сплавы."
     },
     {
       "anchor": "fluid_infuser",
       "type": "blocks/1",
-      "header": "Fluid Infuser",
+      "header": "Жидкостной инфузор",
       "block": "nuclearcraft:fluid_infuser",
-      "text": "The $(item)Fluid Infuser$() adds fluids to materials."
+      "text": "$(item)Жидкостной инфузор$() добавляет жидкости в материалы."
     },
     {
       "anchor": "melter",
       "type": "blocks/1",
-      "header": "Melter",
+      "header": "Плавильник",
       "block": "nuclearcraft:melter",
-      "text": "The $(item)Melter$() melts down materials into a liquid form."
+      "text": "$(item)Плавильник$() переводит материалы в жидкое состояние."
     },
     {
       "anchor": "supercooler",
       "type": "blocks/1",
-      "header": "Supercooler",
+      "header": "Криоохладитель",
       "block": "nuclearcraft:supercooler",
-      "text": "The $(item)Supercooler$() lowers the temperature of fluids."
+      "text": "$(item)Криоохладитель$() понижает температуру жидкостей до сверхнизких значений."
     },
     {
       "anchor": "electrolyzer",
       "type": "blocks/1",
-      "header": "Electrolyzer",
+      "header": "Электролизёр",
       "block": "nuclearcraft:electrolyzer",
-      "text": "The $(item)Electrolyzer$() splits fluids into their constituent parts."
+      "text": "$(item)Электролизёр$() разделяет жидкости на их составные части."
     },
     {
       "anchor": "assembler",
       "type": "blocks/1",
-      "header": "Assembler",
+      "header": "Сборщик",
       "block": "nuclearcraft:assembler",
-      "text": "The $(item)Assembler$() combines components into a complex product."
+      "text": "$(item)Сборщик$() объединяет компоненты в сложный готовый продукт."
     },
     {
       "anchor": "ingot_former",
       "type": "blocks/1",
-      "header": "Ingot Former",
+      "header": "Формовщик слитков",
       "block": "nuclearcraft:ingot_former",
-      "text": "The $(item)Ingot Former$() forms molten materials into ingots or gems."
+      "text": "$(item)Формовщик слитков$() отливает из расплавленных материалов слитки или самоцветы."
     },
     {
       "anchor": "pressurizer",
       "type": "blocks/1",
-      "header": "Pressurizer",
+      "header": "Прессователь",
       "block": "nuclearcraft:pressurizer",
-      "text": "The $(item)pressurizer$() processes materials under immense pressure."
+      "text": "$(item)Прессователь$() обрабатывает материалы под колоссальным давлением."
     },
     {
       "anchor": "chemical_reactor",
       "type": "blocks/1",
-      "header": "Chemical Reactor",
+      "header": "Химический реактор",
       "block": "nuclearcraft:chemical_reactor",
-      "text": "The $(item)Chemical Reactor$() houses reactions between fluids, allowing for chemical reactions to occur."
+      "text": "$(item)Химический реактор$() служит площадкой для химических реакций между жидкостями."
     },
     {
       "anchor": "crystallizer",
       "type": "blocks/1",
-      "header": "Crystallizer",
+      "header": "Кристаллизатор",
       "block": "nuclearcraft:crystallizer",
-      "text": "The $(item)Crystallizer$() precipitates solids from a fluid."
+      "text": "$(item)Кристаллизатор$() осаждает из жидкости твёрдые вещества."
     },
     {
       "anchor": "fluid_enricher",
       "type": "blocks/1",
-      "header": "Fluid Enricher",
+      "header": "Жидкостной обогатитель",
       "block": "nuclearcraft:fluid_enricher",
-      "text": "The $(item)Fluid Enricher$() adds materials to fluids."
+      "text": "$(item)Жидкостной обогатитель$() добавляет материалы к жидкостям."
     },
     {
       "anchor": "fluid_extractor",
       "type": "blocks/1",
-      "header": "Fluid Extractor",
+      "header": "Жидкостной экстрактор",
       "block": "nuclearcraft:extractor",
-      "text": "The $(item)Fluid Extractor$() extracts fluids from materials."
+      "text": "$(item)Жидкостной экстрактор$() извлекает жидкости из материалов."
     },
     {
       "anchor": "centrifuge",
       "type": "blocks/1",
-      "header": "Centrifuge",
+      "header": "Центрифуга",
       "block": "nuclearcraft:centrifuge",
-      "text": "The $(item)Centrifuge$() separates isotopes out of fluid materials."
+      "text": "$(item)Центрифуга$() разделяет изотопы в жидких материалах."
     },
     {
       "anchor": "rock_crusher",
       "type": "blocks/1",
-      "header": "Rock Crusher",
+      "header": "Камнедробилка",
       "block": "nuclearcraft:rock_crusher",
-      "text": "The $(item)Rock Crusher$() crushes rocks to produce mineral dusts."
+      "text": "$(item)Камнедробилка$() дробит породу и выдаёт минеральную пыль."
     }
   ]
 }

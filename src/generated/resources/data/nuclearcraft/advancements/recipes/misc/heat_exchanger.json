@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "nuclearcraft:decay_generator"
+        "recipe": "nuclearcraft:heat_exchanger"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -12,7 +12,7 @@
         "items": [
           {
             "items": [
-              "nuclearcraft:coil_copper"
+              "nuclearcraft:chassis"
             ]
           }
         ]
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "nuclearcraft:decay_generator"
+      "nuclearcraft:heat_exchanger"
     ]
   },
   "sends_telemetry_event": false

@@ -12,7 +12,7 @@
       "item2": "nuclearcraft:hev_chest",
       "item3": "nuclearcraft:hev_pants",
       "item4": "nuclearcraft:hev_boots",
-      "text": "The $(item)HEV Suit$() is advanced technological suite. It provides protection from radiation and other environmental hazards. It also provides a variety of other useful features. Requires charge to operate."
+      "text": "The $(item)HEV Suit$() is an advanced technological ensemble. It provides protection from radiation and other environmental hazards, along with a variety of other useful features. Requires charge to operate. (Battery sold separately. So is the Demon Core demo unit; don't ask.)"
     }
   ]
 }

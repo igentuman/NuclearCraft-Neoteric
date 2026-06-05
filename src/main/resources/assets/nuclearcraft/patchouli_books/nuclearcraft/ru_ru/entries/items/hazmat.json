@@ -1,5 +1,5 @@
 {
-  "name": "Hazmat Suit",
+  "name": "Защитный костюм",
   "icon": "nuclearcraft:hazmat_mask",
   "category": "nuclearcraft:items",
   "sortnum": 0,
@@ -7,12 +7,12 @@
     {
       "anchor": "hazmat",
       "type": "items/4",
-      "header": "Hazmat Suit",
+      "header": "Защитный костюм",
       "item1": "nuclearcraft:hazmat_mask",
       "item2": "nuclearcraft:hazmat_chest",
       "item3": "nuclearcraft:hazmat_pants",
       "item4": "nuclearcraft:hazmat_boots",
-      "text": "$(item)Защитный костюм$() используется для снижения воздействия радиации. Каждая часть комплекта имеет радиационное сопротивление, которое определяет уровень защиты от радиации."
+      "text": "$(item)Защитный костюм$() снижает воздействие радиации на носителя. У каждой части комплекта собственная радиационная стойкость, и именно она определяет итоговый уровень защиты."
     }
   ]
 }

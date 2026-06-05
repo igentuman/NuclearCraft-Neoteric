@@ -7,45 +7,45 @@
 		{
 			
 			"type": "text",
-			"text": "Particle Chambers are the multiblocks where you actually do things with particles, like bombard items and fluids with particles, collide particles together and create new particles. They are the second key ingredient in any accelerator system (the first being accelerators themselves)."
+			"text": "Particle Chambers are the multiblocks where you actually do things with particles: bombard items and fluids, collide particles together, and create new ones. They are the second key ingredient in any accelerator system (the first being the accelerators themselves)."
 		},
         {
 			"anchor": "construction",
             "type": "text",
             "title": "Construction",
-            "text": "The outside (casing) of all particle chambers are made out of Particle Chamber Casing or Particle Chamber Glass. In the casing you need: $(li)The particle Chamber's controller$(li)At least one Particle Chamber Energy Port.$(br2)Inside particle chambers there are particle chamber beam blocks and the particle chamber block itself. "
+            "text": "The outside (casing) of all particle chambers is made out of Particle Chamber Casing or Particle Chamber Glass. In the casing you need: $(li)The Particle Chamber's controller$(li)At least one Particle Chamber Energy Port.$(br2)Inside particle chambers there are particle chamber beam blocks and the particle chamber block itself."
         },
         {
             "type": "diagram_low",
 			"image": "nuclearcraft:textures/gui/book_images/target_chamber_empty.png",
-            "text": "The arrangement of these depends on the type of particle chamber. Around these detector blocks can be placed.$(br2)Below a typical arrangement of a target chamber with 3 output beam ports."
+            "text": "The arrangement of these depends on the type of particle chamber. Detector blocks can be placed around them.$(br2)Below: a typical arrangement of a target chamber with 3 output beam ports."
         },
         {
 			"anchor": "detectors",
             "type": "text",
             "title": "Detectors",
-            "text": "Detectors are placed inside particle chambers to increase the chambers efficiency. The chambers efficiency affects how the particle chamber works. Generally the higher the efficiency the faster items are crafted and the more particles outputted. There are different types of detectors, each increases the efficiency and the power usage of the chamber specified on their tool tips."
+            "text": "Detectors are placed inside particle chambers to increase the chamber's efficiency. The chamber's efficiency affects how the particle chamber works. Generally, the higher the efficiency, the faster items are crafted and the more particles are output. There are different types of detectors; each increases the efficiency and the power usage of the chamber as specified on their tooltips."
         },
         {
 			
             "type": "diagram_low",
 			"image": "nuclearcraft:textures/gui/book_images/target_chamber_full.png",
-            "text": "They must be placed a certain distance from a particle chamber block to work shown on their tooltip.$(br2)Below a typical arrangement of a target chamber with detectors."
+            "text": "They must be placed a certain distance from a particle chamber block to work, as shown on their tooltip.$(br2)Below: a typical arrangement of a target chamber with detectors."
         },
 		{
             "type": "text",
-            "text": "You can check if detectors are in valid positions by sneak right clicking the controller of a formed particle chamber multiblock with the $(l:multiblocks/multitool)multitool$(/l).$(br2)$(l)Note: Detectors can increase the energy use of the particle chambers drastically!$()"
+            "text": "You can check if detectors are in valid positions by sneak right-clicking the controller of a formed particle chamber multiblock with the $(l:multiblocks/multitool)multitool$(/l).$(br2)$(l)Note: Detectors can increase the energy use of the particle chamber drastically!$() The grid does not extend credit."
         },
         {
 			"anchor": "cross_section",
             "type": "text",
             "title": "Cross-Section",
-            "text": "Efficiency and Cross-Section are 2 important values for particle chambers. Cross-Section $(l)σ$() depends on the recipe performed (can be seen in JEI), it can be thought of as what percentage of particles perform the reaction. Efficiency $(l)η$() depends on the particle chamber and modifies the cross-section. This new 'effective' cross-section $(l)Σ$() can only be 100% at max, this means all particles perform the reaction."
+            "text": "Efficiency and Cross-Section are 2 important values for particle chambers. Cross-Section $(l)σ$() depends on the recipe performed (can be seen in JEI); it can be thought of as the percentage of particles that perform the reaction. Efficiency $(l)η$() depends on the particle chamber and modifies the cross-section. This new 'effective' cross-section $(l)Σ$() is capped at 100%, which means all particles perform the reaction."
         },
         {
 			"anchor": "cross section",
             "type": "text",
-            "text": "Because of this detectors can only increase the effective cross-section to this level, anymore detectors do nothing and are in fact a waste of power."
+            "text": "Because of this, detectors can only increase the effective cross-section up to this level; any further detectors do nothing and are in fact a waste of power."
         }
 	]
 }

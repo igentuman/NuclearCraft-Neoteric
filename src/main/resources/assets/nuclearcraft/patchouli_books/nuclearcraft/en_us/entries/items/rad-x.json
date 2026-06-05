@@ -9,7 +9,7 @@
       "type": "items/1",
       "header": "Rad-X",
       "item": "nuclearcraft:rad_x",
-      "text": "$(item)Rad-X$() provides it's user with a set amount of radiation resistance for a set amount of time. Although the effect can b,e stacked, the higher levels of resistance will wear off quicker than the lower levels."
+      "text": "$(item)Rad-X$() provides its user with a set amount of radiation resistance for a set amount of time. Although the effect can be stacked, higher levels of resistance wear off more quickly than lower ones."
     }
   ]
 }

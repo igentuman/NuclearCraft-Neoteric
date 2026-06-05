@@ -135,9 +135,9 @@ dependencies {
     compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
         transitive = false
     }
-    implementation fg.deobf("curse.maven:markdownmanual-502485:4873115")
+    compileOnly fg.deobf("curse.maven:markdownmanual-502485:4873115")
 
-    implementation fg.deobf("curse.maven:tis-3d-238603:5266274") {
+    compileOnly fg.deobf("curse.maven:tis-3d-238603:5266274") {
         transitive = false
     }
 
@@ -153,18 +153,18 @@ dependencies {
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}") {
         transitive = false
     }*/
-    implementation fg.deobf("curse.maven:guideme-1173950:7013686") {
+    compileOnly fg.deobf("curse.maven:guideme-1173950:7013686") {
         transitive = false
     }
-    implementation fg.deobf("curse.maven:applied-energistics-2-223794:7096071") {
+    compileOnly fg.deobf("curse.maven:applied-energistics-2-223794:7096071") {
         transitive = false
     }
-    implementation fg.deobf("curse.maven:multi-builder-tool-827020:7041820")
+    runtimeOnly fg.deobf("curse.maven:multi-builder-tool-827020:7041820")
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
     compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
-    implementation fg.deobf("curse.maven:thermal-foundation-222880:5443583")
-    implementation fg.deobf("curse.maven:thermal-expansion-69163:5372749")
-    implementation fg.deobf("curse.maven:cofh-core-69162:5374122")
+    compileOnly fg.deobf("curse.maven:thermal-foundation-222880:5443583")
+    compileOnly fg.deobf("curse.maven:thermal-expansion-69163:5372749")
+    compileOnly fg.deobf("curse.maven:cofh-core-69162:5374122")
     compileOnly fg.deobf("curse.maven:refined-storage-243076:4844585")
 
     implementation fg.deobf("curse.maven:flib-661261:6369719")

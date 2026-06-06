@@ -185,6 +185,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("emi.category.nuclearcraft.fuel_reprocessor", "");
         add("emi.category.nuclearcraft.particle_info", "Particle Info");
         add("emi.category.nuclearcraft.kugelblitz_info", "Kugelblitz Info");
+        add("emi.category.nuclearcraft.fuel_info", "Fuel Variants");
+        add("emi.category.nuclearcraft.isotope_info", "Isotope Forms");
         add("gui.nuclearcraft.jei.particle.mass", "Mass: %s");
         add("jei.category.nuclearcraft.particle_info", "Particle Info");
         add("jei.category.nuclearcraft.heat_sink_placement", "Heat Sink Placement");

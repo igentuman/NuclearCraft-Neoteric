@@ -19,8 +19,12 @@ import igentuman.nc.compat.ae2.ProcessorEmiRecipeHandlerAE2;
 import igentuman.nc.compat.emi.ingredient.ParticleEmiStack;
 import igentuman.nc.compat.refined_storage.ProcessorEmiRecipeHandlerRS;
 import igentuman.nc.handler.config.ClientConfig;
+import igentuman.nc.compat.jei.FuelInfoRecipe;
+import igentuman.nc.compat.jei.IsotopeInfoRecipe;
 import igentuman.nc.compat.jei.ParticleRecipe;
 import igentuman.nc.compat.jei.ParticleSourceRecipe;
+import igentuman.nc.content.fuel.FuelManager;
+import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.particles.ParticleSources;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.Particles;
@@ -32,6 +36,7 @@ import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
+import igentuman.nc.setup.registration.FissionFuel;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.ModUtil;
@@ -42,8 +47,10 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
@@ -105,12 +112,21 @@ public class EMIPlugin implements EmiPlugin {
         
         // Register cooler placement category
         registerCoolerPlacementCategory(registry);
-        
+
+        // Register fuel info category
+        registerFuelInfoCategory(registry);
+
+        // Register isotope info category
+        registerIsotopeInfoCategory(registry);
+
         // Register workstations
         registerWorkstations(registry);
-        
+
         // Register recipe handlers
         registerRecipeHandlers(registry);
+
+        // Hide fuel and isotope variant items/fluids from EMI index
+        hideFuelAndIsotopeVariants(registry);
     }
     
     private void registerProcessorCategories(EmiRegistry registry) {
@@ -259,7 +275,8 @@ public class EMIPlugin implements EmiPlugin {
             String name = entry.getKey();
             
             // Skip info categories that don't need workstations
-            if (name.equals("particle_info") || name.equals("kugelblitz_info")) {
+            if (name.equals("particle_info") || name.equals("kugelblitz_info")
+                    || name.equals("fuel_info") || name.equals("isotope_info")) {
                 continue;
             }
             
@@ -450,6 +467,90 @@ public class EMIPlugin implements EmiPlugin {
         return recipes;
     }
     
+    private void registerFuelInfoCategory(EmiRegistry registry) {
+        registry.addCategory(FuelInfoEmiCategory.CATEGORY);
+        CATEGORIES.put("fuel_info", FuelInfoEmiCategory.CATEGORY);
+
+        for (String group : FuelManager.all().keySet()) {
+            for (String name : FuelManager.all().get(group).keySet()) {
+                FuelInfoRecipe r = new FuelInfoRecipe(group, name);
+                if (!r.getVariants().isEmpty()) {
+                    registry.addRecipe(new FuelInfoEmiCategory(r));
+                }
+            }
+        }
+    }
+
+    private void registerIsotopeInfoCategory(EmiRegistry registry) {
+        registry.addCategory(IsotopeInfoEmiCategory.CATEGORY);
+        CATEGORIES.put("isotope_info", IsotopeInfoEmiCategory.CATEGORY);
+
+        for (String name : Materials.isotopes()) {
+            IsotopeInfoRecipe r = new IsotopeInfoRecipe(name);
+            if (!r.getVariants().isEmpty()) {
+                registry.addRecipe(new IsotopeInfoEmiCategory(r));
+            }
+        }
+    }
+
+    private static final String[] FUEL_VARIANT_SUFFIXES = {"_ox", "_ni", "_za", "_tr"};
+    private static final String[] ISOTOPE_VARIANT_SUFFIXES = {"_ox", "_ni", "_za"};
+
+    private void hideFuelAndIsotopeVariants(EmiRegistry registry) {
+        Set<Object> hideKeys = new HashSet<>();
+
+        for (Map.Entry<List<String>, net.minecraftforge.registries.RegistryObject<net.minecraft.world.item.Item>> e : FissionFuel.NC_FUEL.entrySet()) {
+            String variant = e.getKey().get(3);
+            if (!variant.isEmpty()) hideKeys.add(e.getValue().get());
+        }
+        for (Map.Entry<List<String>, net.minecraftforge.registries.RegistryObject<net.minecraft.world.item.Item>> e : FissionFuel.NC_DEPLETED_FUEL.entrySet()) {
+            String variant = e.getKey().get(3);
+            if (!variant.isEmpty()) hideKeys.add(e.getValue().get());
+        }
+        for (Map.Entry<String, net.minecraftforge.registries.RegistryObject<net.minecraft.world.item.Item>> e : FissionFuel.NC_ISOTOPES.entrySet()) {
+            String key = e.getKey();
+            for (String suf : ISOTOPE_VARIANT_SUFFIXES) {
+                if (key.endsWith(suf)) {
+                    hideKeys.add(e.getValue().get());
+                    break;
+                }
+            }
+        }
+
+        for (Map.Entry<String, NCFluids.FluidEntry> e : NCFluids.NC_MATERIALS.entrySet()) {
+            String key = e.getKey();
+            boolean isFuelFluid = key.startsWith("fuel_") || key.startsWith("depleted_fuel_");
+            boolean isIsotopeFluid = isKnownIsotopeFluid(key);
+            if (!isFuelFluid && !isIsotopeFluid) continue;
+            String suffixMatch = matchVariantSuffix(key, isFuelFluid ? FUEL_VARIANT_SUFFIXES : ISOTOPE_VARIANT_SUFFIXES);
+            if (suffixMatch == null) continue;
+            hideKeys.add(e.getValue().getStill());
+            net.minecraft.world.item.BucketItem bucket = e.getValue().getBucket();
+            if (bucket != null) hideKeys.add(bucket);
+        }
+
+        if (!hideKeys.isEmpty()) {
+            registry.removeEmiStacks(s -> hideKeys.contains(s.getKey()));
+        }
+    }
+
+    private static String matchVariantSuffix(String key, String[] suffixes) {
+        for (String s : suffixes) {
+            if (key.endsWith(s)) return s;
+        }
+        return null;
+    }
+
+    private static boolean isKnownIsotopeFluid(String key) {
+        for (String iso : Materials.isotopes()) {
+            if (key.equals(iso)) return true;
+            for (String suf : ISOTOPE_VARIANT_SUFFIXES) {
+                if (key.equals(iso + suf)) return true;
+            }
+        }
+        return false;
+    }
+
     private void registerRecipeHandlers(EmiRegistry registry) {
         for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
             var menuType = NCProcessors.PROCESSORS_CONTAINERS.get(name).get();

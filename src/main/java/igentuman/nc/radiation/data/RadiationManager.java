@@ -77,6 +77,9 @@ public class RadiationManager extends SavedData {
                 if(playerRadiationCap != null) {
                     playerRadiationCap.updateRadiation(level, player);
                     playerRadiation = playerRadiationCap.getRadiation();
+                    if(ModUtil.isMekanismLoaded() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
+                        MekanismRadiation.syncEntityRadiation(serverPlayer, playerRadiation);
+                    }
                 }
 
                 // Sync nearby chunks
@@ -140,18 +143,13 @@ public class RadiationManager extends SavedData {
     public @NotNull CompoundTag save(CompoundTag tag) {
         return worldRadiation.serializeNBT();
     }
-    protected int[] ignoredPos;
     public void addRadiation(Level level, double value, int x, int y, int z) {
         if(!RADIATION_CONFIG.ENABLED.get()) return;
-        if(ignoredPos != null && ignoredPos[0] == x && ignoredPos[1] == y && ignoredPos[2] == z) {
-            ignoredPos = null;
-            return;
-        }
         LevelChunk chunk = level.getChunkAt(new BlockPos(x, y, z));
         int appliedRadiation = worldRadiation.addRadiation(level, value, chunk.getPos().x, chunk.getPos().z);
-        if(ModUtil.isMekanismLoaded() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
-            ignoredPos = new int[]{x, y, z};
-            MekanismRadiation.radiate(x, y, z, appliedRadiation/5000, level);
+        if(ModUtil.isMekanismLoaded() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()
+                && !MekanismRadiation.MIRRORING.get()) {
+            MekanismRadiation.radiate(x, y, z, appliedRadiation, level);
         }
     }
 

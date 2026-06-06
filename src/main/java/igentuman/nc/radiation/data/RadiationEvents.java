@@ -85,7 +85,7 @@ public class RadiationEvents {
             if(radiation == 0) return;
             radCap.setRadiation(Math.max(0, radCap.getRadiation() - radiation/1000));
             if(ModUtil.isMekanismLoaded() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
-                MekanismRadiation.addEntityRadiation((Player) entity, -radiation/10000000);
+                MekanismRadiation.addEntityRadiation((Player) entity, -radiation/MekanismRadiation.URAD_PER_SV);
             }
         }
     }

@@ -50,7 +50,8 @@ public class MultiblockControllerBlock extends HorizontalDirectionalBlock {
         if (stack.hasTag()) {
             MultiblockControllerBE tileEntity = (MultiblockControllerBE) world.getExistingBlockEntity(pos);
             CompoundTag nbtData = stack.getOrCreateTag();
-            tileEntity.updateEnergyTier(nbtData.getInt("upgrade_tier"));
+            tileEntity.upgrade_tier = nbtData.getInt("upgrade_tier");
+            tileEntity.updateEnergyTier(tileEntity.upgrade_tier);
         }
     }
 

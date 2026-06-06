@@ -205,6 +205,8 @@ public class FusionCoreBlock extends FusionBeBlock {
             CompoundTag tag = new CompoundTag();
             tag.put("Info", nbtData);
             tileEntity.load(tag);
+            tileEntity.upgrade_tier = nbtData.getInt("upgrade_tier");
+            tileEntity.updateEnergyTier(tileEntity.upgrade_tier);
         }
     }
 }

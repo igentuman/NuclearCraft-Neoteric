@@ -162,6 +162,12 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
                 errorBlockPos = BlockPos.ZERO;
             }
             validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
+            if (infoTag.contains("upgrade_tier")) {
+                upgrade_tier = infoTag.getInt("upgrade_tier");
+                // Re-apply the upgrade tier to the energy storage after a chunk reload,
+                // because the storage constructor only knows the base config tier.
+                updateEnergyTier(upgrade_tier);
+            }
         }
     }
 
@@ -205,6 +211,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
                 errorBlockPos = BlockPos.ZERO;
             }
             infoTag.putLong("erroredBlock", errorBlockPos.asLong());
+            infoTag.putInt("upgrade_tier", upgrade_tier);
             tag.remove("Info");
             tag.put("Info", infoTag);
         }

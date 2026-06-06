@@ -97,6 +97,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.ponder.fission_reactor.text_19", "Up to six irradiation lines for each Irradiation Chamber block.");
         add("nuclearcraft.ponder.fission_reactor.text_20", "Place the Irradiator anywhere in the reactor wall.");
         add("nuclearcraft.ponder.fission_reactor.text_21", "When the reactor is up and running, the Irradiator will use all irradiation lines to produce recipes.");
+        add("nuclearcraft.ponder.fission_reactor.text_22", "Swap in a Pile-Driver Irradiation Chamber for 5x irradiation speed.");
         add("nuclearcraft.ponder.fusion_reactor.header", "Fusion Reactor");
         add("nuclearcraft.ponder.fusion_reactor.text_1", "The Fusion Core is the central part of the reactor.");
         add("nuclearcraft.ponder.fusion_reactor.text_2", "It automatically occupies a 3x3x3 volume around it.");
@@ -1043,6 +1044,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("solar_panel.fe_generation", "Daytime Gen: %s FE/t");
         add("fission_port.descr", "One port for everything: Fluids, items, redstone, computers, etc...");
         add("irradiation_chamber.descr", "Irradiates items with neutron flux. \r\nMust be placed in a straight line with a moderator and a fuel cell behind it.");
+        add("pile-driver_irradiation_chamber.descr", "x5 efficiency.");
     }
 
     private void fuel() {

@@ -2783,6 +2783,7 @@
   "nuclearcraft.ponder.fission_reactor.text_19": "До шести линий облучения для каждого блока камеры облучения.",
   "nuclearcraft.ponder.fission_reactor.text_20": "Разместите иррадиатор в любом месте стены реактора.",
   "nuclearcraft.ponder.fission_reactor.text_21": "Когда реактор запущен и работает, иррадиатор будет использовать все линии облучения для выполнения рецептов.",
+  "nuclearcraft.ponder.fission_reactor.text_22": "Замените камеру облучения на камеру с забивным копром — скорость облучения возрастёт в 5 раз.",
   "nuclearcraft.ponder.fusion_reactor.header": "Термоядерный реактор",
   "nuclearcraft.ponder.fusion_reactor.text_1": "Ядро термоядерного реактора — это центральная часть реактора.",
   "nuclearcraft.ponder.fusion_reactor.text_2": "Оно автоматически занимает объем 3x3x3 вокруг себя.",

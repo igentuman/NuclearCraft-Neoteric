@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 import static igentuman.nc.content.materials.Materials.*;
 import static igentuman.nc.content.particles.ParticleSources.moleAmount;
 import static igentuman.nc.content.particles.Particles.*;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.FissionFuel.NC_WASTE;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 
@@ -165,6 +166,9 @@ public class TargetChamberRecipes extends AbstractRecipeProvider {
         // Boron Ion reactions
         targetChamberItems(ingredient(NC_PARTS.get("silicon_wafer").get()), particles(600, 2.0, 1, boron_ion),
             List.of(), ingredient(NC_PARTS.get("silicon_p_doped").get()), 1000, 1.0);
+
+        targetChamberItems(ingredient(FISSION_BLOCKS.get("fission_reactor_irradiation_chamber").get()), particles(1000, 3.0, 1, boron_ion),
+                List.of(particles(1, 1.0, 1, proton), particles(1, 1.0, 1, positron), particles(1, 1.0, 1, electron)), ingredient(FISSION_BLOCKS.get("fission_reactor_pile-driver_irradiation_chamber").get()), 2000, 0.25);
 
         // Ca-48 reactions
         targetChamberItems(isotopeIngredient(berkelium248), particles(40000, 2.0, 1, calcium_48_ion),

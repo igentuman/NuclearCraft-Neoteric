@@ -22,11 +22,13 @@ import java.util.*;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class FissionReactorMultiblock extends AbstractMultiblock {
 
     protected int irradiationLines = 0;
+    public int effectiveIrradiation = 0;
     protected int extraFuelCells = 0;
     protected int moderatorAttachments = 0;
     protected double heatSinkCooling = 0;
@@ -259,11 +261,16 @@ public class FissionReactorMultiblock extends AbstractMultiblock {
     private void indexIrradiators() {
         validIrradiators.clear();
         irradiationLines = 0;
+        effectiveIrradiation = 0;
         for(long pos: irradiators) {
             BlockPos toCheck = BlockPos.of(pos);
             for(Direction d: Direction.values()) {
                 if(isModerator(toCheck.relative(d)) && isFuelCell(toCheck.relative(d, 2))) {
                     irradiationLines++;
+                    effectiveIrradiation++;
+                    if(getBlockState(pos).is(FISSION_BLOCKS.get("fission_reactor_pile-driver_irradiation_chamber").get())) {
+                        effectiveIrradiation+=4;
+                    }
                     addIfNotExists(pos, validIrradiators);
                 }
             }

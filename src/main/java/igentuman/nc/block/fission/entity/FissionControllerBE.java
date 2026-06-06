@@ -989,6 +989,10 @@ public class FissionControllerBE extends MultiblockControllerBE {
         needToUpdate = false;
     }
 
+    public int getIrradiativeFlux() {
+        return getMultiblock().effectiveIrradiation;
+    }
+
     public static class Recipe extends NcRecipe {
 
         public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double timeModifier, double powerModifier, double heatModifier, double rarity) {

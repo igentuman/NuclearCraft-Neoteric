@@ -140,5 +140,10 @@ public class FissionReactorPonderScenes {
         scene.world().setBlock(util.grid().at(2, 4, 0), PROCESSORS.get("irradiator").get().defaultBlockState().setValue(HORIZONTAL_FACING, Direction.NORTH).setValue(POWERED, true), false);
         scene.world().setBlock(util.grid().at(2, 1, 0), FISSION_BLOCKS.get("fission_reactor_controller").get().defaultBlockState().setValue(HORIZONTAL_FACING, Direction.NORTH).setValue(POWERED, true), false);
 
+        scene.idle(55);
+        scene.addKeyframe();
+        scene.world().setBlock(util.grid().at(2, 3, 2), FISSION_BLOCKS.get("fission_reactor_pile-driver_irradiation_chamber").get().defaultBlockState(), false);
+        scene.overlay().showOutline(PonderPalette.WHITE, new Object(), util.select().fromTo(2, 3, 2, 2, 3, 2), 55);
+        scene.overlay().showText(55).pointAt(util.vector().topOf(2, 3, 2)).text("Swap in a Pile-Driver Irradiation Chamber for 5x irradiation speed.");
     }
 }

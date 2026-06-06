@@ -66,6 +66,7 @@ public class FissionReactorRegistration {
             "casing",
             "controller",
             "irradiation_chamber",
+            "pile-driver_irradiation_chamber",
             "port",
             "glass",
             "solid_fuel_cell"

@@ -125,6 +125,13 @@
       "text": "You can make up to 6 irradiation lines per irradiation chamber. Each line will increase the speed of irradiation."
     },
     {
+      "anchor": "pile_driver",
+      "header": "Pile-Driver Irradiation Chamber",
+      "type": "blocks/1",
+      "block": "nuclearcraft:fission_reactor_pile-driver_irradiation_chamber",
+      "text": "An upgraded $(thing)Irradiation Chamber$() that runs at $(thing)5x$() the speed of a standard chamber. Drops in as a direct replacement at the end of any irradiation line — same placement rules, same line count, just five times the throughput. (Production quotas wait for no one.)"
+    },
+    {
       "anchor": "simple_reactor",
       "header": "Simple Reactor",
       "type": "patchouli:multiblock",

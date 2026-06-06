@@ -7,11 +7,13 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.compat.emi.ingredient.ParticleEmiStack;
+import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.Units;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +42,24 @@ public class TargetChamberEmiCategory extends BasicEmiRecipe {
         this.recipe = recipe;
         for (int i = 0; i < recipe.inputParticles.length; i++) {
             this.inputs.add(ParticleEmiStack.of(recipe.inputParticles[i]));
+        }
+        for (int i = 0; i < recipe.getItemIngredients().size(); i++) {
+            ItemStack[] items = recipe.getItemIngredients().get(i).getItems();
+            this.inputs.add(EmiIngredient.of(Arrays.stream(items).map(EmiStack::of).toList()));
+        }
+        for (int i = 0; i < recipe.getInputFluids().length; i++) {
+            List<FluidStack> fluids = recipe.getInputFluids(i);
+            this.inputs.add(EmiIngredient.of(fluids.stream()
+                    .map(fluid -> EmiStack.of(fluid.getFluid(), fluid.getAmount())).toList()));
+        }
+        for (int i = 0; i < recipe.getResultItems().size(); i++) {
+            this.outputs.add(EmiStack.of(recipe.getResultItems().get(i)));
+        }
+
+        for (FluidStack fluid : recipe.getOutputFluids()) {
+            if (!fluid.isEmpty()) {
+                this.outputs.add(EmiStack.of(fluid.getFluid(), fluid.getAmount()));
+            }
         }
         for (int i = 0; i < recipe.outputParticles.length; i++) {
             this.outputs.add(ParticleEmiStack.of(recipe.outputParticles[i]));

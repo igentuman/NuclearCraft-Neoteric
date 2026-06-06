@@ -81,7 +81,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         isActive = isActive();
         //upadteMultiblockConnection();
         if (isActive) {
-            irradiativeFlux = controller().irradiationLines;
+            irradiativeFlux = controller().getIrradiativeFlux();
             FissionControllerBE.Recipe recipe1 = (FissionControllerBE.Recipe) controller().recipeInfo().recipe();
             fuelMultiplier = recipe1 != null ? recipe1.getIrradiationRate() : 0;
         }
@@ -101,7 +101,12 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
     }
 
     protected boolean isActive() {
-        return controller() != null && !controller().isRemoved() && controller().isProcessing() && controller().efficiency > 0;
+        return controller() != null
+                && !controller().isRemoved()
+                && controller().isProcessing()
+                && controller().efficiency > 0
+                && controller().isCasingValid
+                && controller().isInternalValid;
     }
 
     @Override

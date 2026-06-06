@@ -161,7 +161,7 @@ dependencies {
     }
     runtimeOnly fg.deobf("curse.maven:multi-builder-tool-827020:7041820")
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
-    compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
+    implementation fg.deobf("curse.maven:immersive-engineering-231951:5224387")
     compileOnly fg.deobf("curse.maven:thermal-foundation-222880:5443583")
     compileOnly fg.deobf("curse.maven:thermal-expansion-69163:5372749")
     compileOnly fg.deobf("curse.maven:cofh-core-69162:5374122")

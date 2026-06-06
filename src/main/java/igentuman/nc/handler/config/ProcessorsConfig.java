@@ -56,11 +56,11 @@ public class ProcessorsConfig {
             VEIN_BLOCKS_AMOUNT = builder
                     .comment("Min and max values of blocks per vein.")
                     .comment("Result amount will be random value in this range.")
-                    .define("blocks_per_vein", List.of(30000, 70000), o -> o instanceof ArrayList);
+                    .define("blocks_per_vein", List.of(50000, 1000000), o -> o instanceof ArrayList);
 
             VEINS_RARITY = builder
                     .comment("Veins rarity. Bigger value - less veins.")
-                    .defineInRange("veins_rarity", 100, 1, 5000);
+                    .defineInRange("veins_rarity", 70, 1, 5000);
 
             RANDOMIZED_ORES = builder
                     .comment("All veins will have random ores. It will ignore vein settings")

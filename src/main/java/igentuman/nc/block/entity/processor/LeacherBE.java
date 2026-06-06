@@ -2,6 +2,7 @@ package igentuman.nc.block.entity.processor;
 
 import com.mojang.authlib.GameProfile;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.compat.ie.IEMineralVein;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SlotModePair;
@@ -19,6 +20,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +32,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
@@ -70,7 +75,7 @@ public class LeacherBE extends NCProcessorBE {
 
     public LeacherBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.LEACHER);
-        particle1 = ParticleTypes.EFFECT;
+        particle1 = ParticleTypes.BUBBLE;
     }
 
     @Override
@@ -153,6 +158,43 @@ public class LeacherBE extends NCProcessorBE {
 
     public void tickClient() {
         handleState();
+        if (pumpsAreValid && recipeInfo().recipe != null) {
+            assert getLevel() != null;
+            RandomSource rand = getLevel().getRandom();
+            ChunkPos chunkPos = new ChunkPos(getBlockPos());
+            int minX = chunkPos.getMinBlockX();
+            int minZ = chunkPos.getMinBlockZ();
+
+            for (int i = 0; i < 3; i++) {
+                int x = minX + rand.nextInt(16);
+                int z = minZ + rand.nextInt(16);
+                int y = getLevel().getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+                double px = x + rand.nextDouble();
+                double pz = z + rand.nextDouble();
+                double py = y + 0.1D + rand.nextDouble() * 0.2D;
+                getLevel().addParticle(ParticleTypes.MYCELIUM, px, py, pz, 0.0D, 0.0D, 0.0D);
+                if (rand.nextInt(40) == 0) {
+                    getLevel().addParticle(ParticleTypes.POOF, px, py, pz, 0.0D, 0.0D, 0.0D);
+                }
+                if (rand.nextInt(50) == 0) {
+                    getLevel().addParticle(ParticleTypes.EFFECT, worldPosition.getX() + rand.nextDouble(), worldPosition.getY() + 0.5d + rand.nextDouble(), worldPosition.getZ() + rand.nextDouble(), 0.0D, 0.0D, 0.0D);
+                }
+            }
+
+            if (rand.nextInt(80) == 0) {
+                int x = minX + rand.nextInt(16);
+                int z = minZ + rand.nextInt(16);
+                int y = getLevel().getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+                getLevel().playLocalSound(
+                        x + 0.5D, y + 0.5D, z + 0.5D,
+                        SoundEvents.FIRE_EXTINGUISH,
+                        SoundSource.BLOCKS,
+                        0.3F,
+                        0.6F + rand.nextFloat() * 0.2F,
+                        false
+                );
+            }
+        }
     }
 
     public boolean isPumpValid(BlockPosInstance pos, int id) {
@@ -256,9 +298,16 @@ public class LeacherBE extends NCProcessorBE {
         contentHandler().itemHandler.insertItemInternal(0, ore, false);
     }
 
-    //todo implement
     protected ItemStack useIECoreSample() {
-        return ItemStack.EMPTY;
+        assert level != null;
+        if (
+                !level.getChunk(worldPosition).getPos().equals(IEMineralVein.getChunkPos(catalyst)) ||
+                        !level.dimension().equals(IEMineralVein.getDimension(catalyst))
+        ) {
+            leacherState = WRONG_POSITION;
+            return ItemStack.EMPTY;
+        }
+        return IEMineralVein.getNextVeinItem(level, catalyst, allowedInputItems);
     }
 
 

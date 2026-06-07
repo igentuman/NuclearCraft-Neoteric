@@ -2,6 +2,7 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
@@ -10,6 +11,8 @@ import net.minecraftforge.common.Tags;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.content.materials.Materials.quantite_energy;
+import static igentuman.nc.content.materials.Materials.subliquid_matter;
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 import static igentuman.nc.setup.registration.NCBlocks.WASTELAND_EARTH;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
@@ -37,5 +40,10 @@ public class IrradiatorRecipes extends AbstractRecipeProvider {
         fluidsAndFluids(List.of(fluidIngredient("lithium", 500)), List.of(fluidIngredient("irradiated_lithium", 500)), 1.5D);
         fluidsAndFluids(List.of(fluidIngredient("boron", 500)), List.of(fluidIngredient("irradiated_boron", 500)), 2.5D);
         fluidsAndFluids(List.of(fluidIngredient(Materials.uranium238, 100)), List.of(fluidIngredient(Materials.uranium235, 100)), 5.5D);
+        NcRecipeBuilder.get(ID)
+                .fluids(List.of(fluidIngredient(subliquid_matter, 1000)), List.of(fluidIngredient(quantite_energy, 1000)))
+                .items(List.of(ingredient(isotopeItem(Materials.quantite))), List.of())
+                .modifiers(0.25d, 2d, 1)
+                .build(consumer);
     }
 }

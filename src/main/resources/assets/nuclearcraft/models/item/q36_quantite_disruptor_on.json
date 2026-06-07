@@ -1,0 +1,6 @@
+{
+	"parent": "nuclearcraft:item/q36_quantite_disruptor",
+	"textures": {
+		"2": "nuclearcraft:item/q36/texture_on"
+	}
+}

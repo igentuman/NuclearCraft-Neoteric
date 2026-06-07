@@ -38,8 +38,7 @@ import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.forgeRl;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.content.materials.Materials.slurries;
-import static igentuman.nc.content.materials.Materials.subliquid_matter;
+import static igentuman.nc.content.materials.Materials.*;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.setup.registration.Tags.GASES_TAG;
@@ -230,10 +229,10 @@ public class NCFluids {
         }
     }
 
-
     private static void gases() {
         HashMap<String, GasDefinition> items = new HashMap<>();
 
+        items.put(quantite_energy, new GasDefinition(quantite_energy, 0x369cd192, 2372));
         items.put("steam", new GasDefinition("steam", 0xCC929292, 373));
         items.put("high_pressure_steam", new GasDefinition("high_pressure_steam", 0xCCBDBDBD, 383));
         items.put("exhaust_steam", new GasDefinition("exhaust_steam", 0xCC7E7E7E, 292));

@@ -2,6 +2,7 @@ package igentuman.nc.network;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.network.toClient.PacketPlayerRadiationData;
+import igentuman.nc.network.toClient.PacketQ36BeamFx;
 import igentuman.nc.network.toClient.PacketWorldRadiationData;
 import igentuman.nc.network.toServer.*;
 import igentuman.nc.util.ModUtil;
@@ -26,6 +27,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketHandleFluidSlotClick.class, PacketHandleFluidSlotClick::decode);
         registerClientToServer(PacketBuildMultiblock.class, PacketBuildMultiblock::decode);
         registerClientToServer(PacketRecipeTransfer.class, PacketRecipeTransfer::decode);
+        registerClientToServer(PacketQ36Fire.class, PacketQ36Fire::decode);
         if(ModUtil.isAE2Loaded()) {
             registerClientToServer(PacketAE2PatternTransfer.class, PacketAE2PatternTransfer::decode);
         }
@@ -33,5 +35,6 @@ public class PacketHandler extends BasePacketHandler {
         //Server to client messages
         registerServerToClient(PacketWorldRadiationData.class, PacketWorldRadiationData::decode);
         registerServerToClient(PacketPlayerRadiationData.class, PacketPlayerRadiationData::decode);
+        registerServerToClient(PacketQ36BeamFx.class, PacketQ36BeamFx::decode);
     }
 }

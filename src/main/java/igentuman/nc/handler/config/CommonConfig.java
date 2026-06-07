@@ -25,6 +25,7 @@ public class CommonConfig {
     public static final EnergyStorageConfig ENERGY_STORAGE = new EnergyStorageConfig(BUILDER);
     public static final MiscConfig MISC_CONFIG = new MiscConfig(BUILDER);
     public static final GTCEUCompatibilityConfig GTCEU_CONFIG = new GTCEUCompatibilityConfig(BUILDER);
+    public static final Q36Config Q36_CONFIG = new Q36Config(BUILDER);
 
     public static final StorageBlocksConfig STORAGE_BLOCKS = new StorageBlocksConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
@@ -178,6 +179,58 @@ public class CommonConfig {
             DEBUG_LOG = builder
                     .comment("Debug logging. Enable in case of issues to collect more data")
                     .define("debug_logging", false);
+
+            builder.pop();
+        }
+    }
+
+    public static class Q36Config {
+        public final ForgeConfigSpec.IntValue PULSE_COOLDOWN_TICKS;
+        public final ForgeConfigSpec.IntValue PULSE_QC_COST;
+        public final ForgeConfigSpec.DoubleValue PULSE_DAMAGE;
+        public final ForgeConfigSpec.LongValue PULSE_RADIATION;
+
+        public final ForgeConfigSpec.IntValue BEAM_COOLDOWN_TICKS;
+        public final ForgeConfigSpec.IntValue BEAM_QC_COST;
+        public final ForgeConfigSpec.DoubleValue BEAM_DAMAGE;
+        public final ForgeConfigSpec.LongValue BEAM_RADIATION;
+        public final ForgeConfigSpec.DoubleValue BEAM_RANGE;
+        public final ForgeConfigSpec.IntValue BEAM_BLOCK_BREAK_RADIUS;
+
+        public Q36Config(ForgeConfigSpec.Builder builder) {
+            builder.push("q36_quantite_disruptor");
+
+            PULSE_COOLDOWN_TICKS = builder
+                    .comment("Cooldown between pulse shots, in ticks")
+                    .defineInRange("pulse_cooldown_ticks", 10, 1, 1200);
+            PULSE_QC_COST = builder
+                    .comment("Quantite charge cost per pulse shot")
+                    .defineInRange("pulse_qc_cost", 200, 0, Integer.MAX_VALUE);
+            PULSE_DAMAGE = builder
+                    .comment("Pulse projectile damage on direct hit")
+                    .defineInRange("pulse_damage", 50.0D, 0.0D, 100000.0D);
+            PULSE_RADIATION = builder
+                    .comment("Pulse radiation dose applied on direct hit")
+                    .defineInRange("pulse_radiation", 200_000L, 0L, Long.MAX_VALUE);
+
+            BEAM_COOLDOWN_TICKS = builder
+                    .comment("Cooldown between beam shots, in ticks")
+                    .defineInRange("beam_cooldown_ticks", 60, 1, 1200);
+            BEAM_QC_COST = builder
+                    .comment("Quantite charge cost per beam shot")
+                    .defineInRange("beam_qc_cost", 2000, 0, Integer.MAX_VALUE);
+            BEAM_DAMAGE = builder
+                    .comment("Beam direct hit damage")
+                    .defineInRange("beam_damage", 200.0D, 0.0D, 100000.0D);
+            BEAM_RADIATION = builder
+                    .comment("Beam radiation dose applied on direct hit")
+                    .defineInRange("beam_radiation", 2_000_000L, 0L, Long.MAX_VALUE);
+            BEAM_RANGE = builder
+                    .comment("Beam maximum range in blocks")
+                    .defineInRange("beam_range", 64.0D, 1.0D, 512.0D);
+            BEAM_BLOCK_BREAK_RADIUS = builder
+                    .comment("Beam impact block break radius (0 disables block breaking)")
+                    .defineInRange("beam_block_break_radius", 3, 0, 16);
 
             builder.pop();
         }

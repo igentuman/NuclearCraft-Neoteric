@@ -1,7 +1,9 @@
 package igentuman.nc.setup.registration;
 
+import igentuman.nc.block.entity.ChargingStationBE;
 import igentuman.nc.block.entity.MultiblockBuilderBE;
 import igentuman.nc.block.entity.RedstoneDimmerBE;
+import igentuman.nc.container.ChargingStationContainer;
 import igentuman.nc.container.MultiblockBuilderContainer;
 import igentuman.nc.container.RedstoneDImmerContainer;
 import igentuman.nc.content.Electromagnets;
@@ -60,6 +62,13 @@ public class NCBlocks {
     public static final RegistryObject<Item> REDSTONE_DIMMER_ITEM_BLOCK = fromBlock(REDSTONE_DIMMER_BLOCK);
     public static final RegistryObject<BlockEntityType<RedstoneDimmerBE>> REDSTONE_DIMMER_BE = BLOCK_ENTITIES.register("redstone_dimmer",
             () -> BlockEntityType.Builder.of(RedstoneDimmerBE::new, REDSTONE_DIMMER_BLOCK.get()).build(null));
+
+    public static final RegistryObject<Block> CHARGING_STATION_BLOCK = BLOCKS.register("charging_station", ChargingStationBlock::new);
+    public static final RegistryObject<Item> CHARGING_STATION_ITEM_BLOCK = fromBlock(CHARGING_STATION_BLOCK);
+    public static final RegistryObject<BlockEntityType<ChargingStationBE>> CHARGING_STATION_BE = BLOCK_ENTITIES.register("charging_station",
+            () -> BlockEntityType.Builder.of(ChargingStationBE::new, CHARGING_STATION_BLOCK.get()).build(null));
+    public static final RegistryObject<MenuType<ChargingStationContainer>> CHARGING_STATION_CONTAINER = CONTAINERS.register("charging_station",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new ChargingStationContainer(windowId, data.readBlockPos(), inv)));
 
     public static final RegistryObject<Block> MULTIBLOCK_BUILDER_BLOCK = BLOCKS.register("multiblock_builder", MultiblockBuilderBlock::new);
     public static final RegistryObject<Item> MULTIBLOCK_BUILDER_ITEM_BLOCK = fromBlock(MULTIBLOCK_BUILDER_BLOCK);

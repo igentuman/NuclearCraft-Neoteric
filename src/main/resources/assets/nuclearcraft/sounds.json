@@ -35,6 +35,18 @@
     ],
     "subtitle": "sound_event.nuclearcraft.fission_reactor"
   },
+  "q36.beam_shot": {
+    "sounds": [
+      "nuclearcraft:q36/beam_shot"
+    ],
+    "subtitle": "sound_event.nuclearcraft.q36.beam_shot"
+  },
+  "q36.pulse_shot": {
+    "sounds": [
+      "nuclearcraft:q36/pulse"
+    ],
+    "subtitle": "sound_event.nuclearcraft.q36.pulse_shot"
+  },
   "tile.fusion_charging": {
     "sounds": [
       "nuclearcraft:block/fusion_charging"

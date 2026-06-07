@@ -3,6 +3,7 @@ package igentuman.nc.setup;
 import igentuman.nc.client.RuntimeFuelModelGenerator;
 import igentuman.nc.client.block.BatteryBlockItemDecorator;
 import igentuman.nc.client.block.BatteryBlockLoader;
+import igentuman.nc.client.block.ChargingStationRenderer;
 import igentuman.nc.client.block.fusion.FusionCoreRenderer;
 import igentuman.nc.client.block.kugelblitz.EXPLRenderer;
 import igentuman.nc.client.block.turbine.TurbineRotorRenderer;
@@ -22,6 +23,8 @@ import igentuman.nc.client.particle.RadiationParticle;
 import igentuman.nc.client.renderer.BlackholeRenderer;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.client.renderer.FeralGhoulRenderer;
+import igentuman.nc.client.renderer.Q36EnergyFlashRenderer;
+import igentuman.nc.client.renderer.Q36PulseProjectileRenderer;
 import igentuman.nc.client.renderer.WastelandProjectileRenderer;
 import igentuman.nc.client.sound.SoundHandler;
 import igentuman.nc.compat.ponder.PonderUtil;
@@ -65,9 +68,12 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_CONTAINER;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
+import static igentuman.nc.setup.registration.NCBlocks.CHARGING_STATION_BE;
+import static igentuman.nc.setup.registration.NCBlocks.CHARGING_STATION_CONTAINER;
 import static igentuman.nc.setup.registration.NCBlocks.MULTIBLOCK_BUILDER_CONTAINER;
 import static igentuman.nc.setup.registration.NCBlocks.REDSTONE_DIMMER_CONTAINER;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
+import static igentuman.nc.setup.registration.NCItems.Q36;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_ITEM_CONTAINER;
 import static igentuman.nc.setup.registration.Registries.FLUIDS;
@@ -80,12 +86,16 @@ public class ClientSetup {
         event.enqueueWork(() -> {
             MinecraftForge.EVENT_BUS.addListener(LOWEST, SoundHandler::onTilePlaySound);
             DistortShader.register();
+            igentuman.nc.client.renderer.Q36FlashShader.register();
             BlockEntityRenderers.register(FUSION_BE.get("fusion_core").get(), FusionCoreRenderer::new);
             BlockEntityRenderers.register(EXPL_BE.get(), EXPLRenderer::new);
             BlockEntityRenderers.register(TURBINE_BE.get("turbine_rotor_shaft").get(), TurbineRotorRenderer::new);
             BlockEntityRenderers.register(KUGELBLITZ_BE.get("black_hole").get(), BlackholeRenderer::new);
+            BlockEntityRenderers.register(CHARGING_STATION_BE.get(), ChargingStationRenderer::new);
             EntityRenderers.register(Entities.FERAL_GHOUL.get(), FeralGhoulRenderer::new);
             EntityRenderers.register(Entities.WASTELAND_PROJECTILE.get(), WastelandProjectileRenderer::new);
+            EntityRenderers.register(Entities.Q36_PULSE_PROJECTILE.get(), Q36PulseProjectileRenderer::new);
+            EntityRenderers.register(Entities.Q36_ENERGY_FLASH.get(), Q36EnergyFlashRenderer::new);
             MenuScreens.register(STORAGE_CONTAINER.get(), StorageContainerScreen::new);
             MenuScreens.register(STORAGE_ITEM_CONTAINER.get(), StorageContainerItemScreen::new);
             MenuScreens.register(FUSION_CORE_CONTAINER.get(), FusionCoreScreen::new);
@@ -98,6 +108,7 @@ public class ClientSetup {
             MenuScreens.register(CHAMBER_PORT_CONTAINER.get(), ChamberPortScreen::new);
             MenuScreens.register(CHAMBER_TERMINAL_CONTAINER.get(), ChamberTerminalScreen::new);
             MenuScreens.register(REDSTONE_DIMMER_CONTAINER.get(), RedstoneDimmerScreen::new);
+            MenuScreens.register(CHARGING_STATION_CONTAINER.get(), ChargingStationScreen::new);
             MenuScreens.register(MULTIBLOCK_BUILDER_CONTAINER.get(), MultiblockBuilderScreen::new);
             MenuScreens.register(LINEAR_ACCELERATOR_CONTROLLER_CONTAINER.get(), LinearAcceleratorControllerScreen::new);
             MenuScreens.register(THOROIDAL_ACCELERATOR_CONTROLLER_CONTAINER.get(), RingAcceleratorControllerScreen::new);
@@ -126,6 +137,10 @@ public class ClientSetup {
                     return ClientRadiationData.radiationStage();
                 }
                 return 0;
+            });
+            setPropertyOverride(Q36.get(), rl("firing"), (stack, world, entity, seed) -> {
+                if (world == null) return 0.0F;
+                return igentuman.nc.item.Q36Item.isFxActive(stack, world) ? 1.0F : 0.0F;
             });
         });
         PonderUtil.initPlugin();

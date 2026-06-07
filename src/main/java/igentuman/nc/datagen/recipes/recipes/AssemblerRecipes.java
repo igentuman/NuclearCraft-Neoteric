@@ -43,6 +43,16 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
 
         itemsToItems(
                 List.of(
+                        ingredient(NC_PARTS.get("basic_processor").get(), 2),
+                        ingredient(NC_PARTS.get("basic_electric_circuit").get(), 1),
+                        ingredient(IRON_BARS, 8),
+                        ingredient(NC_PARTS.get("coil_bscco").get(), 4)
+                ),
+                List.of(ingredient(Q36.get(), 1))
+        );
+
+        itemsToItems(
+                List.of(
                         dustIngredient(Materials.hafnium),
                         ingredient(NC_PARTS.get("basic_processor").get(), 1),
                         ingredient(REDSTONE, 4),

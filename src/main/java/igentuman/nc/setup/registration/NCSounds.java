@@ -28,6 +28,8 @@ public final class NCSounds {
     public static final RegistryObject<SoundEvent> FUSION_RUNNING = SOUND_EVENTS.register("tile.fusion_running", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fusion_running")));
     public static final RegistryObject<SoundEvent> TURBINE = SOUND_EVENTS.register("tile.turbine", () -> SoundEvent.createVariableRangeEvent(rl( "tile.turbine")));
     public static final RegistryObject<SoundEvent> FISSION_REACTOR = SOUND_EVENTS.register("tile.fission_reactor", () -> SoundEvent.createVariableRangeEvent(rl( "tile.fission_reactor")));
+    public static final RegistryObject<SoundEvent> Q36_BEAM_SHOT = SOUND_EVENTS.register("q36.beam_shot", () -> SoundEvent.createVariableRangeEvent(rl( "q36.beam_shot")));
+    public static final RegistryObject<SoundEvent> Q36_PULSE_SHOT = SOUND_EVENTS.register("q36.pulse_shot", () -> SoundEvent.createVariableRangeEvent(rl( "q36.pulse_shot")));
     public static final RegistryObject<SoundEvent> RECORD_WANDERER = SOUND_EVENTS.register("music.wanderer", () -> SoundEvent.createVariableRangeEvent(rl( "music.wanderer")));
     public static final RegistryObject<SoundEvent> RECORD_END_OF_THE_WORLD = SOUND_EVENTS.register("music.end_of_the_world", () -> SoundEvent.createVariableRangeEvent(rl( "music.end_of_the_world")));
     public static final RegistryObject<SoundEvent> RECORD_MONEY_FOR_NOTHING = SOUND_EVENTS.register("music.money_for_nothing", () -> SoundEvent.createVariableRangeEvent(rl( "music.money_for_nothing")));

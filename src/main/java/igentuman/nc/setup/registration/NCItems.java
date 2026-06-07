@@ -85,10 +85,12 @@ public class NCItems {
     public static final RegistryObject<Item> SPAXELHOE_TOUGH = ITEMS.register("spaxelhoe_tough", () -> new PaxelItem(7, 2, Tiers.TOUGH, TOUGH_PAXEL_PROPS));
     public static final RegistryObject<Item> SPAXELHOE_THORIUM = ITEMS.register("spaxelhoe_thorium", () -> new PaxelItem(3, 1, Tiers.THORIUM, THORIUM_PAXEL_PROPS));
     public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 11, 2F, ONE_ITEM_PROPERTIES));
+    public static final RegistryObject<Item> Q36 = ITEMS.register("q36_quantite_disruptor", () -> new Q36Item(ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> MULTITOOL = ITEMS.register("multitool", () -> new MultitoolItem(ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> UNKNOWN_INGREDIENT = ITEMS.register("unknown_ingredient", () -> new Item(ONE_ITEM_PROPERTIES));
     public static final TagKey<Item> AMPLIFIERS_ITEMS = itemTag("amplifiers");
     public static final TagKey<Item> ELECTROMAGNETS_ITEMS = itemTag("electromagnets");
+
     public static RegistryObject<Item> registerItem(String name) {
         return ITEMS.register(name, () -> new Item(ITEM_PROPERTIES));
     }

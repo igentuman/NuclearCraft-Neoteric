@@ -37,6 +37,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_turbine", "NuclearCraft Turbine");
         add("itemGroup." + MODID+"_kugelblitz", "NuclearCraft Kugelblitz");
         add("itemGroup." + MODID+"_accelerator", "NuclearCraft Accelerators");
+        add("entity.nuclearcraft.q36_pulse_projectile", "Quantite Pulse");
         add("entity.nuclearcraft.feral_ghoul", "Feral Ghoul");
         add("entity.nuclearcraft.feral_ghoul_boss", "Boss of the Wasteland");
         add("biome.nuclearcraft.wasteland", "Wasteland");
@@ -387,6 +388,8 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("sound_event.nuclearcraft.fission_reactor", "Fission Reactor Ticking");
         add("sound_event.nuclearcraft.turbine", "Turbine is spinning");
+        add("sound_event.nuclearcraft.q36.beam_shot", "Q-36 Quantite Disruptor fires");
+        add("sound_event.nuclearcraft.q36.pulse_shot", "Q-36 Quantite Pulse discharge");
     }
 
     private void advancements() {
@@ -405,6 +408,9 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("advancement.nc.alloy_smelter", "Alloy Smelter");
         add("advancement.nc.alloy_smelter.desc", "Combine metals into alloys");
+
+        add("advancement.nc.q36", "Q-36 Quantite Disruptor");
+        add("advancement.nc.q36.desc", "");
 
         add("advancement.nc.qnp", "QNP");
         add("advancement.nc.qnp.desc", "Craft a QNP for advanced excavation");
@@ -938,6 +944,12 @@ public class NCLanguageProvider extends LanguageProvider {
         add("rtg.fe_generation","Energy Generation: %s FE/t");
         add("tooltip.nc.shift_rbm_to_change","Sneak+Use to change");
         add("tooltip.nc.qnp_mode","Mode: %s");
+        add("tooltip.nc.q36_mode","Mode: %s");
+        add("tooltip.nc.q36_mode.pulse","Pulse - short bursts");
+        add("tooltip.nc.q36_mode.beam","Beam - sustained discharge");
+        add("tooltip.nc.q36_charge","Charge: %s / %s QE");
+        add("tooltip.nc.q36_cooldown","Recharging: %s ticks");
+        add("tooltip.nc.q36_hint","Right-click to switch mode. Left-click to fire.");
         add("tooltip.mode.one_block","One Block");
         add("tooltip.mode.3x3","3x3");
         add("tooltip.mode.3x3x3","3x3x3");
@@ -1100,6 +1112,7 @@ public class NCLanguageProvider extends LanguageProvider {
     private void tools()
     {
         add(QNP.get(), "QNP");
+        add(Q36.get(), "Q-36 Quantite Disruptor");
         add(MULTITOOL.get(), "Multitool");
         add(GEIGER_COUNTER.get(), "Geiger Counter");
         add(SPAXELHOE_THORIUM.get(), "Thorium Spaxel");
@@ -1188,6 +1201,10 @@ public class NCLanguageProvider extends LanguageProvider {
         }
         add("block."+MODID+".redstone_dimmer", "Redstone Dimmer");
         add("block."+MODID+".multiblock_builder", "Creative Multiblock Builder");
+        add("block."+MODID+".charging_station", "Quantite Charging Station");
+        add("block."+MODID+".charging_station.desc", "Bathes a Q-36 Quantite Disruptor in liquid Quantite Energy, restoring charge to the cell. 100 mB per refill tick; ten buckets bring an empty disruptor to full.");
+        add("tooltip.nc.charging_station.fluid_empty", "No Quantite Energy");
+        add("tooltip.nc.charging_station.energy", "Energy: %s / %s FE");
         add("block."+MODID+".portal", "Wasteland Portal");
         add("block."+MODID+".wasteland_earth", "Wasteland Earth");
     }

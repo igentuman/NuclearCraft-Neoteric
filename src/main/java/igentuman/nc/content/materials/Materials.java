@@ -172,6 +172,7 @@ public class Materials extends MaterialsManager {
     public final static String magnesium_24 = "magnesium_24";
     public final static String magnesium_26 = "magnesium_26";
     public final static String sodium_22 = "sodium_22";
+    public final static String quantite_energy = "quantite_energy";
     public static String bscco = "bscco";
     public static List<String> slurries;
 

@@ -41,6 +41,22 @@ minecraft {
             }
         }
 
+        client2 {
+            parent runs.client
+            workingDirectory project.file('run2')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
+            args '--username', 'Dev2'
+            mods {
+                nuclearcraft {
+                    source sourceSets.main
+                }
+            }
+        }
+
         server {
             workingDirectory project.file('server')
             property 'forge.logging.markers', 'REGISTRIES'

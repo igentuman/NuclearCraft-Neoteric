@@ -24,6 +24,7 @@ public class NCShaders {
     public static final ShaderTracker BLACKHOLE_COLOR = new ShaderTracker();
 
     public static PostChain blackholePostEffect;
+    public static PostChain q36FlashPostEffect;
 
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException {
@@ -33,6 +34,10 @@ public class NCShaders {
         blackholePostEffect = new PostChain(mc.getTextureManager(), mc.getResourceManager(),
                 mc.getMainRenderTarget(), rl("shaders/post/black_hole.json"));
         blackholePostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
+
+        q36FlashPostEffect = new PostChain(mc.getTextureManager(), mc.getResourceManager(),
+                mc.getMainRenderTarget(), rl("shaders/post/q36_flash.json"));
+        q36FlashPostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
     }
 
     private static void registerShader(RegisterShadersEvent event, ResourceLocation shaderLocation, VertexFormat vertexFormat, ShaderTracker tracker) throws IOException {

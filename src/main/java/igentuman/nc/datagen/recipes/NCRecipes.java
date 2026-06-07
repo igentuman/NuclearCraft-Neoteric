@@ -73,6 +73,16 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void acceleratorItems(Consumer<FinishedRecipe> consumer) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, CHARGING_STATION_BLOCK.get(), 1)
+                .pattern("SBS")
+                .pattern("S S")
+                .pattern("STS")
+                .define('B', STORAGE_BLOCKS.get("basic_barrel").get())
+                .define('T', ENERGY_BLOCKS.get("advanced_voltaic_pile").get())
+                .define('S', IRON_BARS)
+                .group(MODID)
+                .unlockedBy("item", has(ENERGY_BLOCKS.get("advanced_voltaic_pile").get()))
+                .save(consumer, rl("charging_station"));
         // Empty cooler (using steel instead of stainless steel as per current mod)
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("empty_cooler").get(), 8)
                 .pattern("STS")

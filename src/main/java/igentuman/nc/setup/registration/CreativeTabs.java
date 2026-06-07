@@ -175,6 +175,7 @@ public class CreativeTabs {
         items.add(new ItemStack(SPAXELHOE_THORIUM.get()));
         items.add(new ItemStack(SPAXELHOE_TOUGH.get()));
         items.add(new ItemStack(QNP.get()));
+        items.add(new ItemStack(Q36.get()));
         items.add(new ItemStack(MULTITOOL.get()));
         items.add(new ItemStack(GEIGER_COUNTER.get()));
         items.add(new ItemStack(LITHIUM_ION_CELL.get()));
@@ -209,6 +210,7 @@ public class CreativeTabs {
         }
         items.addAll(blockStacks(NC_BLOCKS.values()));
         items.add(new ItemStack(REDSTONE_DIMMER_ITEM_BLOCK.get()));
+        items.add(new ItemStack(CHARGING_STATION_ITEM_BLOCK.get()));
         items.add(new ItemStack(MULTIBLOCK_BUILDER_BLOCK.get()));
         items.add(new ItemStack(EXPL_BLOCK.get()));
         items.addAll(blockStacks(NC_ELECTROMAGNETS.values()));

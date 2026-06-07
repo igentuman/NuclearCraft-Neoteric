@@ -3,6 +3,8 @@ package igentuman.nc.setup.registration;
 import igentuman.nc.entity.EntityFeralGhoul;
 import igentuman.nc.entity.EntityWastelandBoss;
 import igentuman.nc.entity.EntityWastelandProjectile;
+import igentuman.nc.entity.Q36EnergyFlash;
+import igentuman.nc.entity.Q36PulseProjectile;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -42,6 +44,25 @@ public class Entities {
                             .clientTrackingRange(4)
                             .updateInterval(5)
                             .build("wasteland_projectile"));
+
+    @SuppressWarnings("unchecked")
+    public static final RegistryObject<EntityType<Q36PulseProjectile>> Q36_PULSE_PROJECTILE =
+            Registries.ENTITIES.register("q36_pulse_projectile",
+                    () -> EntityType.Builder.<Q36PulseProjectile>of(Q36PulseProjectile::new, MobCategory.MISC)
+                            .sized(0.25F, 0.25F)
+                            .clientTrackingRange(8)
+                            .updateInterval(1)
+                            .build("q36_pulse_projectile"));
+
+    @SuppressWarnings("unchecked")
+    public static final RegistryObject<EntityType<Q36EnergyFlash>> Q36_ENERGY_FLASH =
+            Registries.ENTITIES.register("q36_energy_flash",
+                    () -> EntityType.Builder.<Q36EnergyFlash>of(Q36EnergyFlash::new, MobCategory.MISC)
+                            .sized(0.1F, 0.1F)
+                            .noSummon()
+                            .clientTrackingRange(8)
+                            .updateInterval(20)
+                            .build("q36_energy_flash"));
 
     public static void registerSpawnPlacements() {
         SpawnPlacements.register(FERAL_GHOUL.get(), 

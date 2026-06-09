@@ -81,6 +81,10 @@ public class Q36Item extends Item {
         public long radiation() {
             return (this == PULSE ? CommonConfig.Q36_CONFIG.PULSE_RADIATION : CommonConfig.Q36_CONFIG.BEAM_RADIATION).get();
         }
+
+        public int fxTicks() {
+            return (this == PULSE ? CommonConfig.Q36_CONFIG.PULSE_FX_TICKS : CommonConfig.Q36_CONFIG.BEAM_FX_TICKS).get();
+        }
     }
 
     public Q36Item(Properties pProperties) {
@@ -165,7 +169,7 @@ public class Q36Item extends Item {
             return;
         }
         setCooldown(stack, level, mode.cooldownTicks());
-        setFxFlash(stack, level, mode == FireMode.BEAM ? 20 : 10);
+        setFxFlash(stack, level, mode.fxTicks()-2);
         switch (mode) {
             case PULSE -> firePulse(player, level);
             case BEAM -> fireBeam(player, (ServerLevel) level, mode);

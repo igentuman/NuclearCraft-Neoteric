@@ -112,6 +112,7 @@ public class WorldEvents {
     public void onTick(ServerTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.START) {
             currentTick++;
+            igentuman.nc.item.MultitoolItem.tickTasks();
         }
     }
 

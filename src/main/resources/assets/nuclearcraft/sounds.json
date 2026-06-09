@@ -162,5 +162,29 @@
     "category": "record",
     "subtitle": "music.hyperspace",
     "sounds": [ { "name": "nuclearcraft:music/hyperspace", "stream": true } ]
+  },
+  "bomb.first_distance": {
+    "sounds": [
+      "nuclearcraft:bomb/first_distance"
+    ],
+    "subtitle": "sound_event.nuclearcraft.bomb.blast"
+  },
+  "bomb.second_distance": {
+    "sounds": [
+      "nuclearcraft:bomb/second_distance"
+    ],
+    "subtitle": "sound_event.nuclearcraft.bomb.blast"
+  },
+  "bomb.third_distance": {
+    "sounds": [
+      "nuclearcraft:bomb/third_distance"
+    ],
+    "subtitle": "sound_event.nuclearcraft.bomb.blast"
+  },
+  "bomb.fourth_distance": {
+    "sounds": [
+      "nuclearcraft:bomb/fourth_distance"
+    ],
+    "subtitle": "sound_event.nuclearcraft.bomb.blast"
   }
 }

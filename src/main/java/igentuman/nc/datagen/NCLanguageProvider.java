@@ -381,6 +381,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("sound_event.nuclearcraft.item.geiger_5", "Geiger Counter Ticks Level 5 Intensity");
         add("sound_event.nuclearcraft.item.geiger_6", "Geiger Counter Ticks Max Intensity");
 
+        add("sound_event.nuclearcraft.bomb.blast", "Distant Detonation");
+
         add("sound_event.nuclearcraft.fusion.ready", "Fusion Reactor Ready");
         add("sound_event.nuclearcraft.fusion.running", "Fusion Reactor Running");
         add("sound_event.nuclearcraft.fusion.charging", "Fusion Reactor Charging");
@@ -1006,7 +1008,15 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.interior.no_heat_sink", "No Heat Sinks Found");
         add("tooltip.nc.use_multitool", "Use Multitool to config sides");
         add("tooltip.nc.multitool.desc", "Commonly used to config sides of batteries, barrels, ports...");
-        add("tooltip.nc.multitool.shift.desc", "Sneak + RBM to config back side");
+        add("tooltip.nc.multitool.shift.desc", "Sneak + RBM to config back side. Can be used as detonator");
+        add("message.nc.multitool.connected_to_bomb", "Connected to the bomb at %s,%s,%s");
+        add("message.nc.multitool.connected_to_tnt", "Connected to the TNT at %s,%s,%s");
+        add("message.nc.multitool.not_your_project", "That's not your project. Access denied");
+        add("message.nc.multitool.armed_confirm", "armed, confirm detonation");
+        add("message.nc.multitool.bomb_detonated", "Bomb at %s,%s,%s detonated");
+        add("message.nc.multitool.tnt_detonated", "TNT at %s,%s,%s detonated");
+        add("tooltip.nc.multitool.connected_to_bomb", " Connected to bomb at %s.%s.%s");
+        add("tooltip.nc.multitool.connected_to_tnt", " Connected to TNT at %s.%s.%s");
         add("side_config.up", "UP: ");
         add("side_config.down", "DOWN: ");
         add("side_config.left", "LEFT: ");
@@ -1207,6 +1217,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.charging_station.energy", "Energy: %s / %s FE");
         add("block."+MODID+".portal", "Wasteland Portal");
         add("block."+MODID+".wasteland_earth", "Wasteland Earth");
+        add("block."+MODID+".pu_239_bomb", "Pu-239 Implosion Device");
+        add("block."+MODID+".pu_239_bomb.desc", "Plutonium-core implosion assembly, Mk-VII pattern. Arms on redstone input; fuses for 3 s before initiation. Field-rated, civilian-discouraged. (Fat Man wishes it had this trigger logic.)");
     }
 }
 

@@ -1,8 +1,9 @@
 package igentuman.nc.setup.registration;
 
+import igentuman.nc.block.bomb.entity.PrimedFissionBombEntity;
 import igentuman.nc.entity.EntityFeralGhoul;
 import igentuman.nc.entity.EntityWastelandBoss;
-import igentuman.nc.entity.EntityWastelandProjectile;
+import igentuman.nc.entity.EntityBlockProjectile;
 import igentuman.nc.entity.Q36EnergyFlash;
 import igentuman.nc.entity.Q36PulseProjectile;
 import net.minecraft.world.entity.EntityType;
@@ -36,13 +37,13 @@ public class Entities {
 
     // Wasteland projectile entity
     @SuppressWarnings("unchecked")
-    public static final RegistryObject<EntityType<EntityWastelandProjectile>> WASTELAND_PROJECTILE =
+    public static final RegistryObject<EntityType<EntityBlockProjectile>> BLOCK_PROJECTILE =
             Registries.ENTITIES.register("wasteland_projectile",
-                    () -> EntityType.Builder.<EntityWastelandProjectile>of((type, level) ->
-                            new EntityWastelandProjectile(type, level), MobCategory.MISC)
+                    () -> EntityType.Builder.<EntityBlockProjectile>of((type, level) ->
+                            new EntityBlockProjectile(type, level), MobCategory.MISC)
                             .sized(0.5F, 0.5F)
-                            .clientTrackingRange(4)
-                            .updateInterval(5)
+                            .clientTrackingRange(16)
+                            .updateInterval(1)
                             .build("wasteland_projectile"));
 
     @SuppressWarnings("unchecked")
@@ -63,6 +64,17 @@ public class Entities {
                             .clientTrackingRange(8)
                             .updateInterval(20)
                             .build("q36_energy_flash"));
+
+    @SuppressWarnings("unchecked")
+    public static final RegistryObject<EntityType<PrimedFissionBombEntity>> PRIMED_FISSION_BOMB =
+            Registries.ENTITIES.register("primed_fission_bomb",
+                    () -> EntityType.Builder.<PrimedFissionBombEntity>of(PrimedFissionBombEntity::new, MobCategory.MISC)
+                            .sized(0.98F, 0.98F)
+                            .noSummon()
+                            .fireImmune()
+                            .clientTrackingRange(16)
+                            .updateInterval(20)
+                            .build("primed_fission_bomb"));
 
     public static void registerSpawnPlacements() {
         SpawnPlacements.register(FERAL_GHOUL.get(), 

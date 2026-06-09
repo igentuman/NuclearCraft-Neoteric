@@ -13,6 +13,11 @@ public class NcParticleTypes {
     }
     public static final ParticleTypeRegistryObject<SimpleParticleType, SimpleParticleType> RADIATION = PARTICLE_TYPES.registerBasicParticle("radiation");
     public static final ParticleTypeRegistryObject<FusionBeamParticleData, FusionBeamParticleType> FUSION_BEAM = PARTICLE_TYPES.register("fusion_beam", FusionBeamParticleType::new);
+    public static final ParticleTypeRegistryObject<SimpleParticleType, SimpleParticleType> FIRE_VERTICAL = PARTICLE_TYPES.registerBasicParticle("fire_vertical");
+    public static final ParticleTypeRegistryObject<SimpleParticleType, SimpleParticleType> FLASH = PARTICLE_TYPES.registerBasicParticle("flash");
+    public static final ParticleTypeRegistryObject<SimpleParticleType, SimpleParticleType> EXPLOSION = PARTICLE_TYPES.registerBasicParticle("explosion");
+    public static final ParticleTypeRegistryObject<SimpleParticleType, SimpleParticleType> EXPLOSION_SEED = PARTICLE_TYPES.registerBasicParticle("explosion_seed");
+    public static final ParticleTypeRegistryObject<SimpleParticleType, SimpleParticleType> VANILLA_FLASH = PARTICLE_TYPES.registerBasicParticle("vanilla_flash");
 
     public static void init() {
     }

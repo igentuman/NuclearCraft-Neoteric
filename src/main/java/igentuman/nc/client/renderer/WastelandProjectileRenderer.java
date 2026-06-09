@@ -2,7 +2,7 @@ package igentuman.nc.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import igentuman.nc.entity.EntityWastelandProjectile;
+import igentuman.nc.entity.EntityBlockProjectile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import static igentuman.nc.setup.registration.NCBlocks.WASTELAND_EARTH;
 
-public class WastelandProjectileRenderer extends EntityRenderer<EntityWastelandProjectile> {
+public class WastelandProjectileRenderer extends EntityRenderer<EntityBlockProjectile> {
     private final BlockRenderDispatcher blockRenderer;
 
     public WastelandProjectileRenderer(EntityRendererProvider.Context context) {
@@ -25,7 +25,7 @@ public class WastelandProjectileRenderer extends EntityRenderer<EntityWastelandP
     }
 
     @Override
-    public void render(EntityWastelandProjectile entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(EntityBlockProjectile entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         BlockState blockstate = WASTELAND_EARTH.get().defaultBlockState();
 
         poseStack.pushPose();
@@ -53,7 +53,7 @@ public class WastelandProjectileRenderer extends EntityRenderer<EntityWastelandP
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EntityWastelandProjectile entity) {
+    public ResourceLocation getTextureLocation(EntityBlockProjectile entity) {
         return TextureAtlas.LOCATION_BLOCKS;
     }
 }

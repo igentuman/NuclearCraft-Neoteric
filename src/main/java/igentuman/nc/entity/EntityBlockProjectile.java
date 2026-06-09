@@ -11,27 +11,25 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-import static igentuman.nc.setup.registration.Entities.WASTELAND_PROJECTILE;
-import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
+import static igentuman.nc.setup.registration.Entities.BLOCK_PROJECTILE;
 
-public class EntityWastelandProjectile extends ThrowableProjectile {
+public class EntityBlockProjectile extends ThrowableProjectile {
 
     private static final float PROJECTILE_DAMAGE = 8.0F;
     private static final float RADIATION_AMOUNT = 1000000; // Amount of radiation to apply on hit
     private static final int PARTICLE_COUNT = 8; // Number of particles to spawn on impact
 
-    public EntityWastelandProjectile(EntityType<? extends ThrowableProjectile> entityType, Level level) {
+    public EntityBlockProjectile(EntityType<? extends ThrowableProjectile> entityType, Level level) {
         super(entityType, level);
     }
 
-    public EntityWastelandProjectile(Level level, LivingEntity owner) {
-        super(WASTELAND_PROJECTILE.get(), owner, level);
+    public EntityBlockProjectile(Level level, LivingEntity owner) {
+        super(BLOCK_PROJECTILE.get(), owner, level);
     }
 
     @Override
@@ -67,13 +65,11 @@ public class EntityWastelandProjectile extends ThrowableProjectile {
     protected void onHit(HitResult result) {
         super.onHit(result);
 
+        if (this.tickCount < 3) return;
+
         if (!this.level().isClientSide) {
-            // Create impact effect
             this.level().broadcastEntityEvent(this, (byte)3);
-
-            // Play sound
             this.playSound(SoundEvents.GENERIC_EXPLODE, 0.8F, 0.6F / (this.random.nextFloat() * 0.2F + 0.9F));
-
             this.discard();
         }
     }

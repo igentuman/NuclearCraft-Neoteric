@@ -26,6 +26,7 @@ public class CommonConfig {
     public static final MiscConfig MISC_CONFIG = new MiscConfig(BUILDER);
     public static final GTCEUCompatibilityConfig GTCEU_CONFIG = new GTCEUCompatibilityConfig(BUILDER);
     public static final Q36Config Q36_CONFIG = new Q36Config(BUILDER);
+    public static final BombConfig BOMB_CONFIG = new BombConfig(BUILDER);
 
     public static final StorageBlocksConfig STORAGE_BLOCKS = new StorageBlocksConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
@@ -189,6 +190,7 @@ public class CommonConfig {
         public final ForgeConfigSpec.IntValue PULSE_QC_COST;
         public final ForgeConfigSpec.DoubleValue PULSE_DAMAGE;
         public final ForgeConfigSpec.LongValue PULSE_RADIATION;
+        public final ForgeConfigSpec.IntValue PULSE_FX_TICKS;
 
         public final ForgeConfigSpec.IntValue BEAM_COOLDOWN_TICKS;
         public final ForgeConfigSpec.IntValue BEAM_QC_COST;
@@ -196,6 +198,7 @@ public class CommonConfig {
         public final ForgeConfigSpec.LongValue BEAM_RADIATION;
         public final ForgeConfigSpec.DoubleValue BEAM_RANGE;
         public final ForgeConfigSpec.IntValue BEAM_BLOCK_BREAK_RADIUS;
+        public final ForgeConfigSpec.IntValue BEAM_FX_TICKS;
 
         public Q36Config(ForgeConfigSpec.Builder builder) {
             builder.push("q36_quantite_disruptor");
@@ -212,6 +215,9 @@ public class CommonConfig {
             PULSE_RADIATION = builder
                     .comment("Pulse radiation dose applied on direct hit")
                     .defineInRange("pulse_radiation", 200_000L, 0L, Long.MAX_VALUE);
+            PULSE_FX_TICKS = builder
+                    .comment("Muzzle flash FX duration after a pulse shot, in ticks")
+                    .defineInRange("pulse_fx_ticks", 10, 0, 200);
 
             BEAM_COOLDOWN_TICKS = builder
                     .comment("Cooldown between beam shots, in ticks")
@@ -231,7 +237,42 @@ public class CommonConfig {
             BEAM_BLOCK_BREAK_RADIUS = builder
                     .comment("Beam impact block break radius (0 disables block breaking)")
                     .defineInRange("beam_block_break_radius", 3, 0, 16);
+            BEAM_FX_TICKS = builder
+                    .comment("Muzzle flash FX duration after a beam shot, in ticks")
+                    .defineInRange("beam_fx_ticks", 20, 0, 200);
 
+            builder.pop();
+        }
+    }
+
+    public static class BombConfig {
+        public final ForgeConfigSpec.IntValue RADIUS_HORIZONTAL;
+        public final ForgeConfigSpec.IntValue RADIUS_VERTICAL;
+        public final ForgeConfigSpec.IntValue FUSE_TICKS;
+        public final ForgeConfigSpec.IntValue OPS_PER_TICK;
+        public final ForgeConfigSpec.IntValue CHUNK_RESENDS_PER_TICK;
+        public final ForgeConfigSpec.BooleanValue FAST_BLOCK_WRITES;
+
+        public BombConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("pu_239_bomb");
+            RADIUS_HORIZONTAL = builder
+                    .comment("Horizontal blast radius in blocks (default 128 = 8 chunks)")
+                    .defineInRange("radius_horizontal", 196, 16, 384);
+            RADIUS_VERTICAL = builder
+                    .comment("Vertical blast radius in blocks (default 64)")
+                    .defineInRange("radius_vertical", 64, 8, 256);
+            FUSE_TICKS = builder
+                    .comment("Ticks between redstone arming and detonation (default 60 = 3 s)")
+                    .defineInRange("fuse_ticks", 60, 1, 12000);
+            OPS_PER_TICK = builder
+                    .comment("Block ops applied per server tick during detonation (default 2048)")
+                    .defineInRange("ops_per_tick", 32768, 64, 65536);
+            CHUNK_RESENDS_PER_TICK = builder
+                    .comment("Whole-chunk packets resent to clients per server tick during detonation. Raise to make blast visible to players faster; bandwidth cost scales with player count.")
+                    .defineInRange("chunk_resends_per_tick", 32, 1, 1024);
+            FAST_BLOCK_WRITES = builder
+                    .comment("If true, bombs mutate chunk sections directly and resend whole chunks instead of using server.setBlock per op. ~50-100x faster but skips neighbor updates, fluid flow, falling-block triggers, and Forge block events inside the blast. Set false to roll back to vanilla setBlock path.")
+                    .define("fast_block_writes", true);
             builder.pop();
         }
     }

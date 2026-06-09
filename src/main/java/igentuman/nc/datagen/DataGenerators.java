@@ -44,7 +44,6 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new NCBiomeTags(generator, event));
         generator.addProvider(event.includeServer(), new NCWorldGenProvider(generator, event));
         generator.addProvider(event.includeServer(), new PoiTypeTags(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
-
     }
 }
 

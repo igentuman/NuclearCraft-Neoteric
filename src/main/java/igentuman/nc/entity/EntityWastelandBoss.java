@@ -32,12 +32,10 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
@@ -463,7 +461,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 Vec3 rightVector = new Vec3(direction.z, 0, -direction.x).normalize().scale(0.750);
                 Vec3 leftVector = rightVector.scale(-0.750);
 
-                EntityWastelandProjectile leftProjectile = new EntityWastelandProjectile(this.level(), this);
+                EntityBlockProjectile leftProjectile = new EntityBlockProjectile(this.level(), this);
                 leftProjectile.setPos(
                         this.getX() + leftVector.x * 1.0 + direction.x * 0.5,
                         this.getEyeY() - 0.3,
@@ -480,7 +478,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
 
                 this.level().addFreshEntity(leftProjectile);
 
-                EntityWastelandProjectile rightProjectile = new EntityWastelandProjectile(this.level(), this);
+                EntityBlockProjectile rightProjectile = new EntityBlockProjectile(this.level(), this);
                 rightProjectile.setPos(
                         this.getX() + rightVector.x * 1.0 + direction.x * 0.5,
                         this.getEyeY() - 0.3,
@@ -552,7 +550,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 // Add vertical adjustment for arc
                 double verticalAdjustment = Math.log10(distance) * 0.08;
 
-                EntityWastelandProjectile projectile = new EntityWastelandProjectile(this.level(), this);
+                EntityBlockProjectile projectile = new EntityBlockProjectile(this.level(), this);
                 
                 // Randomize spawn position slightly
                 double offsetX = (random.nextDouble() - 0.5) * 1.5;

@@ -7,6 +7,7 @@ import igentuman.nc.client.block.ChargingStationRenderer;
 import igentuman.nc.client.block.fusion.FusionCoreRenderer;
 import igentuman.nc.client.block.kugelblitz.EXPLRenderer;
 import igentuman.nc.client.block.turbine.TurbineRotorRenderer;
+import igentuman.nc.client.bomb.BombFlashOverlay;
 import igentuman.nc.client.gui.*;
 import igentuman.nc.client.gui.accelerator.*;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
@@ -18,12 +19,18 @@ import igentuman.nc.client.gui.kugelblitz.EXPLScreen;
 import igentuman.nc.client.gui.turbine.TurbineControllerScreen;
 import igentuman.nc.client.gui.turbine.TurbinePortScreen;
 import igentuman.nc.client.model.ModelFeralGhoul;
+import igentuman.nc.client.particle.BombFlashParticle;
+import igentuman.nc.client.particle.FireVerticalParticle;
 import igentuman.nc.client.particle.FusionBeamParticle;
 import igentuman.nc.client.particle.RadiationParticle;
+import igentuman.nc.client.particle.ExplosionParticle;
+import igentuman.nc.client.particle.ExplosionSeedParticle;
+import igentuman.nc.client.particle.VanillaFlashParticle;
 import igentuman.nc.client.renderer.BlackholeRenderer;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.client.renderer.FeralGhoulRenderer;
 import igentuman.nc.client.renderer.Q36EnergyFlashRenderer;
+import igentuman.nc.client.renderer.entity.PrimedFissionBombRenderer;
 import igentuman.nc.client.renderer.Q36PulseProjectileRenderer;
 import igentuman.nc.client.renderer.WastelandProjectileRenderer;
 import igentuman.nc.client.sound.SoundHandler;
@@ -31,6 +38,7 @@ import igentuman.nc.compat.ponder.PonderUtil;
 import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.event.client.*;
+import igentuman.nc.item.Q36Item;
 import igentuman.nc.radiation.client.ClientRadiationData;
 import igentuman.nc.radiation.client.RadiationOverlay;
 import igentuman.nc.radiation.client.WhiteNoiseOverlay;
@@ -93,9 +101,10 @@ public class ClientSetup {
             BlockEntityRenderers.register(KUGELBLITZ_BE.get("black_hole").get(), BlackholeRenderer::new);
             BlockEntityRenderers.register(CHARGING_STATION_BE.get(), ChargingStationRenderer::new);
             EntityRenderers.register(Entities.FERAL_GHOUL.get(), FeralGhoulRenderer::new);
-            EntityRenderers.register(Entities.WASTELAND_PROJECTILE.get(), WastelandProjectileRenderer::new);
+            EntityRenderers.register(Entities.BLOCK_PROJECTILE.get(), WastelandProjectileRenderer::new);
             EntityRenderers.register(Entities.Q36_PULSE_PROJECTILE.get(), Q36PulseProjectileRenderer::new);
             EntityRenderers.register(Entities.Q36_ENERGY_FLASH.get(), Q36EnergyFlashRenderer::new);
+            EntityRenderers.register(Entities.PRIMED_FISSION_BOMB.get(), PrimedFissionBombRenderer::new);
             MenuScreens.register(STORAGE_CONTAINER.get(), StorageContainerScreen::new);
             MenuScreens.register(STORAGE_ITEM_CONTAINER.get(), StorageContainerItemScreen::new);
             MenuScreens.register(FUSION_CORE_CONTAINER.get(), FusionCoreScreen::new);
@@ -140,7 +149,7 @@ public class ClientSetup {
             });
             setPropertyOverride(Q36.get(), rl("firing"), (stack, world, entity, seed) -> {
                 if (world == null) return 0.0F;
-                return igentuman.nc.item.Q36Item.isFxActive(stack, world) ? 1.0F : 0.0F;
+                return Q36Item.isFxActive(stack, world) ? 1.0F : 0.0F;
             });
         });
         PonderUtil.initPlugin();
@@ -161,12 +170,18 @@ public class ClientSetup {
     public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
         event.registerAboveAll("radiation_bar", RadiationOverlay.RADIATION_BAR);
         event.registerAboveAll("white_noise", WhiteNoiseOverlay.WHITE_NOISE);
+        event.registerAboveAll("bomb_flash", BombFlashOverlay.BOMB_FLASH);
     }
 
     @SubscribeEvent
     public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(NcParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
         event.registerSpriteSet(NcParticleTypes.FUSION_BEAM.get(), FusionBeamParticle.Factory::new);
+        event.registerSpriteSet(NcParticleTypes.FIRE_VERTICAL.get(), FireVerticalParticle.Factory::new);
+        event.registerSpriteSet(NcParticleTypes.FLASH.get(), BombFlashParticle.Factory::new);
+        event.registerSpriteSet(NcParticleTypes.EXPLOSION.get(), ExplosionParticle.Factory::new);
+        event.registerSpriteSet(NcParticleTypes.EXPLOSION_SEED.get(), ExplosionSeedParticle.Factory::new);
+        event.registerSpriteSet(NcParticleTypes.VANILLA_FLASH.get(), VanillaFlashParticle.Factory::new);
     }
 
     public static void setup() {

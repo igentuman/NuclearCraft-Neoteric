@@ -1,5 +1,7 @@
 package igentuman.nc.setup.registration;
 
+import igentuman.nc.block.bomb.Pu239BombBlock;
+import igentuman.nc.block.bomb.entity.Pu239BombBE;
 import igentuman.nc.block.entity.ChargingStationBE;
 import igentuman.nc.block.entity.MultiblockBuilderBE;
 import igentuman.nc.block.entity.RedstoneDimmerBE;
@@ -74,6 +76,11 @@ public class NCBlocks {
     public static final RegistryObject<Item> MULTIBLOCK_BUILDER_ITEM_BLOCK = fromBlock(MULTIBLOCK_BUILDER_BLOCK);
     public static final RegistryObject<BlockEntityType<MultiblockBuilderBE>> MULTIBLOCK_BUILDER_BE = BLOCK_ENTITIES.register("multiblock_builder",
             () -> BlockEntityType.Builder.of(MultiblockBuilderBE::new, MULTIBLOCK_BUILDER_BLOCK.get()).build(null));
+    public static final RegistryObject<Block> PU_239_BOMB = BLOCKS.register("pu_239_bomb", Pu239BombBlock::new);
+    public static final RegistryObject<Item> PU_239_BOMB_ITEM = fromBlock(PU_239_BOMB);
+    public static final RegistryObject<BlockEntityType<Pu239BombBE>> PU_239_BOMB_BE = BLOCK_ENTITIES.register("pu_239_bomb",
+            () -> BlockEntityType.Builder.of(Pu239BombBE::new, PU_239_BOMB.get()).build(null));
+
     public static final RegistryObject<Block> MUSHROOM_BLOCK = BLOCKS.register("glowing_mushroom", () -> new GlowingMushroomBlock(
             BlockBehaviour.Properties.of().sound(SoundType.GRASS).noCollission().instabreak().randomTicks().lightLevel($ -> 5)
             ));

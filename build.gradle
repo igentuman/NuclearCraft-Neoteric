@@ -73,6 +73,7 @@ minecraft {
         }
 
         data {
+
             workingDirectory project.file('run')
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"

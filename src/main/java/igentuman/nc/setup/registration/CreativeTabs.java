@@ -213,6 +213,7 @@ public class CreativeTabs {
         items.add(new ItemStack(CHARGING_STATION_ITEM_BLOCK.get()));
         items.add(new ItemStack(MULTIBLOCK_BUILDER_BLOCK.get()));
         items.add(new ItemStack(EXPL_BLOCK.get()));
+        items.add(new ItemStack(PU_239_BOMB.get()));
         items.addAll(blockStacks(NC_ELECTROMAGNETS.values()));
         items.addAll(blockStacks(NC_RF_AMPLIFIERS.values()));
         for(RegistryObject<Block> block: ENERGY_BLOCKS.values()) {

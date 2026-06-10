@@ -53,6 +53,7 @@ public class BlastTask implements Runnable {
             emitVoidSections();
             voidEmitNanos = System.nanoTime();
             march();
+            emitRadiationDeposits();
         } catch (Throwable t) {
             t.printStackTrace();
         } finally {
@@ -171,6 +172,36 @@ public class BlastTask implements Runnable {
             return chunk.getBlockState(pos);
         } catch (Throwable t) {
             return null;
+        }
+    }
+
+    private void emitRadiationDeposits() {
+        int cxMin = (epicenter.getX() - hRadius) >> 4;
+        int cxMax = (epicenter.getX() + hRadius) >> 4;
+        int czMin = (epicenter.getZ() - hRadius) >> 4;
+        int czMax = (epicenter.getZ() + hRadius) >> 4;
+
+        double maxDistance = hRadius;
+
+        for (int cx = cxMin; cx <= cxMax; cx++) {
+            for (int cz = czMin; cz <= czMax; cz++) {
+                long chunkKey = ChunkPos.asLong(cx, cz);
+                if (!chunkSnapshot.containsKey(chunkKey)) continue;
+
+                double chunkCenterX = (cx << 4) + 8;
+                double chunkCenterZ = (cz << 4) + 8;
+                double dx = chunkCenterX - epicenter.getX();
+                double dz = chunkCenterZ - epicenter.getZ();
+                double distance = Math.sqrt(dx * dx + dz * dz);
+
+                if (distance <= maxDistance) {
+                    double factor = 1.0 - (distance / maxDistance);
+                    float radiationAmount = (float) (10000.0 * yield * factor);
+                    if (radiationAmount > 0.01f) {
+                        outQueue.add(new BlastOp.RadiationDeposit(new ChunkPos(cx, cz), radiationAmount));
+                    }
+                }
+            }
         }
     }
 }

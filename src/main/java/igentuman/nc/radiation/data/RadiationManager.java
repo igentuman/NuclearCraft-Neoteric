@@ -2,6 +2,7 @@ package igentuman.nc.radiation.data;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.compat.mekanism.MekanismRadiation;
+import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.network.toClient.PacketPlayerRadiationData;
 import igentuman.nc.network.toClient.PacketWorldRadiationData;
 import igentuman.nc.util.ModUtil;
@@ -10,6 +11,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -28,6 +31,8 @@ import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.radiation.data.WorldRadiation.packChunkPos;
 
 public class RadiationManager extends SavedData {
+
+    public static final long ENTITY_RADIATION_THRESHOLD = 5_000_000L;
 
     private WorldRadiation worldRadiation;
     private int tickCounter = RADIATION_CONFIG.RADIATION_UPDATE_INTERVAL.get();
@@ -122,11 +127,24 @@ public class RadiationManager extends SavedData {
         }
         if (tickCounter == 0) {
             tickCounter = RADIATION_CONFIG.RADIATION_UPDATE_INTERVAL.get();
+            damageEntities(level);
             if(worldRadiation.updatedChunks.isEmpty()) {
                 return;
             }
 
             setDirty();
+        }
+    }
+
+    private void damageEntities(Level level) {
+        if(!(level instanceof ServerLevel serverLevel)) return;
+        for(net.minecraft.world.entity.Entity entity : serverLevel.getAllEntities()) {
+            if(!(entity instanceof LivingEntity living) || entity instanceof Player) continue;
+            if(!living.isAlive()) continue;
+            int chunkRadiation = worldRadiation.getChunkRadiation(living.chunkPosition().x, living.chunkPosition().z);
+            if(chunkRadiation < ENTITY_RADIATION_THRESHOLD) continue;
+            float damage = (float)(chunkRadiation / ENTITY_RADIATION_THRESHOLD);
+            living.hurt(NCRadiationDamageSource.RADIATION(level), damage);
         }
     }
 

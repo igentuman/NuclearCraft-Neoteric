@@ -2,6 +2,7 @@ package igentuman.nc.block.bomb.entity;
 
 import com.mojang.authlib.GameProfile;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.block.bomb.sim.BlastOp;
 import igentuman.nc.block.bomb.sim.BlastTask;
 import igentuman.nc.block.bomb.sim.BombSimulationExecutor;
@@ -368,6 +369,8 @@ public class PrimedFissionBombEntity extends Entity {
             }
         } else if (op instanceof BlastOp.VoidSection vs) {
             voidSection(server, vs.sx(), vs.sy(), vs.sz());
+        } else if (op instanceof BlastOp.RadiationDeposit rd) {
+            RadiationManager.get(server).addRadiation(server, rd.amount(), rd.chunk().x * 16 + 8, blockPosition().getY(), rd.chunk().z * 16 + 8);
         }
     }
 
@@ -592,11 +595,13 @@ public class PrimedFissionBombEntity extends Entity {
         double ex = ep.getX() + 0.5;
         double ey = ep.getY() + 0.5;
         double ez = ep.getZ() + 0.5;
+        int hR = hRadius + 100;
+        int vR = vRadius + 100;
         AABB box = new AABB(
-                ex - hRadius, ey - vRadius, ez - hRadius,
-                ex + hRadius, ey + vRadius, ez + hRadius);
-        double invHSq = 1.0 / ((double) hRadius * hRadius);
-        double invVSq = 1.0 / ((double) vRadius * vRadius);
+                ex - hR, ey - vR, ez - hR,
+                ex + hR, ey + vR, ez + hR);
+        double invHSq = 1.0 / ((double) hR * hR);
+        double invVSq = 1.0 / ((double) vR * vR);
         List<LivingEntity> targets = server.getEntitiesOfClass(LivingEntity.class, box);
         int hit = 0;
         for (LivingEntity le : targets) {
@@ -610,6 +615,9 @@ public class PrimedFissionBombEntity extends Entity {
             float dmg = (float) (5000.0 * (1.0 - t)) * atten;
             if (dmg <= 0f) continue;
             le.hurt(server.damageSources().explosion(this, null), dmg);
+            if (le.isAlive()) {
+                le.setSecondsOnFire(30);
+            }
             hit++;
         }
         NuclearCraft.LOGGER.info("[Bomb] Entity damage: scanned={} hit={}", targets.size(), hit);

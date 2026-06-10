@@ -35,6 +35,9 @@ import static igentuman.nc.NuclearCraft.rl;
 public class NukeRenderer {
 
     public static final ResourceLocation TEXTURE = rl("textures/particle/nuke.png");
+    public static final ResourceLocation NOISE_0 = rl("textures/particle/noise_channel_0.png");
+    public static final ResourceLocation NOISE_1 = rl("textures/particle/noise_channel_1.png");
+    public static final ResourceLocation NOISE_2 = rl("textures/particle/noise_channel_2.png");
 
     // nuke.png is a 2x2 sprite atlas (256x256, 128x128 per cell).
     // Layout: TL = fireball core, TR = shockwave ring, BL = smoke veil, BR = reserved.
@@ -42,18 +45,26 @@ public class NukeRenderer {
     private static final float[] SPRITE_SHOCKWAVE = {0.5f, 0.0f, 1.0f, 0.5f};
     private static final float[] SPRITE_SMOKE     = {0.0f, 0.5f, 0.5f, 1.0f};
 
-    private static final int PHASE_FIREBALL  = 0;
-    private static final int PHASE_SHOCKWAVE = 1;
-    private static final int PHASE_SMOKE     = 2;
+    private static final int PHASE_FIREBALL    = 0;
+    private static final int PHASE_SHOCKWAVE   = 1;
+    private static final int PHASE_SMOKE       = 2;
+    private static final int PHASE_STEM        = 3;
+    private static final int PHASE_GROUND      = 4;
+    private static final int PHASE_WHITE_SW    = 5;
 
     private static final int FIREBALL_GROW_TICKS = 20;
     private static final int FIREBALL_HOLD_TICKS = 60;
     private static final int FIREBALL_FADE_TICKS = 80;
     private static final int FIREBALL_TOTAL_TICKS = FIREBALL_GROW_TICKS + FIREBALL_HOLD_TICKS + FIREBALL_FADE_TICKS;
 
-    private static final int SHOCKWAVE_DURATION_TICKS = 60;
-    private static final float SHOCKWAVE_MAX_RADIUS_MULT = 10.0f;
+    private static final int SHOCKWAVE_DURATION_TICKS = 120;
+    private static final float SHOCKWAVE_MAX_RADIUS_MULT = 5.0f;
     private static final float FIREBALL_SCALE = 3.5f;
+    private static final float MUSHROOM_CAP_SCALE = 3.5f / 1.5f;
+
+    private static final int WHITE_SW_COUNT = 4;
+    private static final int WHITE_SW_DELAY_TICKS = 8;
+    private static final int WHITE_SW_DURATION_TICKS = 140;
 
     private static int currentPostSize = 0;
 
@@ -75,6 +86,9 @@ public class NukeRenderer {
         pose.translate(-camPos.x, -camPos.y, -camPos.z);
 
         RenderSystem.setShaderTexture(0, TEXTURE);
+        RenderSystem.setShaderTexture(1, NOISE_0);
+        RenderSystem.setShaderTexture(2, NOISE_1);
+        RenderSystem.setShaderTexture(3, NOISE_2);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(false);
@@ -134,6 +148,22 @@ public class NukeRenderer {
                     PHASE_SHOCKWAVE, swT, yieldN, ringAlpha, shader, pose);
         }
 
+        // Secondary white shockwaves: smaller, staggered, spread up the mushroom column.
+        float stemHLocal = Math.min(120f, Math.max(50f, b.yield * 70f));
+        for (int i = 0; i < WHITE_SW_COUNT; i++) {
+            float delay = i * WHITE_SW_DELAY_TICKS;
+            float lt = t - delay;
+            if (lt < 0f || lt >= WHITE_SW_DURATION_TICKS) continue;
+            float swT = Mth.clamp(lt / (float) WHITE_SW_DURATION_TICKS, 0f, 1f);
+            float radScale = 1.10f + 0.10f * i;  // 1.10..1.40 of fireball radius
+            float ringR = maxR * swT * radScale;
+            float ringAlpha = 1f - swT * 0.6f;
+            // distribute across 0.18..0.95 of stem height
+            float heightFrac = 0.18f + 0.26f * i;
+            double yOff = stemHLocal * heightFrac;
+            drawGroundQuad(cx, cy + yOff, cz, ringR, SPRITE_SHOCKWAVE,
+                    PHASE_WHITE_SW, swT, yieldN, ringAlpha, shader, pose);
+        }
     }
 
     private static void renderBombSmoke(ActiveBomb b, PoseStack pose, Quaternionf camRot, float partial, ShaderInstance shader) {
@@ -145,24 +175,53 @@ public class NukeRenderer {
 
         float yieldN = Mth.clamp(b.yield / 4f, 0.1f, 4f);
 
+        float stemH = Math.min(120f, Math.max(50f, b.yield * 70f));
+
+        // Mushroom cap (top billowing cloud)
         if (t >= b.stemStart() && t < b.mushroomEnd()) {
             float local = t - b.stemStart();
             float prog = Mth.clamp(local / (float) ActiveBomb.MUSHROOM_DURATION, 0f, 1f);
-            float stemH = Math.min(120f, Math.max(50f, b.yield * 70f));
-            float capR = Math.max(4f, b.yield * 8f) * 3.5f;
+            float capR = Math.max(4f, b.yield * 8f) * MUSHROOM_CAP_SCALE;
             float growT = Mth.clamp(local / 60f, 0f, 1f);
-            float radius = capR * Math.max(0.3f, growT) * 3.5f;
+            float radius = capR * Math.max(0.3f, growT) * MUSHROOM_CAP_SCALE;
             double capY = cy + stemH * growT;
             float alpha = (1f - prog * 0.4f) * 0.95f;
 
             drawBillboard(cx, capY, cz, radius, camRot, SPRITE_SMOKE,
                     PHASE_SMOKE, prog, yieldN, alpha, shader, pose);
         }
+
+        // Mushroom stem (vertical column, 2x wider)
+        if (t >= b.stemStart() && t < b.mushroomEnd()) {
+            float local = t - b.stemStart();
+            float prog = Mth.clamp(local / (float) ActiveBomb.MUSHROOM_DURATION, 0f, 1f);
+            float growT = Mth.clamp(local / 60f, 0f, 1f);
+            float stemR = Math.max(10f, b.yield * 16f) * 1.1f;
+            float stemHCur = stemH * Math.max(0.05f, growT);
+            double stemMidY = cy + stemHCur * 0.5;
+            float alpha = (1f - prog * 0.35f) * 0.9f;
+
+            drawVerticalBillboard(cx, stemMidY, cz, stemR, stemHCur * 0.5f, camRot, SPRITE_SMOKE,
+                    PHASE_STEM, prog, yieldN, alpha, shader, pose);
+        }
+
+        // Ground dust cloud (volumetric, 2x wider — vertical billboard)
+        if (t >= b.groundCloudStart() && t < b.groundCloudEnd()) {
+            float local = t - b.groundCloudStart();
+            float prog = Mth.clamp(local / (float) ActiveBomb.GROUND_CLOUD_DURATION, 0f, 1f);
+            float maxGR = Math.max(60f, b.yield * 90f);
+            float growT = Mth.clamp(local / 120f, 0f, 1f);
+            float gr = maxGR * easeOutCubic(growT);
+            float alpha = (1f - prog * 0.85f) * 0.85f;
+
+            drawVerticalBillboard(cx, cy + gr * 0.35, cz, gr, gr * 0.45f, camRot, SPRITE_SMOKE,
+                    PHASE_GROUND, prog, yieldN, alpha, shader, pose);
+        }
     }
 
     @SubscribeEvent
     public static void onPostFx(RenderLevelStageEvent ev) {
-        if (ev.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
+        if (ev.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
         if (BombFxManager.active().isEmpty()) return;
 
         Minecraft mc = Minecraft.getInstance();
@@ -296,6 +355,43 @@ public class NukeRenderer {
             vv.mul(radius);
             vv.add((float) wx, (float) wy, (float) wz);
         }
+        Matrix4f m = pose.last().pose();
+        Tesselator tess = Tesselator.getInstance();
+        BufferBuilder bb = tess.getBuilder();
+        bb.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
+        bb.vertex(m, v[0].x, v[0].y, v[0].z).color(255, 255, 255, 255).uv(sprite[0], sprite[3]).endVertex();
+        bb.vertex(m, v[1].x, v[1].y, v[1].z).color(255, 255, 255, 255).uv(sprite[2], sprite[3]).endVertex();
+        bb.vertex(m, v[2].x, v[2].y, v[2].z).color(255, 255, 255, 255).uv(sprite[2], sprite[1]).endVertex();
+        bb.vertex(m, v[3].x, v[3].y, v[3].z).color(255, 255, 255, 255).uv(sprite[0], sprite[1]).endVertex();
+        BufferUploader.drawWithShader(bb.end());
+    }
+
+    private static void drawVerticalBillboard(double wx, double wy, double wz, float halfW, float halfH,
+                                              Quaternionf camRot, float[] sprite,
+                                              int phase, float progress, float yieldN, float alpha,
+                                              ShaderInstance shader, PoseStack pose) {
+        if (alpha <= 0f || halfW <= 0f || halfH <= 0f) return;
+        shader.safeGetUniform("NukeData").set((float) phase, progress, yieldN, alpha);
+        shader.safeGetUniform("SpriteRect").set(sprite[0], sprite[1], sprite[2], sprite[3]);
+
+        // Yaw-locked billboard: horizontal axis follows camera right projected to ground plane,
+        // vertical axis stays world Y so the stem reads as a column from any angle.
+        Vector3f camRight = new Vector3f(1f, 0f, 0f);
+        camRot.transform(camRight);
+        camRight.y = 0f;
+        if (camRight.lengthSquared() < 1e-6f) camRight.set(1f, 0f, 0f);
+        camRight.normalize();
+
+        float rx = camRight.x * halfW;
+        float rz = camRight.z * halfW;
+        Vector3f[] v = {
+                new Vector3f(-rx,  halfH, -rz),
+                new Vector3f( rx,  halfH,  rz),
+                new Vector3f( rx, -halfH,  rz),
+                new Vector3f(-rx, -halfH, -rz)
+        };
+        for (Vector3f vv : v) vv.add((float) wx, (float) wy, (float) wz);
+
         Matrix4f m = pose.last().pose();
         Tesselator tess = Tesselator.getInstance();
         BufferBuilder bb = tess.getBuilder();

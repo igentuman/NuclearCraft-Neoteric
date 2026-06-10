@@ -143,8 +143,8 @@ public class BombFxManager {
         double cy = b.epicenter.getY() + 0.5;
         double cz = b.epicenter.getZ() + 0.5;
 
-        int stemBands = 12;
-        int perBand = 14;
+        int stemBands = 9;
+        int perBand = 9;
         for (int band = 0; band < stemBands; band++) {
             double bandT = (band + rng.nextDouble()) / stemBands;
             if (bandT > growT) continue;
@@ -191,7 +191,7 @@ public class BombFxManager {
             float curCapR = capRadius * Math.max(0.2f, capProgress);
             double capCenterY = cy + stemHeight * growT;
 
-            int domeCount = 90;
+            int domeCount = 60;
             for (int i = 0; i < domeCount; i++) {
                 double theta = rng.nextDouble() * Math.PI * 2.0;
                 double phiTop = Math.acos(rng.nextDouble());

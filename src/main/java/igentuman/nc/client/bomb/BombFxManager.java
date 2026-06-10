@@ -74,24 +74,6 @@ public class BombFxManager {
     }
 
     private static void spawnPhaseParticles(ClientLevel level, ActiveBomb b) {
-        if (b.tickCounter == 1) {
-            double cx = b.epicenter.getX() + 0.5;
-            double cy = b.epicenter.getY() + 0.5;
-            double cz = b.epicenter.getZ() + 0.5;
-            int lifetime = b.fireballStart() + 2;
-            level.addAlwaysVisibleParticle(NcParticleTypes.FLASH.get(), true, cx, cy, cz, b.yield/2, lifetime, 0);
-        }
-        if (b.tickCounter < b.fireballStart()+1) {
-            double cx = b.epicenter.getX() + 0.5 + level.getRandom().nextDouble()/2;
-            double cy = b.epicenter.getY() + 0.5 + level.getRandom().nextDouble()/2;
-            double cz = b.epicenter.getZ() + 0.5 + level.getRandom().nextDouble()/2;
-            float maxR = Math.max(18f, b.yield * 32f);
-            int local = b.tickCounter;
-            float growT = Mth.clamp(local / 30f, 0f, 1f);
-            float radius = 16 + maxR * growT * 5;
-            double transparency = 0.4 * (1/growT);
-            level.addAlwaysVisibleParticle(NcParticleTypes.VANILLA_FLASH.get(), true, cx, cy, cz, radius, transparency, 0);
-        }
         if (b.tickCounter >= b.fireballStart() && b.tickCounter < b.fireballEnd()) {
             spawnFireball(level, b);
         }

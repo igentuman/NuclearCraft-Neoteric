@@ -22,14 +22,23 @@ import static igentuman.nc.NuclearCraft.rl;
 public class NCShaders {
 
     public static final ShaderTracker BLACKHOLE_COLOR = new ShaderTracker();
+    public static final ShaderTracker NUKE_CORE = new ShaderTracker();
+    public static final ShaderTracker NUKE_SMOKE = new ShaderTracker();
 
     public static PostChain blackholePostEffect;
+    public static PostChain nukePostEffect;
     public static PostChain q36FlashPostEffect;
 
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException {
         registerShader(event, rl("rendertype_blackhole"), DefaultVertexFormat.POSITION_COLOR_TEX, BLACKHOLE_COLOR);
+        registerShader(event, rl("rendertype_nuke"), DefaultVertexFormat.POSITION_COLOR_TEX, NUKE_CORE);
+        registerShader(event, rl("rendertype_nuke_smoke"), DefaultVertexFormat.POSITION_COLOR_TEX, NUKE_SMOKE);
         Minecraft mc = Minecraft.getInstance();
+
+        nukePostEffect = new PostChain(mc.getTextureManager(), mc.getResourceManager(),
+                mc.getMainRenderTarget(), rl("shaders/post/nuke.json"));
+        nukePostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
 
         blackholePostEffect = new PostChain(mc.getTextureManager(), mc.getResourceManager(),
                 mc.getMainRenderTarget(), rl("shaders/post/black_hole.json"));

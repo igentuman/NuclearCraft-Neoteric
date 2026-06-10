@@ -111,6 +111,13 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
                 ingredient(MUSHROOM_ITEM.get(), 3),
                 fluidIngredient("radaway_slow", 250)
         );
+
+        // Baratol: dustBariumNitrate + tnt fluid -> baratol fluid (Trinity port)
+        add(
+                fluidIngredient(Materials.tnt, 200),
+                dustIngredient(Materials.barium_nitrate),
+                fluidIngredient(Materials.baratol, 200)
+        );
     }
 
     protected static void add(FluidStackIngredient inputFluid, NcIngredient inputItem, FluidStackIngredient output, double...modifiers) {

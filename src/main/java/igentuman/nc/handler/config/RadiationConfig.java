@@ -118,7 +118,7 @@ public class RadiationConfig {
                             "nuclearcraft:dominos|250000000",
                             "nuclearcraft:moresmore|2500000000",
                             "nuclearcraft:evenmoresmore|1000000000",
-                            "nuclearcraft:radaway|5000000000"
+                            "nuclearcraft:radaway|50000000000"
                     ), o -> o instanceof ArrayList);
 
             ITEM_RADIATION = builder

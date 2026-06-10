@@ -86,6 +86,9 @@ public class Materials extends MaterialsManager {
     public final static String alugentum = "alugentum";
     public final static String borax = "borax";
     public final static String neutronium = "neutronium";
+    public final static String baratol = "baratol";
+    public final static String barium_nitrate = "barium_nitrate";
+    public final static String tnt = "tnt";
 
     public final static String yellowcake = "yellowcake";
     public final static String neodymium = "neodymium";
@@ -312,6 +315,10 @@ public class Materials extends MaterialsManager {
             all.put(potassium_fluoride, NCMaterial.dust(potassium_fluoride));
             all.put(sodium_fluoride, NCMaterial.dust(sodium_fluoride));
             all.put(yellowcake, NCMaterial.dust(yellowcake));
+
+            all.put(barium_nitrate, NCMaterial.dust(barium_nitrate).fluid(true, 600).color(0xFFE6E6CC));
+            all.put(baratol, NCMaterial.alloy(baratol).define("ingot","dust","fluid").fluid(true, 800).color(0xFFB8B0A0));
+            all.put(tnt, NCMaterial.get(tnt).define("fluid").fluid(true, 600).color(0xFFCC2A1F));
 
         }
         return all;

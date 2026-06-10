@@ -31,6 +31,7 @@ public class Pu239BombBlock extends Block implements EntityBlock {
         super(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(5.0f)
+                .noOcclusion()
                 .requiresCorrectToolForDrops());
     }
 

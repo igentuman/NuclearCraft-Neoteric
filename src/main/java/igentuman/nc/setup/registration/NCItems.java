@@ -296,7 +296,11 @@ public class NCItems {
                 "scintillator_pwo",
                 "scintillator_plastic",
                 "laser_assembly",
-                "wire_gold_tungsten"
+                "wire_gold_tungsten",
+                "neutron_initiator",
+                "compression_charge",
+                "pu_239_pit",
+                "pu_239_core"
         );
         for(String name: parts) {
             if(name.equals("research_paper")) {

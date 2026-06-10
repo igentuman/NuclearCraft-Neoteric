@@ -16,7 +16,7 @@
 
   ],
   "client": [
-
+    "LevelRendererCloudsMixin"
   ],
   "minVersion": "0.8"
 }

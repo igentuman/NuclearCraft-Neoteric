@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.dustIngredient;
+import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.isotopeIngredient;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.coolers;
 import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
@@ -68,8 +69,69 @@ public class NCRecipes extends RecipeProvider {
         acceleratorItems(consumer);
         FuelRecipes.generate(consumer);
         CustomRecipes.generate(consumer);
+        bombs(consumer);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.SHIELDING);
         SpecialRecipeBuilder.build(consumer, NcRecipeSerializers.RESET_NBT);
+    }
+
+    private void bombs(Consumer<FinishedRecipe> consumer) {
+        // Barium nitrate dust (simplified): dust_barium + gunpowder -> dust_barium_nitrate
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_DUSTS.get(Materials.barium_nitrate).get())
+                .requires(forgeDust(Materials.barium))
+                .requires(GUNPOWDER)
+                .unlockedBy("item", has(forgeDust(Materials.barium)))
+                .save(consumer, rl("barium_nitrate_from_barium"));
+
+        // Neutron initiator: ' B '/'BPB'/' B '
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("neutron_initiator").get())
+                .pattern(" B ")
+                .pattern("BPB")
+                .pattern(" B ")
+                .define('B', forgeIngot(Materials.beryllium))
+                .define('P', forgeDust(Materials.polonium))
+                .unlockedBy("item", has(forgeDust(Materials.polonium)))
+                .save(consumer, rl("neutron_initiator"));
+
+        // Compression charge: 'STB'/'TB '/'STB'
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("compression_charge").get())
+                .pattern("STB")
+                .pattern("TB ")
+                .pattern("STB")
+                .define('S', forgeIngot(Materials.lead))
+                .define('T', TNT)
+                .define('B', forgeIngot(Materials.baratol))
+                .unlockedBy("item", has(forgeIngot(Materials.baratol)))
+                .save(consumer, rl("compression_charge"));
+
+        // PU-239 pit: 'FFF'/'FNF'/'FFF'
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("pu_239_pit").get())
+                .pattern("FFF")
+                .pattern("FNF")
+                .pattern("FFF")
+                .define('F', isotopeIngredient(Materials.plutonium239))
+                .define('N', NC_PARTS.get("neutron_initiator").get())
+                .unlockedBy("item", has(NC_PARTS.get("neutron_initiator").get()))
+                .save(consumer, rl("pu_239_pit"));
+
+        // PU-239 core: 'FFF'/'FNF'/'FFF' (U-238 tamper around pit)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_PARTS.get("pu_239_core").get())
+                .pattern("FFF")
+                .pattern("FNF")
+                .pattern("FFF")
+                .define('F', isotopeIngredient(Materials.uranium238))
+                .define('N', NC_PARTS.get("pu_239_pit").get())
+                .unlockedBy("item", has(NC_PARTS.get("pu_239_pit").get()))
+                .save(consumer, rl("pu_239_core"));
+
+        // Final PU-239 bomb block
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PU_239_BOMB_ITEM.get())
+                .pattern("CCC")
+                .pattern("CNC")
+                .pattern("CCC")
+                .define('C', NC_PARTS.get("compression_charge").get())
+                .define('N', NC_PARTS.get("pu_239_core").get())
+                .unlockedBy("item", has(NC_PARTS.get("pu_239_core").get()))
+                .save(consumer, rl("pu_239_bomb"));
     }
 
     private void acceleratorItems(Consumer<FinishedRecipe> consumer) {

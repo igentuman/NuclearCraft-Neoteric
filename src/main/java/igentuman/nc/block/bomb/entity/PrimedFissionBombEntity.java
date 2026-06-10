@@ -370,7 +370,7 @@ public class PrimedFissionBombEntity extends Entity {
         } else if (op instanceof BlastOp.VoidSection vs) {
             voidSection(server, vs.sx(), vs.sy(), vs.sz());
         } else if (op instanceof BlastOp.RadiationDeposit rd) {
-            RadiationManager.get(server).addRadiation(server, rd.amount(), rd.chunk().x * 16 + 8, blockPosition().getY(), rd.chunk().z * 16 + 8);
+            RadiationManager.get(server).addRadiation(server, rd.amount()/10, rd.chunk().x * 16 + 8, blockPosition().getY(), rd.chunk().z * 16 + 8);
         }
     }
 

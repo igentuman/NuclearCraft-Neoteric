@@ -67,6 +67,28 @@ public class ActiveBomb {
         return Math.max(0f, Math.min(1f, a)) * distanceFactor;
     }
 
+    public static final int CLOUD_WIPE_GROW_TICKS = 100;
+    public static final int CLOUD_WIPE_HOLD_TICKS = 100;
+    public static final int CLOUD_WIPE_FADE_TICKS = 300;
+
+    public float cloudWipeRadius(float partialTick) {
+        float t = tickCounter + partialTick - flashDuration;
+        if (t < 0f) return 0f;
+        float maxR = Math.max(200f, yield * 250f);
+        int grow = CLOUD_WIPE_GROW_TICKS;
+        int hold = CLOUD_WIPE_HOLD_TICKS;
+        int fade = CLOUD_WIPE_FADE_TICKS;
+        if (t < grow) {
+            float x = t / grow;
+            float ease = 1f - (1f - x) * (1f - x) * (1f - x);
+            return maxR * ease;
+        }
+        if (t < grow + hold) return maxR;
+        float f = (t - grow - hold) / fade;
+        if (f >= 1f) return 0f;
+        return maxR * (1f - f);
+    }
+
     public float cameraShakeAmount(float partialTick) {
         if (shakeFactor <= 0f) return 0f;
         float t = tickCounter + partialTick;

@@ -164,7 +164,11 @@ public class NCBlockTags extends BlockTagsProvider {
     private void blocks() {
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MULTIBLOCK_BUILDER_BLOCK.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(REDSTONE_DIMMER_BLOCK.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CHARGING_STATION_BLOCK.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(PU_239_BOMB.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(REDSTONE_DIMMER_BLOCK.get());
+        tag(BlockTags.NEEDS_IRON_TOOL).add(PU_239_BOMB.get());
+        tag(BlockTags.NEEDS_IRON_TOOL).add(CHARGING_STATION_BLOCK.get());
 
         for(String block: NCBlocks.NC_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCBlocks.NC_BLOCKS.get(block).get());

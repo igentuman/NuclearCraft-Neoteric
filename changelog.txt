@@ -1,3 +1,15 @@
+1.2.26
+    PU-239 nuke and recipes
+    Minor fixes
+1.2.25
+    New gun - Q-36 Quantite Disruptor - https://www.youtube.com/watch?v=amGV24ZbTdk
+    Fixed GT energy upgrade for multiblocks. Thanks to SkeletonAdventure
+1.2.24
+    Ingredients consolidation in JEI/EMI
+    Ore Leacher fixes and improvements, added IE veins support
+    Mekanism radiation compatibility fixes
+    Fixed fluid handler dupe with mekanism fluid tanks
+    Translation fixes, new advancement, patchouli guide book updated
 1.2.1-rc
     Added new heat sinks
     Kugelblitz Chamber multiblock and blackhole feature

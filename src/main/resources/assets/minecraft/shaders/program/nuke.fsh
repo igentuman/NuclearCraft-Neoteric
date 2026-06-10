@@ -55,7 +55,7 @@ void main() {
     // amplify displacement non-linearly so the ring crest punches hard
     float disp = strength * ring * (0.15 + 0.85 * ring);
 
-    // sign: pixels inside ring pull outward, pixels outside push inward — pinch
+    // sign: pixels inside ring pull outward, pixels outside push inward - pinch
     float sgn = sign(ringR - r);
     vec2 sampleUV = clamp(texCoord + dir * disp * sgn, vec2(0.001), vec2(0.999));
 

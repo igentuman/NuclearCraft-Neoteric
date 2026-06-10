@@ -58,13 +58,13 @@
         {
             "title": "Particle Energy",
             "type": "text",
-            "text": "The maximum outputted Particle Energy is calculated using $(l)Eₓ= E₀+|q|V$() where $(l)E₀$() is the starting energy (normally 0 for an ion source), $(l)q$() is the particle's charge, and $(l)V$() is the accelerator's voltage — the sum of all the RF Cavities' voltages (the structure, not the block), which can be seen in the accelerator's GUI."
+            "text": "The maximum outputted Particle Energy is calculated using $(l)Eₓ= E₀+|q|V$() where $(l)E₀$() is the starting energy (normally 0 for an ion source), $(l)q$() is the particle's charge, and $(l)V$() is the accelerator's voltage - the sum of all the RF Cavities' voltages (the structure, not the block), which can be seen in the accelerator's GUI."
         },
         {
             "anchor": "redstone",
 			"title": "Redstone Control",
             "type": "text",
-            "text": "The output particle energy can be controlled with the strength of the redstone signal according to $(l)E=EₓSᵣ/15$() where $(l)Sᵣ$() is the redstone strength. If a redstone strength of 15 (max) is applied to the controller (or input $(l:multiblocks/accelerators/general#redstone)redstone port$(/l)) it will output the maximum energy. Anything less than 15 will output the corresponding fraction of the maximum energy — for example, a redstone strength of 2 is 2/15 = 13.3% of the max energy."
+            "text": "The output particle energy can be controlled with the strength of the redstone signal according to $(l)E=EₓSᵣ/15$() where $(l)Sᵣ$() is the redstone strength. If a redstone strength of 15 (max) is applied to the controller (or input $(l:multiblocks/accelerators/general#redstone)redstone port$(/l)) it will output the maximum energy. Anything less than 15 will output the corresponding fraction of the maximum energy - for example, a redstone strength of 2 is 2/15 = 13.3% of the max energy."
         },
         {
 			"title": "Computer Control",

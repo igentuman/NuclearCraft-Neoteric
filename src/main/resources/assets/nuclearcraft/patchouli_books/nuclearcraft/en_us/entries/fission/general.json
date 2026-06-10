@@ -96,7 +96,7 @@
         "visualize": false,
         "symmetrical": true
       },
-      "text": "If a reactor part's placement rule requires a non-fuel-cell block — for example, if it needs another heat sink — that heat sink must be placed according to its own placement rule. The end of the connection chain must always link back to a fuel cell."
+      "text": "If a reactor part's placement rule requires a non-fuel-cell block - for example, if it needs another heat sink - that heat sink must be placed according to its own placement rule. The end of the connection chain must always link back to a fuel cell."
     },
     {
       "anchor": "irradiator",
@@ -129,7 +129,7 @@
       "header": "Pile-Driver Irradiation Chamber",
       "type": "blocks/1",
       "block": "nuclearcraft:fission_reactor_pile-driver_irradiation_chamber",
-      "text": "An upgraded $(thing)Irradiation Chamber$() that runs at $(thing)5x$() the speed of a standard chamber. Drops in as a direct replacement at the end of any irradiation line — same placement rules, same line count, just five times the throughput. (Production quotas wait for no one.)"
+      "text": "An upgraded $(thing)Irradiation Chamber$() that runs at $(thing)5x$() the speed of a standard chamber. Drops in as a direct replacement at the end of any irradiation line - same placement rules, same line count, just five times the throughput. (Production quotas wait for no one.)"
     },
     {
       "anchor": "simple_reactor",

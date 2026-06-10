@@ -7,7 +7,7 @@
 		{
 			
 			"type": "text",
-			"text": "Synchrotron Accelerators accelerate particles put into them to much higher energies than $(l:multiblocks/accelerators/linear_accelerator)Linear Accelerators$(/l), but cannot be the start of an accelerator system. The start must be a linear accelerator with an $(l:multiblocks/accelerators/linear_accelerator#ion_source)ion source$(/l). $(bold)Synchrotrons have a minimum input particle energy$() — this is usually 5 MeV but can be changed in the configs."
+			"text": "Synchrotron Accelerators accelerate particles put into them to much higher energies than $(l:multiblocks/accelerators/linear_accelerator)Linear Accelerators$(/l), but cannot be the start of an accelerator system. The start must be a linear accelerator with an $(l:multiblocks/accelerators/linear_accelerator#ion_source)ion source$(/l). $(bold)Synchrotrons have a minimum input particle energy$() - this is usually 5 MeV but can be changed in the configs."
 		},
 		{
 			"type": "diagram_high",
@@ -39,7 +39,7 @@
 		{     
 			"type": "text",
 			"title": "Redstone Control",
-			"text": "Just like the $(l:multiblocks/accelerators/linear_accelerator#redstone)Linear Accelerator$(/l), a redstone signal applied to the controller (or input $(l:multiblocks/accelerators/general#redstone)redstone port$(/l)) will turn it on, and the output particle energy will be $(l)E=EₓSᵣ/15$().$(br2)Also like linear accelerators, the output particle energy can be controlled with Open Computers — see the Open Computers section for more information."
+			"text": "Just like the $(l:multiblocks/accelerators/linear_accelerator#redstone)Linear Accelerator$(/l), a redstone signal applied to the controller (or input $(l:multiblocks/accelerators/general#redstone)redstone port$(/l)) will turn it on, and the output particle energy will be $(l)E=EₓSᵣ/15$().$(br2)Also like linear accelerators, the output particle energy can be controlled with Open Computers - see the Open Computers section for more information."
         },		
 		{
            "title": "Particle Energy",

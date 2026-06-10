@@ -50,7 +50,7 @@ Recipes combine:
 And produce:
 
 - **Item / fluid output**
-- **Outgoing particles** (routed back through beam ports — usable for chained reactions)
+- **Outgoing particles** (routed back through beam ports - usable for chained reactions)
 
 ### Example recipe families
 
@@ -65,7 +65,7 @@ And produce:
 
 Antimatter inputs (`antideuterium`, `antihydrogen`, `antihelium`, ...) are **consumed** here;
 the chamber does not produce antimatter directly. Antimatter feedstock comes from
-[`ParticleSources`](ACCELERATORS.md) — typically obtained via item/fluid synthesis.
+[`ParticleSources`](ACCELERATORS.md) - typically obtained via item/fluid synthesis.
 
 ## Recipe Schema in KubeJS
 

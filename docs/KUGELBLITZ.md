@@ -2,7 +2,7 @@
 
 The Kugelblitz is an endgame multiblock that traps a small artificial black hole and
 extracts Hawking-style evaporation energy. It produces enormous amounts of Forge Energy
-and hosts hidden transmutation recipes — but a poorly fed black hole vaporizes itself, and
+and hosts hidden transmutation recipes - but a poorly fed black hole vaporizes itself, and
 an overfed one detonates.
 
 ## Multiblock Structure

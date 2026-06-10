@@ -64,7 +64,7 @@ Slurries feed normal NuclearCraft processing chains (e.g. centrifuge / electroly
 
 ## Commands
 
-- `/vein_check` — dump the vein assigned to the current chunk (see `VeinCheckCommand`).
+- `/vein_check` - dump the vein assigned to the current chunk (see `VeinCheckCommand`).
 
 ## Related Files
 

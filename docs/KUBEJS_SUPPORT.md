@@ -7,7 +7,7 @@ recipe schema, plus dedicated events for fuels, particle sources, and gameplay h
 ## Recipe Types
 
 All entries of `NcRecipeType.ALL_RECIPES` are registered under the `nuclearcraft` namespace.
-This includes — non-exhaustive:
+This includes - non-exhaustive:
 
 - `fission_reactor_controller`
 - `target_chamber` *(extended schema with `crossSection`, `maxEnergy`)*
@@ -26,7 +26,7 @@ This includes — non-exhaustive:
 |---|---|
 | `input` | Item input(s) |
 | `inputFluids` | Fluid input(s) |
-| `inputParticles` | Particle input(s) — for accelerator/target recipes |
+| `inputParticles` | Particle input(s) - for accelerator/target recipes |
 | `output` | Item output(s) |
 | `outputFluids` | Fluid output(s) |
 | `outputParticles` | Particle output(s) |
@@ -130,5 +130,5 @@ without a world reload.
 
 ## Related Docs
 
-- [`PARTICLE_KUBEJS_INTEGRATION.md`](PARTICLE_KUBEJS_INTEGRATION.md) — particle/target chamber example
-- [`MODPACK_DEVELOPER_GUIDE_CUSTOM_FUELS.md`](MODPACK_DEVELOPER_GUIDE_CUSTOM_FUELS.md) — full fuel pack guide
+- [`PARTICLE_KUBEJS_INTEGRATION.md`](PARTICLE_KUBEJS_INTEGRATION.md) - particle/target chamber example
+- [`MODPACK_DEVELOPER_GUIDE_CUSTOM_FUELS.md`](MODPACK_DEVELOPER_GUIDE_CUSTOM_FUELS.md) - full fuel pack guide

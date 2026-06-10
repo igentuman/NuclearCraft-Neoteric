@@ -21,20 +21,38 @@ how you build.
 - **Downloads:** https://curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric
 - **Dev builds:** GitHub Actions tab → latest artifact
 
+## Features
+
+- **Ore processing chain** - crushers, washers, centrifuges, electrolyzers, infusers, melters and assemblers feeding a deep materials tree (uranium, thorium, plutonium, americium, curium, californium and beyond).
+- **Fission reactors** - multiblock cores with configurable solid fuels, moderators, reflectors, heat sinks, steam mode, neutron flux, and meltdown consequences.
+- **(WIP) Molten Salt Reactors** - liquid-fuel cores with input/output port logic, salt loops and thermal feedback.
+- **Fusion reactors** - toroidal plasma ring built from electromagnets and RF amplifiers, fed by fuel/coolant recipes.
+- **Particle accelerators** - linear and (WIP)toroidal beam lines with magnets, RF cavities and configurable particle sources.
+- **Target chamber** - beam-driven transmutation, detector readouts, antimatter production chain.
+- **Kugelblitz reactor** - 11×11×11 photon-ignition chamber for mini cool looking blackhole.
+- **Steam turbines** - rotor shafts, blade tiers, coil materials, steam/exhaust recipes and a transparent energy formula.
+- **In-situ leaching** - ore-vein system with leachers, pumps and research papers as an alternative to traditional mining.
+- **World radiation** - chunk-level radiation field with decay, diffusion, shielding, player effects, dosimetry and geiger counters.
+- **World generation** - new biome, new dimension with custom structures. Mini boss. Ores
+- **Nuclear weapons** - Pu-239 / fission and fusion bombs with simulated blast, fallout and structural damage.
+- **Energy & storage** - Forge Energy (FE/RF) throughout, with Mekanism and GregTech CE:U interop, plus voiding/buffering storage tiers.
+- **Mod integrations** - JEI, EMI, AE2, Refined Storage, ComputerCraft, OpenComputers v2, TIS-3D, KubeJS, Patchouli, Ponder.
+- **In-game guide** - Patchouli Operator's Handbook covering every multiblock and recipe path.
+
 ## Documentation
 
 System reference docs live in [`docs/`](docs):
 
-- [Fission Reactor](docs/FISSION_REACTOR.md) — multiblock layout, heat sinks, moderators, fuels, steam mode, meltdown
-- [Fusion Reactor](docs/FUSION_REACTOR.md) — toroidal ring, magnets, RF amplifiers, plasma, coolant recipes
-- [Turbine](docs/TURBINE.md) — rotor shafts, blades, coils, steam/exhaust recipes, energy formula
-- [Kugelblitz](docs/KUGELBLITZ.md) — 9×9×9 chamber, photon ignition, mass feed, evaporation power
-- [Accelerators](docs/ACCELERATORS.md) — linear & toroidal beam lines, magnets, RF cavities, particle sources
-- [Target Chamber](docs/TARGET_CHAMBER.md) — beam reactions, detectors, transmutation, antimatter chains
-- [Leacher](docs/LEACHER.md) — in-situ ore leaching, pumps, research papers, ore-vein system
-- [Computers](docs/COMPUTERS.md) — ComputerCraft and OpenComputers v2 peripherals
-- [KubeJS Support](docs/KUBEJS_SUPPORT.md) — recipe schemas, events, custom fuel and particle-source registration
-- [Radiation](docs/RADIATION.md) — chunk radiation, decay, shielding, player effects, geiger counter
+- [Fission Reactor](docs/FISSION_REACTOR.md) - multiblock layout, heat sinks, moderators, fuels, steam mode, meltdown
+- [Fusion Reactor](docs/FUSION_REACTOR.md) - toroidal ring, magnets, RF amplifiers, plasma, coolant recipes. Decent energy source
+- [Turbine](docs/TURBINE.md) - Produce energy with steam cycle
+- [Kugelblitz](docs/KUGELBLITZ.md) - Confinment for blackhole. Harness energy and use unique recipe chains
+- [Accelerators](docs/ACCELERATORS.md) - linear & toroidal beam lines, magnets, RF cavities, particle sources
+- [Target Chamber](docs/TARGET_CHAMBER.md) - beam reactions, detectors, transmutation, antimatter chains
+- [Leacher](docs/LEACHER.md) - in-situ ore leaching, pumps, research papers, ore-vein system
+- [Computers](docs/COMPUTERS.md) - ComputerCraft and OpenComputers v2 peripherals
+- [KubeJS Support](docs/KUBEJS_SUPPORT.md) - recipe schemas, events, custom fuel and particle-source registration
+- [Radiation](docs/RADIATION.md) - chunk radiation, decay, shielding, player effects, geiger counter
 
 Modpack/scripting references:
 - [Custom Fuels Guide](docs/MODPACK_DEVELOPER_GUIDE_CUSTOM_FUELS.md)
@@ -42,9 +60,9 @@ Modpack/scripting references:
 
 ## Credits
 
-[tomdodd4598](https://github.com/tomdodd4598) — original NuclearCraft
+[tomdodd4598](https://github.com/tomdodd4598) - original NuclearCraft
 
-[Lach01298](https://github.com/Lach01298) — original QMD
+[Lach01298](https://github.com/Lach01298) - original QMD
 
 ## Support
 

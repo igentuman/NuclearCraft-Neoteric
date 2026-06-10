@@ -48,7 +48,7 @@ Fuel is supplied as **two fluids**, one per input tank. Recipes are shipped unde
 1. Power the core's internal energy buffer (`2,048,000,000` FE capacity).
 2. Each tick the core drains `(rfAmplifiersPower + magnetsPower) / 2` RF into `chargeAmount`.
 3. Charge complete when `chargeAmount >= (rfAmplifiersPower + magnetsPower) × 7`.
-4. `functionalBlocksCharge` reaches 100% — the reactor is `isReady()`.
+4. `functionalBlocksCharge` reaches 100% - the reactor is `isReady()`.
 5. Plasma is then heated by `amplifyPlasma()` (RF amp × size × ratios × `RF_AMPLIFICATION_MULTIPLIER`).
 6. **Energy production starts only when `plasmaTemperature ≥ 1,000,000`.**
 
@@ -72,7 +72,7 @@ The reactor produces FE only. There is no separate steam-output mode.
 ## Coolant Recipes
 
 `FusionCoolantRecipe` entries convert an input cooling fluid into a hot variant, deposited
-into output tank 7. This is how you turn fusion heat into something a turbine can use —
+into output tank 7. This is how you turn fusion heat into something a turbine can use -
 pipe the hot coolant out and into a Turbine running the matching recipe.
 
 `rarityModifier` on the recipe controls how much heat each operation removes.

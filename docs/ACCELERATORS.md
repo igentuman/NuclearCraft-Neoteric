@@ -2,8 +2,8 @@
 
 Particle accelerators take a source item or fluid, spin it up into a high-energy particle
 beam, and deliver that beam to a [Target Chamber](TARGET_CHAMBER.md) for nuclear/exotic
-reactions. NuclearCraft-Neoteric provides two accelerator variants — a linear collider and
-a toroidal (ring) collider — that share a single beam-line architecture.
+reactions. NuclearCraft-Neoteric provides two accelerator variants - a linear collider and
+a toroidal (ring) collider - that share a single beam-line architecture.
 
 ## Variants
 
@@ -18,9 +18,9 @@ a toroidal (ring) collider — that share a single beam-line architecture.
 
 - **Shape:** hollow square torus. Outer 5-thick ring around a hollow inner square offset 4
   from the walls.
-- **Beam-line:** four straight segments validated independently — particles loop around
+- **Beam-line:** four straight segments validated independently - particles loop around
   and accumulate energy.
-- **No ion-source port** — beam ports are embedded in the outer ring; the beam is fed
+- **No ion-source port** - beam ports are embedded in the outer ring; the beam is fed
   externally from a linear accelerator and circulated.
 
 ## Outer Shell
@@ -78,7 +78,7 @@ About **80 particle species** are defined in `Particles.java`: quarks/antiquarks
 nucleons and antinucleons, nuclei (deuteron, triton, helion, alpha + antis), pions, kaons,
 etas, sigmas, deltas, glueballs, etc.
 
-Custom particle sources can be registered from KubeJS —
+Custom particle sources can be registered from KubeJS -
 see [`KUBEJS_SUPPORT.md`](KUBEJS_SUPPORT.md).
 
 ## Output

@@ -106,4 +106,4 @@ Internal energy buffer: `100,000,000 FE`.
 ## Automation
 
 The formed turbine exposes a ComputerCraft / OC2 peripheral with enable/disable and energy
-stats — see [`COMPUTERS.md`](COMPUTERS.md). Fluid ports are configured per-side via right-click.
+stats - see [`COMPUTERS.md`](COMPUTERS.md). Fluid ports are configured per-side via right-click.

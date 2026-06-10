@@ -93,11 +93,11 @@ Consuming these removes the listed amount of accumulated radiation:
 | `decay_speed` | `2000` | Chunk decay per second |
 | `decay_speed_for_player` | `50` | Player decay per second |
 | `gain_speed_for_player` | `0.1` | Multiplier on chunk → player |
-| `items_radiation` | — | Map of item → pRad/tick |
-| `radiation_removal_items` | — | Map of item → pRad removed |
-| `armor_shielding` | — | Map of armor item → shielding |
-| `biome_radiation` | — | Per-biome overrides |
-| `dimension_radiation` | — | Per-dimension overrides |
+| `items_radiation` | - | Map of item → pRad/tick |
+| `radiation_removal_items` | - | Map of item → pRad removed |
+| `armor_shielding` | - | Map of armor item → shielding |
+| `biome_radiation` | - | Per-biome overrides |
+| `dimension_radiation` | - | Per-dimension overrides |
 | `update_interval` | `40` | Ticks between refresh passes |
 | `mekanism_radiation_integration` | `true` | Bridge with Mekanism |
 

@@ -14,7 +14,7 @@ The reactor is a hollow cuboid bounded by casing/glass with functional blocks in
 - **Size:** configurable; default `min_size = 3`, `max_size = 26` (range 3..32)
 - **Required:** exactly one `Fission Reactor Controller`
 - **Outer shell:** `Fission Reactor Casing` and/or `Fission Reactor Glass`
-- **Ports:** `Fission Reactor Port` — placed in the shell, configurable as input/output for items, fluids, and energy
+- **Ports:** `Fission Reactor Port` - placed in the shell, configurable as input/output for items, fluids, and energy
 - **Interior:** any combination of fuel cells, heat sinks, moderators, reflectors, and irradiation chambers
 
 ### Block list
@@ -53,9 +53,9 @@ between them. The Pile-Driver variant counts as 4 irradiation passes.
 
 Heat sinks are defined by JSON in `data/nuclearcraft/heat_sinks/*.json`. Each definition lists:
 
-- `type` — the material/name
-- `heat` — base cooling per tick
-- `placement_rule` — adjacency constraints
+- `type` - the material/name
+- `heat` - base cooling per tick
+- `placement_rule` - adjacency constraints
 
 ### Placement rule operators
 
@@ -117,7 +117,7 @@ Key entries in `FissionConfig.java` (mod config `nuclearcraft-common.toml`):
 - `active_heatsink_coolant_per_tick`
 
 Heat-sink JSONs live in `data/nuclearcraft/heat_sinks/`. Custom fuel and recipe registration
-is supported via KubeJS — see [`KUBEJS_SUPPORT.md`](KUBEJS_SUPPORT.md) and
+is supported via KubeJS - see [`KUBEJS_SUPPORT.md`](KUBEJS_SUPPORT.md) and
 [`MODPACK_DEVELOPER_GUIDE_CUSTOM_FUELS.md`](MODPACK_DEVELOPER_GUIDE_CUSTOM_FUELS.md).
 
 ## Automation
@@ -125,5 +125,5 @@ is supported via KubeJS — see [`KUBEJS_SUPPORT.md`](KUBEJS_SUPPORT.md) and
 - Fuel rods, depleted rods, irradiation items, coolants, and energy can all be routed
   through `fission_reactor_port` blocks.
 - Each port has its own face configuration via right-click.
-- A formed reactor exposes a ComputerCraft / OpenComputers v2 peripheral —
+- A formed reactor exposes a ComputerCraft / OpenComputers v2 peripheral -
   see [`COMPUTERS.md`](COMPUTERS.md).

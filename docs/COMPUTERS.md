@@ -1,7 +1,7 @@
 # Computer Support
 
 NuclearCraft-Neoteric exposes most multiblocks and processors as **ComputerCraft peripherals**
-and **OpenComputers v2 (`oc2`) devices**. The two APIs mirror each other — method names and
+and **OpenComputers v2 (`oc2`) devices**. The two APIs mirror each other - method names and
 return types match, so a script can usually be ported between them by changing how you
 acquire the handle.
 
@@ -12,7 +12,7 @@ There is **no OpenComputers v1 support**.
 Each peripheral exposes its methods via `@LuaFunction`. Acquire with
 `peripheral.wrap(side)` and the peripheral's `type` string.
 
-### `nc_processor` — `ProcessorPeripheral`
+### `nc_processor` - `ProcessorPeripheral`
 
 Generic processor block (manufactory, alloy furnace, centrifuge, etc.).
 
@@ -27,7 +27,7 @@ Generic processor block (manufactory, alloy furnace, centrifuge, etc.).
 | `getSlotContent(slot)` | table | Item info |
 | `voidSlotContent(slot)` | void | Clear a slot |
 
-### `nc_fission_reactor` — `SolidFissionReactorPeripheral`
+### `nc_fission_reactor` - `SolidFissionReactorPeripheral`
 
 | Method | Returns |
 |---|---|
@@ -46,7 +46,7 @@ Generic processor block (manufactory, alloy furnace, centrifuge, etc.).
 | `voidFuel()` | void |
 | `getFuelInSlot()` | table |
 
-### `nc_fusion_reactor_core` — `FusionReactorPeripheral`
+### `nc_fusion_reactor_core` - `FusionReactorPeripheral`
 
 Same surface as the fission reactor, plus:
 
@@ -55,7 +55,7 @@ Same surface as the fission reactor, plus:
 | `setRFAmplification(int)` | void |
 | `getPlasmaStability()` | double |
 
-### `nc_turbine` — `TurbinePeripheral`
+### `nc_turbine` - `TurbinePeripheral`
 
 | Method | Returns |
 |---|---|
@@ -64,7 +64,7 @@ Same surface as the fission reactor, plus:
 | `enableTurbine()` / `disableTurbine()` | void |
 | `getEnergyPerTick()` / `getEnergyStored()` | int |
 
-### `nc_target_chamber` — `TargetChamberPeripheral`
+### `nc_target_chamber` - `TargetChamberPeripheral`
 
 | Method | Returns |
 |---|---|
@@ -76,7 +76,7 @@ Same surface as the fission reactor, plus:
 | `voidFuel()` | void |
 | `getFuelInSlot()` | table |
 
-### `nc_accelerator` — `LinearAcceleratorPeripheral` / `RingAcceleratorPeripheral`
+### `nc_accelerator` - `LinearAcceleratorPeripheral` / `RingAcceleratorPeripheral`
 
 Same peripheral type string for both variants.
 
@@ -93,7 +93,7 @@ Same peripheral type string for both variants.
 | `getStats()` | map (`accelerating_voltage`, `dipole_strength`, `quadrupole_strength`, `input_particle_min_energy`) |
 | `getParticleInfo()` | table |
 
-### `nc_kugelblitz` — `KugelblitzPeripheral`
+### `nc_kugelblitz` - `KugelblitzPeripheral`
 
 | Method | Returns |
 |---|---|
@@ -114,7 +114,7 @@ Device class names: `ProcessorDevice`, `FissionReactorDevice`, `FusionReactorDev
 
 ## TIS-3D
 
-The mod ships a TIS-3D module for low-level data exchange — see `compat/tis3d/`. Use it for
+The mod ships a TIS-3D module for low-level data exchange - see `compat/tis3d/`. Use it for
 on-block status displays and signal triggers.
 
 ## Example (ComputerCraft Lua)

@@ -224,8 +224,22 @@ public class NCBlockStates extends BlockStateProvider {
         horizontalBlock(FISSION_BLOCKS.get("msr_controller").get(),
                 st -> controllerModel(st, sidedModel(FISSION_BLOCKS.get("msr_controller").get(), "fission/msr_controller"))
         );
+        horizontalBlock(FISSION_BLOCKS.get("msr_port").get(), msrPortModel(FISSION_BLOCKS.get("msr_port").get()));
         simpleBlock(FISSION_BLOCKS.get("msr_fuel_cell").get(), multiBlockModel(FISSION_BLOCKS.get("msr_fuel_cell").get(), "fission/msr_fuel_cell"));
         simpleBlock(FISSION_BLOCKS.get("heat_exchanger").get(), multiBlockModel(FISSION_BLOCKS.get("heat_exchanger").get(), "multiblock/heat_exchanger"));
+    }
+
+    public ModelFile msrPortModel(Block block) {
+        ResourceLocation name = key(block);
+        return models().cube(
+                "block/multiblock/" + name.getPath(),
+                rl("block/fission/port/top"),
+                rl("block/fission/port/bottom"),
+                rl("block/fission/port/fission_reactor_port"),
+                rl("block/fission/port/back"),
+                rl("block/fission/port/side"),
+                rl("block/fission/port/side")
+        );
     }
 
     private void fusionReactor() {

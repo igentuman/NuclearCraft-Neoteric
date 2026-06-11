@@ -1,0 +1,113 @@
+{
+  "name": "Общее",
+  "icon": "nuclearcraft:turbine_controller",
+  "category": "nuclearcraft:turbine",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "casing",
+      "type": "blocks/2",
+      "header": "Корпус турбины",
+      "block1": "nuclearcraft:turbine_glass",
+      "block2": "nuclearcraft:turbine_casing",
+      "text": "Внутренние компоненты турбины размещаются внутри прямоугольного параллелепипеда. Рёбра конструкции должны быть сложены из $(thing)Корпуса турбины$(), а стены - из $(thing)Турбинного стекла$(), корпуса или их сочетания."
+    },
+    {
+      "anchor": "controller",
+      "type": "blocks/1",
+      "header": "Контроллер турбины",
+      "block": "nuclearcraft:turbine_controller",
+      "text": "Без контроллера турбинный мультиблок не соберётся. Его интерфейс отображает сводные сведения о работе турбины - в том числе усреднённые показатели по компонентам."
+    },
+    {
+      "anchor": "port",
+      "type": "blocks/1",
+      "header": "Порт турбины",
+      "block": "nuclearcraft:turbine_port",
+      "text": "Порт турбины служит для передачи жидкостей и энергии в турбину и обратно. Каждый порт можно настроить на ввод или вывод. Также поддерживается управление редстоуном и взаимодействие с компьютерами."
+    },
+    {
+      "anchor": "coils",
+      "type": "blocks/2",
+      "block1": "nuclearcraft:turbine_copper_coil,nuclearcraft:turbine_magnesium_coil,nuclearcraft:turbine_silver_coil,nuclearcraft:turbine_gold_coil,nuclearcraft:turbine_beryllium_coil,nuclearcraft:turbine_aluminum_coil",
+      "header": "Катушки",
+      "text": "$(thing)Катушки$() преобразуют кинетическую энергию ротора в электричество. У каждого типа катушек своя эффективность и свои правила размещения."
+    },
+    {
+      "anchor": "simple_turbine",
+      "header": "Простая турбина",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "W": "nuclearcraft:turbine_casing",
+          "G": "nuclearcraft:turbine_glass",
+          "L": "nuclearcraft:turbine_steel_rotor_blade",
+          "N": "nuclearcraft:turbine_controller[facing=north]",
+          "P": "nuclearcraft:turbine_port[facing=north]",
+          "M": "nuclearcraft:turbine_magnesium_coil",
+          "B": "nuclearcraft:turbine_beryllium_coil",
+          "K": "nuclearcraft:turbine_rotor_shaft",
+          "R": "nuclearcraft:turbine_bearing"
+        },
+        "pattern": [
+          [
+            "WWWWW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WWWWW"
+          ],
+          [
+            "WBMBW",
+            "P L G",
+            "G L G",
+            "N L G",
+            "G L G",
+            "P L G",
+            "WBMBW"
+          ],
+          [
+            "WMRMW",
+            "GLKLG",
+            "GLKLG",
+            "GLKLG",
+            "GLKLG",
+            "GLKLG",
+            "WMRMW"
+          ],
+          [
+            "WBMBW",
+            "G L G",
+            "G L G",
+            "G L G",
+            "G L G",
+            "G L G",
+            "WBMBW"
+          ],
+          [
+            "WWWWW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WWWWW"
+          ],
+          [
+            "     ",
+            "     ",
+            "     ",
+            "  0  ",
+            "     ",
+            "     ",
+            "     "
+          ]
+        ],
+        "symmetrical": true
+      },
+      "text": "Простой стартовый проект турбины. Хорошая точка входа - подайте пар с реактора и наблюдайте, как набегают киловатты."
+    }
+  ]
+}

@@ -66,6 +66,8 @@ public class NCItemTags extends ItemTagsProvider {
                 FusionReactorRegistration.FUSION_ITEMS.get("fusion_reactor_casing_glass").get());
         tag(MODERATORS_ITEMS).add(NC_BLOCKS_ITEMS.get("graphite").get(), NC_BLOCKS_ITEMS.get("beryllium").get());
         tag(CASING_ITEMS).add(
+                FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("msr_controller").get(),
+                FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("msr_port").get(),
                 FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_casing").get(),
                 FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_controller").get(),
                 FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_glass").get(),

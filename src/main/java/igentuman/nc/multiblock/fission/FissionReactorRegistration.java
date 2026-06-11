@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.block.fission.entity.MSRControllerBE;
+import igentuman.nc.block.fission.entity.MSRPortBE;
 import igentuman.nc.block.fission.*;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FissionPortContainer;
@@ -143,6 +144,14 @@ public class FissionReactorRegistration {
         FISSION_BLOCKS.put("msr_fuel_cell", BLOCKS.register("msr_fuel_cell", () -> new FissionFuelCellBlock(REACTOR_BLOCKS_PROPERTIES)));
         FISSION_BLOCK_ITEMS.put("msr_fuel_cell", fromMultiblock(FISSION_BLOCKS.get("msr_fuel_cell")));
         ALL_NC_ITEMS.put("msr_fuel_cell", FISSION_BLOCK_ITEMS.get("msr_fuel_cell"));
+
+        FISSION_BLOCKS.put("msr_port", BLOCKS.register("msr_port", () -> new MSRPortBlock(REACTOR_BLOCKS_PROPERTIES)));
+        FISSION_BE.put("msr_port", BLOCK_ENTITIES.register("msr_port",
+                () -> BlockEntityType.Builder
+                        .of(MSRPortBE::new, FISSION_BLOCKS.get("msr_port").get())
+                        .build(null)));
+        FISSION_BLOCK_ITEMS.put("msr_port", fromMultiblock(FISSION_BLOCKS.get("msr_port")));
+        ALL_NC_ITEMS.put("msr_port", FISSION_BLOCK_ITEMS.get("msr_port"));
 
         FISSION_BLOCKS.put("heat_exchanger", BLOCKS.register("heat_exchanger", () -> new Block(REACTOR_BLOCKS_PROPERTIES)));
         FISSION_BLOCK_ITEMS.put("heat_exchanger", fromMultiblock(FISSION_BLOCKS.get("heat_exchanger")));

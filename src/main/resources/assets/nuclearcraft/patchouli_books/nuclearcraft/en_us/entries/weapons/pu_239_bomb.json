@@ -1,0 +1,15 @@
+{
+  "name": "Pu-239 Implosion Device",
+  "icon": "nuclearcraft:pu_239_bomb",
+  "category": "nuclearcraft:weapons",
+  "sortnum": 1,
+  "pages": [
+    {
+      "anchor": "pu_239_bomb",
+      "type": "blocks/1",
+      "header": "Pu-239 Implosion Device",
+      "block": "nuclearcraft:pu_239_bomb",
+      "text": "The $(item)Pu-239 Implosion Device$() is a plutonium-core implosion assembly, Mk-VII pattern. Arms on redstone input, fuses for 3 s, then initiates. Field-rated yield. Recommended minimum standoff: the next biome over. (Fat Man wishes it had this trigger logic.)"
+    }
+  ]
+}

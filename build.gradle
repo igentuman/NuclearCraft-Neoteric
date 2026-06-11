@@ -170,10 +170,10 @@ dependencies {
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}") {
         transitive = false
     }*/
-    compileOnly fg.deobf("curse.maven:guideme-1173950:7013686") {
+    implementation fg.deobf("curse.maven:guideme-1173950:7013686") {
         transitive = false
     }
-    compileOnly fg.deobf("curse.maven:applied-energistics-2-223794:7096071") {
+    implementation fg.deobf("curse.maven:applied-energistics-2-223794:7096071") {
         transitive = false
     }
     runtimeOnly fg.deobf("curse.maven:multi-builder-tool-827020:7041820")

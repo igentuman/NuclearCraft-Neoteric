@@ -17,16 +17,22 @@ import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -401,6 +407,51 @@ public class MSRControllerBE extends MultiblockControllerBE {
 
     protected void trackChanges(boolean changed) {
         this.changed = this.changed || changed;
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return contentHandler().getItemCapability(side);
+        }
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            return contentHandler().getFluidCapability(side);
+        }
+        if (cap == ForgeCapabilities.ENERGY) {
+            return getEnergy().cast();
+        }
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (tag.contains("pebbles")) {
+            pebbles.clear();
+            CompoundTag pebblesTag = tag.getCompound("pebbles");
+            int size = pebblesTag.getInt("size");
+            for (int i = 0; i < size; i++) {
+                if (pebblesTag.contains("pebble_" + i)) {
+                    ReactorPebble pebble = new ReactorPebble();
+                    pebble.deserializeNBT(pebblesTag.get("pebble_" + i));
+                    pebbles.add(pebble);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        CompoundTag pebblesTag = new CompoundTag();
+        pebblesTag.putInt("size", pebbles.size());
+        int i = 0;
+        for (ReactorPebble pebble : pebbles) {
+            pebblesTag.put("pebble_" + i, pebble.serializeNBT());
+            i++;
+        }
+        tag.put("pebbles", pebblesTag);
     }
 
     @Override

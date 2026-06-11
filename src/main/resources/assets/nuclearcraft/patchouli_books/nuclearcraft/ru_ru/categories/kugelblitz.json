@@ -1,0 +1,7 @@
+{
+  "name": "Кугельблиц",
+  "description": "$(l)Энергия из чёрной дыры. Удержание - по желанию, эффекты - впечатляющие.",
+  "icon": "nuclearcraft:chamber_terminal",
+  "parent": "nuclearcraft:multiblocks",
+  "sortnum": 0
+}

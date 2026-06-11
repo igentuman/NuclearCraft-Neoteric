@@ -219,6 +219,7 @@
   "block.nuclearcraft.melter": "Melter",
   "block.nuclearcraft.msr_controller": "MSR Controller",
   "block.nuclearcraft.msr_fuel_cell": "MSR Fuel Cell",
+  "block.nuclearcraft.msr_port": "Msr Port",
   "block.nuclearcraft.multiblock_builder": "Creative Multiblock Builder",
   "block.nuclearcraft.nether_brick_cooler": "Accelerator Nether Brick Cooler",
   "block.nuclearcraft.nether_brick_heat_sink": "Fission Reactor Nether Brick Heat Sink",

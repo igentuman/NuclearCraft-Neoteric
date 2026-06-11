@@ -1,0 +1,7 @@
+{
+  "name": "Турбина",
+  "description": "$(l)Вращающиеся турбины превращают пар в честное электричество.",
+  "icon": "nuclearcraft:turbine_controller",
+  "parent": "nuclearcraft:multiblocks",
+  "sortnum": 0
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Weapons & Demolitions",
+  "description": "$(l)Authorized ordnance only. Civilian use voids the warranty - and the operator.",
+  "icon": "nuclearcraft:q36_quantite_disruptor",
+  "sortnum": 4
+}

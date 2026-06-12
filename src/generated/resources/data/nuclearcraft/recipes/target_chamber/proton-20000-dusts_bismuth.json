@@ -1,0 +1,34 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.04,
+  "input": [
+    {
+      "tag": "forge:dusts/bismuth"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 25000000,
+      "focus": 1.0,
+      "meanEnergy": 20000,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 24000,
+  "output": [
+    {
+      "tag": "forge:ingots/lead"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "alpha"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

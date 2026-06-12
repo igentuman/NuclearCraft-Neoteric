@@ -1,0 +1,40 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.1,
+  "input": [
+    {
+      "tag": "forge:ingots/hafnium"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 10000000,
+      "focus": 1.0,
+      "meanEnergy": 11300000,
+      "particle": "deuteron"
+    }
+  ],
+  "maxEnergy": 20000000,
+  "output": [
+    {
+      "item": "nuclearcraft:hafnium_spallation_waste"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "deuteron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "antideuteron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

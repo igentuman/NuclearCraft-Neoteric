@@ -58,6 +58,10 @@ public class AcceleratorConfig {
         public final ForgeConfigSpec.ConfigValue<Integer> SCALE;
         public final ForgeConfigSpec.ConfigValue<Double> BEAM_ATTENUATION_RATE;
         public final ForgeConfigSpec.ConfigValue<Double> BEAM_SCALING;
+        public final ForgeConfigSpec.ConfigValue<Integer> BASE_HEAT_CAPACITY;
+        public final ForgeConfigSpec.ConfigValue<Double> THERMAL_CONDUCTIVITY;
+        public final ForgeConfigSpec.ConfigValue<Integer> MAX_TEMP;
+        public final ForgeConfigSpec.ConfigValue<Boolean> MELTDOWN_ENABLED;
 
         public GeneralConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for accelerators").push("general");
@@ -81,6 +85,24 @@ public class AcceleratorConfig {
             BEAM_SCALING = builder
                     .comment("The scaling factor for the beam attenuation equation.")
                     .defineInRange("beam_scaling", 10000, 0.0, Integer.MAX_VALUE);
+
+            BASE_HEAT_CAPACITY = builder
+                    .comment("Base heat capacity per accelerator block.")
+                    .comment("Total capacity = base * block count. Larger accelerators = larger thermal mass.")
+                    .defineInRange("base_heat_capacity", 25000, 1, Integer.MAX_VALUE);
+
+            THERMAL_CONDUCTIVITY = builder
+                    .comment("Thermal conductivity of casing. Used for external (biome) heat exchange.")
+                    .comment("Higher = faster equalization to ambient temperature.")
+                    .defineInRange("thermal_conductivity", 0.0025d, 0.0, 1.0);
+
+            MAX_TEMP = builder
+                    .comment("Maximum representable temperature (Kelvin). Heat is mapped to [0, MAX_TEMP] using capacity.")
+                    .defineInRange("max_temp", 400, 1, 10000);
+
+            MELTDOWN_ENABLED = builder
+                    .comment("If true, components exceeding their max operating temperature will explode.")
+                    .define("meltdown_enabled", true);
 
             builder.pop();
         }

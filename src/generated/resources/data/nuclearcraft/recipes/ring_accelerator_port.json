@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "F": {
+      "item": "nuclearcraft:steel_frame"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "V": {
+      "item": "nuclearcraft:servo"
+    }
+  },
+  "pattern": [
+    "SVS",
+    "VFV",
+    "SVS"
+  ],
+  "result": {
+    "count": 4,
+    "item": "nuclearcraft:ring_accelerator_port"
+  },
+  "show_notification": true
+}

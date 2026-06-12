@@ -45,6 +45,14 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     public BlockPos bottomLeft = BlockPos.ZERO;
     @NBTField
     public BlockPos topRight = BlockPos.ZERO;
+    @NBTField
+    public int topCasing = 0;
+    @NBTField
+    public int bottomCasing = 0;
+    @NBTField
+    public int leftCasing = 0;
+    @NBTField
+    public int rightCasing = 0;
     protected AbstractMultiblock multiblock;
     public BlockPos errorBlockPos = BlockPos.ZERO;
     public ValidationResult validationResult = ValidationResult.INCOMPLETE;
@@ -149,6 +157,15 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         if((!isCasingValid || !isInternalValid) && !errorBlockPos.equals(BlockPos.ZERO)) {
             BlockOverlayHandler.addToOutline(new BlockPosInstance(errorBlockPos.getX(), errorBlockPos.getY(), errorBlockPos.getZ()));
         }
+        BlockOverlayHandler.registerDebugController(this);
+    }
+
+    @Override
+    public void setRemoved() {
+        if(getLevel() != null && getLevel().isClientSide()) {
+            BlockOverlayHandler.unregisterDebugController(this);
+        }
+        super.setRemoved();
     }
 
     @Override
@@ -188,6 +205,16 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         height = getMultiblock().height();
         width = getMultiblock().width();
         depth = getMultiblock().depth();
+        topCasing = getMultiblock().topCasing;
+        bottomCasing = getMultiblock().bottomCasing;
+        leftCasing = getMultiblock().leftCasing;
+        rightCasing = getMultiblock().rightCasing;
+        if (getMultiblock().bottomLeft != null) {
+            bottomLeft = new BlockPos(getMultiblock().bottomLeft);
+        }
+        if (getMultiblock().topRight != null) {
+            topRight = new BlockPos(getMultiblock().topRight);
+        }
         trackChanges(wasFormed, getMultiblock().isFormed());
     }
 

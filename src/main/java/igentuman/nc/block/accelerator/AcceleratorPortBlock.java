@@ -1,6 +1,6 @@
 package igentuman.nc.block.accelerator;
 
-import igentuman.nc.block.accelerator.entity.AcceleratorPortBE;
+import igentuman.nc.block.accelerator.entity.LinearAcceleratorPortBE;
 import igentuman.nc.container.AcceleratorPortContainer;
 import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.ChatFormatting;
@@ -100,7 +100,7 @@ public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements 
         if (!level.isClientSide()) {
             BlockEntity be = level.getExistingBlockEntity(pos);
 
-            if (be instanceof AcceleratorPortBE)  {
+            if (be instanceof LinearAcceleratorPortBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -131,13 +131,13 @@ public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements 
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof AcceleratorPortBE tile) {
+                if (t instanceof LinearAcceleratorPortBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof AcceleratorPortBE tile) {
+            if (t instanceof LinearAcceleratorPortBE tile) {
                 tile.tickServer();
             }
         };

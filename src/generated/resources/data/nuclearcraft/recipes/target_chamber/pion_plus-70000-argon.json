@@ -1,0 +1,42 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.04,
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:argon"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 25000000,
+      "focus": 1.0,
+      "meanEnergy": 70000,
+      "particle": "pion_plus"
+    }
+  ],
+  "maxEnergy": 320000,
+  "outputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:chlorine"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,15 +1,15 @@
 {
   "type": "nuclearcraft:accelerator_coolant",
-  "coolingRate": 20.0,
+  "coolingRate": 100.0,
   "inputFluids": [
     {
-      "amount": 1000,
+      "amount": 100,
       "tag": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
-      "amount": 1000,
+      "amount": 100,
       "tag": "forge:steam"
     }
   ]

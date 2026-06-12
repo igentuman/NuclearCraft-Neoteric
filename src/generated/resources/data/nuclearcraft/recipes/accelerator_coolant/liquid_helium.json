@@ -1,15 +1,15 @@
 {
   "type": "nuclearcraft:accelerator_coolant",
-  "coolingRate": 25.0,
+  "coolingRate": 1000.0,
   "inputFluids": [
     {
-      "amount": 10,
+      "amount": 1,
       "tag": "forge:liquid_helium"
     }
   ],
   "outputFluids": [
     {
-      "amount": 10,
+      "amount": 1,
       "tag": "forge:helium"
     }
   ]

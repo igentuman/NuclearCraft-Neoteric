@@ -17,7 +17,7 @@
   "maxEnergy": 7500,
   "output": [
     {
-      "tag": "forge:ingots/lithium/6"
+      "item": "nuclearcraft:lithium_6"
     }
   ],
   "outputParticles": [

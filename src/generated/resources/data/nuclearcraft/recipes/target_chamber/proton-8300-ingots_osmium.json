@@ -17,7 +17,7 @@
   "maxEnergy": 10300,
   "output": [
     {
-      "tag": "forge:ingots/iridium192"
+      "item": "nuclearcraft:iridium_192"
     }
   ],
   "outputParticles": [

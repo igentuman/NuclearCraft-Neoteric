@@ -14,7 +14,7 @@
       "particle": "electron_antineutrino"
     }
   ],
-  "maxEnergy": 10000,
+  "maxEnergy": 30000,
   "output": [
     {
       "tag": "forge:ingots/osmium"

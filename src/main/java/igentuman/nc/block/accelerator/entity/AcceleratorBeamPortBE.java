@@ -23,6 +23,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
@@ -235,9 +236,9 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
         return controller().recipeInfo().getProgress();
     }
 
-    public void extractParticle(ParticleStack particleStack) {
-        if(controller() == null || particleStack == null || particleStack.getAmount() <= 0) return;
-        
+    public boolean extractParticle(ParticleStack particleStack) {
+        if(controller() == null || particleStack == null || particleStack.getAmount() <= 0) return false;
+        AtomicBoolean result = new AtomicBoolean(false);
         Direction facing = getFacing();
         BlockPos currentPos = worldPosition.relative(facing);
         int maxDistance = 16;
@@ -253,10 +254,11 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
             if (level.getBlockEntity(currentPos) instanceof AcceleratorBeamPortBE targetPort) {
                 if (targetPort.getFacing() == facing.getOpposite()) {
                     if (targetPort.controller() != null) {
-                        particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
+                        particleStack.addFocus(-Equations.focusLoss(distance, particleStack));
                         targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
                                 .ifPresent(handler -> {
                                     handler.reciveParticle(facing.getOpposite(), particleStack);
+                                    result.set(true);
                                 });
                     }
                 }
@@ -264,10 +266,11 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
             } else if (level.getBlockEntity(currentPos) instanceof TargetChamberBeamPortBE targetPort) {
                 if (targetPort.getFacing() == facing.getOpposite()) {
                     if (targetPort.controller() != null) {
-                        particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
+                        particleStack.addFocus(-Equations.focusLoss(distance, particleStack));
                         targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
                                 .ifPresent(handler -> {
                                     handler.reciveParticle(facing.getOpposite(), particleStack);
+                                    result.set(true);
                                 });
                     }
                 }
@@ -276,6 +279,8 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
                 break;
             }
         }
+        controller().particleStorage.clearServer();
+        return result.get();
     }
 
 

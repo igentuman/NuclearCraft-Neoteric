@@ -46,8 +46,8 @@ public abstract class AbstractMultiblock implements Multiblock {
     public int bottomCasing = 0;
     public int leftCasing = 0;
     public int rightCasing = 0;
-    protected BlockPos bottomLeft;
-    protected BlockPos topRight;
+    public BlockPos bottomLeft;
+    public BlockPos topRight;
     protected boolean outerValid = false;
     protected boolean isFormed = false;
     protected boolean innerValid = false;

@@ -47,8 +47,6 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
 
     private LazyOptional<LinearAcceleratorPeripheral> peripheralCap;
 
-
-
     protected Direction facing;
     public Recipe recipe;
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
@@ -134,31 +132,46 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         if(level.getGameTime() % 10 == 0) {
             redstoneLevel = getRedstoneSignal();
         }
-        controllerEnabled = getMultiblock().isFormed() && redstoneLevel > 0;
-
-        if (controllerEnabled) {
-            if(!hasEnoughEnergy()) {
-                return;
-            }
-            trackChanges(contentHandler().tick());
-            handleMeltdown();
-            trackChanges(accelerateParticle());
+        boolean formed = getMultiblock().isFormed();
+        if(formed && !thermalInitialized) {
+            initThermal();
+        } else if(!formed && thermalInitialized) {
+            resetThermal();
         }
-        // Passive cooling
-        heat -= coolingRate;
-        heat = Math.max(0, heat);
+
+        controllerEnabled = formed && redstoneLevel > 0;
+
+        if (wasEnabled != controllerEnabled) {
+            particleStorage.clearClient();
+        }
+        currentHeating = 0;
+        if (formed) {
+            externalHeating();
+        }
+        if (controllerEnabled) {
+            if(hasEnoughEnergy()) {
+                trackChanges(contentHandler().tick());
+                trackChanges(accelerateParticle());
+            }
+            handleMeltdown();
+        } else {
+            if(particleStorage.getParticleStack() != null) {
+                particleStorage.clearAll();
+                hasParticle = false;
+                changed = true;
+            }
+        }
         // Coolant cooling
         coolantCoolDown();
-        refreshCacheFlag = !getMultiblock().isFormed();
+        refreshCacheFlag = !formed;
         changed |= wasEnabled != controllerEnabled;
         if(refreshCacheFlag || changed || currentTick % 20 == 0) {
             try {
                 setChanged();
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_NEIGHBORS);
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_ALL);
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
             } catch (NullPointerException ignored) {}
         }
-        //particleStorage.clear();
     }
 
 
@@ -177,7 +190,15 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
     }
 
     private void handleMeltdown() {
+        if(isAcceleratorTooHot()) {
+            quenchMagnets();
+            controllerEnabled = false;
+        }
+    }
 
+    @Override
+    protected igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock getAcceleratorMultiblock() {
+        return getMultiblock();
     }
 
 
@@ -193,6 +214,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         if (isAcceleratorTooHot()) {
             return false;
         }
+        initialFocus = 0;
         hasParticle = false;
         if(energyStorage().getEnergyStored() < energyRequired) {
             return false;
@@ -210,10 +232,10 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         if(particleStack == null || particleStack.isEmpty()) {
             return false;
         }
-        particleStack.addFocus(focusGain(focus, particleStack)-focusLoss(beamLength, particleStack));
+        particleStack.setFocus(focusGain(focus, particleStack)-focusLoss(beamLength, particleStack)+initialFocus);
         particleStack.setMeanEnergy((long)(linacEnergyGain(acceleratingVoltage, particleStack)*(redstoneLevel / 15d)));
         particleStorage.setParticleStack(particleStack);
-        heat += heatRate;
+        internalHeating(heatRate);
         hasParticle = true;
         getMultiblock().extractParticle(particleStack);
         return true;
@@ -226,7 +248,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
                 stack = sourceItem.use(stack, 10000);
                 ParticleStack particle = sourceItem.getParticleStack(stack);
                 if (particle != null) {
-                    particle.addFocus(0.4);
+                    initialFocus = 0.4d;
                     particle.setAmount(10000);
                     particleStorage.setParticleStack(particle);
                     contentHandler().itemHandler.setStackInSlot(0, stack);
@@ -234,7 +256,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
             } else {
                 ParticleStack particle = ParticleSources.getParticleFromItem(stack);
                 if (particle != null && ParticleSources.getAmountStored(stack) >= 10000/stack.getCount()) {
-                    particle.addFocus(0.4);
+                    initialFocus = 0.4d;
                     particle.setAmount(10000);
                     particleStorage.setParticleStack(particle);
                     ParticleSources.use(stack, 10000/stack.getCount());
@@ -249,7 +271,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
             if (fluidStack != null && !fluidStack.isEmpty()) {
                 ParticleStack particle = ParticleSources.getParticleFromFluid(fluidStack);
                 if (particle != null) {
-                    particle.addFocus(0.4);
+                    initialFocus = 0.4d;
                     particle.setAmount(10000);
                     particleStorage.setParticleStack(particle);
                     contentHandler().fluidHandler.tanks.get(0).drain(1, IFluidHandler.FluidAction.EXECUTE);

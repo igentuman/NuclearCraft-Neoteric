@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.02,
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:nitrogen"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 50000000,
+      "focus": 1.0,
+      "meanEnergy": 6000,
+      "particle": "neutron"
+    }
+  ],
+  "maxEnergy": 16000,
+  "output": [
+    {
+      "tag": "forge:dusts/graphite"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "triton"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

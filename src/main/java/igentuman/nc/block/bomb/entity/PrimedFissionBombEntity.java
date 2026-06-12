@@ -27,6 +27,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -314,6 +315,9 @@ public class PrimedFissionBombEntity extends Entity {
     private void applyOp(ServerLevel server, BlastOp op) {
         if (op instanceof BlastOp.SetBlock sb) {
             BlockState oldState = server.getBlockState(sb.pos());
+            if (oldState.is(Blocks.BEDROCK)) {
+                return;
+            }
             Player player = getPlacerPlayer(server);
             if (player != null) {
                 int cx = sb.pos().getX() >> 4;
@@ -515,28 +519,46 @@ public class PrimedFissionBombEntity extends Entity {
             if (isProtected) {
                 return;
             }
-
-            Registry<Biome> biomeReg = server.registryAccess().registryOrThrow(Registries.BIOME);
-            sections[idx] = new LevelChunkSection(biomeReg);
-            int yMin = sy << 4;
-            int yMax = yMin + 16;
-            List<BlockPos> toRemove = new ArrayList<>();
-            for (BlockPos pos : chunk.getBlockEntities().keySet()) {
-                if (pos.getY() >= yMin && pos.getY() < yMax) toRemove.add(pos);
-            }
-            for (BlockPos pos : toRemove) chunk.removeBlockEntity(pos);
-            chunk.setUnsaved(true);
-            server.getChunkSource().getLightEngine().updateSectionStatus(SectionPos.of(sx, sy, sz), true);
-            long key = ChunkPos.asLong(sx, sz);
-            chunksToResend.add(key);
-            dirtyFastChunks.add(key);
-            return;
         }
 
-        Registry<Biome> biomeReg = server.registryAccess().registryOrThrow(Registries.BIOME);
-        sections[idx] = new LevelChunkSection(biomeReg);
-
         int yMin = sy << 4;
+        BlockPos.MutableBlockPos mpos = new BlockPos.MutableBlockPos();
+        boolean hasBedrock = false;
+        LevelChunkSection sec = sections[idx];
+        if (sec != null) {
+            for (int x = 0; x < 16; x++) {
+                for (int y = 0; y < 16; y++) {
+                    for (int z = 0; z < 16; z++) {
+                        mpos.set((sx << 4) + x, yMin + y, (sz << 4) + z);
+                        BlockState state = chunk.getBlockState(mpos);
+                        if (state.is(Blocks.BEDROCK)) {
+                            hasBedrock = true;
+                            break;
+                        }
+                    }
+                    if (hasBedrock) break;
+                }
+                if (hasBedrock) break;
+            }
+        }
+
+        if (hasBedrock && sec != null) {
+            for (int x = 0; x < 16; x++) {
+                for (int y = 0; y < 16; y++) {
+                    for (int z = 0; z < 16; z++) {
+                        mpos.set((sx << 4) + x, yMin + y, (sz << 4) + z);
+                        BlockState state = chunk.getBlockState(mpos);
+                        if (!state.isAir() && !state.is(Blocks.BEDROCK)) {
+                            sec.setBlockState(x, y, z, Blocks.AIR.defaultBlockState(), false);
+                        }
+                    }
+                }
+            }
+        } else {
+            Registry<Biome> biomeReg = server.registryAccess().registryOrThrow(Registries.BIOME);
+            sections[idx] = new LevelChunkSection(biomeReg);
+        }
+
         int yMax = yMin + 16;
         List<BlockPos> toRemove = new ArrayList<>();
         for (BlockPos pos : chunk.getBlockEntities().keySet()) {

@@ -18,9 +18,9 @@
   "maxEnergy": 20500,
   "outputParticles": [
     {
-      "amount": 1,
+      "amount": 2,
       "focus": 1.0,
-      "meanEnergy": 2,
+      "meanEnergy": 1,
       "particle": "proton"
     },
     {

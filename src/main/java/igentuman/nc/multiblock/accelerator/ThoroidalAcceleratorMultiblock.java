@@ -1,12 +1,13 @@
 package igentuman.nc.multiblock.accelerator;
 
+import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.accelerator.entity.RingAcceleratorControllerBE;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.BlockPosInstance;
-import igentuman.nc.util.math.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
@@ -54,6 +55,15 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
     }
 
     @Override
+    public boolean isValidForOuter(BlockPos pos) {
+        if (getLevel() == null) return false;
+        Block block = getBlockState(pos).getBlock();
+        if (block == ACCELERATOR_BLOCKS.get("accelerator_port").get()) return false;
+        if (block == ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()) return false;
+        return validOuterBlocks().contains(block);
+    }
+
+    @Override
     public void validateOuter() {
         topRight = null;
         bottomLeft = null;
@@ -62,85 +72,22 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         validationResult = ValidationResult.INCOMPLETE;
         stage = FINAL_STAGE;
         initialPos = BlockPosInstance.copy(controller().controllerBE().getBlockPos());
+        controllerPos = BlockPosInstance.copy(controller().controllerBE().getBlockPos());
         multiblockDirection = null;
         controllers.clear();
         connectedPorts = 0;
         width = 0;
         depth = 0;
         height = 0;
+        topCasing = 0;
+        bottomCasing = 0;
+        leftCasing = 0;
+        rightCasing = 0;
         outerValid = false;
-        resolveHeight();
-        if(height != maxHeight()) {
-            validationResult = ValidationResult.INCOMPLETE;
-            return;
-        }
-        resolveDepth();
-        resolveWidth();
 
-
-        final boolean controllerOnSide = isControllerPlacedOnSide();
-
-        if(controllerOnSide) {
-            if(width > maxWidth()) {
-                validationResult = ValidationResult.TOO_BIG;
-                return;
-            }
-            if(width < minWidth()) {
-                validationResult = ValidationResult.TOO_SMALL;
-                return;
-            }
-            resolveRealDepth();
-        }
-        if(!controllerOnSide) {
-            if(depth > maxDepth()) {
-                validationResult = ValidationResult.TOO_BIG;
-                return;
-            }
-            if(depth < minDepth()) {
-                validationResult = ValidationResult.TOO_SMALL;
-                return;
-            }
-        }
-        BlockPos leftFront = new BlockPosInstance(getLeftPos(leftCasing));
-        BlockPos leftBack = new BlockPosInstance(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
-        BlockPos rightFront = new BlockPosInstance(getRightPos(rightCasing));
-        BlockPos rightBack = new BlockPosInstance(getRightPos(rightCasing).relative(getControllerDirection(), -depth+1));
-        int minX = MathUtils.min(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
-        int minZ = MathUtils.min(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
-        int maxX = MathUtils.max(leftFront.getX(), rightFront.getX(), leftBack.getX(), rightBack.getX());
-        int maxZ = MathUtils.max(leftFront.getZ(), rightFront.getZ(), leftBack.getZ(), rightBack.getZ());
-        bottomLeft = new BlockPosInstance(minX, leftFront.getY() - bottomCasing, minZ);
-        topRight = new BlockPosInstance(maxX, leftFront.getY() + topCasing, maxZ);
-        AABB excludeArea = new AABB(new BlockPos(bottomLeft).offset(4, -1, 4), new BlockPos(topRight).offset(-4, 1, -4));
-        cacheBlockStates(excludeArea);
-        for(int y = 0; y < height; y++) {
-            for(int x = 0; x < width; x++) {
-                for (int z = 0; z < depth; z++) {
-                    BlockPos toCheck = getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z);
-                    if(excludeArea.contains(toCheck.getCenter())) {
-                        continue;
-                    }
-                    if (y == 0 || x == 0 || z == 0 || y == height-1 || x == width-1 || z == depth-1) {
-                        //validate corner blocks
-                        if (((y == 0 || y == height-1) && (z == 0 || z == depth - 1))
-                                || ((y == 0 || y == height-1) && (x == 0 || x == width - 1))
-                                || ((z == 0 || z == depth-1) && (x == 0 || x == width - 1))
-                        ) {
-                            if (!isValidCorner(toCheck)) {
-                                validationResult = ValidationResult.WRONG_CORNER;
-                                errorBlockPos = new BlockPos(toCheck);
-                                return;
-                            }
-                        } else if (!isValidForOuter(toCheck)) {
-                            validationResult = ValidationResult.WRONG_OUTER;
-                            errorBlockPos = new BlockPos(toCheck);
-                            return;
-                        }
-                        processOuterBlock(toCheck);
-                    }
-                }
-            }
-        }
+        if (!resolveRingHeight()) return;
+        if (!resolveRingBounds()) return;
+        if (!validateCubeShell()) return;
 
         BlockPos startingPos = new BlockPos(bottomLeft);
         BlockPos endingPos = new BlockPos(topRight);
@@ -148,7 +95,6 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         if (!validateInnerWalls(startingPos, endingPos)) {
             return;
         }
-
 
         if (controllers.size() > 1) {
             validationResult = ValidationResult.TOO_MANY_CONTROLLERS;
@@ -161,6 +107,296 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         hasToRefresh = true;
     }
 
+    /** Resolves Y bounds from the controller column. Ring must be exactly maxHeight() tall. */
+    private boolean resolveRingHeight() {
+        BlockPos ctrlPos = controllerPos;
+        int top = 0;
+        for (int i = 1; i <= maxHeight(); i++) {
+            if (!isValidForOuter(new BlockPos(ctrlPos.getX(), ctrlPos.getY() + i, ctrlPos.getZ()))) {
+                top = i - 1;
+                break;
+            }
+            top = i;
+        }
+        int bottom = 0;
+        for (int i = 1; i <= maxHeight(); i++) {
+            if (!isValidForOuter(new BlockPos(ctrlPos.getX(), ctrlPos.getY() - i, ctrlPos.getZ()))) {
+                bottom = i - 1;
+                break;
+            }
+            bottom = i;
+        }
+        topCasing = top;
+        bottomCasing = bottom;
+        height = top + bottom + 1;
+        if (height != maxHeight()) {
+            debugLog("Ring height mismatch: " + height + " != " + maxHeight());
+            validationResult = ValidationResult.INCOMPLETE;
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Resolves the cube bounding box (X/Z) by walking 4 horizontal directions at the top Y.
+     * Works regardless of whether the controller is on an outer wall, inner wall, or corner.
+     */
+    private boolean resolveRingBounds() {
+        BlockPos ctrlPos = controllerPos;
+        int yTop = ctrlPos.getY() + topCasing;
+        BlockPos topStart = new BlockPos(ctrlPos.getX(), yTop, ctrlPos.getZ());
+        if (!isValidForOuter(topStart)) {
+            debugLog("Top of controller column is not casing at " + topStart.toShortString());
+            validationResult = ValidationResult.INCOMPLETE;
+            return false;
+        }
+
+        Direction[] dirs = {Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
+        int[] walks = new int[4];
+        boolean[] reachesOutside = new boolean[4];
+        int maxWalk = maxDepth() + 2;
+        int beyondScan = 64;
+
+        for (int d = 0; d < 4; d++) {
+            BlockPos cur = topStart;
+            int steps = 0;
+            while (steps < maxWalk) {
+                BlockPos next = cur.relative(dirs[d]);
+                if (!isValidForOuter(next)) break;
+                cur = next;
+                steps++;
+            }
+            walks[d] = steps;
+
+            BlockPos beyond = cur.relative(dirs[d]);
+            boolean foundFurther = false;
+            BlockPos scan = beyond;
+            for (int i = 0; i < beyondScan; i++) {
+                if (isValidForOuter(scan)) {
+                    foundFurther = true;
+                    break;
+                }
+                scan = scan.relative(dirs[d]);
+            }
+            reachesOutside[d] = !foundFurther;
+        }
+
+        int axisXSpan = walks[2] + walks[3] + 1;
+        int axisZSpan = walks[0] + walks[1] + 1;
+        int side = Math.max(axisXSpan, axisZSpan);
+
+        if (side < minDepth()) {
+            validationResult = ValidationResult.TOO_SMALL;
+            return false;
+        }
+        if (side > maxDepth()) {
+            validationResult = ValidationResult.TOO_BIG;
+            return false;
+        }
+
+        int cubeMinX, cubeMaxX;
+        if (axisXSpan == side) {
+            cubeMinX = topStart.getX() - walks[3];
+            cubeMaxX = topStart.getX() + walks[2];
+        } else {
+            boolean eastOut = reachesOutside[2];
+            boolean westOut = reachesOutside[3];
+            if (eastOut && !westOut) {
+                cubeMaxX = topStart.getX() + walks[2];
+                cubeMinX = cubeMaxX - side + 1;
+            } else if (westOut && !eastOut) {
+                cubeMinX = topStart.getX() - walks[3];
+                cubeMaxX = cubeMinX + side - 1;
+            } else {
+                debugLog("Cannot resolve X bounds; E_out=" + eastOut + " W_out=" + westOut);
+                validationResult = ValidationResult.WRONG_OUTER;
+                return false;
+            }
+        }
+
+        int cubeMinZ, cubeMaxZ;
+        if (axisZSpan == side) {
+            cubeMinZ = topStart.getZ() - walks[0];
+            cubeMaxZ = topStart.getZ() + walks[1];
+        } else {
+            boolean northOut = reachesOutside[0];
+            boolean southOut = reachesOutside[1];
+            if (southOut && !northOut) {
+                cubeMaxZ = topStart.getZ() + walks[1];
+                cubeMinZ = cubeMaxZ - side + 1;
+            } else if (northOut && !southOut) {
+                cubeMinZ = topStart.getZ() - walks[0];
+                cubeMaxZ = cubeMinZ + side - 1;
+            } else {
+                debugLog("Cannot resolve Z bounds; N_out=" + northOut + " S_out=" + southOut);
+                validationResult = ValidationResult.WRONG_OUTER;
+                return false;
+            }
+        }
+
+        if (cubeMaxX - cubeMinX != cubeMaxZ - cubeMinZ) {
+            debugLog("Ring not square: " + (cubeMaxX - cubeMinX + 1) + "x" + (cubeMaxZ - cubeMinZ + 1));
+            validationResult = ValidationResult.WRONG_OUTER;
+            return false;
+        }
+
+        width = side;
+        depth = side;
+        Direction facing = getControllerDirection();
+        switch (facing) {
+            case NORTH -> {
+                leftCasing = cubeMaxX - ctrlPos.getX();
+                rightCasing = ctrlPos.getX() - cubeMinX;
+            }
+            case SOUTH -> {
+                leftCasing = ctrlPos.getX() - cubeMinX;
+                rightCasing = cubeMaxX - ctrlPos.getX();
+            }
+            case EAST -> {
+                leftCasing = cubeMaxZ - ctrlPos.getZ();
+                rightCasing = ctrlPos.getZ() - cubeMinZ;
+            }
+            case WEST -> {
+                leftCasing = ctrlPos.getZ() - cubeMinZ;
+                rightCasing = cubeMaxZ - ctrlPos.getZ();
+            }
+            default -> {
+                leftCasing = ctrlPos.getX() - cubeMinX;
+                rightCasing = cubeMaxX - ctrlPos.getX();
+            }
+        }
+        bottomLeft = new BlockPosInstance(cubeMinX, ctrlPos.getY() - bottomCasing, cubeMinZ);
+        topRight = new BlockPosInstance(cubeMaxX, yTop, cubeMaxZ);
+        multiblockDirection = facing;
+        return true;
+    }
+
+    /** Validates the outer cube shell (4 outer vertical faces, top, bottom) minus the donut hole. */
+    private boolean validateCubeShell() {
+        int minX = bottomLeft.getX();
+        int minZ = bottomLeft.getZ();
+        int maxX = topRight.getX();
+        int maxZ = topRight.getZ();
+        int minY = bottomLeft.getY();
+        int maxY = topRight.getY();
+
+        AABB excludeArea = new AABB(
+                new BlockPos(minX + 4, minY - 1, minZ + 4),
+                new BlockPos(maxX - 4, maxY + 1, maxZ - 4));
+        cacheBlockStates(excludeArea);
+
+        for (int y = minY; y <= maxY; y++) {
+            boolean yEdge = (y == minY || y == maxY);
+            for (int x = minX; x <= maxX; x++) {
+                boolean xEdge = (x == minX || x == maxX);
+                for (int z = minZ; z <= maxZ; z++) {
+                    boolean zEdge = (z == minZ || z == maxZ);
+                    if (!(yEdge || xEdge || zEdge)) continue;
+                    if (excludeArea.contains(x + 0.5, y + 0.5, z + 0.5)) continue;
+
+                    BlockPos toCheck = new BlockPos(x, y, z);
+                    boolean isCornerEdge = (yEdge && (xEdge || zEdge)) || (xEdge && zEdge);
+                    if (isCornerEdge) {
+                        if (!isValidCorner(toCheck)) {
+                            validationResult = ValidationResult.WRONG_CORNER;
+                            errorBlockPos = new BlockPos(toCheck);
+                            return false;
+                        }
+                    } else if (!isValidForOuter(toCheck)) {
+                        validationResult = ValidationResult.WRONG_OUTER;
+                        errorBlockPos = new BlockPos(toCheck);
+                        return false;
+                    }
+                    processOuterBlock(toCheck);
+                }
+            }
+        }
+        return true;
+    }
+
+
+    private boolean validateCornerDipoles() {
+        int midY = (bottomLeft.getY() + topRight.getY()) / 2;
+        int beamOffset = 2;
+        BlockPos sw = new BlockPos(bottomLeft.getX() + beamOffset, midY, bottomLeft.getZ() + beamOffset);
+        BlockPos se = new BlockPos(topRight.getX() - beamOffset, midY, bottomLeft.getZ() + beamOffset);
+        BlockPos nw = new BlockPos(bottomLeft.getX() + beamOffset, midY, topRight.getZ() - beamOffset);
+        BlockPos ne = new BlockPos(topRight.getX() - beamOffset, midY, topRight.getZ() - beamOffset);
+
+        for (BlockPos corner : new BlockPos[]{sw, se, nw, ne}) {
+            if (!validateDipoleAt(corner)) return false;
+        }
+        return true;
+    }
+
+    private boolean validateDipoleAt(BlockPos center) {
+        Block beamBlock = ACCELERATOR_BLOCKS.get("particle_beam").get();
+        Block yokeBlock = ACCELERATOR_BLOCKS.get("electromagnet_yoke").get();
+
+        if (!getBlockState(center).is(beamBlock)) {
+            validationResult = ValidationResult.WRONG_INNER;
+            errorBlockPos = new BlockPos(center);
+            return false;
+        }
+
+        BlockState upState = getBlockState(center.above());
+        BlockState downState = getBlockState(center.below());
+        if (!(upState.getBlock() instanceof ElectromagnetBlock)) {
+            validationResult = ValidationResult.WRONG_INNER;
+            errorBlockPos = new BlockPos(center.above());
+            return false;
+        }
+        if (!(downState.getBlock() instanceof ElectromagnetBlock)) {
+            validationResult = ValidationResult.WRONG_INNER;
+            errorBlockPos = new BlockPos(center.below());
+            return false;
+        }
+        if (upState.getBlock() != downState.getBlock()) {
+            validationResult = ValidationResult.WRONG_INNER;
+            errorBlockPos = new BlockPos(center.below());
+            return false;
+        }
+
+        BlockPos[] yokePositions = {
+                center.above().north(), center.above().south(),
+                center.above().east(),  center.above().west(),
+                center.above().north().east(), center.above().north().west(),
+                center.above().south().east(), center.above().south().west(),
+                center.below().north(), center.below().south(),
+                center.below().east(),  center.below().west(),
+                center.below().north().east(), center.below().north().west(),
+                center.below().south().east(), center.below().south().west(),
+                center.north().east(), center.north().west(),
+                center.south().east(), center.south().west()
+        };
+        for (BlockPos pos : yokePositions) {
+            if (!getBlockState(pos).is(yokeBlock)) {
+                validationResult = ValidationResult.WRONG_INNER;
+                errorBlockPos = new BlockPos(pos);
+                return false;
+            }
+            addIfNotExists(pos, allBlocks);
+        }
+
+        BlockPos[] faces = {center.north(), center.south(), center.east(), center.west()};
+        for (BlockPos pos : faces) {
+            BlockState bs = getBlockState(pos);
+            if (!bs.is(beamBlock) && !bs.is(yokeBlock)) {
+                validationResult = ValidationResult.WRONG_INNER;
+                errorBlockPos = new BlockPos(pos);
+                return false;
+            }
+            addIfNotExists(pos, allBlocks);
+        }
+
+        electromagnets.put(center.above().asLong(), (ElectromagnetBlock) upState.getBlock());
+        electromagnets.put(center.below().asLong(), (ElectromagnetBlock) downState.getBlock());
+        addIfNotExists(center.above(), allBlocks);
+        addIfNotExists(center.below(), allBlocks);
+        addIfNotExists(center, allBlocks);
+        return true;
+    }
+
     protected void processOuterBlock(BlockPos pos) {
         super.processOuterBlock(pos);
         BlockState bs = getBlockState(pos);
@@ -169,18 +405,20 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         }
     }
 
-    private void resolveRealDepth() {
-        debugLog("Resolving depth from position " + initialPos().toShortString());
+    private void indexCornerCoolers() {
+        int innerWallOffset = 4;
+        BlockPos innerStart = (new BlockPos(bottomLeft)).offset(innerWallOffset, 1, innerWallOffset);
+        BlockPos innerEnd = (new BlockPos(topRight)).offset(-innerWallOffset, -4, -innerWallOffset);
 
-        for(int i = 1; i <= maxDepth()+2; i++) {
-            if (!isValidForOuter(getLeftPos(leftCasing).below(bottomCasing).relative(getControllerDirection(), -i))) {
-                depth = i;
-                debugLog("Found depth boundary at offset " + i);
-                break;
-            }
+        BlockPos innerCorner2 = new BlockPos(innerStart.getX(), innerStart.getY(), innerEnd.getZ());
+        BlockPos innerCorner3 = new BlockPos(innerEnd.getX(), innerStart.getY(), innerStart.getZ());
+
+        for (int h = 0; h < 4; h++) {
+            processInnerBlock(innerStart.offset(0, h, 0));
+            processInnerBlock(innerEnd.offset(0, h, 0));
+            processInnerBlock(innerCorner2.offset(0, h, 0));
+            processInnerBlock(innerCorner3.offset(0, h, 0));
         }
-
-        debugLog("Resolved real depth: " + depth);
     }
 
     /**
@@ -198,22 +436,22 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         
         debugLog("Inner wall boundaries: " + innerStart.toShortString() + " to " + innerEnd.toShortString());
         
-        if (!validateInnerWallFace(innerStart, innerEnd, Direction.Axis.X, true)) {
+        if (!validateInnerWallFace(innerStart.offset(0, 0,1), innerEnd.offset(0, 0,-1), Direction.Axis.X, true)) {
             debugLog("West inner wall validation failed");
             return false;
         }
         
-        if (!validateInnerWallFace(innerStart, innerEnd, Direction.Axis.X, false)) {
+        if (!validateInnerWallFace(innerStart.offset(0, 0,1), innerEnd.offset(0, 0,-1), Direction.Axis.X, false)) {
             debugLog("East inner wall validation failed");
             return false;
         }
         
-        if (!validateInnerWallFace(innerStart, innerEnd, Direction.Axis.Z, true)) {
+        if (!validateInnerWallFace(innerStart.offset(1, 0,0), innerEnd.offset(-1, 0,0), Direction.Axis.Z, true)) {
             debugLog("North inner wall validation failed");
             return false;
         }
         
-        if (!validateInnerWallFace(innerStart, innerEnd, Direction.Axis.Z, false)) {
+        if (!validateInnerWallFace(innerStart.offset(1, 0,0), innerEnd.offset(-1, 0,0), Direction.Axis.Z, false)) {
             debugLog("South inner wall validation failed");
             return false;
         }
@@ -357,10 +595,15 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         dipoleStrength = 0;
         focus = 0.0;
         energyRequired = 0;
+
+        if (!validateCornerDipoles()) {
+            return;
+        }
+        indexCornerCoolers();
         initialPos = new BlockPosInstance(bottomLeft.getX()+2, bottomLeft.getY()+2, bottomLeft.getZ()+2);
 
         multiblockDirection = Direction.SOUTH;
-        for (int z = 1; z < Math.max(depth, width)-4; z++) {
+        for (int z = 0; z < Math.max(depth, width)-4; z++) {
             if(!indexSlice(z)) {
                 return;
             }
@@ -373,13 +616,13 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         }
         initialPos = new BlockPosInstance(topRight.getX()-2, topRight.getY()-2, topRight.getZ()-2);
         multiblockDirection = Direction.NORTH;
-        for (int z = 1; z < Math.max(depth, width)-4; z++) {
+        for (int z = 0; z < Math.max(depth, width)-6; z++) {
             if(!indexSlice(z)) {
                 return;
             }
         }
         multiblockDirection = Direction.WEST;
-        for (int z = 1; z < Math.max(depth, width)-4; z++) {
+        for (int z = 1; z < Math.max(depth, width)-6; z++) {
             if(!indexSlice(z)) {
                 return;
             }
@@ -411,7 +654,7 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
             validationResult = ValidationResult.VALID;
             errorBlockPos = BlockPos.ZERO;
             controllerBE().ionSourcePos = ionSourcePos;
-            controllerBE().beamLength = beamLength;
+            controllerBE().beamLength = beamLength+4;
             controllerBE().amplifiers = amplifiers.size();
             controllerBE().coolers = validCoolers;
             controllerBE().quadroupoles = quadrupolesCount;
@@ -433,5 +676,19 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         controllerBE().setChanged();
 
         stage = 0;
+    }
+
+    private static final int RING_WALL_THICKNESS = 4;
+
+    @Override
+    public long getCapacityMultiplier() {
+        long lx = width();
+        long lz = depth();
+        long interiorY = Math.max(1L, height() - 2L);
+        long outer = (lx - 1L) * (lz - 1L);
+        long holeX = lx - 2L * (RING_WALL_THICKNESS + 1);
+        long holeZ = lz - 2L * (RING_WALL_THICKNESS + 1);
+        long hole = (holeX > 0 && holeZ > 0) ? holeX * holeZ : 0L;
+        return (outer - hole) * interiorY;
     }
 }

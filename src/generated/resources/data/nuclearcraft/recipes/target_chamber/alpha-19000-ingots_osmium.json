@@ -1,0 +1,34 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.025,
+  "input": [
+    {
+      "tag": "forge:ingots/osmium"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 40000000,
+      "focus": 1.0,
+      "meanEnergy": 19000,
+      "particle": "alpha"
+    }
+  ],
+  "maxEnergy": 27500,
+  "output": [
+    {
+      "tag": "forge:ingots/platinum"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

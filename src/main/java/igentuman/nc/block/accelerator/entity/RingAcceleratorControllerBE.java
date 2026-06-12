@@ -6,6 +6,7 @@ import igentuman.nc.compat.cc.RingAcceleratorPeripheral;
 import igentuman.nc.compat.oc2.RingAcceleratorDevice;
 import igentuman.nc.content.particles.*;
 import igentuman.nc.handler.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.accelerator.ThoroidalAcceleratorMultiblock;
 import igentuman.nc.util.capability.CustomEnergyStorage;
@@ -27,6 +28,7 @@ import java.util.*;
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.compat.oc2.RingAcceleratorDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.util.Equations.*;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
@@ -44,7 +46,11 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
 
     public RingAcceleratorControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
-
+        contentHandler().setAllowedInputItems(null);
+        contentHandler().itemHandler.setGlobalMode(0, SlotModePair.SlotMode.DISABLED);
+        contentHandler().itemHandler.setGlobalMode(1, SlotModePair.SlotMode.DISABLED);
+        contentHandler().fluidHandler.setGlobalMode(0, SlotModePair.SlotMode.DISABLED);
+        contentHandler().fluidHandler.setGlobalMode(1, SlotModePair.SlotMode.DISABLED);
     }
 
     public List<ItemStack> getAllowedInputItems()
@@ -68,8 +74,11 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == PARTICLE_HANDLER_CAPABILITY) {
+            return particleHandler.cast();
+        }
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return contentHandler().getFluidCapability(null);
+            return contentHandler().getFluidCapability(side);
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return getEnergy().cast();
@@ -108,26 +117,32 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
         if(redstoneLevel < 1) {
             redstoneLevel = getRedstoneSignal();
         }
-        controllerEnabled = getMultiblock().isFormed() && redstoneLevel > 0;
+        boolean formed = getMultiblock().isFormed();
+        if(formed && !thermalInitialized) {
+            initThermal();
+        } else if(!formed && thermalInitialized) {
+            resetThermal();
+        }
+        controllerEnabled = formed && redstoneLevel > 0;
 
+        currentHeating = 0;
+        if(formed) {
+            externalHeating();
+        }
         if (controllerEnabled) {
             trackChanges(contentHandler().tick());
-            handleMeltdown();
             trackChanges(accelerateParticle());
+            handleMeltdown();
         }
-        // Passive cooling
-        heat -= coolingRate;
-        heat = Math.max(0, heat);
-        // Coolant cooling
         coolantCoolDown();
-        refreshCacheFlag = !getMultiblock().isFormed();
+        refreshCacheFlag = !formed;
         if(wasEnabled != controllerEnabled) {
             setChanged();
         }
         if(refreshCacheFlag || changed || currentTick % 20 == 0) {
             try {
                 setChanged();
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(AcceleratorPortBlock.POWERED, controllerEnabled), Block.UPDATE_NEIGHBORS);
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(AcceleratorPortBlock.POWERED, controllerEnabled), Block.UPDATE_ALL);
                 level.setBlockAndUpdate(worldPosition, getBlockState().setValue(AcceleratorPortBlock.POWERED, controllerEnabled));
             } catch (NullPointerException ignored) {}
         }
@@ -143,17 +158,41 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
         if(particleStorage.getParticle() == null) {
             return false;
         }
+        ParticleStack particleStack = particleStorage.getParticle();
+        if(particleStack.isEmpty() || particleStack.getParticle() == null) {
+            return false;
+        }
+        double radius = getBeamRadius();
+        long maxEnergy = ringEnergyMaxEnergy(dipoleStrength, acceleratingVoltage, radius, particleStack);
+        if(maxEnergy <= 0) {
+            particleStorage.clearServer();
+            return false;
+        }
+        if(particleStack.getMeanEnergy() > maxEnergy) {
+            particleStorage.clearServer();
+            return false;
+        }
         if(!drainEnergy()) {
             return false;
         }
-        ParticleStack particleStack = particleStorage.getParticle();
-        particleStack.addFocus(focusGain(focus, particleStack)-focusLoss(beamLength, particleStack));
-        particleStack.setMeanEnergy((long)(linacEnergyGain(acceleratingVoltage, particleStack)*(redstoneLevel / 15d)));
+        long targetEnergy = (long)(maxEnergy * (redstoneLevel / 15d));
+        long radiationLoss = synchrotronRadiationEnergy(radius, particleStack);
+        particleStack.setMeanEnergy(Math.max(0, targetEnergy - radiationLoss));
+        particleStack.addFocus(focusGain(quadStrength, particleStack) - focusLoss(beamLength, particleStack));
         particleStorage.setParticleStack(particleStack);
-        heat += heatRate;
+        internalHeating(heatRate);
         hasParticle = true;
-        getMultiblock().extractParticle(particleStack);
+        if(particleStack.getFocus() > 0) {
+            getMultiblock().extractParticle(particleStack);
+        }
+        particleStorage.clearServer();
+
         return true;
+    }
+
+    public double getBeamRadius() {
+        int side = getMultiblock().depth();
+        return Math.max(1, (side - 4) / 2d);
     }
 
 
@@ -170,7 +209,15 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
     }
 
     private void handleMeltdown() {
+        if(isAcceleratorTooHot()) {
+            quenchMagnets();
+            controllerEnabled = false;
+        }
+    }
 
+    @Override
+    protected igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock getAcceleratorMultiblock() {
+        return getMultiblock();
     }
 
     public Direction getFacing() {

@@ -55,7 +55,7 @@ public class VerticalBar extends NCGuiElement {
     }
 
     public static class Heat extends VerticalBar{
-        public Heat(int x, int y, IVerticalBarScreen screen, int maxHeat) {
+        public Heat(int x, int y, IVerticalBarScreen screen, long maxHeat) {
             super(x, y, screen, maxHeat);
             xOffset = 102;
             hintKey = "heat.bar.amount";

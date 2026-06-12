@@ -1,0 +1,40 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 1.0,
+  "input": [
+    {
+      "tag": "forge:ingots/copper"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 1000000,
+      "focus": 1.0,
+      "meanEnergy": 11000,
+      "particle": "neutron"
+    }
+  ],
+  "maxEnergy": 15000,
+  "output": [
+    {
+      "tag": "forge:ingots/nickel"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,11 +1,14 @@
 package igentuman.nc.block.accelerator.entity;
 
+import igentuman.nc.block.ElectromagnetBlock;
+import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.content.particles.*;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.util.capability.CustomEnergyStorage;
@@ -15,6 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -22,14 +26,15 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.radiation.ItemRadiation.getItemByName;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
@@ -38,8 +43,6 @@ import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXE
 
 public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
 
-    @NBTField
-    public int heatMax = 0;
     @NBTField
     public BlockPos ionSourcePos = BlockPos.ZERO;
     @NBTField
@@ -63,7 +66,15 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     @NBTField
     public int heatRate = 0;
     @NBTField
-    public int heat = 0;
+    public int heatStored = 0;
+    @NBTField
+    public long heatCapacity = 0;
+    @NBTField
+    public long currentHeating = 0;
+    @NBTField
+    public int ambientTemp = 290;
+    @NBTField
+    public boolean thermalInitialized = false;
     @NBTField
     public double efficiency = 0;
     @NBTField
@@ -78,6 +89,7 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     public int coolingRate = 0;
     @NBTField
     public double redstoneLevel = 0;
+    protected double initialFocus = 0D;
 
     protected final LazyOptional<IParticleStackHandler> particleHandler;
     protected final ParticleStorage particleStorage;
@@ -212,7 +224,6 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         };
     }
 
-
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
@@ -228,7 +239,6 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
-            particleStorage.clear();
         }
     }
 
@@ -246,7 +256,6 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         if (tag.contains("Info")) {
             CompoundTag infoTag = tag.getCompound("Info");
             infoTag.put("particle_storage", particleStorage.writeToNBT(new CompoundTag()));
-            particleStorage.clear();
         }
     }
 
@@ -311,42 +320,135 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     }
 
     protected void coolantCoolDown() {
-        if(hasCoolant() && heat > 0) {
-            double coolantNeededRatio = (double) coolingRate / coolantRecipe.getCoolingRate();
-            int coolantPerOp = coolantRecipe.getInputFluids()[0].getAmount();
-            int coolantNeeded = (int) Math.ceil(coolantNeededRatio * coolantPerOp);
-
-            int availableCoolant = contentHandler().fluidHandler.tanks.get(2).getFluidAmount();
-
-            if(availableCoolant >= coolantNeeded) {
-                // We have enough coolant to provide full cooling
-                int opsNeeded = Math.max(1, coolantNeeded / coolantPerOp);
-                double actualCooling = Math.min(coolingRate, heat);
-
-                heat -= (int) actualCooling;
-                heat = Math.max(0, heat);
-
-                extractCoolant(opsNeeded);
-            } else if(availableCoolant >= coolantPerOp) {
-                // We have some coolant but not enough for full cooling
-                int possibleOps = availableCoolant / coolantPerOp;
-                double partialCooling = (possibleOps * coolantPerOp * coolantRecipe.getCoolingRate()) / coolantPerOp;
-                double actualCooling = Math.min(partialCooling, heat);
-
-                heat -= (int) actualCooling;
-                heat = Math.max(0, heat);
-
-                extractCoolant(possibleOps);
-            }
+        if(heatStored <= 0 || coolingRate <= 0) return;
+        if(!hasCoolant()) return;
+        if(getTemperature() < coolantRecipe.getInputFluids(0).get(0).getFluid().getFluidType().getTemperature()) {
+            return;
         }
+        int heatPerMB = (int) Math.max(1, coolantRecipe.getCoolingRate());
+        int inputAmountPerOp = coolantRecipe.getInputFluids()[0].getAmount();
+        int outputAmountPerOp = coolantRecipe.getOutputFluids().get(0).getAmount();
+        if(inputAmountPerOp <= 0 || outputAmountPerOp <= 0) return;
+
+        long maxHeatChange = Math.min(heatStored, (long) coolingRate);
+        long opsByThroughput = maxHeatChange / ((long) heatPerMB * inputAmountPerOp);
+
+        FluidTank inputTank = contentHandler().fluidHandler.tanks.get(2);
+        FluidTank outputTank = contentHandler().fluidHandler.tanks.get(3);
+        long opsByCoolant = inputTank.getFluidAmount() / inputAmountPerOp;
+        long outputSpace = (long) outputTank.getCapacity() - outputTank.getFluidAmount();
+        long opsByOutput = outputSpace / outputAmountPerOp;
+
+        long ops = Math.min(opsByThroughput, Math.min(opsByCoolant, opsByOutput));
+        if(ops <= 0) return;
+
+        long heatRemoved = ops * heatPerMB * inputAmountPerOp;
+        heatStored -= (int) Math.min(heatStored, heatRemoved);
+        if(heatStored < 0) heatStored = 0;
+        currentHeating -= heatRemoved;
+
+        extractCoolant((int) ops);
     }
 
     protected void extractCoolant(int ops) {
-        if(coolantRecipe != null) {
+        if(coolantRecipe != null && ops > 0) {
             contentHandler().fluidHandler.tanks.get(2).drain(coolantRecipe.getInputFluids()[0].getAmount() * ops, EXECUTE);
             FluidStack output = coolantRecipe.getOutputFluids().get(0).copy();
             output.setAmount(output.getAmount() * ops);
             contentHandler().fluidHandler.tanks.get(3).fill(output, EXECUTE);
+        }
+    }
+
+    public int getMaxTemp() {
+        return ACCELERATOR_CONFIG.MAX_TEMP.get();
+    }
+
+    public int getTemperature() {
+        if(heatCapacity <= 0) return ambientTemp;
+        return Math.round(400 * (float) heatStored / heatCapacity);
+    }
+
+    public long getExteriorSurfaceArea() {
+        AbstractAcceleratorMultiblock mb = getAcceleratorMultiblock();
+        if(mb == null) return 0L;
+        return mb.getExteriorSurfaceArea();
+    }
+
+    public long getExternalHeating() {
+        return (long) ((ambientTemp - getTemperature()) * ACCELERATOR_CONFIG.THERMAL_CONDUCTIVITY.get() * getExteriorSurfaceArea());
+    }
+
+    protected void externalHeating() {
+        long delta = getExternalHeating();
+        applyHeatDelta(delta);
+        currentHeating += delta;
+    }
+
+    protected void internalHeating(long delta) {
+        applyHeatDelta(delta);
+        currentHeating += delta;
+    }
+
+    protected void applyHeatDelta(long delta) {
+        long newHeat = (long) heatStored + delta;
+        if(newHeat < 0) newHeat = 0;
+        if(newHeat > heatCapacity) newHeat = heatCapacity;
+        heatStored = (int) Math.min(Integer.MAX_VALUE, newHeat);
+    }
+
+    protected AbstractAcceleratorMultiblock getAcceleratorMultiblock() {
+        return null;
+    }
+
+    public void initThermal() {
+        AbstractAcceleratorMultiblock mb = getAcceleratorMultiblock();
+        if(mb == null || level == null) return;
+
+        long baseCapacity = (long) ACCELERATOR_CONFIG.BASE_HEAT_CAPACITY.get();
+        heatCapacity = baseCapacity * mb.getCapacityMultiplier();
+        if(heatCapacity <= 0) heatCapacity = baseCapacity;
+
+        float biomeTemp = level.getBiome(worldPosition).value().getBaseTemperature();
+        ambientTemp = 273 + (int) (biomeTemp * 20F);
+
+        if(!thermalInitialized) {
+            heatStored = (int) Math.min(Integer.MAX_VALUE, ambientTemp * heatCapacity / getMaxTemp());
+            thermalInitialized = true;
+        }
+    }
+
+    public void resetThermal() {
+        thermalInitialized = false;
+        currentHeating = 0;
+    }
+
+    protected void quenchMagnets() {
+        if(!ACCELERATOR_CONFIG.MELTDOWN_ENABLED.get() || !controllerEnabled) return;
+        AbstractAcceleratorMultiblock mb = getAcceleratorMultiblock();
+        if(mb == null || level == null) return;
+
+        double temp = getTemperature() * 1000D;
+        List<BlockPos> overheated = new ArrayList<>();
+        for(Map.Entry<Long, ElectromagnetBlock> e : mb.getElectromagnets().entrySet()) {
+            if(e.getValue().getMaxTemperature() < temp) {
+                overheated.add(BlockPos.of(e.getKey()));
+            }
+        }
+        for(Map.Entry<Long, RFAmplifierBlock> e : mb.getAmplifiers().entrySet()) {
+            if(e.getValue().getMaxTemperature() < temp) {
+                overheated.add(BlockPos.of(e.getKey()));
+            }
+        }
+        if(overheated.isEmpty()) return;
+
+        net.minecraft.util.RandomSource rand = level.getRandom();
+        int explosions = 1 + rand.nextInt(1 + overheated.size() / 10);
+        for(int i = 0; i < explosions && !overheated.isEmpty(); i++) {
+            if (level.getRandom().nextInt(50) > 30) {
+                int idx = rand.nextInt(overheated.size());
+                BlockPos pos = overheated.remove(idx);
+                level.explode(null, pos.getX(), pos.getY(), pos.getZ(), 1.0f, Level.ExplosionInteraction.BLOCK);
+            }
         }
     }
 
@@ -368,6 +470,6 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     }
 
     public boolean isAcceleratorTooHot() {
-        return (heatRate - coolingRate) > maxTemperature;
+        return getTemperature() > maxTemperature;
     }
 }

@@ -3,9 +3,11 @@ package igentuman.nc.handler.event.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import igentuman.api.nc.SideModeToggleable;
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
+import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.item.QNP;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.collection.HashList;
@@ -46,6 +48,8 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.mojang.math.Axis.XP;
@@ -62,6 +66,26 @@ public class BlockOverlayHandler {
     private final static HashList<BlockPos> highlightsToRemove = new HashList<>();
     private final static HashMap<Long, RenderBox> boxes = new HashMap<>();
     public final static HashList<FissionControllerBE> reactors = new HashList<>();
+    private final static Set<MultiblockControllerBE> debugControllers = ConcurrentHashMap.newKeySet();
+
+    public static void registerDebugController(MultiblockControllerBE be) {
+        debugControllers.add(be);
+    }
+
+    public static void unregisterDebugController(MultiblockControllerBE be) {
+        debugControllers.remove(be);
+    }
+
+    public static Set<MultiblockControllerBE> getDebugControllers() {
+        return debugControllers;
+    }
+
+    public static boolean isDebugOverlayActive() {
+        Player p = Minecraft.getInstance().player;
+        if (p == null) return false;
+        if (!CommonConfig.MISC_CONFIG.DEBUG_LOG.get()) return false;
+        return isMultiTool(p.getMainHandItem()) || isMultiTool(p.getOffhandItem());
+    }
 
     public static void register(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(BlockOverlayHandler::blockOverlayEvent);
@@ -109,6 +133,7 @@ public class BlockOverlayHandler {
                 for(RenderBox box: boxes.values()) {
                     drawBoundingBoxAtBlockPos(e.getPoseStack(), box.boundingBox, box.red, box.green, box.blue, box.alpha, box.relative, player.blockPosition());
                 }
+                renderMultiblockDebugOverlays(e.getPoseStack(), player);
                 if (outlineBlocks.isEmpty()) return;
                 for (BlockPos pos: outlineBlocks) {
                     if(pos.equals(BlockPos.ZERO)) continue;
@@ -216,6 +241,23 @@ public class BlockOverlayHandler {
 
     public static List<BlockPos> outlineBlocks = new CopyOnWriteArrayList<>();
     public static List<BlockPos> fusionReactors = new CopyOnWriteArrayList<>();
+
+    private static void renderMultiblockDebugOverlays(PoseStack poseStack, Player player) {
+        if (!isDebugOverlayActive()) return;
+        BlockPos playerPos = player.blockPosition();
+        AABB unit = new AABB(0, 0, 0, 1, 1, 1);
+        for (MultiblockControllerBE be : debugControllers) {
+            if (be.isRemoved()) continue;
+            BlockPos bl = be.bottomLeft;
+            BlockPos tr = be.topRight;
+            if (bl == null || tr == null) continue;
+            if (bl.equals(BlockPos.ZERO) && tr.equals(BlockPos.ZERO)) continue;
+            drawBoundingBoxAtBlockPos(poseStack, unit, 0f, 1f, 0f, 1f, bl, playerPos);
+            drawBoundingBoxAtBlockPos(poseStack, unit, 0f, 0f, 1f, 1f, tr, playerPos);
+            AABB full = new AABB(bl.getX(), bl.getY(), bl.getZ(), tr.getX() + 1, tr.getY() + 1, tr.getZ() + 1);
+            drawBoundingBoxAtBlockPos(poseStack, full, 1f, 1f, 0f, 1f, BlockPos.ZERO, playerPos);
+        }
+    }
 
     public static void drawBoundingBoxAtBlockPos(PoseStack matrixStackIn, AABB aabbIn, float red, float green, float blue, float alpha, BlockPos pos, BlockPos aimed) {
         Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();

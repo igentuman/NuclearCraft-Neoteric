@@ -54,17 +54,17 @@ public final class BlockClassifier {
             return new BlastOp.SetBlock(pos, NCBlocks.WASTELAND_EARTH.get().defaultBlockState());
         } else if (r < 0.85f) {
             if (state.is(BlockTags.SAND)) {
-                return new BlastOp.SetBlock(pos, GRASS.defaultBlockState());
+                return new BlastOp.SetBlock(pos, GLASS.defaultBlockState());
             }
             return new BlastOp.SetBlock(pos, Blocks.ROOTED_DIRT.defaultBlockState());
         } else if (r < 0.90f) {
             if (state.is(BlockTags.SAND)) {
-                return new BlastOp.SetBlock(pos, GRASS.defaultBlockState());
+                return new BlastOp.SetBlock(pos, GLASS.defaultBlockState());
             }
             return new BlastOp.SetBlock(pos, Blocks.COARSE_DIRT.defaultBlockState());
         } else if (r < 0.97f) {
             if (state.is(BlockTags.SAND)) {
-                return new BlastOp.SetBlock(pos, GRASS.defaultBlockState());
+                return new BlastOp.SetBlock(pos, GLASS.defaultBlockState());
             }
             return new BlastOp.SetBlock(pos, Blocks.GRAVEL.defaultBlockState());
         }

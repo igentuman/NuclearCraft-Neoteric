@@ -112,8 +112,8 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
         return blockEntity.recipeInfo().getProgress();
     }
 
-    public int getMaxHeat() {
-        return blockEntity.heatMax;
+    public long getMaxHeat() {
+        return blockEntity.heatCapacity;
     }
 
     public double getFocus() {
@@ -153,11 +153,11 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
     }
 
     public int maxCoolant() {
-        return 10000; // TODO: get from config
+        return 100000; // TODO: get from config
     }
 
     public double getHeat() {
-        return blockEntity.heat;
+        return blockEntity.heatStored;
     }
 
     public int getEnergyRequired() {
@@ -182,5 +182,13 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
 
     public boolean isAcceleratorTooHot() {
         return blockEntity.isAcceleratorTooHot();
+    }
+
+    public int getMaxTemperature() {
+        return blockEntity.maxTemperature;
+    }
+
+    public int getTemperature() {
+        return blockEntity.getTemperature();
     }
 }

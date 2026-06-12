@@ -34,6 +34,7 @@ public class PonderScenes {
     public static final ResourceLocation TURBINE = rl("turbine");
     public static final ResourceLocation TARGET_CHAMBER = rl("target_chamber");
     public static final ResourceLocation LINEAR_ACCELERATOR = rl("linear_accelerator");
+    public static final ResourceLocation RING_ACCELERATOR = rl("ring_accelerator");
     public static final ResourceLocation KUGELBLITZ_CHAMBER = rl("kugelblitz_chamber");
 
     public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
@@ -92,16 +93,26 @@ public class PonderScenes {
 
 
         List<Item> linearAcceleratorItems = new ArrayList<>();
-        ACCELERATOR_ITEMS.values().forEach(entry -> linearAcceleratorItems.add(entry.get()));
-        for (RegistryObject<Block> block : NC_ELECTROMAGNETS.values()) {
-            linearAcceleratorItems.add(block.get().asItem());
-        }
-        for (RegistryObject<Block> block : NC_RF_AMPLIFIERS.values()) {
-            linearAcceleratorItems.add(block.get().asItem());
-        }
+        ACCELERATOR_ITEMS.values().forEach(entry -> {
+            if(!entry.get().asItem().toString().contains("ring")) {
+                linearAcceleratorItems.add(entry.get());
+            }
+        });
+
         HELPER.forComponents(
                 linearAcceleratorItems
         ).addStoryBoard(LINEAR_ACCELERATOR, LinearAcceleratorPonderScenes::create);
+
+        List<Item> ringAcceleratorItems = new ArrayList<>();
+        ACCELERATOR_ITEMS.values().forEach(entry -> {
+            if(entry.get().asItem().toString().contains("ring")) {
+                ringAcceleratorItems.add(entry.get());
+            }
+        });
+
+        HELPER.forComponents(
+                ringAcceleratorItems
+        ).addStoryBoard(RING_ACCELERATOR, RingAcceleratorPonderScenes::create);
 
         List<Item> kugelblitzChamberItems = new ArrayList<>();
         KUGELBLITZ_ITEMS.values().forEach(entry -> kugelblitzChamberItems.add(entry.get()));

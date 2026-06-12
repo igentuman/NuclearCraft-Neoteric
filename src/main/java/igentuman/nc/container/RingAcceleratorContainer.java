@@ -156,7 +156,7 @@ public class RingAcceleratorContainer extends AbstractContainerMenu {
     }
 
     public double getHeat() {
-        return blockEntity.heat;
+        return blockEntity.heatStored;
     }
 
     public int getEnergyRequired() {
@@ -182,4 +182,13 @@ public class RingAcceleratorContainer extends AbstractContainerMenu {
     public int getBeamLength() {
         return blockEntity.beamLength;
     }
+
+    public long getMaxTemperature() {
+        return blockEntity.maxTemperature;
+    }
+
+    public long getTemperature() {
+        return blockEntity.getTemperature();
+    }
+
 }

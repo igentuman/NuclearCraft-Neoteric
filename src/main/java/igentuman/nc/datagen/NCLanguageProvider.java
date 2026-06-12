@@ -131,6 +131,12 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.ponder.linear_accelerator.text_6", "Finalize with Casing, Glass, Ports and a Controller.");
         add("nuclearcraft.ponder.linear_accelerator.text_7", "Connect beamline from beam output port to other structure.");
         add("nuclearcraft.ponder.linear_accelerator.text_8", "Provide redstone signal to controller block. Signal strength affects acceleration energy.");
+        add("nuclearcraft.ponder.ring_accelerator.text_1", "Synchrotron casing forms a square torus, 5 blocks wide on each side.");
+        add("nuclearcraft.ponder.ring_accelerator.text_2", "A continuous ring of Particle Beam blocks runs through the middle of all four sides.");
+        add("nuclearcraft.ponder.ring_accelerator.text_3", "Place a dipole magnet at every corner: electromagnet above and below the beam, yokes around.");
+        add("nuclearcraft.ponder.ring_accelerator.text_4", "Inside corners of the ring may host coolers to dump heat.");
+        add("nuclearcraft.ponder.ring_accelerator.text_5", "Use Ring Accelerator Ports for energy, fluids and redstone, and Beam Ports for particle input/output. The generic Accelerator Port and Ion Source Port do not fit on a ring.");
+        add("nuclearcraft.ponder.ring_accelerator.text_6", "Pipe in an existing beam at 5 MeV or higher, then power the controller. Redstone strength scales output energy.");
         add("nuclearcraft.ponder.kugelblitz_chamber.text_1", "Kugelblitz Chamber size is 11x11x11.");
         add("nuclearcraft.ponder.kugelblitz_chamber.text_2", "All 6 walls must be perfectly symmetric.");
         add("nuclearcraft.ponder.kugelblitz_chamber.text_3", "The Kugelblitz Chamber Terminal is the main control block.");
@@ -537,6 +543,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("jei.recipe.nc.fission_reactor", "Fission Reactor");
         add("jei.recipe.nc.target_chamber", "Target Chamber");
         add("jei.recipe.nc.linear_accelerator", "Linear Accelerator");
+        add("jei.recipe.nc.ring_accelerator", "Synchrotron Accelerator");
         add("jei.recipe.nc.kugelblitz_chamber", "Kugelblitz Chamber");
         add("jei.recipe.nc.leacher", "Leacher Setup");
         add("jei.info.nuclearcraft.kugelblitz.description", "The Kugelblitz Chamber transforms items using black hole quantum fields.");
@@ -635,10 +642,11 @@ public class NCLanguageProvider extends LanguageProvider {
             if(name.contains("cooler")) {
                 prefix = "Accelerator ";
             }
-            String title = convertToName(name);
-            if(name.contains("ring")) {
-                title = "(WIP) " + title;
+            if(name.equals("accelerator_port")) {
+                prefix = "Linear ";
             }
+            String title = convertToName(name);
+
             add(ACCELERATOR_BLOCKS.get(name).get(), prefix+title);
         }
         for(String name: TARGET_CHAMBER_BLOCKS.keySet()) {
@@ -852,6 +860,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.rf_amplifier.efficiency","Efficiency: %s%%");
         add("tooltip.nc.rf_amplifier.heat","Heat: %s H/t");
         add("tooltip.nc.rf_amplifier.max_temp","Max Temperature: %s K");
+        add("tooltip.nc.accelerator.temperature","Temperature: %s K");
 
         add("tooltip.nc.reactor.charge","Charged: %s");
         add("tooltip.nc.reactor.running","Activation: %s");

@@ -1,0 +1,46 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.02,
+  "input": [
+    {
+      "tag": "forge:dusts/graphite"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 50000000,
+      "focus": 1.0,
+      "meanEnergy": 42500,
+      "particle": "photon"
+    }
+  ],
+  "maxEnergy": 55000,
+  "output": [
+    {
+      "item": "nuclearcraft:lithium_6"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

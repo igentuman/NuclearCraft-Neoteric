@@ -55,7 +55,7 @@ public class RingAcceleratorPeripheral implements IPeripheral {
     @LuaFunction
     public final int getTemperature()
     {
-        return controller.heat;
+        return controller.heatStored;
     }
 
     @LuaFunction
@@ -68,8 +68,8 @@ public class RingAcceleratorPeripheral implements IPeripheral {
     public final Object getHeatBufferInfo()
     {
         Map<String, Object> statsData = new HashMap<String, Object>();
-        statsData.put("heat_stored", isMultiblockAssembled() ? controller.heat : 0);
-        statsData.put("heat_capacity", isMultiblockAssembled() ? controller.heatMax : 0);
+        statsData.put("heat_stored", isMultiblockAssembled() ? controller.heatStored : 0);
+        statsData.put("heat_capacity", isMultiblockAssembled() ? controller.heatCapacity : 0);
         return statsData;
     }
 

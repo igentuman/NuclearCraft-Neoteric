@@ -66,6 +66,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		{
 			this.clientParticle = null;
 		}
+		this.particleStack = this.clientParticle;
 		
 		this.maxEnergy = nbt.getLong("maxEnergy");
 		this.capacity = nbt.getInt("capacity");
@@ -93,9 +94,10 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 	public CompoundTag writeToNBT(CompoundTag nbt)
 	{
 		CompoundTag tag = new CompoundTag();
-		if (clientParticle != null)
+		ParticleStack toWrite = clientParticle != null ? clientParticle : particleStack;
+		if (toWrite != null)
 		{
-			clientParticle.writeToNBT(tag);
+			toWrite.writeToNBT(tag);
 		} else {
 			new ParticleStack().writeToNBT(tag);
 		}
@@ -336,6 +338,12 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 	public void clear() {
 		particleStack = null;
 		outputParticles.clear();
+	}
+
+	public void clearAll() {
+		particleStack = null;
+		outputParticles.clear();
+		clientParticle =  null;
 	}
 
 	public ParticleStack getClientParticleStack() {

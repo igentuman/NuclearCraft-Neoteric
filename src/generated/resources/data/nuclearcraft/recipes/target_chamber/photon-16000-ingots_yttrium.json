@@ -1,0 +1,34 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.016,
+  "input": [
+    {
+      "tag": "forge:ingots/yttrium"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 62500000,
+      "focus": 1.0,
+      "meanEnergy": 16000,
+      "particle": "photon"
+    }
+  ],
+  "maxEnergy": 23000,
+  "output": [
+    {
+      "tag": "forge:ingots/strontium"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

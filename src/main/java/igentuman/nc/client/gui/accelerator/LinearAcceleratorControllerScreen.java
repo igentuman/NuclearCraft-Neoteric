@@ -11,6 +11,7 @@ import igentuman.nc.client.gui.element.button.Checkbox;
 import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.LinearAcceleratorContainer;
 import igentuman.nc.content.particles.ParticleStack;
+import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -157,8 +158,9 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
 
         if(isCasingValid()) {
             if (isInteriorValid()) {
-                graphics.drawString(font, __("tooltip.nc.accelerator.voltage", container().getVoltage()), 37, 50, 0xffffff);
-                graphics.drawString(font, __("tooltip.nc.accelerator.efficiency", numberFormat(container().getEfficiency()) + "%"), 37, 60, 0xffffff);
+                graphics.drawString(font, __("tooltip.nc.rf_amplifier.max_temp", TextUtils.scaledFormat(container().getMaxTemperature())), 37, 40, 0xffffff);
+                graphics.drawString(font, __("tooltip.nc.accelerator.temperature", container().getTemperature()), 37, 50, 0xffffff);
+                graphics.drawString(font, __("tooltip.nc.accelerator.voltage", container().getVoltage()), 37, 60, 0xffffff);
                 graphics.drawString(font, __("tooltip.nc.accelerator.strength", numberFormat(container().getStrength())), 37, 70, 0xffffff);
                 if (isAcceleratorTooHot()) {
                     graphics.drawString(font, __("tooltip.nc.accelerator.too_hot"), 37, 80, ChatFormatting.RED.getColor());

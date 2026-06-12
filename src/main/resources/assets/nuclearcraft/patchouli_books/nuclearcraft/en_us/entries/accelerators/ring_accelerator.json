@@ -18,7 +18,7 @@
 			"anchor": "construction",
 			"title": "Construction",
 			"type": "text",
-			"text": "Synchrotron Accelerators are a square torus of Accelerator Casings or Glass that must be 5 wide. Like all $(l:multiblocks/accelerators/general#construction)accelerators$(/l), they require a Coolant Vent in both input and output modes and an Energy Port. There must be a continuous ring of Accelerator Beam Blocks down the center. Any beam port must be connected to the central beam ring with a beam block. Example shown on the opposite page."
+			"text": "Synchrotron Accelerators are a square torus of Accelerator Casings or Glass that must be 5 wide. Power, coolant, redstone and computer access all run through the dedicated $(l)Ring Accelerator Port$() - the linear Accelerator Port and Ion Source Port will not validate on a ring. Particle input and output use $(l:multiblocks/accelerators/general#construction)Accelerator Beam Ports$(/l). There must be a continuous ring of Accelerator Beam Blocks down the center. Any beam port must be connected to the central beam ring with a beam block. Example shown on the opposite page."
 		},
 		{
 			"type": "diagram_high",

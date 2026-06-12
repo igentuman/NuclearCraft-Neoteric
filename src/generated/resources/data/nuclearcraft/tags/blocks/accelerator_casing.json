@@ -6,6 +6,7 @@
     "nuclearcraft:ring_accelerator_controller",
     "nuclearcraft:linear_accelerator_controller",
     "nuclearcraft:accelerator_port",
+    "nuclearcraft:ring_accelerator_port",
     "nuclearcraft:accelerator_beam_port",
     "nuclearcraft:accelerator_ion_source_port"
   ]

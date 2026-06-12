@@ -1,0 +1,40 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.064,
+  "input": [
+    {
+      "tag": "forge:ingots/beryllium"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 15625000,
+      "focus": 1.0,
+      "meanEnergy": 100000,
+      "particle": "alpha"
+    }
+  ],
+  "maxEnergy": 145000,
+  "output": [
+    {
+      "item": "nuclearcraft:beryllium_7"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "alpha"
+    },
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

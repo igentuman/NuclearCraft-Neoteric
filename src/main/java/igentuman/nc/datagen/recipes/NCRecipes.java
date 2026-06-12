@@ -439,7 +439,7 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer, rl("linear_accelerator_controller"));
 
         // Thoroidal accelerator controller (ring accelerator)
-        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get())
                 .pattern("PEP")
                 .pattern("AFA")
                 .pattern("PEP")
@@ -449,7 +449,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('F', ACCELERATOR_BLOCKS.get("accelerator_casing").get())
                 .group(MODID+"_accelerator")
                 .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
-                .save(consumer, rl("ring_accelerator_controller"));*/
+                .save(consumer, rl("ring_accelerator_controller"));
 
         // Accelerator port
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("accelerator_port").get(), 4)
@@ -463,6 +463,18 @@ public class NCRecipes extends RecipeProvider {
                 .group(MODID+"_accelerator")
                 .unlockedBy("item", has(NC_PARTS.get("servo").get()))
                 .save(consumer, rl("accelerator_port"));
+
+        // Ring accelerator port
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("ring_accelerator_port").get(), 4)
+                .pattern("SVS")
+                .pattern("VFV")
+                .pattern("SVS")
+                .define('S', forgeIngot(Materials.steel))
+                .define('V', NC_PARTS.get("servo").get())
+                .define('F', NC_PARTS.get("steel_frame").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(NC_PARTS.get("servo").get()))
+                .save(consumer, rl("ring_accelerator_port"));
 
         // Accelerator beam port
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(), 4)

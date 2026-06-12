@@ -7,6 +7,7 @@ import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.math.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import static igentuman.nc.NuclearCraft.debugLog;
@@ -49,6 +50,14 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
     @Override
     public void clearStats() {
         controller().clearStats();
+    }
+
+    @Override
+    public boolean isValidForOuter(BlockPos pos) {
+        if (getLevel() == null) return false;
+        Block block = getBlockState(pos).getBlock();
+        if (block == ACCELERATOR_BLOCKS.get("ring_accelerator_port").get()) return false;
+        return validOuterBlocks().contains(block);
     }
 
     @Override
@@ -213,8 +222,7 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
             controllerBE().quadroupoles = quadrupolesCount;
             controllerBE().dipoles = dipolesCount;
             controllerBE().focus = focus;
-            controllerBE().maxTemperature = maxTemperature;
-            controllerBE().heatMax = maxHeat;
+            controllerBE().maxTemperature = (int)(maxTemperature/1000D);
             controllerBE().heatRate = heatRate;
             controllerBE().efficiency = efficiency/(amplifiers.size() + electromagnets.size());
             controllerBE().quadStrength = quadStrength;

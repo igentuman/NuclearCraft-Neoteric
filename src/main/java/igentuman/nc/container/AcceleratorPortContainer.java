@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.accelerator.entity.AcceleratorPortBE;
+import igentuman.nc.block.accelerator.entity.LinearAcceleratorPortBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.core.BlockPos;
@@ -30,7 +30,7 @@ import static igentuman.nc.util.TextUtils.energy2Display;
 
 public class AcceleratorPortContainer extends AbstractContainerMenu {
 
-    protected final AcceleratorPortBE portBE;
+    protected final LinearAcceleratorPortBE portBE;
     protected final Player playerEntity;
     protected final String name = "accelerator_port";
     private int slotIndex = 0;
@@ -40,7 +40,7 @@ public class AcceleratorPortContainer extends AbstractContainerMenu {
         super(ACCELERATOR_PORT_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        portBE = (AcceleratorPortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        portBE = (LinearAcceleratorPortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
         portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Input(h, 0, 71, 26));

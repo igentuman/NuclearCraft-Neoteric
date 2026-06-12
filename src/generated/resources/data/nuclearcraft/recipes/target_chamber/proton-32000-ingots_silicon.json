@@ -1,0 +1,34 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.2,
+  "input": [
+    {
+      "tag": "forge:ingots/silicon"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 5000000,
+      "focus": 1.0,
+      "meanEnergy": 32000,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 50000,
+  "output": [
+    {
+      "item": "nuclearcraft:magnesium_26"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 3,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

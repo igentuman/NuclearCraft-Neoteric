@@ -1,0 +1,42 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.1,
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:nitrogen"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 10000000,
+      "focus": 1.0,
+      "meanEnergy": 14000,
+      "particle": "alpha"
+    }
+  ],
+  "maxEnergy": 26000,
+  "outputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:oxygen"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -36,6 +36,37 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     protected final HashMap<Long, RFAmplifierBlock> amplifiers = new HashMap<>(1000);
     public final HashMap<Long, CoolerBlock> coolers = new HashMap<>(1000);
     protected HashSet<Long> beamPorts = new HashSet<>();
+
+    public int getMaxOperatingTemp() {
+        return maxTemperature;
+    }
+
+    public int getHeatRate() {
+        return heatRate;
+    }
+
+    public int getCoolingRate() {
+        return coolingRate;
+    }
+
+    public long getExteriorSurfaceArea() {
+        long w = Math.max(1, width());
+        long h = Math.max(1, height());
+        long d = Math.max(1, depth());
+        return 2L * (w * h + w * d + h * d);
+    }
+
+    public int getBlockCount() {
+        return Math.max(1, width() * height() * depth());
+    }
+
+    public HashMap<Long, ElectromagnetBlock> getElectromagnets() {
+        return electromagnets;
+    }
+
+    public HashMap<Long, RFAmplifierBlock> getAmplifiers() {
+        return amplifiers;
+    }
     protected int dipolesCount = 0;
     protected int quadrupolesCount = 0;
     protected final int[] xCoords = new int[]{ 0, 0, -1, 1, 1, -1, -1,  1};
@@ -414,6 +445,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
         validCoolers = 0;
         validationResult =  ValidationResult.VALID;
         stage = FINAL_STAGE;
+
         for (Long pos : coolers.keySet()) {
             CoolerBlock cooler = coolers.get(pos);
             if(cooler.isValid(getLevel(), BlockPos.of(pos), this)) {
@@ -465,5 +497,9 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
                 }
             }
         }
+    }
+
+    public long getCapacityMultiplier() {
+        return 9L * (beamLength + 2);
     }
 }

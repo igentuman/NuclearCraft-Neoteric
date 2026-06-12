@@ -14,22 +14,22 @@ public class AcceleratorCoolantRecipes extends AbstractRecipeProvider {
 
         for(String gas: List.of("nitrogen", "helium")) {
             add(
-                    fluidIngredient("liquid_" + gas, 10),
-                    fluidIngredient(gas, 10),
-                    25
+                    fluidIngredient("liquid_" + gas, 1),
+                    fluidIngredient(gas, 1),
+                    1000
             );
         }
 
         add(
-                fluidIngredient("minecraft:water", 1000),
-                fluidIngredient("steam", 1000),
-                20
+                fluidIngredient("minecraft:water", 100),
+                fluidIngredient("steam", 100),
+                100
         );
 
         add(
-                fluidIngredient("technical_water", 1000),
-                fluidIngredient("high_pressure_steam", 1000),
-                25
+                fluidIngredient("technical_water", 100),
+                fluidIngredient("high_pressure_steam", 100),
+                100
         );
     }
 

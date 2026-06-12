@@ -7,6 +7,7 @@ import igentuman.nc.container.AcceleratorIonSourcePortContainer;
 import igentuman.nc.container.AcceleratorPortContainer;
 import igentuman.nc.container.LinearAcceleratorContainer;
 import igentuman.nc.container.RingAcceleratorContainer;
+import igentuman.nc.container.RingAcceleratorPortContainer;
 import igentuman.nc.util.JSONUtil;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
@@ -55,6 +56,9 @@ public class AcceleratorRegistration {
     public static final RegistryObject<MenuType<AcceleratorIonSourcePortContainer>> ACCELERATOR_ION_SOURCE_PORT_CONTAINER = CONTAINERS.register("accelerator_ion_source_port",
             () -> IForgeMenuType.create((windowId, inv, data) -> new AcceleratorIonSourcePortContainer(windowId, data.readBlockPos(), inv))
     );
+    public static final RegistryObject<MenuType<RingAcceleratorPortContainer>> RING_ACCELERATOR_PORT_CONTAINER = CONTAINERS.register("ring_accelerator_port",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new RingAcceleratorPortContainer(windowId, data.readBlockPos(), inv))
+    );
 
     public static final HashMap<String,CoolerDef> COOLERS = coolers();
 
@@ -68,12 +72,18 @@ public class AcceleratorRegistration {
         registerOrientedBlock("linear_accelerator_controller");
         registerOrientedBlock("ring_accelerator_controller");
         registerOrientedBlock("accelerator_port");
+        registerOrientedBlock("ring_accelerator_port");
         registerOrientedBlock("accelerator_beam_port");
         registerOrientedBlock("accelerator_ion_source_port");
 
         ACCELERATOR_BE.put("accelerator_port",
                 BLOCK_ENTITIES.register("accelerator_port",
-                        () -> BlockEntityType.Builder.of(AcceleratorPortBE::new, ACCELERATOR_BLOCKS.get("accelerator_port").get())
+                        () -> BlockEntityType.Builder.of(LinearAcceleratorPortBE::new, ACCELERATOR_BLOCKS.get("accelerator_port").get())
+                                .build(null)));
+
+        ACCELERATOR_BE.put("ring_accelerator_port",
+                BLOCK_ENTITIES.register("ring_accelerator_port",
+                        () -> BlockEntityType.Builder.of(RingAcceleratorPortBE::new, ACCELERATOR_BLOCKS.get("ring_accelerator_port").get())
                                 .build(null)));
 
         ACCELERATOR_BE.put("accelerator_beam_port",
@@ -119,6 +129,8 @@ public class AcceleratorRegistration {
                     ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new AcceleratorIonSourcePortBlock(props)));
             case "accelerator_port" ->
                     ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new AcceleratorPortBlock(props)));
+            case "ring_accelerator_port" ->
+                    ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new RingAcceleratorPortBlock(props)));
             case "accelerator_beam_port" ->
                     ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new AcceleratorBeamPortBlock(props)));
             default -> ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new AcceleratorOrientedBlock(props)));

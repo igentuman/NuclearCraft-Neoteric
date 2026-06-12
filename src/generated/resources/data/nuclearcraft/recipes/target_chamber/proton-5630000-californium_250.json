@@ -1,0 +1,40 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.2,
+  "input": [
+    {
+      "item": "nuclearcraft:californium_250"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 5000000,
+      "focus": 1.0,
+      "meanEnergy": 5630000,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 20000000,
+  "output": [
+    {
+      "item": "nuclearcraft:californium_spallation_waste"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "antiproton"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

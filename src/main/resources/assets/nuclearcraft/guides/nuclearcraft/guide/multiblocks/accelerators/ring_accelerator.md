@@ -9,13 +9,17 @@ item_ids:
 
 # Synchrotron Accelerator
 
+<GameScene zoom={2}>
+  <ImportStructure src="/structures/ring_accelerator.nbt" />
+</GameScene>
+
 Synchrotron Accelerators accelerate particles put into them to much higher energies than [Linear Accelerators](linear_accelerator.md), but cannot be the start of an accelerator system. The start must be a linear accelerator with an [ion source](linear_accelerator.md#ion_source). **Synchrotrons have a minimum input particle energy** - this is usually 5 MeV but can be changed in the configs.
 
 Example Synchrotron Accelerator.
 
 ## Construction
 
-Synchrotron Accelerators are a square torus of Accelerator Casings or Glass that must be 5 wide. Like all [accelerators](general.md#construction), they require a Coolant Vent in both input and output modes and an Energy Port. There must be a continuous ring of Accelerator Beam Blocks down the center. Any beam port must be connected to the central beam ring with a beam block. Example shown on the opposite page.
+Synchrotron Accelerators are a square torus of Accelerator Casings or Glass that must be 5 wide. Power, coolant, redstone and computer access all run through the dedicated **Ring Accelerator Port** — the linear Accelerator Port and Ion Source Port will not validate on a ring. Particle input and output use [Accelerator Beam Ports](general.md#construction). There must be a continuous ring of Accelerator Beam Blocks down the center. Any beam port must be connected to the central beam ring with a beam block. Example shown on the opposite page.
 
 At each corner and beam port intersection there must be a [dipole magnet](general.md#dipole). So a synchrotron has a minimum of 4 dipoles. The example above will require at least 5 dipoles.
 

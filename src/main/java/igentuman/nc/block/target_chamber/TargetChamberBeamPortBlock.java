@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BE;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_BE;
 import static igentuman.nc.util.PortMode.PORT_MODE;
 import static igentuman.nc.util.StackUtils.isMultiTool;
 import static igentuman.nc.util.TextUtils.*;

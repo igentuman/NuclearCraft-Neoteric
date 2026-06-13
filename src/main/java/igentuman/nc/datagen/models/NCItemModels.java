@@ -1,6 +1,5 @@
 package igentuman.nc.datagen.models;
 
-import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
@@ -19,7 +18,7 @@ import static igentuman.nc.NuclearCraft.forgeRl;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCK_ITEMS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
@@ -101,8 +100,8 @@ public class NCItemModels extends ItemModelProvider {
         for(String name: ACCELERATOR_BLOCKS.keySet()) {
             withExistingParent(ACCELERATOR_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
-        for(String name: TARGET_CHAMBER_BLOCKS.keySet()) {
-            withExistingParent(TARGET_CHAMBER_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        for(String name: PARTICLE_CHAMBER_BLOCKS.keySet()) {
+            withExistingParent(PARTICLE_CHAMBER_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
         withExistingParent(FUSION_CORE_PROXY.getId().getPath(), modLoc("item/fusion_core"));
     }

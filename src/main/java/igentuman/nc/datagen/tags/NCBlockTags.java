@@ -22,7 +22,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.CASING_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.*;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.*;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.*;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
@@ -45,15 +45,29 @@ public class NCBlockTags extends BlockTagsProvider {
         machines();
         tag(MODERATORS_BLOCKS).add(NCBlocks.NC_MATERIAL_BLOCKS.get("graphite").get(), NCBlocks.NC_MATERIAL_BLOCKS.get("beryllium").get());
         tag(TARGET_CHAMBER_CASING_BLOCKS).add(
-                TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get(),
-                TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(),
-                TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get(),
-                TARGET_CHAMBER_BLOCKS.get("target_chamber_port").get(),
-                TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get()
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_port").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_beam_port").get()
+        );
+        tag(COLLISION_CHAMBER_CASING_BLOCKS).add(
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_port").get()
+        );
+        tag(DECAY_CHAMBER_CASING_BLOCKS).add(
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get(),
+                PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_port").get()
         );
         tag(TARGET_CHAMBER_INNER_BLOCKS).add(
                 ACCELERATOR_BLOCKS.get("particle_beam").get(),
-                TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get()
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_camera").get()
         );
         tag(KugelblitzRegistration.CASING_BLOCKS).add(
                 KUGELBLITZ_BLOCKS.get("neutronium_frame").get(),
@@ -243,9 +257,9 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ACCELERATOR_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(ACCELERATOR_BLOCKS.get(block).get());
         }
-        for(String block: TARGET_CHAMBER_BLOCKS.keySet()) {
-            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(TARGET_CHAMBER_BLOCKS.get(block).get());
-            tag(BlockTags.NEEDS_IRON_TOOL).add(TARGET_CHAMBER_BLOCKS.get(block).get());
+        for(String block: PARTICLE_CHAMBER_BLOCKS.keySet()) {
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(PARTICLE_CHAMBER_BLOCKS.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(PARTICLE_CHAMBER_BLOCKS.get(block).get());
         }
         for(String block: FUSION_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(FUSION_BLOCKS.get(block).get());

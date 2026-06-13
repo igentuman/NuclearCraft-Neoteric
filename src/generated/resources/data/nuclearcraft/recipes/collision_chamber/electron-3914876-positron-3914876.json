@@ -1,0 +1,38 @@
+{
+  "type": "nuclearcraft:collision_chamber",
+  "crossSection": 0.025,
+  "energyReleased": -3558978,
+  "inputParticles": [
+    {
+      "amount": 1,
+      "focus": 5.0,
+      "meanEnergy": 3914876,
+      "particle": "electron"
+    },
+    {
+      "amount": 1,
+      "focus": 5.0,
+      "meanEnergy": 3914876,
+      "particle": "positron"
+    }
+  ],
+  "maxEnergy": 5872314,
+  "minEnergy": 3914876,
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "tau"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "antitau"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

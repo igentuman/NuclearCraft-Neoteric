@@ -28,6 +28,10 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     private double radiation = 1D;
     private double powerModifier = 1D;
     private long maxEnergy = 0L;
+    private long minEnergy = 0L;
+    private long energyReleased = 0L;
+    private boolean hasEnergyReleased = false;
+    private boolean hasMinEnergy = false;
 
     public double coolingRate = 0;
     public double heatRequired = 0;
@@ -158,6 +162,18 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         return this;
     }
 
+    public NcRecipeBuilder minEnergy(long minEnergy) {
+        this.minEnergy = minEnergy;
+        this.hasMinEnergy = true;
+        return this;
+    }
+
+    public NcRecipeBuilder energyReleased(long energyReleased) {
+        this.energyReleased = energyReleased;
+        this.hasEnergyReleased = true;
+        return this;
+    }
+
     public class NcRecipeResult extends RecipeResult {
 
         protected NcRecipeResult(ResourceLocation id) {
@@ -250,6 +266,12 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
                 crossSection = crossSection > 0 ? crossSection : 5;
                 json.addProperty("maxEnergy", maxEnergy);
                 json.addProperty("crossSection", crossSection);
+                if(hasMinEnergy) {
+                    json.addProperty("minEnergy", minEnergy);
+                }
+                if(hasEnergyReleased) {
+                    json.addProperty("energyReleased", energyReleased);
+                }
             }
         }
     }

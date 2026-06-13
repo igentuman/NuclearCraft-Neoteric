@@ -67,8 +67,12 @@ import net.minecraftforge.registries.RegistryObject;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.*;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_CONTROLLER_CONTAINER;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_PORT_CONTAINER;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.COLLISION_CHAMBER_CONTROLLER_CONTAINER;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.COLLISION_CHAMBER_PORT_CONTAINER;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.DECAY_CHAMBER_CONTROLLER_CONTAINER;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.DECAY_CHAMBER_PORT_CONTAINER;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_CONTROLLER_CONTAINER;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_PORT_CONTAINER;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_CONTROLLER_CONTAINER;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_PORT_CONTAINER;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.MSR_CONTROLLER_CONTAINER;
@@ -126,6 +130,10 @@ public class ClientSetup {
             MenuScreens.register(RING_ACCELERATOR_PORT_CONTAINER.get(), RingAcceleratorPortScreen::new);
             MenuScreens.register(TARGET_CHAMBER_CONTROLLER_CONTAINER.get(), TargetChamberControllerScreen::new);
             MenuScreens.register(TARGET_CHAMBER_PORT_CONTAINER.get(), TargetChamberPortScreen::new);
+            MenuScreens.register(COLLISION_CHAMBER_CONTROLLER_CONTAINER.get(), CollisionChamberControllerScreen::new);
+            MenuScreens.register(COLLISION_CHAMBER_PORT_CONTAINER.get(), CollisionChamberPortScreen::new);
+            MenuScreens.register(DECAY_CHAMBER_CONTROLLER_CONTAINER.get(), DecayChamberControllerScreen::new);
+            MenuScreens.register(DECAY_CHAMBER_PORT_CONTAINER.get(), DecayChamberPortScreen::new);
 
             for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
                 MenuScreens.register(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), Processors.all().get(name).getScreenConstructor());

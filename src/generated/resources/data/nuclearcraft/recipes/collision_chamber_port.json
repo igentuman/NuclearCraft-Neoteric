@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_collision_chamber",
+  "key": {
+    "F": {
+      "item": "nuclearcraft:steel_frame"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "T": {
+      "tag": "forge:ingots/tungsten"
+    },
+    "V": {
+      "item": "nuclearcraft:servo"
+    }
+  },
+  "pattern": [
+    "THT",
+    "VFV",
+    "THT"
+  ],
+  "result": {
+    "count": 4,
+    "item": "nuclearcraft:collision_chamber_port"
+  },
+  "show_notification": true
+}

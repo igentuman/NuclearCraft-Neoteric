@@ -1,6 +1,8 @@
 package igentuman.nc.recipes;
 
 import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
+import igentuman.nc.block.collision_chamber.entity.CollisionChamberControllerBE;
+import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
 import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
@@ -42,6 +44,8 @@ public class NcRecipeSerializers {
         map.put("fusion_coolant", RECIPE_SERIALIZERS.register("fusion_coolant", () -> new CoolantRecipeSerializer<>(FusionCoolantRecipe::new)));
         map.put("fission_boiling", RECIPE_SERIALIZERS.register("fission_boiling", () -> new BoilingRecipeSerializer<>(FissionControllerBE.FissionBoilingRecipe::new)));
         map.put("target_chamber", RECIPE_SERIALIZERS.register("target_chamber", () -> new TargetChamberSerializer<>(TargetChamberControllerBE.Recipe::new)));
+        map.put("decay_chamber", RECIPE_SERIALIZERS.register("decay_chamber", () -> new ParticleOnlyRecipeSerializer<>(DecayChamberControllerBE.Recipe::new)));
+        map.put("collision_chamber", RECIPE_SERIALIZERS.register("collision_chamber", () -> new ParticleOnlyRecipeSerializer<>(CollisionChamberControllerBE.Recipe::new)));
         map.put(TurbineControllerBE.NAME, RECIPE_SERIALIZERS.register(TurbineControllerBE.NAME, () -> new TurbineRecipeSerializer<>(TurbineControllerBE.Recipe::new)));
         for(String key : Processors.all().keySet()) {
            if(Processors.all().get(key).getRecipeSerializer() != null) {

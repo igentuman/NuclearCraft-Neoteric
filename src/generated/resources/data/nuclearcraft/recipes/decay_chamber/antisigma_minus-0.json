@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:decay_chamber",
+  "crossSection": 0.99,
+  "energyReleased": 120000,
+  "inputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "antisigma_minus"
+    }
+  ],
+  "maxEnergy": 9223372036854775807,
+  "minEnergy": 0,
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "pion_plus"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "antineutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

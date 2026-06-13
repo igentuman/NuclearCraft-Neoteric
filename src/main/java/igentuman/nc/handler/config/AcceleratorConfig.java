@@ -14,6 +14,8 @@ public class AcceleratorConfig {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final GeneralConfig ACCELERATOR_CONFIG = new GeneralConfig(BUILDER);
     public static final ParticleChamberConfig PARTICLE_CHAMBER_CONFIG = new ParticleChamberConfig(BUILDER);
+    public static final DecayChamberConfig DECAY_CHAMBER_CONFIG = new DecayChamberConfig(BUILDER);
+    public static final CollisionChamberConfig COLLISION_CHAMBER_CONFIG = new CollisionChamberConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
@@ -40,15 +42,63 @@ public class AcceleratorConfig {
         public final ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
 
         public ParticleChamberConfig(ForgeConfigSpec.Builder builder) {
-            builder.comment("Particle chamber").push("particle_chamber");
+            builder.comment("Target chamber").push("target_chamber");
 
             MIN_SIZE = builder
-                    .comment("Min size.")
+                    .comment("Min interior size (cube edge, odd).")
                     .defineInRange("min_size", 5, 5, 11);
 
             MAX_SIZE = builder
-                    .comment("Max size.")
+                    .comment("Max interior size (cube edge, odd).")
                     .defineInRange("max_size", 11, 7, 11);
+
+            builder.pop();
+        }
+    }
+
+    public static class DecayChamberConfig {
+        public final ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public final ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public final ForgeConfigSpec.ConfigValue<Integer> BASE_POWER;
+
+        public DecayChamberConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Decay chamber").push("decay_chamber");
+
+            MIN_SIZE = builder
+                    .comment("Min interior size (cube edge, odd).")
+                    .defineInRange("min_size", 5, 3, 17);
+
+            MAX_SIZE = builder
+                    .comment("Max interior size (cube edge, odd).")
+                    .defineInRange("max_size", 9, 5, 17);
+
+            BASE_POWER = builder
+                    .comment("Base RF/tick consumed while running.")
+                    .defineInRange("base_power", 200, 0, Integer.MAX_VALUE);
+
+            builder.pop();
+        }
+    }
+
+    public static class CollisionChamberConfig {
+        public final ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public final ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public final ForgeConfigSpec.ConfigValue<Integer> BASE_POWER;
+
+        public CollisionChamberConfig(ForgeConfigSpec.Builder builder) {
+            builder.comment("Collision chamber").push("collision_chamber");
+
+            MIN_SIZE = builder
+                    .comment("Min interior size (cube edge, odd).")
+                    .defineInRange("min_size", 7, 5, 21);
+
+            MAX_SIZE = builder
+                    .comment("Max interior size (cube edge, odd).")
+                    .defineInRange("max_size", 15, 7, 21);
+
+            BASE_POWER = builder
+                    .comment("Base RF/tick consumed while running.")
+                    .defineInRange("base_power", 1000, 0, Integer.MAX_VALUE);
 
             builder.pop();
         }

@@ -18,8 +18,8 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_CONTROLLER_CONTAINER;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_CONTROLLER_CONTAINER;
 import static igentuman.nc.util.TextUtils.*;
 
 public class TargetChamberControllerContainer extends AbstractContainerMenu {
@@ -80,7 +80,7 @@ public class TargetChamberControllerContainer extends AbstractContainerMenu {
         return stillValid(
                 ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
                 playerEntity,
-                TARGET_CHAMBER_BLOCKS.get(name).get()
+                PARTICLE_CHAMBER_BLOCKS.get(name).get()
         );
     }
 
@@ -122,7 +122,7 @@ public class TargetChamberControllerContainer extends AbstractContainerMenu {
     }
 
     public int getEnergy() {
-        return energy2Display(blockEntity.energyStorage.getEnergyStored());
+        return energy2Display(blockEntity.energyStorage().getEnergyStored());
     }
 
     public double getProgress() {
@@ -153,7 +153,7 @@ public class TargetChamberControllerContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return energy2Display(blockEntity.energyStorage.getMaxEnergyStored());
+        return energy2Display(blockEntity.energyStorage().getMaxEnergyStored());
     }
 
     public String getEfficiency() {

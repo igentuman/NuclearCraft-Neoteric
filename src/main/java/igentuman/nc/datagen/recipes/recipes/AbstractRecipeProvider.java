@@ -201,6 +201,30 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
+    public static void decayChamber(ParticleStack input, List<ParticleStack> outputs,
+                                    long minEnergy, long maxEnergy, long energyReleased, double crossSection) {
+        NcRecipeBuilder.get(ID)
+                .particles(List.of(input), outputs)
+                .minEnergy(minEnergy)
+                .maxEnergy(maxEnergy)
+                .energyReleased(energyReleased)
+                .crossSection(crossSection)
+                .modifiers(1D, 1D, 1D)
+                .build(consumer);
+    }
+
+    public static void collisionChamber(ParticleStack inputA, ParticleStack inputB, List<ParticleStack> outputs,
+                                        long minEnergy, long maxEnergy, long energyReleased, double crossSection) {
+        NcRecipeBuilder.get(ID)
+                .particles(List.of(inputA, inputB), outputs)
+                .minEnergy(minEnergy)
+                .maxEnergy(maxEnergy)
+                .energyReleased(energyReleased)
+                .crossSection(crossSection)
+                .modifiers(1D, 1D, 1D)
+                .build(consumer);
+    }
+
     public static void fluidsAndFluids(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double...params) {
         double timeModifier = params.length>0 ? params[0] : 1.0;
         double powerModifier = params.length>1 ? params[1] : 1.0;

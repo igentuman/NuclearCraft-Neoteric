@@ -68,7 +68,7 @@ public class TargetChamberDevice {
         @Callback
         public final int getEnergyStored()
         {
-            return reactor.energyStorage.getEnergyStored();
+            return reactor.energyStorage().getEnergyStored();
         }
 
         @Callback

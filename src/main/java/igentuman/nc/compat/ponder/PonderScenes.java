@@ -2,7 +2,6 @@ package igentuman.nc.compat.ponder;
 
 import igentuman.nc.compat.ponder.scenes.*;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
-import net.createmod.ponder.api.registration.MultiSceneBuilder;
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +19,7 @@ import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.getHSBlocks;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_ITEMS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_ITEMS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCK_ITEMS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
@@ -85,7 +84,7 @@ public class PonderScenes {
 
 
         List<Item> targetChamberItems = new ArrayList<>();
-        TARGET_CHAMBER_BLOCKS.values().forEach(entry -> targetChamberItems.add(entry.get().asItem()));
+        PARTICLE_CHAMBER_BLOCKS.values().forEach(entry -> targetChamberItems.add(entry.get().asItem()));
 
         HELPER.forComponents(
                 targetChamberItems

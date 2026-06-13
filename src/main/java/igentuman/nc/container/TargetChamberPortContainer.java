@@ -18,8 +18,8 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_PORT_CONTAINER;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_PORT_CONTAINER;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.energy2Display;
 
@@ -86,7 +86,7 @@ public class TargetChamberPortContainer extends AbstractContainerMenu {
         return stillValid(
                 ContainerLevelAccess.create(portBE.getLevel(), portBE.getBlockPos()),
                 playerEntity,
-                TARGET_CHAMBER_BLOCKS.get(name).get()
+                PARTICLE_CHAMBER_BLOCKS.get(name).get()
         );
     }
 

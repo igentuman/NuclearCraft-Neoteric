@@ -17,7 +17,7 @@ import java.util.*;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BLOCK;
@@ -189,7 +189,7 @@ public class CreativeTabs {
         for(RegistryObject<Block> block: ACCELERATOR_BLOCKS.values()) {
             items.add(new ItemStack(block.get()));
         }
-        for(RegistryObject<Block> block: TARGET_CHAMBER_BLOCKS.values()) {
+        for(RegistryObject<Block> block: PARTICLE_CHAMBER_BLOCKS.values()) {
             items.add(new ItemStack(block.get()));
         }
         for(RegistryObject<Item> item: ION_SOURCES.values()) {

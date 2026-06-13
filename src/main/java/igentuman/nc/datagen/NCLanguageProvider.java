@@ -8,13 +8,12 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
-import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_PROXY_BLOCK;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_DETECTORS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_DETECTORS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCItems.*;
@@ -573,6 +572,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc_jei_cat.mek_chemical_conversion", "NC - GAS -> Fluid Conversion");
         add("nc_jei_cat.fission_boiling", "Boiling Reactor");
         add("nc_jei_cat.msr_controller", "Molten Salt Reactor");
+        add("nc_jei_cat.decay_chamber", "Decay Chamber");
+        add("nc_jei_cat.collision_chamber", "Collision Chamber");
 
         add("label.nuclearcraft.energy_range", "Energy: %s - %s");
         add("label.nuclearcraft.energy", "Energy: %s");
@@ -649,12 +650,16 @@ public class NCLanguageProvider extends LanguageProvider {
 
             add(ACCELERATOR_BLOCKS.get(name).get(), prefix+title);
         }
-        for(String name: TARGET_CHAMBER_BLOCKS.keySet()) {
+        for(String name: PARTICLE_CHAMBER_BLOCKS.keySet()) {
             String title = convertToName(name);
+            if (!name.equals("target_chamber_controller") && !name.equals("target_chamber_port")) {
+                title = convertToName(name.replace("target_","particle_"));
+            }
+
             if(TARGET_CHAMBER_DETECTORS.containsKey(name)) {
                 title += " Detector";
             }
-            add(TARGET_CHAMBER_BLOCKS.get(name).get(), title);
+            add(PARTICLE_CHAMBER_BLOCKS.get(name).get(), title);
         }
         for(String name: KUGELBLITZ_BLOCKS.keySet()) {
             String title = convertToName(name);
@@ -670,7 +675,7 @@ public class NCLanguageProvider extends LanguageProvider {
             }
             String title = convertToName(name);
             if(name.equals("msr_controller")) {
-                title = "MSR Controller";
+                title = "(WIP) MSR Controller";
             }
             if(name.equals("msr_fuel_cell")) {
                 title = "MSR Fuel Cell";

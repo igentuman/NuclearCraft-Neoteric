@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.SoundType;
 
 import java.util.List;
 
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_DETECTORS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_DETECTORS;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.math.Pos3D.getTaxiDistance;
 

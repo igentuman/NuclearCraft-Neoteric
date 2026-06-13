@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "nuclearcraft:heat_exchanger"
+        "recipe": "nuclearcraft:collision_chamber_port"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -12,7 +12,7 @@
         "items": [
           {
             "items": [
-              "nuclearcraft:chassis"
+              "nuclearcraft:servo"
             ]
           }
         ]
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "nuclearcraft:heat_exchanger"
+      "nuclearcraft:collision_chamber_port"
     ]
   },
   "sends_telemetry_event": false

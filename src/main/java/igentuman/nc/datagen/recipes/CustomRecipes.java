@@ -47,6 +47,8 @@ public class CustomRecipes extends NCRecipes {
         TurbineControllerRecipes.generate(consumer);
         SubatomicLiquifierRecipes.generate(consumer);
         TargetChamberRecipes.generate(consumer);
+        DecayChamberRecipes.generate(consumer);
+        CollisionChamberRecipes.generate(consumer);
         TConstructAlloyingRecipes.generate(consumer);
         TConstructCastingRecipes.generate(consumer);
         TConstructMeltingRecipes.generate(consumer);

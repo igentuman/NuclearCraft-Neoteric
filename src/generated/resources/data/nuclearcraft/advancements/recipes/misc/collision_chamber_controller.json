@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "nuclearcraft:msr_fuel_cell"
+        "recipe": "nuclearcraft:collision_chamber_controller"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -12,7 +12,7 @@
         "items": [
           {
             "items": [
-              "nuclearcraft:fission_reactor_casing"
+              "nuclearcraft:plate_elite"
             ]
           }
         ]
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "nuclearcraft:msr_fuel_cell"
+      "nuclearcraft:collision_chamber_controller"
     ]
   },
   "sends_telemetry_event": false

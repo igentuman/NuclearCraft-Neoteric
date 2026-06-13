@@ -3,11 +3,12 @@ package igentuman.nc.block.target_chamber.entity;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.block.accelerator.entity.AcceleratorBeamPortBE;
+import igentuman.nc.block.entity.ParticleChamberControllerBE;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.particle_chamber.TargetChamberMultiblock;
+import igentuman.nc.multiblock.particle_chamber.ParticleChamberMultiblock;
 import igentuman.nc.util.Equations;
 import igentuman.nc.util.PortMode;
 import igentuman.nc.util.annotation.NBTField;
@@ -28,7 +29,7 @@ import java.util.Objects;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BE;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_BE;
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
 import static igentuman.nc.util.PortMode.PORT_MODE;
@@ -42,9 +43,9 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
     public byte comparatorMode = SignalSource.ENERGY;
     @NBTField
     public BlockPos controllerPos;
-    protected TargetChamberMultiblock multiblock;
+    protected ParticleChamberMultiblock multiblock;
     public boolean refreshCacheFlag = true;
-    public TargetChamberControllerBE controller;
+    public ParticleChamberControllerBE controller;
 
     public TargetChamberBeamPortBE(BlockPos pPos, BlockState pBlockState) {
         super(TARGET_CHAMBER_BE.get(NAME).get(), pPos, pBlockState);
@@ -59,12 +60,12 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
 
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
-        this.multiblock = (TargetChamberMultiblock) multiblock;
+        this.multiblock = (ParticleChamberMultiblock) multiblock;
         markDirty();
     }
 
     @Override
-    public TargetChamberMultiblock getMultiblock() {
+    public ParticleChamberMultiblock getMultiblock() {
         return multiblock;
     }
 
@@ -184,16 +185,16 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
     }
 
     @Override
-    public TargetChamberControllerBE controller() {
+    public ParticleChamberControllerBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {
-            return (TargetChamberControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+            return (ParticleChamberControllerBE) getLevel().getExistingBlockEntity(controllerPos);
         }
         try {
-            return (TargetChamberControllerBE) getMultiblock().controller().controllerBE();
+            return (ParticleChamberControllerBE) getMultiblock().controller().controllerBE();
         } catch (NullPointerException e) {
             if(controllerPos != null) {
-                return (TargetChamberControllerBE) getLevel().getExistingBlockEntity(controllerPos);
+                return (ParticleChamberControllerBE) getLevel().getExistingBlockEntity(controllerPos);
             }
             return null;
         }
@@ -273,6 +274,14 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
                 break;
             }
         }
+    }
+
+    public boolean isOutput() {
+        return blockState.getValue(PORT_MODE) == PortMode.Mode.OUTPUT;
+    }
+
+    public boolean isInput() {
+        return blockState.getValue(PORT_MODE) == PortMode.Mode.INPUT;
     }
 
     public static class SignalSource {

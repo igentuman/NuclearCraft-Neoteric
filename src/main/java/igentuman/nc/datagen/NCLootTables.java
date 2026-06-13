@@ -10,7 +10,7 @@ import java.util.List;
 
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
@@ -35,7 +35,7 @@ public class NCLootTables extends BaseLootTableProvider {
         NC_BLOCKS.values().forEach(this::add);
         NC_MATERIAL_BLOCKS.values().forEach(this::add);
         ACCELERATOR_BLOCKS.values().forEach(this::add);
-        TARGET_CHAMBER_BLOCKS.values().forEach(this::add);
+        PARTICLE_CHAMBER_BLOCKS.values().forEach(this::add);
         KUGELBLITZ_BLOCKS.values().forEach(block -> {
             if (!block.get().asItem().toString().equals("black_hole")) {
                 add(block);
@@ -94,7 +94,7 @@ public class NCLootTables extends BaseLootTableProvider {
         List<Block> kugelblitzBlocks = KUGELBLITZ_BLOCKS.values().stream().map(RegistryObject::get).toList();
         all.addAll(kugelblitzBlocks.stream().filter(block -> !block.asItem().toString().contains("black_hole")).toList());
         all.addAll(ACCELERATOR_BLOCKS.values().stream().map(RegistryObject::get).toList());
-        all.addAll(TARGET_CHAMBER_BLOCKS.values().stream().map(RegistryObject::get).toList());
+        all.addAll(PARTICLE_CHAMBER_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(PROCESSORS.values().stream().map(RegistryObject::get).toList());
         all.addAll(ENERGY_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(STORAGE_BLOCKS.values().stream().map(RegistryObject::get).toList());

@@ -7,7 +7,6 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.compat.emi.ingredient.ParticleEmiStack;
-import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.util.Units;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +19,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.BARRIER;
 
@@ -31,7 +30,7 @@ public class TargetChamberEmiCategory extends BasicEmiRecipe {
     public static final EmiRecipeCategory CATEGORY = new EmiRecipeCategory(
             rl("target_chamber"),
             EmiStack.of(CATALYSTS.containsKey("target_chamber") ? 
-                new ItemStack(TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get()) :
+                new ItemStack(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get()) :
                 new ItemStack(BARRIER))
     );
 

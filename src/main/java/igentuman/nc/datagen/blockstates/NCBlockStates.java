@@ -22,8 +22,8 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.COOLERS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_DETECTORS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_DETECTORS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.*;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
@@ -91,18 +91,30 @@ public class NCBlockStates extends BlockStateProvider {
         /*horizontalBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(),
                 st -> multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(), "particle_chamber/beam_port")
         );*/
-        horizontalBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_port").get(),
-                st -> multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_port").get(), "particle_chamber/port")
+        horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_port").get(),
+                st -> multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_port").get(), "particle_chamber/port")
         );
-       horizontalBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get(),
-                st -> controllerModel(st, sidedModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get(), "particle_chamber/target_chamber_controller"))
+        horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_port").get(),
+                st -> multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_port").get(), "particle_chamber/port")
+        );
+        horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_port").get(),
+                st -> multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_port").get(), "particle_chamber/port")
+        );
+       horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get(),
+                st -> controllerModel(st, sidedModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get(), "particle_chamber/target_chamber_controller"))
+        );
+       horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get(),
+                st -> controllerModel(st, sidedModel(PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get(), "particle_chamber/collision_chamber_controller"))
+        );
+        horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get(),
+                st -> controllerModel(st, sidedModel(PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get(), "particle_chamber/decay_chamber_controller"))
         );
         for(String name: TARGET_CHAMBER_DETECTORS.keySet()) {
-            simpleBlock(TARGET_CHAMBER_BLOCKS.get(name).get(), multiBlockModel(TARGET_CHAMBER_BLOCKS.get(name).get(), "particle_chamber/"+name));
+            simpleBlock(PARTICLE_CHAMBER_BLOCKS.get(name).get(), multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get(name).get(), "particle_chamber/"+name));
         }
-        simpleBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get(), multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get(), "particle_chamber/camera"));
-        simpleBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get(), multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get(), "particle_chamber/casing"));
-        simpleBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(), multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(), "particle_chamber/glass"));
+        simpleBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_camera").get(), multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_camera").get(), "particle_chamber/camera"));
+        simpleBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get(), multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get(), "particle_chamber/casing"));
+        simpleBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(), multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(), "particle_chamber/glass"));
     }
 
     private void turbine() {
@@ -346,7 +358,7 @@ public class NCBlockStates extends BlockStateProvider {
             type = "accelerator";
         } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get()) {
             type = "accelerator";
-        } else if(st.getBlock() == TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get()) {
+        } else if(st.getBlock() == PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get() || st.getBlock() == PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get()  || st.getBlock() == PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get()) {
             type = "particle_chamber";
         } else if(st.getBlock() == FISSION_BLOCKS.get("msr_controller").get()) {
             type = "fission";

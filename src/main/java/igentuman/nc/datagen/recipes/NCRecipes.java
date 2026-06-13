@@ -23,7 +23,7 @@ import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.dustIn
 import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.isotopeIngredient;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.coolers;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.heatsinks;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
@@ -239,20 +239,33 @@ public class NCRecipes extends RecipeProvider {
 
     private void targetChamberBlocks(Consumer<FinishedRecipe> consumer) {
         // Target chamber controller
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get())
                 .pattern("PTP")
                 .pattern("BFB")
                 .pattern("PTP")
                 .define('P', NC_PARTS.get("plate_elite").get())
                 .define('T', forgeIngot(Materials.tough_alloy))
                 .define('B', NC_PARTS.get("basic_processor").get())
-                .define('F', TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get())
+                .define('F', PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get())
                 .group(MODID+"_target_chamber")
                 .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
                 .save(consumer, rl("target_chamber_controller"));
 
+        // Collision chamber controller
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get())
+                .pattern("PTP")
+                .pattern("BFB")
+                .pattern("PTP")
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .define('T', forgeIngot(Materials.tough_alloy))
+                .define('B', NC_PARTS.get("basic_processor").get())
+                .define('F', PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get())
+                .group(MODID+"_collision_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
+                .save(consumer, rl("collision_chamber_controller"));
+
         // Target chamber casing
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get(), 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get(), 4)
                 .pattern("STS")
                 .pattern("T T")
                 .pattern("STS")
@@ -263,22 +276,22 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer, rl("target_chamber_casing"));
 
         // Target chamber casing glass (shapeless conversion)
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get())
-                .requires(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get())
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get())
+                .requires(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get())
                 .requires(Tags.Items.GLASS)
                 .group(MODID+"_target_chamber")
-                .unlockedBy("item", has(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get()))
+                .unlockedBy("item", has(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get()))
                 .save(consumer, rl("target_chamber_casing_glass"));
 
         // Target chamber casing from glass (reverse conversion)
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_casing").get())
-                .requires(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get())
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get())
+                .requires(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get())
                 .group(MODID+"_target_chamber")
-                .unlockedBy("item", has(TARGET_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get()))
+                .unlockedBy("item", has(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get()))
                 .save(consumer, rl("target_chamber_casing_from_glass"));
 
         // Target chamber port
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_port").get(), 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("target_chamber_port").get(), 4)
                 .pattern("THT")
                 .pattern("VFV")
                 .pattern("THT")
@@ -290,8 +303,21 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_PARTS.get("servo").get()))
                 .save(consumer, rl("target_chamber_port"));
 
+        // Collision chamber port
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_port").get(), 4)
+                .pattern("THT")
+                .pattern("VFV")
+                .pattern("THT")
+                .define('T', forgeIngot(Materials.tungsten))
+                .define('H', HOPPER)
+                .define('V', NC_PARTS.get("servo").get())
+                .define('F', NC_PARTS.get("steel_frame").get())
+                .group(MODID+"_collision_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("servo").get()))
+                .save(consumer, rl("collision_chamber_port"));
+
         // Target chamber beam port
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(), 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(), 4)
                 .pattern("STS")
                 .pattern("BFB")
                 .pattern("STS")
@@ -304,7 +330,7 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer, rl("target_chamber_beam_port"));
 
         // Target chamber camera
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("target_chamber_camera").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("target_chamber_camera").get())
                 .pattern("NSN")
                 .pattern("NCN")
                 .pattern("NSN")
@@ -317,7 +343,7 @@ public class NCRecipes extends RecipeProvider {
 
         // Detectors
         // EM Calorimeter
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("em_calorimeter").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("em_calorimeter").get())
                 .pattern("SSS")
                 .pattern("SCS")
                 .pattern("SSS")
@@ -328,7 +354,7 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer, rl("em_calorimeter"));
 
         // Hadron Calorimeter
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("hadron_calorimeter").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("hadron_calorimeter").get())
                 .pattern("SSS")
                 .pattern("SCS")
                 .pattern("SSS")
@@ -339,7 +365,7 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer, rl("hadron_calorimeter"));
 
         // Silicon Tracker
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("silicon_tracker").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("silicon_tracker").get())
                 .pattern("BAB")
                 .pattern("ACA")
                 .pattern("BAB")
@@ -351,7 +377,7 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer, rl("silicon_tracker"));
 
         // Wire Chamber
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("wire_chamber").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("wire_chamber").get())
                 .pattern("WWW")
                 .pattern("WCW")
                 .pattern("WWW")
@@ -362,7 +388,7 @@ public class NCRecipes extends RecipeProvider {
                 .save(consumer, rl("wire_chamber"));
 
         // Bubble Chamber
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TARGET_CHAMBER_BLOCKS.get("bubble_chamber").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("bubble_chamber").get())
                 .pattern("GGG")
                 .pattern("GCG")
                 .pattern("GGG")
@@ -1632,7 +1658,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(FISSION_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_fuel_cell").get())
+        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_fuel_cell").get())
                 .pattern("TGT")
                 .pattern("G G")
                 .pattern("TGT")
@@ -1642,7 +1668,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(FISSION_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
-        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_controller").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_controller").get())
                 .pattern("LPL")
                 .pattern("TDT")
                 .pattern("LPL")
@@ -1652,7 +1678,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L', FISSION_BLOCKS.get("fission_reactor_casing").get())
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
-                .save(consumer);*/
+                .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("heat_exchanger").get())
                 .pattern("LPL")
@@ -1663,7 +1689,7 @@ public class NCRecipes extends RecipeProvider {
                 .define('L',  NC_PARTS.get("plate_advanced").get())
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(NC_PARTS.get("chassis").get()))
-                .save(consumer);
+                .save(consumer);*/
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("empty_heat_sink").get())
                 .pattern("TIT")

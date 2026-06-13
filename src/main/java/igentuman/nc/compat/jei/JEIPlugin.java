@@ -1,6 +1,8 @@
 package igentuman.nc.compat.jei;
 
 import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
+import igentuman.nc.block.collision_chamber.entity.CollisionChamberControllerBE;
+import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
 import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
@@ -78,6 +80,8 @@ public  class JEIPlugin implements IModPlugin {
     public static HashMap<String, RecipeType<? extends NcRecipe>> recipeTypes;
 
     public static final RecipeType<TargetChamberControllerBE.Recipe> TARGET_CHAMBER = new RecipeType<>(rl("target_chamber"), TargetChamberControllerBE.Recipe.class);
+    public static final RecipeType<CollisionChamberControllerBE.Recipe> COLLISION_CHAMBER = new RecipeType<>(rl("collision_chamber"), CollisionChamberControllerBE.Recipe.class);
+    public static final RecipeType<DecayChamberControllerBE.Recipe> DECAY_CHAMBER = new RecipeType<>(rl("decay_chamber"), DecayChamberControllerBE.Recipe.class);
     public static final RecipeType<ChamberTerminalBE.Recipe> KUGELBLITZ = new RecipeType<>(rl("kugelblitz_chamber"), ChamberTerminalBE.Recipe.class);
     public static final RecipeType<FissionControllerBE.Recipe> FISSION = new RecipeType<>(rl(FissionControllerBE.NAME), FissionControllerBE.Recipe.class);
     public static final RecipeType<MSRControllerBE.Recipe> MSR = new RecipeType<>(rl(MSRControllerBE.NAME), MSRControllerBE.Recipe.class);
@@ -216,6 +220,8 @@ public  class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(new MSRCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), MSR));
         registration.addRecipeCategories(new KugelblitzCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), KUGELBLITZ));
         registration.addRecipeCategories(new TargetChamberCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), TARGET_CHAMBER));
+        registration.addRecipeCategories(new CollisionChamberCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), COLLISION_CHAMBER));
+        registration.addRecipeCategories(new DecayChamberCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), DECAY_CHAMBER));
         if(isMekanismLoaded()) {
             registration.addRecipeCategories(new MekChemicalConversionCategoryWrapper<>(registration.getJeiHelpers().getGuiHelper(), CHEMICAL_TO_FLUID));
         }
@@ -258,6 +264,7 @@ public  class JEIPlugin implements IModPlugin {
                 if(List.of(
                         "fusion_core", "fusion_coolant",
                         "fission_reactor_controller", "msr_controller", "fission_boiling", "target_chamber",
+                        "collision_chamber", "decay_chamber",
                         "nc_ore_veins", "turbine_controller", "kugelblitz_chamber"
                 ).contains(name)) {
                     continue;
@@ -269,6 +276,12 @@ public  class JEIPlugin implements IModPlugin {
             registration.addRecipes(
                     getRecipeType(TARGET_CHAMBER),
                     NcRecipeType.ALL_RECIPES.get("target_chamber").getRecipes(NcClient.tryGetClientWorld()));
+            registration.addRecipes(
+                    getRecipeType(COLLISION_CHAMBER),
+                    NcRecipeType.ALL_RECIPES.get("collision_chamber").getRecipes(NcClient.tryGetClientWorld()));
+            registration.addRecipes(
+                    getRecipeType(DECAY_CHAMBER),
+                    NcRecipeType.ALL_RECIPES.get("decay_chamber").getRecipes(NcClient.tryGetClientWorld()));
             registration.addRecipes(
                     getRecipeType(KUGELBLITZ),
                     NcRecipeType.ALL_RECIPES.get("kugelblitz_chamber").getRecipes(NcClient.tryGetClientWorld()));

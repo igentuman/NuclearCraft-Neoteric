@@ -26,7 +26,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.multiblock.particle_chamber.TargetChamberRegistration.TARGET_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.BARRIER;
 
@@ -47,7 +47,7 @@ public class TargetChamberCategoryWrapper<T extends TargetChamberControllerBE.Re
         this.guiHelper = guiHelper;
         this.background = guiHelper.createDrawable(TEXTURE, 10, 10, 160, 107);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(TARGET_CHAMBER_BLOCKS.get("target_chamber_controller").get()));
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get()));
         } else{
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BARRIER));
         }

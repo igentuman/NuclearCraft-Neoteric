@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:decay_chamber",
+  "crossSection": 0.63,
+  "energyReleased": 358000,
+  "inputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "kaon_minus"
+    }
+  ],
+  "maxEnergy": 9223372036854775807,
+  "minEnergy": 0,
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "muon_antineutrino"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "muon"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

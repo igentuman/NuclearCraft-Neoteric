@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/multiblock/collision_chamber_controller",
+  "textures": {
+    "north": "nuclearcraft:block/particle_chamber/controller/collision_chamber_controller_powered"
+  }
+}

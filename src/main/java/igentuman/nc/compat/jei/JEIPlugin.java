@@ -473,6 +473,9 @@ public  class JEIPlugin implements IModPlugin {
             public @NotNull Collection<IGuiClickableArea> getGuiClickableAreas(@NotNull T containerScreen, double mouseX, double mouseY) {
                 NCProcessorScreen<?> screen = (NCProcessorScreen<?>) containerScreen;
                 String name = screen.getRecipeTypeName();
+                if(name.contains("creative")) {
+                    return List.of();
+                }
                 IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(xPos, yPos, width, height, getRecipeTypes().get(name));
                 return List.of(clickableArea);
             }
@@ -481,7 +484,7 @@ public  class JEIPlugin implements IModPlugin {
 
     public  void registerGuiHandlers(@NotNull IGuiHandlerRegistration registration) {
         for (String name : getRecipeTypes().keySet()) {
-            if (!Processors.registered().containsKey(name)) continue;
+            if (!Processors.registered().containsKey(name) || name.contains("creative")) continue;
             addRecipeClickArea(registration, NCProcessorScreen.class, 67, 74, 18, 18, getRecipeType(name));
         }
         registration.addRecipeClickArea(FissionControllerScreen.class,72, 38, 36, 26, FISSION);

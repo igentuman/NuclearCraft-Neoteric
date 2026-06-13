@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/processor/creative_particle_source",
+  "textures": {
+    "north": "nuclearcraft:block/processor/creative_particle_source_powered"
+  }
+}

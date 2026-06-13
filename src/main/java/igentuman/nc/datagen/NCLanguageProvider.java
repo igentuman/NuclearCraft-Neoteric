@@ -218,6 +218,10 @@ public class NCLanguageProvider extends LanguageProvider {
         add("gui.nuclearcraft.jei.particle.weak", "Feels Weak Force: %s");
         add("gui.nuclearcraft.jei.particle.components", "Made of:");
         add("gui.nuclearcraft.jei.particle.focus", "Minimum Focus: %s");
+        add("gui.nuclearcraft.creative_particle_source.particle", "Particle");
+        add("gui.nuclearcraft.creative_particle_source.search", "Search particle...");
+        add("gui.nuclearcraft.creative_particle_source.focus", "Focus");
+        add("gui.nuclearcraft.creative_particle_source.energy", "Energy");
         add("gui.nuclearcraft.jei.reaction.range", "Range: %s");
         add("gui.nuclearcraft.jei.reaction.energy_released", "Released Energy: %s");
         add("gui.nuclearcraft.jei.reaction.cross_section", "Cross Section: %s%%");

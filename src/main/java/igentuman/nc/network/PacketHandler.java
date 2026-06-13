@@ -28,6 +28,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketHandleFluidSlotClick.class, PacketHandleFluidSlotClick::decode);
         registerClientToServer(PacketBuildMultiblock.class, PacketBuildMultiblock::decode);
         registerClientToServer(PacketRecipeTransfer.class, PacketRecipeTransfer::decode);
+        registerClientToServer(PacketCreativeParticleSource.class, PacketCreativeParticleSource::decode);
         registerClientToServer(PacketQ36Fire.class, PacketQ36Fire::decode);
         if(ModUtil.isAE2Loaded()) {
             registerClientToServer(PacketAE2PatternTransfer.class, PacketAE2PatternTransfer::decode);

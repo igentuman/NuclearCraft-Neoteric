@@ -1,8 +1,10 @@
 package igentuman.nc.content.processors;
 
 import igentuman.api.nc.IProcessorRegistry;
+import igentuman.nc.client.gui.processor.CreativeParticleSourceScreen;
 import igentuman.nc.client.gui.processor.LeacherScreen;
 import igentuman.nc.block.entity.processor.*;
+import igentuman.nc.container.CreativeParticleSourceContainer;
 import igentuman.nc.container.LeacherContainer;
 import igentuman.nc.util.annotation.NCProcessorsRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -51,6 +53,7 @@ public class Processors {
     public final static String SUPERCOOLER = "supercooler";
     public final static String QUANTUM_TRANSFORMER = "quantum_transformer";
     public final static String SUBATOMIC_LIQUIFIER = "subatomic_liquifier";
+    public final static String CREATIVE_PARTICLE_SOURCE = "creative_particle_source";
 
     @OnlyIn(Dist.CLIENT)
     public static void setScreen(String name, MenuScreens.ScreenConstructor constructor) {
@@ -59,6 +62,15 @@ public class Processors {
 
     public static HashMap<String, ProcessorPrefab> all() {
         if(all.isEmpty()) {
+            all.put(CREATIVE_PARTICLE_SOURCE,
+                    ProcessorBuilder
+                            .make(CREATIVE_PARTICLE_SOURCE, 0, 0, 0, 0)
+                            .particle(1, 0)
+                            .blockEntity(CreativeParticleSourceBE::new)
+                            .container(CreativeParticleSourceContainer.class)
+                            .build()
+            );
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ()-> Processors.setScreen(CREATIVE_PARTICLE_SOURCE, CreativeParticleSourceScreen::new));
             all.put(GAS_SCRUBBER,
                     ProcessorBuilder
                             .make(GAS_SCRUBBER, 1, 0, 1, 0)

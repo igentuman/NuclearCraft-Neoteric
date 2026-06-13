@@ -150,4 +150,7 @@ public class ProcessorPrefab <M extends NCProcessorContainer, U extends Screen &
         return recipeSerializerSupplier;
     }
 
+    public void particles(int in, int out) {
+
+    }
 }

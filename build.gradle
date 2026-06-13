@@ -34,6 +34,7 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
             args '--width', '1920', '--height', '1080'
+            jvmArg '-Xmx4G'
             mods {
                 nuclearcraft {
                     source sourceSets.main
@@ -50,6 +51,7 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
             args '--username', 'Dev2'
+            jvmArg '-Xmx4G'
             mods {
                 nuclearcraft {
                     source sourceSets.main
@@ -64,6 +66,7 @@ minecraft {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.enabledGameTestNamespaces', 'nuclearcraft'
+            jvmArg '-Xmx4G'
 
             mods {
                 nuclearcraft {

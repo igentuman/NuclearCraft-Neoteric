@@ -70,7 +70,7 @@ public abstract class ParticleChamberMultiblock extends AbstractMultiblock {
         return (ParticleChamberControllerBE) controllerBe;
     }
 
-    private void indexInnerBlocks() {
+    protected void indexInnerBlocks() {
         BlockPos thePos = initialPos().copy();
         for (int y = 1; y < height - 1; y++) {
             for (int x = 1; x < width - 1; x++) {

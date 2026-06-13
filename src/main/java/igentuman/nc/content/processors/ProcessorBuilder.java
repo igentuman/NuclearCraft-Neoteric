@@ -120,4 +120,9 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
         processor.power = i;
         return this;
     }
+
+    public ProcessorBuilder<?, ?> particle(int in, int out) {
+        processor.particles(in, out);
+        return this;
+    }
 }

@@ -7,6 +7,8 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
+import igentuman.nc.block.collision_chamber.entity.CollisionChamberControllerBE;
+import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
@@ -59,6 +61,7 @@ import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELE
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static igentuman.nc.setup.registration.NCItems.UNKNOWN_INGREDIENT;
@@ -140,6 +143,7 @@ public class EMIPlugin implements EmiPlugin {
             if (name.equals("fusion_core") || name.equals("fusion_coolant") ||
                 name.equals("fission_reactor_controller") || name.equals("fission_boiling") ||
                 name.equals("kugelblitz_chamber") || name.equals("target_chamber") ||
+                name.equals("collision_chamber") || name.equals("decay_chamber") ||
                 name.equals("turbine_controller") || name.equals("accelerator_coolant") ||
                 name.equals("msr_controller") || name.equals("nc_ore_veins")) {
                 continue;
@@ -177,6 +181,28 @@ public class EMIPlugin implements EmiPlugin {
         for (var recipe : targetChamberRecipes) {
             if (recipe instanceof TargetChamberControllerBE.Recipe targetRecipe) {
                 registry.addRecipe(new TargetChamberEmiCategory(targetRecipe));
+            }
+        }
+
+        // Register Collision Chamber category
+        registry.addCategory(CollisionChamberEmiCategory.CATEGORY);
+        CATEGORIES.put("collision_chamber", CollisionChamberEmiCategory.CATEGORY);
+
+        var collisionChamberRecipes = NcRecipeType.ALL_RECIPES.get("collision_chamber").getRecipes(NcClient.tryGetClientWorld());
+        for (var recipe : collisionChamberRecipes) {
+            if (recipe instanceof CollisionChamberControllerBE.Recipe collisionRecipe) {
+                registry.addRecipe(new CollisionChamberEmiCategory(collisionRecipe));
+            }
+        }
+
+        // Register Decay Chamber category
+        registry.addCategory(DecayChamberEmiCategory.CATEGORY);
+        CATEGORIES.put("decay_chamber", DecayChamberEmiCategory.CATEGORY);
+
+        var decayChamberRecipes = NcRecipeType.ALL_RECIPES.get("decay_chamber").getRecipes(NcClient.tryGetClientWorld());
+        for (var recipe : decayChamberRecipes) {
+            if (recipe instanceof DecayChamberControllerBE.Recipe decayRecipe) {
+                registry.addRecipe(new DecayChamberEmiCategory(decayRecipe));
             }
         }
 
@@ -300,6 +326,10 @@ public class EMIPlugin implements EmiPlugin {
                 return EmiStack.of(new ItemStack(KUGELBLITZ_BLOCKS.get("chamber_terminal").get()));
             case "target_chamber":
                 return EmiStack.of(new ItemStack(ACCELERATOR_BLOCKS.get("target_chamber_controller").get()));
+            case "collision_chamber":
+                return EmiStack.of(new ItemStack(PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get()));
+            case "decay_chamber":
+                return EmiStack.of(new ItemStack(PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get()));
             case "fusion_core":
             case "fusion_coolant":
                 return EmiStack.of(new ItemStack(FUSION_BLOCKS.get("fusion_core").get()));

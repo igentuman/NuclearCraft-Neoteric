@@ -27,7 +27,7 @@ import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
 public class CollisionChamberControllerScreen extends AbstractContainerScreen<CollisionChamberControllerContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = rl("textures/gui/accelerators/target_chamber_controller.png");
+    protected final ResourceLocation GUI = rl("textures/gui/accelerators/collision_chamber_controller.png");
     protected int relX;
     protected int relY;
 

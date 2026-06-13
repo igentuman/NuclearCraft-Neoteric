@@ -23,7 +23,7 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class DecayChamberPortScreen extends AbstractContainerScreen<DecayChamberPortContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = rl("textures/gui/accelerators/target_chamber_controller.png");
+    protected final ResourceLocation GUI = rl("textures/gui/accelerators/decay_chamber_controller.png");
     protected int relX;
     protected int relY;
 

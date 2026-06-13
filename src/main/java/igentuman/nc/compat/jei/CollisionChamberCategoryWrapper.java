@@ -26,12 +26,13 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.numberFormat;
 import static net.minecraft.world.item.Items.BARRIER;
 
 @SuppressWarnings("removal")
 public class CollisionChamberCategoryWrapper<T extends CollisionChamberControllerBE.Recipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
-            new ResourceLocation(MODID, "textures/gui/accelerators/target_chamber_controller.png");
+            new ResourceLocation(MODID, "textures/gui/accelerators/collision_chamber_controller.png");
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -43,7 +44,7 @@ public class CollisionChamberCategoryWrapper<T extends CollisionChamberControlle
     public CollisionChamberCategoryWrapper(IGuiHelper guiHelper, RecipeType<T> recipeType) {
         this.recipeType = recipeType;
         this.guiHelper = guiHelper;
-        this.background = guiHelper.createDrawable(TEXTURE, 10, 10, 160, 107);
+        this.background = guiHelper.createDrawable(TEXTURE, 10, 10, 150, 113);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get()));
         } else {
@@ -76,14 +77,14 @@ public class CollisionChamberCategoryWrapper<T extends CollisionChamberControlle
         this.currentRecipe = recipe;
 
         // Input particles (up to 2)
-        List<Vec2> inputMap = List.of(new Vec2(8, 27), new Vec2(8, 45));
+        List<Vec2> inputMap = List.of(new Vec2(36, 35), new Vec2(104, 35));
         for(int i = 0; i < Math.min(recipe.inputParticles.length, inputMap.size()); i++) {
             Vec2 pos = inputMap.get(i);
             builder.addSlot(RecipeIngredientRole.INPUT, (int) pos.x, (int) pos.y).addIngredient(ParticleType.Particle, recipe.inputParticles[i]);
         }
 
         // Output particles (up to 4)
-        List<Vec2> positionMap = List.of(new Vec2(76, 5), new Vec2(136, 18), new Vec2(136, 54), new Vec2(76, 68));
+        List<Vec2> positionMap = List.of(new Vec2(39, 4), new Vec2(101, 4), new Vec2(101, 66), new Vec2(39, 66));
         for(int i = 0; i < Math.min(recipe.outputParticles.length, positionMap.size()); i++) {
             Vec2 pos = positionMap.get(i);
             builder.addSlot(RecipeIngredientRole.OUTPUT, (int) pos.x, (int) pos.y).addIngredient(ParticleType.Particle, recipe.outputParticles[i]);
@@ -102,7 +103,7 @@ public class CollisionChamberCategoryWrapper<T extends CollisionChamberControlle
         var font = Minecraft.getInstance().font;
         var inputParticle = recipe.inputParticles[0];
 
-        int labelY = 77;
+        int labelY = 85;
         int labelX = 0;
 
         long minEnergy = recipe.minEnergy*1000;
@@ -113,7 +114,7 @@ public class CollisionChamberCategoryWrapper<T extends CollisionChamberControlle
         }
         // Cross-section
         guiGraphics.drawString(font, __("tooltip.nuclearcraft.particlestack.focus", Units.getSIFormat(inputParticle.getFocus(), "")), labelX, labelY, 0xFFFFFF);
-        guiGraphics.drawString(font, __("label.nuclearcraft.cross_section", String.format("%.1f", recipe.crossSection*100)), labelX, labelY + 10, 0xFFFFFF);
+        guiGraphics.drawString(font, __("label.nuclearcraft.cross_section", numberFormat(recipe.crossSection*100)), labelX, labelY + 10, 0xFFFFFF);
         guiGraphics.drawString(font, energyLabel, labelX, labelY + 20, 0xFFFFFF);
     }
 }

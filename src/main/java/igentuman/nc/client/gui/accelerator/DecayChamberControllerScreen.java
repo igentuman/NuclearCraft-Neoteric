@@ -27,7 +27,7 @@ import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
 public class DecayChamberControllerScreen extends AbstractContainerScreen<DecayChamberControllerContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = rl("textures/gui/accelerators/target_chamber_controller.png");
+    protected final ResourceLocation GUI = rl("textures/gui/accelerators/decay_chamber_controller.png");
     protected int relX;
     protected int relY;
 

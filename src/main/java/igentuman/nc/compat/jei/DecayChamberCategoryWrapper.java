@@ -31,7 +31,7 @@ import static net.minecraft.world.item.Items.BARRIER;
 @SuppressWarnings("removal")
 public class DecayChamberCategoryWrapper<T extends DecayChamberControllerBE.Recipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
-            new ResourceLocation(MODID, "textures/gui/accelerators/target_chamber_controller.png");
+            new ResourceLocation(MODID, "textures/gui/accelerators/decay_chamber_controller.png");
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -43,7 +43,7 @@ public class DecayChamberCategoryWrapper<T extends DecayChamberControllerBE.Reci
     public DecayChamberCategoryWrapper(IGuiHelper guiHelper, RecipeType<T> recipeType) {
         this.recipeType = recipeType;
         this.guiHelper = guiHelper;
-        this.background = guiHelper.createDrawable(TEXTURE, 10, 10, 160, 107);
+        this.background = guiHelper.createDrawable(TEXTURE, 10, 10, 130, 100);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
             this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get()));
         } else {
@@ -76,12 +76,10 @@ public class DecayChamberCategoryWrapper<T extends DecayChamberControllerBE.Reci
         this.currentRecipe = recipe;
 
         // Input particles (up to 1)
-        for(int i = 0; i < recipe.inputParticles.length; i++) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 8+18*i, 36).addIngredient(ParticleType.Particle, recipe.inputParticles[i]);
-        }
+        builder.addSlot(RecipeIngredientRole.INPUT, 58, 27).addIngredient(ParticleType.Particle, recipe.inputParticles[0]);
 
         // Output particles (up to 3)
-        List<Vec2> positionMap = List.of(new Vec2(76, 5), new Vec2(136, 36), new Vec2(76, 68));
+        List<Vec2> positionMap = List.of(new Vec2(91, 4), new Vec2(91, 27), new Vec2(91, 50));
         for(int i = 0; i < Math.min(recipe.outputParticles.length, positionMap.size()); i++) {
             Vec2 pos = positionMap.get(i);
             builder.addSlot(RecipeIngredientRole.OUTPUT, (int) pos.x, (int) pos.y).addIngredient(ParticleType.Particle, recipe.outputParticles[i]);
@@ -100,7 +98,7 @@ public class DecayChamberCategoryWrapper<T extends DecayChamberControllerBE.Reci
         var font = Minecraft.getInstance().font;
         var inputParticle = recipe.inputParticles[0];
 
-        int labelY = 77;
+        int labelY = 65;
         int labelX = 0;
 
         long minEnergy = recipe.minEnergy*1000;

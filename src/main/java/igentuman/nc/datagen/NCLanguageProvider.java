@@ -178,6 +178,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("emi.category.nuclearcraft.accelerator_coolant", "Accelerator Coolant");
         add("emi.category.nuclearcraft.analyzer", "Analyzer");
         add("emi.category.nuclearcraft.target_chamber", "Target Chamber");
+        add("emi.category.nuclearcraft.collision_chamber", "Collision Chamber");
+        add("emi.category.nuclearcraft.decay_chamber", "Decay Chamber");
         add("emi.category.nuclearcraft.kugelblitz_chamber", "Kugelblitz Chamber");
         add("emi.category.nuclearcraft.turbine_controller", "Turbine Controller");
         add("emi.category.nuclearcraft.heat_sink_placement", "Heat Sink Placement");

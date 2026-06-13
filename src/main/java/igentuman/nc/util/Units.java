@@ -101,7 +101,7 @@ public class Units
 			number *= Math.pow(10, -30+power);
 		}
 		
-		DecimalFormat df = new DecimalFormat("#.###");
+		DecimalFormat df = new DecimalFormat("#.#");
 		
 		return df.format(number);
 	}
@@ -199,7 +199,7 @@ public class Units
 			number *= Math.pow(10, -30+power);
 		}
 		
-		DecimalFormat df = new DecimalFormat("#.###");
+		DecimalFormat df = new DecimalFormat("#.#");
 		
 		return df.format(number)+ " "+ prefix+unit;
 	}

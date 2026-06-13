@@ -46,13 +46,7 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
 
     public static final String NAME = "target_chamber_controller";
 
-    @NBTField
-    public int detectorsCount = 0;
-    @NBTField
-    public double efficiency = 0;
-    public int connectedPorts = 0;
-    @NBTField
-    public int allDetectors = 0;
+
     public float speed = 0.001f;
 
     private List<ItemStack> allowedInputs;

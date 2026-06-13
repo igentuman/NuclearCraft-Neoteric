@@ -518,6 +518,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("report.nc.3.transformers", "Transformers: %s");
         add("report.nc.1.target_chamber.all_detectors", "All Detectors: %s");
         add("report.nc.1.target_chamber.valid_detectors", "Valid Detectors: %s");
+        add("report.nc.1.decay_chamber.detectors", "Detectors: %s");
+        add("report.nc.2.decay_chamber.connected_ports", "Connected Ports: %s");
+        add("report.nc.3.decay_chamber.efficiency", "Efficiency: %s");
         add("report.nc.1.accelerator.all_coolers", "All Coolers: %s");
         add("report.nc.1.accelerator.valid_coolers", "Valid Coolers: %s");
         add("report.nc.1.reactor_all_moderators", "All Moderators: %s");
@@ -758,7 +761,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.magnet.disable", "Disable Auto-pickup");
         add("tooltip.nc.magnet.enable", "Enable Auto-pickup");
         add("tooltip.ion_source.amount", "Amount: %spu / %spu");
-        add("tooltip.target_chamber.detectors", "Detectors: %s");
+        add("tooltip.particle_chamber.detectors", "Detectors: %s");
+        add("tooltip.particle_chamber.connected_ports", "Connected Ports: %s");
+        add("tooltip.particle_chamber.efficiency", "Efficiency: %s%%");
         add("tooltip.detector.distance", "Max distance to chamber camera: %s");
         add("tooltip.detector.power", "FE required: %s/t");
         add("tooltip.detector.efficiency", "Efficiency: %s%%");

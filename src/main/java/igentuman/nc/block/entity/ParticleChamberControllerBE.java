@@ -48,6 +48,13 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
     public boolean hasRedstoneSignal = false;
     @NBTField
     public boolean hasParticle = false;
+    @NBTField
+    public int detectorsCount = 0;
+    @NBTField
+    public double efficiency = 0;
+    public int connectedPorts = 0;
+    @NBTField
+    public int allDetectors = 0;
 
     protected boolean forceShutdown = false;
     private Direction facing;

@@ -27,7 +27,9 @@ public class DecayChamberControllerBE extends ParticleChamberControllerBE {
     public static final String NAME = "decay_chamber_controller";
 
     @NBTField
-    public double efficiency = 1D;
+    public double efficiency = 100D;
+    @NBTField
+    public int detectorsCount = 0;
     public int connectedPorts = 0;
 
     public DecayChamberControllerBE(BlockPos pPos, BlockState pBlockState) {
@@ -100,7 +102,7 @@ public class DecayChamberControllerBE extends ParticleChamberControllerBE {
         if (!hasRecipe()) return false;
 
         Recipe r = (Recipe) recipeInfo().recipe();
-        recipeInfo().process(particleStorage.getParticle().getAmount() * r.crossSection * efficiency);
+        recipeInfo().process(particleStorage.getParticle().getAmount() * r.crossSection * efficiency / 100D);
         energyStorage().consumeEnergy(energyPerTick);
         emitOutputs(r);
         if (recipeInfo().isCompleted()) {
@@ -170,8 +172,9 @@ public class DecayChamberControllerBE extends ParticleChamberControllerBE {
     @Override
     public HashMap<String, String> getAnalyzeReport() {
         HashMap<String, String> report = new HashMap<>();
-        report.put("report.nc.decay_chamber.connected_ports", String.valueOf(connectedPorts));
-        report.put("report.nc.decay_chamber.efficiency", String.format("%.2f", efficiency));
+        report.put("report.nc.1.decay_chamber.detectors", String.valueOf(detectorsCount));
+        report.put("report.nc.2.decay_chamber.connected_ports", String.valueOf(connectedPorts));
+        report.put("report.nc.3.decay_chamber.efficiency", String.format("%.0f%%", efficiency));
         return report;
     }
 

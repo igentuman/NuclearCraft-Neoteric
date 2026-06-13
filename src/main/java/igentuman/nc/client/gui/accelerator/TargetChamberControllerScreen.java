@@ -143,7 +143,7 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
         }
         checkboxInterior.addTooltip(interiorTootip);
         if(isInteriorValid()) {
-            checkboxInterior.addTooltip(__("tooltip.target_chamber.detectors", container().getDetectors()));
+            checkboxInterior.addTooltip(__("tooltip.particle_chamber.detectors", container().getDetectors()));
         }
         energyBar.draw(graphics, mouseX, mouseY, partialTicks);
         if(hasParticle()) {

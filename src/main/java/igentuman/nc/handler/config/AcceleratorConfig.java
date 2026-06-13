@@ -65,12 +65,12 @@ public class AcceleratorConfig {
             builder.comment("Decay chamber").push("decay_chamber");
 
             MIN_SIZE = builder
-                    .comment("Min interior size (cube edge, odd).")
-                    .defineInRange("min_size", 5, 3, 17);
+                    .comment("Min size (cube edge, odd).")
+                    .defineInRange("min_size", 5, 5, 11);
 
             MAX_SIZE = builder
-                    .comment("Max interior size (cube edge, odd).")
-                    .defineInRange("max_size", 9, 5, 17);
+                    .comment("Max size (cube edge, odd).")
+                    .defineInRange("max_size", 11, 7, 11);
 
             BASE_POWER = builder
                     .comment("Base RF/tick consumed while running.")

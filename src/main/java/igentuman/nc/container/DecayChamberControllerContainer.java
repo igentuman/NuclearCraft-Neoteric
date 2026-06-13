@@ -168,6 +168,10 @@ public class DecayChamberControllerContainer extends AbstractContainerMenu {
         return blockEntity.connectedPorts;
     }
 
+    public int getDetectors() {
+        return blockEntity.detectorsCount;
+    }
+
     public boolean hasParticle() {
         return blockEntity.hasParticle;
     }

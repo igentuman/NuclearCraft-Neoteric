@@ -49,11 +49,11 @@ public class DecayChamberControllerScreen extends AbstractContainerScreen<DecayC
     public DecayChamberControllerScreen(DecayChamberControllerContainer container, Inventory inv, Component name) {
         super(container, inv, name);
         imageWidth = 176;
-        imageHeight = 200;
-        guiParticle = new GuiParticle(18, 46);
-        outputParticles.add(new GuiParticle(86, 15));
-        outputParticles.add(new GuiParticle(146, 46));
-        outputParticles.add(new GuiParticle(86, 78));
+        imageHeight = 120;
+        guiParticle = new GuiParticle(68, 37);
+        outputParticles.add(new GuiParticle(101, 14));
+        outputParticles.add(new GuiParticle(101, 37));
+        outputParticles.add(new GuiParticle(101, 60));
     }
 
     protected void updateRelativeCords() {
@@ -76,17 +76,17 @@ public class DecayChamberControllerScreen extends AbstractContainerScreen<DecayC
         super.init();
         updateRelativeCords();
         widgets.clear();
-        checkboxCasing = new Checkbox(imageWidth - 18, 105, this, isCasingValid());
-        checkboxInterior = new Checkbox(imageWidth - 31, 105, this, isInteriorValid());
+        checkboxCasing = new Checkbox(imageWidth - 18, 95, this, isCasingValid());
+        checkboxInterior = new Checkbox(imageWidth - 31, 95, this, isInteriorValid());
         energyBar = new VerticalBar.Energy(7, 16, this, container().getMaxEnergy());
-        widgets.add(new ProgressBar(71, 47, this, 8));
-        analyzeBtn = new Button.MultiblockAnalyze(150, 78, this, menu.getPosition());
-        linkBtn = new Button.Link(150, 14, this, menu.getPosition(),
+        //widgets.add(new ProgressBar(71, 47, this, 8));
+        analyzeBtn = new Button.MultiblockAnalyze(150, 68, this, menu.getPosition());
+        /*linkBtn = new Button.Link(150, 14, this, menu.getPosition(),
                 "https://ftb.fandom.com/wiki/NuclearCraft:_Neoteric#Fission_Reactor_+_Irradiator",
                 List.of(__("tooltip.nc.wiki"))
-        );
+        );*/
         widgets.add(analyzeBtn);
-        widgets.add(linkBtn);
+        //widgets.add(linkBtn);
     }
 
     private boolean isInteriorValid() {
@@ -117,7 +117,9 @@ public class DecayChamberControllerScreen extends AbstractContainerScreen<DecayC
         checkboxInterior.setTooltipKey(isInteriorValid() ? "multiblock.interior.complete" : "multiblock.interior.incomplete");
         checkboxInterior.addTooltip(interiorTootip);
         if (isInteriorValid()) {
-            checkboxInterior.addTooltip(__("tooltip.decay_chamber.connected_ports", container().getConnectedPorts()));
+            checkboxInterior.addTooltip(__("tooltip.particle_chamber.connected_ports", container().getConnectedPorts()));
+            checkboxInterior.addTooltip(__("tooltip.particle_chamber.detectors", container().getDetectors()));
+            checkboxInterior.addTooltip(__("tooltip.particle_chamber.efficiency", container().getEfficiency()));
         }
         energyBar.draw(graphics, mouseX, mouseY, partialTicks);
         if (hasParticle()) {

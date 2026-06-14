@@ -386,10 +386,10 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     private void updateEnergyGeneration() {
         int wasEnergy = energyPerTick;
         double massRatio = (double)MAX_MASS / Math.max(mass, MIN_MASS);
-        energyPerTick = (int)(massRatio * 5000 * Math.log(energyConvertionRate*Math.log(fluxRegulators*4)+1));
+        energyPerTick = (int)(massRatio * 1000 * (Math.log(energyConvertionRate*50000)+1)*(Math.log(fluxRegulators*5000)+1));
         energyPerTick *= ENERGY_GENERATION.GENERATION_MULTIPLIER.get();
         energyPerTick *= KUGELBLITZ_CONFIG.GENERATION_MULTIPLIER.get();
-        energyStorage().addEnergy(energyPerTick*2);
+        energyStorage().addEnergy(energyPerTick);
         if (wasEnergy != energyPerTick) {
             setChanged();
         }

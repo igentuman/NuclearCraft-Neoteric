@@ -162,7 +162,7 @@ public class RadiationManager extends SavedData {
         return worldRadiation.serializeNBT();
     }
     public void addRadiation(Level level, double value, int x, int y, int z) {
-        if(!RADIATION_CONFIG.ENABLED.get()) return;
+        if(!RADIATION_CONFIG.ENABLED.get() || MekanismRadiation.MIRRORING.get()) return;
         LevelChunk chunk = level.getChunkAt(new BlockPos(x, y, z));
         int appliedRadiation = worldRadiation.addRadiation(level, value, chunk.getPos().x, chunk.getPos().z);
         if(ModUtil.isMekanismLoaded() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()

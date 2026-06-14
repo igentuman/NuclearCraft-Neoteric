@@ -1,5 +1,6 @@
 package igentuman.nc.mixin;
 
+import igentuman.nc.compat.mekanism.MekanismRadiation;
 import mekanism.api.Coord4D;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -38,11 +39,11 @@ public abstract class MekRadiationManager {
         Level level = ServerLifecycleHooks.getCurrentServer().getLevel(source.dimension);
         if(level == null) return;
         // Mek Sv -> NC Rad input (addRadiation multiplies by 1e6 to store as uRad). 1 Sv = 10 Rad.
-        igentuman.nc.compat.mekanism.MekanismRadiation.MIRRORING.set(true);
+        MekanismRadiation.MIRRORING.set(true);
         try {
-            igentuman.nc.radiation.data.RadiationManager.get(level).addRadiation(level, magnitude*igentuman.nc.compat.mekanism.MekanismRadiation.RAD_PER_SV, source.getX(), source.getY(), source.getZ());
+            igentuman.nc.radiation.data.RadiationManager.get(level).addRadiation(level, magnitude*MekanismRadiation.RAD_PER_SV, source.getX(), source.getY(), source.getZ());
         } finally {
-            igentuman.nc.compat.mekanism.MekanismRadiation.MIRRORING.set(false);
+            MekanismRadiation.MIRRORING.set(false);
         }
         if(!isMekRadiationEnabled()) {
             callback.cancel();

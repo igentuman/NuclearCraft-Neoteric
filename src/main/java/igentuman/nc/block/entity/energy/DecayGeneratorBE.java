@@ -24,6 +24,7 @@ public class DecayGeneratorBE extends NCEnergy {
     private int[] ticks = new int[6];
     public Block leadBlock;
     public int decayDuration = 36000; // 30 minutes
+    public double blocksRadiation = 0;
 
     public DecayGeneratorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, getName(pBlockState));
@@ -67,19 +68,23 @@ public class DecayGeneratorBE extends NCEnergy {
      */
     private int getEnergyFromConnectedBlocks() {
         double energy = 0;
+        blocksRadiation = 0;
         for(Direction side : Direction.values()) {
             Block connectedBlock = getLevel().getBlockState(getBlockPos().relative(side)).getBlock();
             if (!getAllowedBlocks().contains(connectedBlock)) {
                 ticks[side.ordinal()] = 0;
                 continue;
             }
-            energy += Math.log(ItemRadiation.byItem(connectedBlock.asItem())*5000000)*10;
+            double rad = ItemRadiation.byItem(connectedBlock.asItem());
+            blocksRadiation += rad;
             ticks[side.ordinal()]++;
             if(ticks[side.ordinal()] > decayDuration) {
                 ticks[side.ordinal()] = 0;
                 decayBlock(getBlockPos().relative(side));
             }
+            energy += Math.log1p(rad*50000000D)*50;
         }
+
         return (int) ((int) energy * ENERGY_GENERATION.GENERATION_MULTIPLIER.get());
     }
 
@@ -95,7 +100,7 @@ public class DecayGeneratorBE extends NCEnergy {
         energyStorage.addEnergy(getEnergyFromConnectedBlocks());
         sendOutPower();
         if(currentTick % 40 == 0) {
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), (double) RTGs.all().get("uranium_rtg").config().getRadiation() / 500000000, worldPosition);
+            RadiationManager.get(getLevel()).addRadiation(getLevel(),  blocksRadiation / 10000d, worldPosition);
         }
     }
 

@@ -73,10 +73,10 @@ public class ItemRadiation {
             add(block.asItem().toString(), 0.00004D);
         }
 
-        add(getNCBlock(americium241).asItem(), 0.05D);
-        add(getNCBlock(uranium238).asItem(),0.00005D);
-        add(getNCBlock(californium250).asItem(),3D);
-        add(getNCBlock(plutonium238).asItem(), 0.034D);
+        add(getNCBlock("americium241").asItem(), 0.05D);
+        add(getNCBlock("uranium238").asItem(),0.0005D);
+        add(getNCBlock("californium250").asItem(),3D);
+        add(getNCBlock("plutonium238").asItem(), 0.034D);
 
         for (String name: FuelManager.all().keySet()) {
             for(String subType: FuelManager.all().get(name).keySet()) {

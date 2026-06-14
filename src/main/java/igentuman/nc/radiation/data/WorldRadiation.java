@@ -153,12 +153,11 @@ public class WorldRadiation {
     //returns amount of actually added radiation in mRads
     public int addRadiation(Level level, double radiation, int x, int z)
     {
+        if(!RADIATION_CONFIG.ENABLED.get()) return 0;
         this.level = level;
         long id = packChunkPos(x, z);
         int curTimestamp = (int) (getServerTime() / 20);
         int newRadiationAmount = (int) Math.min(radiation * 1000000.0, Integer.MAX_VALUE);
-        if(!RADIATION_CONFIG.ENABLED.get()) return 0;
-        
         int curRadiation = 0;
         if(chunkRadiation.containsKey(id)) {
             long packedData = chunkRadiation.get(id);

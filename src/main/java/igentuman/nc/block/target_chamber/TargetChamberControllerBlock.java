@@ -94,7 +94,6 @@ public class TargetChamberControllerBlock extends MultiblockControllerBlock impl
             return (lvl, pos, blockState, t) -> {
                 if (t instanceof TargetChamberControllerBE tile) {
                     tile.tickClient();
-                    level.setBlock(pos, blockState.setValue(POWERED, tile.controllerEnabled), 3);
                 }
             };
         }

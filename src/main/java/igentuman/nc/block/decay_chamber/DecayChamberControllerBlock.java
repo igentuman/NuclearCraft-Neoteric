@@ -94,7 +94,6 @@ public class DecayChamberControllerBlock extends MultiblockControllerBlock imple
             return (lvl, pos, blockState, t) -> {
                 if (t instanceof DecayChamberControllerBE tile) {
                     tile.tickClient();
-                    level.setBlock(pos, blockState.setValue(POWERED, tile.controllerEnabled), 3);
                 }
             };
         }

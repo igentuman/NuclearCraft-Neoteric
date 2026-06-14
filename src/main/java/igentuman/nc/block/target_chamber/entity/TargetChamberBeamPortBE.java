@@ -43,6 +43,8 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
     public byte comparatorMode = SignalSource.ENERGY;
     @NBTField
     public BlockPos controllerPos;
+    @NBTField
+    public ParticleStack clientParticle;
     protected ParticleChamberMultiblock multiblock;
     public boolean refreshCacheFlag = true;
     public ParticleChamberControllerBE controller;
@@ -112,6 +114,9 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
+        if(!controller().powered) {
+            clientParticle = new ParticleStack();
         }
     }
 
@@ -274,6 +279,9 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
                 break;
             }
         }
+
+        clientParticle = particleStack.copy();
+        markDirty();
     }
 
     public boolean isOutput() {

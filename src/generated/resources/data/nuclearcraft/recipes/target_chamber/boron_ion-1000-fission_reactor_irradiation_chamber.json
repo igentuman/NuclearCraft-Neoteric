@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 0.25,
+  "energyReleased": 0,
   "input": [
     {
       "item": "nuclearcraft:fission_reactor_irradiation_chamber"
@@ -23,19 +24,19 @@
   "outputParticles": [
     {
       "amount": 1,
-      "focus": 3.0,
+      "focus": 1.0,
       "meanEnergy": 1,
       "particle": "proton"
     },
     {
       "amount": 1,
-      "focus": 3.0,
+      "focus": 1.0,
       "meanEnergy": 1,
       "particle": "positron"
     },
     {
       "amount": 1,
-      "focus": 2.0,
+      "focus": 1.0,
       "meanEnergy": 1,
       "particle": "electron"
     }

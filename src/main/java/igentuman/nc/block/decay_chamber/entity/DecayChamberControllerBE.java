@@ -1,6 +1,8 @@
 package igentuman.nc.block.decay_chamber.entity;
 
 import igentuman.nc.block.entity.ParticleChamberControllerBE;
+import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
+import igentuman.nc.content.particles.Equations;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.ParticleStorage;
 import igentuman.nc.multiblock.particle_chamber.DecayChamberMultiblock;
@@ -71,6 +73,7 @@ public class DecayChamberControllerBE extends ParticleChamberControllerBE {
         handleValidation();
         hasParticle = particleStorage.getParticleStack() != null;
         trackChanges(hasParticle);
+
         controllerEnabled = hasRedstoneSignal() && getMultiblock() != null && getMultiblock().isFormed();
         controllerEnabled = !forceShutdown && controllerEnabled;
         if (getMultiblock() != null && getMultiblock().isFormed() && controllerEnabled) {
@@ -108,17 +111,29 @@ public class DecayChamberControllerBE extends ParticleChamberControllerBE {
         if (recipeInfo().isCompleted()) {
             updateRecipe();
         }
+        particleStorage.clearInputServer();
         return true;
     }
 
     private void emitOutputs(Recipe r) {
         int idx = 0;
+        ParticleStack inputParticle = particleStorage.getParticle();
+        int particleOut = 0;
+        for (ParticleStack out : r.outputParticles) {
+            particleOut += out.getAmount();
+        }
+        double outputFactor = r.crossSection * ((ParticleChamberControllerBE)controller()).efficiency;
+        if(outputFactor >= 1)
+        {
+            outputFactor = 1;
+        }
+        int beamLength = ((ParticleChamberControllerBE)controller()).width;
         for (ParticleStack out : r.outputParticles) {
             if (out != null && out.getAmount() > 0) {
                 ParticleStack copy = out.copy();
-                copy.setMeanEnergy(particleStorage.getParticle().getMeanEnergy() + r.energyReleased / Math.max(1, r.outputParticles.length));
-                copy.setAmount(Math.max(1, out.getAmount()));
-                copy.setFocus(particleStorage.getParticle().getFocus());
+                copy.setMeanEnergy((inputParticle.getMeanEnergy() + r.energyReleased) / particleOut);
+                copy.setAmount((int) Math.round(out.getAmount() * outputFactor * inputParticle.getAmount()));
+                copy.setFocus(inputParticle.getFocus()- Equations.focusLoss(beamLength/2d, inputParticle)- Equations.focusLoss(beamLength/2d, out));
                 particleStorage.outputParticles.add(copy);
                 getMultiblock().extractParticle(idx, copy);
                 idx++;

@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 0.32,
+  "energyReleased": -12100,
   "input": [
     {
       "item": "nuclearcraft:uranium_235"

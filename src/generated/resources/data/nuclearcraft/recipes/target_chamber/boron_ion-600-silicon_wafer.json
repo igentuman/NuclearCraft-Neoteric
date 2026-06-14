@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 1.0,
+  "energyReleased": 0,
   "input": [
     {
       "item": "nuclearcraft:silicon_wafer"
@@ -12,26 +13,6 @@
       "focus": 2.0,
       "meanEnergy": 600,
       "particle": "boron_ion"
-    }
-  ],
-  "outputParticles": [
-    {
-      "amount": 1,
-      "focus": 1.0,
-      "meanEnergy": 1,
-      "particle": "pion_plus"
-    },
-    {
-      "amount": 1,
-      "focus": 1.0,
-      "meanEnergy": 1,
-      "particle": "pion_naught"
-    },
-    {
-      "amount": 1,
-      "focus": 1.0,
-      "meanEnergy": 1,
-      "particle": "pion_minus"
     }
   ],
   "maxEnergy": 1000,

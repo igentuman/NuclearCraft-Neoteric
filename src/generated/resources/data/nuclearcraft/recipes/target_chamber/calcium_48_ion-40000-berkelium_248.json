@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 0.02,
+  "energyReleased": -24400,
   "input": [
     {
       "item": "nuclearcraft:berkelium_248"

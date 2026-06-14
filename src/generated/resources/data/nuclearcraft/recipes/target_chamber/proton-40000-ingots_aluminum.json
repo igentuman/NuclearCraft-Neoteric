@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 0.08,
+  "energyReleased": -22500,
   "input": [
     {
       "tag": "forge:ingots/aluminum"

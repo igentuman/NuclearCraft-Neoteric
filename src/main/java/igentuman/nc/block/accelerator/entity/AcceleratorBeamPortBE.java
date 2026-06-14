@@ -42,6 +42,8 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
     @NBTField
     public BlockPos controllerPos;
     protected AbstractAcceleratorMultiblock multiblock;
+    @NBTField
+    public ParticleStack clientParticle;
     public boolean refreshCacheFlag = true;
     public byte validationRuns = 0;
     public LinearAcceleratorControllerBE controller;
@@ -280,6 +282,8 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
             }
         }
         controller().particleStorage.clearServer();
+        clientParticle = controller().particleStorage.getClientParticleStack();
+        markDirty();
         return result.get();
     }
 

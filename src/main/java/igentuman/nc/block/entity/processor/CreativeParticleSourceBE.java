@@ -54,7 +54,7 @@ public class CreativeParticleSourceBE extends NCProcessorBE {
     }
 
     public long meanEnergy() {
-        long multiplier = (long) Math.pow(10, 3 * (energyScale + 1));
+        long multiplier = (long) Math.pow(10, 3 * (energyScale + 1))/1000;
         return (long) (particleEnergy * multiplier);
     }
 
@@ -62,7 +62,7 @@ public class CreativeParticleSourceBE extends NCProcessorBE {
         if (selectedParticle.isEmpty() || Particles.getParticleFromName(selectedParticle) == null) {
             return ParticleStack.EMPTY;
         }
-        return new ParticleStack(Particles.getParticleFromName(selectedParticle), 10, meanEnergy(), particleFocus);
+        return new ParticleStack(Particles.getParticleFromName(selectedParticle), 10000, meanEnergy(), particleFocus);
     }
 
     public boolean extractParticle(ParticleStack particleStack) {

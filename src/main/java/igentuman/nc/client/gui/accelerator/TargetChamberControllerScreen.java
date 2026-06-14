@@ -149,12 +149,10 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
         if(hasParticle()) {
             guiParticle.drawParticleStack(graphics, getParticleStack());
         }
-        if(container().hasRecipe()) {
-            int i = 0;
-            for (GuiParticle particle : outputParticles) {
-                particle.drawParticleStack(graphics, getOutputParticle(i));
-                i++;
-            }
+        int i = 0;
+        for (GuiParticle particle : outputParticles) {
+            particle.drawParticleStack(graphics, container().getOutputParticle(i));
+            i++;
         }
     }
 

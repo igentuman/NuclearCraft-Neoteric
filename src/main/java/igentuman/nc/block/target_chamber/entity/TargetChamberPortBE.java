@@ -1,6 +1,7 @@
 package igentuman.nc.block.target_chamber.entity;
 
 import igentuman.nc.block.entity.ParticleChamberPortBE;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.multiblock.particle_chamber.TargetChamberMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -56,7 +57,7 @@ public class TargetChamberPortBE extends ParticleChamberPortBE<TargetChamberCont
         }
     }
 
-    public igentuman.nc.content.particles.ParticleStack getOutputParticle(int i) {
+    public ParticleStack getOutputParticle(int i) {
         if (controller() == null || controller().getRecipe() == null) return null;
         return controller().getRecipe().getOutputParticle(i);
     }

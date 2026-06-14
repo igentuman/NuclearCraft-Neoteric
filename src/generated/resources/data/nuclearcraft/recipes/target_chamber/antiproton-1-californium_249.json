@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 1.0,
+  "energyReleased": 1460000,
   "input": [
     {
       "item": "nuclearcraft:californium_249"

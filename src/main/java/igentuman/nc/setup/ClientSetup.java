@@ -181,6 +181,7 @@ public class ClientSetup {
         event.registerAboveAll("white_noise", WhiteNoiseOverlay.WHITE_NOISE);
         event.registerAboveAll("bomb_flash", BombFlashOverlay.BOMB_FLASH);
         event.registerAboveAll("multiblock_debug", MultiblockDebugOverlay.MULTIBLOCK_DEBUG);
+        event.registerAboveAll("beam_particle_info", BeamParticleOverlay.BEAM_PARTICLE_INFO);
     }
 
     @SubscribeEvent

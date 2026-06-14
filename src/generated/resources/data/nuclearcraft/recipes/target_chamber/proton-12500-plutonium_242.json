@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 0.4,
+  "energyReleased": -7070,
   "input": [
     {
       "item": "nuclearcraft:plutonium_242"

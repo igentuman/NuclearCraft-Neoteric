@@ -181,8 +181,6 @@ public class DecayChamberControllerContainer extends AbstractContainerMenu {
     }
 
     public ParticleStack getOutputParticle(int i) {
-        if (!hasRecipe()) return null;
-        DecayChamberControllerBE.Recipe r = (DecayChamberControllerBE.Recipe) blockEntity.recipeInfo().recipe();
-        return r.outputParticles.length > i ? r.outputParticles[i] : null;
+        return blockEntity.particleStorage.outputParticles.size() > i ? blockEntity.particleStorage.outputParticles.get(i) : null;
     }
 }

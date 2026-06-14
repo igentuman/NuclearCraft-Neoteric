@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 0.16,
+  "energyReleased": 3380,
   "input": [
     {
       "item": "nuclearcraft:lithium_6"

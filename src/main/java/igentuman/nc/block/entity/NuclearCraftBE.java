@@ -2,6 +2,7 @@ package igentuman.nc.block.entity;
 
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.client.sound.SoundHandler;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
 import igentuman.nc.handler.sided.SidedContentHandler;
@@ -81,6 +82,7 @@ public class NuclearCraftBE extends BlockEntity {
     private final List<Field> longFields;
     private final List<Field> blockPosFields;
     private final List<Field> directionFields;
+    private final List<Field> particleStackFields;
 
     //sync always fields
     private final List<Field> booleanFieldsS;
@@ -110,6 +112,7 @@ public class NuclearCraftBE extends BlockEntity {
         floatFields = initFields(float.class, false);
         byteFields = initFields(byte.class, false);
         longFields = initFields(long.class, false);
+        particleStackFields = initFields(ParticleStack.class, false);
 
         directionFieldsS = initFields(Direction.class, true);
         booleanFieldsS = initFields(boolean.class, true);
@@ -358,6 +361,12 @@ public class NuclearCraftBE extends BlockEntity {
                     tag.put(f.getName(), tagList);
                 }
             }
+            for (Field f : particleStackFields) {
+                ParticleStack stack = (ParticleStack) f.get(this);
+                if (stack != null) {
+                    tag.put(f.getName(), stack.writeToNBT(new CompoundTag()));
+                }
+            }
         } catch (IllegalAccessException ignore) { }
     }
 
@@ -436,6 +445,11 @@ public class NuclearCraftBE extends BlockEntity {
                         stringArray[i] = tagList.getString(i);
                     }
                     f.set(this, stringArray);
+                }
+            }
+            for(Field f: particleStackFields) {
+                if (tag.contains(f.getName())) {
+                    f.set(this, ParticleStack.loadParticleStackFromNBT(tag.getCompound(f.getName())));
                 }
             }
         } catch (IllegalAccessException ignore) { }

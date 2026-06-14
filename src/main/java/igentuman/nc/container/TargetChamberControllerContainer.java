@@ -200,6 +200,6 @@ public class TargetChamberControllerContainer extends AbstractContainerMenu {
     }
 
     public ParticleStack getOutputParticle(int i) {
-        return blockEntity.getOutputParticle(i);
+        return blockEntity.particleStorage.outputParticles.size() > i ? blockEntity.particleStorage.outputParticles.get(i) : null;
     }
 }

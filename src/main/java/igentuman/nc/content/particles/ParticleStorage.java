@@ -109,7 +109,10 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		CompoundTag outputs = new CompoundTag();
 		int id = 0;
 		for(ParticleStack stack : outputParticles) {
-			outputs.put("particle_"+id, stack.writeToNBT(outputs));
+			CompoundTag stackTag = new CompoundTag();
+			stack.writeToNBT(stackTag);
+			outputs.put("particle_"+id, stackTag);
+			id++;
 		}
 		nbt.put("outputParticles", outputs);
 		if(sourceDir == null)
@@ -327,6 +330,11 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 
 	public void clearClient() {
 		clientParticle = null;
+	}
+
+	public void clearInputServer() {
+		clientParticle = particleStack;
+		particleStack = null;
 	}
 
 	public void clearServer() {

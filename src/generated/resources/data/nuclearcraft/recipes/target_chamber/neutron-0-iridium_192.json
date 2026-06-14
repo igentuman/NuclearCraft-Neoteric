@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 1.0,
+  "energyReleased": 7770,
   "input": [
     {
       "item": "nuclearcraft:iridium_192"

@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 0.25,
+  "energyReleased": -16000,
   "input": [
     {
       "tag": "forge:dusts/graphite"

@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -236,7 +237,7 @@ public abstract class ParticleChamberMultiblock extends AbstractMultiblock {
     protected Direction getControllerDirection() {
         if (controllerBE() != null && controllerBE().getBlockState() != null) {
             try {
-                return controllerBE().getBlockState().getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING);
+                return controllerBE().getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
             } catch (Exception ignored) { }
         }
         return null;

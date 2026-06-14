@@ -24,6 +24,7 @@ public abstract class TargetChamberRecipe extends NcRecipe {
     public double crossSection;
     public ParticleStack[] inputParticles;
     public ParticleStack[] outputParticles;
+    public long energyReleased;
 
     public TargetChamberRecipe(
             ResourceLocation id,
@@ -34,7 +35,8 @@ public abstract class TargetChamberRecipe extends NcRecipe {
             ParticleStack[] inputParticles,
             ParticleStack[] outputParticles,
             long maxEnergy,
-            double crossSection
+            double crossSection,
+            long energyReleased
     ) {
 
         super(id);
@@ -46,6 +48,7 @@ public abstract class TargetChamberRecipe extends NcRecipe {
         this.outputParticles = outputParticles;
         this.maxEnergy = maxEnergy;
         this.crossSection = crossSection;
+        this.energyReleased = energyReleased;
 
         CATALYSTS.put(codeId, List.of(getToastSymbol()));
         RECIPE_CLASSES.put(codeId, getClass());
@@ -102,5 +105,6 @@ public abstract class TargetChamberRecipe extends NcRecipe {
 
         buffer.writeLong(maxEnergy);
         buffer.writeDouble(crossSection);
+        buffer.writeLong(energyReleased);
     }
 }

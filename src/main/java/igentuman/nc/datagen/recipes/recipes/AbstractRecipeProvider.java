@@ -190,13 +190,14 @@ public abstract class AbstractRecipeProvider {
     public static void targetChamber(
             List<FluidStackIngredient> inputFluids, List<NcIngredient> inputItems,
             List<ParticleStack> inputParticles, List<ParticleStack> outputParticles,
-            List<FluidStackIngredient> outputFluids, List<NcIngredient> outputItems, long maxEnergy, double crossSection) {
+            List<FluidStackIngredient> outputFluids, List<NcIngredient> outputItems, long maxEnergy, double crossSection, long energyReleased) {
         NcRecipeBuilder.get(ID)
                 .items(inputItems, outputItems)
                 .fluids(inputFluids, outputFluids)
                 .particles(inputParticles, outputParticles)
                 .maxEnergy(maxEnergy)
                 .crossSection(crossSection)
+                .energyReleased(energyReleased)
                 .modifiers(1D, 1D, 1D)
                 .build(consumer);
     }

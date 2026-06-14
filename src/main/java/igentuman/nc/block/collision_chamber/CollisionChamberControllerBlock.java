@@ -94,7 +94,6 @@ public class CollisionChamberControllerBlock extends MultiblockControllerBlock i
             return (lvl, pos, blockState, t) -> {
                 if (t instanceof CollisionChamberControllerBE tile) {
                     tile.tickClient();
-                    level.setBlock(pos, blockState.setValue(POWERED, tile.controllerEnabled), 3);
                 }
             };
         }

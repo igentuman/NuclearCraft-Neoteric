@@ -342,11 +342,11 @@ public class CommonConfig {
 
             KUGELBLITZ_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("kugelblitz_energy_tier", LuV);
+                    .define("kugelblitz_energy_tier", ZPM);
 
             ACCELERATORS_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("accelerators_energy_tier", LuV);
+                    .define("accelerators_energy_tier", ZPM);
 
             PROCESSOR_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")

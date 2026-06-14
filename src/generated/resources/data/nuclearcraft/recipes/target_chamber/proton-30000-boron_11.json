@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 0.05,
+  "energyReleased": -31400,
   "input": [
     {
       "item": "nuclearcraft:boron_11"

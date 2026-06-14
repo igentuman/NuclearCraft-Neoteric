@@ -242,13 +242,16 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
             return;
         }
         particleStorage.clearClient();
+        particleStorage.outputParticles.clear();
         if (lastTickTime == level.getGameTime()) {
             return;
         }
         lastTickTime = level.getGameTime();
         super.tickServer();
         processChamberTick();
-        particleStorage.clearServer();
+        if (!controllerEnabled) {
+            particleStorage.clearAll();
+        }
     }
 
     /**

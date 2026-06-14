@@ -1,8 +1,10 @@
 package igentuman.nc.block.target_chamber.entity;
 
+import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
 import igentuman.nc.block.entity.ParticleChamberControllerBE;
 import igentuman.nc.compat.cc.TargetChamberPeripheral;
 import igentuman.nc.compat.oc2.TargetChamberDevice;
+import igentuman.nc.content.particles.Equations;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.ParticleStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
@@ -18,12 +20,14 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -120,6 +124,9 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
                 powered = false;
             }
         }
+        if (!powered) {
+            particleStorage.clearAll();
+        }
         changed = powered != wasPowered || changed;
         refreshCacheFlag = getMultiblock() == null || !getMultiblock().isFormed();
         if (refreshCacheFlag || changed || currentTick % 40 == 0) {
@@ -161,8 +168,12 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
     }
 
     private boolean processReaction() {
+        boolean result = false;
         if (recipeInfo().recipe != null && recipeInfo().isCompleted()) {
-            if (contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) {
+            if (
+                    contentHandler.itemHandler.getStackInSlot(0).isEmpty()
+                    && contentHandler.fluidHandler.getFluidInSlot(0).isEmpty()
+            ) {
                 recipeInfo().clear();
             }
         }
@@ -170,9 +181,10 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
             updateRecipe();
         }
         if (hasRecipe()) {
-            return process();
+            result = process();
         }
-        return false;
+        particleStorage.clearInputServer();
+        return result;
     }
 
     private boolean process() {
@@ -183,7 +195,7 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
             return false;
         }
         recipeInfo().process(particleStorage.getParticle().getAmount() * ((Recipe) recipe).crossSection * efficiency / 100D);
-        extractParticles();
+        emitOutputs((Recipe) recipeInfo().recipe);
         if (recipeInfo().radiation != 1D) {
             RadiationManager.get(getLevel()).addRadiation(getLevel(), recipeInfo().radiation / 10000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         }
@@ -192,12 +204,28 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
         return true;
     }
 
-    private void extractParticles() {
-        int id = 0;
-        for (ParticleStack outputParticle : ((Recipe) recipeInfo().recipe()).outputParticles) {
-            if (outputParticle != null && outputParticle.getAmount() > 0) {
-                getMultiblock().extractParticle(id, outputParticle);
-                particleStorage.outputParticles.add(outputParticle);
+    private void emitOutputs(Recipe r) {
+        int idx = 0;
+        ParticleStack inputParticle = particleStorage.getParticle();
+        int particleOut = 0;
+        for (ParticleStack out : r.outputParticles) {
+            particleOut += out.getAmount();
+        }
+        double outputFactor = r.crossSection * ((ParticleChamberControllerBE)controller()).efficiency;
+        if(outputFactor >= 1)
+        {
+            outputFactor = 1;
+        }
+        int beamLength = ((ParticleChamberControllerBE)controller()).width;
+        for (ParticleStack out : r.outputParticles) {
+            if (out != null && out.getAmount() > 0) {
+                ParticleStack copy = out.copy();
+                copy.setMeanEnergy((inputParticle.getMeanEnergy() + r.energyReleased) / particleOut);
+                copy.setAmount((int) Math.round(out.getAmount() * outputFactor * inputParticle.getAmount()));
+                copy.setFocus(inputParticle.getFocus()-Equations.focusLoss(beamLength/2d, inputParticle)- Equations.focusLoss(beamLength/2d, out));
+                particleStorage.outputParticles.add(copy);
+                getMultiblock().extractParticle(idx, copy);
+                idx++;
             }
         }
     }
@@ -301,8 +329,8 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
 
     public static class Recipe extends TargetChamberRecipe {
 
-        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, ParticleStack[] inputParticles, ParticleStack[] outputParticles, long maxEnergy, double crossSection) {
-            super(id, input, output, inputFluids, outputFluids, inputParticles, outputParticles, maxEnergy, crossSection);
+        public Recipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, ParticleStack[] inputParticles, ParticleStack[] outputParticles, long maxEnergy, double crossSection, long energyReleased) {
+            super(id, input, output, inputFluids, outputFluids, inputParticles, outputParticles, maxEnergy, crossSection, energyReleased);
             CATALYSTS.put(NAME, List.of(getToastSymbol()));
         }
 

@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 0.2,
+  "energyReleased": -1880000,
   "input": [
     {
       "item": "nuclearcraft:neptunium_236"

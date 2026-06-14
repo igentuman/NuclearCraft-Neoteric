@@ -1,6 +1,7 @@
 {
   "type": "nuclearcraft:target_chamber",
   "crossSection": 0.04,
+  "energyReleased": -6260,
   "inputFluids": [
     {
       "amount": 1000,

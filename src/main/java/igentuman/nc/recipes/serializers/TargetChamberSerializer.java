@@ -37,7 +37,7 @@ public class TargetChamberSerializer<RECIPE extends TargetChamberRecipe> extends
                     ItemStackIngredient[] inputItems, ItemStackIngredient[] outputItems,
                     FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids,
                     ParticleStack[] inputParticles, ParticleStack[] outputParticles,
-                    long maxEnergy, double crossSection);
+                    long maxEnergy, double crossSection, long energyReleased);
     }
 
     @Override
@@ -54,8 +54,9 @@ public class TargetChamberSerializer<RECIPE extends TargetChamberRecipe> extends
 
         long maxEnergy = GsonHelper.getAsLong(json, "maxEnergy", Long.MAX_VALUE);
         double crossSection = GsonHelper.getAsDouble(json, "crossSection", 5D);
+        long energyReleased = GsonHelper.getAsLong(json, "energyReleased", 0L);
 
-        return this.targetChamberFactory.make(recipeId, inputItems, outputItems, inputFluids, outputFluids, inputParticles,outputParticles, maxEnergy, crossSection);
+        return this.targetChamberFactory.make(recipeId, inputItems, outputItems, inputFluids, outputFluids, inputParticles,outputParticles, maxEnergy, crossSection, energyReleased);
     }
 
     public ParticleStack[] readParticles(@NotNull FriendlyByteBuf buffer) {
@@ -96,8 +97,9 @@ public class TargetChamberSerializer<RECIPE extends TargetChamberRecipe> extends
             ParticleStack[] outputParticles = readParticles(buffer);
             long maxEnergy = buffer.readLong();
             double crossSection = buffer.readDouble();
+            long energyReleased = buffer.readLong();
 
-            return this.targetChamberFactory.make(recipeId, inputItems, outputItems, inputFluids,  outputFluids, inputParticles, outputParticles, maxEnergy, crossSection);
+            return this.targetChamberFactory.make(recipeId, inputItems, outputItems, inputFluids,  outputFluids, inputParticles, outputParticles, maxEnergy, crossSection, energyReleased);
         } catch (Exception e) {
             debugLog("Error reading recipe {} from packet. Trace: {} "+ recipeId + e);
         }

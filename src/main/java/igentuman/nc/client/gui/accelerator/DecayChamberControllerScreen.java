@@ -125,12 +125,10 @@ public class DecayChamberControllerScreen extends AbstractContainerScreen<DecayC
         if (hasParticle()) {
             guiParticle.drawParticleStack(graphics, getParticleStack());
         }
-        if (container().hasRecipe()) {
-            int i = 0;
-            for (GuiParticle particle : outputParticles) {
-                particle.drawParticleStack(graphics, container().getOutputParticle(i));
-                i++;
-            }
+        int i = 0;
+        for (GuiParticle particle : outputParticles) {
+            particle.drawParticleStack(graphics, container().getOutputParticle(i));
+            i++;
         }
     }
 

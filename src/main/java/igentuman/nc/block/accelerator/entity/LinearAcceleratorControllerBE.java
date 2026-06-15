@@ -236,7 +236,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         particleStack.setFocus(focusGain(focus, particleStack)-focusLoss(beamLength, particleStack)+initialFocus);
         particleStack.setMeanEnergy((long)(linacEnergyGain(acceleratingVoltage, particleStack)*(redstoneLevel / 15d)));
         particleStorage.setParticleStack(particleStack);
-        internalHeating(heatRate);
+        internalHeating((long) ((heatRate*(redstoneLevel / 15d)+heatRate)/2));
         hasParticle = true;
         getMultiblock().extractParticle(particleStack);
         return true;

@@ -1,0 +1,39 @@
+{
+	"name": "Collision Chamber",
+	"icon": "nuclearcraft:collision_chamber_controller",
+	"category": "nuclearcraft:particle_chambers",
+	"sortnum": 3,
+	"pages": [
+		{
+			"type": "text",
+			"text": "The Collision Chamber smashes two opposing particle beams head-on and rakes new, heavier particles out of the wreckage. It is the largest and most power-hungry of the particle chambers."
+		},
+		{
+			"anchor": "construction",
+			"title": "Construction",
+			"type": "text",
+			"text": "Unlike the other chambers, the Collision Chamber is not a cube. It is a long box of $(l:particle_chambers/general#construction)particle chamber$(/l) casing and glass: 5 to 11 blocks wide and tall, and 13 to 21 blocks deep (17 by default)."
+		},
+		{
+			"title": "Beam Axis",
+			"type": "text",
+			"text": "Down the long axis runs a line of Particle Beam blocks holding at least 2 Particle Chamber Cameras. Both ends of that axis are capped by Particle Chamber Beam Ports set to input mode - the two beams enter here and meet in the middle."
+		},
+		{
+			"title": "Outputs",
+			"type": "text",
+			"text": "Collision products leave through exactly 4 beam ports set to output mode, placed on the two side walls - two per wall. Each output port must reach a camera along a straight run of Particle Beam blocks. Switch a port's mode with a Multitool."
+		},
+		{
+			"anchor": "detectors",
+			"title": "Detectors & Power",
+			"type": "text",
+			"text": "Like all $(l:particle_chambers/general#detectors)particle chambers$(/l), detectors inside raise efficiency at the cost of power. The Collision Chamber also draws a hefty base power on its own, so wire in a Particle Chamber Port for energy."
+		},
+		{
+			"title": "Operation",
+			"type": "text",
+			"text": "A collision recipe takes two incoming particle stacks - one per input beam - and produces new particles forged in the impact. See JEI for the required energies and the products. (Two beams enter. Something heavier leaves.)"
+		}
+	]
+}

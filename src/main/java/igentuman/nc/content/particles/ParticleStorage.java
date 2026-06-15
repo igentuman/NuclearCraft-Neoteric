@@ -16,12 +16,15 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 {
 
 	protected ParticleStack particleStack;
+	protected ParticleStack particleStackB;
 	public List<ParticleStack> outputParticles = new ArrayList<>();
 	protected ParticleStack clientParticle;
+	protected ParticleStack clientParticleB;
 	protected BlockEntity tile;
 	protected long maxEnergy;
 	protected long minEnergy;
 	protected int capacity;
+	protected boolean doNotMergeParticles = false;
 	protected Direction sourceDir = Direction.UP;
 	
 	public ParticleStorage(ParticleStack stack, long maxEnergy, int capacity, long minEnergy)
@@ -56,6 +59,11 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		this.minEnergy = 0;
 	}
 
+	public void doNotMergeParticles()
+	{
+		this.doNotMergeParticles = true;
+	}
+
 	public void readFromNBT(CompoundTag nbt)
 	{
 		if (nbt.contains("particle_stack"))
@@ -67,7 +75,15 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 			this.clientParticle = null;
 		}
 		this.particleStack = this.clientParticle;
-		
+		if (nbt.contains("particle_stack_b"))
+		{
+			this.clientParticleB = ParticleStack.loadParticleStackFromNBT(nbt.getCompound("particle_stack_b"));
+		}
+		else
+		{
+			this.clientParticleB = null;
+		}
+		this.particleStackB = this.clientParticleB;
 		this.maxEnergy = nbt.getLong("maxEnergy");
 		this.capacity = nbt.getInt("capacity");
 		this.minEnergy = nbt.getLong("minEnergy");
@@ -101,7 +117,16 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 		} else {
 			new ParticleStack().writeToNBT(tag);
 		}
+		CompoundTag tagB = new CompoundTag();
+		ParticleStack toWriteB = clientParticleB != null ? clientParticleB : particleStackB;
+		if (toWriteB != null)
+		{
+			toWriteB.writeToNBT(tagB);
+		} else {
+			new ParticleStack().writeToNBT(tagB);
+		}
 		nbt.put("particle_stack", tag);
+		nbt.put("particle_stack_b", tagB);
 		nbt.putLong("maxEnergy", maxEnergy);
 		nbt.putInt("capacity", capacity);
 		nbt.putLong("minEnergy", minEnergy);
@@ -168,7 +193,7 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 				tile.setChanged();
 				return true;
 			}
-			if(particleStack.getParticle() == stack.getParticle())
+			if(particleStack.getParticle() == stack.getParticle() && !doNotMergeParticles)
 			{
 				if(stack.getMeanEnergy() >= minEnergy && stack.getMeanEnergy() <= maxEnergy)
 				{
@@ -181,6 +206,10 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 						return true;
 					}
 				}
+			} else {
+				particleStackB = stack.copy();
+				tile.setChanged();
+				return true;
 			}
 		}
 		return false;
@@ -221,6 +250,11 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 	public ParticleStack getParticleStack()
 	{
 		return particleStack;
+	}
+
+	public ParticleStack getParticleStackB()
+	{
+		return particleStackB;
 	}
 
 	@Override
@@ -325,7 +359,11 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 	}
 
     public String getCacheKey() {
-		return particleStack == null || particleStack.getParticle() == null ? "" : particleStack.getParticle().getName();
+		String key = particleStack == null || particleStack.getParticle() == null ? "" : particleStack.getParticle().getName();
+		if(particleStackB != null && particleStackB.getParticle() != null) {
+			key += "_" + particleStackB.getParticle().getName();
+		}
+		return key;
     }
 
 	public void clearClient() {
@@ -334,27 +372,38 @@ public class ParticleStorage implements IParticleStorage, IParticleStackHandler
 
 	public void clearInputServer() {
 		clientParticle = particleStack;
+		clientParticleB = particleStackB;
 		particleStack = null;
+		particleStackB = null;
 	}
 
 	public void clearServer() {
 		clientParticle = particleStack;
+		clientParticleB = particleStackB;
 		particleStack = null;
+		particleStackB = null;
 		outputParticles.clear();
 	}
 
 	public void clear() {
 		particleStack = null;
+		particleStackB = null;
 		outputParticles.clear();
 	}
 
 	public void clearAll() {
 		particleStack = null;
+		particleStackB = null;
 		outputParticles.clear();
 		clientParticle =  null;
+		clientParticleB =  null;
 	}
 
 	public ParticleStack getClientParticleStack() {
 		return clientParticle;
+	}
+
+	public ParticleStack getClientParticleStackB() {
+		return clientParticleB;
 	}
 }

@@ -266,10 +266,10 @@ public class CommonConfig {
                     .defineInRange("fuse_ticks", 60, 1, 12000);
             OPS_PER_TICK = builder
                     .comment("Block ops applied per server tick during detonation (default 2048)")
-                    .defineInRange("ops_per_tick", 32768, 64, 65536);
+                    .defineInRange("ops_per_tick", 16384, 64, 65536);
             CHUNK_RESENDS_PER_TICK = builder
                     .comment("Whole-chunk packets resent to clients per server tick during detonation. Raise to make blast visible to players faster; bandwidth cost scales with player count.")
-                    .defineInRange("chunk_resends_per_tick", 32, 1, 1024);
+                    .defineInRange("chunk_resends_per_tick", 16, 1, 1024);
             FAST_BLOCK_WRITES = builder
                     .comment("If true, bombs mutate chunk sections directly and resend whole chunks instead of using server.setBlock per op. ~50-100x faster but skips neighbor updates, fluid flow, falling-block triggers, and Forge block events inside the blast. Set false to roll back to vanilla setBlock path.")
                     .define("fast_block_writes", true);

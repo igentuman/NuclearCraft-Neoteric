@@ -29,8 +29,8 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.applyFormat;
 
-public class TargetChamberPortScreen extends AbstractContainerScreen<TargetChamberPortContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = rl("textures/gui/accelerators/target_chamber_controller.png");
+public class TargetChamberPortScreen extends AbstractContainerScreen<TargetChamberPortContainer> implements IVerticalBarScreen {
+    protected final ResourceLocation GUI = rl("textures/gui/processor.png");
     protected int relX;
     protected int relY;
     private int xCenter;
@@ -42,17 +42,11 @@ public class TargetChamberPortScreen extends AbstractContainerScreen<TargetChamb
 
     public List<NCGuiElement> widgets = new ArrayList<>();
     private VerticalBar energyBar;
-    public GuiParticle guiParticle;
-    public List<GuiParticle> outputParticles = new ArrayList<>();
 
     public TargetChamberPortScreen(TargetChamberPortContainer container, Inventory inv, Component name) {
         super(container, inv, name);
         imageWidth = 176;
         imageHeight = 200;
-        guiParticle = new GuiParticle(18, 46);
-        outputParticles.add(new GuiParticle(86, 15));
-        outputParticles.add(new GuiParticle(146, 46));
-        outputParticles.add(new GuiParticle(86, 78));
     }
 
     protected void updateRelativeCords()
@@ -77,10 +71,14 @@ public class TargetChamberPortScreen extends AbstractContainerScreen<TargetChamb
         updateRelativeCords();
         widgets.clear();
         energyBar = new VerticalBar.Energy(7, 16,  this, container().getMaxEnergy());
-        widgets.add(new ProgressBar(71, 47, this,  8));
-        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(53, 58).canVoid());
-        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(113, 58).canVoid());
+        if (hasFluidTanks()) {
+            addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(53, 58).canVoid());
+            addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(113, 58).canVoid());
+        }
+    }
 
+    private boolean hasFluidTanks() {
+        return menu.hasFluidTanks();
     }
 
     protected FluidTank getFluidTank(int i) {
@@ -100,22 +98,6 @@ public class TargetChamberPortScreen extends AbstractContainerScreen<TargetChamb
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
         energyBar.draw(graphics, mouseX, mouseY, partialTicks);
-        if(hasParticle()) {
-            guiParticle.drawParticleStack(graphics, getParticleStack());
-        }
-        int i = 0;
-        for (GuiParticle particle : outputParticles) {
-            particle.drawParticleStack(graphics, getOutputParticle(i));
-            i++;
-        }
-    }
-
-    private boolean hasParticle() {
-        return container().hasParticle();
-    }
-
-    private ParticleStack getParticleStack() {
-        return container().getParticleStack();
     }
 
     @Override
@@ -139,33 +121,13 @@ public class TargetChamberPortScreen extends AbstractContainerScreen<TargetChamb
                         Optional.empty(), pMouseX, pMouseY);
             }
         }
-        if(guiParticle.isMouseOver(pMouseX, pMouseY)) {
-            if(hasParticle()) {
-                guiParticle.renderTooltip(graphics, getParticleStack(), pMouseX, pMouseY);
-            }
-        }
-        int i = 0;
-        for (GuiParticle particle : outputParticles) {
-            if(particle.isMouseOver(pMouseX, pMouseY)) {
-                particle.renderTooltip(graphics, getOutputParticle(i), pMouseX, pMouseY);
-            }
-            i++;
-        }
+
         energyBar.clearTooltips();
         energyBar.addTooltip(__("tooltip.nc.energy.per_tick", container().energyPerTick()));
         if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
             graphics.renderTooltip(font, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
-    }
-
-    private ParticleStack getOutputParticle(int i) {
-        return container().getOutputParticle(i);
-    }
-
-    @Override
-    public double getProgress() {
-        return container().getProgress();
     }
 
     @Override

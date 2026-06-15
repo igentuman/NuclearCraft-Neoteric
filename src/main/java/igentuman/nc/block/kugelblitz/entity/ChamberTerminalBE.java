@@ -255,10 +255,10 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             return;
         }
         //Disallow boosters like torcherino
-        if(lastTickTime == level.getGameTime()) {
+        if(lastTickTime == currentTick) {
             return;
         }
-        lastTickTime = level.getGameTime();
+        lastTickTime = currentTick;
         changed = false;
         super.tickServer();
         if(!getMultiblock().initialized) return;
@@ -470,6 +470,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
                 feeding = 0;
                 energyPerTick = 0;
                 evaporation = 0;
+                getMultiblock().blackHole = null;
             }
         }
     }
@@ -648,6 +649,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     public void handleLaserBurst() {
         if(!gotLaserBurst) return;
         if(!hasBlackhole()) {
+            blackholeStability = 100;
             handleBlackHole();
             return;
         }

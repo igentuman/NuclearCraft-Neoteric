@@ -122,6 +122,24 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.ponder.target_chamber.text_7", "Add Target Chamber Ports for energy and item/fluid transport.");
         add("nuclearcraft.ponder.target_chamber.text_8", "Place the Target Chamber Controller on the casing.");
         add("nuclearcraft.ponder.target_chamber.text_9", "When the structure is valid, start it with redstone signal to controller block.");
+        add("nuclearcraft.ponder.decay_chamber.text_1", "Decay Chamber size can be from 5x5x5 up to 11x11x11.");
+        add("nuclearcraft.ponder.decay_chamber.text_2", "The center of the structure must be a Particle Chamber Camera.");
+        add("nuclearcraft.ponder.decay_chamber.text_3", "Beam blocks must connect the camera to the beam ports in all 4 horizontal directions.");
+        add("nuclearcraft.ponder.decay_chamber.text_4", "One beam port feeds the input beam; the others carry off the lighter particles split out of it.");
+        add("nuclearcraft.ponder.decay_chamber.text_5", "Use a Multitool to change the port mode.");
+        add("nuclearcraft.ponder.decay_chamber.text_6", "Detectors must be placed around the camera to collect data.");
+        add("nuclearcraft.ponder.decay_chamber.text_7", "Add Particle Chamber Ports for energy and item/fluid transport.");
+        add("nuclearcraft.ponder.decay_chamber.text_8", "Place the Decay Chamber Controller on the casing.");
+        add("nuclearcraft.ponder.decay_chamber.text_9", "When the structure is valid, start it with redstone signal to controller block.");
+        add("nuclearcraft.ponder.collision_chamber.text_1", "Collision Chambers are long boxes: 5 to 11 wide and tall, and 13 to 21 deep (17 by default).");
+        add("nuclearcraft.ponder.collision_chamber.text_2", "A line of Particle Chamber Cameras runs the full length of the chamber, linked by Particle Beam blocks.");
+        add("nuclearcraft.ponder.collision_chamber.text_3", "Both ends of that axis are beam ports in INPUT mode. Two opposing beams enter here and collide.");
+        add("nuclearcraft.ponder.collision_chamber.text_4", "Four beam ports in OUTPUT mode sit on the side walls, two per wall. Collision products leave through them.");
+        add("nuclearcraft.ponder.collision_chamber.text_5", "Each output port reaches a camera along a straight line of Particle Beam blocks.");
+        add("nuclearcraft.ponder.collision_chamber.text_6", "Use a Multitool to switch a port between input and output mode.");
+        add("nuclearcraft.ponder.collision_chamber.text_7", "Detectors fill the interior to raise efficiency at the cost of power.");
+        add("nuclearcraft.ponder.collision_chamber.text_8", "Place the Collision Chamber Controller on the casing and add Particle Chamber Ports for energy and items.");
+        add("nuclearcraft.ponder.collision_chamber.text_9", "Feed the controller a redstone signal to start the collision.");
         add("nuclearcraft.ponder.linear_accelerator.text_1", "One end needs an Ion Source Port or Particle Beam Port (Input).");
         add("nuclearcraft.ponder.linear_accelerator.text_2", "The opposite end needs a Beam Port (Output).");
         add("nuclearcraft.ponder.linear_accelerator.text_3", "RF Amplifiers increase particle energy. Place 8 blocks around a beam block.");
@@ -516,12 +534,18 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void labels() {
+        add("mbtool.structure.target_chamber", "Target Chamber");
+        add("mbtool.structure.decay_chamber", "Decay Chamber");
+        add("mbtool.structure.collision_chamber", "Collision Chamber");
+        add("mbtool.structure.ring_accelerator", "Ring Accelerator");
         add("multiblock.analyze.report", "Multiblock Report");
         add("report.nc.1.stabilizers", "Stabilizers: %s");
         add("report.nc.2.flux_regulators", "Flux Regulators: %s");
         add("report.nc.3.transformers", "Transformers: %s");
         add("report.nc.1.target_chamber.all_detectors", "All Detectors: %s");
         add("report.nc.1.target_chamber.valid_detectors", "Valid Detectors: %s");
+        add("report.nc.1.collision_chamber.connected_ports", "Connected Ports: %s");
+        add("report.nc.2.collision_chamber.efficiency", "Efficiency: %s");
         add("report.nc.1.decay_chamber.detectors", "Detectors: %s");
         add("report.nc.2.decay_chamber.connected_ports", "Connected Ports: %s");
         add("report.nc.3.decay_chamber.efficiency", "Efficiency: %s");
@@ -661,7 +685,7 @@ public class NCLanguageProvider extends LanguageProvider {
         }
         for(String name: PARTICLE_CHAMBER_BLOCKS.keySet()) {
             String title = convertToName(name);
-            if (!name.equals("target_chamber_controller") && !name.equals("target_chamber_port")) {
+            if (!name.equals("target_chamber_controller")) {
                 title = convertToName(name.replace("target_","particle_"));
             }
 
@@ -687,7 +711,7 @@ public class NCLanguageProvider extends LanguageProvider {
                 title = "(WIP) MSR Controller";
             }
             if(name.equals("msr_fuel_cell")) {
-                title = "MSR Fuel Cell";
+                title = "(WIP) MSR Fuel Cell";
             }
             add(FISSION_BLOCKS.get(name).get(), prefix+title);
         }

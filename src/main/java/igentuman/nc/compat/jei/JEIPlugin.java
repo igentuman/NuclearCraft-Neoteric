@@ -448,7 +448,10 @@ public  class JEIPlugin implements IModPlugin {
             "fusion_reactor.nbt",
             "kugelblitz_chamber.nbt",
             "linear_accelerator.nbt",
+            "ring_accelerator.nbt",
             "target_chamber.nbt",
+            "decay_chamber.nbt",
+            "collision_chamber.nbt",
             "leacher.nbt",
             "turbine.nbt"
         );

@@ -56,14 +56,14 @@ public class NCBlockTags extends BlockTagsProvider {
                 PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(),
                 PARTICLE_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(),
                 PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get(),
-                PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_port").get()
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_port").get()
         );
         tag(DECAY_CHAMBER_CASING_BLOCKS).add(
                 PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get(),
                 PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(),
                 PARTICLE_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(),
                 PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get(),
-                PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_port").get()
+                PARTICLE_CHAMBER_BLOCKS.get("target_chamber_port").get()
         );
         tag(TARGET_CHAMBER_INNER_BLOCKS).add(
                 ACCELERATOR_BLOCKS.get("particle_beam").get(),

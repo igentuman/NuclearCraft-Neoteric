@@ -1,3 +1,17 @@
+1.2.28-beta1
+    Fixed - Config changes to default even when it's default #285
+    Fixed - Mekanism<->NCN radiation recursion
+    Fixed - Decay generator
+    Fixed - Kugelblitz chamber issues
+    Added - Decay Chamber with recipes
+    Added - Collision Chamber with recipes
+    Added missing recipes for Target Chamber
+    Added - Ring Accelerator
+    Added - Creative Particle Accelerator
+    Fixed - Particle acceleration math
+    Added multitool debug mode overlay for multiblocks
+    Added multitool overlay over particle beam ports to display the particle
+    Updated guides, ponders and docs
 1.2.27
     Added guideme pages
     Updated patchouli book

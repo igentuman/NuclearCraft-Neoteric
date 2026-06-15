@@ -251,13 +251,26 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
                 .save(consumer, rl("target_chamber_controller"));
 
+        // Decay chamber controller
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get())
+                .pattern("PTP")
+                .pattern("BFB")
+                .pattern("PTP")
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .define('T', forgePlate(Materials.platinum))
+                .define('B', NC_PARTS.get("basic_processor").get())
+                .define('F', PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get())
+                .group(MODID+"_decay_chamber")
+                .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
+                .save(consumer, rl("decay_chamber_controller"));
+
         // Collision chamber controller
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get())
                 .pattern("PTP")
                 .pattern("BFB")
                 .pattern("PTP")
                 .define('P', NC_PARTS.get("plate_elite").get())
-                .define('T', forgeIngot(Materials.tough_alloy))
+                .define('T', forgePlate(Materials.tough_alloy))
                 .define('B', NC_PARTS.get("basic_processor").get())
                 .define('F', PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get())
                 .group(MODID+"_collision_chamber")
@@ -302,19 +315,6 @@ public class NCRecipes extends RecipeProvider {
                 .group(MODID+"_target_chamber")
                 .unlockedBy("item", has(NC_PARTS.get("servo").get()))
                 .save(consumer, rl("target_chamber_port"));
-
-        // Collision chamber port
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_port").get(), 4)
-                .pattern("THT")
-                .pattern("VFV")
-                .pattern("THT")
-                .define('T', forgeIngot(Materials.tungsten))
-                .define('H', HOPPER)
-                .define('V', NC_PARTS.get("servo").get())
-                .define('F', NC_PARTS.get("steel_frame").get())
-                .group(MODID+"_collision_chamber")
-                .unlockedBy("item", has(NC_PARTS.get("servo").get()))
-                .save(consumer, rl("collision_chamber_port"));
 
         // Target chamber beam port
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PARTICLE_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(), 4)

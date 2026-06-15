@@ -1,7 +1,7 @@
 # Accelerators
 
 Particle accelerators take a source item or fluid, spin it up into a high-energy particle
-beam, and deliver that beam to a [Target Chamber](TARGET_CHAMBER.md) for nuclear/exotic
+beam, and deliver that beam to a [Particle Chamber](PARTICLE_CHAMBERS.md) for nuclear/exotic
 reactions. NuclearCraft-Neoteric provides two accelerator variants - a linear collider and
 a toroidal (ring) collider - that share a single beam-line architecture.
 

@@ -116,7 +116,7 @@ public class CollisionChamberControllerBlock extends MultiblockControllerBlock i
         if(isGtLoaded() && isGTEUCapEnabled()) {
             list.add(__("tooltip.nc.energy_eu_tier", getTier(pStack)).withStyle(ChatFormatting.GOLD));
         }
-        list.add(__("tooltip.structure.sizes", minSize()+"x"+minSize()+"x"+minSize(), maxSize()+"x"+maxSize()+"x"+maxSize()).withStyle(ChatFormatting.ITALIC));
+        list.add(__("tooltip.structure.sizes", "5x5x"+minSize(), "11x11x"+maxSize()).withStyle(ChatFormatting.ITALIC));
     }
 
 

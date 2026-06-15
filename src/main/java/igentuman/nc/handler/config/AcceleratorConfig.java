@@ -90,11 +90,11 @@ public class AcceleratorConfig {
 
             MIN_SIZE = builder
                     .comment("Min interior size (cube edge, odd).")
-                    .defineInRange("min_size", 17, 5, 21);
+                    .defineInRange("min_size", 17, 13, 21);
 
             MAX_SIZE = builder
                     .comment("Max interior size (cube edge, odd).")
-                    .defineInRange("max_size", 17, 7, 21);
+                    .defineInRange("max_size", 17, 13, 21);
 
             BASE_POWER = builder
                     .comment("Base RF/tick consumed while running.")

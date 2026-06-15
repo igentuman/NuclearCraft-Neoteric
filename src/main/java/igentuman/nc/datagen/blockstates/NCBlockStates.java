@@ -94,12 +94,6 @@ public class NCBlockStates extends BlockStateProvider {
         horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_port").get(),
                 st -> multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_port").get(), "particle_chamber/port")
         );
-        horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_port").get(),
-                st -> multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_port").get(), "particle_chamber/port")
-        );
-        horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_port").get(),
-                st -> multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_port").get(), "particle_chamber/port")
-        );
        horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get(),
                 st -> controllerModel(st, sidedModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get(), "particle_chamber/target_chamber_controller"))
         );

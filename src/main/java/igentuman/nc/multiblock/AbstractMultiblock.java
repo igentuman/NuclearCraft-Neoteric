@@ -643,7 +643,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         updateAABB();
     }
 
-    private void findCorners() {
+    protected void findCorners() {
         BlockPos leftFront = new BlockPosInstance(getLeftPos(leftCasing));
         BlockPos leftBack = new BlockPosInstance(getLeftPos(leftCasing).relative(getControllerDirection(), -depth+1));
         BlockPos rightFront = new BlockPosInstance(getRightPos(rightCasing));

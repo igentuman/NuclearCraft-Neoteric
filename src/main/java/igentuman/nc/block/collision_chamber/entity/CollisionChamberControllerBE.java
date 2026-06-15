@@ -11,6 +11,7 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,20 +29,16 @@ public class CollisionChamberControllerBE extends ParticleChamberControllerBE {
     public static final String NAME = "collision_chamber_controller";
 
     @NBTField
-    public double efficiency = 1D;
     public int connectedPorts = 0;
-
-    public final ParticleStorage particleStorageB;
 
     public CollisionChamberControllerBE(BlockPos pPos, BlockState pBlockState) {
         this(TARGET_CHAMBER_BE.get(NAME).get(), pPos, pBlockState);
     }
 
-    public CollisionChamberControllerBE(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pPos, BlockState pBlockState) {
+    public CollisionChamberControllerBE(BlockEntityType<?> type, BlockPos pPos, BlockState pBlockState) {
         super(type, pPos, pBlockState);
         energyPerTick = COLLISION_CHAMBER_CONFIG.BASE_POWER.get();
-        particleStorageB = new ParticleStorage();
-        particleStorageB.setTileEntity(this);
+        particleStorage.doNotMergeParticles();
     }
 
     @Override
@@ -72,7 +69,7 @@ public class CollisionChamberControllerBE extends ParticleChamberControllerBE {
         changed = false;
 
         handleValidation();
-        hasParticle = particleStorage.getParticleStack() != null && particleStorageB.getParticleStack() != null;
+        hasParticle = particleStorage.getParticleStack() != null && particleStorage.getParticleStackB() != null;
         trackChanges(hasParticle);
         controllerEnabled = hasRedstoneSignal() && getMultiblock() != null && getMultiblock().isFormed();
         controllerEnabled = !forceShutdown && controllerEnabled;
@@ -97,8 +94,8 @@ public class CollisionChamberControllerBE extends ParticleChamberControllerBE {
 
     private boolean processCollision() {
         if (energyStorage().getEnergyStored() < energyPerTick) return false;
-        ParticleStack inA = particleStorage.getParticle();
-        ParticleStack inB = particleStorageB.getParticle();
+        ParticleStack inA = particleStorage.getParticleStack();
+        ParticleStack inB = particleStorage.getParticleStackB();
         if (inA == null || inB == null) return false;
 
         if (!hasRecipe()) {
@@ -110,7 +107,7 @@ public class CollisionChamberControllerBE extends ParticleChamberControllerBE {
         long collisionEnergy = Math.round(2 * Math.sqrt((double) inA.getMeanEnergy() * (double) inB.getMeanEnergy()));
         double symmetry = 1 - Math.abs(inA.getMeanEnergy() - inB.getMeanEnergy())
                 / (double) Math.max(1, inA.getMeanEnergy() + inB.getMeanEnergy());
-        double outputFactor = Math.min(1D, r.crossSection * efficiency * symmetry);
+        double outputFactor = Math.min(1D, r.crossSection * (efficiency/100D) * symmetry);
         int inputAmount = Math.min(inA.getAmount(), inB.getAmount());
 
         recipeInfo().process(inputAmount * outputFactor);
@@ -146,12 +143,12 @@ public class CollisionChamberControllerBE extends ParticleChamberControllerBE {
     }
 
     public Recipe getRecipe() {
-        if (particleStorage.getParticle() == null || particleStorageB.getParticle() == null) return null;
+        if (particleStorage.getParticleStack() == null || particleStorage.getParticleStackB() == null) return null;
         Recipe cached = getCachedRecipe();
         if (cached != null) return cached;
         if (!NcRecipeType.ALL_RECIPES.containsKey(CollisionChamberRecipe.CODE_ID)) return null;
         for (NcRecipe recipe : NcRecipeType.getAllRecipesFor(CollisionChamberRecipe.CODE_ID, getLevel())) {
-            if (((Recipe) recipe).test(particleStorage, particleStorageB)) {
+            if (((Recipe) recipe).test(particleStorage)) {
                 addToCache(recipe);
                 return (Recipe) recipe;
             }
@@ -160,27 +157,27 @@ public class CollisionChamberControllerBE extends ParticleChamberControllerBE {
     }
 
     public Recipe getCachedRecipe() {
-        String key = particleStorage.getCacheKey() + "::" + particleStorageB.getCacheKey();
+        String key = particleStorage.getCacheKey();
         if (cachedRecipes.containsKey(key) && cachedRecipes.get(key) instanceof Recipe r) {
-            if (r.test(particleStorage, particleStorageB)) return r;
+            if (r.test(particleStorage)) return r;
         }
         return null;
     }
 
     protected void addToCache(NcRecipe recipe) {
-        String key = particleStorage.getCacheKey() + "::" + particleStorageB.getCacheKey();
+        String key = particleStorage.getCacheKey();
         cachedRecipes.put(key, recipe);
     }
 
     protected void updateRecipe() {
-        if (recipe instanceof Recipe current && current.test(particleStorage, particleStorageB)) {
+        if (recipe instanceof Recipe current && current.test(particleStorage)) {
             recipeInfo().ticksProcessed = 0;
             return;
         }
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo().setRecipe(recipe);
-            recipeInfo().ticks = ((Recipe) recipe).getAmount();
+            recipeInfo().ticks = ((Recipe) recipe).getAmount()*10000;
             recipeInfo().energy = energyPerTick;
             recipeInfo().radiation = recipe.getRadiation();
             recipeInfo().be = this;
@@ -189,15 +186,18 @@ public class CollisionChamberControllerBE extends ParticleChamberControllerBE {
         }
     }
 
-    public ParticleStorage getSecondaryParticleStorage() {
-        return particleStorageB;
+    @Override
+    public ParticleStack getOutputParticle(int i) {
+        if (!hasRecipe()) return null;
+        Recipe r = (Recipe) recipeInfo().recipe();
+        return r.outputParticles.length > i ? r.outputParticles[i] : null;
     }
 
     @Override
     public HashMap<String, String> getAnalyzeReport() {
         HashMap<String, String> report = new HashMap<>();
-        report.put("report.nc.collision_chamber.connected_ports", String.valueOf(connectedPorts));
-        report.put("report.nc.collision_chamber.efficiency", String.format("%.2f", efficiency));
+        report.put("report.nc.1.collision_chamber.connected_ports", String.valueOf(connectedPorts));
+        report.put("report.nc.2.collision_chamber.efficiency", String.format("%.2f%%", efficiency));
         return report;
     }
 
@@ -218,10 +218,10 @@ public class CollisionChamberControllerBE extends ParticleChamberControllerBE {
             return PARTICLE_CHAMBER_BLOCKS.containsKey(NAME) ? PARTICLE_CHAMBER_BLOCKS.get(NAME).get().getName().getString() : CODE_ID;
         }
 
-        public boolean test(ParticleStorage a, ParticleStorage b) {
+        public boolean test(ParticleStorage storage) {
             if (inputParticles == null || inputParticles.length < 2) return false;
-            ParticleStack stackA = a.getParticle();
-            ParticleStack stackB = b.getParticle();
+            ParticleStack stackA = storage.getParticleStack();
+            ParticleStack stackB = storage.getParticleStackB();
             if (stackA == null || stackB == null) return false;
             return matchesPair(inputParticles[0], stackA, inputParticles[1], stackB)
                     || matchesPair(inputParticles[0], stackB, inputParticles[1], stackA);

@@ -1,8 +1,9 @@
 package igentuman.nc.block.target_chamber.entity;
 
+import igentuman.nc.block.entity.ParticleChamberControllerBE;
 import igentuman.nc.block.entity.ParticleChamberPortBE;
 import igentuman.nc.content.particles.ParticleStack;
-import igentuman.nc.multiblock.particle_chamber.TargetChamberMultiblock;
+import igentuman.nc.multiblock.particle_chamber.ParticleChamberMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,48 +18,25 @@ import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistrati
 import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
-public class TargetChamberPortBE extends ParticleChamberPortBE<TargetChamberControllerBE, TargetChamberMultiblock> {
+public class TargetChamberPortBE extends ParticleChamberPortBE<ParticleChamberControllerBE, ParticleChamberMultiblock> {
 
     public static final String NAME = "target_chamber_port";
-    public boolean isSteamMode = false;
 
     public TargetChamberPortBE(BlockPos pPos, BlockState pBlockState) {
-        this(TARGET_CHAMBER_BE.get(NAME).get(), pPos, pBlockState);
-    }
-
-    public TargetChamberPortBE(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pPos, BlockState pBlockState) {
-        super(type, pPos, pBlockState);
+        super(TARGET_CHAMBER_BE.get(NAME).get(), pPos, pBlockState);
     }
 
     @Override
-    protected Class<TargetChamberControllerBE> controllerClass() {
-        return TargetChamberControllerBE.class;
+    protected Class<ParticleChamberControllerBE> controllerClass() {
+        return ParticleChamberControllerBE.class;
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (controller() != null) {
-            if (isOC2Loaded() && cap == DEVICE_CAPABILITY) {
-                return controller().getOCDevice(cap, side);
-            }
-            if (isCcLoaded() && cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return controller().getPeripheral(cap, side);
-            }
+            return controller().getCapability(cap, side);
         }
         return super.getCapability(cap, side);
-    }
-
-    @Override
-    public void tickServer() {
-        super.tickServer();
-        if (controller() != null && getMultiblock() != null) {
-            sendOutPower();
-        }
-    }
-
-    public ParticleStack getOutputParticle(int i) {
-        if (controller() == null || controller().getRecipe() == null) return null;
-        return controller().getRecipe().getOutputParticle(i);
     }
 }

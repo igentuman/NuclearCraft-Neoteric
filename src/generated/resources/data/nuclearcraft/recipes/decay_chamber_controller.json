@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "group": "nuclearcraft_collision_chamber",
+  "group": "nuclearcraft_decay_chamber",
   "key": {
     "B": {
       "item": "nuclearcraft:basic_processor"
@@ -13,7 +13,7 @@
       "item": "nuclearcraft:plate_elite"
     },
     "T": {
-      "tag": "forge:plates/tough_alloy"
+      "tag": "forge:plates/platinum"
     }
   },
   "pattern": [
@@ -22,7 +22,7 @@
     "PTP"
   ],
   "result": {
-    "item": "nuclearcraft:collision_chamber_controller"
+    "item": "nuclearcraft:decay_chamber_controller"
   },
   "show_notification": true
 }

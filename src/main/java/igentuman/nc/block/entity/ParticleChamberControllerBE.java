@@ -147,6 +147,18 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
         return particleStorage.getClientParticleStack();
     }
 
+    public ParticleStack getOutputParticle(int i) {
+        return null;
+    }
+
+    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
+        return LazyOptional.empty();
+    }
+
+    public <T> LazyOptional<T> getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        return LazyOptional.empty();
+    }
+
     public boolean hasRecipe() {
         return recipeInfo() != null && recipeInfo().recipe() != null;
     }
@@ -251,6 +263,10 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
         processChamberTick();
         if (!controllerEnabled) {
             particleStorage.clearAll();
+        } else {
+            if(!hasRecipe()) {
+                particleStorage.clearServer();
+            }
         }
     }
 

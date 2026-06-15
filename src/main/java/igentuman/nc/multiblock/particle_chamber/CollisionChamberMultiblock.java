@@ -1,9 +1,13 @@
 package igentuman.nc.multiblock.particle_chamber;
 
+import igentuman.api.nc.multiblock.MultiblockAttachable;
 import igentuman.nc.block.collision_chamber.entity.CollisionChamberControllerBE;
+import igentuman.nc.block.entity.MultiblockPortBE;
+import igentuman.nc.block.target_chamber.DetectorBlock;
 import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
+import igentuman.nc.util.BlockPosInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -11,7 +15,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.AcceleratorConfig.COLLISION_CHAMBER_CONFIG;
@@ -28,6 +34,7 @@ public class CollisionChamberMultiblock extends ParticleChamberMultiblock {
 
     public final List<BlockPos> inputPorts = new ArrayList<>(REQUIRED_INPUTS);
     public final List<BlockPos> outputPorts = new ArrayList<>(REQUIRED_OUTPUTS);
+    public final List<BlockPos> chamberCameras = new ArrayList<>();
 
     @Override public int maxHeight() { return 11; }
     @Override public int maxWidth()  { return 11; }
@@ -53,17 +60,123 @@ public class CollisionChamberMultiblock extends ParticleChamberMultiblock {
         MultiblockHandler.get(getLevel().dimension()).addMultiblock(this);
     }
 
+    public boolean isControllerPlacedOnSide() {
+        return depth > 4 && depth < minDepth();
+    }
+
     @Override
     public void validateOuter() {
-        super.validateOuter();
-        if (!validationResult.isValid) {
+        debugLog("Particle chamber outer validation for " + getClass().getSimpleName());
+        outerValid = false;
+        inputPorts.clear();
+        outputPorts.clear();
+        beamPorts.clear();
+        chamberCameras.clear();
+        validDetectors.clear();
+        allDetectors.clear();
+        resolveDimensions();
+        if(height > maxHeight()) {
+            validationResult = ValidationResult.TOO_BIG;
             return;
         }
-        // odd width/height are required so the beam line sits on the chamber centre
-        if (width % 2 == 0 || height % 2 == 0) {
-            debugLog("Collision chamber requires odd width and height, got " + width + "x" + height);
-            validationResult = ValidationResult.WRONG_PROPORTIONS;
-            outerValid = false;
+        if(height < minHeight()) {
+            validationResult = ValidationResult.TOO_SMALL;
+            return;
+        }
+        final boolean controllerOnSide = isControllerPlacedOnSide();
+
+        if(controllerOnSide) {
+            if(width > maxDepth()) {
+                validationResult = ValidationResult.TOO_BIG;
+                return;
+            }
+            if(width < minDepth()) {
+                validationResult = ValidationResult.TOO_SMALL;
+                return;
+            }
+            if(height != depth) {
+                validationResult = ValidationResult.WRONG_PROPORTIONS;
+                return;
+            }
+        }
+        if(!controllerOnSide) {
+            if(depth > maxDepth()) {
+                validationResult = ValidationResult.TOO_BIG;
+                return;
+            }
+            if(depth < minDepth()) {
+                validationResult = ValidationResult.TOO_SMALL;
+                return;
+            }
+            if(height != width) {
+                validationResult = ValidationResult.WRONG_PROPORTIONS;
+                return;
+            }
+        }
+        findCorners();
+
+        cacheBlockStates(null);
+        debugLog("Cached block states for validation area. Corners: " + bottomLeft.toShortString() + " to " + topRight.toShortString() +
+                ", Total cached: " + bsCache.size());
+
+        int totalOuterBlocks = 0;
+        int validOuterBlocks = 0;
+        int cornerBlocks = 0;
+        int validCornerBlocks = 0;
+        Direction controllerDirection = getControllerDirection();
+        for(int y = 0; y < height; y++) {
+            for(int x = 0; x < width; x++) {
+                for (int z = 0; z < depth; z++) {
+                    if (y == 0 || x == 0 || z == 0 || y == height-1 || x == width-1 || z == depth-1) {
+                        BlockPos currentPos = getSidePos(x - leftCasing).above(y - bottomCasing).relative(controllerDirection, -z);
+                        totalOuterBlocks++;
+
+                        if (((y == 0 || y == height-1) && (z == 0 || z == depth - 1))
+                                || ((y == 0 || y == height-1) && (x == 0 || x == width - 1))
+                                || ((z == 0 || z == depth-1) && (x == 0 || x == width - 1))
+                        ) {
+                            cornerBlocks++;
+                            if (!isValidCorner(currentPos)) {
+                                validationResult = ValidationResult.WRONG_CORNER;
+                                errorBlockPos = new BlockPos(currentPos);
+                                debugLog("Validation failed - WRONG_CORNER at " + currentPos.toShortString() +
+                                        " - Expected corner block, found: " + getBlockState(currentPos).getBlock().getDescriptionId());
+                                return;
+                            }
+                            validCornerBlocks++;
+                        } else if (!isValidForOuter(currentPos)) {
+                            validationResult = ValidationResult.WRONG_OUTER;
+                            errorBlockPos = new BlockPos(currentPos);
+                            debugLog("Validation failed - WRONG_OUTER at " + currentPos.toShortString() +
+                                    " - Expected outer block, found: " + getBlockState(currentPos).getBlock().getDescriptionId());
+                            return;
+                        } else {
+                            validOuterBlocks++;
+                        }
+                        processOuterBlock(currentPos);
+                    }
+                }
+            }
+        }
+
+        debugLog("Outer block validation complete - Total: " + totalOuterBlocks +
+                ", Valid outer: " + validOuterBlocks + ", Corner blocks: " + cornerBlocks +
+                ", Valid corners: " + validCornerBlocks);
+
+        if (controllers.size() > 1) {
+            validationResult = ValidationResult.TOO_MANY_CONTROLLERS;
+            debugLog("Validation failed - TOO_MANY_CONTROLLERS: Found " + controllers.size() + " controllers");
+            return;
+        }
+        outerValid = true;
+        validationResult = ValidationResult.VALID;
+    }
+
+    @Override
+    protected void processOuterBlock(BlockPos pos) {
+        super.processOuterBlock(pos);
+        if(getBlockEntity(pos) instanceof TargetChamberBeamPortBE be) {
+            beamPorts.put(pos.asLong(), be);
         }
     }
 
@@ -74,9 +187,7 @@ public class CollisionChamberMultiblock extends ParticleChamberMultiblock {
             clearStats();
             return;
         }
-        inputPorts.clear();
-        outputPorts.clear();
-        beamPorts.clear();
+
 
         indexInnerBlocks();
         if (!validationResult.isValid) {
@@ -95,12 +206,53 @@ public class CollisionChamberMultiblock extends ParticleChamberMultiblock {
 
         CollisionChamberControllerBE ctrl = (CollisionChamberControllerBE) controllerBE();
         ctrl.connectedPorts = inputPorts.size() + outputPorts.size();
-        ctrl.efficiency = 1D;
+        validateDetectors();
+        controllerBE().allDetectors = allDetectors.size();
+        controllerBE().efficiency = efficiency * 100;
+        controllerBE().energyPerTick = power;
+        controllerBE().connectedPorts = connectedPorts;
+        controllerBE().detectorsCount = validDetectors.size();
+        controllerBE().markDirty();
         ctrl.height = height;
         ctrl.width = width;
         ctrl.depth = depth;
         validationResult = ValidationResult.VALID;
         innerValid = true;
+    }
+
+    public Map<Long, DetectorBlock> validateDetectors() {
+        validDetectors.clear();
+        for (long packedPos : allDetectors) {
+            BlockPos hpos = BlockPos.of(packedPos);
+            Block block = getBlockState(hpos).getBlock();
+            if (block instanceof DetectorBlock hs) {
+                if (hs.isValid(getLevel(), hpos, closestChamberPos(hpos))) {
+                    validDetectors.put(packedPos, hs);
+                }
+            }
+        }
+        controllerBE().detectorsCount = validDetectors.size();
+        return validDetectors;
+    }
+
+    private BlockPos closestChamberPos(BlockPos hpos) {
+        BlockPos closest = null;
+        double best = Double.MAX_VALUE;
+        for (BlockPos camera : chamberCameras) {
+            double d = camera.distSqr(hpos);
+            if (d < best) {
+                best = d;
+                closest = camera;
+            }
+        }
+        return closest;
+    }
+
+    protected Direction getMultiblockDirection() {
+        if(multiblockDirection == null) {
+            multiblockDirection = getControllerDirection();
+        }
+        return multiblockDirection;
     }
 
     /**
@@ -110,17 +262,36 @@ public class CollisionChamberMultiblock extends ParticleChamberMultiblock {
      */
     private boolean validateBeamAxis() {
         int xc = width / 2;
+        if (isControllerPlacedOnSide()) {
+            xc = depth / 2;
+        }
+
         int yc = height / 2;
-        Direction dir = getControllerDirection();
+        Direction dir = getMultiblockDirection().getOpposite();
+        if(isControllerPlacedOnSide()) {
+            dir = switch (dir) {
+                case NORTH -> Direction.EAST;
+                case EAST -> Direction.NORTH;
+                case SOUTH -> Direction.WEST;
+                case WEST -> Direction.SOUTH;
+                default -> dir;
+            };
+        }
         Block beam = ACCELERATOR_BLOCKS.get("particle_beam").get();
         Block camera = PARTICLE_CHAMBER_BLOCKS.get("target_chamber_camera").get();
-
+        int length = depth;
+        if (isControllerPlacedOnSide()) {
+            length = width;
+        }
+        BlockPosInstance pos = BlockPosInstance.of(((BlockPosInstance)bottomLeft).revert().above(yc).relative(dir.getClockWise(), xc).asLong());
+        ((BlockPosInstance) bottomLeft).revert();
         int cameras = 0;
-        for (int z = 1; z < depth - 1; z++) {
-            BlockPos pos = getSidePos(xc - leftCasing).above(yc - bottomCasing).relative(dir, -z);
-            BlockState bs = getBlockState(pos);
+        for (int z = 1; z < length - 1; z++) {
+
+            BlockState bs = getBlockState(pos.revert().relative(dir, z));
             if (bs.is(camera)) {
                 cameras++;
+                chamberCameras.add(new BlockPos(pos.revert().relative(dir, z)));
             } else if (!bs.is(beam)) {
                 validationResult = ValidationResult.WRONG_INNER;
                 errorBlockPos = new BlockPos(pos);
@@ -135,11 +306,10 @@ public class CollisionChamberMultiblock extends ParticleChamberMultiblock {
             return false;
         }
 
-        BlockPos near = new BlockPos(getSidePos(xc - leftCasing).above(yc - bottomCasing));
-        BlockPos far = new BlockPos(getSidePos(xc - leftCasing).above(yc - bottomCasing).relative(dir, -(depth - 1)));
+        BlockPos near = new BlockPos(pos.revert());
+        BlockPos far = new BlockPos(pos.revert().relative(dir, length-1));
         for (BlockPos end : List.of(near, far)) {
             if (getBlockEntity(end) instanceof TargetChamberBeamPortBE port && port.isInput()) {
-                beamPorts.put(end.asLong(), port);
                 inputPorts.add(end);
             } else {
                 validationResult = ValidationResult.NO_PORT;
@@ -158,45 +328,45 @@ public class CollisionChamberMultiblock extends ParticleChamberMultiblock {
      */
     private boolean validateOutputPorts() {
         Direction wd = widthDir();
-        int left = 0;
-        int right = 0;
-        for (long packedPos : allBlocks) {
-            if (beamPorts.containsKey(packedPos)) {
-                continue;
-            }
+        HashMap<Direction, Integer> portsPerSide = new HashMap<>();
+        for (long packedPos : beamPorts.keySet()) {
             BlockPos pos = BlockPos.of(packedPos);
             if (!(getBlockEntity(pos) instanceof TargetChamberBeamPortBE port) || !port.isOutput()) {
                 continue;
             }
             Direction facing = port.getFacing();
-            Direction inward;
-            if (facing == wd) {
-                right++;
-                inward = wd.getOpposite();
-            } else if (facing == wd.getOpposite()) {
-                left++;
-                inward = wd;
-            } else {
+            if ((isControllerPlacedOnSide() && facing != getMultiblockDirection() && facing != getMultiblockDirection().getOpposite())
+            || (!isControllerPlacedOnSide() && (facing == getMultiblockDirection() || facing == getMultiblockDirection().getOpposite()))) {
                 validationResult = ValidationResult.NO_PORT;
                 errorBlockPos = pos;
                 debugLog("Collision output port at " + pos.toShortString() + " must sit on a side wall");
                 return false;
             }
-            if (!portLinksToCamera(pos, inward)) {
+            if (!portLinksToCamera(pos, facing.getOpposite())) {
                 validationResult = ValidationResult.WRONG_INNER;
                 errorBlockPos = pos;
                 debugLog("Collision output port at " + pos.toShortString() + " is not linked to a chamber camera by particle beam");
                 return false;
             }
-            beamPorts.put(packedPos, port);
+            portsPerSide.put(facing, portsPerSide.getOrDefault(facing, 0) + 1);
             outputPorts.add(pos);
         }
-        if (left != REQUIRED_OUTPUTS_PER_SIDE || right != REQUIRED_OUTPUTS_PER_SIDE) {
-            validationResult = ValidationResult.NO_PORT;
-            errorBlockPos = controllerBE().getBlockPos();
-            debugLog("Collision chamber needs " + REQUIRED_OUTPUTS_PER_SIDE + " output ports per side wall, found left=" + left + " right=" + right);
+        if (outputPorts.size() != 4 || portsPerSide.size() != 2) {
+            validationResult = ValidationResult.WRONG_INNER;
+            errorBlockPos = new BlockPos(controllerPos);
+            debugLog("Expected 4 output beam ports along 2 walls");
             return false;
         }
+        for(int qty: portsPerSide.values()) {
+            if(qty != 2) {
+                validationResult = ValidationResult.NO_PORT;
+                errorBlockPos = controllerBE().getBlockPos();
+                debugLog("Expected 2 output beam ports along 2 walls, found " + qty);
+                return false;
+
+            }
+        }
+
         return true;
     }
 

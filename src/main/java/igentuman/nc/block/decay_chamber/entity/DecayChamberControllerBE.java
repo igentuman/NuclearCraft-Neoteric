@@ -185,6 +185,13 @@ public class DecayChamberControllerBE extends ParticleChamberControllerBE {
     }
 
     @Override
+    public ParticleStack getOutputParticle(int i) {
+        if (!hasRecipe()) return null;
+        Recipe r = (Recipe) recipeInfo().recipe();
+        return r.outputParticles.length > i ? r.outputParticles[i] : null;
+    }
+
+    @Override
     public HashMap<String, String> getAnalyzeReport() {
         HashMap<String, String> report = new HashMap<>();
         report.put("report.nc.1.decay_chamber.detectors", String.valueOf(detectorsCount));

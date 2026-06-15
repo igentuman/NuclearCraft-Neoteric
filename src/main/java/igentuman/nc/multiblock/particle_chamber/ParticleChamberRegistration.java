@@ -1,21 +1,15 @@
 package igentuman.nc.multiblock.particle_chamber;
 
 import igentuman.nc.block.collision_chamber.CollisionChamberControllerBlock;
-import igentuman.nc.block.collision_chamber.CollisionChamberPortBlock;
 import igentuman.nc.block.collision_chamber.entity.CollisionChamberControllerBE;
-import igentuman.nc.block.collision_chamber.entity.CollisionChamberPortBE;
 import igentuman.nc.block.decay_chamber.DecayChamberControllerBlock;
-import igentuman.nc.block.decay_chamber.DecayChamberPortBlock;
 import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
-import igentuman.nc.block.decay_chamber.entity.DecayChamberPortBE;
 import igentuman.nc.block.target_chamber.*;
 import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberPortBE;
 import igentuman.nc.container.CollisionChamberControllerContainer;
-import igentuman.nc.container.CollisionChamberPortContainer;
 import igentuman.nc.container.DecayChamberControllerContainer;
-import igentuman.nc.container.DecayChamberPortContainer;
 import igentuman.nc.container.TargetChamberControllerContainer;
 import igentuman.nc.container.TargetChamberPortContainer;
 import net.minecraft.tags.TagKey;
@@ -64,14 +58,8 @@ public class ParticleChamberRegistration {
     public static final RegistryObject<MenuType<TargetChamberPortContainer>> TARGET_CHAMBER_PORT_CONTAINER = CONTAINERS.register("target_chamber_port",
             () -> IForgeMenuType.create((windowId, inv, data) -> new TargetChamberPortContainer(windowId, data.readBlockPos(), inv))
     );
-    public static final RegistryObject<MenuType<CollisionChamberPortContainer>> COLLISION_CHAMBER_PORT_CONTAINER = CONTAINERS.register("collision_chamber_port",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new CollisionChamberPortContainer(windowId, data.readBlockPos(), inv))
-    );
     public static final RegistryObject<MenuType<DecayChamberControllerContainer>> DECAY_CHAMBER_CONTROLLER_CONTAINER = CONTAINERS.register("decay_chamber_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new DecayChamberControllerContainer(windowId, data.readBlockPos(), inv))
-    );
-    public static final RegistryObject<MenuType<DecayChamberPortContainer>> DECAY_CHAMBER_PORT_CONTAINER = CONTAINERS.register("decay_chamber_port",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new DecayChamberPortContainer(windowId, data.readBlockPos(), inv))
     );
 
     public static List<DetectorDef> detectors() {
@@ -94,24 +82,12 @@ public class ParticleChamberRegistration {
         registerOrientedBlock("collision_chamber_controller");
         registerOrientedBlock("decay_chamber_controller");
         registerOrientedBlock("target_chamber_controller");
-        registerOrientedBlock("collision_chamber_port");
-        registerOrientedBlock("decay_chamber_port");
         registerOrientedBlock("target_chamber_port");
         registerOrientedBlock("target_chamber_beam_port");
 
         TARGET_CHAMBER_BE.put("target_chamber_port",
                 BLOCK_ENTITIES.register("target_chamber_port",
                         () -> BlockEntityType.Builder.of(TargetChamberPortBE::new, PARTICLE_CHAMBER_BLOCKS.get("target_chamber_port").get())
-                                .build(null)));
-
-        TARGET_CHAMBER_BE.put("collision_chamber_port",
-                BLOCK_ENTITIES.register("collision_chamber_port",
-                        () -> BlockEntityType.Builder.of(CollisionChamberPortBE::new, PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_port").get())
-                                .build(null)));
-
-        TARGET_CHAMBER_BE.put("decay_chamber_port",
-                BLOCK_ENTITIES.register("decay_chamber_port",
-                        () -> BlockEntityType.Builder.of(DecayChamberPortBE::new, PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_port").get())
                                 .build(null)));
 
         TARGET_CHAMBER_BE.put("target_chamber_beam_port",
@@ -148,10 +124,6 @@ public class ParticleChamberRegistration {
                     PARTICLE_CHAMBER_BLOCKS.put(key, BLOCKS.register(key, () -> new DecayChamberControllerBlock(props)));
             case "target_chamber_port" ->
                     PARTICLE_CHAMBER_BLOCKS.put(key, BLOCKS.register(key, () -> new TargetChamberPortBlock(props)));
-            case "collision_chamber_port" ->
-                    PARTICLE_CHAMBER_BLOCKS.put(key, BLOCKS.register(key, () -> new CollisionChamberPortBlock(props)));
-            case "decay_chamber_port" ->
-                    PARTICLE_CHAMBER_BLOCKS.put(key, BLOCKS.register(key, () -> new DecayChamberPortBlock(props)));
             case "target_chamber_beam_port" ->
                     PARTICLE_CHAMBER_BLOCKS.put(key, BLOCKS.register(key, () -> new TargetChamberBeamPortBlock(props)));
             default -> throw new IllegalArgumentException("Unknown oriented particle chamber block: " + key);

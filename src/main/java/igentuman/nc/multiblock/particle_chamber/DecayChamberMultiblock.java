@@ -1,22 +1,7 @@
 package igentuman.nc.multiblock.particle_chamber;
 
 import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
-import igentuman.nc.block.decay_chamber.entity.DecayChamberPortBE;
-import igentuman.nc.block.target_chamber.DetectorBlock;
-import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
-import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.ValidationResult;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-
-import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.AcceleratorConfig.DECAY_CHAMBER_CONFIG;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.*;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;

@@ -99,7 +99,8 @@ public class KugelblitzMultiblock extends AbstractMultiblock {
         } else {
             debugLog("Kugelblitz chamber validation failed with result: " + validationResult);
         }
-        
+        ((BlockPosInstance)bottomLeft).revert();
+        ((BlockPosInstance)topRight).revert();
         initialized = true;
     }
 

@@ -111,7 +111,14 @@ public class MultiblockAnalyzeReportScreen<T extends MultiblockControllerContain
         List<String> tooltips = reportItems.keySet().stream()
                 .sorted(Comparator.comparingInt(key -> {
                     String[] parts = key.split("\\.");
-                    return parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
+                    if (parts.length > 2) {
+                        try {
+                            return Integer.parseInt(parts[2]);
+                        } catch (NumberFormatException e) {
+                            return 0;
+                        }
+                    }
+                    return 0;
                 }))
                 .toList();
         for(String record: tooltips) {

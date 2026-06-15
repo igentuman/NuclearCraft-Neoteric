@@ -3,6 +3,7 @@ package igentuman.nc.block.target_chamber;
 import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.particle_chamber.DetectorDef;
+import igentuman.nc.multiblock.particle_chamber.ParticleChamberMultiblock;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -65,7 +66,11 @@ public class DetectorBlock extends MultiblockBlock {
         list.add(TextUtils.applyFormat(__("tooltip.detector.efficiency", efficiency*100), ChatFormatting.GOLD));
     }
 
-    public boolean isValid(Level level, BlockPos pos, AbstractMultiblock multiblock) {
+    public boolean isValid(Level level, BlockPos pos, BlockPos chamberPos) {
+        return getTaxiDistance(chamberPos, pos) <= distance;
+    }
+
+    public boolean isValid(Level level, BlockPos pos, ParticleChamberMultiblock multiblock) {
         return getTaxiDistance(multiblock.getCenterBlock(), pos) <= distance;
     }
 }

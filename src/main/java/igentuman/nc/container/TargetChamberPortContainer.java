@@ -37,10 +37,13 @@ public class TargetChamberPortContainer extends AbstractContainerMenu {
         portBE = (TargetChamberPortBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
         slotIndex = 0;
         layoutPlayerInventorySlots();
-        portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 53, 38));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 111, 38));
-        });
+        assert portBE != null;
+        if (portBE.hasItems()) {
+            portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                addSlot(new NCSlotItemHandler.Input(h, 0, 53, 38));
+                addSlot(new NCSlotItemHandler.Output(h, 1, 111, 38));
+            });
+        }
     }
 
     public BlockPos getPosition() {
@@ -49,36 +52,7 @@ public class TargetChamberPortContainer extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player pPlayer, int index) {
-        if(portBE.controller() == null) return ItemStack.EMPTY;
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
-            ItemStack stack = slot.getItem();
-            itemstack = stack.copy();
-            if(slot instanceof NCSlotItemHandler.Output || slot instanceof NCSlotItemHandler.Input) {
-                if (!this.moveItemStackTo(stack, 0, 36, true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else {
-                if (!this.moveItemStackTo(stack, slots.size()-2, slots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            }
-
-            if (stack.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-
-            if (stack.getCount() == itemstack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-
-            slot.onTake(pPlayer, stack);
-        }
-
-        return itemstack;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -149,11 +123,7 @@ public class TargetChamberPortContainer extends AbstractContainerMenu {
         return portBE.hasParticle();
     }
 
-    public ParticleStack getParticleStack() {
-        return portBE.getParticleStack();
-    }
-
-    public ParticleStack getOutputParticle(int i) {
-        return portBE.getOutputParticle(i);
+    public boolean hasFluidTanks() {
+        return portBE.hasFluidTanks();
     }
 }

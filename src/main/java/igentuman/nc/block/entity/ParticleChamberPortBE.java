@@ -280,6 +280,16 @@ public abstract class ParticleChamberPortBE<C extends ParticleChamberControllerB
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
+    public boolean hasFluidTanks() {
+        if (controller() == null) return false;
+        return controller().contentHandler().inputFluidSlots > 0 || controller().contentHandler().outputFluidSlots > 0;
+    }
+
+    public boolean hasItems() {
+        if (controller() == null) return false;
+        return controller().contentHandler().inputItemSlots > 0 || controller().contentHandler().outputItemSlots > 0;
+    }
+
     public static class SignalSource {
         public static final byte ENERGY = 1;
         public static final byte HEAT = 2;

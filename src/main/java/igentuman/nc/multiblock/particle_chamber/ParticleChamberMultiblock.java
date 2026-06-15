@@ -260,6 +260,14 @@ public abstract class ParticleChamberMultiblock extends AbstractMultiblock {
                 onCachedBlockRemoved(packedPos);
             }
         }
+        //check if block in AABB between bottomLeft and topRight
+        if (bottomLeft != null && topRight != null) {
+            if (pos.getX() >= Math.min(bottomLeft.getX(), topRight.getX()) && pos.getX() <= Math.max(bottomLeft.getX(), topRight.getX()) &&
+                pos.getY() >= Math.min(bottomLeft.getY(), topRight.getY()) && pos.getY() <= Math.max(bottomLeft.getY(), topRight.getY()) &&
+                pos.getZ() >= Math.min(bottomLeft.getZ(), topRight.getZ()) && pos.getZ() <= Math.max(bottomLeft.getZ(), topRight.getZ())) {
+                hasToRefresh = true;
+            }
+        }
     }
 
     public void extractParticle(int id, ParticleStack outputParticle) {

@@ -32,6 +32,8 @@ public class PonderScenes {
     public static final ResourceLocation FUSION_REACTOR = rl("fusion_reactor");
     public static final ResourceLocation TURBINE = rl("turbine");
     public static final ResourceLocation TARGET_CHAMBER = rl("target_chamber");
+    public static final ResourceLocation DECAY_CHAMBER = rl("decay_chamber");
+    public static final ResourceLocation COLLISION_CHAMBER = rl("collision_chamber");
     public static final ResourceLocation LINEAR_ACCELERATOR = rl("linear_accelerator");
     public static final ResourceLocation RING_ACCELERATOR = rl("ring_accelerator");
     public static final ResourceLocation KUGELBLITZ_CHAMBER = rl("kugelblitz_chamber");
@@ -41,6 +43,7 @@ public class PonderScenes {
         List<Item> fissionItems = new ArrayList<>(List.of(
                 FISSION_BLOCK_ITEMS.get("fission_reactor_casing").get(),
                 FISSION_BLOCK_ITEMS.get("fission_reactor_irradiation_chamber").get(),
+                FISSION_BLOCK_ITEMS.get("fission_reactor_pile-driver_irradiation_chamber").get(),
                 PROCESSOR_BLOCKS_ITEMS.get("irradiator").get(),
                 FISSION_BLOCK_ITEMS.get("fission_reactor_glass").get(),
                 FISSION_BLOCK_ITEMS.get("fission_reactor_controller").get(),
@@ -84,7 +87,19 @@ public class PonderScenes {
 
 
         List<Item> targetChamberItems = new ArrayList<>();
-        PARTICLE_CHAMBER_BLOCKS.values().forEach(entry -> targetChamberItems.add(entry.get().asItem()));
+        PARTICLE_CHAMBER_BLOCKS.values().forEach(entry -> {
+            if(entry.get().asItem().toString().contains("target_")) {
+                targetChamberItems.add(entry.get().asItem());
+            }
+        });
+
+        HELPER.forComponents(
+                List.of(PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get().asItem())
+        ).addStoryBoard(DECAY_CHAMBER, DecayChamberPonderScenes::create);
+
+        HELPER.forComponents(
+                List.of(PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get().asItem())
+        ).addStoryBoard(COLLISION_CHAMBER, CollisionChamberPonderScenes::create);
 
         HELPER.forComponents(
                 targetChamberItems

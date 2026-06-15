@@ -34,30 +34,11 @@ public class CollisionChamberControllerContainer extends AbstractContainerMenu {
         this.playerEntity = playerInventory.player;
         this.playerInventory = new InvWrapper(playerInventory);
         blockEntity = (CollisionChamberControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
-        layoutPlayerInventorySlots();
     }
 
     @Override
     public ItemStack quickMoveStack(Player pPlayer, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
-            ItemStack stack = slot.getItem();
-            itemstack = stack.copy();
-            if (!this.moveItemStackTo(stack, slots.size() - 2, slots.size(), true)) {
-                return ItemStack.EMPTY;
-            }
-            if (stack.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-            if (stack.getCount() == itemstack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-            slot.onTake(pPlayer, stack);
-        }
-        return itemstack;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -177,12 +158,12 @@ public class CollisionChamberControllerContainer extends AbstractContainerMenu {
     }
 
     public ParticleStack getParticleStackB() {
-        return blockEntity.particleStorageB.getClientParticleStack();
+        return blockEntity.particleStorage.getClientParticleStackB();
     }
 
     public ParticleStack getOutputParticle(int i) {
-        if (!hasRecipe()) return null;
-        CollisionChamberControllerBE.Recipe r = (CollisionChamberControllerBE.Recipe) blockEntity.recipeInfo().recipe();
-        return r.outputParticles.length > i ? r.outputParticles[i] : null;
+        if(!blockEntity.particleStorage.outputParticles.isEmpty()) return blockEntity.particleStorage.outputParticles.get(i);
+        if(!blockEntity.hasRecipe()) return null;
+        return blockEntity.getRecipe().outputParticles.length > i ? blockEntity.getRecipe().outputParticles[i] : null;
     }
 }

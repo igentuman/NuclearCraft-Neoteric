@@ -40,7 +40,6 @@ public class CollisionChamberControllerScreen extends AbstractContainerScreen<Co
     public Checkbox checkboxInterior;
     private VerticalBar energyBar;
     private Button.MultiblockAnalyze analyzeBtn;
-    private Button.Link linkBtn;
     public GuiParticle particleA;
     public GuiParticle particleB;
     public List<GuiParticle> outputParticles = new ArrayList<>();
@@ -51,12 +50,12 @@ public class CollisionChamberControllerScreen extends AbstractContainerScreen<Co
         super(container, inv, name);
         imageWidth = 176;
         imageHeight = 200;
-        particleA = new GuiParticle(28, 30);
-        particleB = new GuiParticle(28, 62);
-        outputParticles.add(new GuiParticle(110, 15));
-        outputParticles.add(new GuiParticle(146, 46));
-        outputParticles.add(new GuiParticle(110, 78));
-        outputParticles.add(new GuiParticle(74, 46));
+        particleA = new GuiParticle(46, 45);
+        particleB = new GuiParticle(114, 45);
+        outputParticles.add(new GuiParticle(49, 15));
+        outputParticles.add(new GuiParticle(111, 15));
+        outputParticles.add(new GuiParticle(111, 76));
+        outputParticles.add(new GuiParticle(49, 76));
     }
 
     protected void updateRelativeCords() {
@@ -82,14 +81,9 @@ public class CollisionChamberControllerScreen extends AbstractContainerScreen<Co
         checkboxCasing = new Checkbox(imageWidth - 18, 105, this, isCasingValid());
         checkboxInterior = new Checkbox(imageWidth - 31, 105, this, isInteriorValid());
         energyBar = new VerticalBar.Energy(7, 16, this, container().getMaxEnergy());
-        widgets.add(new ProgressBar(54, 47, this, 8));
         analyzeBtn = new Button.MultiblockAnalyze(150, 78, this, menu.getPosition());
-        linkBtn = new Button.Link(150, 14, this, menu.getPosition(),
-                "https://ftb.fandom.com/wiki/NuclearCraft:_Neoteric#Fission_Reactor_+_Irradiator",
-                List.of(__("tooltip.nc.wiki"))
-        );
+
         widgets.add(analyzeBtn);
-        widgets.add(linkBtn);
     }
 
     private boolean isInteriorValid() {
@@ -129,12 +123,10 @@ public class CollisionChamberControllerScreen extends AbstractContainerScreen<Co
         if (getParticleStackB() != null) {
             particleB.drawParticleStack(graphics, getParticleStackB());
         }
-        if (container().hasRecipe()) {
-            int i = 0;
-            for (GuiParticle particle : outputParticles) {
-                particle.drawParticleStack(graphics, container().getOutputParticle(i));
-                i++;
-            }
+        int i = 0;
+        for (GuiParticle particle : outputParticles) {
+            particle.drawParticleStack(graphics, container().getOutputParticle(i));
+            i++;
         }
     }
 
@@ -148,7 +140,7 @@ public class CollisionChamberControllerScreen extends AbstractContainerScreen<Co
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font, menu.getTitle(), imageWidth / 2, 5, 0xffffff);
+        graphics.drawCenteredString(font, menu.getTitle(), imageWidth / 2, 4, 0xffffff);
         if (isCasingValid()) {
             casingTootip = applyFormat(__("tooltip.nc.structure.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
         } else {
@@ -156,12 +148,9 @@ public class CollisionChamberControllerScreen extends AbstractContainerScreen<Co
         }
         if (isCasingValid()) {
             if (isInteriorValid()) {
-                if (container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
+                if (!container().getEfficiency().equals("NaN")) {
                     int color = container().getRawEfficiency() > 0 ? 0x8AFF8A : 0xCCCCCC;
-                    graphics.pose().pushPose();
-                    graphics.pose().scale(0.5f, 0.5f, 0.5f);
-                    graphics.drawString(font, __("fission_reactor.efficiency", container().getEfficiency()), 35 * 2, 82 * 2, color);
-                    graphics.pose().popPose();
+                    graphics.drawString(font, __("fission_reactor.efficiency", container().getEfficiency()), 8, 95, color);
                 }
             } else {
                 interiorTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);

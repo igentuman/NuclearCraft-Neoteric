@@ -34,30 +34,11 @@ public class DecayChamberControllerContainer extends AbstractContainerMenu {
         this.playerEntity = playerInventory.player;
         this.playerInventory = new InvWrapper(playerInventory);
         blockEntity = (DecayChamberControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
-        layoutPlayerInventorySlots();
     }
 
     @Override
     public ItemStack quickMoveStack(Player pPlayer, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
-            ItemStack stack = slot.getItem();
-            itemstack = stack.copy();
-            if (!this.moveItemStackTo(stack, slots.size() - 2, slots.size(), true)) {
-                return ItemStack.EMPTY;
-            }
-            if (stack.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-            if (stack.getCount() == itemstack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-            slot.onTake(pPlayer, stack);
-        }
-        return itemstack;
+        return ItemStack.EMPTY;
     }
 
     @Override

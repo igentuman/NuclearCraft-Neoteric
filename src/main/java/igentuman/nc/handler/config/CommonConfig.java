@@ -318,7 +318,7 @@ public class CommonConfig {
 
             FISSION_REACTOR_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("fission_reactor_energy_tier", EV);
+                    .defineEnum("fission_reactor_energy_tier", EV);
             
             OVERCHARGE_EXPLOSIONS = builder
                     .comment("This only counts if GTCEU is supported")
@@ -334,23 +334,23 @@ public class CommonConfig {
 
             TURBINE_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("turbine_energy_tier", EV);
+                    .defineEnum("turbine_energy_tier", EV);
 
             FUSION_REACTOR_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("fusion_reactor_energy_tier", IV);
+                    .defineEnum("fusion_reactor_energy_tier", IV);
 
             KUGELBLITZ_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("kugelblitz_energy_tier", ZPM);
+                    .defineEnum("kugelblitz_energy_tier", ZPM);
 
             ACCELERATORS_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("accelerators_energy_tier", ZPM);
+                    .defineEnum("accelerators_energy_tier", ZPM);
 
             PROCESSOR_ENERGY_TIER = builder
                     .comment("This only counts if GTCEU is supported")
-                    .define("processor_energy_tier", MV);
+                    .defineEnum("processor_energy_tier", MV);
 
             ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER = builder
                     .comment("This only counts if GTCEU is supported")

@@ -129,7 +129,6 @@ public class Particles
 		{
 			if (!particles.containsKey(name))
 			{
-				debugLog("there is no particle with name " + name);
 				return null;
 			}
 			return particles.get(name);

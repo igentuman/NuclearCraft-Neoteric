@@ -267,13 +267,17 @@ public class CollisionChamberMultiblock extends ParticleChamberMultiblock {
         }
 
         int yc = height / 2;
-        Direction dir = getMultiblockDirection().getOpposite();
+
+        Direction dir = switch (getControllerDirection().getOpposite()) {
+            case WEST -> Direction.EAST;
+            case NORTH -> Direction.SOUTH;
+            default -> getControllerDirection().getOpposite();
+        };
+
         if(isControllerPlacedOnSide()) {
             dir = switch (dir) {
-                case NORTH -> Direction.EAST;
-                case EAST -> Direction.NORTH;
-                case SOUTH -> Direction.WEST;
-                case WEST -> Direction.SOUTH;
+                case NORTH, SOUTH -> Direction.EAST;
+                case EAST, WEST -> Direction.SOUTH;
                 default -> dir;
             };
         }
@@ -283,7 +287,10 @@ public class CollisionChamberMultiblock extends ParticleChamberMultiblock {
         if (isControllerPlacedOnSide()) {
             length = width;
         }
-        BlockPosInstance pos = BlockPosInstance.of(((BlockPosInstance)bottomLeft).revert().above(yc).relative(dir.getClockWise(), xc).asLong());
+        if(dir.equals(Direction.EAST)) {
+            xc *= -1;
+        }
+        BlockPosInstance pos = BlockPosInstance.of(((BlockPosInstance)bottomLeft).revert().above(yc).relative(dir.getCounterClockWise(), xc).asLong());
         ((BlockPosInstance) bottomLeft).revert();
         int cameras = 0;
         for (int z = 1; z < length - 1; z++) {

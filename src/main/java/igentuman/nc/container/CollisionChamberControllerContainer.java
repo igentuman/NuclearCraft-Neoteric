@@ -162,7 +162,7 @@ public class CollisionChamberControllerContainer extends AbstractContainerMenu {
     }
 
     public ParticleStack getOutputParticle(int i) {
-        if(!blockEntity.particleStorage.outputParticles.isEmpty()) return blockEntity.particleStorage.outputParticles.get(i);
+        if(!blockEntity.particleStorage.outputParticles.isEmpty()) return blockEntity.particleStorage.outputParticles.size() > i ? blockEntity.particleStorage.outputParticles.get(i) : null;
         if(!blockEntity.hasRecipe()) return null;
         return blockEntity.getRecipe().outputParticles.length > i ? blockEntity.getRecipe().outputParticles[i] : null;
     }

@@ -1,3 +1,5 @@
+1.2.28-beta2
+    Fixed - Startup crash on NeoForge
 1.2.28-beta1
     Fixed - Config changes to default even when it's default #285
     Fixed - Mekanism<->NCN radiation recursion

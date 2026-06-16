@@ -46,7 +46,7 @@ public class NCBiomeModifier {
     public static void bootstrap(BootstapContext<BiomeModifier> context) {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var biomes = context.lookup(Registries.BIOME);
-        TagKey<Biome> everyBiome = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath("forge", "biomes"));
+        TagKey<Biome> everyBiome = TagKey.create(Registries.BIOME, new ResourceLocation("forge", "biomes"));
         for(String name: Ores.registered().keySet()) {
             NCOre ore = Ores.all().get(name);
             if(ore.config().dimensions.contains("minecraft:overworld")) {

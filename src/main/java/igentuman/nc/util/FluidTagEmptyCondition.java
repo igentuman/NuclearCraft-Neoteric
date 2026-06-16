@@ -16,7 +16,7 @@ import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
 public class FluidTagEmptyCondition implements ICondition
 {
-    private static final ResourceLocation NAME = ResourceLocation.fromNamespaceAndPath("forge", "fluid_tag_empty");
+    private static final ResourceLocation NAME = new ResourceLocation("forge", "fluid_tag_empty");
     private final TagKey<Fluid> tag;
 
     public FluidTagEmptyCondition(String location)
@@ -26,7 +26,7 @@ public class FluidTagEmptyCondition implements ICondition
 
     public FluidTagEmptyCondition(String namespace, String path)
     {
-        this(ResourceLocation.fromNamespaceAndPath(namespace, path));
+        this(new ResourceLocation(namespace, path));
     }
 
     public FluidTagEmptyCondition(ResourceLocation tag)

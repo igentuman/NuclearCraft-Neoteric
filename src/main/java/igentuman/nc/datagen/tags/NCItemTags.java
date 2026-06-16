@@ -73,7 +73,7 @@ public class NCItemTags extends ItemTagsProvider {
                 FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_glass").get(),
                 FissionReactorRegistration.FISSION_BLOCK_ITEMS.get("fission_reactor_port").get()
         );
-        /*tag(TagKey.create(ITEM_REGISTRY, ResourceLocation.fromNamespaceAndPath("mysticalagradditions", "neutronium_ingot")))
+        /*tag(TagKey.create(ITEM_REGISTRY, new ResourceLocation("mysticalagradditions", "neutronium_ingot")))
                 .add(NC_INGOTS.get(neutronium).get());*/
     }
 

@@ -29,7 +29,7 @@ import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
 import static igentuman.nc.util.TextUtils.*;
 
-public class AcceleratorIonSourcePortScreen extends AbstractContainerScreen<AcceleratorIonSourcePortContainer> implements IProgressScreen, IVerticalBarScreen {
+public class AcceleratorIonSourcePortScreen extends AbstractContainerScreen<AcceleratorIonSourcePortContainer> {
     protected final ResourceLocation GUI = rl("textures/gui/accelerators/accelerator_source.png");
     protected int relX;
     protected int relY;
@@ -69,7 +69,6 @@ public class AcceleratorIonSourcePortScreen extends AbstractContainerScreen<Acce
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
         widgets.clear();
-        energyBar = new VerticalBar.Energy(7, 6,  this, container().getMaxEnergy());
         addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(16, 16).pos(80, 43).canVoid());
     }
 
@@ -126,48 +125,7 @@ public class AcceleratorIonSourcePortScreen extends AbstractContainerScreen<Acce
            }
         }
 
-        if(container().getMaxEnergy() > 0) {
-            energyBar.clearTooltips();
-            if(isGtLoaded() && isGTEUCapEnabled()) {
-                energyBar.addTooltip(applyFormat(__("tooltip.eu.per_tick", scaledFormat(menu.getEnergyRequired())), ChatFormatting.YELLOW));
-                energyBar.addTooltip(applyFormat(__("tooltip.eu.tier", menu.getTier()), ChatFormatting.YELLOW));
-            } else {
-                energyBar.addTooltip(applyFormat(__("tooltip.nc.energy.per_tick", scaledFormat(container().getEnergyRequired())).withStyle(ChatFormatting.AQUA)));
-            }
-            if(energyBar.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, energyBar.getTooltips(),
-                        Optional.empty(), pMouseX, pMouseY);
-            }
-        }
+
     }
 
-    @Override
-    public double getProgress() {
-        return 0;
-    }
-
-    @Override
-    public double getEnergy() {
-        return container().getEnergy();
-    }
-
-    @Override
-    public double getHeat() {
-        return 0;
-    }
-
-    @Override
-    public double getCoolant() {
-        return 0;
-    }
-
-    @Override
-    public double getHotCoolant() {
-        return 0;
-    }
-
-    public int getAnalogSignalStrength()
-    {
-        return container().getAnalogSignalStrength();
-    }
 }

@@ -68,6 +68,11 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         return false;
     }
 
+    @Override
+    public void updateAnalogSignal() {
+
+    }
+
     public void tickServer() {
         int wasFlux = irradiativeFlux;
         double wasFuel = fuelMultiplier;

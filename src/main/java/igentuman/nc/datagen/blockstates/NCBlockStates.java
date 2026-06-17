@@ -71,9 +71,6 @@ public class NCBlockStates extends BlockStateProvider {
         horizontalBlock(ACCELERATOR_BLOCKS.get("accelerator_port").get(),
                 st -> multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_port").get(), "accelerator/accelerator_port")
         );
-        horizontalBlock(ACCELERATOR_BLOCKS.get("ring_accelerator_port").get(),
-                st -> multiBlockModel(ACCELERATOR_BLOCKS.get("ring_accelerator_port").get(), "accelerator/ring_accelerator_port")
-        );
        horizontalBlock(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(),
                 st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(), "accelerator/controller"))
         );

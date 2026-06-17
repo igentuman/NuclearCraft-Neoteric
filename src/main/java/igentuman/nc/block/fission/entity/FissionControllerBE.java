@@ -98,41 +98,28 @@ public class FissionControllerBE extends MultiblockControllerBE {
     @NBTField
     public int toggleModeTimer = 2000;
     @NBTField
-    public boolean enabledByController = false;
-    @NBTField
     public double heatSinkCooling = 0;
     @NBTField
     public double activeCooling = 0;
     @NBTField
     public double heatPerTick = 0;
     @NBTField
-    public int energyPerTick = 0;
-    @NBTField
     public double heatMultiplier = 0;
     @NBTField
     public int irradiationLines = 0;
     @NBTField
-    public double efficiency = 0;
-    @NBTField
     public double moderationLevel = 1D;
-    @NBTField
-    public boolean powered = false;
     @NBTField
     public double steamRate;
     @NBTField
     public int steamPerTick = 0;
     @NBTField
     public int extraFuelCells = 0;
-    protected boolean forceShutdown = false;
     public int fuelCellMultiplier = 1;
     public int moderatorCellMultiplier = 1;
-    public boolean controllerEnabled = false;
-    private Direction facing;
     protected List<FissionBoilingRecipe> coolantRecipes;
     protected FissionBoilingRecipe boilingRecipe;
     private List<ItemStack> allowedInputs;
-    @NBTField
-    public boolean hasRedstoneSignal = false;
     private double envCooling = 0.0D;
     @NBTField
     public double boilingPenalty = 0;
@@ -367,8 +354,12 @@ public class FissionControllerBE extends MultiblockControllerBE {
         if (cap == ITEM_HANDLER) {
             return contentHandler().getItemCapability(side);
         }
-        if (cap == FLUID_HANDLER && canAcceptFluid()) {
-            return contentHandler().getFluidCapability(side);
+        if (cap == FLUID_HANDLER) {
+            if(canAcceptFluid()) {
+                return contentHandler().getFluidCapability(side);
+            } else {
+                return LazyOptional.empty();
+            }
         }
 
         if(isGtLoaded()) {
@@ -442,10 +433,10 @@ public class FissionControllerBE extends MultiblockControllerBE {
             return;
         }
         //Disallow boosters like torcherino
-        if(lastTickTime == level.getGameTime()) {
+        if(lastTickTime == currentTick) {
             return;
         }
-        lastTickTime = level.getGameTime();
+        lastTickTime = currentTick;
         changed = false;
         super.tickServer();
         boilingPenalty = 0;
@@ -895,12 +886,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     public void enableReactor() {
-        toggleReactor(true);
-    }
-
-    public void toggleReactor(boolean mode) {
-        controllerEnabled = mode || getRedstoneSignal() > 0;
-        enabledByController = mode;
+        toggleMultiblock(true);
     }
 
     public int getRedstoneSignal() {

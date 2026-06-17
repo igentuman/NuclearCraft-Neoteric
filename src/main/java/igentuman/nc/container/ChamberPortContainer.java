@@ -109,7 +109,7 @@ public class ChamberPortContainer extends AbstractContainerMenu {
     }
 
     public byte getComparatorMode() {
-        return blockEntity.comparatorMode;
+        return blockEntity.redstoneMode;
     }
 
     public byte getAnalogSignalStrength() {

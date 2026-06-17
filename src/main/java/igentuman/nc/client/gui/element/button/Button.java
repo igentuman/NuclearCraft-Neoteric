@@ -584,4 +584,66 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             });
         }
     }
+
+    public static class AcceleratorPortRedstoneModeButton extends Button {
+        public final BlockPos pos;
+        public static final int BTN_ID = 76;
+        public byte mode = 1;
+        public byte strength = 0;
+
+        public AcceleratorPortRedstoneModeButton(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 162, 0, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, bId));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            return List.of(
+                    __("gui.nc.accelerator_comparator_config.tooltip_"+mode),
+                    __("gui.nc.reactor_comparator_strength.tooltip", strength)
+            );
+        }
+
+        public void setMode(byte redstoneMode) {
+            mode = redstoneMode;
+            btn = new ImageButton(X(), Y(), width, height, 162, (redstoneMode-1) * 36, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+            });
+        }
+    }
+
+    public static class TargetChamberPortRedstoneModeButton extends Button {
+        public final BlockPos pos;
+        public static final int BTN_ID = 78;
+        public byte mode = 1;
+        public byte strength = 0;
+
+        public TargetChamberPortRedstoneModeButton(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 162, 0, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, bId));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            return List.of(
+                    __("gui.nc.accelerator_comparator_config.tooltip_"+mode),
+                    __("gui.nc.reactor_comparator_strength.tooltip", strength)
+            );
+        }
+
+        public void setMode(byte redstoneMode) {
+            mode = redstoneMode;
+            btn = new ImageButton(X(), Y(), width, height, 162, (redstoneMode-1) * 36, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+            });
+        }
+    }
 }

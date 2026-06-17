@@ -129,35 +129,8 @@ public class AcceleratorIonSourcePortContainer extends AbstractContainerMenu {
         topRow -= 58;
         addSlotBox(playerInventory, leftCol, topRow, 9, 18, 3, 18);
     }
-    public int getEnergy() {
-        return energy2Display(portBE.getEnergyStored());
-    }
-
-    public int getMaxEnergy() {
-        return energy2Display(portBE.getMaxEnergyStored());
-    }
-
-    public int energyPerTick() {
-        return energy2Display(portBE.energyPerTick());
-    }
-
-    public byte getComparatorMode() {
-        return portBE.comparatorMode;
-    }
-
-    public byte getAnalogSignalStrength() {
-        return portBE.analogSignal;
-    }
 
     public FluidTank getFluidTank(int i) {
         return portBE.getFluidTank(i);
-    }
-
-    public int getEnergyRequired() {
-        return portBE.getEnergyRequired();
-    }
-
-    public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier() {
-        return portBE.getTier();
     }
 }

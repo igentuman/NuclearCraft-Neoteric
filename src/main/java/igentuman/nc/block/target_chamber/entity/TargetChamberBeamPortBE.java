@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
@@ -37,27 +38,14 @@ import static igentuman.nc.util.PortMode.PORT_MODE;
 public class TargetChamberBeamPortBE extends MultiblockPortBE {
 
     public static String NAME = "target_chamber_beam_port";
-    @NBTField
-    public byte analogSignal = 0;
-    @NBTField
-    public byte comparatorMode = SignalSource.ENERGY;
-    @NBTField
-    public BlockPos controllerPos;
+
     @NBTField
     public ParticleStack clientParticle;
     protected ParticleChamberMultiblock multiblock;
-    public boolean refreshCacheFlag = true;
     public ParticleChamberControllerBE controller;
 
     public TargetChamberBeamPortBE(BlockPos pPos, BlockState pBlockState) {
         super(TARGET_CHAMBER_BE.get(NAME).get(), pPos, pBlockState);
-    }
-    public Direction getFacing() {
-        return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
-    }
-
-    public boolean hasRedstoneSignal() {
-        return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
     }
 
     @Override
@@ -72,172 +60,30 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
     }
 
     @Override
-    public boolean canInvalidateCache() {
-        return true;
-    }
-
-    @Override
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
-        //Disallow boosters like torcherino
-        if(lastTickTime == level.getGameTime()) {
+        if (lastTickTime == currentTick) {
             return;
         }
-        lastTickTime = level.getGameTime();
-        super.tickServer();
-        if(getMultiblock() == null || controller() == null) return;
-        int wasSignal = analogSignal;
-        boolean updated = false;
-        if(controllerPos == null) {
-            controllerPos = controller().getBlockPos();
-            updated = true;
-            setChanged();
-        }
-        if(hasRedstoneSignal()) {
-            controller().controllerEnabled = true;
-        }
-
-        updateAnalogSignal();
-
-        updated = wasSignal != analogSignal || updated;
-        /*switch (comparatorMode) {
-            case SignalSource.TRANSFORMATION_ENERGY_RATE -> controller().heatRate = analogSignal/15*100;
-        }*/
-        Direction dir = getFacing();
-
-        if(fluidHandler() != null) {
-            updated = fluidHandler().pullFluids(dir, false, worldPosition) || updated;
-        }
-
-        if(updated || needToUpdate) {
-            needToUpdate = false;
-            MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
-            setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-        }
-        if(!controller().powered) {
-            clientParticle = new ParticleStack();
-        }
-    }
-
-    private void updateAnalogSignal() {
-        if(controller() == null) {
-            analogSignal = 0;
-            return;
-        }
-        switch (comparatorMode) {
-            case SignalSource.ENERGY:
-                analogSignal = (byte) (controller().energyStorage().getEnergyStored() * 15 / controller().energyStorage().getMaxEnergyStored());
-                break;
-            case SignalSource.PROGRESS:
-                analogSignal = (byte) (getProgress()/100D * 15);
-                break;
-            case SignalSource.ITEMS:
-                analogSignal = (byte) (controller().contentHandler().itemHandler.getStackInSlot(0).getCount() * 15 / controller().contentHandler().itemHandler.getStackInSlot(0).getMaxStackSize());
-                break;
-            case SignalSource.FREQUENCY:
-                analogSignal = (byte) (Math.max(1, getRedstoneSignal()));
-                break;
-            case SignalSource.TRANSFORMATION_ENERGY_RATE:
-                analogSignal = (byte) (Math.max(1, getRedstoneSignal()));
-                break;
-        }
-    }
-
-    public int getRedstoneSignal() {
-        return Objects.requireNonNull(getLevel()).getBestNeighborSignal(worldPosition);
-    }
-
-    protected FluidCapabilityHandler fluidHandler()
-    {
-        return controller().contentHandler().fluidHandler;
-    }
-
-    protected <T> LazyOptional<T> fluidHandler(@Nullable Direction side)
-    {
-        return controller().contentHandler().getFluidCapability(side);
+        lastTickTime = currentTick;
+        boolean updated = updateController();
+        if(!isConnectedToController()) return;
+        updateIfNeeded(updated);
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(controller() == null) return super.getCapability(cap, side);
-        if(isCcLoaded()) {
-            if(cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return LazyOptional.empty();
-            }
-        }
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return LazyOptional.empty();
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return LazyOptional.empty();
-        }
-        if (cap == ForgeCapabilities.ENERGY) {
-            return LazyOptional.empty();
-        }
+        if(!isConnectedToController()) return LazyOptional.empty();
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
             return controller().getCapability(cap, side);
         }
-
-
-        if(isOC2Loaded()) {
-            if(cap == DEVICE_CAPABILITY) {
-                return LazyOptional.empty();
-            }
-        }
-        return super.getCapability(cap, side);
+        return LazyOptional.empty();
     }
 
     @Override
     public ParticleChamberControllerBE controller() {
-        if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
-        if(getLevel().isClientSide && controllerPos != null) {
-            return (ParticleChamberControllerBE) getLevel().getExistingBlockEntity(controllerPos);
-        }
-        try {
-            return (ParticleChamberControllerBE) getMultiblock().controller().controllerBE();
-        } catch (NullPointerException e) {
-            if(controllerPos != null) {
-                return (ParticleChamberControllerBE) getLevel().getExistingBlockEntity(controllerPos);
-            }
-            return null;
-        }
-    }
-
-    public int getEnergyStored() {
-        if(controller() == null) return 0;
-        return controller().energyStorage().getEnergyStored();
-    }
-
-    public int getMaxEnergyStored() {
-        if(controller() == null) return 0;
-        return controller().energyStorage().getMaxEnergyStored();
-    }
-
-    public int energyPerTick() {
-        if(controller() == null) return 0;
-        return controller().energyPerTick;
-    }
-
-    public void toggleComparatorMode() {
-        comparatorMode++;
-        if(comparatorMode > SignalSource.TRANSFORMATION_ENERGY_RATE) {
-            comparatorMode = SignalSource.ENERGY;
-        }
-        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
-        setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-    }
-
-    public FluidTank getFluidTank(int i) {
-        if(controller() == null) return null;
-        return controller().getFluidTank(i);
-    }
-
-    public double getProgress() {
-        if(controller() == null) return 0;
-        return controller().recipeInfo().getProgress();
+        return (ParticleChamberControllerBE) super.controller();
     }
 
     public void extractParticle(ParticleStack particleStack) {
@@ -247,6 +93,7 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
 
         for (int distance = 0; distance < maxDistance; distance++) {
 
+            assert level != null;
             BlockState blockState = level.getBlockState(currentPos);
             if (blockState.is(ACCELERATOR_BLOCKS.get("particle_beam").get())) {
                 currentPos = currentPos.relative(facing);
@@ -290,14 +137,5 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
 
     public boolean isInput() {
         return blockState.getValue(PORT_MODE) == PortMode.Mode.INPUT;
-    }
-
-    public static class SignalSource {
-        public static final byte ENERGY = 1;
-        public static final byte MASS = 2;
-        public static final byte PROGRESS = 3;
-        public static final byte ITEMS = 4;
-        public static final byte FREQUENCY = 5;
-        public static final byte TRANSFORMATION_ENERGY_RATE = 6;
     }
 }

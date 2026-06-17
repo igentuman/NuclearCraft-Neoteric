@@ -43,6 +43,11 @@ public class PhotonConcentratorBE extends NuclearCraftBE implements MultiblockAt
     }
 
     @Override
+    public void updateAnalogSignal() {
+
+    }
+
+    @Override
     public ChamberTerminalBE controller() {
         if(NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
         if(getLevel().isClientSide && controllerPos != null) {

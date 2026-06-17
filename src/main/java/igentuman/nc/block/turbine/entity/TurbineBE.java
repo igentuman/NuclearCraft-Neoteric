@@ -52,6 +52,11 @@ public class TurbineBE extends NuclearCraftBE implements MultiblockAttachable {
     }
 
     @Override
+    public void updateAnalogSignal() {
+
+    }
+
+    @Override
     public void setRemoved()
     {
         if(controller() != null) controller().invalidateCache();

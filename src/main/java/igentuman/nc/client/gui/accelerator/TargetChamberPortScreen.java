@@ -42,6 +42,7 @@ public class TargetChamberPortScreen extends AbstractContainerScreen<TargetChamb
 
     public List<NCGuiElement> widgets = new ArrayList<>();
     private VerticalBar energyBar;
+    private Button.TargetChamberPortRedstoneModeButton modeBtn;
 
     public TargetChamberPortScreen(TargetChamberPortContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -55,6 +56,12 @@ public class TargetChamberPortScreen extends AbstractContainerScreen<TargetChamb
         relY = (this.height - this.imageHeight) / 2;
         NCGuiElement.RELATIVE_X = relX;
         NCGuiElement.RELATIVE_Y = relY;
+    }
+
+    protected void addWidget(NCGuiElement widget)
+    {
+        widget.setScreen(this);
+        widgets.add(widget);
     }
 
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
@@ -71,6 +78,8 @@ public class TargetChamberPortScreen extends AbstractContainerScreen<TargetChamb
         updateRelativeCords();
         widgets.clear();
         energyBar = new VerticalBar.Energy(7, 16,  this, container().getMaxEnergy());
+        modeBtn = new Button.TargetChamberPortRedstoneModeButton(150, 64, this, menu.getPosition());
+        widgets.add(modeBtn);
         if (hasFluidTanks()) {
             addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(53, 58).canVoid());
             addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(113, 58).canVoid());
@@ -94,6 +103,8 @@ public class TargetChamberPortScreen extends AbstractContainerScreen<TargetChamb
     }
 
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        modeBtn.setMode(container().getComparatorMode());
+        modeBtn.strength = container().getAnalogSignalStrength();
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }

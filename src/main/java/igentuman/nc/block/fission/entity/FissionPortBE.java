@@ -8,7 +8,6 @@ import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fission.FissionReactorMultiblock;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
-import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -33,40 +32,18 @@ import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 public class FissionPortBE extends MultiblockPortBE {
 
     public static final String NAME = "fission_reactor_port";
-
-    @NBTField
-    public byte analogSignal = 0;
-    @NBTField
-    public byte redstoneMode = SignalSource.HEAT;
-    @NBTField
-    public BlockPos controllerPos;
     public boolean isSteamMode = false;
-    @NBTField
-    public boolean connected = false;
-    protected long lastTickTime = 0;
     protected FissionReactorMultiblock multiblock;
-    protected FissionControllerBE controller;
 
     public FissionPortBE(BlockPos pPos, BlockState pBlockState) {
         super(FissionReactorRegistration.FISSION_BE.get(NAME).get(), pPos, pBlockState);
-    }
-    public Direction getFacing() {
-        return getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
-    }
-
-    public boolean hasRedstoneSignal() {
-        return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
-    }
-
-    public int getRedstoneSignal() {
-        return Objects.requireNonNull(getLevel()).getBestNeighborSignal(worldPosition);
     }
 
     public FissionReactorMultiblock getMultiblock() {
         return multiblock;
     }
 
-    private boolean updateController() {
+    public boolean updateController() {
         boolean result = false;
         if (controller != controller()) {
             controller = controller();
@@ -85,46 +62,26 @@ public class FissionPortBE extends MultiblockPortBE {
     }
 
     public void tickServer() {
-        if (NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
-
-        int wasSignal = analogSignal;
-        boolean wasConnected = connected;
-        //Disallow boosters like torcherino
-        if(lastTickTime == level.getGameTime()) {
-            return;
-        }
-        lastTickTime = level.getGameTime();
-        if(getMultiblock() != null && controller() != null) {
-            sendOutPower();
-        }
+        if(lastTickTime == currentTick || NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
+        lastTickTime = currentTick;
 
         boolean updated = updateController();
-        if(currentTick % 20 == 0 && controller() != null) {
-            pushPull();
+        if(getMultiblock() != null && isConnectedToController()) {
+            sendOutPower();
         }
-        if (currentTick % 10 == 0 && controller() != null) {
-            updateAnalogSignal();
+        int wasSignal = analogSignal;
 
-            updated = wasSignal != analogSignal || updated;
+        if (currentTick % 10 == 0 && isConnectedToController()) {
+            updateAnalogSignal();
+            updated |= pushPull();
+            updated |= wasSignal != analogSignal;
             switch (redstoneMode) {
-                case SignalSource.SWITCH -> controller().toggleReactor(analogSignal > 0);
+                case SignalSource.SWITCH -> controller().toggleMultiblock(analogSignal > 0);
                 case SignalSource.MODERATOR -> controller().adjustModerator(analogSignal);
             }
         }
-        //if no recipe - tick only 5 times per second
-        if(currentTick % 5 == 0 && controller() != null && !controller().hasRecipe()) {
-            return;
-        }
-        connected = getMultiblock() != null && getMultiblock().isFormed();
-        if (updated || wasConnected != connected || needToUpdate) {
-            needToUpdate = false;
-            if(connected) {
-                MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
-            }
-            setChanged();
-            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
-        }
+
+        updateIfNeeded(updated);
     }
 
     public boolean pushPull() {
@@ -137,7 +94,7 @@ public class FissionPortBE extends MultiblockPortBE {
         return pushed;
     }
 
-    private void updateAnalogSignal() {
+    public void updateAnalogSignal() {
         switch (redstoneMode) {
             case SignalSource.ENERGY:
                 analogSignal = (byte) (controller().energyStorage().getEnergyStored() * 15 / controller().energyStorage().getMaxEnergyStored());
@@ -205,75 +162,6 @@ public class FissionPortBE extends MultiblockPortBE {
         );
     }
 
-    protected ItemCapabilityHandler itemHandler()
-    {
-        return controller().contentHandler().itemHandler;
-    }
-
-    protected FluidCapabilityHandler fluidHandler()
-    {
-        return controller().contentHandler().fluidHandler;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (controller() == null) return super.getCapability(cap, side);
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return controller().getCapability(cap, side);
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER && controller().canAcceptFluid()) {
-            return controller().getCapability(cap, side);
-        }
-        if(isGtLoaded()) {
-            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-                if (isGTEUCapEnabled() && !isSteamMode) {
-                    return getGTEnergy(controller(), side).cast();
-                }
-            }
-        }
-        if (cap == ENERGY && !isSteamMode) {
-            if(!isOnlyGTCEUCapEnabled()) {
-                return controller().getEnergy().cast();
-            } else {
-                return LazyOptional.empty();
-            }
-        }
-
-        if (isMekanismLoaded() && isSteamMode) {
-            if (cap == mekanism.common.capabilities.Capabilities.GAS_HANDLER) {
-                if (controller().contentHandler().hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> controller().contentHandler().gasConverter(side));
-                }
-                return LazyOptional.empty();
-            }
-            if (cap == mekanism.common.capabilities.Capabilities.SLURRY_HANDLER) {
-                if (controller().contentHandler().hasFluidCapability(side)) {
-                    return LazyOptional.of(() -> controller().contentHandler().getSlurryConverter(side));
-                }
-                return LazyOptional.empty();
-            }
-        }
-
-        if (isOC2Loaded()) {
-            if (cap == DEVICE_CAPABILITY) {
-                return controller().getOCDevice(cap, side);
-            }
-        }
-
-        if (isCcLoaded()) {
-            if (cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
-                return controller().getPeripheral(cap, side);
-            }
-        }
-        return super.getCapability(cap, side);
-    }
-
-    @Override
-    public boolean canInvalidateCache() {
-        return true;
-    }
-
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
         if(this.multiblock == multiblock) {
@@ -288,52 +176,14 @@ public class FissionPortBE extends MultiblockPortBE {
         }
     }
 
-
     @Override
     public FissionControllerBE controller() {
-        if (NuclearCraft.instance.isNcBeStopped || (!getLevel().isClientSide() && getLevel().getServer() != null && !getLevel().getServer().isRunning())) return null;
-        if (controller == null && getLevel().isClientSide && controllerPos != null) {
-            BlockEntity be = getLevel().getExistingBlockEntity(controllerPos);
-            if (be instanceof FissionControllerBE controllerBe) {
-                controller = controllerBe;
-                return  controller;
-            }
-        }
-        try {
-            BlockEntity be = getMultiblock().controller().controllerBE();
-            if (be instanceof FissionControllerBE controllerBe) {
-                controller = controllerBe;
-                return controller;
-            }
-        } catch (NullPointerException e) {
-            if (controllerPos != null) {
-                BlockEntity be = getLevel().getExistingBlockEntity(controllerPos);
-                if (be instanceof FissionControllerBE controllerBe) {
-                    controller = controllerBe;
-                }
-            }
-        }
-        return controller;
-    }
-
-    public int getEnergyStored() {
-        if (controller() == null) return 0;
-        return controller().energyStorage().getEnergyStored();
+        return (FissionControllerBE) super.controller();
     }
 
     public double getDepletionProgress() {
         if (controller() == null) return 0;
         return controller().getDepletionProgress();
-    }
-
-    public int getMaxEnergyStored() {
-        if (controller() == null) return 0;
-        return controller().energyStorage().getMaxEnergyStored();
-    }
-
-    public int energyPerTick() {
-        if (controller() == null) return 0;
-        return controller().energyPerTick;
     }
 
     public void toggleRedstoneMode() {
@@ -345,11 +195,6 @@ public class FissionPortBE extends MultiblockPortBE {
         MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-    }
-
-    public FluidTank getFluidTank(int i) {
-        if (controller() == null) return null;
-        return controller().getFluidTank(i);
     }
 
     public boolean isBoilingMode() {

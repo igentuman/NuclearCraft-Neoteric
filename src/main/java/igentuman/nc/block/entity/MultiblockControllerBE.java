@@ -11,10 +11,12 @@ import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -42,6 +44,8 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     @NBTField
     public int analyzeDelay = 0;
     @NBTField
+    public byte analogSignal = 0;
+    @NBTField
     public BlockPos bottomLeft = BlockPos.ZERO;
     @NBTField
     public BlockPos topRight = BlockPos.ZERO;
@@ -66,6 +70,21 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     public long validationTime = 0;
     @NBTField
     public long multiblockTicksCounter = 0;
+    @NBTField
+    public boolean enabledByController = false;
+    @NBTField
+    public boolean hasRedstoneSignal = false;
+    @NBTField
+    public int energyPerTick = 0;
+    @NBTField
+    public double efficiency = 0;
+    @NBTField
+    public boolean powered = false;
+    protected boolean forceShutdown = false;
+    protected Direction facing;
+
+
+
     public MultiblockControllerBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
     }
@@ -96,6 +115,11 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     @Override
     public boolean canInvalidateCache() {
         return true;
+    }
+
+    @Override
+    public void updateAnalogSignal() {
+
     }
 
     public void invalidateCache()
@@ -145,7 +169,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
             analyzeDelay--;
         }
         assert level != null;
-        if(level.getGameTime() % 5 == 0) {
+        if(currentTick % 5 == 0) {
             MultiblockHandler.tickMultiblockAsync((ServerLevel) level, getMultiblock());
             if(multiblock != null && multiblock.isMarkedForRemoval()) {
                 multiblock = null;
@@ -181,8 +205,6 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
             validationResult = ValidationResult.byId(infoTag.getInt("validationId"));
             if (infoTag.contains("upgrade_tier")) {
                 upgrade_tier = infoTag.getInt("upgrade_tier");
-                // Re-apply the upgrade tier to the energy storage after a chunk reload,
-                // because the storage constructor only knows the base config tier.
                 updateEnergyTier(upgrade_tier);
             }
         }
@@ -301,5 +323,19 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         }
 
         setChanged();
+    }
+
+    public void toggleMultiblock(boolean mode) {
+        controllerEnabled = mode || getRedstoneSignal() > 0;
+        enabledByController = mode;
+    }
+
+    public <T> LazyOptional<T> getPeripheral(Capability<T> cap, Direction side) {
+        return LazyOptional.empty();
+    }
+
+    public void setRedstoneByPort(int redstoneSignal) {
+        this.analogSignal = (byte) redstoneSignal;
+        toggleMultiblock(analogSignal > 0);
     }
 }

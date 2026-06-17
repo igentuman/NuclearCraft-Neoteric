@@ -76,8 +76,6 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     @NBTField
     public boolean thermalInitialized = false;
     @NBTField
-    public double efficiency = 0;
-    @NBTField
     public double quadStrength = 0;
     @NBTField
     public double dipoleStrength = 0;
@@ -259,10 +257,6 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         }
     }
 
-
-    public boolean hasRedstoneSignal() {
-        return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
-    }
 
     public boolean isProcessing() {
         return hasParticle && controllerEnabled;

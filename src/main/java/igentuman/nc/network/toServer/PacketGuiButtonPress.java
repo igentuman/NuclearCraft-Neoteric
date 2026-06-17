@@ -1,6 +1,8 @@
 package igentuman.nc.network.toServer;
 
+import igentuman.nc.block.accelerator.entity.AcceleratorPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
+import igentuman.nc.block.entity.ParticleChamberPortBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
@@ -113,6 +115,16 @@ public class PacketGuiButtonPress implements INcPacket {
             case Button.Kugelblitz.BTN_ID:
                 if (be instanceof ChamberPortBE port) {
                     port.toggleComparatorMode();
+                }
+                break;
+            case Button.AcceleratorPortRedstoneModeButton.BTN_ID:
+                if (be instanceof AcceleratorPortBE port) {
+                    port.toggleComparatorMode();
+                }
+                break;
+            case Button.TargetChamberPortRedstoneModeButton.BTN_ID:
+                if (be instanceof ParticleChamberPortBE port) {
+                    port.toggleRedstoneMode();
                 }
                 break;
             case 77:

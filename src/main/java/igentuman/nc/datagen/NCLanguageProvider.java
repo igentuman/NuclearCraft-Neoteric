@@ -676,9 +676,6 @@ public class NCLanguageProvider extends LanguageProvider {
             if(name.contains("cooler")) {
                 prefix = "Accelerator ";
             }
-            if(name.equals("accelerator_port")) {
-                prefix = "Linear ";
-            }
             String title = convertToName(name);
 
             add(ACCELERATOR_BLOCKS.get(name).get(), prefix+title);
@@ -987,6 +984,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("gui.nc.reactor_comparator_config.tooltip_12","Comparator: Heat Stored");
         add("gui.nc.reactor_comparator_config.tooltip_13","Comparator: Efficiency");
         add("gui.nc.reactor_comparator_strength.tooltip","Current Signal Strength: %s");
+        add("gui.nc.accelerator_comparator_config.tooltip_1","Input: Redstone Control");
+        add("gui.nc.accelerator_comparator_config.tooltip_2","Comparator: Particle Present");
+        add("gui.nc.accelerator_comparator_config.tooltip_3","Comparator: Temperature");
         add("gui.nc.redstone_config.tooltip_0","WORK MODE: IGNORE SIGNAL");
         add("gui.nc.redstone_config.tooltip_1","WORK MODE: ON SIGNAL");
         add("gui.nc.fluid_tank_renderer.amount_capacity","%s/%s mB");

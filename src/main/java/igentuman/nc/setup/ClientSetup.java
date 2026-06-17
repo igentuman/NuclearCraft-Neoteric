@@ -125,7 +125,6 @@ public class ClientSetup {
             MenuScreens.register(THOROIDAL_ACCELERATOR_CONTROLLER_CONTAINER.get(), RingAcceleratorControllerScreen::new);
             MenuScreens.register(ACCELERATOR_PORT_CONTAINER.get(), AcceleratorPortScreen::new);
             MenuScreens.register(ACCELERATOR_ION_SOURCE_PORT_CONTAINER.get(), AcceleratorIonSourcePortScreen::new);
-            MenuScreens.register(RING_ACCELERATOR_PORT_CONTAINER.get(), RingAcceleratorPortScreen::new);
             MenuScreens.register(TARGET_CHAMBER_CONTROLLER_CONTAINER.get(), TargetChamberControllerScreen::new);
             MenuScreens.register(TARGET_CHAMBER_PORT_CONTAINER.get(), TargetChamberPortScreen::new);
             MenuScreens.register(COLLISION_CHAMBER_CONTROLLER_CONTAINER.get(), CollisionChamberControllerScreen::new);

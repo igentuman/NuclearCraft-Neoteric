@@ -1,6 +1,6 @@
 package igentuman.nc.block.accelerator;
 
-import igentuman.nc.block.accelerator.entity.LinearAcceleratorPortBE;
+import igentuman.nc.block.accelerator.entity.AcceleratorPortBE;
 import igentuman.nc.container.AcceleratorPortContainer;
 import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.ChatFormatting;
@@ -82,6 +82,16 @@ public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements 
     }
 
     @Override
+    public boolean hasAnalogOutputSignal(BlockState pState) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
+        return pLevel.getExistingBlockEntity(pPos) instanceof AcceleratorPortBE be ? be.analogSignal : 0;
+    }
+
+    @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
         super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
         MultiblockHandler.get(pLevel.dimension()).trackBlockChange(pPos, true);
@@ -100,7 +110,7 @@ public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements 
         if (!level.isClientSide()) {
             BlockEntity be = level.getExistingBlockEntity(pos);
 
-            if (be instanceof LinearAcceleratorPortBE)  {
+            if (be instanceof AcceleratorPortBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -131,13 +141,13 @@ public class AcceleratorPortBlock extends HorizontalDirectionalBlock implements 
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof LinearAcceleratorPortBE tile) {
+                if (t instanceof AcceleratorPortBE tile) {
                     tile.tickClient();
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof LinearAcceleratorPortBE tile) {
+            if (t instanceof AcceleratorPortBE tile) {
                 tile.tickServer();
             }
         };

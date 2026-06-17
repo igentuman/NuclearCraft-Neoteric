@@ -11,7 +11,7 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class WorldUtil {
 
-    protected static BlockState getBlockState(BlockPos pos, ServerLevel level) {
+    public static BlockState getBlockState(BlockPos pos, ServerLevel level) {
         if (level == null) {
             return AIR.defaultBlockState();
         }
@@ -41,7 +41,7 @@ public class WorldUtil {
         return section.getBlockState(localX, localY, localZ);
     }
 
-    protected static BlockEntity getBlockEntity(BlockPos pos, ServerLevel level) {
+    public static BlockEntity getBlockEntity(BlockPos pos, ServerLevel level) {
         if (level == null) {
             return null;
         }
@@ -57,7 +57,7 @@ public class WorldUtil {
         return chunk.getBlockEntity(pos);
     }
 
-    protected static ChunkAccess getChunk(int chunkX, int chunkZ, ServerLevel level) {
+    public static ChunkAccess getChunk(int chunkX, int chunkZ, ServerLevel level) {
         return level.getChunkSource().getChunk(chunkX, chunkZ, true);
     }
 }

@@ -47,14 +47,10 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
 
     private LazyOptional<LinearAcceleratorPeripheral> peripheralCap;
 
-    protected Direction facing;
     public Recipe recipe;
-    public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
-
 
     public LinearAcceleratorControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
-
     }
 
     @Override
@@ -119,12 +115,14 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         }
     }
 
-    protected int reValidateCounter = 0;
-
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
             return;
         }
+        if (lastTickTime == currentTick) {
+            return;
+        }
+        lastTickTime = currentTick;
         changed = false;
         super.tickServer();
         boolean wasEnabled = controllerEnabled;

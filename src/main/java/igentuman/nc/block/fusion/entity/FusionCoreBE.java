@@ -59,29 +59,16 @@ import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXE
 
 public class FusionCoreBE extends MultiblockControllerBE {
 
-
-    @NBTField
-    public byte analogSignal = 0;
-    @NBTField
-    public byte redstoneMode = SignalSource.HEAT;
     @NBTField
     public double reactorHeat = 0;
     @NBTField
     public int size = 0;
-    @NBTField
-    public int energyPerTick = 0;
-    @NBTField
-    public double efficiency = 0;
-    @NBTField
-    public boolean powered = false;
     @NBTField
     public int inputRedstoneSignal = 0;
     @NBTField
     public int currentRfAmplification = 0;
     @NBTField
     public int amplifiers = 0;
-    @NBTField
-    protected boolean forceShutdown = false;
     @NBTField
     public double magneticFieldStrength = 0;
     @NBTField
@@ -115,6 +102,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
     public int magnetsEfficiency = 0;
     @NBTField
     protected double lastKnownOptimalTemp = 1000000;
+    @NBTField
+    public byte redstoneMode = SignalSource.HEAT;
 
     protected FusionCoolantRecipe coolantRecipe;
     protected final LazyOptional<IEnergyStorage> energy;
@@ -376,10 +365,10 @@ public class FusionCoreBE extends MultiblockControllerBE {
             block.placeProxyBlocks(getBlockState(), level, worldPosition, this);
         }
         //Disallow boosters like torcherino
-        if(lastTickTime == level.getGameTime()) {
+        if(lastTickTime == currentTick) {
             return;
         }
-        lastTickTime = level.getGameTime();
+        lastTickTime = currentTick;
         super.tickServer();
         tickProxyBlocks();
         handleValidation();

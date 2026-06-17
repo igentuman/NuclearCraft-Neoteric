@@ -58,7 +58,6 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
     public boolean isValidForOuter(BlockPos pos) {
         if (getLevel() == null) return false;
         Block block = getBlockState(pos).getBlock();
-        if (block == ACCELERATOR_BLOCKS.get("accelerator_port").get()) return false;
         if (block == ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()) return false;
         return validOuterBlocks().contains(block);
     }

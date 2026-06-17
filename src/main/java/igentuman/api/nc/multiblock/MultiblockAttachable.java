@@ -48,4 +48,6 @@ public interface MultiblockAttachable<M extends AbstractMultiblock, BE extends B
         }
     }
 
+    void updateAnalogSignal();
+
 }

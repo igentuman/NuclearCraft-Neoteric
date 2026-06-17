@@ -84,7 +84,6 @@ public class NCBlockTags extends BlockTagsProvider {
                 ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get(),
                 ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_port").get(),
-                ACCELERATOR_BLOCKS.get("ring_accelerator_port").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get()
         );

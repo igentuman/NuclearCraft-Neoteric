@@ -56,7 +56,6 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
     public boolean isValidForOuter(BlockPos pos) {
         if (getLevel() == null) return false;
         Block block = getBlockState(pos).getBlock();
-        if (block == ACCELERATOR_BLOCKS.get("ring_accelerator_port").get()) return false;
         return validOuterBlocks().contains(block);
     }
 

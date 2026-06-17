@@ -490,18 +490,6 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_PARTS.get("servo").get()))
                 .save(consumer, rl("accelerator_port"));
 
-        // Ring accelerator port
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("ring_accelerator_port").get(), 4)
-                .pattern("SVS")
-                .pattern("VFV")
-                .pattern("SVS")
-                .define('S', forgeIngot(Materials.steel))
-                .define('V', NC_PARTS.get("servo").get())
-                .define('F', NC_PARTS.get("steel_frame").get())
-                .group(MODID+"_accelerator")
-                .unlockedBy("item", has(NC_PARTS.get("servo").get()))
-                .save(consumer, rl("ring_accelerator_port"));
-
         // Accelerator beam port
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(), 4)
                 .pattern("STS")

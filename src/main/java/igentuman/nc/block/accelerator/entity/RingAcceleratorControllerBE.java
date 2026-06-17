@@ -38,11 +38,7 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
 
     public static String NAME = "ring_accelerator_controller";
     private LazyOptional<RingAcceleratorPeripheral> peripheralCap;
-
-
-    protected Direction facing;
     public LinearAcceleratorControllerBE.Recipe recipe;
-
 
     public RingAcceleratorControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
@@ -103,8 +99,6 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
             stopSound();
         }
     }
-
-    protected int reValidateCounter = 0;
 
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {

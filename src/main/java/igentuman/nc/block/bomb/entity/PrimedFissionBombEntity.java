@@ -145,10 +145,10 @@ public class PrimedFissionBombEntity extends Entity {
                     (System.nanoTime() - detonationStartNanos) / 1_000_000L, tickCount, phase);
         }
         if (phase == Phase.FIREBALL || phase == Phase.MUSHROOM) {
-            drainOps(igentuman.nc.handler.config.CommonConfig.BOMB_CONFIG.OPS_PER_TICK.get());
+            drainOps(CommonConfig.BOMB_CONFIG.OPS_PER_TICK.get());
         }
         if (level() instanceof ServerLevel sv) {
-            drainPendingResend(sv, igentuman.nc.handler.config.CommonConfig.BOMB_CONFIG.CHUNK_RESENDS_PER_TICK.get());
+            drainPendingResend(sv, CommonConfig.BOMB_CONFIG.CHUNK_RESENDS_PER_TICK.get());
         }
         if (phase == Phase.DONE && cleanupDone && pendingResend.isEmpty() && relightPending.get() <= 0) {
             long totalMs = (System.nanoTime() - detonationStartNanos) / 1_000_000L;
@@ -263,7 +263,7 @@ public class PrimedFissionBombEntity extends Entity {
         Map<Long, ChunkAccess> snapshot = new HashMap<>();
         for (int cx = cxMin; cx <= cxMax; cx++) {
             for (int cz = czMin; cz <= czMax; cz++) {
-                ForgeChunkManager.forceChunk(server, NuclearCraft.MODID, this.getUUID(), cx, cz, true, true);
+                ForgeChunkManager.forceChunk(server, NuclearCraft.MODID, this.getUUID(), cx, cz, true, false);
                 forcedChunks.add(ChunkPos.asLong(cx, cz));
                 ChunkAccess chunk = server.getChunk(cx, cz, ChunkStatus.FULL, true);
                 snapshot.put(ChunkPos.asLong(cx, cz), chunk);
@@ -600,6 +600,7 @@ public class PrimedFissionBombEntity extends Entity {
         for (long key : forcedChunks) {
             int cx = ChunkPos.getX(key);
             int cz = ChunkPos.getZ(key);
+            ForgeChunkManager.forceChunk(server, NuclearCraft.MODID, this.getUUID(), cx, cz, false, false);
             ForgeChunkManager.forceChunk(server, NuclearCraft.MODID, this.getUUID(), cx, cz, false, true);
         }
         forcedChunks.clear();

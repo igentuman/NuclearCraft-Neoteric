@@ -118,6 +118,7 @@ public class NuclearCraft {
         StructureCommand.register(event.getDispatcher());
         RadiationCommand.register(event.getDispatcher());
         DebugCommand.register(event.getDispatcher());
+        DetonateCommand.register(event.getDispatcher());
         FuelModelsCommand.register(event.getDispatcher());
     }
 

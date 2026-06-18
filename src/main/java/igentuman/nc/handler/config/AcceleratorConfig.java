@@ -111,6 +111,7 @@ public class AcceleratorConfig {
         public final ForgeConfigSpec.ConfigValue<Integer> BASE_HEAT_CAPACITY;
         public final ForgeConfigSpec.ConfigValue<Double> THERMAL_CONDUCTIVITY;
         public final ForgeConfigSpec.ConfigValue<Integer> MAX_TEMP;
+        public final ForgeConfigSpec.ConfigValue<Integer> RING_ACCELERATOR_INPUT_PARTICLE_MIN_ENERGY;
         public final ForgeConfigSpec.ConfigValue<Boolean> MELTDOWN_ENABLED;
 
         public GeneralConfig(ForgeConfigSpec.Builder builder) {
@@ -149,6 +150,10 @@ public class AcceleratorConfig {
             MAX_TEMP = builder
                     .comment("Maximum representable temperature (Kelvin). Heat is mapped to [0, MAX_TEMP] using capacity.")
                     .defineInRange("max_temp", 400, 1, 10000);
+
+            RING_ACCELERATOR_INPUT_PARTICLE_MIN_ENERGY = builder
+                    .comment("Minimal energy of input particle for ring accelerators in kEV.")
+                    .defineInRange("ring_accelerator_input_particle_min_energy", 5000, 1, 100000);
 
             MELTDOWN_ENABLED = builder
                     .comment("If true, components exceeding their max operating temperature will explode.")

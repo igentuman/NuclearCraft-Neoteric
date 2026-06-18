@@ -4,6 +4,7 @@ import igentuman.api.nc.multiblock.MultiblockController;
 import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.accelerator.CoolerBlock;
+import igentuman.nc.block.accelerator.entity.AbstractAcceleratorControllerBE;
 import igentuman.nc.block.accelerator.entity.AcceleratorBeamPortBE;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.multiblock.AbstractMultiblock;
@@ -493,7 +494,10 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
             if(bs.getValue(PORT_MODE).equals(PortMode.Mode.OUTPUT)) {
                 BlockEntity be = getBlockEntity(portPos);
                 if(be instanceof AcceleratorBeamPortBE port) {
-                    port.extractParticle(particleStack);
+                    if(port.extractParticle(particleStack)) {
+                        //((AbstractAcceleratorControllerBE)controllerBE()).getParticleStorage().clearServer();
+                        break;
+                    }
                 }
             }
         }

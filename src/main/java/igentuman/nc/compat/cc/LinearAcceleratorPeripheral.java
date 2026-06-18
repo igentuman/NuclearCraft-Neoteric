@@ -2,6 +2,7 @@ package igentuman.nc.compat.cc;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import igentuman.nc.block.accelerator.entity.AbstractAcceleratorControllerBE;
 import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -10,9 +11,9 @@ import java.util.Map;
 public class LinearAcceleratorPeripheral implements IPeripheral {
     private final LinearAcceleratorControllerBE controller;
 
-    public LinearAcceleratorPeripheral(LinearAcceleratorControllerBE controller)
+    public LinearAcceleratorPeripheral(AbstractAcceleratorControllerBE controller)
     {
-        this.controller = controller;
+        this.controller = (LinearAcceleratorControllerBE) controller;
     }
 
     @Nonnull
@@ -32,7 +33,7 @@ public class LinearAcceleratorPeripheral implements IPeripheral {
     @LuaFunction
     public final boolean isFormed()
     {
-        return controller.isCasingValid && controller.isInternalValid;
+        return isMultiblockAssembled();
     }
 
     @LuaFunction
@@ -42,29 +43,29 @@ public class LinearAcceleratorPeripheral implements IPeripheral {
 
     @LuaFunction
     public final boolean hasParticle() {
-        return controller.hasParticle;
+        return isMultiblockAssembled() && controller.hasParticle;
     }
 
     @LuaFunction
     public final int getEnergyStored()
     {
-        return controller.energyStorage().getEnergyStored();
+        return isMultiblockAssembled() ? controller.energyStorage().getEnergyStored() : 0;
     }
 
     @LuaFunction
     public final int getTemperature()
     {
-        return controller.heatStored;
+        return isMultiblockAssembled() ? controller.getTemperature() : 0;
     }
 
     @LuaFunction
-    public final int getMaxTemperature()
+    public int getMaxTemperature()
     {
-        return controller.maxTemperature;
+        return isMultiblockAssembled() ? controller.maxTemperature : 0;
     }
 
     @LuaFunction
-    public final Object getHeatBufferInfo()
+    public Object getHeatBufferInfo()
     {
         Map<String, Object> statsData = new HashMap<String, Object>();
         statsData.put("heat_stored", isMultiblockAssembled() ? controller.heatStored : 0);
@@ -73,7 +74,7 @@ public class LinearAcceleratorPeripheral implements IPeripheral {
     }
 
     @LuaFunction
-    public final Object getCoolingInfo()
+    public Object getCoolingInfo()
     {
         Map<String, Object> statsData = new HashMap<String, Object>();
         statsData.put("cooling_fluid",isMultiblockAssembled() ? controller.getFluidTank(2).getFluid().getTranslationKey(): "");
@@ -87,40 +88,48 @@ public class LinearAcceleratorPeripheral implements IPeripheral {
     {
         Map<String, Object> statsData = new HashMap<String, Object>();
         statsData.put("accelerating_voltage", isMultiblockAssembled() ? controller.acceleratingVoltage : 0);
-        statsData.put("dipole_strength", isMultiblockAssembled() ? controller.dipoleStrength : 0);
         statsData.put("quadrupole_strength", isMultiblockAssembled() ? controller.quadStrength : 0);
-        statsData.put("input_particle_min_energy", isMultiblockAssembled() ? controller.getMinEnergy() : 0);
-
+        statsData.put("beam_length", isMultiblockAssembled() ? controller.beamLength : 0);
         return statsData;
     }
 
-    private boolean isMultiblockAssembled() {
+    protected boolean isMultiblockAssembled() {
         return controller.isCasingValid && controller.isInternalValid;
     }
 
     @LuaFunction
-    public final int getHeatRate()
+    public int getHeatRate()
     {
-        return controller.heatRate;
+        return isMultiblockAssembled() ? controller.heatRate : 0;
     }
 
     @LuaFunction
-    public final Object getParticleInfo()
+    public Object getParticleInfo()
     {
-        return controller.getParticleStack();
+        if(!isMultiblockAssembled() || !controller.hasParticle || controller.getParticleStorage().getClientParticleStack() == null) {
+            return null;
+        }
+        Map<String, Object> particle = new HashMap<String, Object>();
+        particle.put("energy", controller.getParticleStorage().getClientParticleStack().getMeanEnergy());
+        particle.put("focus", controller.getParticleStorage().getClientParticleStack().getFocus());
+        particle.put("amount", controller.getParticleStorage().getClientParticleStack().getAmount());
+        particle.put("particle", controller.getParticleStorage().getClientParticleStack().getParticle().getName());
+        return particle;
     }
 
     @LuaFunction
-    public final boolean isAcceleratorOn() {
-        return controller.controllerEnabled;
+    public boolean isAcceleratorOn() {
+        return isMultiblockAssembled() && controller.controllerEnabled;
     }
 
-    public final String getAcceleratorType() {
+    public String getAcceleratorType() {
         return "linear_accelerator";
     }
 
+    @LuaFunction(mainThread = true)
     public void setEnergyPercentage(double percentage)
     {
+        if(!isMultiblockAssembled()) return;
         if(percentage < 5)
         {
             percentage = 0;
@@ -130,7 +139,16 @@ public class LinearAcceleratorPeripheral implements IPeripheral {
             percentage = 100;
         }
 
-        controller.redstoneLevel = percentage * 0.15D;
+        controller.externalControlled = true;
+        controller.isControlledByComputer = true;
+        controller.analogSignal = (byte) (percentage * 0.15D);
+        controller.accelerationEnergy = percentage / 100D;
     }
 
+    @LuaFunction(mainThread = true)
+    public void releaseControl()
+    {
+        controller.externalControlled = false;
+        controller.isControlledByComputer = false;
+    }
 }

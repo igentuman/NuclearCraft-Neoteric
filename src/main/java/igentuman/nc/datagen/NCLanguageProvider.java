@@ -806,6 +806,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.accelerator.quadroupoles", "Quadrupoles: %s");
         add("tooltip.nc.accelerator.dipoles", "Dipoles: %s");
         add("tooltip.nc.accelerator.too_hot", "Accelerator is too hot");
+        add("tooltip.nc.accelerator.energy_too_low", "Particle energy too low");
+        add("tooltip.nc.accelerator.energy_too_high", "Particle energy too high");
         add("tooltip.nc.accelerator.voltage", "Voltage: %sV");
         add("tooltip.nc.accelerator.amplifiers", "Amplifiers: %s");
         add("tooltip.nc.accelerator.coolers", "Coolers: %s");

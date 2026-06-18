@@ -1,5 +1,6 @@
 package igentuman.nc.block.accelerator.entity;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.ElectromagnetBlock;
 import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.entity.MultiblockControllerBE;
@@ -10,15 +11,20 @@ import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock;
 import igentuman.nc.recipes.NcRecipeType;
+import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
+import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -26,6 +32,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,15 +41,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
+import static igentuman.nc.block.accelerator.AcceleratorPortBlock.POWERED;
 import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.radiation.ItemRadiation.getItemByName;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static net.minecraft.world.item.Items.AIR;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
-public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
+public abstract class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
 
+    @NBTField
+    public double accelerationEnergy = 1;
     @NBTField
     public BlockPos ionSourcePos = BlockPos.ZERO;
     @NBTField
@@ -86,7 +98,9 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     @NBTField
     public int coolingRate = 0;
     @NBTField
-    public double redstoneLevel = 0;
+    public boolean energyIsTooLow = false;
+    @NBTField
+    public boolean energyIsTooHigh = false;
     protected double initialFocus = 0D;
 
     protected final LazyOptional<IParticleStackHandler> particleHandler;
@@ -135,9 +149,72 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         particleHandler = CapabilityParticleStackHandler.createHandler(particleStorage);
     }
 
+
+    public LazyOptional<IParticleStackHandler> particleHandler() {
+        return particleHandler;
+    }
+
     public ParticleStack getParticleStack() {
         return particleStorage.getParticle();
     }
+
+    public void tickServer() {
+        if(lastTickTime == currentTick || NuclearCraft.instance.isNcBeStopped || isRemoved()) {
+            return;
+        }
+        lastTickTime = currentTick;
+        changed = false;
+        super.tickServer();
+        boolean wasEnabled = controllerEnabled;
+        handleValidation();
+
+        boolean formed = getMultiblock().isFormed();
+        if(formed && !thermalInitialized) {
+            initThermal();
+        } else if(!formed && thermalInitialized) {
+            resetThermal();
+        }
+        if(!externalControlled && !isControlledByComputer && currentTick % 10 == 0) {
+            analogSignal = (byte) getRedstoneSignal();
+            accelerationEnergy = analogSignal / 15D;
+        }
+        controllerEnabled = formed && (analogSignal > 0 || (accelerationEnergy > 0 && externalControlled));
+        externalControlled = false;
+        if (wasEnabled != controllerEnabled) {
+            particleStorage.clearClient();
+        }
+        currentHeating = 0;
+        if (formed) {
+            externalHeating();
+        }
+        if (controllerEnabled) {
+            if(hasEnoughEnergy()) {
+                trackChanges(contentHandler().tick());
+                trackChanges(accelerateParticle());
+            }
+            handleMeltdown();
+        } else {
+            if(particleStorage.getParticleStack() != null) {
+                particleStorage.clearAll();
+                hasParticle = false;
+                changed = true;
+            }
+        }
+        coolantCoolDown();
+        refreshCacheFlag = !formed;
+        changed |= wasEnabled != controllerEnabled;
+        if(refreshCacheFlag || changed || currentTick % 20 == 0) {
+            try {
+                setChanged();
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_ALL);
+                level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
+            } catch (NullPointerException ignored) {}
+        }
+    }
+
+    protected abstract boolean accelerateParticle();
+
+    protected abstract void handleMeltdown();
 
     public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier() {
         return GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get();
@@ -154,9 +231,9 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         return allowedInputFluids;
     }
 
-    public List<LinearAcceleratorControllerBE.CoolantRecipe> getCoolantRecipes() {
+    public List<CoolantRecipe> getCoolantRecipes() {
         if(coolantRecipes == null) {
-            coolantRecipes = (List<LinearAcceleratorControllerBE.CoolantRecipe>) NcRecipeType.getAllRecipesFor("accelerator_coolant", getLevel());
+            coolantRecipes = (List<CoolantRecipe>) NcRecipeType.getAllRecipesFor("accelerator_coolant", getLevel());
         }
         return coolantRecipes;
     }
@@ -164,7 +241,7 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     protected List<FluidStack> getAllowedCoolants() {
         if(allowedCoolants == null) {
             allowedCoolants = new ArrayList<>();
-            for(LinearAcceleratorControllerBE.CoolantRecipe recipe : getCoolantRecipes()) {
+            for(CoolantRecipe recipe : getCoolantRecipes()) {
                 allowedCoolants.addAll(recipe.getInputFluids(0));
             }
         }
@@ -174,7 +251,7 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
     protected List<FluidStack> getAllowedCoolantsOutput() {
         if(allowedCoolantsOutput == null) {
             allowedCoolantsOutput = new ArrayList<>();
-            for(LinearAcceleratorControllerBE.CoolantRecipe recipe : getCoolantRecipes()) {
+            for(CoolantRecipe recipe : getCoolantRecipes()) {
                 allowedCoolantsOutput.addAll(recipe.getOutputFluids(0));
             }
         }
@@ -203,9 +280,8 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         return allowedInputs;
     }
 
-    //todo implement
     public int getMinEnergy() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -403,7 +479,7 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
         if(heatCapacity <= 0) heatCapacity = baseCapacity;
 
         float biomeTemp = level.getBiome(worldPosition).value().getBaseTemperature();
-        ambientTemp = 273 + (int) (biomeTemp * 20F);
+        ambientTemp = 273 + (int) (biomeTemp * 10F);
 
         if(!thermalInitialized) {
             heatStored = (int) Math.min(Integer.MAX_VALUE, ambientTemp * heatCapacity / getMaxTemp());
@@ -465,5 +541,37 @@ public class AbstractAcceleratorControllerBE extends MultiblockControllerBE {
 
     public boolean isAcceleratorTooHot() {
         return getTemperature() > maxTemperature;
+    }
+
+    public ParticleStorage getParticleStorage() {
+        return particleStorage;
+    }
+
+    public static class CoolantRecipe extends NcRecipe {
+        protected double coolingRate;
+
+        public CoolantRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double temperature, double powerModifier, double radiation, double rar) {
+            super(id, input, output, inputFluids, outputFluids, temperature, powerModifier, radiation, rar);
+            coolingRate = temperature;
+        }
+
+        @Override
+        public @NotNull String getGroup() {
+            return "accelerator_coolant";
+        }
+
+        @Override
+        public String getCodeId() {
+            return "accelerator_coolant";
+        }
+
+        @Override
+        public @NotNull ItemStack getToastSymbol() {
+            return new ItemStack(ACCELERATOR_BLOCKS.get("accelerator_port").get());
+        }
+
+        public double getCoolingRate() {
+            return Math.max(rarityModifier, 1);
+        }
     }
 }

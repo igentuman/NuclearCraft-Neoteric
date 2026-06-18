@@ -14,7 +14,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static igentuman.nc.NuclearCraft.currentTick;
-import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 
 public class AcceleratorIonSourcePortBE extends MultiblockPortBE {
@@ -58,9 +57,6 @@ public class AcceleratorIonSourcePortBE extends MultiblockPortBE {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(!isConnectedToController()) return super.getCapability(cap, side);
-        if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return LazyOptional.empty();
-        }
         return controller().getCapability(cap, side);
     }
 

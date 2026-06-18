@@ -192,11 +192,16 @@ public abstract class MultiblockPortBE extends NuclearCraftBE implements Multibl
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(isConnectedToController()) return super.getCapability(cap, side);
+        if(!isConnectedToController()) return LazyOptional.empty();
 
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return controller().getCapability(cap, side);
         }
+
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return controller().getCapability(cap, side);
+        }
+
         if(isGtLoaded()) {
             if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER) {
                 if (isGTEUCapEnabled()) {
@@ -216,7 +221,7 @@ public abstract class MultiblockPortBE extends NuclearCraftBE implements Multibl
                 return controller().getPeripheral(cap, side);
             }
         }
-        return super.getCapability(cap, side);
+        return LazyOptional.empty();
     }
 
     public int getRedstoneSignal() {

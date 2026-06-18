@@ -1,10 +1,11 @@
 package igentuman.nc.block.accelerator.entity;
 
-import igentuman.nc.NuclearCraft;
+import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.compat.cc.LinearAcceleratorPeripheral;
 import igentuman.nc.compat.oc2.LinearAcceleratorDevice;
 import igentuman.nc.content.particles.*;
 import igentuman.nc.item.ParticleSourceItem;
+import igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock;
 import igentuman.nc.multiblock.accelerator.LinearAcceleratorMultiblock;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -15,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -29,17 +29,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
-import static igentuman.nc.block.accelerator.AcceleratorPortBlock.POWERED;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
 import static igentuman.nc.compat.oc2.LinearAcceleratorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.util.Equations.*;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isOC2Loaded;
+import static igentuman.nc.util.ModUtil.*;
 
 public class LinearAcceleratorControllerBE extends AbstractAcceleratorControllerBE {
 
@@ -89,7 +87,17 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
             return contentHandler().getFluidCapability(side);
         }
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return particleHandler.cast();
+            return LazyOptional.empty();
+        }
+        if(isGtLoaded()) {
+            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER && energyStorage() != null) {
+                if (isGTEUCapEnabled()) {
+                    if (side != null && sideConfig.get(side.ordinal()) != SideModeToggleable.SideMode.DISABLED)
+                        return getGTEnergy(this, side).cast();
+                } else {
+                    return LazyOptional.empty();
+                }
+            }
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return getEnergy().cast();
@@ -104,7 +112,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
                 return getOCDevice(cap, side);
             }
         }
-        return super.getCapability(cap, side);
+        return LazyOptional.empty();
     }
 
 
@@ -114,66 +122,6 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
             stopSound();
         }
     }
-
-    public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
-            return;
-        }
-        if (lastTickTime == currentTick) {
-            return;
-        }
-        lastTickTime = currentTick;
-        changed = false;
-        super.tickServer();
-        boolean wasEnabled = controllerEnabled;
-        handleValidation();
-        if(level.getGameTime() % 10 == 0) {
-            redstoneLevel = getRedstoneSignal();
-        }
-        boolean formed = getMultiblock().isFormed();
-        if(formed && !thermalInitialized) {
-            initThermal();
-        } else if(!formed && thermalInitialized) {
-            resetThermal();
-        }
-
-        controllerEnabled = formed && redstoneLevel > 0;
-
-        if (wasEnabled != controllerEnabled) {
-            particleStorage.clearClient();
-        }
-        currentHeating = 0;
-        if (formed) {
-            externalHeating();
-        }
-        if (controllerEnabled) {
-            if(hasEnoughEnergy()) {
-                trackChanges(contentHandler().tick());
-                trackChanges(accelerateParticle());
-            }
-            handleMeltdown();
-        } else {
-            if(particleStorage.getParticleStack() != null) {
-                particleStorage.clearAll();
-                hasParticle = false;
-                changed = true;
-            }
-        }
-        // Coolant cooling
-        coolantCoolDown();
-        refreshCacheFlag = !formed;
-        changed |= wasEnabled != controllerEnabled;
-        if(refreshCacheFlag || changed || currentTick % 20 == 0) {
-            try {
-                setChanged();
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, controllerEnabled), Block.UPDATE_ALL);
-                level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, controllerEnabled));
-            } catch (NullPointerException ignored) {}
-        }
-    }
-
-
-
 
     @Override
     public LinearAcceleratorMultiblock getMultiblock() {
@@ -187,7 +135,8 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         return (LinearAcceleratorMultiblock) multiblock;
     }
 
-    private void handleMeltdown() {
+    @Override
+    protected void handleMeltdown() {
         if(isAcceleratorTooHot()) {
             heatStored /= 2;
             quenchMagnets();
@@ -196,7 +145,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
     }
 
     @Override
-    protected igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock getAcceleratorMultiblock() {
+    protected AbstractAcceleratorMultiblock getAcceleratorMultiblock() {
         return getMultiblock();
     }
 
@@ -209,7 +158,8 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         return report;
     }
 
-    private boolean accelerateParticle() {
+    @Override
+    protected boolean accelerateParticle() {
         if (isAcceleratorTooHot()) {
             return false;
         }
@@ -232,11 +182,12 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
             return false;
         }
         particleStack.setFocus(focusGain(focus, particleStack)-focusLoss(beamLength, particleStack)+initialFocus);
-        particleStack.setMeanEnergy((long)(linacEnergyGain(acceleratingVoltage, particleStack)*(redstoneLevel / 15d)));
+        particleStack.setMeanEnergy((long)(linacEnergyGain(acceleratingVoltage, particleStack)*(accelerationEnergy)));
         particleStorage.setParticleStack(particleStack);
-        internalHeating((long) ((heatRate*(redstoneLevel / 15d)+heatRate)/2));
+        internalHeating((long) ((heatRate*(accelerationEnergy)+heatRate)/2));
         hasParticle = true;
         getMultiblock().extractParticle(particleStack);
+        particleStorage.clearServer();
         return true;
     }
 
@@ -288,11 +239,11 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
     }
 
     public int getDepth() {
-        return depth;
+        return Math.max(depth, width);
     }
 
     public int getWidth() {
-        return width;
+        return Math.min(width, depth);
     }
 
     public int getHeight() {
@@ -332,33 +283,5 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         }
 
         public double getEnergy() { return powerModifier * 1000; }
-    }
-
-    public static class CoolantRecipe extends NcRecipe {
-        protected double coolingRate;
-
-        public CoolantRecipe(ResourceLocation id, ItemStackIngredient[] input, ItemStackIngredient[] output, FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids, double temperature, double powerModifier, double radiation, double rar) {
-            super(id, input, output, inputFluids, outputFluids, temperature, powerModifier, radiation, rar);
-            coolingRate = temperature;
-        }
-
-        @Override
-        public @NotNull String getGroup() {
-            return "accelerator_coolant";
-        }
-
-        @Override
-        public String getCodeId() {
-            return "accelerator_coolant";
-        }
-
-        @Override
-        public @NotNull ItemStack getToastSymbol() {
-            return new ItemStack(ACCELERATOR_BLOCKS.get("accelerator_port").get());
-        }
-
-        public double getCoolingRate() {
-            return Math.max(rarityModifier, 1);
-        }
     }
 }

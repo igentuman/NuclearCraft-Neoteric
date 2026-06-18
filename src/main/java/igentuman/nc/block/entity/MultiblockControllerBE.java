@@ -82,7 +82,8 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     public boolean powered = false;
     protected boolean forceShutdown = false;
     protected Direction facing;
-
+    public boolean externalControlled = false;
+    public boolean  isControlledByComputer = false;
 
 
     public MultiblockControllerBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
@@ -336,6 +337,7 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
 
     public void setRedstoneByPort(int redstoneSignal) {
         this.analogSignal = (byte) redstoneSignal;
+        externalControlled  = true;
         toggleMultiblock(analogSignal > 0);
     }
 }

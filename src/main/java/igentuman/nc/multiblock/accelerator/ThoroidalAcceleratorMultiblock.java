@@ -45,6 +45,17 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
     }
 
     @Override
+    public long getExteriorSurfaceArea() {
+        long area = super.getExteriorSurfaceArea();
+        long lx = width();
+        long lz = depth();
+        long holeX = lx - 2L * (RING_WALL_THICKNESS + 1);
+        long holeZ = lz - 2L * (RING_WALL_THICKNESS + 1);
+        long hole = (holeX > 0 && holeZ > 0) ? holeX * holeZ : 0L;
+        return area - 10L * hole;
+    }
+
+    @Override
     protected Direction getControllerDirection() {
         return controllerBE().getFacing();
     }

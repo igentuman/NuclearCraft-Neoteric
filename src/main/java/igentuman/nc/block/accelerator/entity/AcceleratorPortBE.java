@@ -58,22 +58,23 @@ public class AcceleratorPortBE extends MultiblockPortBE {
         if(!isConnectedToController()) return;
         int wasSignal = analogSignal;
         updateAnalogSignal();
-        if(redstoneMode == SignalSource.INPUT && hasRedstoneSignal()) {
-            controller().setRedstoneByPort(getRedstoneSignal());
-        }
         updated |= wasSignal != analogSignal;
         updated |= pushPull();
         updateIfNeeded(updated);
     }
 
     public void updateAnalogSignal() {
-        if(controller() == null) {
+        if(!isConnectedToController()) {
             analogSignal = 0;
             return;
         }
         switch (redstoneMode) {
             case SignalSource.INPUT:
                 analogSignal = (byte) Math.max(0, getRedstoneSignal());
+                if(!controller().externalControlled && !controller().isControlledByComputer) {
+                    controller().setRedstoneByPort(getRedstoneSignal());
+                    controller().accelerationEnergy = getRedstoneSignal() / 15D;
+                }
                 break;
             case SignalSource.OUTPUT:
                 analogSignal = (byte) (hasParticle() ? 15 : 0);
@@ -89,9 +90,6 @@ public class AcceleratorPortBE extends MultiblockPortBE {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(!isConnectedToController()) return LazyOptional.empty();
-        if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return LazyOptional.empty();
-        }
         return controller().getCapability(cap, side);
     }
 

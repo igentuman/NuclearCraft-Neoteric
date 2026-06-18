@@ -111,8 +111,8 @@ public class RingAcceleratorContainer extends AbstractContainerMenu {
         return blockEntity.recipeInfo().getProgress();
     }
 
-    public int getMaxHeat() {
-        return blockEntity.maxTemperature;
+    public long getMaxHeat() {
+        return blockEntity.heatCapacity;
     }
 
     public double getFocus() {
@@ -148,7 +148,7 @@ public class RingAcceleratorContainer extends AbstractContainerMenu {
     }
 
     public ParticleStack getParticleStack() {
-        return blockEntity.getParticleStack();
+        return blockEntity.getParticleStorage().getClientParticleStack();
     }
 
     public int maxCoolant() {
@@ -191,4 +191,15 @@ public class RingAcceleratorContainer extends AbstractContainerMenu {
         return blockEntity.getTemperature();
     }
 
+    public boolean isEnergyTooLow() {
+        return blockEntity.energyIsTooLow;
+    }
+
+    public boolean isEnergyTooHigh() {
+        return blockEntity.energyIsTooHigh;
+    }
+
+    public boolean isAcceleratorTooHot() {
+        return blockEntity.isAcceleratorTooHot();
+    }
 }

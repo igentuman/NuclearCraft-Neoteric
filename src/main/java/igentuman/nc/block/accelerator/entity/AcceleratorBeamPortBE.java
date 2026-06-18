@@ -10,6 +10,7 @@ import igentuman.nc.util.Equations;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -30,7 +31,8 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
     protected AbstractAcceleratorMultiblock multiblock;
     @NBTField
     public ParticleStack clientParticle;
-    public LinearAcceleratorControllerBE controller;
+    public AbstractAcceleratorControllerBE controller;
+    private boolean alreadySentParticle = false;
 
     public AcceleratorBeamPortBE(BlockPos pPos, BlockState pBlockState) {
         super(ACCELERATOR_BE.get(NAME).get(), pPos, pBlockState);
@@ -42,7 +44,7 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
         this.multiblock = (AbstractAcceleratorMultiblock) multiblock;
         if (this.multiblock != null) {
             controllerPos = this.multiblock.controller().controllerBE().getBlockPos();
-            controller = (LinearAcceleratorControllerBE) this.multiblock.controller().controllerBE();
+            controller = (AbstractAcceleratorControllerBE) this.multiblock.controller().controllerBE();
             markDirty();
         }
     }
@@ -64,10 +66,11 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(isConnectedToController()) return super.getCapability(cap, side);
+        if(!isConnectedToController()) return LazyOptional.empty();
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return controller().getCapability(cap, side);
+            return controller().particleHandler().cast();
         }
+
         return LazyOptional.empty();
     }
 
@@ -77,7 +80,7 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
     }
 
     public boolean extractParticle(ParticleStack particleStack) {
-        if(controller() == null || particleStack == null || particleStack.getAmount() <= 0) return false;
+        if(alreadySentParticle || controller() == null || particleStack == null || particleStack.getAmount() <= 0) return false;
         AtomicBoolean result = new AtomicBoolean(false);
         Direction facing = getFacing();
         BlockPos currentPos = worldPosition.relative(facing);
@@ -91,37 +94,46 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
                 currentPos = currentPos.relative(facing);
                 continue;
             }
-            
-            if (level.getBlockEntity(currentPos) instanceof AcceleratorBeamPortBE targetPort) {
+            BlockEntity be = level.getExistingBlockEntity(currentPos);
+            if (be instanceof AcceleratorBeamPortBE targetPort) {
                 if (targetPort.getFacing() == facing.getOpposite()) {
-                    if (targetPort.controller() != null) {
-                        particleStack.addFocus(-Equations.focusLoss(distance, particleStack));
-                        targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
-                                .ifPresent(handler -> {
-                                    handler.reciveParticle(facing.getOpposite(), particleStack);
-                                    result.set(true);
-                                });
-                    }
+                    int finalDistance = distance;
+                    targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                            .ifPresent(handler -> {
+                                particleStack.addFocus(-Equations.focusLoss(finalDistance, particleStack));
+                                handler.reciveParticle(facing.getOpposite(), particleStack);
+                                result.set(true);
+                                alreadySentParticle = true;
+                            });
                 }
                 break;
-            } else if (level.getBlockEntity(currentPos) instanceof TargetChamberBeamPortBE targetPort) {
+            } else if (be instanceof TargetChamberBeamPortBE targetPort) {
                 if (targetPort.getFacing() == facing.getOpposite()) {
-                    if (targetPort.controller() != null) {
-                        particleStack.addFocus(-Equations.focusLoss(distance, particleStack));
-                        targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
-                                .ifPresent(handler -> {
-                                    handler.reciveParticle(facing.getOpposite(), particleStack);
-                                    result.set(true);
-                                });
-                    }
+                    int finalDistance1 = distance;
+                    targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                            .ifPresent(handler -> {
+                                particleStack.addFocus(-Equations.focusLoss(finalDistance1, particleStack));
+                                handler.reciveParticle(facing.getOpposite(), particleStack);
+                                result.set(true);
+                            });
                 }
                 break;
-            } else {
+            } else if (be != null) {
+                int finalDistance2 = distance;
+                be.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                        .ifPresent(handler -> {
+                            particleStack.addFocus(-Equations.focusLoss(finalDistance2, particleStack));
+                            handler.reciveParticle(facing.getOpposite(), particleStack);
+                            result.set(true);
+                        });
+                break;
+            }
+            else {
                 break;
             }
         }
-        controller().particleStorage.clearServer();
-        clientParticle = controller().particleStorage.getClientParticleStack();
+
+        clientParticle = particleStack.copy();
         markDirty();
         return result.get();
     }

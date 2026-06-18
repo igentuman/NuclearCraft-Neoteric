@@ -2836,6 +2836,8 @@
   "tooltip.nc.accelerator.coolers": "Coolers: %s",
   "tooltip.nc.accelerator.dipoles": "Dipoles: %s",
   "tooltip.nc.accelerator.efficiency": "Efficiency: %s",
+  "tooltip.nc.accelerator.energy_too_high": "Particle energy too high",
+  "tooltip.nc.accelerator.energy_too_low": "Particle energy too low",
   "tooltip.nc.accelerator.focus": "Focus: %s",
   "tooltip.nc.accelerator.quadroupoles": "Quadrupoles: %s",
   "tooltip.nc.accelerator.strength": "Magnet Strength: %s T",

@@ -83,7 +83,7 @@ public class CreativeParticleSourceBE extends NCProcessorBE {
                 if (targetPort.getFacing() == facing.getOpposite()) {
                     if (targetPort.controller() != null) {
                         particleStack.addFocus(-Equations.focusLoss(distance, particleStack));
-                        targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                        targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
                                 .ifPresent(handler -> {
                                     handler.reciveParticle(facing.getOpposite(), particleStack);
                                     result.set(true);

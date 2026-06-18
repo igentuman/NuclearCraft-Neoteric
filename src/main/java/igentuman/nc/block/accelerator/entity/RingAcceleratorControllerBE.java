@@ -1,19 +1,17 @@
 package igentuman.nc.block.accelerator.entity;
 
-import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.accelerator.AcceleratorPortBlock;
 import igentuman.nc.compat.cc.RingAcceleratorPeripheral;
 import igentuman.nc.compat.oc2.RingAcceleratorDevice;
-import igentuman.nc.content.particles.*;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock;
 import igentuman.nc.multiblock.accelerator.ThoroidalAcceleratorMultiblock;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -23,16 +21,17 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
-import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
+import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
 import static igentuman.nc.compat.oc2.RingAcceleratorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
+import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.util.Equations.*;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isOC2Loaded;
+import static igentuman.nc.util.ModUtil.*;
 
 public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE {
 
@@ -71,10 +70,22 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return particleHandler.cast();
+            return LazyOptional.empty();
+        }
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return LazyOptional.empty();
         }
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return contentHandler().getFluidCapability(side);
+        }
+        if(isGtLoaded()) {
+            if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER && energyStorage() != null) {
+                if (isGTEUCapEnabled()) {
+                    return getGTEnergy(this, side).cast();
+                } else {
+                    return LazyOptional.empty();
+                }
+            }
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return getEnergy().cast();
@@ -89,7 +100,7 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
                 return getOCDevice(cap, side);
             }
         }
-        return super.getCapability(cap, side);
+        return LazyOptional.empty();
     }
 
 
@@ -100,51 +111,33 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
         }
     }
 
-    public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
-            return;
-        }
-        changed = false;
-        super.tickServer();
-        boolean wasEnabled = controllerEnabled;
-        handleValidation();
-        if(redstoneLevel < 1) {
-            redstoneLevel = getRedstoneSignal();
-        }
-        boolean formed = getMultiblock().isFormed();
-        if(formed && !thermalInitialized) {
-            initThermal();
-        } else if(!formed && thermalInitialized) {
-            resetThermal();
-        }
-        controllerEnabled = formed && redstoneLevel > 0;
+    public void initThermal() {
+        AbstractAcceleratorMultiblock mb = getAcceleratorMultiblock();
+        if(mb == null || level == null) return;
 
-        currentHeating = 0;
-        if(formed) {
-            externalHeating();
+        long baseCapacity = (long) ACCELERATOR_CONFIG.BASE_HEAT_CAPACITY.get();
+        heatCapacity = baseCapacity * mb.getCapacityMultiplier();
+        if(heatCapacity <= 0) heatCapacity = baseCapacity;
+
+        float biomeTemp = level.getBiome(worldPosition).value().getBaseTemperature();
+        ambientTemp = 273 + (int) (biomeTemp * 20F);
+
+        if(!thermalInitialized) {
+            heatStored = (int) Math.min(Integer.MAX_VALUE, ambientTemp * heatCapacity / getMaxTemp() / 2);
+            thermalInitialized = true;
         }
-        if (controllerEnabled) {
-            trackChanges(contentHandler().tick());
-            trackChanges(accelerateParticle());
-            handleMeltdown();
-        }
-        coolantCoolDown();
-        refreshCacheFlag = !formed;
-        if(wasEnabled != controllerEnabled) {
-            setChanged();
-        }
-        if(refreshCacheFlag || changed || currentTick % 20 == 0) {
-            try {
-                setChanged();
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(AcceleratorPortBlock.POWERED, controllerEnabled), Block.UPDATE_ALL);
-                level.setBlockAndUpdate(worldPosition, getBlockState().setValue(AcceleratorPortBlock.POWERED, controllerEnabled));
-            } catch (NullPointerException ignored) {}
-        }
-        //particleStorage.clear();
     }
 
-    private boolean accelerateParticle() {
+    @Override
+    public int getMinEnergy() {
+        return ACCELERATOR_CONFIG.RING_ACCELERATOR_INPUT_PARTICLE_MIN_ENERGY.get();
+    }
+
+    @Override
+    protected boolean accelerateParticle() {
         hasParticle = false;
+        energyIsTooLow = false;
+        energyIsTooHigh = false;
         if(energyStorage().getEnergyStored() < energyRequired) {
             return false;
         }
@@ -158,23 +151,26 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
         }
         double radius = getBeamRadius();
         long maxEnergy = ringEnergyMaxEnergy(dipoleStrength, acceleratingVoltage, radius, particleStack);
-        if(maxEnergy <= 0) {
+
+        if(maxEnergy <= 0 || particleStack.getMeanEnergy() < getMinEnergy()) {
+            energyIsTooLow = true;
             particleStorage.clearServer();
             return false;
         }
         if(particleStack.getMeanEnergy() > maxEnergy) {
             particleStorage.clearServer();
+            energyIsTooHigh = true;
             return false;
         }
         if(!drainEnergy()) {
             return false;
         }
-        long targetEnergy = (long)(maxEnergy * (redstoneLevel / 15d));
+        long targetEnergy = (long)(maxEnergy * accelerationEnergy);
         long radiationLoss = synchrotronRadiationEnergy(radius, particleStack);
         particleStack.setMeanEnergy(Math.max(0, targetEnergy - radiationLoss));
         particleStack.addFocus(focusGain(quadStrength, particleStack) - focusLoss(beamLength, particleStack));
         particleStorage.setParticleStack(particleStack);
-        internalHeating(heatRate);
+        internalHeating((long) ((heatRate*(accelerationEnergy)+heatRate)/2));
         hasParticle = true;
         if(particleStack.getFocus() > 0) {
             getMultiblock().extractParticle(particleStack);
@@ -202,7 +198,8 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
         return (ThoroidalAcceleratorMultiblock) multiblock;
     }
 
-    private void handleMeltdown() {
+    @Override
+    protected void handleMeltdown() {
         if(isAcceleratorTooHot()) {
             quenchMagnets();
             controllerEnabled = false;
@@ -210,7 +207,7 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
     }
 
     @Override
-    protected igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock getAcceleratorMultiblock() {
+    protected AbstractAcceleratorMultiblock getAcceleratorMultiblock() {
         return getMultiblock();
     }
 

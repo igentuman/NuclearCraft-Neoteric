@@ -606,6 +606,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc_jei_cat.fission_boiling", "Boiling Reactor");
         add("nc_jei_cat.msr_controller", "Molten Salt Reactor");
         add("nc_jei_cat.decay_chamber", "Decay Chamber");
+        add("nc_jei_cat.nuclear_blast", "Nuclear Blast Transformation");
         add("nc_jei_cat.collision_chamber", "Collision Chamber");
 
         add("label.nuclearcraft.energy_range", "Energy: %s - %s");

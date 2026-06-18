@@ -10,6 +10,8 @@ import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE.FusionCoolantRecipe;
 import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
+import igentuman.nc.recipes.type.NuclearBlastRecipe;
+import igentuman.nc.recipes.serializers.NuclearBlastRecipeSerializer;
 import igentuman.nc.recipes.serializers.*;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.recipes.type.RadShieldingRecipe;
@@ -30,6 +32,7 @@ public class NcRecipeSerializers {
 
     public static final RecipeSerializerRegistryObject<RadShieldingRecipe> SHIELDING = RECIPE_SERIALIZERS.register("shielding", () -> new SimpleCraftingRecipeSerializer<>(RadShieldingRecipe::new));
     public static final RecipeSerializerRegistryObject<ResetNbtRecipe> RESET_NBT = RECIPE_SERIALIZERS.register("reset_nbt", () -> new SimpleCraftingRecipeSerializer<>(ResetNbtRecipe::new));
+    public static final RecipeSerializerRegistryObject<NuclearBlastRecipe> NUCLEAR_BLAST_RECIPE = RECIPE_SERIALIZERS.register("nuclear_blast", () -> new NuclearBlastRecipeSerializer());
 
     public static final HashMap<String, RecipeSerializerRegistryObject<? extends NcRecipe>> SERIALIZERS = initSerializers();
 
@@ -46,6 +49,7 @@ public class NcRecipeSerializers {
         map.put("target_chamber", RECIPE_SERIALIZERS.register("target_chamber", () -> new TargetChamberSerializer<>(TargetChamberControllerBE.Recipe::new)));
         map.put("decay_chamber", RECIPE_SERIALIZERS.register("decay_chamber", () -> new ParticleOnlyRecipeSerializer<>(DecayChamberControllerBE.Recipe::new)));
         map.put("collision_chamber", RECIPE_SERIALIZERS.register("collision_chamber", () -> new ParticleOnlyRecipeSerializer<>(CollisionChamberControllerBE.Recipe::new)));
+        map.put("nuclear_blast", NUCLEAR_BLAST_RECIPE);
         map.put(TurbineControllerBE.NAME, RECIPE_SERIALIZERS.register(TurbineControllerBE.NAME, () -> new TurbineRecipeSerializer<>(TurbineControllerBE.Recipe::new)));
         for(String key : Processors.all().keySet()) {
            if(Processors.all().get(key).getRecipeSerializer() != null) {

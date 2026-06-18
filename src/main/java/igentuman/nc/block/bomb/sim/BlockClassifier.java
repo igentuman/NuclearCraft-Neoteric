@@ -1,17 +1,96 @@
 package igentuman.nc.block.bomb.sim;
 
 import igentuman.nc.setup.registration.NCBlocks;
+import igentuman.nc.recipes.NcRecipeType;
+import igentuman.nc.recipes.type.NuclearBlastRecipe;
+import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static net.minecraft.world.level.block.Blocks.*;
 
 
 public final class BlockClassifier {
+
+    public static class Transformation {
+        public final BlockState outputState;
+        public final double chance;
+
+        public Transformation(BlockState outputState, double chance) {
+            this.outputState = outputState;
+            this.chance = chance;
+        }
+    }
+
+    private static volatile Map<Block, List<Transformation>> transformationMap = new HashMap<>();
+    private static boolean recipesLoaded = false;
+
+    public static synchronized void initializeRecipesMap() {
+        if (recipesLoaded) return;
+        try {
+            var recipeTypeObj = NcRecipeType.ALL_RECIPES.get("nuclear_blast");
+            if (recipeTypeObj == null) return;
+            var recipeType = recipeTypeObj.getRecipeType();
+            if (recipeType == null) return;
+            List<NuclearBlastRecipe> recipes = (List<NuclearBlastRecipe>) recipeType.getRecipes(null);
+            if (recipes == null || recipes.isEmpty()) {
+                return;
+            }
+
+            Map<Block, List<Transformation>> tempMap = new HashMap<>();
+
+            for (NuclearBlastRecipe recipe : recipes) {
+                if (recipe.isIncomplete()) continue;
+
+                if (recipe.getInputItems().length == 0 || recipe.getInputItems()[0] == null) continue;
+                if (recipe.getOutputItems().length == 0 || recipe.getOutputItems()[0] == null) continue;
+
+                ItemStackIngredient inputIngredient = recipe.getInputItems()[0];
+                ItemStackIngredient outputIngredient = recipe.getOutputItems()[0];
+
+                List<ItemStack> outputStacks = outputIngredient.getRepresentations();
+                if (outputStacks.isEmpty()) continue;
+                ItemStack outputStack = outputStacks.get(0);
+                if (outputStack.isEmpty()) continue;
+
+                Block outputBlock = Block.byItem(outputStack.getItem());
+                if (outputBlock == Blocks.AIR) continue;
+
+                BlockState outputState = outputBlock.defaultBlockState();
+                double chance = recipe.getChance();
+                Transformation transformation = new Transformation(outputState, chance);
+
+                List<ItemStack> inputStacks = inputIngredient.getRepresentations();
+                for (ItemStack inputStack : inputStacks) {
+                    if (inputStack.isEmpty()) continue;
+                    Block inputBlock = Block.byItem(inputStack.getItem());
+                    if (inputBlock == Blocks.AIR) continue;
+
+                    tempMap.computeIfAbsent(inputBlock, k -> new ArrayList<>()).add(transformation);
+                }
+            }
+
+            transformationMap = tempMap;
+            recipesLoaded = true;
+        } catch (Exception e) {
+            // Quietly ignore or log
+        }
+    }
+
+    public static synchronized void invalidate() {
+        recipesLoaded = false;
+        transformationMap.clear();
+    }
 
     // ratioSq = (distance / blastRadius)^2. Thresholds below are zone-radius fractions, squared.
     // Vaporization zone: inner 15% of blast radius (0.15^2). Everything becomes air.
@@ -100,8 +179,15 @@ public final class BlockClassifier {
             if (state.is(BlockTags.DIRT) || state.is(BlockTags.SAND)) {
                 return getDirtOrSandBlastOp(pos, state);
             }
-            if (state.is(BlockTags.COAL_ORES)) {
-                return new BlastOp.SetBlock(pos, DIAMOND_ORE.defaultBlockState());
+            initializeRecipesMap();
+            List<Transformation> transformations = transformationMap.get(state.getBlock());
+            if (transformations != null) {
+                for (Transformation t : transformations) {
+                    if (ThreadLocalRandom.current().nextDouble() < t.chance) {
+                        return new BlastOp.SetBlock(pos, t.outputState);
+                    }
+                }
+                return null;
             }
             if (isGrassPlant(state)) {
                 return new BlastOp.SetBlock(pos, Blocks.AIR.defaultBlockState());

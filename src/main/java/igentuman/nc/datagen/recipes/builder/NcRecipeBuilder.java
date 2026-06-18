@@ -255,8 +255,12 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             if(powerModifier > 0) {
                 json.addProperty("powerModifier", powerModifier);
             }
-            if(rarityModifier != 1D && rarityModifier != 0) {
-                json.addProperty("rarityModifier", rarityModifier);
+            if(ID.equals("nuclear_blast")) {
+                json.addProperty("chance", rarityModifier);
+            } else {
+                if(rarityModifier != 1D && rarityModifier != 0) {
+                    json.addProperty("rarityModifier", rarityModifier);
+                }
             }
             if(temperature != 0D) {
                 json.addProperty("temperature", temperature);

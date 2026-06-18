@@ -9,9 +9,9 @@ import net.minecraft.world.item.Item;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.content.materials.Materials.*;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
-import static igentuman.nc.setup.registration.Tags.forgeGem;
-import static igentuman.nc.setup.registration.Tags.forgeOre;
+import static igentuman.nc.setup.registration.Tags.*;
 import static net.minecraft.world.item.Items.*;
 
 public class RockCrusherRecipes extends AbstractRecipeProvider {
@@ -19,6 +19,12 @@ public class RockCrusherRecipes extends AbstractRecipeProvider {
     public static void generate(Consumer<FinishedRecipe> consumer) {
         RockCrusherRecipes.consumer = consumer;
         ID = Processors.ROCK_CRUSHER;
+
+        add(
+                ingredient(forgeBlock(kumanderite), 2),
+                List.of(ingredient(isotopeItem(xenorium298), 12), ingredient(isotopeItem(quantite), 16), ingredient(isotopeItem(californium252), 8)),
+                10, 2, 2
+        );
 
         add(
                 ingredient(GRAVEL, 4),

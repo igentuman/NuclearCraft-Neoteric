@@ -47,6 +47,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         recipes.put("target_chamber", register("target_chamber"));
         recipes.put("decay_chamber", register("decay_chamber"));
         recipes.put("collision_chamber", register("collision_chamber"));
+        recipes.put("nuclear_blast", register("nuclear_blast"));
         recipes.put(TurbineControllerBE.NAME, register(TurbineControllerBE.NAME));
 
         for(String processorName: Processors.all().keySet()) {

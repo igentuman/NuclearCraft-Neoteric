@@ -36,6 +36,7 @@ import igentuman.nc.multiblock.accelerator.CoolerDef;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.recipes.NcRecipeType;
+import igentuman.nc.recipes.type.NuclearBlastRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.setup.registration.FissionFuel;
@@ -145,7 +146,8 @@ public class EMIPlugin implements EmiPlugin {
                 name.equals("kugelblitz_chamber") || name.equals("target_chamber") ||
                 name.equals("collision_chamber") || name.equals("decay_chamber") ||
                 name.equals("turbine_controller") || name.equals("accelerator_coolant") ||
-                name.equals("msr_controller") || name.equals("nc_ore_veins")) {
+                name.equals("msr_controller") || name.equals("nc_ore_veins") ||
+                name.equals("nuclear_blast")) {
                 continue;
             }
             
@@ -291,6 +293,17 @@ public class EMIPlugin implements EmiPlugin {
         for (var recipe : oreVeinRecipes) {
             if (recipe instanceof OreVeinRecipe oreVeinRecipe) {
                 registry.addRecipe(new OreVeinEmiCategory(oreVeinRecipe));
+            }
+        }
+
+        // Register Nuclear Blast category
+        registry.addCategory(NuclearBlastEmiCategory.CATEGORY);
+        CATEGORIES.put("nuclear_blast", NuclearBlastEmiCategory.CATEGORY);
+
+        var nuclearBlastRecipes = NcRecipeType.ALL_RECIPES.get("nuclear_blast").getRecipes(NcClient.tryGetClientWorld());
+        for (var recipe : nuclearBlastRecipes) {
+            if (recipe instanceof NuclearBlastRecipe blastRecipe) {
+                registry.addRecipe(new NuclearBlastEmiCategory(blastRecipe));
             }
         }
     }

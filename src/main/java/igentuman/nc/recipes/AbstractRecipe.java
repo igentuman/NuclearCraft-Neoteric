@@ -477,6 +477,10 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
         return inputItems;
     }
 
+    public ItemStackIngredient[] getOutputItems() {
+        return outputItems;
+    }
+
     public boolean handleOutputs(SidedContentHandler contentHandler, ItemStack outputItem) {
         int i = contentHandler.inputItemSlots;
         if(!contentHandler.itemHandler.insertItemInternal(i, outputItem, true).isEmpty()) {

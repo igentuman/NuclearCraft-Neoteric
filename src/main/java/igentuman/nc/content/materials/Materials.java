@@ -7,6 +7,7 @@ import java.util.Set;
 
 public class Materials extends MaterialsManager {
     
+    public final static String kumanderite = "kumanderite";
     public final static String uranium = "uranium";
     public final static String thorium = "thorium";
     public final static String boron = "boron";
@@ -196,6 +197,7 @@ public class Materials extends MaterialsManager {
             all.put(cobalt, NCMaterial.ore(cobalt).color(0xFF5A6691));
             all.put(platinum, NCMaterial.ore(platinum).ores(false, true, false, false).color(0xFF6C939B));
 
+            all.put(kumanderite, NCMaterial.get(kumanderite).define("block"));
             all.put("uranium238", NCMaterial.get("uranium238").define("block"));
             all.put("plutonium238", NCMaterial.get("plutonium238").define("block"));
             all.put("americium241", NCMaterial.get("americium241").define("block"));

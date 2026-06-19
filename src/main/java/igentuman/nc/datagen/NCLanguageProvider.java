@@ -959,6 +959,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.blade.desc","Converts the energy of the oncoming fluid flow into rotational energy in the rotor shaft. The expansion coefficient is larger than unity, so the volume of the fluid flow will increase each time it passes through a set. Must be placed in complete sets of four coplanar groups extending from the turbine shaft to the wall. Each blade block can process up to %s of oncoming fluid.");
         add("tooltip.nc.rotor_shaft.desc","Connects the rotor blades to the dynamo to convert the generated kinetic energy into electrical energy. Must be placed axially as a cuboid along the centre of the turbine interior.");
         add("tooltip.nc.bearing.desc","Connects the rotor shaft to the turbine wall and dynamo. Must cover the full area of each end of the shaft.");
+        add("tooltip.nc.bearing.create","Supports Create kinetic energy.");
         add("turbine.active.coils", "Active coils: %s");
         add("turbine.blades.flow", "Max steam flow: %s mB/t");
         add("tooltip.nc.liquid_empty","Stored: 0 of %s");

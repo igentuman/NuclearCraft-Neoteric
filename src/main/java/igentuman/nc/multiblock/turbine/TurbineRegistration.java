@@ -2,6 +2,7 @@ package igentuman.nc.multiblock.turbine;
 
 import igentuman.nc.block.turbine.*;
 import igentuman.nc.block.turbine.entity.*;
+import igentuman.nc.compat.create.CreateTurbine;
 import igentuman.nc.container.TurbineControllerContainer;
 import igentuman.nc.container.TurbinePortContainer;
 import net.minecraft.tags.TagKey;
@@ -21,6 +22,7 @@ import java.util.function.Supplier;
 
 import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.setup.registration.Tags.blockTag;
+import static igentuman.nc.util.ModUtil.isCreateLoaded;
 
 public class TurbineRegistration {
 
@@ -95,8 +97,17 @@ public class TurbineRegistration {
                         () -> BlockEntityType.Builder.of(TurbineRotorBE::new, rotor.get())
                                 .build(null)));
 
-        addBlock("turbine_bearing", () -> new TurbineBearingBlock(TURBINE_BLOCKS_PROPERTIES));
 
+        if(isCreateLoaded()) {
+            CreateTurbine.registerBearing();
+        } else {
+            RegistryObject<Block> bearing = addBlock("turbine_bearing", () -> new TurbineBearingBlock(TURBINE_BLOCKS_PROPERTIES));
+
+            TURBINE_BE.put("turbine_bearing",
+                    BLOCK_ENTITIES.register("turbine_bearing",
+                            () -> BlockEntityType.Builder.of(TurbineBearingBE::new, bearing.get())
+                                    .build(null)));
+        }
 
         addBlock("turbine_glass", () -> new TurbineBlock(GLASS_BLOCK_PROPERTIES));
         addBlock("turbine_casing", () -> new TurbineBlock(TURBINE_BLOCKS_PROPERTIES));

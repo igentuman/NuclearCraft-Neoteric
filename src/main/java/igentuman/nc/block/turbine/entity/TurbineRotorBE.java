@@ -13,11 +13,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
+import static igentuman.nc.util.ModUtil.isCreateLoaded;
 
 public class TurbineRotorBE extends TurbineBE {
     @NBTField(syncAlways = true)
     public BlockPos controllerPos = BlockPos.ZERO;
+
     private float rotation = 0;
 
     public static String NAME = "turbine_rotor_shaft";
@@ -56,11 +59,12 @@ public class TurbineRotorBE extends TurbineBE {
     @Override
     public void tickServer() {
         //Disallow boosters like torcherino
-        if(lastTickTime == level.getGameTime()) {
+        if(lastTickTime == currentTick) {
             return;
         }
-        lastTickTime = level.getGameTime();
+        lastTickTime = currentTick;
         super.tickServer();
+
         BlockPos wasPos = controllerPos;
         if(wasPos != getControllerPos()) {
             controllerPos = getControllerPos();

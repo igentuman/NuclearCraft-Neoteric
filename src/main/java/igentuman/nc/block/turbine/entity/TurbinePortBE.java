@@ -78,7 +78,7 @@ public class TurbinePortBE extends MultiblockPortBE {
     }
 
     public void updateAnalogSignal() {
-        if(isConnectedToController()) {
+        if(!isConnectedToController()) {
             analogSignal = 0;
             return;
         }

@@ -98,7 +98,6 @@ public class TurbineControllerBlock extends MultiblockControllerBlock implements
             return (lvl, pos, blockState, t) -> {
                 if (t instanceof TurbineControllerBE tile) {
                     tile.tickClient();
-                    level.setBlock(pos, blockState.setValue(POWERED, tile.powered), 3);
                 }
             };
         }

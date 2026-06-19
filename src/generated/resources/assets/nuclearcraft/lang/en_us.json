@@ -2879,6 +2879,7 @@
   "tooltip.nc.analyze": "Analyze structure",
   "tooltip.nc.analyze.descr": "Refresh multiblock data, analyze and provide more details",
   "tooltip.nc.analyzed": "Item analyze completed",
+  "tooltip.nc.bearing.create": "Supports Create kinetic energy.",
   "tooltip.nc.bearing.desc": "Connects the rotor shaft to the turbine wall and dynamo. Must cover the full area of each end of the shaft.",
   "tooltip.nc.blade.desc": "Converts the energy of the oncoming fluid flow into rotational energy in the rotor shaft. The expansion coefficient is larger than unity, so the volume of the fluid flow will increase each time it passes through a set. Must be placed in complete sets of four coplanar groups extending from the turbine shaft to the wall. Each blade block can process up to %s of oncoming fluid.",
   "tooltip.nc.build": "Build Multiblock",

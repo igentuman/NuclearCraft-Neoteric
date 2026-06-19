@@ -3,10 +3,8 @@ package igentuman.nc.multiblock.turbine;
 import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
-import igentuman.nc.block.turbine.entity.TurbineBladeBE;
-import igentuman.nc.block.turbine.entity.TurbineCoilBE;
-import igentuman.nc.block.turbine.entity.TurbineControllerBE;
-import igentuman.nc.block.turbine.entity.TurbineRotorBE;
+import igentuman.nc.block.turbine.entity.*;
+import igentuman.nc.compat.create.CreateTurbine;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
@@ -16,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +23,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
+import static igentuman.nc.util.ModUtil.isCreateLoaded;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class TurbineMultiblock extends AbstractMultiblock {
@@ -301,5 +301,21 @@ public class TurbineMultiblock extends AbstractMultiblock {
 
     protected Direction getControllerDirection() {
         return controller().controllerBE().getFacing();
+    }
+
+    public void passKineticEnergy() {
+        if (!isCreateLoaded() || turbineDirection == null) return;
+        Direction.Axis axis = turbineDirection.getAxis();
+        int coils = controllerBE().getActiveCoils();
+        float rpm = Math.min(256, (float) (controllerBE().rotationSpeed*1000 / ((float) coils /2+1) * TURBINE_CONFIG.KINETIC_ENERGY_CONVERTION.get()));
+        List<BlockPos> tmp = bearingPositions.stream().toList();
+        for(BlockPos pos: tmp) {
+            BlockState bs = getBlockState(pos);
+            if(bs.hasProperty(BlockStateProperties.AXIS) && bs.getValue(BlockStateProperties.AXIS) != axis) {
+                controllerBE().getLevel().setBlock(pos, bs.setValue(BlockStateProperties.AXIS, axis), Block.UPDATE_CLIENTS);
+            }
+            BlockEntity be = getBlockEntity(pos);
+            CreateTurbine.applyKinetic(be, rpm, (float) Math.log1p(controllerBE().realFlow)*7);
+        }
     }
 }

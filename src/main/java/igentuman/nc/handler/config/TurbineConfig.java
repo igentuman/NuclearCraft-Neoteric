@@ -44,6 +44,7 @@ public class TurbineConfig {
         public final ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
         public final ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
         public final ForgeConfigSpec.ConfigValue<Double> ENERGY_GEN;
+        public final ForgeConfigSpec.ConfigValue<Double> KINETIC_ENERGY_CONVERTION;
         public final ForgeConfigSpec.ConfigValue<Integer> BLADE_FLOW;
         public final ForgeConfigSpec.ConfigValue<List<Double>> EFFICIENCY;
         public HashMap<String, ForgeConfigSpec.ConfigValue<List<String>>> PLACEMENT_RULES = new HashMap<>();
@@ -66,6 +67,10 @@ public class TurbineConfig {
             ENERGY_GEN = builder
                     .comment("Energy gen multiplier")
                     .defineInRange("energy_gen", 10D, 1D, 1000000D);
+
+            KINETIC_ENERGY_CONVERTION = builder
+                    .comment("Create energy convertion rate")
+                    .defineInRange("create_energy_convertion", 0.2D, 0.01D, 2D);
 
             EFFICIENCY = builder
                     .comment("Efficiency %: " + String.join(", ", TurbineRegistration.initialEfficiency().keySet()))

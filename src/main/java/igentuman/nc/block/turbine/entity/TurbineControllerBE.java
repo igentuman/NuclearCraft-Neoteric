@@ -12,15 +12,18 @@ import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
+import igentuman.nc.util.NCDamageSources;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -226,10 +229,10 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             return;
         }
         //Disallow boosters like torcherino
-        if(lastTickTime == level.getGameTime()) {
+        if(lastTickTime == currentTick) {
             return;
         }
-        lastTickTime = level.getGameTime();
+        lastTickTime = currentTick;
         changed = false;
         super.tickServer();
         boolean wasPowered = powered;
@@ -401,12 +404,31 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             this.realFlow = (int) Math.min(realFlow, maxFlow);
         }
         rotationSpeed = (float) ((rotationSpeed*4+realFlow/(flow*TURBINE_CONFIG.BLADE_FLOW.get()))/5f);
+        if(!level.isClientSide()) {
+            damageEntitiesInside();
+        }
+        getMultiblock().passKineticEnergy();
         energyStorage().addEnergy(calculateEnergy());
         efficiency = calculateEfficiency();
         handleRecipeOutput();
         contentHandler().fluidHandler.tanks.get(0).drain(this.realFlow, EXECUTE);
 
         return true;
+    }
+
+    private void damageEntitiesInside() {
+        if(rotationSpeed <= 0 || bottomLeft == null || topRight == null) return;
+        int minX = Math.min(bottomLeft.getX(), topRight.getX());
+        int minY = Math.min(bottomLeft.getY(), topRight.getY());
+        int minZ = Math.min(bottomLeft.getZ(), topRight.getZ());
+        int maxX = Math.max(bottomLeft.getX(), topRight.getX()) + 1;
+        int maxY = Math.max(bottomLeft.getY(), topRight.getY()) + 1;
+        int maxZ = Math.max(bottomLeft.getZ(), topRight.getZ()) + 1;
+        AABB interior = new AABB(minX, minY, minZ, maxX, maxY, maxZ).deflate(1);
+        float damage = 10 * rotationSpeed;
+        for(LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, interior)) {
+            entity.hurt(NCDamageSources.TURBINE(level), damage);
+        }
     }
 
     public void calculateMaxFlow() {

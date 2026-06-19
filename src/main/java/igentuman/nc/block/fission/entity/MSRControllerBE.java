@@ -3,6 +3,7 @@ package igentuman.nc.block.fission.entity;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
+import igentuman.nc.compat.oc2.MSRDevice;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.item.ItemFuel;
@@ -40,6 +41,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.block.fission.MSRControllerBlock.POWERED;
+import static igentuman.nc.compat.oc2.MSRDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
 import static igentuman.nc.handler.config.FissionConfig.MSR_CONFIG;
@@ -420,6 +422,9 @@ public class MSRControllerBE extends MultiblockControllerBE {
         }
         if (cap == ForgeCapabilities.ENERGY) {
             return getEnergy().cast();
+        }
+        if (isOC2Loaded() && cap == DEVICE_CAPABILITY) {
+            return LazyOptional.of(() -> MSRDevice.createDevice(this)).cast();
         }
         return super.getCapability(cap, side);
     }

@@ -59,10 +59,19 @@ public class BeamDiverterControllerBE extends AbstractAcceleratorControllerBE {
         if (energyStorage().getEnergyStored() < energyPerTick) return false;
 
         ParticleStack copy = particleStorage.getParticle().copy();
-        copy.setMeanEnergy((copy.getMeanEnergy()) / 1);
-        copy.setFocus(Equations.focusLoss(3/2d, copy)- Equations.focusLoss(3/2d, copy));
-        particleStorage.outputParticles.add(copy);
-        getMultiblock().extractParticle(copy);
+
+        copy.addFocus(-Equations.focusLoss(3, copy));
+
+        AcceleratorBeamPortBE inputPort = getMultiblock().getInputBeamPort();
+        AcceleratorBeamPortBE outputPort = getMultiblock().getFirstOutputBeamPort();
+        if(inputPort != null && outputPort != null) {
+            if(inputPort.getFacing().getOpposite() != outputPort.getFacing()) {
+                copy.addMeanEnergy(-Equations.cornerEnergyLoss(copy,160 * (Math.log(dipoleStrength*10)+0.2)));
+            }
+            outputPort.extractParticle(copy);
+            particleStorage.outputParticles.add(copy);
+        }
+
 
         particleStorage.clearServer();
         return true;

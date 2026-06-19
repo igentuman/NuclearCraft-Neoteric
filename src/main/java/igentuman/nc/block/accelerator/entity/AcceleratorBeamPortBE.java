@@ -11,6 +11,7 @@ import igentuman.nc.util.PortMode;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -61,9 +62,14 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
         if(lastTickTime == currentTick || NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         lastTickTime = currentTick;
         alreadySentParticle = false;
-        boolean updated = updateController();
+        boolean updated = updateController() || currentTick % 40 == 0;
         if(!isConnectedToController()) return;
         updateIfNeeded(updated);
+    }
+
+    protected void saveClientData(CompoundTag tag) {
+        super.saveClientData(tag);
+        clientParticle = ParticleStack.EMPTY;
     }
 
     @Nonnull

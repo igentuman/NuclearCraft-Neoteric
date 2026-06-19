@@ -56,7 +56,6 @@ public class AcceleratorBeamPortBlock extends HorizontalDirectionalBlock impleme
             if(isMultiTool(player.getItemInHand(hand))) {
                 PortMode.Mode mode = state.getValue(PORT_MODE);
                 PortMode.Mode newMode = mode.next();
-                MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(pos);
                 level.setBlockAndUpdate(pos, state.setValue(PORT_MODE, newMode));
                 player.sendSystemMessage(__("message.nc.switch_side.mode", newMode));
                 return InteractionResult.SUCCESS;

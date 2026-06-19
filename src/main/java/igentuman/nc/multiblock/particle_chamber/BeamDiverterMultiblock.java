@@ -171,6 +171,8 @@ public class BeamDiverterMultiblock extends AbstractAcceleratorMultiblock {
         int outputCount = 0;
         beamPortsBE.clear();
         beamPorts.clear();
+        dipoleStrength = 0;
+        electromagnets.clear();
 
         List<Direction> horizontalDirs = List.of(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST);
         BlockPos center = getCenterBlock();
@@ -197,6 +199,7 @@ public class BeamDiverterMultiblock extends AbstractAcceleratorMultiblock {
                 outputCount++;
             }
             beamPortsBE.put(portPos.asLong(), portBE);
+            beamPorts.add(portPos.asLong());
         }
 
         if (inputCount != 1) {
@@ -240,6 +243,9 @@ public class BeamDiverterMultiblock extends AbstractAcceleratorMultiblock {
                             errorBlockPos = pos;
                             clearStats();
                             return;
+                        } {
+                            electromagnets.putIfAbsent(pos.asLong(), (ElectromagnetBlock) bs.getBlock());
+                            dipoleStrength = ((ElectromagnetBlock) bs.getBlock()).getStrength();
                         }
                     } else {
                         if (!bs.is(yokeBlock)) {
@@ -255,13 +261,14 @@ public class BeamDiverterMultiblock extends AbstractAcceleratorMultiblock {
 
         validationResult = ValidationResult.VALID;
         innerValid = true;
-
+        ((BlockPosInstance) bottomLeft).revert();
         BeamDiverterControllerBE ctrl = controllerBE();
         ctrl.connectedPorts = beamPorts.size();
         ctrl.height = height;
         ctrl.width = width;
         ctrl.depth = depth;
         ctrl.efficiency = 100D;
+        ctrl.dipoleStrength = dipoleStrength;
         ctrl.refresh();
     }
 
@@ -275,12 +282,36 @@ public class BeamDiverterMultiblock extends AbstractAcceleratorMultiblock {
         for (long pos : beamPortsBE.keySet()) {
             if (getBlockState(pos).getValue(PORT_MODE) == PortMode.Mode.OUTPUT) {
                 BlockEntity be = beamPortsBE.get(pos);
-                if (be instanceof TargetChamberBeamPortBE port) {
+                if (be instanceof AcceleratorBeamPortBE port) {
                     if(port.extractParticle(outputParticle)) {
                         break;
                     }
                 }
             }
         }
+    }
+
+    public AcceleratorBeamPortBE getInputBeamPort() {
+        for (long pos : beamPortsBE.keySet()) {
+            if (getBlockState(pos).getValue(PORT_MODE) == PortMode.Mode.INPUT) {
+                BlockEntity be = beamPortsBE.get(pos);
+                if (be instanceof AcceleratorBeamPortBE port) {
+                    return port;
+                }
+            }
+        }
+        return null;
+    }
+
+    public AcceleratorBeamPortBE getFirstOutputBeamPort() {
+        for (long pos : beamPortsBE.keySet()) {
+            if (getLevel().getBlockState(BlockPos.of(pos)).getValue(PORT_MODE) == PortMode.Mode.OUTPUT) {
+                BlockEntity be = beamPortsBE.get(pos);
+                if (be instanceof AcceleratorBeamPortBE port) {
+                    return port;
+                }
+            }
+        }
+        return null;
     }
 }

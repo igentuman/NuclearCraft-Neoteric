@@ -115,7 +115,7 @@ public class BeamDiverterContainer extends AbstractContainerMenu {
     }
 
     public double getStrength() {
-        return 100D;
+        return blockEntity.dipoleStrength;
     }
 
     public boolean isAcceleratorTooHot() {

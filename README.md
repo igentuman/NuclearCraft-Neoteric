@@ -48,6 +48,7 @@ System reference docs live in [`docs/`](docs):
 - [Turbine](docs/TURBINE.md) - Produce energy with steam cycle
 - [Kugelblitz](docs/KUGELBLITZ.md) - Confinment for blackhole. Harness energy and use unique recipe chains
 - [Accelerators](docs/ACCELERATORS.md) - linear & toroidal beam lines, magnets, RF cavities, particle sources
+- [Beam Diverter](docs/BEAM_DIVERTER.md) - 5×5×5 multiblock that redirects a particle beam between input and output ports
 - [Particle Chambers](docs/PARTICLE_CHAMBERS.md) - Target, Decay and Collision chambers for beam reactions, detectors, and particle manipulation
 - [Leacher](docs/LEACHER.md) - in-situ ore leaching, pumps, research papers, ore-vein system
 - [Computers](docs/COMPUTERS.md) - ComputerCraft and OpenComputers v2 peripherals

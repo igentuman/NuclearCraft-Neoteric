@@ -8,7 +8,7 @@ import igentuman.nc.content.particles.Equations;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.particle_chamber.BeamDiverterMultiblock;
+import igentuman.nc.multiblock.accelerator.BeamDiverterMultiblock;
 import igentuman.nc.util.PortMode;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;

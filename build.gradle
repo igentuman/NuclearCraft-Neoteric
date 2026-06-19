@@ -152,6 +152,8 @@ dependencies {
         }
     }
 
+    implementation fg.deobf("curse.maven:create-328085:7178761")
+
     compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
         transitive = false
     }

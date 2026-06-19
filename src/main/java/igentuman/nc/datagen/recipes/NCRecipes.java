@@ -451,6 +451,19 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get()))
                 .save(consumer, rl("accelerator_casing_from_glass"));
 
+        // Beam diverter controller
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("beam_diverter_controller").get())
+                .pattern("PEP")
+                .pattern("BFB")
+                .pattern("PEP")
+                .define('P', NC_PARTS.get("plate_elite").get())
+                .define('E', COMPASS)
+                .define('B', NC_PARTS.get("basic_processor").get())
+                .define('F', ACCELERATOR_BLOCKS.get("accelerator_casing").get())
+                .group(MODID+"_accelerator")
+                .unlockedBy("item", has(NC_PARTS.get("plate_elite").get()))
+                .save(consumer, rl("beam_diverter_controller"));
+
         // Linear accelerator controller
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get())
                 .pattern("PEP")

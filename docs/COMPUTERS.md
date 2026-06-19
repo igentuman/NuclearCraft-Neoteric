@@ -7,6 +7,25 @@ acquire the handle.
 
 There is **no OpenComputers v1 support**.
 
+## Scope
+
+| Multiblock / block | CC peripheral type | CC class | OC2 device class |
+|---|---|---|---|
+| Processors | `nc_processor` | `ProcessorPeripheral` | `ProcessorDevice` |
+| Fission reactor | `nc_fission_reactor` | `SolidFissionReactorPeripheral` | `FissionReactorDevice` |
+| Fusion reactor | `nc_fusion_reactor_core` | `FusionReactorPeripheral` | `FusionReactorDevice` |
+| Turbine | `nc_turbine` | `TurbinePeripheral` | `TurbineDevice` |
+| Linear accelerator | `nc_accelerator` | `LinearAcceleratorPeripheral` | `LinearAcceleratorDevice` |
+| Ring accelerator | `ring_accelerator` | `RingAcceleratorPeripheral` | `RingAcceleratorDevice` |
+| Target chamber | `nc_target_chamber` | `TargetChamberPeripheral` | `TargetChamberDevice` |
+| Decay chamber | `nc_decay_chamber` | `DecayChamberPeripheral` | `DecayChamberDevice` |
+| Collision chamber | `nc_decay_chamber` | `CollisionChamberPeripheral` | `CollisionChamberDevice` |
+| Beam diverter | `nc_beam_diverter` | `BeamDiverterPeripheral` | `BeamDiverterDevice` |
+| Kugelblitz | `nc_kugelblitz` | `KugelblitzPeripheral` | `KugelblitzDevice` |
+
+> The linear and ring accelerators use **different** peripheral type strings (`nc_accelerator`
+> vs `ring_accelerator`). The decay and collision chambers share the `nc_decay_chamber` string.
+
 ## ComputerCraft (`compat/cc/`)
 
 Each peripheral exposes its methods via `@LuaFunction`. Acquire with
@@ -64,34 +83,77 @@ Same surface as the fission reactor, plus:
 | `enableTurbine()` / `disableTurbine()` | void |
 | `getEnergyPerTick()` / `getEnergyStored()` | int |
 
+### `nc_accelerator` - `LinearAcceleratorPeripheral`
+
+| Method | Returns | Description |
+|---|---|---|
+| `isFormed()` | boolean | Casing and internals valid |
+| `getName()` | string | Controller id |
+| `hasParticle()` | boolean | A beam is present |
+| `getEnergyStored()` | int | Stored FE |
+| `getMinEnergy()` | int | Minimum input particle energy |
+| `getTemperature()` / `getMaxTemperature()` | int | Current / max operating temperature |
+| `getHeatRate()` | int | Heat generated per tick |
+| `getHeatBufferInfo()` | map | `heat_stored`, `heat_capacity` |
+| `getCoolingInfo()` | map | `cooling_fluid`, `cooling` |
+| `getStats()` | map | `accelerating_voltage`, `quadrupole_strength`, `beam_length` |
+| `getParticleInfo()` | map / nil | `energy`, `focus`, `amount`, `particle` |
+| `isAcceleratorOn()` | boolean | Controller enabled |
+| `setEnergyPercentage(double)` | void | Computer-controlled acceleration 0..100 (`<5` ⇒ off) |
+| `releaseControl()` | void | Hand control back to redstone |
+
+### `ring_accelerator` - `RingAcceleratorPeripheral`
+
+Same surface as `nc_accelerator`, except `getStats()` reports
+`accelerating_voltage`, `dipole_strength`, `quadrupole_strength`, `input_particle_min_energy`,
+and it adds the beam-port controls:
+
+| Method | Returns | Description |
+|---|---|---|
+| `getBeamPortsInfo()` | list / nil | One entry per beam port (see [Beam ports](#beam-ports)) |
+| `setBeamPortMode(id, mode)` | boolean | Set port `id` to `"input"`, `"output"`, or `"disabled"` |
+
 ### `nc_target_chamber` - `TargetChamberPeripheral`
 
-| Method | Returns |
-|---|---|
-| `isFormed()` | boolean |
-| `hasRecipe()` | boolean |
-| `getRecipeProgress()` | int |
-| `enableReactor()` / `disableReactor()` | void |
-| `getEnergyPerTick()` / `getEnergyStored()` | int |
-| `voidFuel()` | void |
-| `getFuelInSlot()` | table |
+| Method | Returns | Description |
+|---|---|---|
+| `isFormed()` | boolean | Casing and internals valid |
+| `getName()` | string | Controller id |
+| `hasRecipe()` | boolean | Recipe active |
+| `getRecipeProgress()` | int | Progress 0..100 |
+| `enableController()` / `disableController()` | void | Clear / force shutdown |
+| `getEnergyPerTick()` / `getEnergyStored()` | int | Power draw / stored FE |
+| `getInputItem()` | table | Input item info |
+| `getInputFluid()` | table | Input fluid info |
+| `getInputParticleInfo()` | map / nil | Incoming beam: `energy`, `focus`, `amount`, `particle` |
+| `getOutputParticlesInfo()` | map / nil | Output beams keyed by particle name |
+| `getBeamPortsInfo()` | list / nil | One entry per beam port |
+| `setBeamPortMode(id, mode)` | boolean | Set port `id` to `"input"`, `"output"`, or `"disabled"` |
 
-### `nc_accelerator` - `LinearAcceleratorPeripheral` / `RingAcceleratorPeripheral`
+### `nc_decay_chamber` - `DecayChamberPeripheral` / `CollisionChamberPeripheral`
 
-Same peripheral type string for both variants.
+Both the decay chamber and the collision chamber report the `nc_decay_chamber` type.
 
-| Method | Returns |
-|---|---|
-| `isFormed()` | boolean |
-| `hasParticle()` | boolean |
-| `isAcceleratorOn()` | boolean |
-| `getEnergyStored()` | int |
-| `getTemperature()` / `getMaxTemperature()` | int |
-| `getHeatRate()` | double |
-| `getHeatBufferInfo()` | map |
-| `getCoolingInfo()` | map |
-| `getStats()` | map (`accelerating_voltage`, `dipole_strength`, `quadrupole_strength`, `input_particle_min_energy`) |
-| `getParticleInfo()` | table |
+| Method | Returns | Description |
+|---|---|---|
+| `isFormed()` | boolean | Casing and internals valid |
+| `getName()` | string | Controller id |
+| `hasRecipe()` | boolean | Recipe active |
+| `getRecipeProgress()` | int | Progress 0..100 |
+| `enableController()` / `disableController()` | void | Clear / force shutdown |
+| `getEnergyPerTick()` / `getEnergyStored()` | int | Power draw / stored FE |
+| `getInputParticleInfo()` | map / nil | Decay: one beam. Collision: `particle_1`, `particle_2` |
+| `getOutputParticlesInfo()` | map / nil | Output beams keyed by particle name |
+| `getBeamPortsInfo()` | list / nil | One entry per beam port |
+| `setBeamPortMode(id, mode)` | boolean | Decay chamber only; the collision chamber omits this method |
+
+### `nc_beam_diverter` - `BeamDiverterPeripheral`
+
+| Method | Returns | Description |
+|---|---|---|
+| `getParticleInfo()` | map / nil | Beam inside the diverter: `energy`, `focus`, `amount`, `particle` |
+| `getBeamPortsInfo()` | list / nil | One entry per beam port |
+| `setBeamPortMode(id, mode)` | boolean | Set port `id` to `"input"`, `"output"`, or `"disabled"` |
 
 ### `nc_kugelblitz` - `KugelblitzPeripheral`
 
@@ -105,12 +167,36 @@ Same peripheral type string for both variants.
 | `getFluxRegulators()`, `getTransformers()`, `getStabilizers()` | int |
 | `getTransformationEnergyRate()` / `setTransformationEnergyRate(0..100)` | int |
 
+## Beam ports
+
+`getBeamPortsInfo()` returns a list (Lua table, 1-indexed) describing every beam port on the
+multiblock, sorted by packed block position. Each entry is a map:
+
+| Key | Type | Notes |
+|---|---|---|
+| `id` | int | Stable index to pass to `setBeamPortMode` |
+| `x`, `y`, `z` | int | Block position |
+| `mode` | string | `"input"`, `"output"`, or `"disabled"` |
+| `particle` | map / nil | The port's buffered beam (`energy`, `focus`, `amount`, `particle`), or nil |
+
+`setBeamPortMode(id, mode)` accepts the same three mode strings (case-insensitive) and returns
+`true` on success, `false` if the multiblock is not formed or the `id`/`mode` is invalid.
+
+The beam-port methods run on the server thread (`mainThread = true` on CC, `synchronize = true`
+on OC2) because they mutate world state.
+
 ## OpenComputers v2 (`compat/oc2/`)
 
 Mirror of the CC peripherals, exposed as `ObjectDevice` records with `@Callback` annotations.
 Device class names: `ProcessorDevice`, `FissionReactorDevice`, `FusionReactorDevice`,
-`TurbineDevice`, `TargetChamberDevice`, `LinearAcceleratorDevice`, `RingAcceleratorDevice`,
-`KugelblitzDevice`. Method names match the CC peripherals 1:1.
+`TurbineDevice`, `LinearAcceleratorDevice`, `RingAcceleratorDevice`, `TargetChamberDevice`,
+`DecayChamberDevice`, `CollisionChamberDevice`, `BeamDiverterDevice`, `KugelblitzDevice`.
+
+OC2 devices are named after the controller (`getDeviceTypeNames()` returns `getName()`), and the
+accelerator/diverter devices expose finer-grained getters than the CC `getStats()`/`getHeatBufferInfo()`
+maps - e.g. `getAcceleratingVoltage()`, `getDipoleStrength()`, `getQuadrupoleStrength()`,
+`getBeamLength()`, `getHeatStored()`, `getHeatCapacity()`, `getCoolingRate()`. The beam-port
+methods (`getBeamPortsInfo`, `setBeamPortMode`) match the CC versions 1:1.
 
 ## TIS-3D
 
@@ -120,11 +206,16 @@ on-block status displays and signal triggers.
 ## Example (ComputerCraft Lua)
 
 ```lua
-local r = peripheral.wrap("back")
-print("Formed: " .. tostring(r.isFormed()))
-print("Heat:   " .. r.getHeat() .. " / " .. r.getMaxHeatCapacity())
-print("FE/t:   " .. r.getEnergyPerTick())
-if r.getHeat() > r.getMaxHeatCapacity() * 0.8 then
-  r.disableReactor()
+-- Route one accelerator's beam to each output of a beam diverter in turn.
+local d = peripheral.find("nc_beam_diverter")
+
+for _, port in ipairs(d.getBeamPortsInfo()) do
+  if port.mode == "output" or port.mode == "disabled" then
+    d.setBeamPortMode(port.id, "output")
+    local beam = d.getParticleInfo()
+    if beam then
+      print(("port %d <- %s @ %.1f MeV"):format(port.id, beam.particle, beam.energy))
+    end
+  end
 end
 ```

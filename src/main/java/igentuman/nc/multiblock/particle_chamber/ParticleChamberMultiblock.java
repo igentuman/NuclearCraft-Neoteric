@@ -272,7 +272,7 @@ public abstract class ParticleChamberMultiblock extends AbstractMultiblock {
     public void extractParticle(int id, ParticleStack outputParticle) {
         int i = -1;
         for (long pos : beamPorts.keySet()) {
-            if (getBlockState(pos).getValue(PORT_MODE) == PortMode.Mode.OUTPUT) {
+            if (getLevel().getBlockState(BlockPos.of(pos)).getValue(PORT_MODE) == PortMode.Mode.OUTPUT) {
                 BlockEntity be = beamPorts.get(pos);
                 i++;
                 if (id != i) continue;

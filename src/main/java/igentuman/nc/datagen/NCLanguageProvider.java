@@ -154,6 +154,14 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.ponder.ring_accelerator.text_4", "Inside corners of the ring may host coolers to dump heat.");
         add("nuclearcraft.ponder.ring_accelerator.text_5", "Use Ring Accelerator Ports for energy, fluids and redstone, and Beam Ports for particle input/output. The generic Accelerator Port and Ion Source Port do not fit on a ring.");
         add("nuclearcraft.ponder.ring_accelerator.text_6", "Pipe in an existing beam at 5 MeV or higher, then power the controller. Redstone strength scales output energy.");
+        add("nuclearcraft.ponder.beam_diverter.header", "Beam Diverter");
+        add("nuclearcraft.ponder.beam_diverter.text_1", "The Beam Diverter is a fixed 5x5x5 cube of Accelerator Casing and Glass.");
+        add("nuclearcraft.ponder.beam_diverter.text_2", "An Accelerator Beam Port sits at the center of each of the four walls.");
+        add("nuclearcraft.ponder.beam_diverter.text_3", "Inside, a cross of Particle Beam blocks links the four ports through the center.");
+        add("nuclearcraft.ponder.beam_diverter.text_4", "A dipole magnet - an electromagnet above and below the center, with yokes filling the rest - bends the beam.");
+        add("nuclearcraft.ponder.beam_diverter.text_5", "Set exactly one port to Input and at least one to Output - with the Multitool, redstone, or a computer.");
+        add("nuclearcraft.ponder.beam_diverter.text_6", "The diverter reroutes the incoming beam to the active output. A 90 degree turn costs energy that scales with dipole strength; a straight pass-through only loses focus.");
+        add("nuclearcraft.ponder.beam_diverter.text_7", "Mount the Beam Diverter Controller in the casing and power it to start routing.");
         add("nuclearcraft.ponder.kugelblitz_chamber.text_1", "Kugelblitz Chamber size is 11x11x11.");
         add("nuclearcraft.ponder.kugelblitz_chamber.text_2", "All 6 walls must be perfectly symmetric.");
         add("nuclearcraft.ponder.kugelblitz_chamber.text_3", "The Kugelblitz Chamber Terminal is the main control block.");
@@ -538,6 +546,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("mbtool.structure.decay_chamber", "Decay Chamber");
         add("mbtool.structure.collision_chamber", "Collision Chamber");
         add("mbtool.structure.ring_accelerator", "Ring Accelerator");
+        add("mbtool.structure.beam_diverter", "Beam Diverter");
         add("multiblock.analyze.report", "Multiblock Report");
         add("report.nc.1.stabilizers", "Stabilizers: %s");
         add("report.nc.2.flux_regulators", "Flux Regulators: %s");

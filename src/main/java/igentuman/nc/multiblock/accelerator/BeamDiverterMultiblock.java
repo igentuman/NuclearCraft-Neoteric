@@ -1,13 +1,10 @@
-package igentuman.nc.multiblock.particle_chamber;
+package igentuman.nc.multiblock.accelerator;
 
 import igentuman.nc.block.accelerator.entity.AcceleratorBeamPortBE;
 import igentuman.nc.block.beam_diverter.entity.BeamDiverterControllerBE;
-import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock;
-import igentuman.nc.multiblock.accelerator.BeamDiverterController;
 import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.PortMode;
 import igentuman.nc.block.ElectromagnetBlock;
@@ -21,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.debugLog;
+import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_CASING_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_INNER_BLOCKS;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
@@ -172,6 +170,7 @@ public class BeamDiverterMultiblock extends AbstractAcceleratorMultiblock {
         beamPortsBE.clear();
         beamPorts.clear();
         dipoleStrength = 0;
+        int electromagnetsFE = 0;
         electromagnets.clear();
 
         List<Direction> horizontalDirs = List.of(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST);
@@ -246,6 +245,7 @@ public class BeamDiverterMultiblock extends AbstractAcceleratorMultiblock {
                         } {
                             electromagnets.putIfAbsent(pos.asLong(), (ElectromagnetBlock) bs.getBlock());
                             dipoleStrength = ((ElectromagnetBlock) bs.getBlock()).getStrength();
+                            electromagnetsFE += ((ElectromagnetBlock) bs.getBlock()).getPower();
                         }
                     } else {
                         if (!bs.is(yokeBlock)) {
@@ -268,6 +268,7 @@ public class BeamDiverterMultiblock extends AbstractAcceleratorMultiblock {
         ctrl.width = width;
         ctrl.depth = depth;
         ctrl.efficiency = 100D;
+        ctrl.energyPerTick = ACCELERATOR_CONFIG.BASE_ENERGY_REQUIREMENT.get() + electromagnetsFE;
         ctrl.dipoleStrength = dipoleStrength;
         ctrl.refresh();
     }

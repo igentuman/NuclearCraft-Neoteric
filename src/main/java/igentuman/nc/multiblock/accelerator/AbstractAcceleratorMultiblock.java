@@ -494,7 +494,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     public void extractParticle(ParticleStack particleStack) {
         for (long pos : beamPorts) {
             BlockPosInstance portPos = BlockPosInstance.of(pos);
-            BlockState bs = getBlockState(portPos);
+            BlockState bs = getLevel().getBlockState(portPos);
             if (!bs.is(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get())) continue;
             if(bs.getValue(PORT_MODE).equals(PortMode.Mode.OUTPUT)) {
                 BlockEntity be = getBlockEntity(portPos);

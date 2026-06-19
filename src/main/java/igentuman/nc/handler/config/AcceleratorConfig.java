@@ -109,6 +109,7 @@ public class AcceleratorConfig {
         public final ForgeConfigSpec.ConfigValue<Double> BEAM_ATTENUATION_RATE;
         public final ForgeConfigSpec.ConfigValue<Double> BEAM_SCALING;
         public final ForgeConfigSpec.ConfigValue<Integer> BASE_HEAT_CAPACITY;
+        public final ForgeConfigSpec.ConfigValue<Integer> BASE_ENERGY_REQUIREMENT;
         public final ForgeConfigSpec.ConfigValue<Double> THERMAL_CONDUCTIVITY;
         public final ForgeConfigSpec.ConfigValue<Integer> MAX_TEMP;
         public final ForgeConfigSpec.ConfigValue<Integer> RING_ACCELERATOR_INPUT_PARTICLE_MIN_ENERGY;
@@ -141,6 +142,10 @@ public class AcceleratorConfig {
                     .comment("Base heat capacity per accelerator block.")
                     .comment("Total capacity = base * block count. Larger accelerators = larger thermal mass.")
                     .defineInRange("base_heat_capacity", 25000, 1, Integer.MAX_VALUE);
+
+            BASE_ENERGY_REQUIREMENT = builder
+                    .comment("Base energy requirement per accelerator.")
+                    .defineInRange("base_energy_requirement", 10000, 1, Integer.MAX_VALUE);
 
             THERMAL_CONDUCTIVITY = builder
                     .comment("Thermal conductivity of casing. Used for external (biome) heat exchange.")

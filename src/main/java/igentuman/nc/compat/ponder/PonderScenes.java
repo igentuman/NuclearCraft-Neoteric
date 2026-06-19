@@ -36,6 +36,7 @@ public class PonderScenes {
     public static final ResourceLocation COLLISION_CHAMBER = rl("collision_chamber");
     public static final ResourceLocation LINEAR_ACCELERATOR = rl("linear_accelerator");
     public static final ResourceLocation RING_ACCELERATOR = rl("ring_accelerator");
+    public static final ResourceLocation BEAM_DIVERTER = rl("beam_diverter");
     public static final ResourceLocation KUGELBLITZ_CHAMBER = rl("kugelblitz_chamber");
 
     public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
@@ -108,7 +109,8 @@ public class PonderScenes {
 
         List<Item> linearAcceleratorItems = new ArrayList<>();
         ACCELERATOR_ITEMS.values().forEach(entry -> {
-            if(!entry.get().asItem().toString().contains("ring")) {
+            String name = entry.get().asItem().toString();
+            if(!name.contains("ring") && !name.contains("beam_diverter")) {
                 linearAcceleratorItems.add(entry.get());
             }
         });
@@ -127,6 +129,17 @@ public class PonderScenes {
         HELPER.forComponents(
                 ringAcceleratorItems
         ).addStoryBoard(RING_ACCELERATOR, RingAcceleratorPonderScenes::create);
+
+        List<Item> beamDiverterItems = new ArrayList<>();
+        ACCELERATOR_ITEMS.values().forEach(entry -> {
+            if(entry.get().asItem().toString().contains("beam_diverter")) {
+                beamDiverterItems.add(entry.get());
+            }
+        });
+
+        HELPER.forComponents(
+                beamDiverterItems
+        ).addStoryBoard(BEAM_DIVERTER, BeamDiverterPonderScenes::create);
 
         List<Item> kugelblitzChamberItems = new ArrayList<>();
         KUGELBLITZ_ITEMS.values().forEach(entry -> kugelblitzChamberItems.add(entry.get()));

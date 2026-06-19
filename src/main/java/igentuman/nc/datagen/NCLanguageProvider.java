@@ -551,6 +551,30 @@ public class NCLanguageProvider extends LanguageProvider {
         add("report.nc.3.decay_chamber.efficiency", "Efficiency: %s");
         add("report.nc.1.accelerator.all_coolers", "All Coolers: %s");
         add("report.nc.1.accelerator.valid_coolers", "Valid Coolers: %s");
+
+        add("report.nc.1.linear_accelerator.beam_length", "Beam Length: %s blocks");
+        add("report.nc.2.linear_accelerator.amplifiers", "RF Amplifiers: %s");
+        add("report.nc.3.linear_accelerator.coolers", "Active Coolers: %s");
+        add("report.nc.4.linear_accelerator.quadroupoles", "Quadrupoles: %s");
+        add("report.nc.5.linear_accelerator.dipoles", "Dipoles: %s");
+        add("report.nc.6.linear_accelerator.focus", "Focus: %s");
+        add("report.nc.7.linear_accelerator.max_temperature", "Max Operating Temp: %s");
+        add("report.nc.8.linear_accelerator.heat_rate", "Heat Generation: %s");
+        add("report.nc.9.linear_accelerator.efficiency", "System Efficiency: %s");
+        add("report.nc.10.linear_accelerator.voltage", "Accelerating Voltage: %s");
+        add("report.nc.11.linear_accelerator.energy_required", "Energy Required: %s");
+
+        add("report.nc.1.ring_accelerator.radius", "Beam Radius: %s blocks");
+        add("report.nc.2.ring_accelerator.amplifiers", "RF Amplifiers: %s");
+        add("report.nc.3.ring_accelerator.coolers", "Active Coolers: %s");
+        add("report.nc.4.ring_accelerator.quadroupoles", "Quadrupoles: %s");
+        add("report.nc.5.ring_accelerator.dipoles", "Dipoles: %s");
+        add("report.nc.6.ring_accelerator.focus", "Focus: %s");
+        add("report.nc.7.ring_accelerator.max_temperature", "Max Operating Temp: %s");
+        add("report.nc.8.ring_accelerator.heat_rate", "Heat Generation: %s");
+        add("report.nc.9.ring_accelerator.efficiency", "System Efficiency: %s");
+        add("report.nc.10.ring_accelerator.voltage", "Accelerating Voltage: %s");
+        add("report.nc.11.ring_accelerator.energy_required", "Energy Required: %s");
         add("report.nc.1.reactor_all_moderators", "All Moderators: %s");
         add("report.nc.2.reactor_moderators", "Valid Moderators: %s");
         add("report.nc.3.reactor_moderator_attachments", "Moderator Attachments: %s");

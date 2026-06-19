@@ -1,5 +1,6 @@
 package igentuman.nc.compat.oc2;
 
+import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.content.particles.ParticleStack;
 import li.cil.oc2.api.bus.device.Device;
@@ -18,16 +19,16 @@ import java.util.Map;
 
 import static java.util.Collections.singletonList;
 
-public class TargetChamberDevice {
+public class DecayChamberDevice {
 
     public static final Capability<Device> DEVICE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
 
-    public static RPCDevice createDevice(TargetChamberControllerBE blockEntity) {
+    public static RPCDevice createDevice(DecayChamberControllerBE blockEntity) {
         return new ObjectDevice(new TargetChamberDeviceRecord(blockEntity));
     }
 
-    public record TargetChamberDeviceRecord(TargetChamberControllerBE controller) implements NamedDevice {
+    public record TargetChamberDeviceRecord(DecayChamberControllerBE controller) implements NamedDevice {
 
         @Callback
         public final String getName() {
@@ -67,16 +68,6 @@ public class TargetChamberDevice {
         @Callback
         public final int getEnergyStored() {
             return controller.energyStorage().getEnergyStored();
-        }
-
-        @Callback
-        public final Object[] getInputItem() {
-            return controller.getInputItem();
-        }
-
-        @Callback
-        public final Object[] getInputFluid() {
-            return controller.getInputFluid();
         }
 
         @Callback

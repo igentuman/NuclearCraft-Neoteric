@@ -428,7 +428,7 @@ public class EMIPlugin implements EmiPlugin {
         registry.addCategory(KugelblitzInfoEmiCategory.CATEGORY);
         CATEGORIES.put("kugelblitz_info", KugelblitzInfoEmiCategory.CATEGORY);
         
-        // Add info recipes for chamber terminal and unknown ingredient
+        // Add info recipes for chamber controller and unknown ingredient
         registry.addRecipe(new KugelblitzInfoEmiCategory(
             rl("/kugelblitz_chamber_terminal_info"),
             new ItemStack(KUGELBLITZ_BLOCKS.get("chamber_terminal").get())

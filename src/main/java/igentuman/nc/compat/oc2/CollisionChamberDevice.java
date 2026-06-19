@@ -1,6 +1,7 @@
 package igentuman.nc.compat.oc2;
 
-import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
+import igentuman.nc.block.collision_chamber.entity.CollisionChamberControllerBE;
+import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
 import igentuman.nc.content.particles.ParticleStack;
 import li.cil.oc2.api.bus.device.Device;
 import li.cil.oc2.api.bus.device.object.Callback;
@@ -18,16 +19,16 @@ import java.util.Map;
 
 import static java.util.Collections.singletonList;
 
-public class TargetChamberDevice {
+public class CollisionChamberDevice {
 
     public static final Capability<Device> DEVICE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
 
-    public static RPCDevice createDevice(TargetChamberControllerBE blockEntity) {
+    public static RPCDevice createDevice(CollisionChamberControllerBE blockEntity) {
         return new ObjectDevice(new TargetChamberDeviceRecord(blockEntity));
     }
 
-    public record TargetChamberDeviceRecord(TargetChamberControllerBE controller) implements NamedDevice {
+    public record TargetChamberDeviceRecord(CollisionChamberControllerBE controller) implements NamedDevice {
 
         @Callback
         public final String getName() {
@@ -70,26 +71,24 @@ public class TargetChamberDevice {
         }
 
         @Callback
-        public final Object[] getInputItem() {
-            return controller.getInputItem();
-        }
-
-        @Callback
-        public final Object[] getInputFluid() {
-            return controller.getInputFluid();
-        }
-
-        @Callback
         public final Object getInputParticleInfo() {
             if (!isFormed() || !controller.hasParticle || controller.getParticleStorage().getClientParticleStack() == null) {
                 return null;
             }
-            Map<String, Object> particle = new HashMap<String, Object>();
-            particle.put("energy", controller.getParticleStorage().getClientParticleStack().getMeanEnergy());
-            particle.put("focus", controller.getParticleStorage().getClientParticleStack().getFocus());
-            particle.put("amount", controller.getParticleStorage().getClientParticleStack().getAmount());
-            particle.put("particle", controller.getParticleStorage().getClientParticleStack().getParticle().getName());
-            return particle;
+            Map<String, Object> set = new HashMap<String, Object>();
+            Map<String, Object> a = new HashMap<String, Object>();
+            a.put("energy", controller.getParticleStorage().getClientParticleStack().getMeanEnergy());
+            a.put("focus", controller.getParticleStorage().getClientParticleStack().getFocus());
+            a.put("amount", controller.getParticleStorage().getClientParticleStack().getAmount());
+            a.put("particle", controller.getParticleStorage().getClientParticleStack().getParticle().getName());
+            Map<String, Object> b = new HashMap<String, Object>();
+            a.put("energy", controller.getParticleStorage().getClientParticleStackB().getMeanEnergy());
+            a.put("focus", controller.getParticleStorage().getClientParticleStackB().getFocus());
+            a.put("amount", controller.getParticleStorage().getClientParticleStackB().getAmount());
+            a.put("particle", controller.getParticleStorage().getClientParticleStackB().getParticle().getName());
+            set.put("particle_1", a);
+            set.put("particle_2", b);
+            return set;
         }
 
         @Callback
@@ -119,14 +118,6 @@ public class TargetChamberDevice {
                 return null;
             }
             return controller.getBeamPortsInfo();
-        }
-
-        @Callback(synchronize = true)
-        public boolean setBeamPortMode(int id, String mode) {
-            if (!isFormed()) {
-                return false;
-            }
-            return controller.setBeamPortMode(id, mode);
         }
 
         @Override

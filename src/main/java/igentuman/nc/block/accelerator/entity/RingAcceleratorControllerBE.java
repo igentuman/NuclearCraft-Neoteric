@@ -6,12 +6,15 @@ import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock;
 import igentuman.nc.multiblock.accelerator.ThoroidalAcceleratorMultiblock;
+import igentuman.nc.util.PortMode;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -21,8 +24,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
@@ -32,6 +34,7 @@ import static igentuman.nc.handler.config.AcceleratorConfig.ACCELERATOR_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.util.Equations.*;
 import static igentuman.nc.util.ModUtil.*;
+import static igentuman.nc.util.PortMode.PORT_MODE;
 
 public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE {
 
@@ -181,8 +184,25 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
     }
 
     public double getBeamRadius() {
-        int side = getMultiblock().depth();
+        int side = getDepth();
         return Math.max(1, (side - 4) / 2d);
+    }
+
+    @Override
+    public HashMap<String, String> getAnalyzeReport() {
+        HashMap<String, String> report = new HashMap<>();
+        report.put("report.nc.1.ring_accelerator.radius", String.format("%.1f", getBeamRadius()));
+        report.put("report.nc.2.ring_accelerator.amplifiers", String.valueOf(amplifiers));
+        report.put("report.nc.3.ring_accelerator.coolers", String.valueOf(coolers));
+        report.put("report.nc.4.ring_accelerator.quadroupoles", String.valueOf(quadroupoles));
+        report.put("report.nc.5.ring_accelerator.dipoles", String.valueOf(dipoles));
+        report.put("report.nc.6.ring_accelerator.focus", String.format("%.2f", focus));
+        report.put("report.nc.7.ring_accelerator.max_temperature", String.format("%d K", maxTemperature));
+        report.put("report.nc.8.ring_accelerator.heat_rate", String.format("%d H/t", heatRate));
+        report.put("report.nc.9.ring_accelerator.efficiency", String.format("%.2f%%", efficiency * 100));
+        report.put("report.nc.10.ring_accelerator.voltage", String.format("%d V", acceleratingVoltage));
+        report.put("report.nc.11.ring_accelerator.energy_required", String.format("%d FE/t", energyRequired));
+        return report;
     }
 
 
@@ -257,5 +277,78 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
 
     public FluidTank getFluidTank(int i) {
         return contentHandler().fluidHandler.tanks.get(i);
+    }
+
+    public List<Long> getSortedBeamPorts() {
+        if (getMultiblock() == null) {
+            return List.of();
+        }
+        List<Long> ports = new java.util.ArrayList<>(getMultiblock().getBeamPorts());
+        ports.sort(Long::compare);
+        return ports;
+    }
+
+    public List<Map<String, Object>> getBeamPortsInfo() {
+        List<Map<String, Object>> infoList = new ArrayList<>();
+        if (getMultiblock() == null) return infoList;
+        List<Long> sortedPorts = getSortedBeamPorts();
+        for (int i = 0; i < sortedPorts.size(); i++) {
+            long packedPos = sortedPorts.get(i);
+            BlockPos pos = BlockPos.of(packedPos);
+            Map<String, Object> portInfo = new HashMap<>();
+            portInfo.put("id", i);
+            portInfo.put("x", pos.getX());
+            portInfo.put("y", pos.getY());
+            portInfo.put("z", pos.getZ());
+
+            BlockState state = level.getBlockState(pos);
+            String modeStr = "disabled";
+            if (state.hasProperty(PORT_MODE)) {
+                modeStr = state.getValue(PORT_MODE).getSerializedName();
+            }
+            portInfo.put("mode", modeStr);
+
+            BlockEntity be = level.getBlockEntity(pos);
+            Map<String, Object> particleInfo = null;
+            if (be instanceof AcceleratorBeamPortBE beamPortBe) {
+                ParticleStack particleStack = beamPortBe.clientParticle;
+                if (particleStack != null && !particleStack.isEmpty() && particleStack.getParticle() != null) {
+                    particleInfo = new HashMap<>();
+                    particleInfo.put("energy", particleStack.getMeanEnergy());
+                    particleInfo.put("focus", particleStack.getFocus());
+                    particleInfo.put("amount", particleStack.getAmount());
+                    particleInfo.put("particle", particleStack.getParticle().getName());
+                }
+            }
+            portInfo.put("particle", particleInfo);
+
+            infoList.add(portInfo);
+        }
+        return infoList;
+    }
+
+    public boolean setBeamPortMode(int id, String mode) {
+        if (getMultiblock() == null) return false;
+        List<Long> sortedPorts = getSortedBeamPorts();
+        if (id < 0 || id >= sortedPorts.size()) return false;
+        long packedPos = sortedPorts.get(id);
+        BlockPos pos = BlockPos.of(packedPos);
+        BlockState state = level.getBlockState(pos);
+        if (!state.hasProperty(PORT_MODE)) return false;
+
+        PortMode.Mode enumMode;
+        if (mode.equalsIgnoreCase("input")) {
+            enumMode = PortMode.Mode.INPUT;
+        } else if (mode.equalsIgnoreCase("output")) {
+            enumMode = PortMode.Mode.OUTPUT;
+        } else if (mode.equalsIgnoreCase("disabled")) {
+            enumMode = PortMode.Mode.DISABLED;
+        } else {
+            return false;
+        }
+
+        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(pos);
+        level.setBlockAndUpdate(pos, state.setValue(PORT_MODE, enumMode));
+        return true;
     }
 }

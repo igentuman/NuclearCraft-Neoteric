@@ -1,3 +1,6 @@
+1.2.28-rc1
+    Fixed - Collision chamber validation and GUI
+    Added - Beam Diverter multiblock
 1.2.28-beta2
     Fixed - Startup crash on NeoForge
 1.2.28-beta1

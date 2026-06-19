@@ -3,10 +3,9 @@ package igentuman.nc.multiblock.accelerator;
 import com.google.gson.JsonArray;
 import igentuman.nc.block.accelerator.*;
 import igentuman.nc.block.accelerator.entity.*;
-import igentuman.nc.container.AcceleratorIonSourcePortContainer;
-import igentuman.nc.container.AcceleratorPortContainer;
-import igentuman.nc.container.LinearAcceleratorContainer;
-import igentuman.nc.container.RingAcceleratorContainer;
+import igentuman.nc.block.beam_diverter.BeamDiverterControllerBlock;
+import igentuman.nc.block.beam_diverter.entity.BeamDiverterControllerBE;
+import igentuman.nc.container.*;
 import igentuman.nc.util.JSONUtil;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
@@ -49,6 +48,9 @@ public class AcceleratorRegistration {
     public static final RegistryObject<MenuType<RingAcceleratorContainer>> THOROIDAL_ACCELERATOR_CONTROLLER_CONTAINER = CONTAINERS.register("ring_accelerator_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new RingAcceleratorContainer(windowId, data.readBlockPos(), inv))
     );
+    public static final RegistryObject<MenuType<BeamDiverterContainer>> BEAM_DIVERTER_CONTROLLER_CONTAINER = CONTAINERS.register("beam_diverter_controller",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new BeamDiverterContainer(windowId, data.readBlockPos(), inv))
+    );
     public static final RegistryObject<MenuType<AcceleratorPortContainer>> ACCELERATOR_PORT_CONTAINER = CONTAINERS.register("accelerator_port",
             () -> IForgeMenuType.create((windowId, inv, data) -> new AcceleratorPortContainer(windowId, data.readBlockPos(), inv))
     );
@@ -66,6 +68,7 @@ public class AcceleratorRegistration {
         registerSimpleBlock("accelerator_casing_glass");
         registerSimpleBlock("particle_beam");
         registerOrientedBlock("linear_accelerator_controller");
+        registerOrientedBlock("beam_diverter_controller");
         registerOrientedBlock("ring_accelerator_controller");
         registerOrientedBlock("accelerator_port");
         registerOrientedBlock("accelerator_beam_port");
@@ -91,6 +94,11 @@ public class AcceleratorRegistration {
                         () -> BlockEntityType.Builder.of(LinearAcceleratorControllerBE::new, ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get())
                                 .build(null)));
 
+        ACCELERATOR_BE.put("beam_diverter_controller",
+                BLOCK_ENTITIES.register("beam_diverter_controller",
+                        () -> BlockEntityType.Builder.of(BeamDiverterControllerBE::new, ACCELERATOR_BLOCKS.get("beam_diverter_controller").get())
+                                .build(null)));
+
         ACCELERATOR_BE.put("ring_accelerator_controller",
                 BLOCK_ENTITIES.register("ring_accelerator_controller",
                         () -> BlockEntityType.Builder.of(RingAcceleratorControllerBE::new, ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get())
@@ -111,6 +119,8 @@ public class AcceleratorRegistration {
                 ? NO_OCCLUSION_BLOCK_PROPS
                 : ACCELERATOR_BLOCK_PROPERTIES;
         switch (key) {
+            case "beam_diverter_controller" ->
+                    ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new BeamDiverterControllerBlock(props)));
             case "linear_accelerator_controller" ->
                     ACCELERATOR_BLOCKS.put(key, BLOCKS.register(key, () -> new LinearAcceleratorControllerBlock(props)));
             case "ring_accelerator_controller" ->

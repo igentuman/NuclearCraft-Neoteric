@@ -1,6 +1,7 @@
 package igentuman.nc.compat.oc2;
 
 import igentuman.nc.block.accelerator.entity.RingAcceleratorControllerBE;
+import igentuman.nc.block.beam_diverter.entity.BeamDiverterControllerBE;
 import igentuman.nc.content.particles.ParticleStack;
 import li.cil.oc2.api.bus.device.Device;
 import li.cil.oc2.api.bus.device.object.Callback;
@@ -18,16 +19,16 @@ import java.util.Map;
 
 import static java.util.Collections.singletonList;
 
-public class RingAcceleratorDevice {
+public class BeamDiverterDevice {
 
     public static final Capability<Device> DEVICE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
 
-    public static RPCDevice createDevice(RingAcceleratorControllerBE blockEntity) {
-        return new ObjectDevice(new RingAcceleratorRecord(blockEntity));
+    public static RPCDevice createDevice(BeamDiverterControllerBE blockEntity) {
+        return new ObjectDevice(new BeamDiverterRecord(blockEntity));
     }
 
-    public record RingAcceleratorRecord(RingAcceleratorControllerBE controller) implements NamedDevice {
+    public record BeamDiverterRecord(BeamDiverterControllerBE controller) implements NamedDevice {
 
         @Callback
         public final boolean isFormed() {
@@ -47,56 +48,6 @@ public class RingAcceleratorDevice {
         @Callback
         public final int getEnergyStored() {
             return controller.energyStorage().getEnergyStored();
-        }
-
-        @Callback
-        public final int getTemperature() {
-            return controller.getTemperature();
-        }
-
-        @Callback
-        public final int getMaxTemperature() {
-            return controller.maxTemperature;
-        }
-
-        @Callback
-        public final int getHeatStored() {
-            return controller.heatStored;
-        }
-
-        @Callback
-        public final long getHeatCapacity() {
-            return controller.heatCapacity;
-        }
-
-        @Callback
-        public final int getCoolingRate() {
-            return controller.coolingRate;
-        }
-
-        @Callback
-        public final int getHeatRate() {
-            return controller.heatRate;
-        }
-
-        @Callback
-        public final long getAcceleratingVoltage() {
-            return controller.acceleratingVoltage;
-        }
-
-        @Callback
-        public final double getDipoleStrength() {
-            return controller.dipoleStrength;
-        }
-
-        @Callback
-        public final double getQuadrupoleStrength() {
-            return controller.quadStrength;
-        }
-
-        @Callback
-        public final int getMinEnergy() {
-            return controller.getMinEnergy();
         }
 
         @Callback
@@ -132,26 +83,6 @@ public class RingAcceleratorDevice {
                 return false;
             }
             return controller.setBeamPortMode(id, mode);
-        }
-
-        @Callback
-        public final void setEnergyPercentage(double percentage) {
-            if (percentage < 5) {
-                percentage = 0;
-            }
-            if (percentage > 100) {
-                percentage = 100;
-            }
-            controller.externalControlled = true;
-            controller.isControlledByComputer = true;
-            controller.analogSignal = (byte) (percentage * 0.15D);
-            controller.accelerationEnergy = percentage / 100D;
-        }
-
-        @Callback
-        public final void releaseControl() {
-            controller.externalControlled = false;
-            controller.isControlledByComputer = false;
         }
 
         @Override

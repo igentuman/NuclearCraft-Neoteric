@@ -153,8 +153,17 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
     @Override
     public HashMap<String, String> getAnalyzeReport() {
         HashMap<String, String> report = new HashMap<>();
-        //report.put("report.nc.1.accelerator.all_coolers", String.valueOf(getMultiblock().coolers.size()));
-        //report.put("report.nc.2.accelerator.valid_coolers", String.valueOf(getMultiblock().validCoolers));
+        report.put("report.nc.1.linear_accelerator.beam_length", String.valueOf(beamLength));
+        report.put("report.nc.2.linear_accelerator.amplifiers", String.valueOf(amplifiers));
+        report.put("report.nc.3.linear_accelerator.coolers", String.valueOf(coolers));
+        report.put("report.nc.4.linear_accelerator.quadroupoles", String.valueOf(quadroupoles));
+        report.put("report.nc.5.linear_accelerator.dipoles", String.valueOf(dipoles));
+        report.put("report.nc.6.linear_accelerator.focus", String.format("%.2f", focus));
+        report.put("report.nc.7.linear_accelerator.max_temperature", String.format("%d K", maxTemperature));
+        report.put("report.nc.8.linear_accelerator.heat_rate", String.format("%d H/t", heatRate));
+        report.put("report.nc.9.linear_accelerator.efficiency", String.format("%.2f%%", efficiency * 100));
+        report.put("report.nc.10.linear_accelerator.voltage", String.format("%d V", acceleratingVoltage));
+        report.put("report.nc.11.linear_accelerator.energy_required", String.format("%d FE/t", energyRequired));
         return report;
     }
 
@@ -171,16 +180,14 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         if(particleStorage.getParticle() == null) {
             getParticleFromIonSource();
         }
-        if(particleStorage.getParticle() == null) {
+        ParticleStack particleStack = particleStorage.getParticle();
+        if(particleStorage.getParticle() == null || particleStack.isEmpty()) {
             return false;
         }
         if(!drainEnergy()) {
             return false;
         }
-        ParticleStack particleStack = particleStorage.getParticle();
-        if(particleStack == null || particleStack.isEmpty()) {
-            return false;
-        }
+
         particleStack.setFocus(focusGain(focus, particleStack)-focusLoss(beamLength, particleStack)+initialFocus);
         particleStack.setMeanEnergy((long)(linacEnergyGain(acceleratingVoltage, particleStack)*(accelerationEnergy)));
         particleStorage.setParticleStack(particleStack);
@@ -193,7 +200,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
 
     private void getParticleFromIonSource() {
         ItemStack stack = contentHandler().itemHandler.getStackInSlot(0);
-        if(stack != null && !stack.isEmpty()) {
+        if(!stack.isEmpty()) {
             if (stack.getItem() instanceof ParticleSourceItem sourceItem) {
                 stack = sourceItem.use(stack, 10000);
                 ParticleStack particle = sourceItem.getParticleStack(stack);
@@ -231,12 +238,6 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
 
     }
 
-    public Direction getFacing() {
-        if (facing == null) {
-            facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
-        }
-        return facing;
-    }
 
     public int getDepth() {
         return Math.max(depth, width);

@@ -77,7 +77,9 @@ public class NCBlockStates extends BlockStateProvider {
        horizontalBlock(ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get(),
                 st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get(), "accelerator/controller"))
         );
-
+        horizontalBlock(ACCELERATOR_BLOCKS.get("beam_diverter_controller").get(),
+                st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("beam_diverter_controller").get(), "accelerator/controller"))
+        );
         simpleBlock(ACCELERATOR_BLOCKS.get("electromagnet_yoke").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("electromagnet_yoke").get(), "accelerator/electromagnet_yoke"));
         simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), "accelerator/accelerator_casing"));
         simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), "accelerator/accelerator_casing_glass"));
@@ -348,6 +350,8 @@ public class NCBlockStates extends BlockStateProvider {
         } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()) {
             type = "accelerator";
         } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get()) {
+            type = "accelerator";
+        } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("beam_diverter_controller").get()) {
             type = "accelerator";
         } else if(st.getBlock() == PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get() || st.getBlock() == PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get()  || st.getBlock() == PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get()) {
             type = "particle_chamber";

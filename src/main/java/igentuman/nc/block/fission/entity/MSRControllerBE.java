@@ -48,6 +48,7 @@ import static igentuman.nc.handler.config.FissionConfig.MSR_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.FissionFuel.ITEM_PROPERTIES;
 import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
+import static igentuman.nc.util.ModUtil.isOC2Loaded;
 import static net.minecraft.world.item.Items.AIR;
 
 public class MSRControllerBE extends MultiblockControllerBE {
@@ -56,20 +57,15 @@ public class MSRControllerBE extends MultiblockControllerBE {
     private static final int MIN_PEBBLES_FOR_CRITICALITY = 10;
     private static final double MIN_SALT_FOR_CRITICALITY = 100;
     public final SidedContentHandler contentHandler;
-    private Direction facing;
 
     @NBTField
     public double maxHeat = FISSION_CONFIG.HEAT_CAPACITY.getDefault();
     @NBTField
     public double heat = 0;
     @NBTField
-    public boolean powered = false;
-    @NBTField
     public double heatPerTick = 0;
     @NBTField
     public boolean enabledByController = false;
-    @NBTField
-    public boolean hasRedstoneSignal = false;
     @NBTField
     public int connectedPorts = 0;
     @NBTField
@@ -83,8 +79,6 @@ public class MSRControllerBE extends MultiblockControllerBE {
     @NBTField
     public int steamPerTick = 0;
 
-    @NBTField
-    public int energyPerTick = 0;
     @NBTField public int pebbleCount = 0;
     @NBTField public double saltVolume = 0.0;      // mB
     @NBTField public double coolantVolume = 0.0;   // mB
@@ -96,7 +90,6 @@ public class MSRControllerBE extends MultiblockControllerBE {
     @NBTField public boolean isCritical = false;
     @NBTField public boolean portsLocked = false;
 
-    // MSR Constants from MSR.md
     public static final double T_AMBIENT = 20.0;
     public static final double MAX_TEMPERATURE = 2000.0;
     public static final double PRESSURE_MAX = 150.0;
@@ -112,7 +105,7 @@ public class MSRControllerBE extends MultiblockControllerBE {
     public static final double SALT_PER_DEPLETED_PEBBLE = 10.0;
     public static final double IMPURITY_RATE_PER_PEBBLE = 0.001;
 
-    private HashSet<ReactorPebble> pebbles = new HashSet<>();
+    private final HashSet<ReactorPebble> pebbles = new HashSet<>();
     
     protected List<FissionControllerBE.FissionBoilingRecipe> coolantRecipes;
     protected FissionControllerBE.FissionBoilingRecipe boilingRecipe;

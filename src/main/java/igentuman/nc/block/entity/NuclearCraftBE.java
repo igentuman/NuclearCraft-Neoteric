@@ -57,7 +57,7 @@ public class NuclearCraftBE extends BlockEntity {
     protected SoundInstance currentSound;
     protected int playSoundCooldown = 0;
     protected UUID playerUID = null;
-    public HashMap<Integer, SideModeToggleable.SideMode> sideConfig = new HashMap<>();
+    public final HashMap<Integer, SideModeToggleable.SideMode> sideConfig = new HashMap<>();
     public SidedContentHandler contentHandler;
     protected CustomEnergyStorage energyStorage;
     public final RecipeInfo recipeInfo;
@@ -66,7 +66,7 @@ public class NuclearCraftBE extends BlockEntity {
     protected NcRecipe recipe;
     protected boolean saveSideMapFlag = true;
     public boolean wasUpdated = true;
-    public HashMap<String, NcRecipe> cachedRecipes = new HashMap<>();
+    public final HashMap<String, NcRecipe> cachedRecipes = new HashMap<>();
     protected LazyOptional<IEnergyStorage> energy;
     protected long lastTickTime = 0;
     public boolean needToUpdate = false;
@@ -84,19 +84,6 @@ public class NuclearCraftBE extends BlockEntity {
     private final List<Field> directionFields;
     private final List<Field> particleStackFields;
 
-    //sync always fields
-    private final List<Field> booleanFieldsS;
-    private final List<Field> intFieldsS;
-    private final List<Field> intArrayFieldsS;
-    private final List<Field> doubleFieldsS;
-    private final List<Field> stringFieldsS;
-    private final List<Field> stringArrayFieldsS;
-    private final List<Field> floatFieldsS;
-    private final List<Field> byteFieldsS;
-    private final List<Field> longFieldsS;
-    private final List<Field> blockPosFieldsS;
-    private final List<Field> directionFieldsS;
-
 
     public NuclearCraftBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -113,19 +100,6 @@ public class NuclearCraftBE extends BlockEntity {
         byteFields = initFields(byte.class, false);
         longFields = initFields(long.class, false);
         particleStackFields = initFields(ParticleStack.class, false);
-
-        directionFieldsS = initFields(Direction.class, true);
-        booleanFieldsS = initFields(boolean.class, true);
-        intFieldsS = initFields(int.class, true);
-        intArrayFieldsS = initFields(int[].class, true);
-        doubleFieldsS = initFields(double.class, true);
-        stringFieldsS = initFields(String.class, true);
-        stringArrayFieldsS = initFields(String[].class, true);
-        blockPosFieldsS = initFields(BlockPos.class, true);
-        floatFieldsS = initFields(float.class, true);
-        byteFieldsS = initFields(byte.class, true);
-        longFieldsS = initFields(long.class, true);
-
         recipeInfo = new RecipeInfo();
     }
 

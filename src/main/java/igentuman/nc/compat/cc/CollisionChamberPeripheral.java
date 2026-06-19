@@ -2,17 +2,18 @@ package igentuman.nc.compat.cc;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
+import igentuman.nc.block.collision_chamber.entity.CollisionChamberControllerBE;
+import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
 import igentuman.nc.content.particles.ParticleStack;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TargetChamberPeripheral implements IPeripheral {
-    private final TargetChamberControllerBE controller;
+public class CollisionChamberPeripheral implements IPeripheral {
+    private final CollisionChamberControllerBE controller;
 
-    public TargetChamberPeripheral(TargetChamberControllerBE be)
+    public CollisionChamberPeripheral(CollisionChamberControllerBE be)
     {
         this.controller = be;
     }
@@ -21,14 +22,14 @@ public class TargetChamberPeripheral implements IPeripheral {
     @Override
     public String getType()
     {
-        return "nc_target_chamber";
+        return "nc_decay_chamber";
     }
 
 
     @Override
     public boolean equals( IPeripheral other )
     {
-        return this == other || other instanceof TargetChamberPeripheral && ((TargetChamberPeripheral) other).controller == controller;
+        return this == other || other instanceof CollisionChamberPeripheral && ((CollisionChamberPeripheral) other).controller == controller;
     }
 
     @LuaFunction
@@ -77,17 +78,6 @@ public class TargetChamberPeripheral implements IPeripheral {
         return controller.energyStorage().getEnergyStored();
     }
 
-    @LuaFunction
-    public final Object[] getInputItem()
-    {
-        return controller.getInputItem();
-    }
-
-    @LuaFunction
-    public final Object[] getInputFluid()
-    {
-        return controller.getInputFluid();
-    }
 
     @LuaFunction
     public Object getInputParticleInfo()
@@ -95,12 +85,20 @@ public class TargetChamberPeripheral implements IPeripheral {
         if(!isFormed() || !controller.hasParticle || controller.getParticleStorage().getClientParticleStack() == null) {
             return null;
         }
-        Map<String, Object> particle = new HashMap<String, Object>();
-        particle.put("energy", controller.getParticleStorage().getClientParticleStack().getMeanEnergy());
-        particle.put("focus", controller.getParticleStorage().getClientParticleStack().getFocus());
-        particle.put("amount", controller.getParticleStorage().getClientParticleStack().getAmount());
-        particle.put("particle", controller.getParticleStorage().getClientParticleStack().getParticle().getName());
-        return particle;
+        Map<String, Object> set = new HashMap<String, Object>();
+        Map<String, Object> a = new HashMap<String, Object>();
+        a.put("energy", controller.getParticleStorage().getClientParticleStack().getMeanEnergy());
+        a.put("focus", controller.getParticleStorage().getClientParticleStack().getFocus());
+        a.put("amount", controller.getParticleStorage().getClientParticleStack().getAmount());
+        a.put("particle", controller.getParticleStorage().getClientParticleStack().getParticle().getName());
+        Map<String, Object> b = new HashMap<String, Object>();
+        a.put("energy", controller.getParticleStorage().getClientParticleStackB().getMeanEnergy());
+        a.put("focus", controller.getParticleStorage().getClientParticleStackB().getFocus());
+        a.put("amount", controller.getParticleStorage().getClientParticleStackB().getAmount());
+        a.put("particle", controller.getParticleStorage().getClientParticleStackB().getParticle().getName());
+        set.put("particle_1", a);
+        set.put("particle_2", b);
+        return set;
     }
 
     @LuaFunction
@@ -131,13 +129,5 @@ public class TargetChamberPeripheral implements IPeripheral {
             return null;
         }
         return controller.getBeamPortsInfo();
-    }
-
-    @LuaFunction(mainThread = true)
-    public boolean setBeamPortMode(int id, String mode) {
-        if (!isFormed()) {
-            return false;
-        }
-        return controller.setBeamPortMode(id, mode);
     }
 }

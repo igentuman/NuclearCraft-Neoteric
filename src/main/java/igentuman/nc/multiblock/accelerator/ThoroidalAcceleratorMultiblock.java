@@ -663,6 +663,9 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         if (isFormed) {
             validationResult = ValidationResult.VALID;
             errorBlockPos = BlockPos.ZERO;
+            controllerBE().width = width;
+            controllerBE().depth = depth;
+            controllerBE().height = height;
             controllerBE().ionSourcePos = ionSourcePos;
             controllerBE().beamLength = beamLength+4;
             controllerBE().amplifiers = amplifiers.size();

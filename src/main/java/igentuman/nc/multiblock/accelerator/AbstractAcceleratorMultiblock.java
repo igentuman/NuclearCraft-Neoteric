@@ -37,6 +37,11 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
     protected final HashMap<Long, RFAmplifierBlock> amplifiers = new HashMap<>(1000);
     public final HashMap<Long, CoolerBlock> coolers = new HashMap<>(1000);
     protected HashSet<Long> beamPorts = new HashSet<>();
+    public final HashMap<Long, BlockEntity> beamPortsBE = new HashMap<>();
+
+    public HashSet<Long> getBeamPorts() {
+        return beamPorts;
+    }
 
     public int getMaxOperatingTemp() {
         return maxTemperature;

@@ -1,17 +1,24 @@
 package igentuman.nc.block.entity;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.accelerator.entity.AcceleratorBeamPortBE;
 import igentuman.nc.content.particles.CapabilityParticleStackHandler;
 import igentuman.nc.content.particles.IParticleStackHandler;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.ParticleStorage;
+import igentuman.nc.datagen.recipes.builder.TConstructRecipeBuilder;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
+import igentuman.nc.multiblock.AbstractMultiblock;
+import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.particle_chamber.ParticleChamberMultiblock;
+import igentuman.nc.util.PortMode;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -21,7 +28,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
+import java.util.*;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.compat.gregtech.GTUtils.getGTEnergy;
@@ -29,6 +36,7 @@ import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.PortMode.PORT_MODE;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER;
@@ -39,10 +47,6 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
     protected final LazyOptional<IParticleStackHandler> particleHandler;
 
     @NBTField
-    public boolean powered = false;
-    @NBTField
-    public int energyPerTick = 0;
-    @NBTField
     public boolean enabledByController = false;
     @NBTField
     public boolean hasRedstoneSignal = false;
@@ -50,14 +54,11 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
     public boolean hasParticle = false;
     @NBTField
     public int detectorsCount = 0;
-    @NBTField
-    public double efficiency = 0;
     public int connectedPorts = 0;
     @NBTField
     public int allDetectors = 0;
-
     protected boolean forceShutdown = false;
-    private Direction facing;
+
 
     public ParticleChamberControllerBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -128,11 +129,6 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
 
     public void disableForceShutdown() {
         forceShutdown = false;
-    }
-
-    @Override
-    public int getRedstoneSignal() {
-        return Objects.requireNonNull(getLevel()).getBestNeighborSignal(worldPosition);
     }
 
     public LazyOptional<IEnergyStorage> getEnergy() {
@@ -275,4 +271,90 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
      * recipe processing and block-state updates.
      */
     protected abstract void processChamberTick();
+
+    public LazyOptional<IParticleStackHandler> getParticleHandler() {
+        return particleHandler;
+    }
+
+    public ParticleStorage getParticleStorage() {
+        return particleStorage;
+    }
+
+    @Override
+    public ParticleChamberMultiblock getMultiblock() {
+        return (ParticleChamberMultiblock) multiblock;
+    }
+
+    public List<Long> getSortedBeamPorts() {
+        if (getMultiblock() == null) {
+            return List.of();
+        }
+        List<Long> ports = new ArrayList<>(getMultiblock().getBeamPorts());
+        ports.sort(Long::compare);
+        return ports;
+    }
+
+    public List<Map<String, Object>> getBeamPortsInfo() {
+        List<Map<String, Object>> infoList = new ArrayList<>();
+        if (getMultiblock() == null) return infoList;
+        List<Long> sortedPorts = getSortedBeamPorts();
+        for (int i = 0; i < sortedPorts.size(); i++) {
+            long packedPos = sortedPorts.get(i);
+            BlockPos pos = BlockPos.of(packedPos);
+            Map<String, Object> portInfo = new HashMap<>();
+            portInfo.put("id", i);
+            portInfo.put("x", pos.getX());
+            portInfo.put("y", pos.getY());
+            portInfo.put("z", pos.getZ());
+
+            BlockState state = level.getBlockState(pos);
+            String modeStr = "disabled";
+            if (state.hasProperty(PORT_MODE)) {
+                modeStr = state.getValue(PORT_MODE).getSerializedName();
+            }
+            portInfo.put("mode", modeStr);
+
+            BlockEntity be = level.getBlockEntity(pos);
+            Map<String, Object> particleInfo = null;
+            if (be instanceof AcceleratorBeamPortBE beamPortBe) {
+                ParticleStack particleStack = beamPortBe.clientParticle;
+                if (particleStack != null && !particleStack.isEmpty() && particleStack.getParticle() != null) {
+                    particleInfo = new HashMap<>();
+                    particleInfo.put("energy", particleStack.getMeanEnergy());
+                    particleInfo.put("focus", particleStack.getFocus());
+                    particleInfo.put("amount", particleStack.getAmount());
+                    particleInfo.put("particle", particleStack.getParticle().getName());
+                }
+            }
+            portInfo.put("particle", particleInfo);
+
+            infoList.add(portInfo);
+        }
+        return infoList;
+    }
+
+    public boolean setBeamPortMode(int id, String mode) {
+        if (getMultiblock() == null) return false;
+        List<Long> sortedPorts = getSortedBeamPorts();
+        if (id < 0 || id >= sortedPorts.size()) return false;
+        long packedPos = sortedPorts.get(id);
+        BlockPos pos = BlockPos.of(packedPos);
+        BlockState state = level.getBlockState(pos);
+        if (!state.hasProperty(PORT_MODE)) return false;
+
+        PortMode.Mode enumMode;
+        if (mode.equalsIgnoreCase("input")) {
+            enumMode = PortMode.Mode.INPUT;
+        } else if (mode.equalsIgnoreCase("output")) {
+            enumMode = PortMode.Mode.OUTPUT;
+        } else if (mode.equalsIgnoreCase("disabled")) {
+            enumMode = PortMode.Mode.DISABLED;
+        } else {
+            return false;
+        }
+
+        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(pos);
+        level.setBlockAndUpdate(pos, state.setValue(PORT_MODE, enumMode));
+        return true;
+    }
 }

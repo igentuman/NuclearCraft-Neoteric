@@ -7,6 +7,7 @@ import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.accelerator.AbstractAcceleratorMultiblock;
 import igentuman.nc.util.Equations;
+import igentuman.nc.util.PortMode;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,6 +24,7 @@ import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.util.PortMode.PORT_MODE;
 
 public class AcceleratorBeamPortBE extends MultiblockPortBE {
 
@@ -58,6 +60,7 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
     public void tickServer() {
         if(lastTickTime == currentTick || NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         lastTickTime = currentTick;
+        alreadySentParticle = false;
         boolean updated = updateController();
         if(!isConnectedToController()) return;
         updateIfNeeded(updated);
@@ -80,7 +83,7 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
     }
 
     public boolean extractParticle(ParticleStack particleStack) {
-        if(alreadySentParticle || controller() == null || particleStack == null || particleStack.getAmount() <= 0) return false;
+        if(alreadySentParticle || !isConnectedToController() || particleStack == null || particleStack.getAmount() <= 0) return false;
         AtomicBoolean result = new AtomicBoolean(false);
         Direction facing = getFacing();
         BlockPos currentPos = worldPosition.relative(facing);
@@ -96,18 +99,17 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
             }
             BlockEntity be = level.getExistingBlockEntity(currentPos);
             if (be instanceof AcceleratorBeamPortBE targetPort) {
-                if (targetPort.getFacing() == facing.getOpposite()) {
+                if (targetPort.getFacing() == facing.getOpposite() && targetPort.isInput()) {
                     int finalDistance = distance;
                     targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
                             .ifPresent(handler -> {
                                 particleStack.addFocus(-Equations.focusLoss(finalDistance, particleStack));
                                 handler.reciveParticle(facing.getOpposite(), particleStack);
                                 result.set(true);
-                                alreadySentParticle = true;
                             });
                 }
                 break;
-            } else if (be instanceof TargetChamberBeamPortBE targetPort) {
+            } else if (be instanceof TargetChamberBeamPortBE targetPort && targetPort.isInput()) {
                 if (targetPort.getFacing() == facing.getOpposite()) {
                     int finalDistance1 = distance;
                     targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
@@ -132,9 +134,17 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
                 break;
             }
         }
-
+        alreadySentParticle = result.get();
         clientParticle = particleStack.copy();
         markDirty();
         return result.get();
+    }
+
+    public boolean isOutput() {
+        return blockState.getValue(PORT_MODE) == PortMode.Mode.OUTPUT;
+    }
+
+    public boolean isInput() {
+        return blockState.getValue(PORT_MODE) == PortMode.Mode.INPUT;
     }
 }

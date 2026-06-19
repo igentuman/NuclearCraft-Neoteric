@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -121,6 +122,13 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
     @Override
     public void updateAnalogSignal() {
 
+    }
+
+    public Direction getFacing() {
+        if (facing == null) {
+            facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+        }
+        return facing;
     }
 
     public void invalidateCache()

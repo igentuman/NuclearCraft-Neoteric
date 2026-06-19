@@ -1,6 +1,10 @@
 package igentuman.nc.block.collision_chamber.entity;
 
 import igentuman.nc.block.entity.ParticleChamberControllerBE;
+import igentuman.nc.compat.cc.CollisionChamberPeripheral;
+import igentuman.nc.compat.cc.DecayChamberPeripheral;
+import igentuman.nc.compat.oc2.CollisionChamberDevice;
+import igentuman.nc.compat.oc2.DecayChamberDevice;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.ParticleStorage;
 import igentuman.nc.multiblock.particle_chamber.CollisionChamberMultiblock;
@@ -9,20 +13,28 @@ import igentuman.nc.recipes.type.CollisionChamberRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.collision_chamber.CollisionChamberControllerBlock.POWERED;
+import static igentuman.nc.compat.oc2.TargetChamberDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.AcceleratorConfig.COLLISION_CHAMBER_CONFIG;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_BE;
+import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
 public class CollisionChamberControllerBE extends ParticleChamberControllerBE {
 
@@ -56,6 +68,32 @@ public class CollisionChamberControllerBE extends ParticleChamberControllerBE {
             validationsCounter = 0;
         }
         return (CollisionChamberMultiblock) multiblock;
+    }
+
+
+    private LazyOptional<CollisionChamberPeripheral> peripheralCap;
+
+    public <T> LazyOptional<T> getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (peripheralCap == null) {
+            peripheralCap = LazyOptional.of(() -> new CollisionChamberPeripheral(this));
+        }
+        return peripheralCap.cast();
+    }
+
+    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
+        return LazyOptional.of(() -> CollisionChamberDevice.createDevice(this)).cast();
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (isOC2Loaded() && cap == DEVICE_CAPABILITY) {
+            return getOCDevice(cap, side);
+        }
+        if (isCcLoaded() && cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+            return getPeripheral(cap, side);
+        }
+        return super.getCapability(cap, side);
     }
 
     @Override

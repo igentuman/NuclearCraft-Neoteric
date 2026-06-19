@@ -1,7 +1,5 @@
 package igentuman.nc.multiblock.particle_chamber;
 
-import igentuman.api.nc.multiblock.MultiblockController;
-import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.entity.ParticleChamberControllerBE;
 import igentuman.nc.block.target_chamber.DetectorBlock;
 import igentuman.nc.block.target_chamber.entity.TargetChamberBeamPortBE;
@@ -16,10 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
@@ -202,6 +197,10 @@ public abstract class ParticleChamberMultiblock extends AbstractMultiblock {
         }
     }
 
+    public Set<Long> getBeamPorts() {
+        return beamPorts.keySet();
+    }
+
     /**
      * All particle chambers must form an odd-sided cube and use the controller's facing direction.
      */
@@ -253,8 +252,8 @@ public abstract class ParticleChamberMultiblock extends AbstractMultiblock {
             }
         }
         if (bsCache.containsKey(packedPos)) {
-            net.minecraft.world.level.block.state.BlockState bs = getLevel().getBlockState(pos);
-            net.minecraft.world.level.block.state.BlockState cachedState = bsCache.get(packedPos);
+            BlockState bs = getLevel().getBlockState(pos);
+            BlockState cachedState = bsCache.get(packedPos);
             if (cachedState == null || !bs.is(cachedState.getBlock())) {
                 bsCache.remove(packedPos);
                 onCachedBlockRemoved(packedPos);
@@ -278,7 +277,9 @@ public abstract class ParticleChamberMultiblock extends AbstractMultiblock {
                 i++;
                 if (id != i) continue;
                 if (be instanceof TargetChamberBeamPortBE port) {
-                    port.extractParticle(outputParticle);
+                    if(port.extractParticle(outputParticle)) {
+                        break;
+                    }
                 }
             }
         }

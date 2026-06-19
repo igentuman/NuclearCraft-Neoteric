@@ -328,7 +328,7 @@ public  class JEIPlugin implements IModPlugin {
             registration.addRecipes(FuelInfoCategory.TYPE, fuelInfoRecipes());
             registration.addRecipes(IsotopeInfoCategory.TYPE, isotopeInfoRecipes());
             
-            // Add ingredient info for chamber terminal
+            // Add ingredient info for chamber controller
             registration.addIngredientInfo(
                 List.of(new ItemStack(KUGELBLITZ_BLOCKS.get("chamber_terminal").get()), new ItemStack(UNKNOWN_INGREDIENT.get())),
                 VanillaTypes.ITEM_STACK,

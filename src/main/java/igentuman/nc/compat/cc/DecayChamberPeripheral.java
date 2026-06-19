@@ -2,6 +2,7 @@ package igentuman.nc.compat.cc;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.content.particles.ParticleStack;
 
@@ -9,10 +10,10 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TargetChamberPeripheral implements IPeripheral {
-    private final TargetChamberControllerBE controller;
+public class DecayChamberPeripheral implements IPeripheral {
+    private final DecayChamberControllerBE controller;
 
-    public TargetChamberPeripheral(TargetChamberControllerBE be)
+    public DecayChamberPeripheral(DecayChamberControllerBE be)
     {
         this.controller = be;
     }
@@ -21,14 +22,14 @@ public class TargetChamberPeripheral implements IPeripheral {
     @Override
     public String getType()
     {
-        return "nc_target_chamber";
+        return "nc_decay_chamber";
     }
 
 
     @Override
     public boolean equals( IPeripheral other )
     {
-        return this == other || other instanceof TargetChamberPeripheral && ((TargetChamberPeripheral) other).controller == controller;
+        return this == other || other instanceof DecayChamberPeripheral && ((DecayChamberPeripheral) other).controller == controller;
     }
 
     @LuaFunction
@@ -77,17 +78,6 @@ public class TargetChamberPeripheral implements IPeripheral {
         return controller.energyStorage().getEnergyStored();
     }
 
-    @LuaFunction
-    public final Object[] getInputItem()
-    {
-        return controller.getInputItem();
-    }
-
-    @LuaFunction
-    public final Object[] getInputFluid()
-    {
-        return controller.getInputFluid();
-    }
 
     @LuaFunction
     public Object getInputParticleInfo()

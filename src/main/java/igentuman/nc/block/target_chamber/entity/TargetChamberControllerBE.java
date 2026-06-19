@@ -1,6 +1,5 @@
 package igentuman.nc.block.target_chamber.entity;
 
-import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
 import igentuman.nc.block.entity.ParticleChamberControllerBE;
 import igentuman.nc.compat.cc.TargetChamberPeripheral;
 import igentuman.nc.compat.oc2.TargetChamberDevice;
@@ -8,7 +7,6 @@ import igentuman.nc.content.particles.Equations;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.ParticleStorage;
 import igentuman.nc.handler.sided.SidedContentHandler;
-import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.multiblock.particle_chamber.TargetChamberMultiblock;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.NcRecipeType;
@@ -16,18 +14,15 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.TargetChamberRecipe;
-import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -297,7 +292,7 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
             recipeInfo().energy = recipeInfo().recipe().getEnergy();
             recipeInfo().radiation = recipeInfo().recipe().getRadiation();
             recipeInfo().be = this;
-            if (!recipe.consumeInputs(contentHandler, 1)) {
+            if (!recipe.consumeInputs(contentHandler(), 1)) {
                 recipe = null;
                 recipeInfo().clear();
             }
@@ -306,13 +301,8 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
         }
     }
 
-    public Object[] getFuel() {
-        return contentHandler.itemHandler.getSlotContent(0);
-    }
-
-    public void voidFuel() {
-        contentHandler.voidSlot(0);
-        contentHandler.itemHandler.holdedInputs.clear();
+    public Object[] getInputItem() {
+        return contentHandler().itemHandler.getSlotContent(0);
     }
 
     public ItemStack getCurrentFuel() {
@@ -325,6 +315,10 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
             return null;
         }
         return ((Recipe) recipeInfo().recipe).outputParticles.length > i ? ((Recipe) recipeInfo().recipe).outputParticles[i] : null;
+    }
+
+    public Object[] getInputFluid() {
+        return contentHandler().fluidHandler.getSlotContent(0);
     }
 
     public static class Recipe extends TargetChamberRecipe {

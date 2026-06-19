@@ -2,6 +2,10 @@ package igentuman.nc.block.decay_chamber.entity;
 
 import igentuman.nc.block.entity.ParticleChamberControllerBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
+import igentuman.nc.compat.cc.DecayChamberPeripheral;
+import igentuman.nc.compat.cc.TargetChamberPeripheral;
+import igentuman.nc.compat.oc2.DecayChamberDevice;
+import igentuman.nc.compat.oc2.TargetChamberDevice;
 import igentuman.nc.content.particles.Equations;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.ParticleStorage;
@@ -11,18 +15,27 @@ import igentuman.nc.recipes.type.DecayChamberRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.decay_chamber.DecayChamberControllerBlock.POWERED;
+import static igentuman.nc.compat.oc2.TargetChamberDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.AcceleratorConfig.DECAY_CHAMBER_CONFIG;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_BE;
+import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
 public class DecayChamberControllerBE extends ParticleChamberControllerBE {
 
@@ -38,7 +51,7 @@ public class DecayChamberControllerBE extends ParticleChamberControllerBE {
         this(TARGET_CHAMBER_BE.get(NAME).get(), pPos, pBlockState);
     }
 
-    public DecayChamberControllerBE(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pPos, BlockState pBlockState) {
+    public DecayChamberControllerBE(BlockEntityType<?> type, BlockPos pPos, BlockState pBlockState) {
         super(type, pPos, pBlockState);
         energyPerTick = DECAY_CHAMBER_CONFIG.BASE_POWER.get();
     }
@@ -63,6 +76,31 @@ public class DecayChamberControllerBE extends ParticleChamberControllerBE {
     @Override
     public boolean canInvalidateCache() {
         return false;
+    }
+
+    private LazyOptional<DecayChamberPeripheral> peripheralCap;
+
+    public <T> LazyOptional<T> getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (peripheralCap == null) {
+            peripheralCap = LazyOptional.of(() -> new DecayChamberPeripheral(this));
+        }
+        return peripheralCap.cast();
+    }
+
+    public <T> LazyOptional<T> getOCDevice(Capability<T> cap, Direction side) {
+        return LazyOptional.of(() -> DecayChamberDevice.createDevice(this)).cast();
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (isOC2Loaded() && cap == DEVICE_CAPABILITY) {
+            return getOCDevice(cap, side);
+        }
+        if (isCcLoaded() && cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+            return getPeripheral(cap, side);
+        }
+        return super.getCapability(cap, side);
     }
 
     @Override

@@ -15,6 +15,7 @@ import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
@@ -25,6 +26,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
@@ -43,6 +45,7 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
     public ParticleStack clientParticle;
     protected ParticleChamberMultiblock multiblock;
     public ParticleChamberControllerBE controller;
+    private boolean alreadySentParticle = false;
 
     public TargetChamberBeamPortBE(BlockPos pPos, BlockState pBlockState) {
         super(TARGET_CHAMBER_BE.get(NAME).get(), pPos, pBlockState);
@@ -61,10 +64,8 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
 
     @Override
     public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
-        if (lastTickTime == currentTick) {
-            return;
-        }
+        if(lastTickTime == currentTick || NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
+        alreadySentParticle = false;
         lastTickTime = currentTick;
         boolean updated = updateController();
         if(!isConnectedToController()) return;
@@ -76,7 +77,7 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(!isConnectedToController()) return LazyOptional.empty();
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return controller().getCapability(cap, side);
+            return controller().getParticleHandler().cast();
         }
         return LazyOptional.empty();
     }
@@ -86,7 +87,9 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
         return (ParticleChamberControllerBE) super.controller();
     }
 
-    public void extractParticle(ParticleStack particleStack) {
+    public boolean extractParticle(ParticleStack particleStack) {
+        if(alreadySentParticle || !isConnectedToController() || particleStack == null || particleStack.getAmount() <= 0) return false;
+        AtomicBoolean result = new AtomicBoolean(false);
         Direction facing = getFacing();
         BlockPos currentPos = worldPosition.relative(facing);
         int maxDistance = 16;
@@ -99,36 +102,48 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
                 currentPos = currentPos.relative(facing);
                 continue;
             }
-
-            if (level.getBlockEntity(currentPos) instanceof AcceleratorBeamPortBE targetPort) {
-                if (targetPort.getFacing() == facing.getOpposite() && targetPort.getBlockState().getValue(PORT_MODE) == PortMode.Mode.INPUT) {
-                    if (targetPort.controller() != null) {
-                        particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
-                        targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
-                                .ifPresent(handler -> {
-                                    handler.reciveParticle(facing.getOpposite(), particleStack);
-                                });
-                    }
+            BlockEntity be = level.getExistingBlockEntity(currentPos);
+            if (be instanceof AcceleratorBeamPortBE targetPort) {
+                if (targetPort.getFacing() == facing.getOpposite() && targetPort.isInput()) {
+                    int finalDistance = distance;
+                    targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                            .ifPresent(handler -> {
+                                particleStack.addFocus(-Equations.focusLoss(finalDistance, particleStack));
+                                handler.reciveParticle(facing.getOpposite(), particleStack);
+                                result.set(true);
+                            });
                 }
                 break;
-            } else if (level.getBlockEntity(currentPos) instanceof TargetChamberBeamPortBE targetPort) {
-                if (targetPort.getFacing() == facing.getOpposite() && targetPort.getBlockState().getValue(PORT_MODE) == PortMode.Mode.INPUT) {
-                    if (targetPort.controller() != null) {
-                        particleStack.addFocus(-Equations.focusLoss(distance-1, particleStack));
-                        targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
-                                .ifPresent(handler -> {
-                                    handler.reciveParticle(facing.getOpposite(), particleStack);
-                                });
-                    }
+            } else if (be instanceof TargetChamberBeamPortBE targetPort) {
+                if (targetPort.getFacing() == facing.getOpposite() && targetPort.isInput()) {
+                    int finalDistance1 = distance;
+                    targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                            .ifPresent(handler -> {
+                                particleStack.addFocus(-Equations.focusLoss(finalDistance1, particleStack));
+                                handler.reciveParticle(facing.getOpposite(), particleStack);
+                                result.set(true);
+                            });
                 }
                 break;
-            } else {
+            } else if (be != null) {
+                int finalDistance2 = distance;
+                be.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                        .ifPresent(handler -> {
+                            particleStack.addFocus(-Equations.focusLoss(finalDistance2, particleStack));
+                            handler.reciveParticle(facing.getOpposite(), particleStack);
+                            result.set(true);
+                        });
+                break;
+            }
+            else {
                 break;
             }
         }
 
+        alreadySentParticle = result.get();
         clientParticle = particleStack.copy();
         markDirty();
+        return result.get();
     }
 
     public boolean isOutput() {

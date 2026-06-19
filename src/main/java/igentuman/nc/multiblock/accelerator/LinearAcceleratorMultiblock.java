@@ -214,6 +214,9 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
             maxHeat = (beamLength + 5) * 10000;
             validationResult = ValidationResult.VALID;
             errorBlockPos = BlockPos.ZERO;
+            controllerBE().width = width;
+            controllerBE().depth = depth;
+            controllerBE().height = height;
             controllerBE().ionSourcePos = ionSourcePos;
             controllerBE().beamLength = beamLength;
             controllerBE().amplifiers = amplifiers.size();

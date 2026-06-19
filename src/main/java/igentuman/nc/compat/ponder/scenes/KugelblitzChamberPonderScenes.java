@@ -109,7 +109,7 @@ public class KugelblitzChamberPonderScenes {
                 .text("They all need to be fully charged and then activated with redstone or in their GUI.");
         scene.addInstruction(new RotateSceneInstruction(35, 15, true));
         scene.idle(55);
-        // Activate terminal state to show success
+        // Activate controller state to show success
         scene.world().setBlock(terminalPos, KUGELBLITZ_BLOCKS.get("chamber_terminal").get().defaultBlockState().setValue(HORIZONTAL_FACING, Direction.EAST).setValue(POWERED, true), false);
         scene.overlay().showText(60)
                 .text("When all 6 lasers burst simultaneously, this will create a Blackhole inside the chamber.");

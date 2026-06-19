@@ -14,11 +14,10 @@ import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +25,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -71,10 +69,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     @NBTField
     public BlockPos blackholePos = BlockPos.ZERO;
     @NBTField
-    public int energyPerTick = 0;
-    @NBTField
-    public double efficiency = 0;
-    @NBTField
     public long mass = 0;
     @NBTField
     public int evaporation = 0;
@@ -95,7 +89,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     public HashMap<Direction, Long> pulseEnergy = new HashMap<>();
     public int collectingEnergy = 10;
 
-    protected Direction facing;
     public Recipe recipe;
     public HashMap<String, Recipe> cachedRecipes = new HashMap<>();
     private List<ItemStack> allowedInputs;
@@ -138,11 +131,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
             }
         }
         return allowedInputs;
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
     }
 
     @Override
@@ -251,13 +239,10 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
     protected int reValidateCounter = 0;
 
     public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
+        if(lastTickTime == currentTick || NuclearCraft.instance.isNcBeStopped || isRemoved()) {
             return;
         }
-        //Disallow boosters like torcherino
-        if(lastTickTime == currentTick) {
-            return;
-        }
+
         lastTickTime = currentTick;
         changed = false;
         super.tickServer();
@@ -593,29 +578,6 @@ public class ChamberTerminalBE extends MultiblockControllerBE {
 
     public boolean hasRecipe() {
         return recipeInfo().recipe() != null && hasResultItem((Recipe) recipeInfo().recipe());
-    }
-
-    public Direction getFacing() {
-        if (facing == null) {
-            facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
-        }
-        return facing;
-    }
-
-    public int getDepth() {
-        return depth;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public boolean hasRedstoneSignal() {
-        return Objects.requireNonNull(getLevel()).hasNeighborSignal(worldPosition);
     }
 
     public boolean isProcessing() {

@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import static igentuman.nc.content.materials.Materials.*;
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_BLOCK;
 import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
+import static igentuman.nc.setup.registration.Tags.forgeBlock;
 
 public class SubatomicLiquifierRecipes extends AbstractRecipeProvider {
 

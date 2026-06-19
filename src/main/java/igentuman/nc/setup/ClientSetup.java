@@ -129,6 +129,7 @@ public class ClientSetup {
             MenuScreens.register(TARGET_CHAMBER_PORT_CONTAINER.get(), TargetChamberPortScreen::new);
             MenuScreens.register(COLLISION_CHAMBER_CONTROLLER_CONTAINER.get(), CollisionChamberControllerScreen::new);
             MenuScreens.register(DECAY_CHAMBER_CONTROLLER_CONTAINER.get(), DecayChamberControllerScreen::new);
+            MenuScreens.register(BEAM_DIVERTER_CONTROLLER_CONTAINER.get(), BeamDiverterControllerScreen::new);
 
             for(String name: NCProcessors.PROCESSORS_CONTAINERS.keySet()) {
                 MenuScreens.register(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), Processors.all().get(name).getScreenConstructor());

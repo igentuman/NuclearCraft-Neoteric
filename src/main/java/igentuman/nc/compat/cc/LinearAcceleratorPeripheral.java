@@ -53,6 +53,12 @@ public class LinearAcceleratorPeripheral implements IPeripheral {
     }
 
     @LuaFunction
+    public final int getMinEnergy()
+    {
+        return isMultiblockAssembled() ? controller.getMinEnergy() : 0;
+    }
+
+    @LuaFunction
     public final int getTemperature()
     {
         return isMultiblockAssembled() ? controller.getTemperature() : 0;

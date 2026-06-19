@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
+import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
+import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
 
 public class KugelblitzRecipes extends AbstractRecipeProvider {
 
@@ -66,6 +68,7 @@ public class KugelblitzRecipes extends AbstractRecipeProvider {
                 "#forge:blocks/wool"
         );
         itemToItem(ingotStack("tough_alloy"), dustStack("bscco", 1), 2);
+        itemToItem(NcIngredient.of(NC_ITEMS.get("upgrade_stack").get()), NcIngredient.of(NC_ITEMS.get("upgrade_quantum").get()), 2);
         for(String name: items) {
             NcIngredient ingredient = NcIngredient.of(name);
             if(ingredient.isEmpty()) continue;

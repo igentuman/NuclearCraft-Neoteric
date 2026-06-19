@@ -75,7 +75,7 @@ public class KugelblitzRegistration {
     2. Event Horizon Stabilizer
     3. Neutronium Frame
     4. Chamber port
-    5. Chamber terminal
+    5. Chamber controller
     6. Quantum Flux Regulator
     7. Quantum transformer
     */

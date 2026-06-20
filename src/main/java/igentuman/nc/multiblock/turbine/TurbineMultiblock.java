@@ -147,7 +147,7 @@ public class TurbineMultiblock extends AbstractMultiblock {
         controllerBE().blades = blades;
         controllerBE().flow = flow;
         controllerBE().bearingPos = bearingPositions.get(0);
-        controllerBE().refresh();
+        controllerBE().markDirty();
     }
 
     @Override
@@ -306,8 +306,8 @@ public class TurbineMultiblock extends AbstractMultiblock {
     public void passKineticEnergy() {
         if (!isCreateLoaded() || turbineDirection == null) return;
         Direction.Axis axis = turbineDirection.getAxis();
-        int coils = controllerBE().getActiveCoils();
-        float rpm = Math.min(256, (float) (controllerBE().rotationSpeed*1000 / ((float) coils /2+1) * TURBINE_CONFIG.KINETIC_ENERGY_CONVERTION.get()));
+        float coilsDrag = (float) Math.log(controllerBE().activeCoils/controllerBE().coilsDrag())+1;
+        float rpm = Math.min(256, (float) (controllerBE().rotationSpeed*5000 / coilsDrag * TURBINE_CONFIG.KINETIC_ENERGY_CONVERTION.get()));
         List<BlockPos> tmp = bearingPositions.stream().toList();
         for(BlockPos pos: tmp) {
             BlockState bs = getBlockState(pos);
@@ -315,7 +315,7 @@ public class TurbineMultiblock extends AbstractMultiblock {
                 controllerBE().getLevel().setBlock(pos, bs.setValue(BlockStateProperties.AXIS, axis), Block.UPDATE_CLIENTS);
             }
             BlockEntity be = getBlockEntity(pos);
-            CreateTurbine.applyKinetic(be, rpm, (float) Math.log1p(controllerBE().realFlow)*7);
+            CreateTurbine.applyKinetic(be, rpm, (float) (Math.log1p(controllerBE().maxFlow) + Math.log1p(controllerBE().realFlow))*5F);
         }
     }
 }

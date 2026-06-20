@@ -552,7 +552,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("report.nc.2.flux_regulators", "Flux Regulators: %s");
         add("report.nc.3.transformers", "Transformers: %s");
         add("report.nc.1.target_chamber.all_detectors", "All Detectors: %s");
-        add("report.nc.1.target_chamber.valid_detectors", "Valid Detectors: %s");
+        add("report.nc.2.target_chamber.valid_detectors", "Valid Detectors: %s");
         add("report.nc.1.collision_chamber.connected_ports", "Connected Ports: %s");
         add("report.nc.2.collision_chamber.efficiency", "Efficiency: %s");
         add("report.nc.1.decay_chamber.detectors", "Detectors: %s");

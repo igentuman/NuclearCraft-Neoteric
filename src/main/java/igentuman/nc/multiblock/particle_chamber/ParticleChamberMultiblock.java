@@ -150,7 +150,7 @@ public abstract class ParticleChamberMultiblock extends AbstractMultiblock {
             clearStats();
             return;
         }
-        controllerBE().refresh();
+        controllerBE().markDirty();
     }
 
     protected void onCachedBlockRemoved(long packedPos) {
@@ -177,11 +177,10 @@ public abstract class ParticleChamberMultiblock extends AbstractMultiblock {
         for (Direction dir : List.of(Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH)) {
             BlockPos pos = getCenterBlock();
             for (int i = 1; i < width() / 2; i++) {
-                pos = pos.relative(dir, i);
-                BlockState bs = getBlockState(pos);
+                BlockState bs = getBlockState(pos.relative(dir, i));
                 if (!bs.is(ACCELERATOR_BLOCKS.get("particle_beam").get())) {
                     validationResult = ValidationResult.WRONG_INNER;
-                    errorBlockPos = pos;
+                    errorBlockPos = pos.relative(dir, i);
                     return;
                 }
             }

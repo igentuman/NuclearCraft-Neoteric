@@ -45,11 +45,11 @@ public class AcceleratorConfig {
             builder.comment("Target chamber").push("target_chamber");
 
             MIN_SIZE = builder
-                    .comment("Min interior size (cube edge, odd).")
+                    .comment("Min exterior size (cube edge, odd).")
                     .defineInRange("min_size", 5, 5, 11);
 
             MAX_SIZE = builder
-                    .comment("Max interior size (cube edge, odd).")
+                    .comment("Max exterior size (cube edge, odd).")
                     .defineInRange("max_size", 11, 7, 11);
 
             builder.pop();
@@ -74,7 +74,7 @@ public class AcceleratorConfig {
 
             BASE_POWER = builder
                     .comment("Base RF/tick consumed while running.")
-                    .defineInRange("base_power", 200, 0, Integer.MAX_VALUE);
+                    .defineInRange("base_power", 2000, 0, Integer.MAX_VALUE);
 
             builder.pop();
         }
@@ -98,7 +98,7 @@ public class AcceleratorConfig {
 
             BASE_POWER = builder
                     .comment("Base RF/tick consumed while running.")
-                    .defineInRange("base_power", 1000, 0, Integer.MAX_VALUE);
+                    .defineInRange("base_power", 2000, 0, Integer.MAX_VALUE);
 
             builder.pop();
         }

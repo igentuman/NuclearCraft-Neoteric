@@ -270,7 +270,7 @@ public class BeamDiverterMultiblock extends AbstractAcceleratorMultiblock {
         ctrl.efficiency = 100D;
         ctrl.energyPerTick = ACCELERATOR_CONFIG.BASE_ENERGY_REQUIREMENT.get() + electromagnetsFE;
         ctrl.dipoleStrength = dipoleStrength;
-        ctrl.refresh();
+        ctrl.markDirty();
     }
 
     @Override

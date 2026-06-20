@@ -153,7 +153,6 @@ public class ProcessorBlock extends HorizontalDirectionalBlock implements Entity
             return (lvl, pos, blockState, t) -> {
                 if (t instanceof NCProcessorBE tile) {
                     tile.tickClient();
-                    level.setBlockAndUpdate(pos, blockState.setValue(ACTIVE, tile.isActive));
                 }
             };
         }

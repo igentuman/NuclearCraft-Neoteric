@@ -23,6 +23,7 @@ import igentuman.nc.util.capability.CustomEnergyStorage;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -618,15 +619,18 @@ public class FissionControllerBE extends MultiblockControllerBE {
     }
 
     private void spawnParticles() {
-        if(!isCasingValid || !isInternalValid || efficiency <= 0) {
+        if(!isCasingValid || !isInternalValid || efficiency <= 0 || !powered) {
             return;
         }
 
         if(currentTick  % (level.random.nextInt(5)+1) != 0) {
             return;
         }
-        BlockPos topRightInner = topRight.relative(getFacing(), -1).below().relative(getFacing().getClockWise(),1);
-        BlockPos bottomLeftInner = bottomLeft.relative(getFacing(), 1).above().relative(getFacing().getCounterClockWise(),1);
+        BlockPos topRightInner = topRight.offset(-1, -1, -1);
+        BlockPos topRightInnerExclude = topRightInner.offset(-1, -1, -1);
+        BlockPos bottomLeftInner = bottomLeft.offset(1, 1, 1);
+        BlockPos bottomLeftInnerExclude = bottomLeftInner.offset(1, 1, 1);
+        AABB excludeArea = new AABB(bottomLeftInnerExclude, topRightInnerExclude);
         int minX = Math.min(topRightInner.getX(), bottomLeftInner.getX());
         int minY = Math.min(topRightInner.getY(), bottomLeftInner.getY());
         int minZ = Math.min(topRightInner.getZ(), bottomLeftInner.getZ());
@@ -634,7 +638,10 @@ public class FissionControllerBE extends MultiblockControllerBE {
         int maxY = Math.max(topRightInner.getY(), bottomLeftInner.getY());
         int maxZ = Math.max(topRightInner.getZ(), bottomLeftInner.getZ());
         for(BlockPos blockPos: BlockPos.randomBetweenClosed(level.random, width+height+depth, minX, minY, minZ, maxX, maxY, maxZ)) {
-            level.addParticle(RADIATION.get(), true, blockPos.getX()+level.random.nextFloat(), blockPos.getY()+level.random.nextFloat(), blockPos.getZ()+level.random.nextFloat(), 0, -0.05f, 0);
+            if (excludeArea.contains(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5)) {
+                continue;
+            }
+            level.addParticle(ParticleTypes.HAPPY_VILLAGER, true, blockPos.getX()+level.random.nextFloat(), blockPos.getY()+level.random.nextFloat(), blockPos.getZ()+level.random.nextFloat(), 0, -0.05f, 0);
         }
     }
 
@@ -970,8 +977,8 @@ public class FissionControllerBE extends MultiblockControllerBE {
         contentHandler().fluidHandler.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
         contentHandler().fluidHandler.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
         setChanged();
-        level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, false));
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, false), Block.UPDATE_ALL);
+        level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
         needToUpdate = false;
     }
 

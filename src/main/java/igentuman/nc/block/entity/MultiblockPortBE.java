@@ -92,7 +92,7 @@ public abstract class MultiblockPortBE extends NuclearCraftBE implements Multibl
     }
 
     public boolean isConnectedToController() {
-        return controller() != null && !controller().isRemoved();
+        return controller() != null && !controller().isRemoved() && controller().isInternalValid;
     }
 
     protected ItemCapabilityHandler itemHandler() {

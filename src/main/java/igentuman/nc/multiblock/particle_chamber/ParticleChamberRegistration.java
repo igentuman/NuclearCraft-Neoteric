@@ -64,11 +64,11 @@ public class ParticleChamberRegistration {
 
     public static List<DetectorDef> detectors() {
         return List.of(
-                DetectorDef.make("bubble_chamber", 0.075D, 200, 2),
-                DetectorDef.make("silicon_tracker", 0.15D, 2000, 1),
-                DetectorDef.make("wire_chamber", 0.1D, 1000, 2),
-                DetectorDef.make("em_calorimeter", 0.05D, 200, 3),
-                DetectorDef.make("hadron_calorimeter", 0.025D, 100, 4)
+                DetectorDef.make("bubble_chamber", 0.075D, 2000, 2),
+                DetectorDef.make("silicon_tracker", 0.15D, 20000, 1),
+                DetectorDef.make("wire_chamber", 0.1D, 10000, 2),
+                DetectorDef.make("em_calorimeter", 0.05D, 2000, 3),
+                DetectorDef.make("hadron_calorimeter", 0.025D, 1000, 5)
         );
     }
 

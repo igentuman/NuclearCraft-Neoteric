@@ -1,6 +1,9 @@
-1.2.28-rc1
+1.2.28-beta3
+    Refactored multiblocks related code, expect issues
     Fixed - Collision chamber validation and GUI
     Added - Beam Diverter multiblock
+    Added - Turbine Multiblocks generates Create kinetic energy
+    Fixed - Computer (CC/OC2) capabilities for multiblocks
 1.2.28-beta2
     Fixed - Startup crash on NeoForge
 1.2.28-beta1

@@ -14,13 +14,12 @@ import java.util.HashSet;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class MSRMultiblock extends AbstractMultiblock {
 
     protected int fuelCellCount = 0;
-    protected int heatExchangerCount = 0;
-    protected final HashSet<Long> heatExchangers = new HashSet<>();
 
     public MSRMultiblock(MSRControllerBE msrControllerBE) {
         super(
@@ -35,7 +34,6 @@ public class MSRMultiblock extends AbstractMultiblock {
     private static HashSet<Block> getInnerBlocks() {
         HashSet<Block> innerBlocks = new HashSet<>();
         innerBlocks.add(FissionReactorRegistration.FISSION_BLOCKS.get("msr_fuel_cell").get());
-        innerBlocks.add(FissionReactorRegistration.FISSION_BLOCKS.get("heat_exchanger").get());
         return innerBlocks;
     }
 
@@ -94,10 +92,6 @@ public class MSRMultiblock extends AbstractMultiblock {
             return;
         }
 
-        debugLog("Stage 2 complete - Fuel cells found: " + fuelCellCount + ", Heat exchangers found: " + heatExchangerCount);
-        
-        // Stage 3: Update controller with calculated stats
-        debugLog("Stage 3: Updating controller stats");
         updateControllerStats();
         
         debugLog("=== MSR MULTIBLOCK VALIDATION COMPLETE ===");
@@ -111,12 +105,8 @@ public class MSRMultiblock extends AbstractMultiblock {
             return;
         }
         fuelCellCount = 0;
-        heatExchangerCount = 0;
-        heatExchangers.clear();
-        Block heatExchangerBlock = FissionReactorRegistration.FISSION_BLOCKS.get("heat_exchanger").get();
         indexInnerBlocks();
         bsCache.values().stream().filter(bs -> bs.getBlock() instanceof FissionFuelCellBlock).forEach(bs -> fuelCellCount++);
-        bsCache.values().stream().filter(bs -> bs.is(heatExchangerBlock)).forEach(bs -> heatExchangerCount++) ;
     }
 
     private void indexInnerBlocks() {
@@ -163,24 +153,20 @@ public class MSRMultiblock extends AbstractMultiblock {
         // Update controller
         controller.connectedPorts = connectedPorts;
         controller.fuelCellsCount = fuelCellCount;
-        controller.heatExchangerCount = heatExchangerCount;
         controller.maxHeat = chamberVolume * 1000.0;
         controller.minPebblesForCriticality = Math.max(20, chamberVolume * 5);
         controller.minSaltForCriticality = Math.max(500, chamberVolume * 100);
         
         debugLog("  FuelCells: " + fuelCellCount);
-        debugLog("  HeatExchangers: " + heatExchangerCount);
         debugLog("  ChamberVolume: " + chamberVolume);
         
-        controller.setChanged();
+        controller.markDirty();
     }
 
     @Override
     public void clearStats() {
         fuelCellCount = 0;
-        heatExchangerCount = 0;
-        heatExchangers.clear();
-        
+
         BlockEntity be = getLevel().getBlockEntity((BlockPos) controllerPos);
         if(be instanceof MSRControllerBE controller) {
             controller.isCasingValid = false;

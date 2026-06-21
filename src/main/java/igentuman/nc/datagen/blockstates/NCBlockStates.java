@@ -139,6 +139,7 @@ public class NCBlockStates extends BlockStateProvider {
         horizontalBlock(HX_BLOCKS.get("heat_exchanger_cold_coolant_port").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger_cold_coolant_port").get(), "heat_exchanger/port"));
         simpleBlock(HX_BLOCKS.get("heat_exchanger_casing").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger_casing").get(), "heat_exchanger/casing"));
         simpleBlock(HX_BLOCKS.get("heat_exchanger_radiator").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger_radiator").get(), "heat_exchanger/radiator"));
+        simpleBlock(HX_BLOCKS.get("heat_exchanger").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger").get(), "multiblock/heat_exchanger"));
     }
 
     private void kugelblitz() {
@@ -246,7 +247,6 @@ public class NCBlockStates extends BlockStateProvider {
         );
         horizontalBlock(FISSION_BLOCKS.get("msr_port").get(), msrPortModel(FISSION_BLOCKS.get("msr_port").get()));
         simpleBlock(FISSION_BLOCKS.get("msr_fuel_cell").get(), multiBlockModel(FISSION_BLOCKS.get("msr_fuel_cell").get(), "fission/msr_fuel_cell"));
-        simpleBlock(FISSION_BLOCKS.get("heat_exchanger").get(), multiBlockModel(FISSION_BLOCKS.get("heat_exchanger").get(), "multiblock/heat_exchanger"));
     }
 
     public ModelFile msrPortModel(Block block) {

@@ -23,6 +23,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
+import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
 import static igentuman.nc.setup.registration.Registries.*;
 import static igentuman.nc.setup.registration.Tags.blockTag;
 
@@ -71,5 +72,6 @@ public class HeatExchangerRegistration {
 
         addBlock("heat_exchanger_casing", () -> new HeatExchangerCasingBlock(HX_BLOCKS_PROPERTIES));
         addBlock("heat_exchanger_radiator", () -> new RadiatorBlock(HX_BLOCKS_PROPERTIES));
+        addBlock("heat_exchanger", () -> new Block(HX_BLOCKS_PROPERTIES));
     }
 }

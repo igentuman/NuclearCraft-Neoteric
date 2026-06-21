@@ -152,10 +152,6 @@ public class FissionReactorRegistration {
                         .build(null)));
         FISSION_BLOCK_ITEMS.put("msr_port", fromMultiblock(FISSION_BLOCKS.get("msr_port")));
         ALL_NC_ITEMS.put("msr_port", FISSION_BLOCK_ITEMS.get("msr_port"));
-
-        FISSION_BLOCKS.put("heat_exchanger", BLOCKS.register("heat_exchanger", () -> new Block(REACTOR_BLOCKS_PROPERTIES)));
-        FISSION_BLOCK_ITEMS.put("heat_exchanger", fromMultiblock(FISSION_BLOCKS.get("heat_exchanger")));
-        ALL_NC_ITEMS.put("heat_exchanger", FISSION_BLOCK_ITEMS.get("heat_exchanger"));
     }
 
     public static final HashSet<Block> blocks = moderators();

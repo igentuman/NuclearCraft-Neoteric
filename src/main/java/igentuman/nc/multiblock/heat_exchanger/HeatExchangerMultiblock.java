@@ -112,7 +112,7 @@ public class HeatExchangerMultiblock extends AbstractMultiblock {
         BlockState bs = getBlockState(toCheck);
         if (bs.isAir()) return true;
         super.processInnerBlock(new BlockPosInstance(toCheck));
-        if (bs.getBlock() == FissionReactorRegistration.FISSION_BLOCKS.get("heat_exchanger").get()) {
+        if (bs.getBlock() == HX_BLOCKS.get("heat_exchanger").get()) {
             heatExchangerCount++;
         }
         return true;

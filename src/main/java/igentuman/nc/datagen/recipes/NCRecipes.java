@@ -1683,7 +1683,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
                 .save(consumer);
 */
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("heat_exchanger").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger").get())
                 .pattern("LPL")
                 .pattern("PMP")
                 .pattern("LPL")

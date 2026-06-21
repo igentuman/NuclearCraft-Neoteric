@@ -29,6 +29,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BL
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
@@ -54,6 +55,7 @@ public class NCBlockStates extends BlockStateProvider {
         fissionReactor();
         msrReactor();
         turbine();
+        heatExchanger();
         storageBlocks();
         fusionReactor();
         kugelblitz();
@@ -127,6 +129,16 @@ public class NCBlockStates extends BlockStateProvider {
         for(String type: TurbineRegistration.coils.keySet()) {
             simpleBlock(TURBINE_BLOCKS.get("turbine_" + type + "_coil").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_" + type + "_coil").get(), "turbine/" + type + "_coil"));
         }
+    }
+
+    private void heatExchanger() {
+        horizontalBlock(HX_BLOCKS.get("heat_exchanger_controller").get(),
+                st -> controllerModel(st, sidedModel(HX_BLOCKS.get("heat_exchanger_controller").get(), "heat_exchanger/controller"))
+        );
+        horizontalBlock(HX_BLOCKS.get("heat_exchanger_hot_coolant_port").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger_hot_coolant_port").get(), "heat_exchanger/port"));
+        horizontalBlock(HX_BLOCKS.get("heat_exchanger_cold_coolant_port").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger_cold_coolant_port").get(), "heat_exchanger/port"));
+        simpleBlock(HX_BLOCKS.get("heat_exchanger_casing").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger_casing").get(), "heat_exchanger/casing"));
+        simpleBlock(HX_BLOCKS.get("heat_exchanger_radiator").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger_radiator").get(), "heat_exchanger/radiator"));
     }
 
     private void kugelblitz() {
@@ -357,6 +369,8 @@ public class NCBlockStates extends BlockStateProvider {
             type = "particle_chamber";
         } else if(st.getBlock() == FISSION_BLOCKS.get("msr_controller").get()) {
             type = "fission";
+        } else if(st.getBlock() == HX_BLOCKS.get("heat_exchanger_controller").get()) {
+            type = "heat_exchanger";
         }
         BlockModelBuilder result = models()
                 .getBuilder("block/multiblock/"+key(st.getBlock()).getPath()+powered)

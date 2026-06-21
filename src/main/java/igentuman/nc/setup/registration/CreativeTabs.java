@@ -7,6 +7,7 @@ import igentuman.nc.block.storage.ContainerBlock;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.materials.Ores;
 import igentuman.nc.content.processors.Processors;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +18,7 @@ import java.util.*;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCK_ITEMS;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
@@ -48,6 +50,13 @@ public class CreativeTabs {
                     .displayItems((displayParams, output) -> KUGELBLITZ_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get()))))
                     .icon(() -> new ItemStack(KUGELBLITZ_BLOCKS.get("chamber_terminal").get()))
                     .title(__("itemGroup.nuclearcraft_kugelblitz"))
+                    .build());
+
+    public static final RegistryObject<CreativeModeTab> HX_TAB = CREATIVE_TABS.register("heat_exchanger",
+            () ->  CreativeModeTab.builder()
+                    .displayItems((displayParams, output) -> hxStuff().forEach(output::accept))
+                    .icon(() -> new ItemStack(HX_BLOCK_ITEMS.get("heat_exchanger_controller").get()))
+                    .title(__("itemGroup.nuclearcraft_heat_exchanger"))
                     .build());
 
     public static final RegistryObject<CreativeModeTab> ACCELERATOR_TAB = CREATIVE_TABS.register("accelerator",
@@ -181,6 +190,14 @@ public class CreativeTabs {
         items.add(new ItemStack(LITHIUM_ION_CELL.get()));
         items.add(new ItemStack(MUSHROOM_BLOCK.get()));
         items.add(new ItemStack(WASTELAND_EARTH.get()));
+        return items;
+    }
+
+    private static List<ItemStack> hxStuff() {
+        List<ItemStack> items = new ArrayList<>();
+        for(RegistryObject<BlockItem> block: HX_BLOCK_ITEMS.values()) {
+            items.add(new ItemStack(block.get()));
+        }
         return items;
     }
 

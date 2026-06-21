@@ -1,0 +1,7 @@
+{
+  "name": "Heat Exchanger",
+  "description": "$(l)Two coolant loops, one heat buffer. Bank heat hot, spend it cold.",
+  "icon": "nuclearcraft:heat_exchanger_controller",
+  "parent": "nuclearcraft:multiblocks",
+  "sortnum": 1
+}

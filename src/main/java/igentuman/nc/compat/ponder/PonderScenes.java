@@ -21,6 +21,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_IT
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_ITEMS;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCK_ITEMS;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCK_ITEMS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_ELECTROMAGNETS;
 import static igentuman.nc.setup.registration.NCBlocks.NC_RF_AMPLIFIERS;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSOR_BLOCKS_ITEMS;
@@ -38,6 +39,7 @@ public class PonderScenes {
     public static final ResourceLocation RING_ACCELERATOR = rl("ring_accelerator");
     public static final ResourceLocation BEAM_DIVERTER = rl("beam_diverter");
     public static final ResourceLocation KUGELBLITZ_CHAMBER = rl("kugelblitz_chamber");
+    public static final ResourceLocation HEAT_EXCHANGER = rl("heat_exchanger");
 
     public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
         PonderSceneRegistrationHelper<Item> HELPER = helper.withKeyFunction(BuiltInRegistries.ITEM::getKey);
@@ -85,6 +87,14 @@ public class PonderScenes {
         HELPER.forComponents(
                 turbineItems
         ).addStoryBoard(TURBINE, TurbinePonderScenes::create);
+
+
+        List<Item> heatExchangerItems = new ArrayList<>();
+        HX_BLOCK_ITEMS.values().forEach(entry -> heatExchangerItems.add(entry.get()));
+
+        HELPER.forComponents(
+                heatExchangerItems
+        ).addStoryBoard(HEAT_EXCHANGER, HeatExchangerPonderScenes::create);
 
 
         List<Item> targetChamberItems = new ArrayList<>();

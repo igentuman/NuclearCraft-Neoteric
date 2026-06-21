@@ -236,6 +236,14 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
+    public static void hxRecipe(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double time, double power, double heat) {
+        NcRecipeBuilder.get(ID)
+                .fluids(input, output)
+                .heat(heat)
+                .modifiers(time, 0, power)
+                .build(consumer);
+    }
+
     public static void coolantRecipe(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double coolingRate) {
         NcRecipeBuilder.get(ID)
                 .fluids(input, output)

@@ -1,0 +1,7 @@
+{
+  "name": "Теплообменник",
+  "description": "$(l)Два контура теплоносителя, один тепловой буфер. Копи тепло горячим, трать холодным.",
+  "icon": "nuclearcraft:heat_exchanger_controller",
+  "parent": "nuclearcraft:multiblocks",
+  "sortnum": 1
+}

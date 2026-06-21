@@ -269,6 +269,13 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean testType(FluidStack fluidStack) {
+            if (tag.isEmpty()) {
+                for(FluidStack type: getRepresentations()) {
+                    if (type.isFluidEqual(fluidStack)) {
+                        return true;
+                    }
+                }
+            }
             return tag.contains(Objects.requireNonNull(fluidStack).getFluid());
         }
 

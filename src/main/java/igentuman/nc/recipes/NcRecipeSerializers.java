@@ -10,6 +10,7 @@ import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE.FusionCoolantRecipe;
 import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
+import igentuman.nc.block.heat_exchanger.entity.HeatExchangerControllerBE;
 import igentuman.nc.recipes.type.NuclearBlastRecipe;
 import igentuman.nc.recipes.serializers.NuclearBlastRecipeSerializer;
 import igentuman.nc.recipes.serializers.*;
@@ -51,6 +52,7 @@ public class NcRecipeSerializers {
         map.put("collision_chamber", RECIPE_SERIALIZERS.register("collision_chamber", () -> new ParticleOnlyRecipeSerializer<>(CollisionChamberControllerBE.Recipe::new)));
         map.put("nuclear_blast", NUCLEAR_BLAST_RECIPE);
         map.put(TurbineControllerBE.NAME, RECIPE_SERIALIZERS.register(TurbineControllerBE.NAME, () -> new TurbineRecipeSerializer<>(TurbineControllerBE.Recipe::new)));
+        map.put(HeatExchangerControllerBE.NAME, RECIPE_SERIALIZERS.register(HeatExchangerControllerBE.NAME, () -> new HeatExchangerRecipeSerializer<>(HeatExchangerControllerBE.Recipe::new)));
         for(String key : Processors.all().keySet()) {
            if(Processors.all().get(key).getRecipeSerializer() != null) {
                map.put(key, RECIPE_SERIALIZERS.register(key, Processors.all().get(key).getRecipeSerializer()));

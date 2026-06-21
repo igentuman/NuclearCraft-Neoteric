@@ -16,6 +16,7 @@ import igentuman.nc.client.gui.fission.MSRControllerScreen;
 import igentuman.nc.client.gui.kugelblitz.ChamberPortScreen;
 import igentuman.nc.client.gui.kugelblitz.ChamberTerminalScreen;
 import igentuman.nc.client.gui.kugelblitz.EXPLScreen;
+import igentuman.nc.client.gui.heat_exchanger.HeatExchangerControllerScreen;
 import igentuman.nc.client.gui.turbine.TurbineControllerScreen;
 import igentuman.nc.client.gui.turbine.TurbinePortScreen;
 import igentuman.nc.client.model.ModelFeralGhoul;
@@ -78,6 +79,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_CONTAINER;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_CONTROLLER_CONTAINER;
 import static igentuman.nc.setup.registration.NCBlocks.CHARGING_STATION_BE;
 import static igentuman.nc.setup.registration.NCBlocks.CHARGING_STATION_CONTAINER;
 import static igentuman.nc.setup.registration.NCBlocks.MULTIBLOCK_BUILDER_CONTAINER;
@@ -113,6 +115,7 @@ public class ClientSetup {
             MenuScreens.register(EXPL_CONTAINER.get(), EXPLScreen::new);
             MenuScreens.register(TURBINE_CONTROLLER_CONTAINER.get(), TurbineControllerScreen::new);
             MenuScreens.register(TURBINE_PORT_CONTAINER.get(), TurbinePortScreen::new);
+            MenuScreens.register(HX_CONTROLLER_CONTAINER.get(), HeatExchangerControllerScreen::new);
             MenuScreens.register(FISSION_CONTROLLER_CONTAINER.get(), FissionControllerScreen::new);
             MenuScreens.register(FISSION_PORT_CONTAINER.get(), FissionPortScreen::new);
             MenuScreens.register(MSR_CONTROLLER_CONTAINER.get(), MSRControllerScreen::new);

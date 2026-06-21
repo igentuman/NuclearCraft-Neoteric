@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:fission_boiling",
+  "heatRequired": 400.0,
+  "inputFluids": [
+    {
+      "amount": 10,
+      "tag": "forge:helium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 10,
+      "tag": "forge:hot_helium"
+    }
+  ]
+}

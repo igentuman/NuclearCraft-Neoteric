@@ -5,6 +5,7 @@ import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
+import igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
@@ -27,6 +28,7 @@ import static igentuman.nc.multiblock.fission.FissionReactorRegistration.*;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 import static igentuman.nc.setup.registration.Tags.BLOCK_TAGS;
@@ -77,6 +79,7 @@ public class NCBlockTags extends BlockTagsProvider {
                 KUGELBLITZ_BLOCKS.get("quantum_transformer").get(),
                 KUGELBLITZ_BLOCKS.get("photon_concentrator").get(),
                 KUGELBLITZ_BLOCKS.get("event_horizon_stabilizer").get());
+
         tag(AcceleratorRegistration.ACCELERATOR_CASING_BLOCKS).add(
                 ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get(),
                 ACCELERATOR_BLOCKS.get("accelerator_casing").get(),
@@ -155,6 +158,16 @@ public class NCBlockTags extends BlockTagsProvider {
         );
         tag(TurbineRegistration.INNER_TURBINE_BLOCKS).add(
                 TurbineRegistration.getBladeBlocks()
+        );
+        tag(HeatExchangerRegistration.CASING_BLOCKS).add(
+                HX_BLOCKS.get("heat_exchanger_casing").get(),
+                HX_BLOCKS.get("heat_exchanger_radiator").get(),
+                HX_BLOCKS.get("heat_exchanger_controller").get(),
+                HX_BLOCKS.get("heat_exchanger_hot_coolant_port").get(),
+                HX_BLOCKS.get("heat_exchanger_cold_coolant_port").get()
+        );
+        tag(HeatExchangerRegistration.INNER_BLOCKS).add(
+                FISSION_BLOCKS.get("heat_exchanger").get()
         );
     }
 
@@ -246,6 +259,10 @@ public class NCBlockTags extends BlockTagsProvider {
         for(String block: TURBINE_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(TURBINE_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(TURBINE_BLOCKS.get(block).get());
+        }
+        for(String block: HX_BLOCKS.keySet()) {
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(HX_BLOCKS.get(block).get());
+            tag(BlockTags.NEEDS_IRON_TOOL).add(HX_BLOCKS.get(block).get());
         }
         for(String block: KUGELBLITZ_BLOCKS.keySet()) {
             if(block.equals("black_hole")) continue;

@@ -35,6 +35,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
 
     public double coolingRate = 0;
     public double heatRequired = 0;
+    public double heat = 0;
 
     public String ID;
     private double rarityModifier = 1D;
@@ -136,6 +137,11 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
 
     public NcRecipeBuilder heatRequired(double heatRequired) {
         this.heatRequired = heatRequired;
+        return this;
+    }
+
+    public NcRecipeBuilder heat(double heat) {
+        this.heat = heat;
         return this;
     }
 
@@ -245,6 +251,9 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             }
             if(coolingRate > 0) {
                 json.addProperty("coolingRate", coolingRate);
+            }
+            if(heat != 0) {
+                json.addProperty("heat", heat);
             }
             if(timeModifier > 0) {
                 json.addProperty("timeModifier", timeModifier);

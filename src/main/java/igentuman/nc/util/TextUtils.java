@@ -49,6 +49,14 @@ public class TextUtils
         return "tooltip.nc.forge_energy_per_tick";
     }
 
+    public static String energyUseLine()
+    {
+        if(ModUtil.isGtLoaded() && isGTEUCapEnabled()) {
+            return "tooltip.nc.eu_per_tick";
+        }
+        return "tooltip.nc.forge_energy_per_tick";
+    }
+
 	public static String numberFormat(double value)
 	{
 		String preffix = "";
@@ -144,6 +152,7 @@ public class TextUtils
 	public static String applySpeccialRules(String val)
 	{
 		val = val.replace("Rtg", "RTG");
+		val = val.replace("Flibe", "FLiBe");
 		val = val.replace("Du", "DU");
 		val = val.replace("Tbu", "TBU");
 		val = val.replace("Bssco", "BSSCO");

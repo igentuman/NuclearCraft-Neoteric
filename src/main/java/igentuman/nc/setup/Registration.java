@@ -10,6 +10,7 @@ import igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration;
 import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration;
+import igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.recipes.NcRecipeSerializers;
 import igentuman.nc.recipes.NcRecipeType;
@@ -56,6 +57,7 @@ public class Registration {
         FusionReactorRegistration.init();
         KugelblitzRegistration.init();
         TurbineRegistration.init();
+        HeatExchangerRegistration.init();
         AcceleratorRegistration.init();
         ParticleChamberRegistration.init();
         CreativeTabs.init();

@@ -1,6 +1,6 @@
 {
   "type": "nuclearcraft:fission_boiling",
-  "heatRequired": 1.0,
+  "heatRequired": 200.0,
   "inputFluids": [
     {
       "amount": 10,

@@ -129,7 +129,8 @@ public class NCFluids {
         items.put("emergency_coolant_heated", new LiquidDefinition("emergency_coolant_heated", 0x90CDBEE7));
         items.put(Materials.irradiated_sodium, new LiquidDefinition(Materials.irradiated_sodium, 0x90CDBEE7));
         items.put("mercury", new LiquidDefinition("mercury", 0xFFB5B5B5));
-
+        items.put("flibe_hot_molten_salt", new LiquidDefinition("flibe_hot_molten_salt", 0x90FFD0A3, 800));
+        items.put("flibe_molten_salt", new LiquidDefinition("flibe_molten_salt", 0xFFB5B5B5, 400));
         for(LiquidDefinition liquid: items.values()) {
             LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
@@ -246,6 +247,7 @@ public class NCFluids {
         items.put("nitrogen_dioxide", new GasDefinition("nitrogen_dioxide", 0xCC782A10, 294));
         items.put("hydrogen", new GasDefinition("hydrogen", 0xCCA0EFFF, 239));
         items.put("helium", new GasDefinition("helium", 0xCCC57B81, 293));
+        items.put("hot_helium", new GasDefinition("hot_helium", 0xAAC57B81, 693));
         items.put("helium_3", new GasDefinition("helium_3", 0xCCCBBB67, 293));
         items.put("tritium", new GasDefinition("tritium", 0xCC5DBBD6, 20));
         items.put("deuterium", new GasDefinition("deuterium", 0xCC9E6FEF, 239));

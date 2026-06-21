@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_heat_exchanger",
+  "key": {
+    "A": {
+      "tag": "forge:plates/aluminum"
+    },
+    "T": {
+      "tag": "forge:ingots/copper"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "AAA",
+    "TTT"
+  ],
+  "result": {
+    "count": 2,
+    "item": "nuclearcraft:heat_exchanger_radiator"
+  },
+  "show_notification": true
+}

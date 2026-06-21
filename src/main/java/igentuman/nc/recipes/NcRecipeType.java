@@ -4,6 +4,7 @@ import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.entity.processor.NuclearFurnaceBE;
 import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
+import igentuman.nc.block.heat_exchanger.entity.HeatExchangerControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -49,6 +50,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         recipes.put("collision_chamber", register("collision_chamber"));
         recipes.put("nuclear_blast", register("nuclear_blast"));
         recipes.put(TurbineControllerBE.NAME, register(TurbineControllerBE.NAME));
+        recipes.put(HeatExchangerControllerBE.NAME, register(HeatExchangerControllerBE.NAME));
 
         for(String processorName: Processors.all().keySet()) {
             if(Processors.all().get(processorName).hasRecipes()) {

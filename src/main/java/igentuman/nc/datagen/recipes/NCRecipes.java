@@ -30,6 +30,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BL
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_BLOCK;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.coils;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCBlocks.*;
@@ -63,6 +64,7 @@ public class NCRecipes extends RecipeProvider {
         msrBlocks(consumer);
         fusionBlocks(consumer);
         turbineBlocks(consumer);
+        heatExchangerBlocks(consumer);
         kugelBlitzBlocks(consumer);
         acceleratorBlocks(consumer);
         targetChamberBlocks(consumer);
@@ -1680,17 +1682,17 @@ public class NCRecipes extends RecipeProvider {
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
                 .save(consumer);
-
+*/
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("heat_exchanger").get())
                 .pattern("LPL")
                 .pattern("PMP")
                 .pattern("LPL")
                 .define('M', NC_PARTS.get("chassis").get())
-                .define('P', forgePlate("boron"))
-                .define('L',  NC_PARTS.get("plate_advanced").get())
+                .define('P', forgePlate("copper"))
+                .define('L',  forgePlate(Materials.thermoconducting))
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(NC_PARTS.get("chassis").get()))
-                .save(consumer);*/
+                .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("empty_heat_sink").get())
                 .pattern("TIT")
@@ -1866,6 +1868,61 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(TURBINE_BLOCKS.get("turbine_casing").get()))
                 .save(consumer);
 
+    }
+
+    private void heatExchangerBlocks(Consumer<FinishedRecipe> consumer) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger_casing").get(), 4)
+                .pattern("SSS")
+                .pattern("SLS")
+                .pattern("SSS")
+                .define('S', forgePlate(Materials.hsla_steel))
+                .define('L', NC_PARTS.get("chassis").get())
+                .group(MODID+"_heat_exchanger")
+                .unlockedBy("item", has(NC_PARTS.get("chassis").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger_controller").get(), 1)
+                .pattern("GCG")
+                .pattern("CBC")
+                .pattern("GCG")
+                .define('C', HX_BLOCKS.get("heat_exchanger_casing").get())
+                .define('G', NC_PARTS.get("basic_electric_circuit").get())
+                .define('B', BUCKET)
+                .group(MODID+"_heat_exchanger")
+                .unlockedBy("item", has(HX_BLOCKS.get("heat_exchanger_casing").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger_radiator").get(), 2)
+                .pattern("AAA")
+                .pattern("AAA")
+                .pattern("TTT")
+                .define('T', forgeIngot(Materials.copper))
+                .define('A', forgePlate(Materials.aluminum))
+                .group(MODID+"_heat_exchanger")
+                .unlockedBy("item", has(HX_BLOCKS.get("heat_exchanger_casing").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger_hot_coolant_port").get(), 2)
+                .pattern("TST")
+                .pattern("SBS")
+                .pattern("TST")
+                .define('S', forgeIngot(Materials.hsla_steel))
+                .define('T', forgeIngot(Materials.gold))
+                .define('B', CAULDRON)
+                .group(MODID+"_heat_exchanger")
+                .unlockedBy("item", has(HX_BLOCKS.get("heat_exchanger_casing").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger_cold_coolant_port").get(), 2)
+                .pattern("TST")
+                .pattern("SBS")
+                .pattern("TST")
+                .define('S', forgeIngot(Materials.hsla_steel))
+                .define('T', forgeIngot(Materials.zinc))
+                .define('B', CAULDRON)
+                .group(MODID+"_heat_exchanger")
+                .unlockedBy("item", has(HX_BLOCKS.get("heat_exchanger_casing").get()))
+                .save(consumer);
     }
 
     private void solarPanels(Consumer<FinishedRecipe> consumer) {

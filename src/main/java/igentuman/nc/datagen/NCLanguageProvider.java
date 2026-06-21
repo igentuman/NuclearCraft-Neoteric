@@ -15,6 +15,7 @@ import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.EXPL_PRO
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_DETECTORS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
@@ -173,6 +174,24 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.ponder.kugelblitz_chamber.text_9", "Finally, all 6 Excited Photon Lasers (EXPL) must be burst at the same time.");
         add("nuclearcraft.ponder.kugelblitz_chamber.text_10", "They all need to be fully charged and then activated with redstone or in their GUI.");
         add("nuclearcraft.ponder.kugelblitz_chamber.text_11", "When all 6 lasers burst simultaneously, a black hole forms inside the chamber. Containment is, optimistically, a solved problem.");
+        add("nuclearcraft.ponder.turbine.header", "Turbine");
+        add("nuclearcraft.ponder.turbine.text_1", "Walls are mainly made of Turbine Casing or Turbine Glass.");
+        add("nuclearcraft.ponder.turbine.text_2", "Turbine can have vertical or horizontal orientation.");
+        add("nuclearcraft.ponder.turbine.text_3", "Place the Turbine Controller anywhere in the casing to form the structure.");
+        add("nuclearcraft.ponder.turbine.text_4", "Turbine Ports allow fluid and energy transfer.");
+        add("nuclearcraft.ponder.turbine.text_5", "Bearings are placed at the center of the casing ends.");
+        add("nuclearcraft.ponder.turbine.text_6", "The Rotor Shaft connects the two bearings.");
+        add("nuclearcraft.ponder.turbine.text_7", "Attach Turbine Blades to the Rotor Shaft.");
+        add("nuclearcraft.ponder.turbine.text_8", "Coils must be placed next to a bearing or another active coil.");
+        add("nuclearcraft.ponder.turbine.text_9", "When turbine is ready, you can start it with redstone signal to controller.");
+        add("nuclearcraft.ponder.heat_exchanger.header", "Heat Exchanger");
+        add("nuclearcraft.ponder.heat_exchanger.text_1", "A cuboid shell of Heat Exchanger Casing, from 3x3x3 up to 11x11x11. Non-cube shapes are allowed.");
+        add("nuclearcraft.ponder.heat_exchanger.text_2", "Place one Heat Exchanger Controller in the shell. It owns the shared heat buffer.");
+        add("nuclearcraft.ponder.heat_exchanger.text_3", "Hot Coolant Ports take hot coolant in, return it cooled, and dump the heat into the buffer. Run a matched pair.");
+        add("nuclearcraft.ponder.heat_exchanger.text_4", "Cold Coolant Ports condense spent steam back into water, drawing the stored heat to do it. Two of them as well.");
+        add("nuclearcraft.ponder.heat_exchanger.text_5", "Radiators go on the top face and passively vent surplus heat, so the hot side never jams.");
+        add("nuclearcraft.ponder.heat_exchanger.text_6", "Fill the interior with Heat Exchanger blocks. More blocks mean faster processing and a bigger heat buffer.");
+        add("nuclearcraft.ponder.heat_exchanger.text_7", "Apply a redstone signal: the hot loop banks heat, the cold loop spends it. Both run at once on standby power.");
     }
 
     private void particles() {
@@ -208,6 +227,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("emi.category.nuclearcraft.decay_chamber", "Decay Chamber");
         add("emi.category.nuclearcraft.kugelblitz_chamber", "Kugelblitz Chamber");
         add("emi.category.nuclearcraft.turbine_controller", "Turbine Controller");
+        add("emi.category.nuclearcraft.heat_exchanger_controller", "Heat Exchanger");
         add("emi.category.nuclearcraft.heat_sink_placement", "Heat Sink Placement");
         add("emi.category.nuclearcraft.assembler", "Assembler");
         add("emi.category.nuclearcraft.isotope_separator", "Isotope Separator");
@@ -634,6 +654,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc_jei_cat.target_chamber", "Target Chamber");
         add("nc_jei_cat.kugelblitz_chamber", "Quantum Transformation");
         add("nc_jei_cat.turbine", "Turbine");
+        add("nc_jei_cat.heat_exchanger_controller", "Heat Exchanger");
+        add("heat_exchanger.blocks", "Heat Exchangers: %s");
+        add("heat_exchanger_controller.recipe.duration", "Base time: %s ticks");
+        add("heat_exchanger_controller.recipe.power", "Power factor: %s");
+        add("heat_exchanger_controller.recipe.heat_add", "Heat output: +%s H");
+        add("heat_exchanger_controller.recipe.heat_remove", "Heat draw: -%s H");
+        add("heat_exchanger.radiator.descr", "Vents 1000 H/t from the heat buffer. Passive: keeps shedding heat even on the night shift.");
         add("nc_jei_cat.fusion_coolant", "Fusion Reactor Coolant");
         add("nc_jei_cat.mek_chemical_conversion", "NC - GAS -> Fluid Conversion");
         add("nc_jei_cat.fission_boiling", "Boiling Reactor");
@@ -752,6 +779,10 @@ public class NCLanguageProvider extends LanguageProvider {
         for(String name: TURBINE_BLOCKS.keySet()) {
             String title = convertToName(name);
             add(TURBINE_BLOCKS.get(name).get(), title);
+        }
+        for(String name: HX_BLOCKS.keySet()) {
+            String title = convertToName(name);
+            add(HX_BLOCKS.get(name).get(), title);
         }
         add(FUSION_CORE_PROXY.get(), "Fusion Reactor Core");
         add(EXPL_PROXY_BLOCK.get(), "EXPL");

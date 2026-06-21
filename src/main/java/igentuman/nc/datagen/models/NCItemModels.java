@@ -23,6 +23,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BL
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.FissionFuel.NC_WASTE;
 import static igentuman.nc.setup.registration.NCItems.*;
@@ -89,6 +90,9 @@ public class NCItemModels extends ItemModelProvider {
         }
         for(String name: TURBINE_BLOCKS.keySet()) {
             withExistingParent(TURBINE_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        }
+        for(String name: HX_BLOCKS.keySet()) {
+            withExistingParent(HX_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
         for(String name: FUSION_BLOCKS.keySet()) {
             if(name.contains("core")) continue;

@@ -14,6 +14,7 @@ import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistrati
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
@@ -43,6 +44,7 @@ public class NCLootTables extends BaseLootTableProvider {
         });
         FISSION_BLOCKS.values().forEach(this::add);
         TURBINE_BLOCKS.values().forEach(this::add);
+        HX_BLOCKS.values().forEach(this::add);
         FUSION_BLOCKS.values().forEach(this::add);
         add(MUSHROOM_BLOCK.get(), block -> createSimpleTable("block", MUSHROOM_BLOCK.get()));
         add(WASTELAND_EARTH.get(), block -> createSimpleTable("block", WASTELAND_EARTH.get()));
@@ -91,6 +93,7 @@ public class NCLootTables extends BaseLootTableProvider {
         all.addAll(FISSION_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(FUSION_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(TURBINE_BLOCKS.values().stream().map(RegistryObject::get).toList());
+        all.addAll(HX_BLOCKS.values().stream().map(RegistryObject::get).toList());
         List<Block> kugelblitzBlocks = KUGELBLITZ_BLOCKS.values().stream().map(RegistryObject::get).toList();
         all.addAll(kugelblitzBlocks.stream().filter(block -> !block.asItem().toString().contains("black_hole")).toList());
         all.addAll(ACCELERATOR_BLOCKS.values().stream().map(RegistryObject::get).toList());

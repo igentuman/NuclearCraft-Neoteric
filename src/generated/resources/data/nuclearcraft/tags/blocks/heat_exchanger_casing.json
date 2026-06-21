@@ -1,0 +1,9 @@
+{
+  "values": [
+    "nuclearcraft:heat_exchanger_casing",
+    "nuclearcraft:heat_exchanger_radiator",
+    "nuclearcraft:heat_exchanger_controller",
+    "nuclearcraft:heat_exchanger_hot_coolant_port",
+    "nuclearcraft:heat_exchanger_cold_coolant_port"
+  ]
+}

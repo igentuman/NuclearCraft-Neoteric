@@ -15,6 +15,7 @@ import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
 import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
+import igentuman.nc.block.heat_exchanger.entity.HeatExchangerControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.processor.NCProcessorScreen;
 import igentuman.nc.compat.ae2.ProcessorEmiRecipeHandlerAE2;
@@ -64,6 +65,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BL
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.ION_SOURCES;
 import static igentuman.nc.setup.registration.NCItems.UNKNOWN_INGREDIENT;
 
@@ -284,7 +286,18 @@ public class EMIPlugin implements EmiPlugin {
                 registry.addRecipe(new TurbineControllerEmiCategory(turbineRecipe));
             }
         }
-        
+
+        // Register Heat Exchanger category
+        registry.addCategory(HeatExchangerEmiCategory.CATEGORY);
+        CATEGORIES.put("heat_exchanger_controller", HeatExchangerEmiCategory.CATEGORY);
+
+        var heatExchangerRecipes = NcRecipeType.ALL_RECIPES.get("heat_exchanger_controller").getRecipes(NcClient.tryGetClientWorld());
+        for (var recipe : heatExchangerRecipes) {
+            if (recipe instanceof HeatExchangerControllerBE.Recipe hxRecipe) {
+                registry.addRecipe(new HeatExchangerEmiCategory(hxRecipe));
+            }
+        }
+
         // Register Ore Veins category
         registry.addCategory(OreVeinEmiCategory.CATEGORY);
         CATEGORIES.put("nc_ore_veins", OreVeinEmiCategory.CATEGORY);
@@ -355,6 +368,8 @@ public class EMIPlugin implements EmiPlugin {
                 return EmiStack.of(new ItemStack(FISSION_BLOCKS.get("fission_reactor_controller").get()));
             case "turbine_controller":
                 return EmiStack.of(new ItemStack(TURBINE_BLOCKS.get("turbine_controller").get()));
+            case "heat_exchanger_controller":
+                return EmiStack.of(new ItemStack(HX_BLOCKS.get("heat_exchanger_controller").get()));
             case "nc_ore_veins":
                 return EmiStack.of(new ItemStack(net.minecraft.world.item.Items.DIAMOND_PICKAXE));
             case "particle_source_info":

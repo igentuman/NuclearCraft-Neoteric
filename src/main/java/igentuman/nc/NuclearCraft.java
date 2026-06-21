@@ -72,6 +72,7 @@ public class NuclearCraft {
         container.addConfig(new ModConfig(ModConfig.Type.COMMON, FissionConfig.spec, container,"NuclearCraft/fission.toml"));
         container.addConfig(new ModConfig(ModConfig.Type.COMMON, FusionConfig.spec, container,"NuclearCraft/fusion.toml"));
         container.addConfig(new ModConfig(ModConfig.Type.COMMON, TurbineConfig.spec, container,"NuclearCraft/turbine.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, HeatExchangerConfig.spec, container,"NuclearCraft/heat_exchanger.toml"));
         container.addConfig(new ModConfig(ModConfig.Type.COMMON, RadiationConfig.spec, container,"NuclearCraft/radiation.toml"));
         container.addConfig(new ModConfig(ModConfig.Type.COMMON, WorldConfig.spec, container,"NuclearCraft/world.toml"));
     }

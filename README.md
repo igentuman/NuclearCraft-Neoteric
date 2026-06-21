@@ -50,6 +50,7 @@ System reference docs live in [`docs/`](docs):
 - [Accelerators](docs/ACCELERATORS.md) - linear & toroidal beam lines, magnets, RF cavities, particle sources
 - [Beam Diverter](docs/BEAM_DIVERTER.md) - 5×5×5 multiblock that redirects a particle beam between input and output ports
 - [Particle Chambers](docs/PARTICLE_CHAMBERS.md) - Target, Decay and Collision chambers for beam reactions, detectors, and particle manipulation
+- [Heat Exchanger](docs/HEAT_EXCHANGER.md) - Cooldown or heat up liquids
 - [Leacher](docs/LEACHER.md) - in-situ ore leaching, pumps, research papers, ore-vein system
 - [Computers](docs/COMPUTERS.md) - ComputerCraft and OpenComputers v2 peripherals
 - [KubeJS Support](docs/KUBEJS_SUPPORT.md) - recipe schemas, events, custom fuel and particle-source registration

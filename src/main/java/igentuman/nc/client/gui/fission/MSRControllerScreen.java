@@ -36,7 +36,6 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
     public Checkbox checkboxCasing;
     public Checkbox checkboxInterior;
     private Button.MultiblockAnalyze analyzeBtn;
-    private Button.Link linkBtn;
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
 
@@ -71,16 +70,9 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         checkboxCasing = new Checkbox(imageWidth - 19, 80, this, isCasingValid());
         checkboxInterior = new Checkbox(imageWidth - 32, 80, this, isInteriorValid());
         analyzeBtn = new Button.MultiblockAnalyze(150, 38, this, container().getPosition());
-        linkBtn = new Button.Link(150, 14, this, container().getPosition(),
-                "https://ftb.fandom.com/wiki/NuclearCraft:_Neoteric#Molten_Salt_Reactor",
-                List.of(__("tooltip.nc.wiki"))
-        );
 
-        widgets.add(heatBar);
-        widgets.add(pressureBar);
         widgets.add(new Button.ReportIssue(163, 6, this, container().getPosition()));
         widgets.add(analyzeBtn);
-        widgets.add(linkBtn);
     }
 
     private boolean isCasingValid() {
@@ -156,6 +148,14 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
     }
 
     private void renderBarTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
+        if(heatBar.isMouseOver(pMouseX, pMouseY)) {
+            heatBar.clearTooltips();
+            heatBar.addTooltip(__("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
+        }
+        if(pressureBar.isMouseOver(pMouseX, pMouseY)) {
+            pressureBar.clearTooltips();
+            pressureBar.addTooltip(__("msr.pressure.bar.amount", container().getPressure()).withStyle(ChatFormatting.RED));
+        }
         for (NCGuiElement widget : widgets) {
             if (widget.isMouseOver(pMouseX, pMouseY)) {
                 graphics.renderTooltip(font, widget.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);

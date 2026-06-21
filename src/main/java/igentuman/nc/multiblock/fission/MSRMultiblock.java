@@ -154,9 +154,7 @@ public class MSRMultiblock extends AbstractMultiblock {
         controller.connectedPorts = connectedPorts;
         controller.fuelCellsCount = fuelCellCount;
         controller.maxHeat = chamberVolume * 1000.0;
-        controller.minPebblesForCriticality = Math.max(20, chamberVolume * 5);
-        controller.minSaltForCriticality = Math.max(500, chamberVolume * 100);
-        
+
         debugLog("  FuelCells: " + fuelCellCount);
         debugLog("  ChamberVolume: " + chamberVolume);
         

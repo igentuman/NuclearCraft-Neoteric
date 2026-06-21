@@ -98,8 +98,7 @@ public class MSRControllerBE extends MultiblockControllerBE {
     public static final double PRESSURE_PER_DEPLETED_MB = 0.008;
     public static final double OPTIMAL_DENSITY = 0.025;
     public static final double CONCENTRATION_MODIFIER = 0.08;
-    public double minSaltForCriticality = 500.0;
-    public int minPebblesForCriticality = 20;
+    public static final double CRITICALITY_THRESHOLD = 1000.0;
     public static final double COOLING_EFFICIENCY = 0.9;
     public static final double THERMAL_MASS_BASE = 1000000.0;
     public static final double SALT_PER_DEPLETED_PEBBLE = 10.0;
@@ -232,20 +231,29 @@ public class MSRControllerBE extends MultiblockControllerBE {
         // 0. Compute concentration & reactivity modifiers
         double pDensity = (double) pebbleCount / Math.max(saltVolume, 1.0);
         double concentrationFactor = 1.0 + (pDensity - OPTIMAL_DENSITY) * CONCENTRATION_MODIFIER;
-        
-        // 1. Check criticality
-        isCritical = (pebbleCount >= MIN_PEBBLES_FOR_CRITICALITY) && 
-                     (saltVolume >= MIN_SALT_FOR_CRITICALITY) && 
+
+        // 1. Base reactivity from aggregate pebble criticality (primary driver, decays with burnup)
+        double totalEffCriticality = 0;
+        for (ReactorPebble pebble : pebbles) {
+            double burnup = Math.min(1.0, pebble.ticksProcessed / Math.max(1.0, pebble.ticks));
+            totalEffCriticality += pebble.criticality * (1.0 - burnup);
+        }
+        double baseReactivity = totalEffCriticality / CRITICALITY_THRESHOLD;
+
+        // 2. Criticality gate: pebble criticality first, then fixed floors
+        isCritical = (baseReactivity >= 1.0) &&
+                     (pebbleCount >= MIN_PEBBLES_FOR_CRITICALITY) &&
+                     (saltVolume >= MIN_SALT_FOR_CRITICALITY) &&
                      !portsLocked && enabledByController;
 
-        // 2. Reactivity & Feedback
+        // 3. Reactivity & Feedback
         // thermalFeedback = 1.0 - (temperature - T_optimal) * temperatureFeedbackFactor
         // Let's say T_optimal is 600C.
         double thermalFeedback = Math.max(0.1, Math.min(2.0, 1.0 - (temperature - 600.0) * 0.001));
         double impurityFeedback = 1.0 - impurity;
-        reactivity = thermalFeedback * impurityFeedback * concentrationFactor;
+        reactivity = baseReactivity * thermalFeedback * impurityFeedback * concentrationFactor;
 
-        // 3. Fission & Heat
+        // 4. Fission & Heat
         double totalHeatProduced = 0;
         double totalEnergyProduced = 0;
         
@@ -267,24 +275,24 @@ public class MSRControllerBE extends MultiblockControllerBE {
         energyPerTick = (int) (totalEnergyProduced * FISSION_CONFIG.FE_GENERATION_MULTIPLIER.get());
         energyStorage.receiveEnergy(energyPerTick, false);
         
-        // 4. Temperature update
+        // 5. Temperature update
         // heatRemoved = coolantVolume * coolingEfficiency * coolantHeatCapacityFactor
         double cooling = coolantVolume * COOLING_EFFICIENCY * (temperature - T_AMBIENT) / 10000.0;
         double netHeat = heatPerTick - cooling;
         temperature += netHeat / (THERMAL_MASS_BASE + saltVolume + coolantVolume);
         temperature = Math.max(T_AMBIENT, temperature);
         
-        // 5. Pressure calculation
+        // 6. Pressure calculation
         pressure = (temperature - T_AMBIENT) * PRESSURE_PER_DEGREE + depletedVolume * PRESSURE_PER_DEPLETED_MB;
         
-        // 6. Port lock logic
+        // 7. Port lock logic
         if (pressure >= PRESSURE_MAX) {
             portsLocked = true;
         } else if (pressure <= PRESSURE_UNLOCK) {
             portsLocked = false;
         }
 
-        // 7. Meltdown check
+        // 8. Meltdown check
         if (temperature >= MAX_TEMPERATURE) {
             // Meltdown logic here
         }

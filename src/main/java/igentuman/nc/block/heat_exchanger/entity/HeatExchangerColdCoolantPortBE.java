@@ -3,10 +3,12 @@ package igentuman.nc.block.heat_exchanger.entity;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.block.entity.ParticleChamberPortBE;
+import igentuman.nc.compat.oc2.HeatExchangerDevice;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.heat_exchanger.HeatExchangerMultiblock;
 import igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration;
+import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -20,12 +22,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static igentuman.nc.NuclearCraft.currentTick;
+import static igentuman.nc.compat.oc2.HeatExchangerDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.util.ModUtil.isOC2Loaded;
 
 public class HeatExchangerColdCoolantPortBE extends MultiblockPortBE {
     public static String NAME = "heat_exchanger_cold_coolant_port";
     protected HeatExchangerMultiblock multiblock;
     public HeatExchangerControllerBE controller;
     private LazyOptional<IFluidHandler> fluidCap = LazyOptional.empty();
+    @NBTField
+    public byte comparatorMode = SignalSource.HEAT;
 
     public HeatExchangerColdCoolantPortBE(BlockPos pPos, BlockState pBlockState) {
         super(HeatExchangerRegistration.HX_BE.get(NAME).get(), pPos, pBlockState);
@@ -70,7 +76,8 @@ public class HeatExchangerColdCoolantPortBE extends MultiblockPortBE {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (isConnectedToController() && cap == ForgeCapabilities.FLUID_HANDLER) {
+        if (!isConnectedToController()) return super.getCapability(cap, side);
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
             if (!fluidCap.isPresent()) {
                 fluidCap = LazyOptional.of(() -> new HeatExchangerPortFluidHandler(
                         this::controller,
@@ -80,6 +87,9 @@ public class HeatExchangerColdCoolantPortBE extends MultiblockPortBE {
             }
             return fluidCap.cast();
         }
+        if (isOC2Loaded() && cap == DEVICE_CAPABILITY) {
+            return controller().getCapability(cap, side);
+        }
         return super.getCapability(cap, side);
     }
 
@@ -87,10 +97,13 @@ public class HeatExchangerColdCoolantPortBE extends MultiblockPortBE {
         if (NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         if (lastTickTime == currentTick) return;
         lastTickTime = currentTick;
+        byte wasSignal = analogSignal;
         boolean wasConnected = connected;
         boolean updated = updateController() || needToUpdate || currentTick % 20 == 0;
         if (isConnectedToController() && currentTick % 10 == 0) {
+            updateAnalogSignal();
             pushPull();
+            updated |= wasSignal != analogSignal;
         }
         connected = isConnectedToController();
         updated |= wasConnected != connected;
@@ -106,8 +119,47 @@ public class HeatExchangerColdCoolantPortBE extends MultiblockPortBE {
     }
 
     @Override
+    public void updateAnalogSignal() {
+        if (!isConnectedToController()) {
+            analogSignal = 0;
+            return;
+        }
+        switch (comparatorMode) {
+            case SignalSource.ENABLE_RADIATORS:
+                if (hasRedstoneSignal()) {
+                    controller().enableRadiators();
+                } else {
+                    controller().disableRadiators();
+                }
+                analogSignal = 0;
+                break;
+            case SignalSource.HEAT:
+                if (controller().maxHeat <= 0) {
+                    analogSignal = 0;
+                    break;
+                }
+                analogSignal = (byte) (controller().heat * 15 / controller().maxHeat);
+                break;
+        }
+    }
+
+    public void toggleRedstoneMode() {
+        comparatorMode++;
+        if (comparatorMode > SignalSource.HEAT) {
+            comparatorMode = SignalSource.ENABLE_RADIATORS;
+        }
+        setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    @Override
     public void setRemoved() {
         super.setRemoved();
         fluidCap.invalidate();
+    }
+
+    public static class SignalSource {
+        public static final byte ENABLE_RADIATORS = 1;
+        public static final byte HEAT = 2;
     }
 }

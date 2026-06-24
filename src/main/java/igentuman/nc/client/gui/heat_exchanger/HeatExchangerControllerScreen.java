@@ -42,6 +42,7 @@ public class HeatExchangerControllerScreen extends AbstractContainerScreen<HeatE
     public Checkbox checkboxInterior;
     private VerticalBar energyBar;
     private VerticalBar heatBar;
+    private Button.RadiatorToggle radiatorToggle;
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
 
@@ -77,6 +78,8 @@ public class HeatExchangerControllerScreen extends AbstractContainerScreen<HeatE
         addWidget(FluidTankRenderer.tank(getFluidTank(2)).id(2).size(17, 17).pos(120, 18).canVoid());
         addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(17, 17).pos(50, 52).canVoid());
         addWidget(FluidTankRenderer.tank(getFluidTank(3)).id(3).size(17, 17).pos(120, 52).canVoid());
+        radiatorToggle = new Button.RadiatorToggle(32, 70, this, container().getPosition());
+        widgets.add(radiatorToggle);
     }
 
     protected void addWidget(NCGuiElement widget) {
@@ -104,6 +107,7 @@ public class HeatExchangerControllerScreen extends AbstractContainerScreen<HeatE
     }
 
     private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        radiatorToggle.setEnabled(container().isRadiatorsEnabled());
         for (NCGuiElement widget : widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
@@ -208,6 +212,12 @@ public class HeatExchangerControllerScreen extends AbstractContainerScreen<HeatE
             }
         }
         heatBar.clearTooltips();
+        if (container().getHotCycleOps() > 0) {
+            heatBar.addTooltip(__("heat_exchanger.hot_cycle_rate", container().getHotCycleOps()));
+        }
+        if (container().getColdCycleOps() > 0) {
+            heatBar.addTooltip(__("heat_exchanger.cold_cycle_rate", container().getColdCycleOps()));
+        }
         if (heatBar.isMouseOver(pMouseX, pMouseY)) {
             graphics.renderTooltip(font, heatBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);

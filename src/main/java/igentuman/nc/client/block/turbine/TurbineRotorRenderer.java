@@ -57,6 +57,7 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
     public float x = -0.25f;
     public float y = -0.2f;
     public float z = -0.25f;
+    public float scaling = 1f;
 
     public int getAttachedBlades() {
         return rotor.getAttachedBlades();
@@ -77,6 +78,7 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
 
         long time = Util.getMillis();
         float step = rotorBe.getRotationSpeed() * 5f;
+        scaling = rotorBe.getScaling();
 
         float angle = time * step;
 
@@ -128,13 +130,13 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
     private void renderBlade(Direction facing, PoseStack pPoseStack, MultiBufferSource buffer, int combinedOverlay, BlockRenderDispatcher blockRenderer, Quaternionf rotation, BakedModel blade) {
 
         pPoseStack.translate(0.5, 0.5, 0.5);
-        Transformation tr = new Transformation(new Vector3f(0, 0, 0), rotation, new Vector3f(1f, (getAttachedBlades()+1)/2f, 1f), null);
+        Transformation tr = new Transformation(new Vector3f(0, 0, 0), rotation, new Vector3f(1f, (getAttachedBlades()+1)/2f*scaling, 1f), null);
         BlockState theBlade = bottomBlade;
         if(facing.getAxis() == Y) {
             tr = new Transformation(
                     new Vector3f(0, 0, 0),
                     rotation,
-                    new Vector3f(1f, 1f, (getAttachedBlades()+1)/2f),
+                    new Vector3f(1f, 1f, (getAttachedBlades()+1)/2f*scaling),
                     null
             );
             theBlade = bladeNorth;

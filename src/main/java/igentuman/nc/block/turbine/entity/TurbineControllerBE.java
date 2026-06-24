@@ -147,7 +147,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     public void calculateMaxEnergy()
     {
-        maxEnergy = (int)(Math.sqrt(((long)maxFlow+1)*((long)maxFlow+2)/2D)*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get());
+        maxEnergy = (int)(Math.sqrt(((long)maxFlow+1)*((long)maxFlow+2)/2D)*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get()*3.5);
     }
 
     public BlockPos getBlockPosForSteam()
@@ -223,6 +223,15 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         }
     }
 
+    public void recalculate() {
+        double multiplier = ((double) Math.round(Math.log(height*width*depth)*10)/10)-1;
+        contentHandler().fluidHandler.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
+        contentHandler().fluidHandler.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
+        calculateMaxFlow();
+        calculateMaxEnergy();
+        markDirty();
+    }
+
     public void tickServer() {
         rotationSpeed = 0;
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) {
@@ -254,7 +263,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         refreshCacheFlag = !getMultiblock().isFormed()  || currentTick % 100 == 0;
         if(wasPowered != powered) {
             setChanged();
-            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
         }
         if(refreshCacheFlag || changed) {
             try {
@@ -470,7 +479,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
 
     private int calculateEnergy() {
         int wasEnergy = energyPerTick;
-        energyPerTick = (int)(Math.sqrt(((long)getRealFlow()+1)*((long)getRealFlow()+2)/2D)*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get()*recipeInfo().energy/2);
+        energyPerTick = (int)(Math.sqrt(((long)getRealFlow()+1)*((long)getRealFlow()+2)/2D)*TURBINE_CONFIG.ENERGY_GEN.get()*getEfficiencyRate()*ENERGY_GENERATION.GENERATION_MULTIPLIER.get()*recipeInfo().energy*4);
         if(wasEnergy != energyPerTick) {
             changed = true;
         }
@@ -554,11 +563,7 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     @Override
     public void refresh() {
         needToUpdate = false;
-        double multiplier = ((double) Math.round(Math.log(height*width*depth)*10)/10)-1;
-        contentHandler().fluidHandler.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
-        contentHandler().fluidHandler.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
-        calculateMaxFlow();
-        calculateMaxEnergy();
+
         setChanged();
     }
 

@@ -7,6 +7,7 @@ import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.heat_exchanger.HeatExchangerMultiblock;
 import igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration;
+import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -26,6 +27,8 @@ public class HeatExchangerHotCoolantPortBE extends MultiblockPortBE {
     protected HeatExchangerMultiblock multiblock;
     public HeatExchangerControllerBE controller;
     private LazyOptional<IFluidHandler> fluidCap = LazyOptional.empty();
+    @NBTField
+    public byte comparatorMode = SignalSource.HEAT;
 
     public HeatExchangerHotCoolantPortBE(BlockPos pPos, BlockState pBlockState) {
         super(HeatExchangerRegistration.HX_BE.get(NAME).get(), pPos, pBlockState);
@@ -61,10 +64,13 @@ public class HeatExchangerHotCoolantPortBE extends MultiblockPortBE {
         if (NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         if (lastTickTime == currentTick) return;
         lastTickTime = currentTick;
+        byte wasSignal = analogSignal;
         boolean wasConnected = connected;
         boolean updated = updateController() || needToUpdate || currentTick % 20 == 0;
         if (isConnectedToController() && currentTick % 10 == 0) {
+            updateAnalogSignal();
             pushPull();
+            updated |= wasSignal != analogSignal;
         }
         connected = isConnectedToController();
         updated |= wasConnected != connected;
@@ -77,6 +83,40 @@ public class HeatExchangerHotCoolantPortBE extends MultiblockPortBE {
             assert level != null;
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
+    }
+
+    @Override
+    public void updateAnalogSignal() {
+        if (!isConnectedToController()) {
+            analogSignal = 0;
+            return;
+        }
+        switch (comparatorMode) {
+            case SignalSource.ENABLE_RADIATORS:
+                if (hasRedstoneSignal()) {
+                    controller().enableRadiators();
+                } else {
+                    controller().disableRadiators();
+                }
+                analogSignal = 0;
+                break;
+            case SignalSource.HEAT:
+                if (controller().maxHeat <= 0) {
+                    analogSignal = 0;
+                    break;
+                }
+                analogSignal = (byte) (controller().heat * 15 / controller().maxHeat);
+                break;
+        }
+    }
+
+    public void toggleRedstoneMode() {
+        comparatorMode++;
+        if (comparatorMode > SignalSource.HEAT) {
+            comparatorMode = SignalSource.ENABLE_RADIATORS;
+        }
+        setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
     @Override
@@ -109,5 +149,10 @@ public class HeatExchangerHotCoolantPortBE extends MultiblockPortBE {
     public void setRemoved() {
         super.setRemoved();
         fluidCap.invalidate();
+    }
+
+    public static class SignalSource {
+        public static final byte ENABLE_RADIATORS = 1;
+        public static final byte HEAT = 2;
     }
 }

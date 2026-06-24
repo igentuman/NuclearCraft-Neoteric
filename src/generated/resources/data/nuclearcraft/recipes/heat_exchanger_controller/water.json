@@ -1,6 +1,6 @@
 {
   "type": "nuclearcraft:heat_exchanger_controller",
-  "heat": -250.0,
+  "heat": -200.0,
   "inputFluids": [
     {
       "amount": 1,

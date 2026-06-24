@@ -3,11 +3,14 @@ package igentuman.nc.client.gui.fission;
 import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.element.NCTextField;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.button.Checkbox;
 import igentuman.nc.container.MSRControllerContainer;
+import igentuman.nc.network.toServer.PacketSliderChanged;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -32,10 +35,10 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
     
     private List<NCGuiElement> widgets = new ArrayList<>();
     private VerticalBar heatBar;
-    private VerticalBar pressureBar;
+    private NCTextField inputRateField;
+    private NCTextField outputRateField;
     public Checkbox checkboxCasing;
     public Checkbox checkboxInterior;
-    private Button.MultiblockAnalyze analyzeBtn;
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
 
@@ -64,15 +67,33 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         widgets.clear();
         
         heatBar = new VerticalBar.Heat(8, 16, this, (int) menu.getMaxHeat());
-        pressureBar = new VerticalBar(17, 16, this, (int) menu.getMaxPressure());
-        pressureBar.setTooltipKey("msr.pressure.bar.amount");
 
         checkboxCasing = new Checkbox(imageWidth - 19, 80, this, isCasingValid());
         checkboxInterior = new Checkbox(imageWidth - 32, 80, this, isInteriorValid());
-        analyzeBtn = new Button.MultiblockAnalyze(150, 38, this, container().getPosition());
 
         widgets.add(new Button.ReportIssue(163, 6, this, container().getPosition()));
-        widgets.add(analyzeBtn);
+
+        // Molten-salt rate controls (buckets/tick): left = input, right = output
+        inputRateField = new NCTextField(8, 60, 40, 12, true);
+        inputRateField.setValue(String.valueOf(container().getInputRate()));
+        inputRateField.setOnChange(value -> sendRate(value, 0));
+        inputRateField.addTooltip(__("msr.input_rate.tooltip"));
+        outputRateField = new NCTextField(imageWidth - 48, 60, 40, 12, true);
+        outputRateField.setValue(String.valueOf(container().getOutputRate()));
+        outputRateField.setOnChange(value -> sendRate(value, 1));
+        outputRateField.addTooltip(__("msr.output_rate.tooltip"));
+        widgets.add(inputRateField);
+        widgets.add(outputRateField);
+    }
+
+    private void sendRate(String value, int buttonId) {
+        int rate;
+        try {
+            rate = value.isEmpty() ? 0 : (int) Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            rate = 0;
+        }
+        NuclearCraft.packetHandler().sendToServer(new PacketSliderChanged(container().getPosition(), Math.max(0, rate), buttonId));
     }
 
     private boolean isCasingValid() {
@@ -107,9 +128,6 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         int y = 30;
         graphics.drawString(font, __("msr.reactivity", roundFormat(menu.getReactivity())), 45, y, 0x00ff00);
         graphics.drawString(font, __("msr.status", menu.isCritical() ? __("msr.critical") : __("msr.subcritical")), 45, y + 12, menu.isCritical() ? 0x00ff00 : 0xff0000);
-        if (menu.isLocked()) {
-            graphics.drawString(font, __("msr.locked"), 45, y + 24, 0xff0000);
-        }
         graphics.pose().popPose();
     }
 
@@ -119,10 +137,6 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         updateRelativeCords();
         renderBackground(graphics);
         graphics.blit(GUI, relX, relY, 0, 0, imageWidth, imageHeight);
-
-        if (analyzeBtn != null) {
-            analyzeBtn.setEnabled(container().canAnalyze());
-        }
 
         for (NCGuiElement widget : widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTick);
@@ -152,10 +166,6 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
             heatBar.clearTooltips();
             heatBar.addTooltip(__("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
         }
-        if(pressureBar.isMouseOver(pMouseX, pMouseY)) {
-            pressureBar.clearTooltips();
-            pressureBar.addTooltip(__("msr.pressure.bar.amount", container().getPressure()).withStyle(ChatFormatting.RED));
-        }
         for (NCGuiElement widget : widgets) {
             if (widget.isMouseOver(pMouseX, pMouseY)) {
                 graphics.renderTooltip(font, widget.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
@@ -178,6 +188,26 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         }
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
+
+    @Override
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
+        for (NCGuiElement widget : widgets) {
+            if (widget.keyPressed(key, scanCode, modifiers)) {
+                return true;
+            }
+        }
+        return super.keyPressed(key, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char c, int modifiers) {
+        for (NCGuiElement widget : widgets) {
+            if (widget.charTyped(c, modifiers)) {
+                return true;
+            }
+        }
+        return super.charTyped(c, modifiers);
+    }
     
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
@@ -193,7 +223,7 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
 
     @Override
     public double getEnergy() {
-        return menu.getPressure(); // Reusing energy slot for pressure in VerticalBar logic if needed, but we use custom bars
+        return 0;
     }
 
     @Override
@@ -208,6 +238,6 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
 
     @Override
     public double getHotCoolant() {
-        return menu.getDepleted();
+        return menu.getHotSalt();
     }
 }

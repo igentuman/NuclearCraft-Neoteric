@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.util.ModUtil.isEMILoaded;
 import static igentuman.nc.util.TextUtils.__;
 
@@ -644,6 +646,79 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             btn = new ImageButton(X(), Y(), width, height, 162, (redstoneMode-1) * 36, 18, TEXTURE, pButton -> {
                 NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
             });
+        }
+    }
+
+    public static class HeatExchangerPortRedstoneModeButton extends Button {
+        public final BlockPos pos;
+        public static final int BTN_ID = 80;
+        public byte mode = 1;
+        public byte strength = 0;
+
+        public HeatExchangerPortRedstoneModeButton(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X(), Y(), width, height, 238, 256, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, bId));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            return List.of(
+                    __("gui.nc.hx_comparator_config.tooltip_" + mode),
+                    __("gui.nc.reactor_comparator_strength.tooltip", strength)
+            );
+        }
+
+        public void setMode(byte redstoneMode) {
+            mode = redstoneMode;
+            btn = new ImageButton(X(), Y(), width, height, 238, 256 - (redstoneMode) * 36, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+            });
+        }
+    }
+
+    public static class RadiatorToggle extends Button {
+        public final BlockPos pos;
+        public static final int BTN_ID = 79;
+        public boolean enabled = false;
+        private final ItemStack icon = new ItemStack(HX_BLOCKS.get("heat_exchanger_radiator").get());
+
+        public RadiatorToggle(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+        }
+
+        @Override
+        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+            transform.blit(TEXTURE, X(), Y(), 0, 0, 18, 18);
+            transform.renderItem(icon, X() + 1, Y() + 1);
+            if (!enabled) {
+                transform.fill(X() + 1, Y() + 1, X() + 17, Y() + 17, 0xAA101010);
+            }
+            if (mX >= X() && mX < X() + 18 && mY >= Y() && mY < Y() + 18) {
+                transform.fill(X() + 1, Y() + 1, X() + 17, Y() + 17, 0x60FFFFFF);
+            }
+        }
+
+        @Override
+        public boolean onPress() {
+            NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+            return true;
+        }
+
+        @Override
+        public void setEnabled(boolean b) {
+            enabled = b;
+        }
+
+        @Override
+        public List<Component> getTooltips() {
+            return List.of(__("gui.nc.radiator_toggle.tooltip_" + (enabled ? "disable" : "enable")));
         }
     }
 }

@@ -139,13 +139,18 @@ public class FissionConfig {
 
     public static class MSRReactorConfig {
         public final ForgeConfigSpec.ConfigValue<Integer> PEBBLES_PER_FUEL_CELL;
+        public final ForgeConfigSpec.ConfigValue<Integer> VOLUME_PER_FUEL_CELL;
 
         public MSRReactorConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for Molten Salt Fission Reactor (MSR)").push("msr_reactor");
 
             PEBBLES_PER_FUEL_CELL = builder
                     .comment("Number of pebbles that can be stored per fuel cell. Determines the maximum pebble capacity.")
-                    .defineInRange("pebbles_per_fuel_cell", 4, 1, 100);
+                    .defineInRange("pebbles_per_fuel_cell", 10, 1, 100);
+
+            VOLUME_PER_FUEL_CELL = builder
+                    .comment("mB of shared internal volume contributed per fuel cell block. Salt, coolant and pebbles all draw from this budget.")
+                    .defineInRange("volume_per_fuel_cell", 5000, 1, 1000000);
 
             builder.pop();
         }

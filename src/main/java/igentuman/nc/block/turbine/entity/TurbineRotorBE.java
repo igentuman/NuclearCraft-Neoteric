@@ -22,7 +22,7 @@ public class TurbineRotorBE extends TurbineBE {
     public BlockPos controllerPos = BlockPos.ZERO;
 
     private float rotation = 0;
-
+    private float scaling = -1;
     public static String NAME = "turbine_rotor_shaft";
     public boolean connectedToBearing = false;
     public TurbineRotorBE(BlockPos pPos, BlockState pBlockState) {
@@ -141,5 +141,36 @@ public class TurbineRotorBE extends TurbineBE {
             return false;
         }
         return getController().controller().isInternalValid && getController().controller().isCasingValid;
+    }
+
+    public float getScaling() {
+        if(level.getDayTime() % 20 != 0 && scaling != -1) {
+            return scaling;
+        }
+        TurbineControllerBE controller = getController();
+        if(controller == null) return 1f;
+        BlockPos steamPos = controller.getBlockPosForSteam();
+        Direction facing = getBlockState().getValue(TurbineRotorBlock.FACING);
+        Direction.Axis axis = facing.getAxis();
+        int steam = axis.choose(steamPos.getX(), steamPos.getY(), steamPos.getZ());
+        int self = Math.abs(axis.choose(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()) - steam);
+        int dMin = self;
+        int dMax = self;
+        int count = 1;
+        for(Direction dir: List.of(facing, facing.getOpposite())) {
+            BlockPos p = getBlockPos();
+            for(int i = 1; i < Math.max(Math.max(controller.height, controller.width), controller.depth); i++) {
+                p = p.relative(dir);
+                if(!(getLevel().getBlockEntity(p) instanceof TurbineRotorBE)) break;
+                count++;
+                int d = Math.abs(axis.choose(p.getX(), p.getY(), p.getZ()) - steam);
+                if(d < dMin) dMin = d;
+                if(d > dMax) dMax = d;
+            }
+        }
+        if(count <= 1 || dMax == dMin) return 1f;
+        float t = (float)(self - dMin) / (dMax - dMin);
+        scaling = 0.3f + t * 0.7f;
+        return scaling;
     }
 }

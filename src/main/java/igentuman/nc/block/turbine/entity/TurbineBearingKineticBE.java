@@ -1,11 +1,16 @@
 package igentuman.nc.block.turbine.entity;
 
+import com.simibubi.create.content.kinetics.KineticNetwork;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
+import com.simibubi.create.content.kinetics.base.IRotate;
+import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+
+import javax.annotation.Nullable;
 
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
 
@@ -37,6 +42,21 @@ public class TurbineBearingKineticBE extends GeneratingKineticBlockEntity {
         if (v == addedStressCapacity) return;
         addedStressCapacity = v;
         updateGeneratedRotation();
+    }
+
+    public void updateFromNetwork(float maxStress, float currentStress, int networkSize) {
+        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+        super.updateFromNetwork(maxStress, currentStress, networkSize);
+    }
+
+    public void onSpeedChanged(float previousSpeed) {
+        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+        super.onSpeedChanged(previousSpeed);
+    }
+
+    public void setNetwork(@Nullable Long networkIn) {
+        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+        super.setNetwork(networkIn);
     }
 
     @Override

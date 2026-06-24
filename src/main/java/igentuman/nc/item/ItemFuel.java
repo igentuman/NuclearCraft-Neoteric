@@ -63,7 +63,7 @@ public class ItemFuel extends Item {
         }
         list.add(TextUtils.applyFormat(__("fuel.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
         list.add(TextUtils.applyFormat(__("fuel.depletion.descr", depletion()), ChatFormatting.GREEN));
-        list.add(TextUtils.applyFormat(__("fuel.irradiation.descr", TextUtils.numberFormat(Math.log((ItemRadiation.byItem(this)+0.01)*10000)*(Math.pow(heat / 100 +  200 / (double)depletion + 0.5, 1.5)*2))), ChatFormatting.LIGHT_PURPLE));
+        list.add(TextUtils.applyFormat(__("fuel.irradiation.descr", TextUtils.numberFormat(irradiation())), ChatFormatting.LIGHT_PURPLE));
 
         if(!DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(__("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
@@ -78,5 +78,11 @@ public class ItemFuel extends Item {
 
     public int depletion() {
         return (int) (depletion*def.depletionMult());
+    }
+
+    public double irradiation() {
+        initDefinition();
+        return Math.log((ItemRadiation.byItem(this) + 0.01) * 10000)
+                * (Math.pow(heat / 100 + 200 / (double) depletion + 0.5, 1.5) * 2);
     }
 }

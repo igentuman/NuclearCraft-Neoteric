@@ -44,15 +44,19 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
         fluidCapabilites = NonNullList.create();
         for (int i = 0; i < inputSlots; i++) {
             int finalI = i;
-            tanks.add(new NcFluidTank(inputCapacity*1000));
+            tanks.add(createTank(inputCapacity*1000));
             fluidCapabilites.add(LazyOptional.of(() -> tanks.get(finalI)));
         }
         for (int i = inputSlots; i < inputSlots+outputSlots; i++) {
             int finalI = i;
-            tanks.add(new NcFluidTank(outputCapacity*1000));
+            tanks.add(createTank(outputCapacity*1000));
             fluidCapabilites.add(LazyOptional.of(() -> tanks.get(finalI)));
         }
         initDefault();
+    }
+
+    protected NcFluidTank createTank(int capacity) {
+        return new NcFluidTank(capacity);
     }
 
     public LazyOptional<FluidHandlerWrapper> getCapability(Direction side) {

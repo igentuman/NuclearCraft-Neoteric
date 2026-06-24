@@ -2,11 +2,19 @@ package igentuman.nc.block.heat_exchanger;
 
 import igentuman.nc.block.heat_exchanger.entity.HeatExchangerColdCoolantPortBE;
 import igentuman.nc.block.heat_exchanger.entity.HeatExchangerHotCoolantPortBE;
+import igentuman.nc.container.HeatExchangerPortContainer;
 import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,6 +33,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,6 +78,28 @@ public class HeatExchangerPortBlock extends HorizontalDirectionalBlock implement
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
         return HX_BE.get(asItem().toString()).get().create(pPos, pState);
+    }
+
+    @Override
+    public InteractionResult use(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, InteractionHand hand, BlockHitResult result) {
+        if (!level.isClientSide()) {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof HeatExchangerHotCoolantPortBE || be instanceof HeatExchangerColdCoolantPortBE) {
+                MenuProvider containerProvider = new MenuProvider() {
+                    @Override
+                    public Component getDisplayName() {
+                        return be.getBlockState().getBlock().getName();
+                    }
+
+                    @Override
+                    public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity) {
+                        return new HeatExchangerPortContainer(windowId, pos, playerInventory);
+                    }
+                };
+                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+            }
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @javax.annotation.Nullable

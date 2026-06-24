@@ -7,6 +7,9 @@ import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
+import igentuman.nc.block.heat_exchanger.entity.HeatExchangerControllerBE;
+import igentuman.nc.block.heat_exchanger.entity.HeatExchangerColdCoolantPortBE;
+import igentuman.nc.block.heat_exchanger.entity.HeatExchangerHotCoolantPortBE;
 import igentuman.nc.block.kugelblitz.entity.ChamberPortBE;
 import igentuman.nc.block.kugelblitz.entity.EXPLBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
@@ -125,6 +128,18 @@ public class PacketGuiButtonPress implements INcPacket {
             case Button.TargetChamberPortRedstoneModeButton.BTN_ID:
                 if (be instanceof ParticleChamberPortBE port) {
                     port.toggleRedstoneMode();
+                }
+                break;
+            case Button.RadiatorToggle.BTN_ID:
+                if (be instanceof HeatExchangerControllerBE hx) {
+                    hx.toggleRadiators();
+                }
+                break;
+            case Button.HeatExchangerPortRedstoneModeButton.BTN_ID:
+                if (be instanceof HeatExchangerHotCoolantPortBE hotPort) {
+                    hotPort.toggleRedstoneMode();
+                } else if (be instanceof HeatExchangerColdCoolantPortBE coldPort) {
+                    coldPort.toggleRedstoneMode();
                 }
                 break;
             case 77:

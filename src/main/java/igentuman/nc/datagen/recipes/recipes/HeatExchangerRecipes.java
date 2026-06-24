@@ -26,7 +26,7 @@ public class HeatExchangerRecipes extends AbstractRecipeProvider {
         hxRecipe(
                 List.of(fluidIngredient("technical_water", 1)),
                 List.of(fluidIngredient("high_pressure_steam", 1)),
-                1D, 1D, 300D
+                1D, 1D, -300D
         );
 
         hxRecipe(
@@ -38,7 +38,7 @@ public class HeatExchangerRecipes extends AbstractRecipeProvider {
         hxRecipe(
                 List.of(fluidIngredient("minecraft:water", 1)),
                 List.of(fluidIngredient("steam", 1)),
-                1D, 1D, -250D
+                1D, 1D, -200D
         );
 
         hxRecipe(

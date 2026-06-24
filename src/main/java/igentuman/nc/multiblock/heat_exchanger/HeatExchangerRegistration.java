@@ -8,6 +8,7 @@ import igentuman.nc.block.heat_exchanger.entity.HeatExchangerControllerBE;
 import igentuman.nc.block.heat_exchanger.entity.HeatExchangerColdCoolantPortBE;
 import igentuman.nc.block.heat_exchanger.entity.HeatExchangerHotCoolantPortBE;
 import igentuman.nc.container.HeatExchangerControllerContainer;
+import igentuman.nc.container.HeatExchangerPortContainer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -39,6 +40,10 @@ public class HeatExchangerRegistration {
 
     public static final RegistryObject<MenuType<HeatExchangerControllerContainer>> HX_CONTROLLER_CONTAINER = CONTAINERS.register("heat_exchanger_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new HeatExchangerControllerContainer(windowId, data.readBlockPos(), inv))
+    );
+
+    public static final RegistryObject<MenuType<HeatExchangerPortContainer>> HX_PORT_CONTAINER = CONTAINERS.register("heat_exchanger_port",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new HeatExchangerPortContainer(windowId, data.readBlockPos(), inv))
     );
 
     public static void init() {

@@ -15,6 +15,7 @@ There is **no OpenComputers v1 support**.
 | Fission reactor | `nc_fission_reactor` | `SolidFissionReactorPeripheral` | `FissionReactorDevice` |
 | Fusion reactor | `nc_fusion_reactor_core` | `FusionReactorPeripheral` | `FusionReactorDevice` |
 | Turbine | `nc_turbine` | `TurbinePeripheral` | `TurbineDevice` |
+| Heat exchanger | `nc_heat_exchanger` | `HeatExchangerPeripheral` | `HeatExchangerDevice` |
 | Linear accelerator | `nc_accelerator` | `LinearAcceleratorPeripheral` | `LinearAcceleratorDevice` |
 | Ring accelerator | `ring_accelerator` | `RingAcceleratorPeripheral` | `RingAcceleratorDevice` |
 | Target chamber | `nc_target_chamber` | `TargetChamberPeripheral` | `TargetChamberDevice` |
@@ -82,6 +83,15 @@ Same surface as the fission reactor, plus:
 | `hasRecipe()` | boolean |
 | `enableTurbine()` / `disableTurbine()` | void |
 | `getEnergyPerTick()` / `getEnergyStored()` | int |
+
+### `nc_heat_exchanger` - `HeatExchangerPeripheral`
+
+| Method | Returns | Description |
+|---|---|---|
+| `getName()` | string | Controller id |
+| `isFormed()` | boolean | Casing and internals valid |
+| `getStatistics()` | map | `heat`, `maxHeat`, `hotCycleOps`, `coldCycleOps`, `radiators_qty` |
+| `enableRadiators()` / `disableRadiators()` | void | Toggle passive radiator cooling |
 
 ### `nc_accelerator` - `LinearAcceleratorPeripheral`
 
@@ -189,8 +199,9 @@ on OC2) because they mutate world state.
 
 Mirror of the CC peripherals, exposed as `ObjectDevice` records with `@Callback` annotations.
 Device class names: `ProcessorDevice`, `FissionReactorDevice`, `FusionReactorDevice`,
-`TurbineDevice`, `LinearAcceleratorDevice`, `RingAcceleratorDevice`, `TargetChamberDevice`,
-`DecayChamberDevice`, `CollisionChamberDevice`, `BeamDiverterDevice`, `KugelblitzDevice`.
+`TurbineDevice`, `HeatExchangerDevice`, `LinearAcceleratorDevice`, `RingAcceleratorDevice`,
+`TargetChamberDevice`, `DecayChamberDevice`, `CollisionChamberDevice`, `BeamDiverterDevice`,
+`KugelblitzDevice`.
 
 OC2 devices are named after the controller (`getDeviceTypeNames()` returns `getName()`), and the
 accelerator/diverter devices expose finer-grained getters than the CC `getStats()`/`getHeatBufferInfo()`

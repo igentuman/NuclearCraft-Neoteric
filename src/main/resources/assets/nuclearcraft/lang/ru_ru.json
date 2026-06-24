@@ -944,6 +944,8 @@
   "gui.nc.side_config.tooltip": "Конфигурация стороны",
   "gui.nc.turbine_comparator_config.tooltip_0": "Компаратор: Накопленная энергия",
   "gui.nc.turbine_comparator_config.tooltip_2": "Компаратор: Переполнение",
+  "gui.nc.hx_comparator_config.tooltip_1": "Ввод: Включить радиаторы",
+  "gui.nc.hx_comparator_config.tooltip_2": "Компаратор: Накопленное тепло",
   "gui.nuclearcraft.jei.particle.charge": "Заряд: %s",
   "gui.nuclearcraft.jei.particle.colour": "Испытывает сильное взаимодействие: %s",
   "gui.nuclearcraft.jei.particle.components": "Состоит из:",

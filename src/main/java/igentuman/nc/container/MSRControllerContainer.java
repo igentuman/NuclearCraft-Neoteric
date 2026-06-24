@@ -86,24 +86,28 @@ public class MSRControllerContainer extends AbstractContainerMenu {
         return MSRControllerBE.MAX_TEMPERATURE;
     }
 
-    public double getPressure() {
-        return blockEntity.pressure;
-    }
-
-    public double getMaxPressure() {
-        return MSRControllerBE.PRESSURE_MAX;
-    }
-
     public int getSalt() {
         return (int) blockEntity.saltVolume;
     }
 
-    public int getCoolant() {
-        return (int) blockEntity.coolantVolume;
+    public int getHotSalt() {
+        return (int) blockEntity.hotSaltVolume;
     }
 
-    public int getDepleted() {
-        return (int) blockEntity.depletedVolume;
+    public int getFreeVolume() {
+        return (int) blockEntity.freeVolume();
+    }
+
+    public int getInputRate() {
+        return blockEntity.saltInputRate;
+    }
+
+    public int getOutputRate() {
+        return blockEntity.saltOutputRate;
+    }
+
+    public int getGlobalVolume() {
+        return (int) blockEntity.globalVolume();
     }
 
     public double getReactivity() {
@@ -116,10 +120,6 @@ public class MSRControllerContainer extends AbstractContainerMenu {
 
     public boolean isCritical() {
         return blockEntity.isCritical;
-    }
-
-    public boolean isLocked() {
-        return blockEntity.portsLocked;
     }
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {

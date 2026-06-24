@@ -656,6 +656,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc_jei_cat.turbine", "Turbine");
         add("nc_jei_cat.heat_exchanger_controller", "Heat Exchanger");
         add("heat_exchanger.blocks", "Heat Exchangers: %s");
+        add("heat_exchanger.hot_cycle_rate", "Hot cycle rate: %s");
+        add("heat_exchanger.cold_cycle_rate", "Cold cycle rate: %s");
         add("heat_exchanger_controller.recipe.duration", "Base time: %s ticks");
         add("heat_exchanger_controller.recipe.power", "Power factor: %s");
         add("heat_exchanger_controller.recipe.heat_add", "Heat output: +%s H");
@@ -688,12 +690,12 @@ public class NCLanguageProvider extends LanguageProvider {
         add("fission.casing.reactor_incomplete", "Reactor Incomplete");
         add("fission_reactor.heat_multiplier", "Heat Multiplier: %sx");
 
-        add("msr.pressure.bar.amount", "Pressure: %s / %s");
         add("msr.reactivity", "Reactivity: %s");
         add("msr.status", "Status: %s");
         add("msr.critical", "CRITICAL");
         add("msr.subcritical", "SUBCRITICAL");
-        add("msr.locked", "PORTS LOCKED");
+        add("msr.input_rate.tooltip", "Molten salt input rate (buckets/tick). Cold FLiBe drawn into the reactor each tick.");
+        add("msr.output_rate.tooltip", "Hot molten salt output rate (buckets/tick). Pumped out each tick — the reactor's only cooling. Run it too low and the core overheats.");
 
         add("turbine.efficiency", "Efficiency: %s%%");
         add("turbine.real_flow", "Real Flow: %smB");
@@ -952,6 +954,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("gui.nc.kugelblits_port.tooltip_strength","Signal strength: %s");
         add("gui.nc.reactor_mode.tooltip_steam","Boiling Mode");
         add("gui.nc.reactor_mode.tooltip_energy","Energy Mode");
+        add("gui.nc.radiator_toggle.tooltip_enable","Enable Radiators");
+        add("gui.nc.radiator_toggle.tooltip_disable","Disable Radiators");
         add("gui.nc.reactor_mode.timer","Changing mode in: %s sec");
         add("reactor.steam_per_tick","Boiling rate: %s mB/t");
         add("reactor.max_boiling_rate","Max rate: %s mB/t");
@@ -1045,6 +1049,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("gui.nc.reactor_comparator_config.tooltip_1","Comparator: Energy Stored");
         add("gui.nc.turbine_comparator_config.tooltip_0","Comparator: Energy Stored");
         add("gui.nc.turbine_comparator_config.tooltip_2","Comparator: Overflow");
+        add("gui.nc.hx_comparator_config.tooltip_1","Input: Enable Radiators");
+        add("gui.nc.hx_comparator_config.tooltip_2","Comparator: Heat Stored");
         add("gui.nc.reactor_comparator_config.tooltip_2","Comparator: Heat Stored");
         add("gui.nc.reactor_comparator_config.tooltip_3","Comparator: Depletion Progress");
         add("gui.nc.reactor_comparator_config.tooltip_4","Comparator: Fuel Left");

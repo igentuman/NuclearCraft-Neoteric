@@ -45,7 +45,7 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         this.inputFluidSlots = inputFluidSlots;
         this.outputFluidSlots = outputFluidSlots;
         if(inputItemSlots + outputItemSlots > 0) {
-            itemHandler = new ItemCapabilityHandler(inputItemSlots, outputItemSlots);
+            itemHandler = createItemHandler(inputItemSlots, outputItemSlots);
             itemHandler.tile = blockEntity;
             itemHandler.sidedContentHandler = this;
             itemCapability = LazyOptional.of(() -> itemHandler);
@@ -60,12 +60,20 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
                 inputTankSize = tankCapacities[0];
                 if(tankCapacities.length > 1) outputTankSize = tankCapacities[1];
             }
-            fluidHandler = new FluidCapabilityHandler(inputFluidSlots, outputFluidSlots, inputTankSize, outputTankSize);
+            fluidHandler = createFluidHandler(inputFluidSlots, outputFluidSlots, inputTankSize, outputTankSize);
             fluidHandler.tile = blockEntity;
             fluidHandler.sidedContentHandler = this;
         } else {
             fluidHandler = null;
         }
+    }
+
+    protected ItemCapabilityHandler createItemHandler(int inputItemSlots, int outputItemSlots) {
+        return new ItemCapabilityHandler(inputItemSlots, outputItemSlots);
+    }
+
+    protected FluidCapabilityHandler createFluidHandler(int inputFluidSlots, int outputFluidSlots, int inputTankSize, int outputTankSize) {
+        return new FluidCapabilityHandler(inputFluidSlots, outputFluidSlots, inputTankSize, outputTankSize);
     }
 
     public static Tag serializeSideMap(HashMap<Integer, SlotModePair[]> sideMap) {

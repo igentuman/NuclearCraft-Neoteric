@@ -47,11 +47,6 @@ public class MSRDevice {
         }
 
         @Callback
-        public final double getPressure() {
-            return reactor.pressure;
-        }
-
-        @Callback
         public final double getReactivity() {
             return reactor.reactivity;
         }
@@ -67,13 +62,18 @@ public class MSRDevice {
         }
 
         @Callback
-        public final double getCoolantVolume() {
-            return reactor.coolantVolume;
+        public final double getHotSaltVolume() {
+            return reactor.hotSaltVolume;
         }
 
         @Callback
-        public final double getDepletedVolume() {
-            return reactor.depletedVolume;
+        public final double getFreeVolume() {
+            return reactor.freeVolume();
+        }
+
+        @Callback
+        public final double getGlobalVolume() {
+            return reactor.globalVolume();
         }
 
         @Callback
@@ -97,33 +97,13 @@ public class MSRDevice {
         }
 
         @Callback
-        public final int getEnergyPerTick() {
-            return reactor.energyPerTick;
-        }
-
-        @Callback
-        public final int getEnergyStored() {
-            return reactor.energyStorage().getEnergyStored();
-        }
-
-        @Callback
         public final double getHeatPerTick() {
             return reactor.heatPerTick;
         }
 
         @Callback
-        public final boolean isPortsLocked() {
-            return reactor.portsLocked;
-        }
-
-        @Callback
         public final double getMaxTemperature() {
             return MSRControllerBE.MAX_TEMPERATURE;
-        }
-
-        @Callback
-        public final double getMaxPressure() {
-            return MSRControllerBE.PRESSURE_MAX;
         }
 
         @Callback

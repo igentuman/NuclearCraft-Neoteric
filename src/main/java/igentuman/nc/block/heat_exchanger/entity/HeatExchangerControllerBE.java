@@ -2,6 +2,8 @@ package igentuman.nc.block.heat_exchanger.entity;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockControllerBE;
+import igentuman.nc.compat.cc.HeatExchangerPeripheral;
+import igentuman.nc.compat.oc2.HeatExchangerDevice;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.heat_exchanger.HeatExchangerMultiblock;
 import igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration;
@@ -15,16 +17,21 @@ import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +39,10 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.compat.oc2.HeatExchangerDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.HeatExchangerConfig.HEAT_EXCHANGER_CONFIG;
+import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isOC2Loaded;
 import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE;
@@ -57,6 +67,12 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
     public double heat = 0;
     @NBTField
     public double maxHeat = 0;
+    @NBTField
+    public boolean radiatorsEnabled = false;
+    @NBTField
+    public long hotCycleOps = 0;
+    @NBTField
+    public long coldCycleOps = 0;
 
     public final RecipeInfo coldRecipeInfo = new RecipeInfo();
 
@@ -197,7 +213,7 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
 
     // Passive cooling. Ungated: runs whenever the multiblock is formed, regardless of redstone/energy.
     private void coolDown() {
-        if (radiators <= 0 || heat <= 0) {
+        if (!radiatorsEnabled || radiators <= 0 || heat <= 0) {
             return;
         }
         double removed = (double) radiators * HEAT_EXCHANGER_CONFIG.RADIATOR_COOLING.get();
@@ -216,6 +232,8 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
         if (energyStorage().getEnergyStored() < ept) {
             return false;
         }
+        hotCycleOps = 0;
+        coldCycleOps = 0;
         boolean hotRan = processSide(recipeInfo(), TANK_HOT_IN, TANK_HOT_OUT, true);
         boolean coldRan = processSide(coldRecipeInfo, TANK_COLD_IN, TANK_COLD_OUT, false);
         if (hotRan || coldRan) {
@@ -253,7 +271,6 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
         if (inAmount <= 0) {
             return false;
         }
-
         // One "op" = one full recipe application. Cap ops/tick by every constraint, then run the minimum.
         double throughput = heatExchangers * HEAT_EXCHANGER_CONFIG.THROUGHPUT_PER_BLOCK.get();
         long ops = (long) Math.floor(throughput / inAmount);
@@ -299,6 +316,11 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
         info.ticksProcessed += 1;
         if (info.ticks <= 0 || info.ticksProcessed >= info.ticks) {
             info.ticksProcessed = 0;
+        }
+        if(hot) {
+            hotCycleOps = ops;
+        } else {
+            coldCycleOps = ops;
         }
         return true;
     }
@@ -348,6 +370,29 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
         return radiators;
     }
 
+    public boolean isRadiatorsEnabled() {
+        return radiatorsEnabled;
+    }
+
+    public void toggleRadiators() {
+        radiatorsEnabled = !radiatorsEnabled;
+        MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
+        setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    public void enableRadiators() {
+        if (!radiatorsEnabled) {
+            toggleRadiators();
+        }
+    }
+
+    public void disableRadiators() {
+        if (radiatorsEnabled) {
+            toggleRadiators();
+        }
+    }
+
     public double getHeat() {
         return heat;
     }
@@ -372,6 +417,27 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
         if (heat > maxHeat) {
             heat = maxHeat;
         }
+    }
+
+    private LazyOptional<HeatExchangerPeripheral> peripheralCap;
+
+    public <T> LazyOptional<T> getPeripheral(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (peripheralCap == null) {
+            peripheralCap = LazyOptional.of(() -> new HeatExchangerPeripheral(this));
+        }
+        return peripheralCap.cast();
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (isOC2Loaded() && cap == DEVICE_CAPABILITY) {
+            return LazyOptional.of(() -> HeatExchangerDevice.createDevice(this)).cast();
+        }
+        if (isCcLoaded() && cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+            return getPeripheral(cap, side);
+        }
+        return super.getCapability(cap, side);
     }
 
     @Override

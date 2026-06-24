@@ -83,7 +83,7 @@ public class NCFuel {
             triso = new FuelDef(group, name,
                     0,
                     Math.ceil((float)oxide.heat*1.5), (float)oxide.criticality/1.5,
-                    (float)oxide.depletion/1.25, (float)oxide.efficiency*1.5);
+                    (float)oxide.depletion*12.5, (float)oxide.efficiency*1.5);
         }
         return triso;
     }

@@ -103,6 +103,10 @@ public class HeatExchangerControllerContainer extends AbstractContainerMenu {
         return blockEntity.getRadiators();
     }
 
+    public boolean isRadiatorsEnabled() {
+        return blockEntity.isRadiatorsEnabled();
+    }
+
     public double getHeat() {
         return blockEntity.getHeat();
     }
@@ -121,6 +125,14 @@ public class HeatExchangerControllerContainer extends AbstractContainerMenu {
 
     public double getColdProgress() {
         return blockEntity.getColdProgress();
+    }
+
+    public long getHotCycleOps() {
+        return blockEntity.hotCycleOps;
+    }
+
+    public long getColdCycleOps() {
+        return blockEntity.coldCycleOps;
     }
 
     public boolean isRunning() {

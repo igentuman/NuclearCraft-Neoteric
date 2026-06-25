@@ -1,3 +1,12 @@
+1.2.28-beta5
+    Added - MSR multiblock
+    Updated - guideme, patchouli, ponders
+    New turbine rendering
+    Changed some math for HX and turbine
+    Removed one more call of block update from background thread
+1.2.28-beta4
+    Added - Heat Exchanger
+    Fixed - minor issues, recipes and missing translations
 1.2.28-beta3
     Refactored multiblocks related code, expect issues
     Fixed - Collision chamber validation and GUI

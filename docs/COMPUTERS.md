@@ -5,6 +5,9 @@ and **OpenComputers v2 (`oc2`) devices**. The two APIs mirror each other - metho
 return types match, so a script can usually be ported between them by changing how you
 acquire the handle.
 
+> Exception: the **Molten Salt Reactor** (`nc_msr_reactor`) is **not** symmetric. Its OC2 device
+> exposes the full metric/control set, while its CC peripheral is a smaller surface (see below).
+
 There is **no OpenComputers v1 support**.
 
 ## Scope
@@ -13,6 +16,7 @@ There is **no OpenComputers v1 support**.
 |---|---|---|---|
 | Processors | `nc_processor` | `ProcessorPeripheral` | `ProcessorDevice` |
 | Fission reactor | `nc_fission_reactor` | `SolidFissionReactorPeripheral` | `FissionReactorDevice` |
+| Molten salt reactor | `nc_msr_reactor` | `MSRControllerPeripheral` | `MSRDevice` |
 | Fusion reactor | `nc_fusion_reactor_core` | `FusionReactorPeripheral` | `FusionReactorDevice` |
 | Turbine | `nc_turbine` | `TurbinePeripheral` | `TurbineDevice` |
 | Heat exchanger | `nc_heat_exchanger` | `HeatExchangerPeripheral` | `HeatExchangerDevice` |
@@ -65,6 +69,27 @@ Generic processor block (manufactory, alloy furnace, centrifuge, etc.).
 | `getCooling()`, `getHeat()`, `getHeatStored()` | int |
 | `voidFuel()` | void |
 | `getFuelInSlot()` | table |
+
+### `nc_msr_reactor` - `MSRControllerPeripheral`
+
+The Molten Salt Reactor controller. The CC peripheral is a **control-focused subset** - it can read
+the headline stats and drive the salt rates, but the full metric set (volumes, pebble/cell counts,
+`isFormed` / `isCritical`, enable/disable) lives only on the OC2 device.
+
+| Method | Returns | Description |
+|---|---|---|
+| `getName()` | string | Controller id |
+| `getTemperature()` | double | Core temperature (K, 0..2000) |
+| `getReactivity()` | double | Current reactivity |
+| `getDepletion()` | double | Fuel burn progress |
+| `getSaltInputRate()` | int | Cold FLiBe drawn in per tick (buckets/t) |
+| `getSaltOutputRate()` | int | Hot FLiBe pumped out per tick (buckets/t); the reactor's only cooling |
+| `setSaltInputRate(int)` | void | Set the input rate (server thread) |
+| `setSaltOutputRate(int)` | void | Set the output rate (server thread) |
+| `voidFuel()` | void | Dump the loaded pebbles (server thread) |
+
+The three setters / `voidFuel()` mutate world state, so they run on the server thread
+(`mainThread = true` on CC, `synchronize = true` on OC2).
 
 ### `nc_fusion_reactor_core` - `FusionReactorPeripheral`
 
@@ -198,10 +223,16 @@ on OC2) because they mutate world state.
 ## OpenComputers v2 (`compat/oc2/`)
 
 Mirror of the CC peripherals, exposed as `ObjectDevice` records with `@Callback` annotations.
-Device class names: `ProcessorDevice`, `FissionReactorDevice`, `FusionReactorDevice`,
+Device class names: `ProcessorDevice`, `FissionReactorDevice`, `MSRDevice`, `FusionReactorDevice`,
 `TurbineDevice`, `HeatExchangerDevice`, `LinearAcceleratorDevice`, `RingAcceleratorDevice`,
 `TargetChamberDevice`, `DecayChamberDevice`, `CollisionChamberDevice`, `BeamDiverterDevice`,
 `KugelblitzDevice`.
+
+The **`MSRDevice`** (`nc_msr_reactor`) is the one device that is **not** a 1:1 mirror of its CC
+peripheral - it adds everything the CC surface omits: `isFormed()`, `isCritical()`, `getImpurity()`,
+`getSaltVolume()`, `getHotSaltVolume()`, `getFreeVolume()`, `getGlobalVolume()`, `getPebbleCount()`,
+`getMaxPebbleCapacity()`, `getFuelCellsCount()`, `getHeatExchangerCount()`, `getHeatPerTick()`,
+`getMaxTemperature()`, and `enableReactor()` / `disableReactor()`.
 
 OC2 devices are named after the controller (`getDeviceTypeNames()` returns `getName()`), and the
 accelerator/diverter devices expose finer-grained getters than the CC `getStats()`/`getHeatBufferInfo()`

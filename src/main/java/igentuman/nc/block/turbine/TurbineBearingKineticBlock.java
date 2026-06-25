@@ -39,9 +39,6 @@ public class TurbineBearingKineticBlock extends TurbineBearingBlock implements I
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         IBE.onRemove(state, level, pos, newState);
-        if(!level.isClientSide()) {
-            MultiblockHandler.get(level.dimension()).trackBlockChange(pos);
-        }
         super.onRemove(state, level, pos, newState, isMoving);
     }
 

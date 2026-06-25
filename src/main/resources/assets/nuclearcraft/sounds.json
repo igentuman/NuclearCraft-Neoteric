@@ -35,6 +35,12 @@
     ],
     "subtitle": "sound_event.nuclearcraft.fission_reactor"
   },
+  "tile.msr_running": {
+    "sounds": [
+      "nuclearcraft:block/msr_running"
+    ],
+    "subtitle": "sound_event.nuclearcraft.msr_running"
+  },
   "q36.beam_shot": {
     "sounds": [
       "nuclearcraft:q36/beam_shot"

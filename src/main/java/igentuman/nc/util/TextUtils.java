@@ -152,6 +152,7 @@ public class TextUtils
 	public static String applySpeccialRules(String val)
 	{
 		val = val.replace("Rtg", "RTG");
+		val = val.replace("Msr", "MSR");
 		val = val.replace("Flibe", "FLiBe");
 		val = val.replace("Du", "DU");
 		val = val.replace("Tbu", "TBU");

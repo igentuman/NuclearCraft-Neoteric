@@ -348,4 +348,12 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
         externalControlled  = true;
         toggleMultiblock(analogSignal > 0);
     }
+
+    public boolean isProcessing() {
+        return hasRecipe() && recipeInfo().ticksProcessed > 0 && !recipeInfo().isCompleted();
+    }
+
+    public boolean hasRecipe() {
+        return recipeInfo().recipe() != null;
+    }
 }

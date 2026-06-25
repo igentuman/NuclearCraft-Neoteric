@@ -1661,28 +1661,6 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(FISSION_BLOCKS.get("fission_reactor_casing").get()))
                 .save(consumer);
 
-        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_fuel_cell").get())
-                .pattern("TGT")
-                .pattern("G G")
-                .pattern("TGT")
-                .define('G', Tags.Items.GLASS)
-                .define('T', forgeIngot("tough_alloy"))
-                .group(MODID+"_fission")
-                .unlockedBy("item", has(FISSION_BLOCKS.get("fission_reactor_casing").get()))
-                .save(consumer);
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_controller").get())
-                .pattern("LPL")
-                .pattern("TDT")
-                .pattern("LPL")
-                .define('P', NC_PARTS.get("plate_extreme").get())
-                .define('D', NCProcessors.PROCESSORS.get(Processors.FUEL_REPROCESSOR).get())
-                .define('T', NC_PARTS.get("advanced_electric_circuit").get())
-                .define('L', FISSION_BLOCKS.get("fission_reactor_casing").get())
-                .group(MODID+"_fission")
-                .unlockedBy("item", has(NC_PARTS.get("plate_extreme").get()))
-                .save(consumer);
-*/
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger").get())
                 .pattern("LPL")
                 .pattern("PMP")
@@ -1747,17 +1725,41 @@ public class NCRecipes extends RecipeProvider {
 
     private void msrBlocks(Consumer<FinishedRecipe> consumer) {
         // MSR Controller
-        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_controller").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_controller").get())
                 .pattern("LPL")
                 .pattern("TDT")
-                .pattern("LPL")
+                .pattern("LZL")
+                .define('Z', CAULDRON)
                 .define('P', NC_PARTS.get("plate_advanced").get())
                 .define('D', NCProcessors.PROCESSORS.get(Processors.DECAY_HASTENER).get())
                 .define('T', NCProcessors.PROCESSORS.get(Processors.CHEMICAL_REACTOR).get())
                 .define('L', FISSION_BLOCKS.get("fission_reactor_casing").get())
                 .group(MODID+"_msr")
                 .unlockedBy("item", has(NC_PARTS.get("plate_advanced").get()))
-                .save(consumer, rl("msr_controller"));*/
+                .save(consumer, rl("msr_controller"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_fuel_cell").get())
+                .pattern("TGT")
+                .pattern("GBG")
+                .pattern("TGT")
+                .define('G', Tags.Items.GLASS)
+                .define('B', BUCKET)
+                .define('T', forgeIngot("tough_alloy"))
+                .group(MODID+"_fission")
+                .unlockedBy("item", has(FISSION_BLOCKS.get("fission_reactor_casing").get()))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_BLOCKS.get("msr_port").get())
+                .pattern("LPL")
+                .pattern("MTM")
+                .pattern("LPL")
+                .define('M', NC_PARTS.get("servo").get())
+                .define('P', BUCKET)
+                .define('T', FISSION_BLOCKS.get("fission_reactor_casing").get())
+                .define('L', forgePlate("tough_alloy"))
+                .group(MODID+"_fission")
+                .unlockedBy("item", has(FISSION_BLOCKS.get("fission_reactor_casing").get()))
+                .save(consumer);
     }
 
     private void turbineBlocks(Consumer<FinishedRecipe> consumer) {

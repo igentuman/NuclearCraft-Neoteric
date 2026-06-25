@@ -1,5 +1,6 @@
 package igentuman.nc.block.fission.entity;
 
+import igentuman.api.nc.multiblock.IrradiationSupport;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
@@ -69,7 +70,7 @@ import static net.minecraft.core.Direction.UP;
 import static net.minecraft.world.item.Items.AIR;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.*;
 
-public class FissionControllerBE extends MultiblockControllerBE {
+public class FissionControllerBE extends MultiblockControllerBE implements IrradiationSupport {
 
     public static final String NAME = "fission_reactor_controller";
     public final SidedContentHandler contentHandler;
@@ -976,10 +977,7 @@ public class FissionControllerBE extends MultiblockControllerBE {
         maxHeat = FISSION_CONFIG.HEAT_CAPACITY.get()*multiplier;
         contentHandler().fluidHandler.tanks.get(0).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
         contentHandler().fluidHandler.tanks.get(1).setCapacity((int) (Math.pow(multiplier, 2)*1_000_000));
-        setChanged();
-        level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, powered));
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(POWERED, powered), Block.UPDATE_ALL);
-        needToUpdate = false;
+        markDirty();
     }
 
     public int getIrradiativeFlux() {

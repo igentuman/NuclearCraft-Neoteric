@@ -1,6 +1,9 @@
 package igentuman.nc.block.entity.processor;
 
+import igentuman.api.nc.multiblock.IrradiationSupport;
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
+import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.api.nc.multiblock.MultiblockAttachable;
@@ -18,12 +21,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 
 public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable {
 
     private AbstractMultiblock multiblock;
-    private FissionControllerBE controller;
+    private MultiblockControllerBE controller;
     @NBTField
     public int irradiativeFlux = 0;
     @NBTField
@@ -45,7 +49,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         this.multiblock = multiblock;
         if (multiblock != null) {
             if(multiblock.controller() != null) {
-                controller = (FissionControllerBE) multiblock.controller().controllerBE();
+                controller = multiblock.controller().controllerBE();
             }
         } else {
             controller = null;
@@ -54,7 +58,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
     }
 
     @Override
-    public FissionControllerBE controller() {
+    public MultiblockControllerBE controller() {
         return controller;
     }
 
@@ -80,15 +84,24 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         irradiativeFlux = 0;
         fuelMultiplier = 0;
         //allow only partial updates when irradiator boosted by torcherino
-        if(lastTickTime == level.getGameTime() && level.getRandom().nextDouble() < 0.05) {
+        if(lastTickTime == currentTick && level.getRandom().nextDouble() < 0.05) {
             return;
         }
+        lastTickTime = currentTick;
         isActive = isActive();
         //upadteMultiblockConnection();
         if (isActive) {
-            irradiativeFlux = controller().getIrradiativeFlux();
-            FissionControllerBE.Recipe recipe1 = (FissionControllerBE.Recipe) controller().recipeInfo().recipe();
-            fuelMultiplier = recipe1 != null ? recipe1.getIrradiationRate() : 0;
+            if(controller() instanceof IrradiationSupport source) {
+                irradiativeFlux = source.getIrradiativeFlux();
+            }
+            if(controller() instanceof FissionControllerBE source) {
+                FissionControllerBE.Recipe recipe1 = (FissionControllerBE.Recipe) source.recipeInfo().recipe();
+                fuelMultiplier = recipe1 != null ? recipe1.getIrradiationRate() : 0;
+            }
+            if(controller() instanceof MSRControllerBE source) {
+
+                fuelMultiplier = source.pebbleCount * 2D /source.fuelCellsCount;
+            }
         }
         if(isActive && speedMultiplier() > 0) {
             MultiblockHandler.get(level.dimension()).addIgnoreToUpdate(getBlockPos());
@@ -136,7 +149,9 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         }
         boolean processed = recipeInfo().process(speedMultiplier()*skippedTicks);
         if(processed) {
-            controller().addIrradiationHeat();
+            if(controller() instanceof IrradiationSupport source) {
+                source.addIrradiationHeat();
+            }
         }
         if(recipeInfo().radiation != 1D) {
             RadiationManager.get(getLevel()).addRadiation(getLevel(), (recipeInfo().radiation/1000000)*speedMultiplier()*skippedTicks, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
@@ -155,7 +170,7 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         if(mb != null) {
             if(mb.isFormed()) {
                 if(mb.controller() != null) {
-                    controller = (FissionControllerBE) mb.controller().controllerBE();
+                    controller = mb.controller().controllerBE();
                 }
             }
             multiblock = mb;

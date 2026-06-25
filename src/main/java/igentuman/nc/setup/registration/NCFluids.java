@@ -129,8 +129,8 @@ public class NCFluids {
         items.put("emergency_coolant_heated", new LiquidDefinition("emergency_coolant_heated", 0x90CDBEE7));
         items.put(Materials.irradiated_sodium, new LiquidDefinition(Materials.irradiated_sodium, 0x90CDBEE7));
         items.put("mercury", new LiquidDefinition("mercury", 0xFFB5B5B5));
-        items.put("flibe_hot_molten_salt", new LiquidDefinition("flibe_hot_molten_salt", 0x90FFD0A3, 800));
-        items.put("flibe_molten_salt", new LiquidDefinition("flibe_molten_salt", 0xFFB5B5B5, 400));
+        items.put("flibe_hot_molten_salt", new LiquidDefinition("flibe_hot_molten_salt", 0xFFB5B5B5, 800));
+        items.put("flibe_molten_salt", new LiquidDefinition("flibe_molten_salt", 0x90FFD0A3, 400));
         for(LiquidDefinition liquid: items.values()) {
             LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));

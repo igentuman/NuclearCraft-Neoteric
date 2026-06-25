@@ -9,6 +9,7 @@ import igentuman.nc.block.fission.*;
 import igentuman.nc.container.FissionControllerContainer;
 import igentuman.nc.container.FissionPortContainer;
 import igentuman.nc.container.MSRControllerContainer;
+import igentuman.nc.container.MSRPortContainer;
 import igentuman.nc.util.JSONUtil;
 import igentuman.nc.multiblock.ValidationScheduler;
 import net.minecraft.tags.TagKey;
@@ -52,6 +53,10 @@ public class FissionReactorRegistration {
 
     public static final RegistryObject<MenuType<MSRControllerContainer>> MSR_CONTROLLER_CONTAINER = CONTAINERS.register("msr_controller",
             () -> IForgeMenuType.create((windowId, inv, data) -> new MSRControllerContainer(windowId, data.readBlockPos(), inv))
+            );
+
+    public static final RegistryObject<MenuType<MSRPortContainer>> MSR_PORT_CONTAINER = CONTAINERS.register("msr_port",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new MSRPortContainer(windowId, data.readBlockPos(), inv))
             );
 
     public static final BlockBehaviour.Properties REACTOR_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();

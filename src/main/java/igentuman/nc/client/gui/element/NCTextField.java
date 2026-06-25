@@ -46,6 +46,11 @@ public class NCTextField extends NCGuiElement {
         suppressResponder = false;
     }
 
+    public void step(int delta) {
+        int next = (int) Math.max(0, getDouble(0) + delta);
+        editBox.setValue(String.valueOf(next));
+    }
+
     public String getValue() {
         return editBox.getValue();
     }

@@ -56,7 +56,7 @@ public class HeatExchangerConfig {
 
             THROUGHPUT_PER_BLOCK = builder
                     .comment("Recipe progress units per server tick, per interior heat exchanger block.")
-                    .defineInRange("throughput_per_block", 5000.0D, 0.01D, 1000D);
+                    .defineInRange("throughput_per_block", 5000.0D, 0.01D, 100000D);
 
             ENERGY_CAPACITY = builder
                     .comment("Internal energy buffer (FE).")
@@ -72,7 +72,7 @@ public class HeatExchangerConfig {
 
             HEAT_CAPACITY_PER_BLOCK = builder
                     .comment("Heat buffer capacity per interior heat exchanger block.")
-                    .defineInRange("heat_capacity_per_block", 1000000, 1, Integer.MAX_VALUE);
+                    .defineInRange("heat_capacity_per_block", 5000000, 1, Integer.MAX_VALUE);
 
             builder.pop();
         }

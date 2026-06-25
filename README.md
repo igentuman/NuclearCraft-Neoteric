@@ -25,7 +25,7 @@ how you build.
 
 - **Ore processing chain** - crushers, washers, centrifuges, electrolyzers, infusers, melters and assemblers feeding a deep materials tree (uranium, thorium, plutonium, americium, curium, californium and beyond).
 - **Fission reactors** - multiblock cores with configurable solid fuels, moderators, reflectors, heat sinks, steam mode, neutron flux, and meltdown consequences.
-- **(WIP) Molten Salt Reactors** - liquid-fuel cores with input/output port logic, salt loops and thermal feedback.
+- **Molten Salt Reactors** - liquid-fuel cores: pump carrier salt through a chamber of fuel pebbles, manage coupled temperature/reactivity with a self-stabilizing negative feedback, and ship the heat out as hot salt to a heat exchanger.
 - **Fusion reactors** - toroidal plasma ring built from electromagnets and RF amplifiers, fed by fuel/coolant recipes.
 - **Particle accelerators** - linear and (WIP)toroidal beam lines with magnets, RF cavities and configurable particle sources.
 - **Target chamber** - beam-driven transmutation, detector readouts, antimatter production chain.
@@ -44,6 +44,7 @@ how you build.
 System reference docs live in [`docs/`](docs):
 
 - [Fission Reactor](docs/FISSION_REACTOR.md) - multiblock layout, heat sinks, moderators, fuels, steam mode, meltdown
+- [Molten Salt Reactor](docs/MOLTEN_SALT_REACTOR.md) - liquid-fuel core, TRISO pebbles, FLiBe salt loop, temperature/reactivity feedback, ports
 - [Fusion Reactor](docs/FUSION_REACTOR.md) - toroidal ring, magnets, RF amplifiers, plasma, coolant recipes. Decent energy source
 - [Turbine](docs/TURBINE.md) - Produce energy with steam cycle
 - [Kugelblitz](docs/KUGELBLITZ.md) - Confinment for blackhole. Harness energy and use unique recipe chains

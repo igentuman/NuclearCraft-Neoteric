@@ -181,7 +181,7 @@ dependencies {
     implementation fg.deobf("curse.maven:applied-energistics-2-223794:7096071") {
         transitive = false
     }
-    runtimeOnly fg.deobf("curse.maven:multi-builder-tool-827020:7041820")
+    runtimeOnly fg.deobf("curse.maven:multi-builder-tool-827020:8291472")
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
     implementation fg.deobf("curse.maven:immersive-engineering-231951:5224387")
     compileOnly fg.deobf("curse.maven:thermal-foundation-222880:5443583")

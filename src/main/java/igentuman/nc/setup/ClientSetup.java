@@ -13,6 +13,7 @@ import igentuman.nc.client.gui.accelerator.*;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
 import igentuman.nc.client.gui.fission.MSRControllerScreen;
+import igentuman.nc.client.gui.fission.MSRPortScreen;
 import igentuman.nc.client.gui.kugelblitz.ChamberPortScreen;
 import igentuman.nc.client.gui.kugelblitz.ChamberTerminalScreen;
 import igentuman.nc.client.gui.kugelblitz.EXPLScreen;
@@ -76,6 +77,7 @@ import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistrati
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_CONTROLLER_CONTAINER;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_PORT_CONTAINER;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.MSR_CONTROLLER_CONTAINER;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.MSR_PORT_CONTAINER;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_CONTAINER;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
@@ -122,6 +124,7 @@ public class ClientSetup {
             MenuScreens.register(FISSION_CONTROLLER_CONTAINER.get(), FissionControllerScreen::new);
             MenuScreens.register(FISSION_PORT_CONTAINER.get(), FissionPortScreen::new);
             MenuScreens.register(MSR_CONTROLLER_CONTAINER.get(), MSRControllerScreen::new);
+            MenuScreens.register(MSR_PORT_CONTAINER.get(), MSRPortScreen::new);
             MenuScreens.register(CHAMBER_PORT_CONTAINER.get(), ChamberPortScreen::new);
             MenuScreens.register(CHAMBER_TERMINAL_CONTAINER.get(), ChamberTerminalScreen::new);
             MenuScreens.register(REDSTONE_DIMMER_CONTAINER.get(), RedstoneDimmerScreen::new);

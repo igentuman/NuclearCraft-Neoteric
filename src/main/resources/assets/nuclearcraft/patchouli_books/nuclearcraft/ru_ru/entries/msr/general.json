@@ -1,0 +1,81 @@
+{
+  "name": "Общая информация",
+  "icon": "nuclearcraft:msr_controller",
+  "category": "nuclearcraft:msr",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(thing)Жидкосолевой реактор$() работает на $(thing)жидком топливе$(). Вместо расстановки теплоотводов и замедлителей вы прокачиваете $(thing)соль-носитель$() через камеру, набитую $(thing)топливными шариками$(), и управляете двумя связанными параметрами - $(thing)температурой$() и $(thing)реактивностью$()."
+    },
+    {
+      "type": "text",
+      "text": "Энергию напрямую он $(o)не$() вырабатывает. Он превращает $(thing)холодную соль$() в $(thing)горячую$(); направьте горячую соль в $(l:heat_exchanger/general)Теплообменник$(), а оттуда на турбину. Откачка горячей соли - это ещё и $(o)единственное охлаждение$() активной зоны: остановите её, и она перегреется."
+    },
+    {
+      "anchor": "controller",
+      "type": "blocks/1",
+      "header": "Контроллер ЖСР",
+      "block": "nuclearcraft:msr_controller",
+      "text": "Поместите ровно один $(thing)Контроллер$() в оболочку, чтобы собрать реактор. Он ведёт расчёт и владеет баками соли и слотами шариков. Его интерфейс показывает температуру, реактивность, выгорание и скорости соли."
+    },
+    {
+      "anchor": "casing",
+      "type": "blocks/2",
+      "header": "Оболочка",
+      "block1": "nuclearcraft:fission_reactor_casing",
+      "block2": "nuclearcraft:fission_reactor_glass",
+      "text": "ЖСР использует оболочку реактора деления. Рёбра и углы - $(thing)Корпус реактора$(); стены могут быть из Корпуса, $(thing)Стекла реактора$() или обоих. Оболочка - куб от $(thing)5x5x5$() до $(thing)26x26x26$()."
+    },
+    {
+      "anchor": "fuel_cell",
+      "type": "blocks/1",
+      "header": "Топливная ячейка",
+      "block": "nuclearcraft:msr_fuel_cell",
+      "text": "Заполните $(o)всё внутреннее пространство$() $(thing)Топливными ячейками ЖСР$() - иные внутренние блоки не допускаются. Число ячеек задаёт объём соли и тепловой бюджет реактора: чем больше зона, тем больше она вмещает и тем мощнее работает."
+    },
+    {
+      "anchor": "port",
+      "type": "blocks/1",
+      "header": "Порт ЖСР",
+      "block": "nuclearcraft:msr_port",
+      "text": "$(thing)Порты$() двигают всё внутрь и наружу: $(item)холодная соль$() - внутрь, $(item)горячая$() - наружу, $(item)шарики$() - внутрь, $(item)отработанные шарики$() - наружу. Один тип порта переносит и предметы, и жидкость. Порт также выдаёт сигнал компаратора (Температура или Выгорание)."
+    },
+    {
+      "type": "text",
+      "text": "$(thing)Топливо$() загружается как $(item)шарики TRISO$() - варианты с суффиксом $(thing)_tr$(), например Торий, LEU-235, HEU-235, Плутоний. Выгорая, шарик оставляет $(thing)отработанный шарик$() в выходном слоте. $(thing)Соль-носитель$() - это $(item)Солевая смесь FLiBe$(); реактор закачивает её холодной и откачивает горячей."
+    },
+    {
+      "anchor": "build",
+      "header": "Эталонная сборка",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "W": "nuclearcraft:fission_reactor_casing",
+          "G": "nuclearcraft:fission_reactor_glass",
+          "C": "nuclearcraft:msr_fuel_cell",
+          "0": "nuclearcraft:msr_fuel_cell",
+          "N": "nuclearcraft:msr_controller[facing=north]",
+          "P": "nuclearcraft:msr_port[facing=west]",
+          "Q": "nuclearcraft:msr_port[facing=east]",
+          "R": "nuclearcraft:irradiator[facing=north]"
+        },
+        "pattern": [
+          ["WWWWWWW", "WGGGGGW", "WGGGGGW", "WGGGGGW", "WGGGGGW", "WGGGGGW", "WWWWWWW"],
+          ["WGGRGGW", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "WGGGGGW"],
+          ["WGGGGGW", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "WGGGGGW"],
+          ["WGGGGGW", "GCCCCCG", "GCCCCCG", "GCC0CCG", "GCCCCCG", "GCCCCCG", "WGGGGGW"],
+          ["WGGGGGW", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "WGGGGGW"],
+          ["WGGNGGW", "GCCCCCG", "PCCCCCQ", "GCCCCCG", "PCCCCCQ", "GCCCCCG", "WGGGGGW"],
+          ["WWWWWWW", "WWWWWWW", "WWWWWWW", "WWWWWWW", "WWWWWWW", "WWWWWWW", "WWWWWWW"]
+        ],
+        "symmetrical": false
+      },
+      "text": "Сборка 7x7x7: оболочка из корпуса и стекла вокруг сплошного ядра 5x5x5 из Топливных ячеек, Контроллер и Облучатель на одной стене и по паре Портов на боковых стенах."
+    },
+    {
+      "type": "text",
+      "text": "$(thing)Эксплуатация:$() подайте холодную соль, загрузите шарики, дайте редстоун. При достатке топлива и соли зона выходит на $(thing)критичность$() и нагревается. У реактивности $(o)отрицательный температурный коэффициент$() - она падает с нагревом, поэтому реактор самостабилизируется. Поднимайте $(thing)скорость вывода соли$(), чтобы держать температуру ниже потолка в 2000 K. Реактором также можно управлять с $(thing)компьютеров$() (тип $(thing)nc_msr_reactor$())."
+    }
+  ]
+}

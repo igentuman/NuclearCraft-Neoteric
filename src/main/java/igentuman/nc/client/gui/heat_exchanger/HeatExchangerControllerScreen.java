@@ -74,10 +74,10 @@ public class HeatExchangerControllerScreen extends AbstractContainerScreen<HeatE
         addWidget(new NormalSlot(new int[]{120, 18}, "fluid_out"));
         addWidget(new NormalSlot(new int[]{120, 52}, "fluid_out"));
         // tank 0 = hot in, 2 = hot out, 1 = cold in, 3 = cold out
-        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(17, 17).pos(50, 18).canVoid());
-        addWidget(FluidTankRenderer.tank(getFluidTank(2)).id(2).size(17, 17).pos(120, 18).canVoid());
-        addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(17, 17).pos(50, 52).canVoid());
-        addWidget(FluidTankRenderer.tank(getFluidTank(3)).id(3).size(17, 17).pos(120, 52).canVoid());
+        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(16, 16).pos(50, 18).canVoid());
+        addWidget(FluidTankRenderer.tank(getFluidTank(2)).id(2).size(16, 16).pos(120, 18).canVoid());
+        addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(16, 16).pos(50, 52).canVoid());
+        addWidget(FluidTankRenderer.tank(getFluidTank(3)).id(3).size(16, 16).pos(120, 52).canVoid());
         radiatorToggle = new Button.RadiatorToggle(32, 70, this, container().getPosition());
         widgets.add(radiatorToggle);
     }

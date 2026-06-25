@@ -8,24 +8,29 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.NCTextField;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Button;
+import igentuman.nc.client.gui.element.button.Button.VoidPebbles;
 import igentuman.nc.client.gui.element.button.Checkbox;
+import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
+import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.container.MSRControllerContainer;
 import igentuman.nc.network.toServer.PacketSliderChanged;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.util.TextUtils.__;
-import static igentuman.nc.util.TextUtils.applyFormat;
-import static igentuman.nc.util.TextUtils.roundFormat;
+import static igentuman.nc.block.fission.entity.MSRControllerBE.MAX_TEMPERATURE;
+import static igentuman.nc.util.TextUtils.*;
 
 public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerContainer> implements IProgressScreen, IVerticalBarScreen {
 
@@ -41,6 +46,7 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
     public Checkbox checkboxInterior;
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
+    protected VoidPebbles voidPebbles;
 
     public MSRControllerContainer container() {
         return (MSRControllerContainer) menu;
@@ -70,20 +76,35 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
 
         checkboxCasing = new Checkbox(imageWidth - 19, 80, this, isCasingValid());
         checkboxInterior = new Checkbox(imageWidth - 32, 80, this, isInteriorValid());
-
-        widgets.add(new Button.ReportIssue(163, 6, this, container().getPosition()));
+        addWidget(new NormalSlot(new int[]{106, 21}, "item_in"));
+        addWidget(new NormalSlot(new int[]{106, 51}, "item_out"));
 
         // Molten-salt rate controls (buckets/tick): left = input, right = output
-        inputRateField = new NCTextField(8, 60, 40, 12, true);
+        inputRateField = new NCTextField(18, 79, 40, 12, true);
         inputRateField.setValue(String.valueOf(container().getInputRate()));
         inputRateField.setOnChange(value -> sendRate(value, 0));
         inputRateField.addTooltip(__("msr.input_rate.tooltip"));
-        outputRateField = new NCTextField(imageWidth - 48, 60, 40, 12, true);
+        outputRateField = new NCTextField(imageWidth - 85, 79, 40, 12, true);
         outputRateField.setValue(String.valueOf(container().getOutputRate()));
         outputRateField.setOnChange(value -> sendRate(value, 1));
         outputRateField.addTooltip(__("msr.output_rate.tooltip"));
-        widgets.add(inputRateField);
-        widgets.add(outputRateField);
+        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(41, 42).pos(128, 20));
+        addWidget(inputRateField);
+        addWidget(outputRateField);
+        addWidget(new Button.Stepper(8, 80, this, inputRateField, -1));
+        addWidget(new Button.Stepper(59, 80, this, inputRateField, 1));
+        addWidget(new Button.Stepper(81, 80, this, outputRateField, -1));
+        addWidget(new Button.Stepper(132, 80, this, outputRateField, 1));
+        voidPebbles = new VoidPebbles(157, 65, this, container().getPosition());
+    }
+
+    protected void addWidget(NCGuiElement widget) {
+        widget.setScreen(this);
+        widgets.add(widget);
+    }
+
+    protected FluidTank getFluidTank(int i) {
+        return menu.getFluidTank(i);
     }
 
     private void sendRate(String value, int buttonId) {
@@ -126,8 +147,17 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         graphics.pose().pushPose();
         graphics.pose().scale(0.7f, 0.7f, 0.7f);
         int y = 30;
-        graphics.drawString(font, __("msr.reactivity", roundFormat(menu.getReactivity())), 45, y, 0x00ff00);
-        graphics.drawString(font, __("msr.status", menu.isCritical() ? __("msr.critical") : __("msr.subcritical")), 45, y + 12, menu.isCritical() ? 0x00ff00 : 0xff0000);
+        MutableComponent status = menu.isCritical() ? __("msr.critical") : __("msr.subcritical");
+        if(menu.getFuelCellsCount() == 0) {
+            status = __("msr.non_functional");
+        }
+        graphics.drawString(font, __("msr.reactivity", numberFormat(menu.getReactivity())), 10, y, 0x00ff00);
+        graphics.drawString(font, __("msr.status", status), 10, y + 12, menu.isCritical() ? 0x00ff00 : ChatFormatting.WHITE.getColor());
+        graphics.drawString(font, __("msr.temperature", scaledFormat(menu.getTemperature())), 10, y + 22, menu.getTemperature() < MAX_TEMPERATURE ? 0x00ff00 : 0xff0000);
+        graphics.drawString(font, __("msr.depletion", numberFormat(menu.getDepletion())), 10, y + 32, 0x00ff00);
+        if(menu.getOverheatTimer() > 0) {
+            graphics.drawString(font, __("msr.overheat", roundFormat((600-menu.getOverheatTimer())/20)), 10, y + 42, 0xff0000);
+        }
         graphics.pose().popPose();
     }
 
@@ -141,7 +171,11 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         for (NCGuiElement widget : widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTick);
         }
-
+        graphics.pose().pushPose();
+        graphics.pose().scale(0.5f, 0.5f, 0.5f);
+        voidPebbles.draw(graphics, mouseX*2, mouseY*2, partialTick);
+        graphics.pose().scale(2f, 2f, 2f);
+        graphics.pose().popPose();
         checkboxCasing.setChecked(isCasingValid()).draw(graphics, mouseX, mouseY, partialTick);
         if (isCasingValid()) {
             checkboxCasing.setTooltipKey("multiblock.casing.complete");
@@ -158,7 +192,27 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         }
         checkboxInterior.addTooltip(interiorTootip);
 
+
         renderBarTooltips(graphics, mouseX - relX, mouseY - relY);
+        graphics.pose().pushPose();
+        RenderSystem.enableBlend();
+        graphics.pose().translate(0, 0, 200);
+        Random rnd = new Random(200);
+        graphics.pose().scale(0.5f, 0.5f, 0.5f);
+        for (int i = 0; i < getPebblesQty(); i++) {
+            int x = rnd.nextInt(25);
+            int y = rnd.nextInt(25);
+            graphics.blit(GUI, (relX+134+x)*2, (relY+29+y)*2, 250, 0, 5, 5);
+        }
+        graphics.pose().scale(2f, 2f, 2f);
+        graphics.blit(GUI, relX+127, relY+19, 178, 0, 52, 50);
+
+        graphics.pose().popPose();
+
+    }
+
+    private int getPebblesQty() {
+        return menu.getPebblesQty();
     }
 
     private void renderBarTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
@@ -170,6 +224,9 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
             if (widget.isMouseOver(pMouseX, pMouseY)) {
                 graphics.renderTooltip(font, widget.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
             }
+        }
+        if (voidPebbles.isMouseOver(pMouseX, pMouseY)) {
+            graphics.renderTooltip(font, voidPebbles.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
         }
         if (checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
             graphics.renderTooltip(font, checkboxCasing.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
@@ -185,6 +242,9 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
             if (widget.mouseClicked(pMouseX, pMouseY, pButton)) {
                 return true;
             }
+        }
+        if(voidPebbles.mouseClicked(pMouseX, pMouseY, pButton)) {
+            return true;
         }
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }

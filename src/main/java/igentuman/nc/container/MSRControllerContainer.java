@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
@@ -32,8 +33,8 @@ public class MSRControllerContainer extends AbstractContainerMenu {
         this.playerInventory =  new InvWrapper(playerInventory);
         blockEntity = (MSRControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
-        addSlot(new NCSlotItemHandler.Input(blockEntity.contentHandler().itemHandler, 0, 56, 35));
-        addSlot(new NCSlotItemHandler.Output(blockEntity.contentHandler().itemHandler, 1, 116, 35));
+        addSlot(new NCSlotItemHandler.Input(blockEntity.contentHandler().itemHandler, 0, 106, 21));
+        addSlot(new NCSlotItemHandler.Output(blockEntity.contentHandler().itemHandler, 1, 106, 51));
     }
 
     @Override
@@ -191,5 +192,25 @@ public class MSRControllerContainer extends AbstractContainerMenu {
 
     public int getFuelCellsCount() {
         return blockEntity.fuelCellsCount;
+    }
+
+    public FluidTank getFluidTank(int i) {
+        return blockEntity.getFluidTank(i);
+    }
+
+    public double getTemperature() {
+        return blockEntity.temperature;
+    }
+
+    public double getOverheatTimer() {
+        return blockEntity.overheatTimer;
+    }
+
+    public int getPebblesQty() {
+        return blockEntity.pebbleCount;
+    }
+
+    public double getDepletion() {
+        return blockEntity.depletion*100;
     }
 }

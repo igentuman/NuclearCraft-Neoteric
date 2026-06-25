@@ -1,10 +1,12 @@
 package igentuman.nc.client.gui.element.button;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.MultiblockAnalyzeReportScreen;
 import igentuman.nc.client.gui.MultiblockBuilderScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.element.NCTextField;
 import igentuman.nc.client.gui.processor.side.SideConfigSlotSelectionScreen;
 import igentuman.nc.compat.emi.EMIPlugin;
 import igentuman.nc.container.MultiblockControllerContainer;
@@ -12,14 +14,18 @@ import igentuman.nc.network.toServer.PacketBuildMultiblock;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
 import igentuman.nc.util.builder.ReactorDesignParser;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button.Builder;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
@@ -526,6 +532,31 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
     }
 
+    public static class MSRPortRedstoneModeButton extends ReactorPortRedstoneModeButton {
+        public static final int BTN_ID = 83;
+
+        public MSRPortRedstoneModeButton(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(BTN_ID, xPos, yPos, screen, pos);
+            mode = 1;
+        }
+
+        @Override
+        public List<Component> getTooltips() {
+            return List.of(
+                    __("gui.nc.msr_comparator_config.tooltip_" + mode),
+                    __("gui.nc.reactor_comparator_strength.tooltip", strength)
+            );
+        }
+
+        @Override
+        public void setMode(byte redstoneMode) {
+            mode = redstoneMode;
+            btn = new ImageButton(X(), Y(), width, height, 238, 256 - (redstoneMode + 1) * 36, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+            });
+        }
+    }
+
     public static class TurbinePortRedstoneModeButton extends Button {
         public final BlockPos pos;
         public static final int BTN_ID = 74;
@@ -649,6 +680,25 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
     }
 
+    public static class VoidPebbles extends Button {
+        private final BlockPos pos;
+        public static final int BTN_ID = 81;
+
+        public VoidPebbles(int xPos, int yPos, AbstractContainerScreen<?> screen, BlockPos pos) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.pos = pos;
+            height = 18;
+            width = 18;
+            btn = new ImageButton(X()*2, Y()*2, width, height, 72, 220, 18, TEXTURE, pButton -> {
+                NuclearCraft.packetHandler().sendToServer(new PacketGuiButtonPress(pos, BTN_ID));
+            });
+        }
+
+        public List<Component> getTooltips() {
+            return List.of(__("gui.nc.msr.void_pebbles.tooltip"));
+        }
+    }
+
     public static class HeatExchangerPortRedstoneModeButton extends Button {
         public final BlockPos pos;
         public static final int BTN_ID = 80;
@@ -719,6 +769,46 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         @Override
         public List<Component> getTooltips() {
             return List.of(__("gui.nc.radiator_toggle.tooltip_" + (enabled ? "disable" : "enable")));
+        }
+    }
+
+    public static class Stepper extends Button {
+        public static final int BTN_ID = 82;
+        private final NCTextField field;
+        private final int sign;
+
+        public Stepper(int xPos, int yPos, AbstractContainerScreen<?> screen, NCTextField field, int sign) {
+            super(xPos, yPos, screen, BTN_ID);
+            this.field = field;
+            this.sign = sign >= 0 ? 1 : -1;
+            width = 9;
+            height = 10;
+        }
+
+        @Override
+        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+            transform.fill(X(), Y(), X() + width, Y() + height, 0xFF000000);
+            transform.fill(X() + 1, Y() + 1, X() + width - 1, Y() + height - 1, 0xFF8B8B8B);
+            int cx = X() + width / 2;
+            int cy = Y() + height / 2;
+            transform.fill(X() + 2, cy, X() + width - 2, cy + 1, 0xFF101010);
+            if (sign > 0) {
+                transform.fill(cx, Y() + 2, cx + 1, Y() + height - 2, 0xFF101010);
+            }
+            if (mX >= X() && mX < X() + width && mY >= Y() && mY < Y() + height) {
+                transform.fill(X() + 1, Y() + 1, X() + width - 1, Y() + height - 1, 0x60FFFFFF);
+            }
+        }
+
+        @Override
+        public boolean onPress() {
+            field.step(sign * (Screen.hasControlDown() ? 10 : 1));
+            return true;
+        }
+
+        @Override
+        public List<Component> getTooltips() {
+            return List.of(__("gui.nc.stepper.tooltip"));
         }
     }
 }

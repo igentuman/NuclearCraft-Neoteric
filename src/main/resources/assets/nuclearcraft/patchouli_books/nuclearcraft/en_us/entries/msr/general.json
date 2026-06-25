@@ -1,0 +1,81 @@
+{
+  "name": "General Info",
+  "icon": "nuclearcraft:msr_controller",
+  "category": "nuclearcraft:msr",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "text",
+      "text": "The $(thing)Molten Salt Reactor$() runs on $(thing)liquid fuel$(). Instead of arranging heat sinks and moderators, you pump $(thing)carrier salt$() through a chamber packed with $(thing)fuel pebbles$() and manage two coupled stats - $(thing)temperature$() and $(thing)reactivity$()."
+    },
+    {
+      "type": "text",
+      "text": "It does $(o)not$() make power directly. It turns $(thing)cold salt$() into $(thing)hot salt$(); pump that hot salt to a $(l:heat_exchanger/general)Heat Exchanger$() and on to a Turbine. Pumping hot salt out is also the core's $(o)only cooling$() - stop, and it overheats."
+    },
+    {
+      "anchor": "controller",
+      "type": "blocks/1",
+      "header": "MSR Controller",
+      "block": "nuclearcraft:msr_controller",
+      "text": "Place exactly one $(thing)Controller$() in the shell to form the reactor. It runs the simulation and owns the salt tanks and pebble slots. Its GUI reports temperature, reactivity, depletion and the salt rates."
+    },
+    {
+      "anchor": "casing",
+      "type": "blocks/2",
+      "header": "Shell",
+      "block1": "nuclearcraft:fission_reactor_casing",
+      "block2": "nuclearcraft:fission_reactor_glass",
+      "text": "The MSR reuses the fission shell. Edges and corners are $(thing)Reactor Casing$(); walls can be Casing, $(thing)Reactor Glass$(), or both. The shell is a cube from $(thing)5x5x5$() up to $(thing)26x26x26$()."
+    },
+    {
+      "anchor": "fuel_cell",
+      "type": "blocks/1",
+      "header": "Fuel Cell",
+      "block": "nuclearcraft:msr_fuel_cell",
+      "text": "Fill the $(o)entire interior$() with $(thing)MSR Fuel Cells$() - no other interior block is allowed. The fuel-cell count sets the reactor's salt volume and heat budget, so a bigger core holds more and runs harder."
+    },
+    {
+      "anchor": "port",
+      "type": "blocks/1",
+      "header": "MSR Port",
+      "block": "nuclearcraft:msr_port",
+      "text": "$(thing)Ports$() move everything in and out: $(item)cold salt$() in, $(item)hot salt$() out, $(item)pebbles$() in, $(item)depleted pebbles$() out. One port type carries both items and fluid. A port also emits a comparator signal (Temperature or Depletion)."
+    },
+    {
+      "type": "text",
+      "text": "$(thing)Fuel$() is loaded as $(item)TRISO pebbles$() - the $(thing)_tr$() fuel variants, e.g. Thorium, LEU-235, HEU-235, Plutonium. As a pebble burns out it leaves a $(thing)depleted pebble$() in the output slot. $(thing)Carrier salt$() is $(item)FLiBe Molten Salt$(); the reactor pumps it in cold and out hot."
+    },
+    {
+      "anchor": "build",
+      "header": "Reference Build",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "W": "nuclearcraft:fission_reactor_casing",
+          "G": "nuclearcraft:fission_reactor_glass",
+          "C": "nuclearcraft:msr_fuel_cell",
+          "0": "nuclearcraft:msr_fuel_cell",
+          "N": "nuclearcraft:msr_controller[facing=north]",
+          "P": "nuclearcraft:msr_port[facing=west]",
+          "Q": "nuclearcraft:msr_port[facing=east]",
+          "R": "nuclearcraft:irradiator[facing=north]"
+        },
+        "pattern": [
+          ["WWWWWWW", "WGGGGGW", "WGGGGGW", "WGGGGGW", "WGGGGGW", "WGGGGGW", "WWWWWWW"],
+          ["WGGRGGW", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "WGGGGGW"],
+          ["WGGGGGW", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "WGGGGGW"],
+          ["WGGGGGW", "GCCCCCG", "GCCCCCG", "GCC0CCG", "GCCCCCG", "GCCCCCG", "WGGGGGW"],
+          ["WGGGGGW", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "GCCCCCG", "WGGGGGW"],
+          ["WGGNGGW", "GCCCCCG", "PCCCCCQ", "GCCCCCG", "PCCCCCQ", "GCCCCCG", "WGGGGGW"],
+          ["WWWWWWW", "WWWWWWW", "WWWWWWW", "WWWWWWW", "WWWWWWW", "WWWWWWW", "WWWWWWW"]
+        ],
+        "symmetrical": false
+      },
+      "text": "A 7x7x7 build: a casing-and-glass shell around a solid 5x5x5 core of Fuel Cells, with the Controller and an Irradiator on one wall and a pair of Ports on each side wall."
+    },
+    {
+      "type": "text",
+      "text": "$(thing)Running it:$() pipe cold salt in, load pebbles, apply redstone. With enough fuel and salt the core goes $(thing)critical$() and heats up. Reactivity has a $(o)negative temperature coefficient$() - it falls as the core warms, so it self-stabilizes. Raise the $(thing)salt output rate$() to keep temperature off the 2000 K ceiling. The reactor can also be read and driven from $(thing)computers$() (type $(thing)nc_msr_reactor$())."
+    }
+  ]
+}

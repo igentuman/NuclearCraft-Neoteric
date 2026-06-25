@@ -684,9 +684,12 @@ public abstract class AbstractMultiblock implements Multiblock {
         int validInnerBlocks = 0;
         int airBlocks = 0;
         
-        for(int y = 1; y < resolveHeight()-1; y++) {
-            for(int x = 1; x < resolveWidth()-1; x++) {
-                for (int z = 1; z < resolveDepth()-1; z++) {
+        int innerHeight = resolveHeight();
+        int innerWidth = resolveWidth();
+        int innerDepth = resolveDepth();
+        for(int y = 1; y < innerHeight-1; y++) {
+            for(int x = 1; x < innerWidth-1; x++) {
+                for (int z = 1; z < innerDepth-1; z++) {
                     BlockPosInstance toCheck = new BlockPosInstance(getSidePos(x - leftCasing).above(y - bottomCasing).relative(getControllerDirection(), -z));
                     totalInnerBlocks++;
                     

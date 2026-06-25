@@ -8,22 +8,23 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashSet;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
-import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
+import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class MSRMultiblock extends AbstractMultiblock {
 
     protected int fuelCellCount = 0;
+    protected HashSet<BlockPos> fuelCellBlocks = new HashSet<>();
 
     public MSRMultiblock(MSRControllerBE msrControllerBE) {
         super(
-                getBlocksByTagKey(FissionReactorRegistration.CASING_BLOCKS.location().toString()),
+                getOuterBlocks(),
                 getInnerBlocks(),
                 new MSRController(msrControllerBE)
         );
@@ -31,9 +32,20 @@ public class MSRMultiblock extends AbstractMultiblock {
         controllerBe = msrControllerBE;
     }
 
+    private static HashSet<Block> getOuterBlocks() {
+        HashSet<Block> blocks = new HashSet<>();
+        blocks.addAll(getBlocksByTagKey(FissionReactorRegistration.CASING_BLOCKS.location().toString()));
+        blocks.add(PROCESSORS.get("irradiator").get());
+        return blocks;
+    }
+
+    public HashSet<BlockPos> getFuelCellBlocks() {
+        return fuelCellBlocks;
+    }
+
     private static HashSet<Block> getInnerBlocks() {
         HashSet<Block> innerBlocks = new HashSet<>();
-        innerBlocks.add(FissionReactorRegistration.FISSION_BLOCKS.get("msr_fuel_cell").get());
+        innerBlocks.add(FISSION_BLOCKS.get("msr_fuel_cell").get());
         return innerBlocks;
     }
 
@@ -105,6 +117,7 @@ public class MSRMultiblock extends AbstractMultiblock {
             return;
         }
         fuelCellCount = 0;
+        fuelCellBlocks.clear();
         indexInnerBlocks();
         bsCache.values().stream().filter(bs -> bs.getBlock() instanceof FissionFuelCellBlock).forEach(bs -> fuelCellCount++);
     }
@@ -138,6 +151,9 @@ public class MSRMultiblock extends AbstractMultiblock {
             return false;
         }
         addIfNotExists(toCheck, allBlocks);
+        if (getBlockState(toCheck).is(FISSION_BLOCKS.get("msr_fuel_cell").get())) {
+            fuelCellBlocks.add(new BlockPos(toCheck));
+        }
         attachMultiblock(toCheck);
         return true;
     }

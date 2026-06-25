@@ -1,10 +1,23 @@
 package igentuman.nc.block.fission;
 
 import igentuman.nc.block.fission.entity.MSRPortBE;
+import igentuman.nc.container.MSRPortContainer;
 import igentuman.nc.multiblock.MultiblockHandler;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -18,10 +31,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BE;
+import static igentuman.nc.util.TextUtils.__;
+import static net.minecraft.network.chat.Component.translatable;
 
 public class MSRPortBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final DirectionProperty HORIZONTAL_FACING = FACING;
@@ -55,6 +74,38 @@ public class MSRPortBlock extends HorizontalDirectionalBlock implements EntityBl
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return FISSION_BE.get("msr_port").get().create(pPos, pState);
+    }
+
+    @Override
+    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+        if (!level.isClientSide()) {
+            BlockEntity be = level.getExistingBlockEntity(pos);
+            if (be instanceof MSRPortBE) {
+                MenuProvider containerProvider = new MenuProvider() {
+                    @Override
+                    public Component getDisplayName() {
+                        return translatable("block.nuclearcraft.msr_port");
+                    }
+
+                    @Override
+                    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
+                        return new MSRPortContainer(windowId, pos, playerInventory);
+                    }
+                };
+                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, be.getBlockPos());
+            }
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState pState) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState pBlockState, Level pLevel, BlockPos pPos) {
+        return pLevel.getExistingBlockEntity(pPos) instanceof MSRPortBE be ? be.analogSignal : 0;
     }
 
     @Nullable
@@ -92,5 +143,10 @@ public class MSRPortBlock extends HorizontalDirectionalBlock implements EntityBl
         super.onRemove(state, level, pos, newState, isMoving);
         if (level.isClientSide()) return;
         MultiblockHandler.get(level.dimension()).trackBlockChange(pos, true);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> list, TooltipFlag flag) {
+        list.add(__("tooltip.nc.msr_port.descr").withStyle(ChatFormatting.YELLOW));
     }
 }

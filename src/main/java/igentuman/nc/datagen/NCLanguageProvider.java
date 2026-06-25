@@ -37,6 +37,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("itemGroup." + MODID+"_turbine", "NuclearCraft Turbine");
         add("itemGroup." + MODID+"_kugelblitz", "NuclearCraft Kugelblitz");
         add("itemGroup." + MODID+"_accelerator", "NuclearCraft Accelerators");
+        add("itemGroup." + MODID+"_heat_exchanger", "NuclearCraft HX");
         add("entity.nuclearcraft.q36_pulse_projectile", "Quantite Pulse");
         add("entity.nuclearcraft.feral_ghoul", "Feral Ghoul");
         add("entity.nuclearcraft.feral_ghoul_boss", "Boss of the Wasteland");
@@ -192,6 +193,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nuclearcraft.ponder.heat_exchanger.text_5", "Radiators go on the top face and passively vent surplus heat, so the hot side never jams.");
         add("nuclearcraft.ponder.heat_exchanger.text_6", "Fill the interior with Heat Exchanger blocks. More blocks mean faster processing and a bigger heat buffer.");
         add("nuclearcraft.ponder.heat_exchanger.text_7", "Apply a redstone signal: the hot loop banks heat, the cold loop spends it. Both run at once on standby power.");
+        add("nuclearcraft.ponder.molten_salt_reactor.header", "Molten Salt Reactor");
+        add("nuclearcraft.ponder.molten_salt_reactor.text_1", "A cuboid shell of Reactor Casing edges and Reactor Glass walls, from 5x5x5 up to 26x26x26.");
+        add("nuclearcraft.ponder.molten_salt_reactor.text_2", "Place one MSR Controller. It runs the reaction and owns the salt tanks and pebble slots.");
+        add("nuclearcraft.ponder.molten_salt_reactor.text_3", "Ports move salt and pebbles in and out: cold salt in, hot salt out, pebbles in, depleted out.");
+        add("nuclearcraft.ponder.molten_salt_reactor.text_4", "An Irradiator can sit in the wall and add irradiation to the chamber.");
+        add("nuclearcraft.ponder.molten_salt_reactor.text_5", "Fill the entire interior with MSR Fuel Cells. More cells mean more salt volume and a bigger heat budget.");
+        add("nuclearcraft.ponder.molten_salt_reactor.text_6", "Pipe cold FLiBe salt in, load TRISO pebbles, apply redstone. The core heats up and turns cold salt into hot salt - send it to a Heat Exchanger.");
     }
 
     private void particles() {
@@ -446,6 +454,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("sound_event.nuclearcraft.fusion.switch", "Fusion Reactor Switch");
 
         add("sound_event.nuclearcraft.fission_reactor", "Fission Reactor Ticking");
+        add("sound_event.nuclearcraft.msr_running", "Molten Salt Reactor humming along");
         add("sound_event.nuclearcraft.turbine", "Turbine is spinning");
         add("sound_event.nuclearcraft.q36.beam_shot", "Q-36 Quantite Disruptor fires");
         add("sound_event.nuclearcraft.q36.pulse_shot", "Q-36 Quantite Pulse discharge");
@@ -562,6 +571,10 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void labels() {
+        add("msr.temperature", "Temperature: %sK");
+        add("msr.overheat", "Overheat: %ss");
+        add("msr.non_functional", "Non-functional");
+        add("msr.depletion", "Depletion: %s%%");
         add("mbtool.structure.target_chamber", "Target Chamber");
         add("mbtool.structure.decay_chamber", "Decay Chamber");
         add("mbtool.structure.collision_chamber", "Collision Chamber");
@@ -769,12 +782,7 @@ public class NCLanguageProvider extends LanguageProvider {
                 prefix = "";
             }
             String title = convertToName(name);
-            if(name.equals("msr_controller")) {
-                title = "(WIP) MSR Controller";
-            }
-            if(name.equals("msr_fuel_cell")) {
-                title = "(WIP) MSR Fuel Cell";
-            }
+
             add(FISSION_BLOCKS.get(name).get(), prefix+title);
         }
 
@@ -910,6 +918,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.moderator.desc","Fission Reactor moderator. Must be placed adjacent to a fuel cell. \n Each face adjacent to a fuel cell adds +%s%% efficiency and +%s%% heat gen.");
 
         add("boiling.recipe.heat_required","Heat required: %s H");
+        add("gui.nc.msr.void_pebbles.tooltip","Void fuel pebbles");
 
         add("tooltip.active_heatsink","Needs coolant fluid supply into reactor to work.");
 
@@ -956,6 +965,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("gui.nc.reactor_mode.tooltip_energy","Energy Mode");
         add("gui.nc.radiator_toggle.tooltip_enable","Enable Radiators");
         add("gui.nc.radiator_toggle.tooltip_disable","Disable Radiators");
+        add("gui.nc.stepper.tooltip","Click: ±1 · Ctrl+Click: ±10");
         add("gui.nc.reactor_mode.timer","Changing mode in: %s sec");
         add("reactor.steam_per_tick","Boiling rate: %s mB/t");
         add("reactor.max_boiling_rate","Max rate: %s mB/t");
@@ -964,6 +974,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc.multiblock_builder.description", "For automated building.");
         add("tooltip.nc.fusion_connector.descr", "Used to connect fusion core and toroidal reactor chamber");
         add("tooltip.nc.fusion_casing.descr", "Used to build toroidal fusion reactor chamber");
+        add("tooltip.nc.msr_controller.descr", "Runs the Molten Salt Reactor: pumps FLiBe carrier salt past TRISO fuel pebbles, holds the chain reaction, and ships the heat out as hot salt. (No heat sinks, no moderators - just don't let the cooling stop.)");
+        add("tooltip.nc.msr_port.descr", "Loads fuel pebbles and pipes molten salt in and out. Cold salt in, hot salt out - and that hot-salt flow is the core's only cooling.");
         add("tooltip.nc.rf_amplifier.not_found","No RF Amplifiers attached");
         add("tooltip.nc.rf_amplifier.power","Energy Required: %s FE/t");
         add("tooltip.nc.rf_amplifier.voltage","Amplification: %s V");
@@ -1060,6 +1072,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("gui.nc.reactor_comparator_config.tooltip_12","Comparator: Heat Stored");
         add("gui.nc.reactor_comparator_config.tooltip_13","Comparator: Efficiency");
         add("gui.nc.reactor_comparator_strength.tooltip","Current Signal Strength: %s");
+        add("gui.nc.msr_comparator_config.tooltip_1","Comparator: Temperature (0-2000K)");
+        add("gui.nc.msr_comparator_config.tooltip_2","Comparator: Depletion Progress");
         add("gui.nc.accelerator_comparator_config.tooltip_1","Input: Redstone Control");
         add("gui.nc.accelerator_comparator_config.tooltip_2","Comparator: Particle Present");
         add("gui.nc.accelerator_comparator_config.tooltip_3","Comparator: Temperature");

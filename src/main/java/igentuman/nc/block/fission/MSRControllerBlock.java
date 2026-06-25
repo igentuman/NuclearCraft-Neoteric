@@ -106,6 +106,7 @@ public class MSRControllerBlock extends MultiblockControllerBlock implements Ent
 
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+        list.add(__("tooltip.nc.msr_controller.descr").withStyle(ChatFormatting.YELLOW));
         list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
         int max = FISSION_CONFIG.MAX_SIZE.get();
         int min = FISSION_CONFIG.MIN_SIZE.get() + 2;

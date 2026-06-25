@@ -52,6 +52,36 @@ public class MSRDevice {
         }
 
         @Callback
+        public final double getDepletion() {
+            return reactor.depletion;
+        }
+
+        @Callback
+        public final int getSaltInputRate() {
+            return reactor.saltInputRate;
+        }
+
+        @Callback
+        public final int getSaltOutputRate() {
+            return reactor.saltOutputRate;
+        }
+
+        @Callback(synchronize = true)
+        public final void setSaltInputRate(int val) {
+            reactor.setSaltInputRate(val);
+        }
+
+        @Callback(synchronize = true)
+        public final void setSaltOutputRate(int val) {
+            reactor.setSaltOutputRate(val);
+        }
+
+        @Callback(synchronize = true)
+        public final void voidFuel() {
+            reactor.voidFuel();
+        }
+
+        @Callback
         public final double getImpurity() {
             return reactor.impurity;
         }

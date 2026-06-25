@@ -5,6 +5,8 @@ import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.entity.ParticleChamberPortBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fission.entity.FissionPortBE;
+import igentuman.nc.block.fission.entity.MSRControllerBE;
+import igentuman.nc.block.fission.entity.MSRPortBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
 import igentuman.nc.block.heat_exchanger.entity.HeatExchangerControllerBE;
@@ -100,6 +102,11 @@ public class PacketGuiButtonPress implements INcPacket {
                 }
                 port.toggleRedstoneMode();
                 break;
+            case Button.MSRPortRedstoneModeButton.BTN_ID:
+                if (be instanceof MSRPortBE msrPort) {
+                    msrPort.toggleRedstoneMode();
+                }
+                break;
             case Button.TurbinePortRedstoneModeButton.BTN_ID:
                 if (!(be instanceof TurbinePortBE port)) {
                     return;
@@ -145,6 +152,11 @@ public class PacketGuiButtonPress implements INcPacket {
             case 77:
                 if (be instanceof EXPLBE expl) {
                     expl.activated = true;
+                }
+                break;
+            case Button.VoidPebbles.BTN_ID:
+                if (be instanceof MSRControllerBE msr) {
+                    msr.voidPebbles();
                 }
                 break;
         }

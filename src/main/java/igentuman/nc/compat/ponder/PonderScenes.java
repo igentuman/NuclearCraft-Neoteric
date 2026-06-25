@@ -40,6 +40,7 @@ public class PonderScenes {
     public static final ResourceLocation BEAM_DIVERTER = rl("beam_diverter");
     public static final ResourceLocation KUGELBLITZ_CHAMBER = rl("kugelblitz_chamber");
     public static final ResourceLocation HEAT_EXCHANGER = rl("heat_exchanger");
+    public static final ResourceLocation MOLTEN_SALT_REACTOR = rl("molten_salt_reactor");
 
     public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
         PonderSceneRegistrationHelper<Item> HELPER = helper.withKeyFunction(BuiltInRegistries.ITEM::getKey);
@@ -95,6 +96,17 @@ public class PonderScenes {
         HELPER.forComponents(
                 heatExchangerItems
         ).addStoryBoard(HEAT_EXCHANGER, HeatExchangerPonderScenes::create);
+
+
+        List<Item> msrItems = new ArrayList<>(List.of(
+                FISSION_BLOCK_ITEMS.get("msr_controller").get(),
+                FISSION_BLOCK_ITEMS.get("msr_fuel_cell").get(),
+                FISSION_BLOCK_ITEMS.get("msr_port").get()
+        ));
+
+        HELPER.forComponents(
+                msrItems
+        ).addStoryBoard(MOLTEN_SALT_REACTOR, MoltenSaltReactorPonderScenes::create);
 
 
         List<Item> targetChamberItems = new ArrayList<>();

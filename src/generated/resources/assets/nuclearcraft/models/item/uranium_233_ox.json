@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "nuclearcraft:item/material/isotope/uranium/233_ox"
+  }
+}

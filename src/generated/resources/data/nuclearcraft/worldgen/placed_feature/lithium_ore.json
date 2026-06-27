@@ -1,0 +1,19 @@
+{
+  "feature": "nuclearcraft:lithium_ore",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 4
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "nuclearcraft:configurable_ore",
+      "material": "lithium"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

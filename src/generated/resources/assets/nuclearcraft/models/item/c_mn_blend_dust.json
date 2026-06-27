@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "nuclearcraft:item/material/dust/c_mn_blend"
+  }
+}

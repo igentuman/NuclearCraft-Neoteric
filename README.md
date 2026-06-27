@@ -90,20 +90,20 @@ Replace all occurrences of `nc` and `nc` with your chosen mod ID:
 
 With the mod ID in place, define your content inside [`setup/ModEntries.java`](./src/main/java/igentuman/nc/setup/ModEntries.java) using the `ModEntryBuilder` fluent API. The following documentation pages cover the most common scenarios:
 
-- [Processors & Items Registration](./docs/processors-registration.md) - machines, simple items, plain blocks
-- [Materials Registration](./docs/materials-registration.md) - full metal material sets (ore, ingot, dust, fluid, …)
-- [Tools & Armor Registration](./docs/tools-armor-registration.md) - full tool / armor sets with per-slot custom item classes
-- [Custom Block Entities](./docs/custom-block-entities.md) - custom block/BE/container/screen classes
-- [Side Configuration System](./docs/side-configuration.md) - per-face push/pull config for machines
-- [Multiblocks](./docs/multiblocks.md) - controller + ports + cubic/NBT validator, off-thread tick logic
-- [Entry Config Gating](./docs/entry-config-gating.md) - per-entry enable/disable toggles in `entries.toml`
-- [Registry Builders](./docs/registry-builders.md) - particle, entity, sound, mob effect, world/entity data
-- [Processor Catalysts](./docs/catalysts.md) - energy/speed/efficiency catalysts with per-tick hooks
-- [Tag-Based Recipe Outputs](./docs/tag-outputs.md) - tag outputs resolved via `mod_tag_priority`
-- [JEI Integration](./docs/jei-integration.md) - automatic and custom recipe categories
-- [KubeJS Support](./docs/kubejs-support.md) - script processor recipes with KubeJS
-- [ComputerCraft Support](./docs/cc-support.md) - Lua peripheral API for all machines
-- [Materials Registration](./docs/materials-registration.md#world-generation) - ore world generation via builder
+- [Processors & Items Registration](./orig_docs/processors-registration.md) - machines, simple items, plain blocks
+- [Materials Registration](./orig_docs/materials-registration.md) - full metal material sets (ore, ingot, dust, fluid, …)
+- [Tools & Armor Registration](./orig_docs/tools-armor-registration.md) - full tool / armor sets with per-slot custom item classes
+- [Custom Block Entities](./orig_docs/custom-block-entities.md) - custom block/BE/container/screen classes
+- [Side Configuration System](./orig_docs/side-configuration.md) - per-face push/pull config for machines
+- [Multiblocks](./orig_docs/multiblocks.md) - controller + ports + cubic/NBT validator, off-thread tick logic
+- [Entry Config Gating](./orig_docs/entry-config-gating.md) - per-entry enable/disable toggles in `entries.toml`
+- [Registry Builders](./orig_docs/registry-builders.md) - particle, entity, sound, mob effect, world/entity data
+- [Processor Catalysts](./orig_docs/catalysts.md) - energy/speed/efficiency catalysts with per-tick hooks
+- [Tag-Based Recipe Outputs](./orig_docs/tag-outputs.md) - tag outputs resolved via `mod_tag_priority`
+- [JEI Integration](./orig_docs/jei-integration.md) - automatic and custom recipe categories
+- [KubeJS Support](./orig_docs/kubejs-support.md) - script processor recipes with KubeJS
+- [ComputerCraft Support](./orig_docs/cc-support.md) - Lua peripheral API for all machines
+- [Materials Registration](./orig_docs/materials-registration.md#world-generation) - ore world generation via builder
 
 After adding content, run `./gradlew runData` to regenerate assets and data, then `./gradlew runClient` to test in-game.
 
@@ -206,20 +206,20 @@ src/main/java/igentuman/nc/
 
 ## Documentation
 
-- [Processors & Items Registration](./docs/processors-registration.md) - Register machines, simple items, and plain blocks using `ModEntryBuilder`
-- [Materials Registration](./docs/materials-registration.md) - Register full metal materials (ore, ingot, dust, fluid, etc.)
-- [Tools & Armor Registration](./docs/tools-armor-registration.md) - Register full tool / armor sets, optionally with per-slot custom item classes
-- [Custom Block Entities](./docs/custom-block-entities.md) - Add custom Block, BlockEntity, Container, and Screen classes
-- [Side Configuration System](./docs/side-configuration.md) - Per-slot, per-face push/pull configuration for machines
-- [Multiblocks](./docs/multiblocks.md) - Declare controllers, ports, cubic/NBT validators, and off-thread tick logic via `MultiblockEntryBuilder`
-- [Entry Config Gating](./docs/entry-config-gating.md) - Per-entry enable/disable toggles, runtime gating, and how disabling behaves
-- [Registry Builders](./docs/registry-builders.md) - Register `ParticleType`, `EntityType`, `SoundEvent`, `MobEffect`, and world/entity data
-- [Processor Catalysts](./docs/catalysts.md) - Energy/speed/efficiency catalysts with per-tick hooks and per-type slots
-- [Tag-Based Recipe Outputs](./docs/tag-outputs.md) - Tag item/fluid outputs resolved via `mod_tag_priority`, with datagen conditions
-- [JEI Integration](./docs/jei-integration.md) - Automatic and custom JEI recipe category setup
-- [KubeJS Support](./docs/kubejs-support.md) - Script processor recipes with KubeJS
-- [ComputerCraft Support](./docs/cc-support.md) - Lua peripheral API, all functions, and example scripts
-- [Materials Registration](./docs/materials-registration.md) - Register full metal materials including automatic ore world generation
+- [Processors & Items Registration](./orig_docs/processors-registration.md) - Register machines, simple items, and plain blocks using `ModEntryBuilder`
+- [Materials Registration](./orig_docs/materials-registration.md) - Register full metal materials (ore, ingot, dust, fluid, etc.)
+- [Tools & Armor Registration](./orig_docs/tools-armor-registration.md) - Register full tool / armor sets, optionally with per-slot custom item classes
+- [Custom Block Entities](./orig_docs/custom-block-entities.md) - Add custom Block, BlockEntity, Container, and Screen classes
+- [Side Configuration System](./orig_docs/side-configuration.md) - Per-slot, per-face push/pull configuration for machines
+- [Multiblocks](./orig_docs/multiblocks.md) - Declare controllers, ports, cubic/NBT validators, and off-thread tick logic via `MultiblockEntryBuilder`
+- [Entry Config Gating](./orig_docs/entry-config-gating.md) - Per-entry enable/disable toggles, runtime gating, and how disabling behaves
+- [Registry Builders](./orig_docs/registry-builders.md) - Register `ParticleType`, `EntityType`, `SoundEvent`, `MobEffect`, and world/entity data
+- [Processor Catalysts](./orig_docs/catalysts.md) - Energy/speed/efficiency catalysts with per-tick hooks and per-type slots
+- [Tag-Based Recipe Outputs](./orig_docs/tag-outputs.md) - Tag item/fluid outputs resolved via `mod_tag_priority`, with datagen conditions
+- [JEI Integration](./orig_docs/jei-integration.md) - Automatic and custom JEI recipe category setup
+- [KubeJS Support](./orig_docs/kubejs-support.md) - Script processor recipes with KubeJS
+- [ComputerCraft Support](./orig_docs/cc-support.md) - Lua peripheral API, all functions, and example scripts
+- [Materials Registration](./orig_docs/materials-registration.md) - Register full metal materials including automatic ore world generation
 
 ---
 

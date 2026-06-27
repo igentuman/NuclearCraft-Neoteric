@@ -9,6 +9,13 @@ public class FluidDefinition {
     public boolean isMolten;
     public boolean isToxic;
 
+    /**
+     * Explicit registry name override. When set, the fluid (and its tags/lang/block/bucket)
+     * use this name verbatim instead of the derived {@code molten_<material>} / {@code <material>_fluid}.
+     * Used for standalone fluids (acids, gases) that must keep their bare original names.
+     */
+    public String fluidName;
+
     private MaterialFluid registeredFluid;
 
     public FluidDefinition() {
@@ -36,13 +43,45 @@ public class FluidDefinition {
     }
 
     public static FluidDefinition gas() {
+        return gas(300);
+    }
+
+    public static FluidDefinition gas(int temperature) {
         FluidDefinition gas = new FluidDefinition();
         gas.isGas = true;
-        gas.temperature = 300;
+        gas.temperature = temperature;
         gas.luminosity = 0;
         gas.density = -1000;
-        gas.viscosity = 200;
+        gas.viscosity = 0;
         return gas;
+    }
+
+    public static FluidDefinition acid() {
+        return acid(300);
+    }
+
+    public static FluidDefinition acid(int temperature) {
+        FluidDefinition acid = new FluidDefinition();
+        acid.isToxic = true;
+        acid.temperature = temperature;
+        acid.luminosity = 0;
+        acid.density = 400;
+        acid.viscosity = 1000;
+        return acid;
+    }
+
+    /**
+     * Resolves the registry name for this fluid: the explicit {@link #fluidName} when set,
+     * otherwise the derived molten/fluid name based on {@code materialName}.
+     */
+    public String resolveName(String materialName) {
+        if (fluidName != null) return fluidName;
+        return isMolten ? "molten_" + materialName : materialName + "_fluid";
+    }
+
+    public FluidDefinition setName(String fluidName) {
+        this.fluidName = fluidName;
+        return this;
     }
 
     public FluidDefinition setTemperature(int temperature) {

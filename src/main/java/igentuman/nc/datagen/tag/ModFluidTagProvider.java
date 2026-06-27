@@ -25,7 +25,7 @@ public class ModFluidTagProvider extends FluidTagsProvider {
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.materialEntry() instanceof MaterialEntry mat && mat.hasFluid()) {
                 var materialFluid = mat.materialFluid();
-                String fluidName = mat.fluidDefinition.isMolten ? "molten_" + mat.name : mat.name;
+                String fluidName = mat.fluidDefinition.resolveName(mat.name);
 
                 // Tag both source and flowing under a mod-namespaced tag
                 var fluidTag = net.minecraft.tags.FluidTags.create(

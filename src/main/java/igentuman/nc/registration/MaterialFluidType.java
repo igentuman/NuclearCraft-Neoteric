@@ -4,8 +4,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.joml.Vector3f;
 
+import static igentuman.nc.Main.rl;
+
 /**
- * A FluidType for material fluids that uses vanilla water textures with a color tint.
+ * FluidType for material fluids. Picks the still/flow textures by fluid kind
+ * (molten / gas / liquid) and carries the ARGB tint color used for rendering.
  */
 public class MaterialFluidType extends FluidType {
 
@@ -13,13 +16,28 @@ public class MaterialFluidType extends FluidType {
     private final ResourceLocation flowingTexture;
     private final ResourceLocation overlayTexture;
     private final int tintColor;
+    private final boolean molten;
+    private final boolean gas;
+    private final boolean toxic;
 
-    public MaterialFluidType(Properties properties, int tintColor) {
+    public MaterialFluidType(Properties properties, int tintColor, FluidDefinition def) {
         super(properties);
         this.tintColor = tintColor;
-        this.stillTexture = ResourceLocation.withDefaultNamespace("block/water_still");
-        this.flowingTexture = ResourceLocation.withDefaultNamespace("block/water_flow");
-        this.overlayTexture = ResourceLocation.withDefaultNamespace("block/water_overlay");
+        this.molten = def.isMolten;
+        this.gas = def.isGas;
+        this.toxic = def.isToxic;
+
+        if (def.isMolten) {
+            this.stillTexture = rl("block/fluid/molten_still");
+            this.flowingTexture = rl("block/fluid/molten_flow");
+        } else if (def.isGas) {
+            this.stillTexture = rl("block/fluid/gas");
+            this.flowingTexture = rl("block/fluid/gas");
+        } else {
+            this.stillTexture = rl("block/fluid/liquid_still");
+            this.flowingTexture = rl("block/fluid/liquid_flow");
+        }
+        this.overlayTexture = null;
     }
 
     public ResourceLocation getStillTexture() {
@@ -36,6 +54,18 @@ public class MaterialFluidType extends FluidType {
 
     public int getTintColor() {
         return tintColor;
+    }
+
+    public boolean isMolten() {
+        return molten;
+    }
+
+    public boolean isGas() {
+        return gas;
+    }
+
+    public boolean isToxic() {
+        return toxic;
     }
 
     /**

@@ -14,6 +14,8 @@ import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.MultiblockControllerScreen;
 import igentuman.nc.screen.MultiblockPortScreen;
 import igentuman.nc.screen.UniversalProcessorScreen;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
@@ -22,9 +24,11 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.model.DynamicFluidContainerModel;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
@@ -43,7 +47,25 @@ public class Client {
             // Register the game-bus render handlers (level-stage events).
             DelayedRenderHandler.register();
             DistortShader.register();
+            registerFluidRenderLayers();
         });
+    }
+
+    /**
+     * Modded fluids default to the solid render layer, so tint alpha has no effect.
+     * Lighter fluids (gases, acids - density below water) must render translucent for
+     * their alpha to show; dense molten metals stay opaque on the solid layer.
+     */
+    private static void registerFluidRenderLayers() {
+        for (ModEntry entry : ModEntries.ENTRIES.values()) {
+            if (entry.materialEntry() instanceof MaterialEntry mat && mat.hasFluid()) {
+                var materialFluid = mat.materialFluid();
+                if (materialFluid.fluidType().get().getDensity() < 1000) {
+                    ItemBlockRenderTypes.setRenderLayer(materialFluid.source().get(), RenderType.translucent());
+                    ItemBlockRenderTypes.setRenderLayer(materialFluid.flowing().get(), RenderType.translucent());
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -101,11 +123,26 @@ public class Client {
 
                         @Override
                         public int getTintColor() {
-                            // ARGB format: full alpha + material color
-                            return 0xFF000000 | mft.getTintColor();
+                            // Full ARGB; alpha drives translucency for gases/acids.
+                            return mft.getTintColor();
                         }
                     }, fluidType);
                 }
+            }
+        }
+    }
+
+    /**
+     * Tints fluid buckets by the fluid's color. {@link DynamicFluidContainerModel.Colors} reads the
+     * fluid's {@link IClientFluidTypeExtensions#getTintColor()} for the masked fluid layer; the
+     * matching bucket model is generated with {@code applyTint(true)}.
+     */
+    @SubscribeEvent
+    static void registerItemColors(RegisterColorHandlersEvent.Item event) {
+        DynamicFluidContainerModel.Colors bucketColors = new DynamicFluidContainerModel.Colors();
+        for (ModEntry entry : ModEntries.ENTRIES.values()) {
+            if (entry.materialEntry() instanceof MaterialEntry mat && mat.hasFluid()) {
+                event.register(bucketColors, mat.bucket());
             }
         }
     }

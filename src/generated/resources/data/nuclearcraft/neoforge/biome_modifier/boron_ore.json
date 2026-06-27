@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "nuclearcraft:boron_ore",
+  "step": "underground_ores"
+}

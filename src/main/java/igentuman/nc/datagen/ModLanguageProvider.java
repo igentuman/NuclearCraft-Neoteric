@@ -1,6 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.registration.ArmorSetEntry;
+import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ToolSetEntry;
 import igentuman.nc.setup.ModEntries;
@@ -73,21 +74,24 @@ public class ModLanguageProvider  extends LanguageProvider {
                 }
                 if (materialEntry.hasFluid()) {
                     var fluid = materialEntry.materialFluid();
-                    String fluidName = materialEntry.fluidDefinition.isMolten
-                            ? "molten_" + materialEntry.name
-                            : materialEntry.name + "_fluid";
+                    String fluidName = materialEntry.fluidDefinition.resolveName(materialEntry.name);
                     add(fluid.bucket().get(), convertToName(fluidName + "_bucket"));
-                    add("fluid_type.nc." + fluidName, convertToName(fluidName));
+                    add("fluid_type.nuclearcraft." + fluidName, convertToName(fluidName));
                 }
             }
+        }
+        for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
+            isotope.variants().forEach((suffix, item) ->
+                    add(item.get(), convertToName(isotope.itemId + suffix)));
         }
     }
 
     private void labels() {
-        add("screen.nc.side_config", "Side Configuration");
-        add("screen.nc.slot_selection", "Select Slot");
-        add("screen.nc.multiblock.assembled", "Assembled");
-        add("screen.nc.multiblock.not_assembled", "Not Assembled");
+        add("screen.nuclearcraft.side_config", "Side Configuration");
+        add("screen.nuclearcraft.slot_selection", "Select Slot");
+        add("screen.nuclearcraft.multiblock.assembled", "Assembled");
+        add("screen.nuclearcraft.multiblock.not_assembled", "Not Assembled");
         add("tooltip.fluid.empty", "Empty");
+        add("death.attack.acid", "%1$s dissolved in acid");
     }
 }

@@ -13,6 +13,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 import igentuman.nc.registration.MaterialEntry;
+import igentuman.nc.registration.MaterialFluidType;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 
@@ -76,6 +77,20 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     String path = BuiltInRegistries.BLOCK.getKey(materialEntry.storageBlock().get()).getPath();
                     if (!blockStateExists(path)) {
                         blockWithItem(materialEntry.storageBlock(), "material");
+                    }
+                }
+                if (materialEntry.hasFluid()) {
+                    var fluidBlock = materialEntry.materialFluid().fluidBlock();
+                    String path = BuiltInRegistries.BLOCK.getKey(fluidBlock.get()).getPath();
+                    if (!blockStateExists(path)) {
+                        // Particle-only model; the fluid renderer draws the liquid itself.
+                        ResourceLocation particle = materialEntry.materialFluid().fluidType().get() instanceof MaterialFluidType mft
+                                ? mft.getStillTexture()
+                                : ResourceLocation.withDefaultNamespace("block/water_still");
+                        ModelFile fluidModel = models().getBuilder(path)
+                                .texture("particle", particle);
+                        getVariantBuilder(fluidBlock.get())
+                                .forAllStates(state -> ConfiguredModel.builder().modelFile(fluidModel).build());
                     }
                 }
             }

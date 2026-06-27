@@ -110,6 +110,14 @@ public class ModEntryBuilder {
         return add(name).item(itemSupplier);
     }
 
+    /**
+     * Registers an isotope (item-form variants + decay metadata) into {@link igentuman.nc.setup.ModEntries#ISOTOPES}.
+     * Isotopes live in their own registry, not {@code ENTRIES}; see {@link IsotopeEntry}.
+     */
+    public static IsotopeEntry addIsotope(String name, double radiation) {
+        return IsotopeEntry.register(name, radiation);
+    }
+
     public static ModEntryBuilder addMetalOreMaterial(String name, int color) {
         ModEntryBuilder materialEntry = add(name)
                 .material(color);

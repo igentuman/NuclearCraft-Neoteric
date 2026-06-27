@@ -11,6 +11,7 @@ import igentuman.nc.network.PacketMultiblockBroken;
 import igentuman.nc.network.PacketMultiblockFormed;
 import igentuman.nc.network.PacketAE2PatternTransfer;
 import igentuman.nc.network.PacketSideConfigToggle;
+import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.Registers;
@@ -258,6 +259,11 @@ public class Main {
                     event.accept(entry.item());
                 }
                 continue;
+            }
+        }
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
+                isotope.variants().values().forEach(item -> event.accept(item));
             }
         }
     }

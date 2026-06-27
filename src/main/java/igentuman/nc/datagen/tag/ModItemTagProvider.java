@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.tag;
 
 import igentuman.nc.registration.ArmorSetEntry;
+import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.registration.ToolSetEntry;
@@ -86,6 +87,10 @@ public class ModItemTagProvider extends ItemTagsProvider {
                 tag(Tags.Items.STORAGE_BLOCKS).add(material.storageItem().get());
                 tag(materialTag("storage_blocks/" + name)).add(material.storageItem().get());
             }
+        }
+        for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
+            TagKey<Item> isoTag = materialTag("isotopes/" + isotope.itemId);
+            isotope.variants().values().forEach(item -> tag(isoTag).add(item.get()));
         }
     }
 

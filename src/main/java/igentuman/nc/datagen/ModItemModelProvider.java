@@ -1,6 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.registration.ArmorSetEntry;
+import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ToolSetEntry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -74,9 +75,17 @@ public class ModItemModelProvider  extends ItemModelProvider {
                     ResourceLocation bucketKey = BuiltInRegistries.ITEM.getKey(fluid.bucket().asItem());
                     withExistingParent(bucketKey.toString(), "neoforge:item/bucket")
                             .customLoader(DynamicFluidContainerModelBuilder::begin)
-                            .fluid(fluid.source().get());
+                            .fluid(fluid.source().get())
+                            .flipGas(materialEntry.fluidDefinition.isGas)
+                            .applyTint(true);
                 }
             }
+        }
+        for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
+            // Texture path keeps the slashed element/mass layout (e.g. isotope/uranium/238);
+            // the model file itself is named after the registered item id (uranium_238).
+            isotope.variants().forEach((suffix, item) ->
+                    simpleItem(item, "material/isotope/" + isotope.name + suffix));
         }
     }
 

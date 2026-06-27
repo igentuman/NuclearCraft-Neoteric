@@ -1,5 +1,6 @@
 package igentuman.nc.registration;
 
+import igentuman.nc.block.NCFluidBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -264,7 +265,7 @@ public class MaterialEntry {
 
     @SuppressWarnings("unchecked")
     private MaterialFluid registerFluid(FluidDefinition def) {
-        String fluidName = def.isMolten ? "molten_" + name : name + "_fluid";
+        String fluidName = def.resolveName(name);
 
         // Register the FluidType
         DeferredHolder<FluidType, FluidType> fluidType = (DeferredHolder<FluidType, FluidType>)
@@ -274,7 +275,8 @@ public class MaterialEntry {
                                 .density(def.density)
                                 .viscosity(def.viscosity)
                                 .lightLevel(def.luminosity),
-                        color
+                        color,
+                        def
                 ));
 
         // Array holders to break circular reference between source <-> flowing
@@ -301,7 +303,7 @@ public class MaterialEntry {
 
         // Register fluid block
         blockHolder[0] = (DeferredBlock<LiquidBlock>)
-                (DeferredBlock<?>) BLOCKS.register(fluidName + "_block", () -> new LiquidBlock(
+                (DeferredBlock<?>) BLOCKS.register(fluidName + "_block", () -> new NCFluidBlock(
                         sourceHolder[0].get(),
                         BlockBehaviour.Properties.of()
                                 .noCollission()

@@ -1,22 +1,12 @@
 {
   "required": true,
   "package": "igentuman.nc.mixin",
-  "compatibilityLevel": "JAVA_17",
-  "refmap": "nuclearcraft.refmap.json",
-  "mixins": [
-    "KubeJSRecipesEventJSMixin",
-    "LightningRodBlockMixin",
-    "MekRadiationManager",
-    "ParticleStackKubeJSMixin",
-    "TemplatePoolAccess",
-    "OverworldBiomeBuilderInvoker",
-    "OverworldBiomeBuilderMixin"
-  ],
-  "server": [
-
-  ],
-  "client": [
-    "LevelRendererCloudsMixin"
-  ],
-  "minVersion": "0.8"
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
 }

@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/processor/analyzer",
-  "textures": {
-    "north": "nuclearcraft:block/processor/analyzer_powered"
-  }
-}

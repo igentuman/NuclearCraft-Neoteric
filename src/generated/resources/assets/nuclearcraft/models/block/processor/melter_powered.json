@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/processor/melter",
-  "textures": {
-    "north": "nuclearcraft:block/processor/melter_powered"
-  }
-}

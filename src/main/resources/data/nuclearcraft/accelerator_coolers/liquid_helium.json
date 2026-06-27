@@ -1,5 +1,0 @@
-[{
-  "type": "liquid_helium",
-  "heat": 200,
-  "placement_rule": ["boron_cooler", "lapis_cooler"]
-}]

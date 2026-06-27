@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/processor/crystallizer",
-  "textures": {
-    "north": "nuclearcraft:block/processor/crystallizer_powered"
-  }
-}

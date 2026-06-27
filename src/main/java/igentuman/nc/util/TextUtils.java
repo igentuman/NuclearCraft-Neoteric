@@ -8,29 +8,11 @@ import net.minecraft.network.chat.Style;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
-import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
-import static igentuman.nc.compat.gregtech.GTUtils.convert2EU;
-import static igentuman.nc.util.ModUtil.isGtLoaded;
-
 public class TextUtils
 {
 	public static MutableComponent __(String text, Object... pArgs)
 	{
 		return Component.translatable(text, pArgs);
-	}
-
-	public static String capitalize(String text)
-	{
-		if(text == null) {
-			return text;
-		}
-		if(text.isEmpty()) {
-			return text;
-		}
-		if(text.length() == 1) {
-			return text.toUpperCase();
-		}
-		return text.substring(0, 1).toUpperCase() + text.substring(1);
 	}
 
 	public static MutableComponent applyFormat(Component component, ChatFormatting... color)
@@ -40,22 +22,6 @@ public class TextUtils
 			style = style.applyFormat(format);
 		return component.copy().setStyle(style);
 	}
-
-    public static String energyGenLine()
-    {
-        if(ModUtil.isGtLoaded() && isGTEUCapEnabled()) {
-            return "tooltip.nc.eu_per_tick";
-        }
-        return "tooltip.nc.forge_energy_per_tick";
-    }
-
-    public static String energyUseLine()
-    {
-        if(ModUtil.isGtLoaded() && isGTEUCapEnabled()) {
-            return "tooltip.nc.eu_per_tick";
-        }
-        return "tooltip.nc.forge_energy_per_tick";
-    }
 
 	public static String numberFormat(double value)
 	{
@@ -105,13 +71,6 @@ public class TextUtils
 		return  preffix+df.format(value);
 	}
 
-	public static int energy2Display(int energy) {
-		if(isGtLoaded() && isGTEUCapEnabled()) {
-			return convert2EU(energy);
-		}
-		return energy;
-	}
-
 	public static String scaledFormat(double value)
 	{
 		if(value >= 1000000000000D) {
@@ -146,14 +105,15 @@ public class TextUtils
 
 	public static String formatLiquid(int val)
 	{
-		return TextUtils.numberFormat(val/1000)+" B";
+		if (val < 1000) {
+			return val + " mB";
+		}
+		return TextUtils.numberFormat((double) val/1000)+" B";
 	}
 
 	public static String applySpeccialRules(String val)
 	{
 		val = val.replace("Rtg", "RTG");
-		val = val.replace("Msr", "MSR");
-		val = val.replace("Flibe", "FLiBe");
 		val = val.replace("Du", "DU");
 		val = val.replace("Tbu", "TBU");
 		val = val.replace("Bssco", "BSSCO");

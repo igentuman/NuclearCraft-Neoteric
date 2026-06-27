@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/processor/pressurizer",
-  "textures": {
-    "north": "nuclearcraft:block/processor/pressurizer_powered"
-  }
-}

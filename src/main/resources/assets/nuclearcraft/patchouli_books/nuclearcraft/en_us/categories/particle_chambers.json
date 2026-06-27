@@ -1,7 +1,0 @@
-{
-	"name": "Particle Chambers",
-	"description": "$(l)Smashing particles. Strictly for science.",
-	"icon": "nuclearcraft:target_chamber_controller",
-    "parent": "nuclearcraft:multiblocks",
-	"sortnum": 0
-}

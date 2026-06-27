@@ -1,0 +1,32 @@
+package igentuman.nc.block_entity.catalyst;
+
+import igentuman.nc.block_entity.GlobalBlockEntity;
+import net.minecraft.world.item.Item;
+
+/**
+ * Behavior object attached to a processor BE for one {@link CatalystType}.
+ * Stateless by design: {@code power} and {@code item} are re-derived from the catalyst slot
+ * each tick by the host, so no NBT persistence is needed.
+ */
+public abstract class Catalyst {
+
+    public final CatalystType type;
+    public final GlobalBlockEntity host;
+
+    /** Strength = count of catalyst items in this type's catalyst slot. */
+    public int power;
+
+    /** Item currently backing this catalyst; lets the host detect slot-content changes. */
+    public Item item;
+
+    protected Catalyst(CatalystType type, GlobalBlockEntity host) {
+        this.type = type;
+        this.host = host;
+    }
+
+    /** Runs each server tick before the processor's operation logic. */
+    public void preTick() {}
+
+    /** Runs each server tick after the processor's operation logic. */
+    public void postTick() {}
+}

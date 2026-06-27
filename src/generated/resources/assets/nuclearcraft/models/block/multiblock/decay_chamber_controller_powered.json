@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/multiblock/decay_chamber_controller",
-  "textures": {
-    "north": "nuclearcraft:block/particle_chamber/controller/decay_chamber_controller_powered"
-  }
-}

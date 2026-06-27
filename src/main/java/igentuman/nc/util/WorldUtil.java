@@ -9,6 +9,9 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 
 import static net.minecraft.world.level.block.Blocks.AIR;
 
+/**
+ * Utility class for faster world-related operations.
+ */
 public class WorldUtil {
 
     public static BlockState getBlockState(BlockPos pos, ServerLevel level) {

@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/processor/assembler",
-  "textures": {
-    "north": "nuclearcraft:block/processor/assembler_powered"
-  }
-}

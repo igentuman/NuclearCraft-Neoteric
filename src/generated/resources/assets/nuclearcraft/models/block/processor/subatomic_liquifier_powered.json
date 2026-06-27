@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/processor/subatomic_liquifier",
-  "textures": {
-    "north": "nuclearcraft:block/processor/subatomic_liquifier_powered"
-  }
-}

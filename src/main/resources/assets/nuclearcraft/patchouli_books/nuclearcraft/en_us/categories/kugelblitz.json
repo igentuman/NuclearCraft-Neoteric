@@ -1,7 +1,0 @@
-{
-  "name": "Kugelblitz",
-  "description": "$(l)Power from a black hole. Containment optional, results spectacular.",
-  "icon": "nuclearcraft:chamber_terminal",
-  "parent": "nuclearcraft:multiblocks",
-  "sortnum": 0
-}

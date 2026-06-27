@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/processor/steam_turbine",
-  "textures": {
-    "north": "nuclearcraft:block/processor/steam_turbine_powered"
-  }
-}

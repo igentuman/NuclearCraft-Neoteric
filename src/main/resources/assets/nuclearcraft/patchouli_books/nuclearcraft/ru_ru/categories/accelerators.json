@@ -1,7 +1,0 @@
-{
-	"name": "Ускорители",
-	"description": "$(l)Разгон частиц. Медленно, затем очень и очень быстро.",
-	"icon": "nuclearcraft:linear_accelerator_controller",
-  "parent": "nuclearcraft:multiblocks",
-	"sortnum": 0
-}

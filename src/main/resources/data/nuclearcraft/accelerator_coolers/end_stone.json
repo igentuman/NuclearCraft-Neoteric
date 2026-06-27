@@ -1,5 +1,0 @@
-[{
-  "type": "end_stone",
-  "heat": 50,
-  "placement_rule": ["electromagnet_yoke"]
-}]

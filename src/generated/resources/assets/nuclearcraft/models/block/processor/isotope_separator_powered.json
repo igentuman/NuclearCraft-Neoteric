@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/processor/isotope_separator",
-  "textures": {
-    "north": "nuclearcraft:block/processor/isotope_separator_powered"
-  }
-}

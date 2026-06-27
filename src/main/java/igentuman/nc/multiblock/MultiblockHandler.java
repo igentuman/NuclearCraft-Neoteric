@@ -1,316 +1,248 @@
 package igentuman.nc.multiblock;
 
+import igentuman.nc.Main;
+import igentuman.nc.api.multiblock.IMultiblockCache;
+import igentuman.nc.api.multiblock.IMultiblockLogic;
+import igentuman.nc.api.multiblock.IMultiblockValidator;
+import igentuman.nc.network.PacketMultiblockBroken;
+import igentuman.nc.network.PacketMultiblockFormed;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import static igentuman.nc.NuclearCraft.debugLog;
+import static igentuman.nc.Main.TICK_COUNTER;
 
-public class MultiblockHandler {
+/**
+ * Singleton manager: per-level executor for off-main-thread {@code tickServer},
+ * active instances by controller position, and a structure-position index for O(1)
+ * block-change lookup.
+ */
+@EventBusSubscriber(modid = Main.MODID)
+public final class MultiblockHandler {
 
-    public static final ConcurrentHashMap<ResourceKey<Level>, MultiblockHandler> instances = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, AbstractMultiblock> multiblocks = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Long, List<String>> chunkCache = new ConcurrentHashMap<>();
-    private final Set<String> toRemove = Collections.synchronizedSet(new HashSet<>());
-    public final Set<Long> ignoreUpdate = Collections.synchronizedSet(new HashSet<>());
-    public final Set<Long> changedBlocks = Collections.synchronizedSet(new HashSet<>());
-    private CompletableFuture<Void> validationFuture;
+    private static final Map<ResourceKey<Level>, ExecutorService> LEVEL_THREADS = new ConcurrentHashMap<>();
+    private static final Map<ResourceKey<Level>, Map<Long, MultiblockInstance>> INSTANCES = new ConcurrentHashMap<>();
+    private static final Map<ResourceKey<Level>, Map<Long, Long>> STRUCTURE_INDEX = new ConcurrentHashMap<>();
 
+    private MultiblockHandler() {}
 
-    private MultiblockHandler() {
-    }
-
-    public static MultiblockHandler get(ResourceKey<Level> dimension) {
-        if (instances.containsKey(dimension)) {
-            return instances.get(dimension);
-        }
-        MultiblockHandler handler = new MultiblockHandler();
-        instances.put(dimension, handler);
-        return handler;
-    }
-
-    public static void tickMultiblockAsync(ServerLevel level, AbstractMultiblock multiblock) {
-        MultiblockHandler handler = get(level.dimension());
-        if(multiblock.isMarkedForRemoval()) {
-            multiblock.dispose();
-            return;
-        }
-        if (multiblock.getValidationFuture() != null && !multiblock.getValidationFuture().isDone()) {
-            return;
-        }
-        // Reset future reference if it completed exceptionally
-        if (multiblock.getValidationFuture() != null && multiblock.getValidationFuture().isCompletedExceptionally()) {
-            multiblock.setValidationFuture(null);
-        }
-        multiblock.setValidationFuture(CompletableFuture.runAsync(
-                () -> {
-                    try {
-                        handler.tick(level, multiblock);
-                    } catch (Exception e) {
-                        debugLog("Exception in multiblock async tick: " + e.getMessage());
-                    }
-                },
-                MultiblockExecutorManager.getExecutor()
-        ).exceptionally(throwable -> {
-            debugLog("Unhandled exception in multiblock async tick: " + throwable.getMessage());
-            return null;
+    @SubscribeEvent
+    public static void onLevelLoad(LevelEvent.Load event) {
+        if (!(event.getLevel() instanceof ServerLevel serverLevel)) return;
+        ResourceKey<Level> dim = serverLevel.dimension();
+        LEVEL_THREADS.computeIfAbsent(dim, k -> Executors.newSingleThreadExecutor(r -> {
+            Thread t = new Thread(r, "multiblock-" + k.location());
+            t.setDaemon(true);
+            return t;
         }));
+        INSTANCES.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
+        STRUCTURE_INDEX.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
     }
 
-    public static void trackChangesAsync(ServerLevel level) {
-        if (get(level.dimension()).validationFuture != null && !get(level.dimension()).validationFuture.isDone()) {
-            return;
+    @SubscribeEvent
+    public static void onLevelUnload(LevelEvent.Unload event) {
+        if (!(event.getLevel() instanceof ServerLevel serverLevel)) return;
+        ResourceKey<Level> dim = serverLevel.dimension();
+        ExecutorService ex = LEVEL_THREADS.remove(dim);
+        if (ex != null) ex.shutdownNow();
+        INSTANCES.remove(dim);
+        STRUCTURE_INDEX.remove(dim);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        if (!(event.getLevel() instanceof ServerLevel serverLevel)) return;
+        handleBlockChange(serverLevel, event.getPos());
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        if (!(event.getLevel() instanceof ServerLevel serverLevel)) return;
+        handleBlockChange(serverLevel, event.getPos());
+    }
+
+    private static void handleBlockChange(ServerLevel level, BlockPos changed) {
+        ResourceKey<Level> dim = level.dimension();
+        Map<Long, Long> idx = STRUCTURE_INDEX.get(dim);
+        if (idx == null) return;
+        Long controllerKey = idx.get(changed.asLong());
+        if (controllerKey == null) return;
+        MultiblockInstance instance = INSTANCES.getOrDefault(dim, Collections.emptyMap()).get(controllerKey);
+        if (instance != null) instance.onStructureBlockChanged(level, BlockPos.of(controllerKey), changed);
+    }
+
+    /** Initialize a new multiblock at the controller position. Attempts immediate validation. */
+    public static void initMultiblock(ServerLevel level, BlockPos controllerPos, Direction facing, MultiblockEntry entry) {
+        ResourceKey<Level> dim = level.dimension();
+        Map<Long, MultiblockInstance> map = INSTANCES.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
+        MultiblockInstance instance = new MultiblockInstance(entry, facing);
+        map.put(controllerPos.asLong(), instance);
+    }
+
+    /** Destroy a multiblock. Called on controller-block removal. */
+    public static void destroyMultiblock(ServerLevel level, BlockPos controllerPos) {
+        ResourceKey<Level> dim = level.dimension();
+        Map<Long, MultiblockInstance> map = INSTANCES.get(dim);
+        if (map == null) return;
+        MultiblockInstance instance = map.remove(controllerPos.asLong());
+        if (instance == null) return;
+        if (instance.formed) {
+            removeFromStructureIndex(dim, instance.cache.getStructurePositions());
+            instance.logic.onBroken(level, controllerPos, instance.cache);
+            sendBroken(level, controllerPos);
         }
-        if (get(level.dimension()).validationFuture != null && get(level.dimension()).validationFuture.isCompletedExceptionally()) {
-            get(level.dimension()).validationFuture = null;
+        instance.cache.clear();
+    }
+
+    /** Restore an instance on world load from a serialized cache tag. No re-validation. */
+    public static void restoreMultiblock(ServerLevel level, BlockPos controllerPos, Direction facing,
+                                          MultiblockEntry entry, CompoundTag cacheNbt, HolderLookup.Provider registries) {
+        ResourceKey<Level> dim = level.dimension();
+        Map<Long, MultiblockInstance> map = INSTANCES.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
+        MultiblockInstance instance = new MultiblockInstance(entry, facing);
+        if (cacheNbt != null) {
+            instance.cache.loadNbt(cacheNbt, registries);
         }
-        get(level.dimension()).validationFuture = CompletableFuture.runAsync(
-                () -> {
-                    try {
-                        MultiblockHandler.get(level.dimension()).trackAllChanges();
-                    } catch (Exception e) {
-                        debugLog("Exception in async trackChangesAsync: " + e.getMessage());
-                        for(StackTraceElement element : e.getStackTrace()) {
-                            debugLog(element.toString());
-                        }
+        instance.formed = !instance.cache.getStructurePositions().isEmpty();
+        if (instance.formed) {
+            indexStructure(dim, controllerPos.asLong(), instance.cache.getStructurePositions());
+            instance.logic.onFormed(level, controllerPos, instance.cache);
+        }
+        map.put(controllerPos.asLong(), instance);
+    }
+
+    /** Per-tick submission of {@code logic.tickServer} to the level executor. */
+    public static void submitTick(ServerLevel level, BlockPos controllerPos) {
+        Map<Long, MultiblockInstance> map = INSTANCES.get(level.dimension());
+        if (map == null) return;
+        MultiblockInstance instance = map.get(controllerPos.asLong());
+        if (instance == null) return;
+        ExecutorService ex = LEVEL_THREADS.get(level.dimension());
+        if (ex == null || ex.isShutdown()) return;
+        IMultiblockLogic logic = instance.logic;
+        IMultiblockCache cache = instance.cache;
+        ex.submit(() -> {
+            try {
+                if (!instance.formed) {
+                    if (TICK_COUNTER % 5 == 0) {
+                        instance.tryValidate(level, controllerPos);
                     }
-                },
-                MultiblockExecutorManager.getExecutor()
-        ).exceptionally(throwable -> {
-            debugLog("Unhandled exception in trackChangesAsync: " + throwable.getMessage());
-            return null;
+                    return;
+                }
+                logic.tickServer(level, controllerPos, cache);
+            } catch (Throwable t) {
+                Main.LOGGER.error("Multiblock tickServer error at {}", controllerPos, t);
+            }
         });
     }
 
-    public void addMultiblock(AbstractMultiblock multiblock) {
-        if (multiblock.controller() == null) {
-            throw new IllegalArgumentException("Multiblock controller is null");
-        }
-        if (!multiblocks.containsKey(multiblock.getId())) {
-            multiblocks.put(multiblock.getId(), multiblock);
-            debugLog("Added new multiblock: " + multiblock.getId() + " (" + multiblock.getClass().getSimpleName() + ")");
-        } else {
-            multiblocks.putIfAbsent(multiblock.getId(), multiblock);
-            debugLog("Multiblock already exists: " + multiblock.getId());
-        }
-        addToChunkCache(multiblock);
+    public static MultiblockInstance getInstance(ServerLevel level, BlockPos controllerPos) {
+        Map<Long, MultiblockInstance> map = INSTANCES.get(level.dimension());
+        return map == null ? null : map.get(controllerPos.asLong());
     }
 
-    private void addToChunkCache(AbstractMultiblock multiblock) {
-        long chunkPos = multiblock.getChunk().toLong();
-        if (!chunkCache.containsKey(chunkPos)) {
-            chunkCache.put(chunkPos, Collections.synchronizedList(new ArrayList<>()));
-        }
-        List<String> list = chunkCache.get(chunkPos);
-        if (!list.contains(multiblock.getId())) {
-            list.add(multiblock.getId());
-        }
+    static void indexStructure(ResourceKey<Level> dim, long controllerKey, Set<Long> positions) {
+        Map<Long, Long> idx = STRUCTURE_INDEX.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
+        for (long p : positions) idx.put(p, controllerKey);
     }
 
-    private void removeFromChunkCache(String id) {
-        for (List<String> list : chunkCache.values()) {
-            list.remove(id);
-        }
-        List<Long> chunkPosSet = chunkCache.keySet().stream().toList();
-        for (long chunkPos : chunkPosSet) {
-            if (!chunkCache.containsKey(chunkPos)) {
-                continue;
-            }
-            List<String> list = chunkCache.get(chunkPos);
-            if (list.isEmpty()) {
-                chunkCache.remove(chunkPos);
-            }
-        }
+    static void removeFromStructureIndex(ResourceKey<Level> dim, Set<Long> positions) {
+        Map<Long, Long> idx = STRUCTURE_INDEX.get(dim);
+        if (idx == null) return;
+        for (long p : positions) idx.remove(p);
     }
 
-    public void addMultiblock(AbstractMultiblock multiblock, boolean force) {
-        if (multiblocks.containsKey(multiblock.getId()) && force) {
-            debugLog("Force replacing existing multiblock: " + multiblock.getId());
-            multiblocks.get(multiblock.getId()).dispose();
-        }
-        addMultiblock(multiblock);
+    static void sendFormed(ServerLevel level, BlockPos controllerPos, Set<Long> positions) {
+        long[] arr = new long[positions.size()];
+        int i = 0;
+        for (long p : positions) arr[i++] = p;
+        PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(controllerPos),
+                new PacketMultiblockFormed(controllerPos, arr));
     }
 
-    public void addIgnoreToUpdate(BlockPos blockPos) {
-        if (blockPos != null) {
-            ignoreUpdate.add(blockPos.asLong());
-        }
+    static void sendBroken(ServerLevel level, BlockPos controllerPos) {
+        PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(controllerPos),
+                new PacketMultiblockBroken(controllerPos));
     }
 
-    public void trackAllChanges() {
-        ConcurrentHashMap.KeySetView<String, AbstractMultiblock> tmp = multiblocks.keySet();
-        for (String id : tmp) {
-            if(shouldRemove(id)) {
-                removeMultiblock(multiblocks.get(id));
-            }
-        }
-        for (long packedPos : changedBlocks) {
-            BlockPos pos = BlockPos.of(packedPos);
-            Collection<AbstractMultiblock> multiblockCollection = multiblocks.values();
-            for (AbstractMultiblock multiblock : multiblockCollection) {
-                if (multiblock == null) {
-                    continue;
-                }
-                multiblock.onBlockChange(pos);
-            }
-        }
-        changedBlocks.clear();
-    }
+    /** Internal instance state. Package-private - exposed only via {@link #getInstance}. */
+    public static final class MultiblockInstance {
+        public final MultiblockEntry entry;
+        public final IMultiblockValidator validator;
+        public final IMultiblockLogic logic;
+        public final IMultiblockCache cache;
+        public final Direction facing;
+        public boolean formed;
 
-    private boolean shouldRemove(String id) {
-        return !multiblocks.containsKey(id)
-                || multiblocks.get(id) == null
-                || multiblocks.get(id).controllerBE() == null
-                || multiblocks.get(id).controllerBE().isRemoved()
-                ;
-    }
+        MultiblockInstance(MultiblockEntry entry, Direction facing) {
+            this.entry = entry;
+            this.validator = entry.validatorSupplier().get();
+            this.logic = entry.logicSupplier().get();
+            this.cache = entry.cacheSupplier().get();
+            this.facing = facing;
+            this.formed = false;
+        }
 
-    public void trackBlockChange(BlockPos pos, boolean force) {
-        if(force) {
-            ignoreUpdate.remove(pos.asLong());
-        }
-        trackBlockChange(pos);
-    }
-
-    public void trackBlockChange(BlockPos pos) {
-        if (pos == null || multiblocks.isEmpty()) {
-            return;
-        }
-        if (ignoreUpdate.contains(pos.asLong())) {
-            return;
-        }
-        if (!changedBlocks.contains(pos.asLong())) {
-            changedBlocks.add(pos.asLong());
-            debugLog("Tracking block change at " + pos.toShortString() + " (total tracked: " + changedBlocks.size() + ")");
-        }
-    }
-
-    public void tick(Level level, AbstractMultiblock multiblock) {
-        if(!multiblocks.containsKey(multiblock.getId())) {
-            addMultiblock(multiblock, false);
-        }
-        if(multiblocks.get(multiblock.getId()) != multiblock) {
-            if(multiblocks.get(multiblock.getId()) != null) {
-                removeMultiblock(multiblocks.get(multiblock.getId()));
-            } else {
-                multiblocks.remove(multiblock.getId());
-            }
-            multiblocks.put(multiblock.getId(), multiblock);
-        }
-        multiblock.tick(level);
-    }
-
-    public void removeMultiblock(AbstractMultiblock multiblock) {
-        String id = multiblock.getId();
-        debugLog("Removing multiblock: " + id + " (" + multiblock.getClass().getSimpleName() + ")");
-        multiblocks.remove(id);
-        removeFromChunkCache(id);
-    }
-
-    public boolean checkAttachmentToBlock(Class<?> toCheck, Level level, BlockPos pos, Direction dir) {
-        if (multiblocks.isEmpty()) {
-            return false;
-        }
-        //Iterate chunk cache first for better performance
-        long chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4).toLong();
-        if (chunkCache.containsKey(chunkPos)) {
-            List<String> list = chunkCache.get(chunkPos);
-            for (String id : list) {
-                AbstractMultiblock multiblock = multiblocks.get(id);
-                if (multiblock == null) {
-                    continue;
-                }
-                if (multiblock.checkAttachmentToBlock(toCheck, level, pos, dir)) {
-                    return true;
-                }
-            }
-        }
-        for (AbstractMultiblock multiblock : multiblocks.values()) {
-            if (multiblock == null) {
-                continue;
-            }
-            if (multiblock.checkAttachmentToBlock(toCheck, level, pos, dir)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public AbstractMultiblock getMultiblockByPos(BlockPos pos) {
-        if (multiblocks.isEmpty()) {
-            return null;
-        }
-        long chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4).toLong();
-        if (chunkCache.containsKey(chunkPos)) {
-            List<String> list = chunkCache.get(chunkPos);
-            for (String id : list) {
-                AbstractMultiblock multiblock = multiblocks.get(id);
-                if (multiblock == null) {
-                    continue;
-                }
-                if (multiblock.containsPos(pos)) {
-                    return multiblock;
-                }
+        void tryValidate(ServerLevel level, BlockPos controllerPos) {
+            Set<Long> previousPositions = new HashSet<>(cache.getStructurePositions());
+            cache.clear();
+            boolean valid = validator.validate(level, controllerPos, facing, cache);
+            if (valid && !formed) {
+                formed = true;
+                indexStructure(level.dimension(), controllerPos.asLong(), cache.getStructurePositions());
+                logic.onFormed(level, controllerPos, cache);
+                sendFormed(level, controllerPos, cache.getStructurePositions());
+            } else if (!valid && formed) {
+                formed = false;
+                removeFromStructureIndex(level.dimension(), previousPositions);
+                cache.getStructurePositions().addAll(previousPositions);
+                logic.onBroken(level, controllerPos, cache);
+                sendBroken(level, controllerPos);
+                cache.getStructurePositions().clear();
             }
         }
 
-        // If not found in chunk cache, check all multiblocks as fallback
-        for (AbstractMultiblock multiblock : multiblocks.values()) {
-            if (multiblock != null && multiblock.containsPos(pos)) {
-                return multiblock;
+        void onStructureBlockChanged(ServerLevel level, BlockPos controllerPos, BlockPos changed) {
+            cache.invalidate(changed);
+            Set<Long> previousPositions = new HashSet<>(cache.getStructurePositions());
+            boolean wasFormed = formed;
+            boolean valid = validator.validate(level, controllerPos, facing, cache);
+            if (wasFormed && !valid) {
+                formed = false;
+                removeFromStructureIndex(level.dimension(), previousPositions);
+                cache.getStructurePositions().addAll(previousPositions);
+                logic.onBroken(level, controllerPos, cache);
+                sendBroken(level, controllerPos);
+                cache.getStructurePositions().clear();
+            } else if (!wasFormed && valid) {
+                formed = true;
+                indexStructure(level.dimension(), controllerPos.asLong(), cache.getStructurePositions());
+                logic.onFormed(level, controllerPos, cache);
+                sendFormed(level, controllerPos, cache.getStructurePositions());
+            } else if (wasFormed && valid) {
+                // positions could have shifted - refresh index
+                removeFromStructureIndex(level.dimension(), previousPositions);
+                indexStructure(level.dimension(), controllerPos.asLong(), cache.getStructurePositions());
             }
         }
-
-        return null;
-    }
-
-    public void clear() {
-        // Cancel any running futures to prevent memory leaks
-        if (validationFuture != null && !validationFuture.isDone()) {
-            validationFuture.cancel(true);
-        }
-        
-        for (AbstractMultiblock multiblock : multiblocks.values()) {
-            if (multiblock != null) {
-                multiblock.dispose();
-            }
-        }
-        multiblocks.clear();
-        chunkCache.clear();
-        toRemove.clear();
-        ignoreUpdate.clear();
-        changedBlocks.clear();
-        
-        // Clear future references
-        validationFuture = null;
-    }
-
-    public void onControllerRemoved(BlockPos pos) {
-        AbstractMultiblock multiblock = getMultiblockByPos(pos);
-        if(multiblock != null) {
-            debugLog("Controller removed at " + pos.toShortString() + " for multiblock: " + multiblock.getId());
-            multiblock.onControllerRemoved();
-        } else {
-            debugLog("Controller removed at " + pos.toShortString() + " but no multiblock found");
-        }
-    }
-    
-    /**
-     * Clears all dimension handlers and their futures.
-     * Should be called when the server shuts down to prevent memory leaks.
-     */
-    public static void clearAll() {
-        debugLog("Clearing all multiblock handlers for " + instances.size() + " dimensions");
-        for (MultiblockHandler handler : instances.values()) {
-            handler.clear();
-        }
-        instances.clear();
     }
 }

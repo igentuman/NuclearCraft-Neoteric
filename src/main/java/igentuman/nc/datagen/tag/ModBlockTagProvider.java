@@ -1,0 +1,57 @@
+package igentuman.nc.datagen.tag;
+
+import igentuman.nc.registration.MaterialEntry;
+import igentuman.nc.registration.ModEntry;
+import igentuman.nc.setup.ModEntries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
+import java.util.concurrent.CompletableFuture;
+
+import static igentuman.nc.Main.MODID;
+
+public class ModBlockTagProvider extends BlockTagsProvider {
+    public ModBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, MODID, existingFileHelper);
+    }
+
+    @Override
+    public void addTags(HolderLookup.Provider provider) {
+        for (ModEntry entry : ModEntries.ENTRIES.values()) {
+            if (entry.hasBlock()) {
+                tag(BlockTags.MINEABLE_WITH_PICKAXE).add(entry.block().get());
+                tag(BlockTags.NEEDS_IRON_TOOL).add(entry.block().get());
+            }
+
+            MaterialEntry material = entry.materialEntry();
+            if (material == null) continue;
+
+            String name = material.name;
+
+            if (material.hasOre()) {
+                tag(BlockTags.MINEABLE_WITH_PICKAXE).add(material.oreBlock().get());
+                tag(BlockTags.NEEDS_IRON_TOOL).add(material.oreBlock().get());
+                tag(Tags.Blocks.ORES).add(material.oreBlock().get());
+                tag(blockTag("ores/" + name)).add(material.oreBlock().get());
+            }
+
+            if (material.hasBlock()) {
+                tag(BlockTags.MINEABLE_WITH_PICKAXE).add(material.storageBlock().get());
+                tag(BlockTags.NEEDS_IRON_TOOL).add(material.storageBlock().get());
+                tag(Tags.Blocks.STORAGE_BLOCKS).add(material.storageBlock().get());
+                tag(blockTag("storage_blocks/" + name)).add(material.storageBlock().get());
+            }
+        }
+    }
+
+    private static TagKey<Block> blockTag(String path) {
+        return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", path));
+    }
+}

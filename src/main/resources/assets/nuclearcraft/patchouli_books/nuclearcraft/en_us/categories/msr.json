@@ -1,7 +1,0 @@
-{
-  "name": "Molten Salt Reactor",
-  "description": "$(l)Liquid fuel, no heat sinks. Pump salt, feed pebbles, ride the feedback.",
-  "icon": "nuclearcraft:msr_controller",
-  "parent": "nuclearcraft:multiblocks",
-  "sortnum": 1
-}

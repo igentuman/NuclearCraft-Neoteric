@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "nuclearcraft:block/ore/thorium_deepslate_ore"
-  }
-}

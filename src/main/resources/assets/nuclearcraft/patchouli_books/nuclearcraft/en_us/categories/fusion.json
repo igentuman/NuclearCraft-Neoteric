@@ -1,7 +1,0 @@
-{
-  "name": "Nuclear Fusion",
-  "description": "$(l)Fusing the atom, for fun and ultimate glory.",
-  "icon": "nuclearcraft:fusion_core",
-  "parent": "nuclearcraft:multiblocks",
-  "sortnum": 1
-}

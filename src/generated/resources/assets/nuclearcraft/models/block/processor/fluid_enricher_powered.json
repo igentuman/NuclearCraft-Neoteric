@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/processor/fluid_enricher",
-  "textures": {
-    "north": "nuclearcraft:block/processor/fluid_enricher_powered"
-  }
-}

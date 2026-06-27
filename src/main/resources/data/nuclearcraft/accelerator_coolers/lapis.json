@@ -1,5 +1,0 @@
-[{
-  "type": "lapis",
-  "heat": 130,
-  "placement_rule": ["electromagnet_yoke", "#nuclearcraft:electromagnets"]
-}]

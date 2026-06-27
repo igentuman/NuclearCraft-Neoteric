@@ -22,6 +22,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Registries.PLACED_FEATURES;
 import static igentuman.nc.world.NCConfiguredFeatures.CONFIGURED_FEATURES;
+import static igentuman.nc.world.NCConfiguredFeatures.CONFIGURED_WASTELAND_DECO;
 import static igentuman.nc.world.NCConfiguredFeatures.CONFIGURED_WASTELAND_RUINS;
 
 
@@ -29,6 +30,7 @@ public class NCPlacedFeatures {
 
     public static final HashMap<String, ResourceKey<PlacedFeature>> PLACED_FEATURES_KEYS = initPlaceFeatures();
     public static final RegistryObject<PlacedFeature> WASTELAND_RUINS_PLACED_FEATURE = PLACED_FEATURES.register("wasteland_ruins", () -> new PlacedFeature(CONFIGURED_WASTELAND_RUINS.getHolder().get(), List.of()));
+    public static final RegistryObject<PlacedFeature> WASTELAND_DECO_PLACED_FEATURE = PLACED_FEATURES.register("wasteland_deco", () -> new PlacedFeature(CONFIGURED_WASTELAND_DECO.getHolder().get(), List.of()));
 
     private static HashMap<String, ResourceKey<PlacedFeature>> initPlaceFeatures() {
         HashMap<String, ResourceKey<PlacedFeature>> map = new HashMap<>();
@@ -42,6 +44,7 @@ public class NCPlacedFeatures {
         map.put("glowing_mushroom", registerKey("glowing_mushroom_placed"));
         map.put("glowing_mushroom_wasteland", registerKey("glowing_mushroom_wasteland_placed"));
         map.put("wasteland_ruins", registerKey("wasteland_ruins"));
+        map.put("wasteland_deco", registerKey("wasteland_deco"));
         map.put("wasteland_portal", registerKey("wasteland_portal"));
         map.put("wasteland_boss_lair", registerKey("wasteland_boss_lair"));
         map.put("wasteland_surface", registerKey("wasteland_surface"));
@@ -96,6 +99,12 @@ public class NCPlacedFeatures {
                 configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_ruins")),
                 List.of(
                         RarityFilter.onAverageOnceEvery(250), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
+                ));
+
+        register(context, PLACED_FEATURES_KEYS.get("wasteland_deco"),
+                configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_deco")),
+                List.of(
+                        RarityFilter.onAverageOnceEvery(30), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
                 ));
 
         register(context, PLACED_FEATURES_KEYS.get("wasteland_portal"),

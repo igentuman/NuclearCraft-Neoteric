@@ -1,6 +1,9 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.content.processors.Processors;
+import igentuman.nc.item.CrystalAnalysis;
+import igentuman.nc.item.ResoniteCrystalItem;
+import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.util.insitu_leaching.OreVeinProvider;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
@@ -57,10 +60,28 @@ public class AnalyzerBE extends NCProcessorBE {
         if (hasRecipe() && recipeInfo.isCompleted()) {
             handleChunkAnalyzeWithPaper();
             handleMapAnalyze();
+            if(contentHandler().itemHandler.getStackInSlot(1).isEmpty()) {
+                handleCrystalAnalyze();
+            }
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
             } else {
                 recipeInfo.stuck = true;
+            }
+        }
+    }
+
+    // Rolls rarity + buff onto the output crystal. Re-analysing an already-analyzed crystal preserves
+    // its NBT instead of rerolling, so feeding one back in never destroys an existing artifact.
+    private void handleCrystalAnalyze() {
+        if (recipe.getInputIngredient(0).test(new ItemStack(NCItems.RESONITE_CRYSTAL.get()))) {
+            ItemStack input = contentHandler.itemHandler.holdedInputs.get(0);
+            for (ItemStack output : recipe.getResultItems()) {
+                if (ResoniteCrystalItem.isAnalyzed(input)) {
+                    output.setTag(input.getOrCreateTag().copy());
+                } else {
+                    CrystalAnalysis.applyAnalysis(output, level.random);
+                }
             }
         }
     }

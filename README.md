@@ -34,6 +34,7 @@ how you build.
 - **In-situ leaching** - ore-vein system with leachers, pumps and research papers as an alternative to traditional mining.
 - **World radiation** - chunk-level radiation field with decay, diffusion, shielding, player effects, dosimetry and geiger counters.
 - **World generation** - new biome, new dimension with custom structures. Mini boss. Ores
+- **Anomalies and crystals** - Environmental hazards in Wastelands and buffs.
 - **Nuclear weapons** - Pu-239 / fission and fusion bombs with simulated blast, fallout and structural damage.
 - **Energy & storage** - Forge Energy (FE/RF) throughout, with Mekanism and GregTech CE:U interop, plus voiding/buffering storage tiers.
 - **Mod integrations** - JEI, EMI, AE2, Refined Storage, ComputerCraft, OpenComputers v2, TIS-3D, KubeJS, Patchouli, Ponder.

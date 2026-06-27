@@ -103,6 +103,7 @@ public class ClientSetup {
             MinecraftForge.EVENT_BUS.addListener(LOWEST, SoundHandler::onTilePlaySound);
             DistortShader.register();
             igentuman.nc.client.renderer.Q36FlashShader.register();
+            igentuman.nc.client.renderer.AnomalyShader.register();
             BlockEntityRenderers.register(FUSION_BE.get("fusion_core").get(), FusionCoreRenderer::new);
             BlockEntityRenderers.register(EXPL_BE.get(), EXPLRenderer::new);
             BlockEntityRenderers.register(TURBINE_BE.get("turbine_rotor_shaft").get(), TurbineRotorRenderer::new);

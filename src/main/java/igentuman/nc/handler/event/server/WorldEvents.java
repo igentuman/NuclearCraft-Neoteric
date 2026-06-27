@@ -5,6 +5,7 @@ import igentuman.nc.multiblock.MultiblockExecutorManager;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.radiation.data.RadiationManager;
+import igentuman.nc.world.anomaly.AnomalySpawnManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
@@ -124,6 +125,7 @@ public class WorldEvents {
             final ServerLevel level = (ServerLevel) event.level;
             RadiationEvents.tickAsync(event);
             MultiblockHandler.trackChangesAsync(level);
+            AnomalySpawnManager.tick(level);
         }
     }
 

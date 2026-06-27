@@ -75,6 +75,14 @@ public class NCItemModels extends ItemModelProvider {
                 mcLoc("item/generated"),
                 "layer0", modLoc("item/tool/"+SPAXELHOE_THORIUM.getId().getPath()));
 
+        singleTexture(RESONITE_SHARD.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/"+RESONITE_SHARD.getId().getPath()));
+
+        singleTexture(RESONITE_CRYSTAL.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/"+RESONITE_CRYSTAL.getId().getPath()));
+
         NCFluids.ALL_FLUID_ENTRIES.values().forEach(this::createBucket);
     }
 

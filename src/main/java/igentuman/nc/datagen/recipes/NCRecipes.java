@@ -2129,6 +2129,15 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(CAULDRON))
                 .save(consumer);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, RESONITE_CRYSTAL.get())
+                .pattern("SSS")
+                .pattern("SSS")
+                .pattern("SSS")
+                .define('S', RESONITE_SHARD.get())
+                .group(MODID)
+                .unlockedBy("item", has(RESONITE_SHARD.get()))
+                .save(consumer);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NCProcessors.PROCESSORS.get("pump").get())
                 .pattern("PMP")
                 .pattern("PCP")

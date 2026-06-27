@@ -41,6 +41,12 @@ public class NCLanguageProvider extends LanguageProvider {
         add("entity.nuclearcraft.q36_pulse_projectile", "Quantite Pulse");
         add("entity.nuclearcraft.feral_ghoul", "Feral Ghoul");
         add("entity.nuclearcraft.feral_ghoul_boss", "Boss of the Wasteland");
+        add("entity.nuclearcraft.gravitational_anomaly", "Gravitational Anomaly");
+        add("entity.nuclearcraft.electric_anomaly", "Electrical Anomaly");
+        add("entity.nuclearcraft.radioactive_anomaly", "Radioactive Anomaly");
+        add("entity.nuclearcraft.burning_anomaly", "Thermal Anomaly");
+        add("entity.nuclearcraft.psycho_anomaly", "Psi Anomaly");
+        add("entity.nuclearcraft.teleporting_anomaly", "Spatial Anomaly (do not approach, per Directive 12-B)");
         add("biome.nuclearcraft.wasteland", "Wasteland");
         ponders();
         ores();
@@ -458,6 +464,13 @@ public class NCLanguageProvider extends LanguageProvider {
         add("sound_event.nuclearcraft.turbine", "Turbine is spinning");
         add("sound_event.nuclearcraft.q36.beam_shot", "Q-36 Quantite Disruptor fires");
         add("sound_event.nuclearcraft.q36.pulse_shot", "Q-36 Quantite Pulse discharge");
+
+        add("sound_event.nuclearcraft.anomaly.gravitational", "Gravitational anomaly groans");
+        add("sound_event.nuclearcraft.anomaly.electric", "Electric anomaly crackles");
+        add("sound_event.nuclearcraft.anomaly.radioactive", "Radioactive anomaly seethes");
+        add("sound_event.nuclearcraft.anomaly.burning", "Burning anomaly roars");
+        add("sound_event.nuclearcraft.anomaly.psycho", "Psycho anomaly whispers");
+        add("sound_event.nuclearcraft.anomaly.teleporting", "Teleporting anomaly warbles");
     }
 
     private void advancements() {
@@ -1014,6 +1027,25 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.liquid_capacity","Capacity: %s");
         add("effect.nuclearcraft.radiation_resistance","Radiation Resistance");
         add("effect.nuclearcraft.radiation_decay","Radiation Decay");
+        add("effect.nuclearcraft.quickdraw_boost","Quickdraw");
+        add("effect.nuclearcraft.max_health_boost","Vitality");
+        add("tooltip.nc.resonite_crystal.raw","Unanalyzed. Run it through an Analyzer to certify its potential (results not guaranteed).");
+        add("tooltip.nc.resonite_crystal.rarity","Grade: %s");
+        add("tooltip.nc.resonite_crystal.effect","Resonance: %s");
+        add("tooltip.nc.resonite_crystal.fe","Output: %s/t");
+        add("tooltip.nc.resonite_rarity.common","Common");
+        add("tooltip.nc.resonite_rarity.rare","Rare");
+        add("tooltip.nc.resonite_rarity.epic","Epic");
+        add("tooltip.nc.resonite_rarity.legendary","Legendary");
+        add("tooltip.nc.resonite_crystal.patron.noteclip","Noteclip walked one of these past three checkpoints. The logbook never recorded him leaving.");
+        add("tooltip.nc.resonite_crystal.patron.marcin212","marcin212 swears a shard like this knit his ribs back after the medics had already filed the paperwork.");
+        add("tooltip.nc.resonite_crystal.patron.personbelowrocks","PersonBelowRocks pried a stuck blast door off its rails with one of these in his pocket. The door is still missing.");
+        add("tooltip.nc.resonite_crystal.patron.tomdodd4598","Dr. tomdodd4598 logged this specimen as 'remarkable' in the margins, right where the dosimeter trace flatlines.");
+        add("tooltip.nc.resonite_crystal.patron.ethantabler","ethantabler crossed an anomaly field on a hunch the size of this crystal. Walked out the far side whistling.");
+        add("tooltip.nc.resonite_crystal.patron.endleon201","endleon201 caught a round square in the vest, glanced at this, and marked it down as a good day.");
+        add("tooltip.nc.resonite_crystal.patron.sancho_lucky","sancho.lucky outran the morning blowout with this in hand. Barely. The Zone files 'barely' under 'survived'.");
+        add("tooltip.nc.resonite_crystal.patron.cerusvi","Cerusvi cleared a containment fence the manual flagged as uncrossable. The manual has since been revised.");
+        add("tooltip.nc.resonite_crystal.patron.tocix9730","tocix9730 filed a warranty claim from inside the fireball. Per company policy, it was approved.");
         add("leacher.tooltip.valid_pump","Pump - Ok");
         add("leacher.tooltip.invalid_pump","Pump in the corner not found");
         add("tooltip.nc.target_chamber.camera","Center of Target Chamber structure");
@@ -1267,6 +1299,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add(SPAXELHOE_THORIUM.get(), "Thorium Spaxel");
         add(SPAXELHOE_TOUGH.get(), "Tough Spaxel");
         add(LITHIUM_ION_CELL.get(), "Lithium Ion Cell");
+        add(RESONITE_SHARD.get(), "Resonite Shard");
+        add(RESONITE_CRYSTAL.get(), "Resonite Crystal");
     }
 
     private void armor() {

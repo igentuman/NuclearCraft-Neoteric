@@ -29,5 +29,8 @@ public class AnalyzerRecipes extends AbstractRecipeProvider {
 
         itemToItem(ingredient(FILLED_MAP), NcIngredient.stack(dataMap), 5.5D, 10D);
 
+        // Output NBT (rarity + buff) is rolled in AnalyzerBE#handleCrystalAnalyze; the recipe just gates time/power.
+        itemToItem(ingredient(NCItems.RESONITE_CRYSTAL.get()),
+                NcIngredient.stack(new ItemStack(NCItems.RESONITE_CRYSTAL.get())), 8.0D, 16D);
     }
 }

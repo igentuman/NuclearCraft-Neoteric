@@ -27,6 +27,7 @@ public class CommonConfig {
     public static final GTCEUCompatibilityConfig GTCEU_CONFIG = new GTCEUCompatibilityConfig(BUILDER);
     public static final Q36Config Q36_CONFIG = new Q36Config(BUILDER);
     public static final BombConfig BOMB_CONFIG = new BombConfig(BUILDER);
+    public static final AnomalyConfig ANOMALY_CONFIG = new AnomalyConfig(BUILDER);
 
     public static final StorageBlocksConfig STORAGE_BLOCKS = new StorageBlocksConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
@@ -273,6 +274,233 @@ public class CommonConfig {
             FAST_BLOCK_WRITES = builder
                     .comment("If true, bombs mutate chunk sections directly and resend whole chunks instead of using server.setBlock per op. ~50-100x faster but skips neighbor updates, fluid flow, falling-block triggers, and Forge block events inside the blast. Set false to roll back to vanilla setBlock path.")
                     .define("fast_block_writes", true);
+            builder.pop();
+        }
+    }
+
+    public static class AnomalyConfig {
+        // Global
+        public final ForgeConfigSpec.BooleanValue ENABLED;
+        public final ForgeConfigSpec.BooleanValue SHADER;
+        public final ForgeConfigSpec.DoubleValue SPAWN_CHANCE_PER_CELL;
+        public final ForgeConfigSpec.IntValue CELL_SIZE;
+        public final ForgeConfigSpec.IntValue ACTIVATION_CELL_RADIUS;
+
+        // Per-variant enable + weight (indexed by AnomalyType ordinal in AnomalySpawnManager)
+        public final ForgeConfigSpec.BooleanValue ENABLE_GRAVITATIONAL;
+        public final ForgeConfigSpec.BooleanValue ENABLE_ELECTRIC;
+        public final ForgeConfigSpec.BooleanValue ENABLE_RADIOACTIVE;
+        public final ForgeConfigSpec.BooleanValue ENABLE_BURNING;
+        public final ForgeConfigSpec.BooleanValue ENABLE_PSYCHO;
+        public final ForgeConfigSpec.BooleanValue ENABLE_TELEPORTING;
+        public final ForgeConfigSpec.IntValue WEIGHT_GRAVITATIONAL;
+        public final ForgeConfigSpec.IntValue WEIGHT_ELECTRIC;
+        public final ForgeConfigSpec.IntValue WEIGHT_RADIOACTIVE;
+        public final ForgeConfigSpec.IntValue WEIGHT_BURNING;
+        public final ForgeConfigSpec.IntValue WEIGHT_PSYCHO;
+        public final ForgeConfigSpec.IntValue WEIGHT_TELEPORTING;
+
+        // Gravitational
+        public final ForgeConfigSpec.DoubleValue GRAV_RADIUS;
+        public final ForgeConfigSpec.DoubleValue GRAV_PULL;
+        public final ForgeConfigSpec.DoubleValue GRAV_LAUNCH_CHANCE;
+        public final ForgeConfigSpec.DoubleValue GRAV_LAUNCH_POWER;
+        public final ForgeConfigSpec.IntValue GRAV_ABSORB_THRESHOLD;
+        public final ForgeConfigSpec.IntValue GRAV_ABSORB_INTERVAL;
+        public final ForgeConfigSpec.BooleanValue GRAV_BLOCK_ABSORB;
+        public final ForgeConfigSpec.BooleanValue GRAV_EXPLOSION;
+        public final ForgeConfigSpec.DoubleValue GRAV_EXPLOSION_POWER;
+        public final ForgeConfigSpec.DoubleValue GRAV_MASS_SCALE;
+
+        // Electric
+        public final ForgeConfigSpec.DoubleValue ELECTRIC_RADIUS;
+        public final ForgeConfigSpec.DoubleValue ELECTRIC_DAMAGE;
+        public final ForgeConfigSpec.IntValue ELECTRIC_INTERVAL;
+        public final ForgeConfigSpec.IntValue ELECTRIC_DISCHARGE_FE;
+
+        // Radioactive
+        public final ForgeConfigSpec.IntValue RAD_RADIUS;
+        public final ForgeConfigSpec.LongValue RAD_DOSE;
+        public final ForgeConfigSpec.IntValue RAD_INTERVAL;
+
+        // Burning
+        public final ForgeConfigSpec.DoubleValue BURN_RADIUS;
+        public final ForgeConfigSpec.DoubleValue BURN_EXPLOSION_RADIUS;
+        public final ForgeConfigSpec.IntValue BURN_EXPLOSION_MIN_TICKS;
+        public final ForgeConfigSpec.IntValue BURN_EXPLOSION_MAX_TICKS;
+        public final ForgeConfigSpec.IntValue BURN_WATER_BLOCKS_TO_NEUTRALIZE;
+        public final ForgeConfigSpec.BooleanValue BURN_BLOCK_IGNITE;
+        public final ForgeConfigSpec.BooleanValue BURN_EXPLOSION;
+
+        // Psycho
+        public final ForgeConfigSpec.DoubleValue PSYCHO_RADIUS;
+        public final ForgeConfigSpec.IntValue PSYCHO_INTERVAL;
+        public final ForgeConfigSpec.IntValue PSYCHO_AMPLIFIER;
+        public final ForgeConfigSpec.IntValue PSYCHO_VEX_INTERVAL;
+        public final ForgeConfigSpec.IntValue PSYCHO_VEX_MAX;
+        public final ForgeConfigSpec.IntValue PSYCHO_VEX_LIFETIME;
+
+        // Teleporting
+        public final ForgeConfigSpec.DoubleValue TP_VICTIM_RADIUS;
+        public final ForgeConfigSpec.IntValue TP_MAX_DISTANCE;
+        public final ForgeConfigSpec.IntValue TP_SELF_MIN_TICKS;
+        public final ForgeConfigSpec.IntValue TP_SELF_MAX_TICKS;
+        public final ForgeConfigSpec.DoubleValue TP_SELF_RADIUS;
+        public final ForgeConfigSpec.IntValue TP_HOVER_OFFSET;
+
+        // Crystal shards
+        public final ForgeConfigSpec.BooleanValue SHARD_DROPS_ENABLED;
+        public final ForgeConfigSpec.IntValue SHARD_DROP_MIN;
+        public final ForgeConfigSpec.IntValue SHARD_DROP_MAX;
+        public final ForgeConfigSpec.DoubleValue SHARD_DROP_CHANCE;
+        public final ForgeConfigSpec.IntValue RARITY_WEIGHT_COMMON;
+        public final ForgeConfigSpec.IntValue RARITY_WEIGHT_RARE;
+        public final ForgeConfigSpec.IntValue RARITY_WEIGHT_EPIC;
+        public final ForgeConfigSpec.IntValue RARITY_WEIGHT_LEGENDARY;
+        public final ForgeConfigSpec.IntValue BUFF_REFRESH_TICKS;
+        public final ForgeConfigSpec.IntValue BUFF_DURATION_TICKS;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> BUFF_EFFECT_BLACKLIST;
+
+        public AnomalyConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("anomalies");
+
+            ENABLED = builder
+                    .comment("Master switch for the Wasteland anomaly system")
+                    .define("enabled", true);
+            SHADER = builder
+                    .comment("Enable the per-variant anomaly post-process shaders (distortion/glow/lightning). Disable on weak GPUs.")
+                    .define("shader", true);
+            SPAWN_CHANCE_PER_CELL = builder
+                    .comment("Probability (0..1) that a given placement cell contains an anomaly")
+                    .defineInRange("spawn_chance_per_cell", 0.45D, 0.0D, 1.0D);
+            CELL_SIZE = builder
+                    .comment("Side length, in blocks, of each square placement cell")
+                    .defineInRange("cell_size", 128, 16, 4096);
+            ACTIVATION_CELL_RADIUS = builder
+                    .comment("How many cells around each player are scanned for spawning")
+                    .defineInRange("activation_cell_radius", 2, 0, 8);
+
+            builder.push("variants");
+            ENABLE_GRAVITATIONAL = builder.define("enable_gravitational", true);
+            WEIGHT_GRAVITATIONAL = builder.defineInRange("weight_gravitational", 2, 0, 1000);
+            ENABLE_ELECTRIC = builder.define("enable_electric", true);
+            WEIGHT_ELECTRIC = builder.defineInRange("weight_electric", 3, 0, 1000);
+            ENABLE_RADIOACTIVE = builder.define("enable_radioactive", true);
+            WEIGHT_RADIOACTIVE = builder.defineInRange("weight_radioactive", 3, 0, 1000);
+            ENABLE_BURNING = builder.define("enable_burning", true);
+            WEIGHT_BURNING = builder.defineInRange("weight_burning", 3, 0, 1000);
+            ENABLE_PSYCHO = builder.define("enable_psycho", true);
+            WEIGHT_PSYCHO = builder.defineInRange("weight_psycho", 2, 0, 1000);
+            ENABLE_TELEPORTING = builder.define("enable_teleporting", true);
+            WEIGHT_TELEPORTING = builder.defineInRange("weight_teleporting", 2, 0, 1000);
+            builder.pop();
+
+            builder.push("gravitational");
+            GRAV_RADIUS = builder.defineInRange("radius", 12.0D, 1.0D, 32.0D);
+            GRAV_PULL = builder
+                    .comment("Per-tick velocity added toward the centre at the edge of the radius")
+                    .defineInRange("pull", 0.3D, 0.0D, 2.0D);
+            GRAV_LAUNCH_CHANCE = builder
+                    .comment("Per-tick chance to fling a caught living entity upward")
+                    .defineInRange("launch_chance", 0.05D, 0.0D, 1.0D);
+            GRAV_LAUNCH_POWER = builder
+                    .comment("Upward velocity applied when a living entity is launched. ~2.0 hurls them well into the sky.")
+                    .defineInRange("launch_power", 2.0D, 0.0D, 10.0D);
+            GRAV_ABSORB_THRESHOLD = builder
+                    .comment("Absorbed blocks needed to trigger the collapse explosion (counterplay)")
+                    .defineInRange("absorb_threshold", 320, 1, 100000);
+            GRAV_ABSORB_INTERVAL = builder.defineInRange("absorb_interval_ticks", 50, 1, 1200);
+            GRAV_BLOCK_ABSORB = builder
+                    .comment("Allow the anomaly to remove (absorb) nearby blocks. Disable to prevent terrain edits.")
+                    .define("block_absorb", true);
+            GRAV_EXPLOSION = builder.define("explosion_on_collapse", true);
+            GRAV_EXPLOSION_POWER = builder.defineInRange("explosion_power", 18.0D, 0.0D, 64.0D);
+            GRAV_MASS_SCALE = builder
+                    .comment("Extra radius/pull multiplier gained as the anomaly absorbs mass. 0 = no growth; 1.0 = up to 2x radius and pull at the collapse threshold.")
+                    .defineInRange("mass_scale", 1.0D, 0.0D, 8.0D);
+            builder.pop();
+
+            builder.push("electric");
+            ELECTRIC_RADIUS = builder.defineInRange("radius", 28.0D, 1.0D, 64.0D);
+            ELECTRIC_DAMAGE = builder.defineInRange("damage", 16.0D, 0.0D, 1000.0D);
+            ELECTRIC_INTERVAL = builder.defineInRange("strike_interval_ticks", 50, 1, 1200);
+            ELECTRIC_DISCHARGE_FE = builder
+                    .comment("Free energy buffer (FE) an adjacent battery must offer to neutralise it. 10 MFE = 10,000,000 FE.")
+                    .defineInRange("discharge_fe_threshold", 100_000_000, 1, Integer.MAX_VALUE);
+            builder.pop();
+
+            builder.push("radioactive");
+            RAD_RADIUS = builder.defineInRange("radius", 48, 4, 256);
+            RAD_DOSE = builder
+                    .comment("Radiation dose applied to each living entity within radius per emit (scaled by distance falloff). Same units as the player radiation capability.")
+                    .defineInRange("dose", 100_000L, 0L, Long.MAX_VALUE);
+            RAD_INTERVAL = builder.defineInRange("emit_interval_ticks", 20, 1, 1200);
+            builder.pop();
+
+            builder.push("burning");
+            BURN_RADIUS = builder.defineInRange("radius", 10.0D, 1.0D, 64.0D);
+            BURN_EXPLOSION_RADIUS = builder.defineInRange("explosion_radius", 2.0D, 0.0D, 64.0D);
+            BURN_EXPLOSION_MIN_TICKS = builder.defineInRange("explosion_min_ticks", 200, 1, 24000);
+            BURN_EXPLOSION_MAX_TICKS = builder.defineInRange("explosion_max_ticks", 400, 1, 24000);
+            BURN_WATER_BLOCKS_TO_NEUTRALIZE = builder
+                    .comment("Water source blocks within 3 blocks needed to extinguish it (counterplay)")
+                    .defineInRange("water_blocks_to_neutralize", 8, 1, 1000);
+            BURN_BLOCK_IGNITE = builder
+                    .comment("Allow the anomaly to set nearby flammable blocks on fire. Disable to prevent fire spread.")
+                    .define("block_ignite", true);
+            BURN_EXPLOSION = builder.define("periodic_explosion", true);
+            builder.pop();
+
+            builder.push("psycho");
+            PSYCHO_RADIUS = builder.defineInRange("radius", 48.0D, 1.0D, 128.0D);
+            PSYCHO_INTERVAL = builder.defineInRange("interval_ticks", 40, 1, 1200);
+            PSYCHO_AMPLIFIER = builder.defineInRange("effect_amplifier", 0, 0, 10);
+            PSYCHO_VEX_INTERVAL = builder
+                    .comment("Average ticks between vex spawns (actual timing jittered +/-25%)")
+                    .defineInRange("vex_spawn_interval_ticks", 40, 1, 1200);
+            PSYCHO_VEX_MAX = builder
+                    .comment("Max vexes allowed within radius before spawning is suppressed. 0 disables vex spawning.")
+                    .defineInRange("vex_max_nearby", 6, 0, 64);
+            PSYCHO_VEX_LIFETIME = builder
+                    .comment("Ticks a spawned vex lives before vanishing. 0 = no limit (persistent).")
+                    .defineInRange("vex_lifetime_ticks", 1200, 0, 24000);
+            builder.pop();
+
+            builder.push("teleporting");
+            TP_VICTIM_RADIUS = builder.defineInRange("victim_radius", 5.0D, 1.0D, 32.0D);
+            TP_MAX_DISTANCE = builder.defineInRange("victim_max_distance", 100, 1, 1000);
+            TP_SELF_MIN_TICKS = builder.defineInRange("self_blink_min_ticks", 60, 1, 1200);
+            TP_SELF_MAX_TICKS = builder.defineInRange("self_blink_max_ticks", 120, 1, 1200);
+            TP_SELF_RADIUS = builder.defineInRange("self_blink_radius", 12.0D, 1.0D, 32.0D);
+            TP_HOVER_OFFSET = builder.defineInRange("hover_offset", 3, 0, 32);
+            builder.pop();
+
+            builder.push("shards");
+            SHARD_DROPS_ENABLED = builder
+                    .comment("Drop resonite shards when an anomaly is resolved through its counterplay")
+                    .define("shard_drops_enabled", true);
+            SHARD_DROP_MIN = builder.defineInRange("shard_drop_min", 1, 0, 64);
+            SHARD_DROP_MAX = builder.defineInRange("shard_drop_max", 2, 0, 64);
+            SHARD_DROP_CHANCE = builder.defineInRange("shard_drop_chance", 1.0D, 0.0D, 1.0D);
+            RARITY_WEIGHT_COMMON = builder
+                    .comment("Relative weights for the rarity rolled when a crystal is analyzed")
+                    .defineInRange("rarity_weight_common", 85, 0, 1000000);
+            RARITY_WEIGHT_RARE = builder.defineInRange("rarity_weight_rare", 8, 0, 1000000);
+            RARITY_WEIGHT_EPIC = builder.defineInRange("rarity_weight_epic", 6, 0, 1000000);
+            RARITY_WEIGHT_LEGENDARY = builder.defineInRange("rarity_weight_legendary", 1, 0, 1000000);
+            BUFF_REFRESH_TICKS = builder
+                    .comment("How often (ticks) carried analyzed crystals re-apply their buff")
+                    .defineInRange("buff_refresh_ticks", 120, 1, 1200);
+            BUFF_DURATION_TICKS = builder
+                    .comment("Duration (ticks) of the applied buff; keep above the refresh interval")
+                    .defineInRange("buff_duration_ticks", 240, 1, 24000);
+            BUFF_EFFECT_BLACKLIST = builder
+                    .comment("Effect ids excluded from the crystal analysis buff pool")
+                    .defineList("buff_effect_blacklist",
+                            Arrays.asList("minecraft:hero_of_the_village", "minecraft:dolphins_grace", "minecraft:conduit_power"),
+                            o -> o instanceof String);
+            builder.pop();
+
             builder.pop();
         }
     }

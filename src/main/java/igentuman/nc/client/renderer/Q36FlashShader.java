@@ -10,18 +10,14 @@ import igentuman.nc.entity.Q36EnergyFlash;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.client.renderer.NCShaders.q36FlashPostEffect;
 
-@Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class Q36FlashShader {
 
     private static int currentSize = 0;

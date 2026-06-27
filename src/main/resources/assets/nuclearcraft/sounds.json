@@ -192,5 +192,41 @@
       "nuclearcraft:bomb/fourth_distance"
     ],
     "subtitle": "sound_event.nuclearcraft.bomb.blast"
+  },
+  "entity.anomaly.gravitational": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/gravitational", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.gravitational"
+  },
+  "entity.anomaly.electric": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/electric", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.electric"
+  },
+  "entity.anomaly.radioactive": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/radioactive", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.radioactive"
+  },
+  "entity.anomaly.burning": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/burning", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.burning"
+  },
+  "entity.anomaly.psycho": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/psycho", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.psycho"
+  },
+  "entity.anomaly.teleporting": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/teleporting", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.teleporting"
   }
 }

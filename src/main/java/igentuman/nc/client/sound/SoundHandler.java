@@ -70,6 +70,19 @@ public class SoundHandler {
         return s;
     }
 
+    public static SoundInstance startAnomalySound(igentuman.nc.entity.anomaly.AnomalyEntity entity, SoundEvent soundEvent, float volume) {
+        AnomalyAmbientSound s = new AnomalyAmbientSound(entity, soundEvent, volume);
+        if (!isClientPlayerInRange(s)) {
+            return null;
+        }
+        playSound(s);
+        return s;
+    }
+
+    public static boolean isActive(SoundInstance sound) {
+        return sound != null && Minecraft.getInstance().getSoundManager().isActive(sound);
+    }
+
     public static void stopTileSound(BlockPos pos) {
         long posKey = pos.asLong();
         SoundInstance s = soundMap.get(posKey);

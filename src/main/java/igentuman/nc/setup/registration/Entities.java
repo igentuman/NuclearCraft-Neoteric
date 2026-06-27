@@ -6,6 +6,13 @@ import igentuman.nc.entity.EntityWastelandBoss;
 import igentuman.nc.entity.EntityBlockProjectile;
 import igentuman.nc.entity.Q36EnergyFlash;
 import igentuman.nc.entity.Q36PulseProjectile;
+import igentuman.nc.entity.anomaly.AnomalyEntity;
+import igentuman.nc.entity.anomaly.BurningAnomalyEntity;
+import igentuman.nc.entity.anomaly.ElectricAnomalyEntity;
+import igentuman.nc.entity.anomaly.GravitationalAnomalyEntity;
+import igentuman.nc.entity.anomaly.PsychoAnomalyEntity;
+import igentuman.nc.entity.anomaly.RadioactiveAnomalyEntity;
+import igentuman.nc.entity.anomaly.TeleportingAnomalyEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -76,6 +83,62 @@ public class Entities {
                             .updateInterval(20)
                             .build("primed_fission_bomb"));
 
+    // spawner, hence .noSummon(). Large tracking range so renderer/FX engage before the effect radius.
+    @SuppressWarnings("unchecked")
+    public static final RegistryObject<EntityType<GravitationalAnomalyEntity>> GRAVITATIONAL_ANOMALY =
+            Registries.ENTITIES.register("gravitational_anomaly",
+                    () -> EntityType.Builder.<GravitationalAnomalyEntity>of(GravitationalAnomalyEntity::new, MobCategory.MISC)
+                            .sized(1.0F, 1.0F)
+                            .clientTrackingRange(10)
+                            .updateInterval(3)
+                            .build("gravitational_anomaly"));
+
+    @SuppressWarnings("unchecked")
+    public static final RegistryObject<EntityType<ElectricAnomalyEntity>> ELECTRIC_ANOMALY =
+            Registries.ENTITIES.register("electric_anomaly",
+                    () -> EntityType.Builder.<ElectricAnomalyEntity>of(ElectricAnomalyEntity::new, MobCategory.MISC)
+                            .sized(1.0F, 1.0F)
+                            .clientTrackingRange(10)
+                            .updateInterval(3)
+                            .build("electric_anomaly"));
+
+    @SuppressWarnings("unchecked")
+    public static final RegistryObject<EntityType<RadioactiveAnomalyEntity>> RADIOACTIVE_ANOMALY =
+            Registries.ENTITIES.register("radioactive_anomaly",
+                    () -> EntityType.Builder.<RadioactiveAnomalyEntity>of(RadioactiveAnomalyEntity::new, MobCategory.MISC)
+                            .sized(1.0F, 1.0F)
+                            .clientTrackingRange(10)
+                            .updateInterval(3)
+                            .build("radioactive_anomaly"));
+
+    @SuppressWarnings("unchecked")
+    public static final RegistryObject<EntityType<BurningAnomalyEntity>> BURNING_ANOMALY =
+            Registries.ENTITIES.register("burning_anomaly",
+                    () -> EntityType.Builder.<BurningAnomalyEntity>of(BurningAnomalyEntity::new, MobCategory.MISC)
+                            .sized(1.0F, 1.0F)
+                            .fireImmune()
+                            .clientTrackingRange(10)
+                            .updateInterval(3)
+                            .build("burning_anomaly"));
+
+    @SuppressWarnings("unchecked")
+    public static final RegistryObject<EntityType<PsychoAnomalyEntity>> PSYCHO_ANOMALY =
+            Registries.ENTITIES.register("psycho_anomaly",
+                    () -> EntityType.Builder.<PsychoAnomalyEntity>of(PsychoAnomalyEntity::new, MobCategory.MISC)
+                            .sized(1.0F, 1.0F)
+                            .clientTrackingRange(10)
+                            .updateInterval(3)
+                            .build("psycho_anomaly"));
+
+    @SuppressWarnings("unchecked")
+    public static final RegistryObject<EntityType<TeleportingAnomalyEntity>> TELEPORTING_ANOMALY =
+            Registries.ENTITIES.register("teleporting_anomaly",
+                    () -> EntityType.Builder.<TeleportingAnomalyEntity>of(TeleportingAnomalyEntity::new, MobCategory.MISC)
+                            .sized(1.0F, 1.0F)
+                            .clientTrackingRange(10)
+                            .updateInterval(3)
+                            .build("teleporting_anomaly"));
+
     public static void registerSpawnPlacements() {
         SpawnPlacements.register(FERAL_GHOUL.get(), 
                 SpawnPlacements.Type.NO_RESTRICTIONS,
@@ -92,5 +155,11 @@ public class Entities {
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(FERAL_GHOUL.get(), EntityFeralGhoul.createAttributes().build());
         event.put(FERAL_GHOUL_BOSS.get(), EntityWastelandBoss.createAttributes().build());
+        event.put(GRAVITATIONAL_ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        event.put(ELECTRIC_ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        event.put(RADIOACTIVE_ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        event.put(BURNING_ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        event.put(PSYCHO_ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        event.put(TELEPORTING_ANOMALY.get(), AnomalyEntity.createAttributes().build());
     }
 }

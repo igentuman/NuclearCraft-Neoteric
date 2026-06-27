@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import igentuman.nc.world.BiomeFilterNether;
 import igentuman.nc.world.OrePlacementModifier;
 import igentuman.nc.world.structure.WastelandBossLairFeature;
+import igentuman.nc.world.structure.WastelandDecoFeature;
 import igentuman.nc.world.structure.WastelandPortalFeature;
 import igentuman.nc.world.structure.WastelandStructureFeature;
 import net.minecraft.core.BlockPos;
@@ -47,6 +48,7 @@ public class WorldGeneration {
 
     public static void init() {
         WastelandStructureFeature.init();
+        WastelandDecoFeature.init();
         WastelandPortalFeature.init();
         WastelandBossLairFeature.init();
     }

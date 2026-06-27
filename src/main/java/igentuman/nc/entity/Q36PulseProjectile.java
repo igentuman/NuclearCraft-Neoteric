@@ -81,6 +81,9 @@ public class Q36PulseProjectile extends ThrowableProjectile {
         super.onHitEntity(result);
         if (level().isClientSide) return;
         Entity target = result.getEntity();
+        if (target instanceof igentuman.nc.entity.anomaly.AnomalyEntity anomaly) {
+            anomaly.onQ36Hit(getOwner());
+        }
         LivingEntity ownerLiving = getOwner() instanceof LivingEntity le ? le : null;
         DamageSource src = damageSources().mobProjectile(this, ownerLiving);
         target.hurt(src, Q36Item.FireMode.PULSE.damage());

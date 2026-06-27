@@ -1,0 +1,44 @@
+{
+  "name": "Shards & Crystals",
+  "icon": "nuclearcraft:resonite_crystal",
+  "category": "nuclearcraft:anomalies",
+  "sortnum": 2,
+  "pages": [
+    {
+      "anchor": "shard",
+      "type": "items/1",
+      "header": "Resonite Shard",
+      "item": "nuclearcraft:resonite_shard",
+      "text": "The $(item)Resonite Shard$() is what every counterplayed anomaly leaves behind (radioactive ones never resolve, so they never pay out). Plain on its own, but the only feedstock for crystals."
+    },
+    {
+      "anchor": "crystal",
+      "type": "items/1",
+      "header": "Resonite Crystal",
+      "item": "nuclearcraft:resonite_crystal",
+      "text": "Nine shards in a 3x3 press into one raw $(item)Resonite Crystal$(). Raw, it does nothing - no buff, no power. Its potential is sealed until it is analyzed."
+    },
+    {
+      "type": "crafting",
+      "recipe": "nuclearcraft:resonite_crystal",
+      "text": "Nine $(item)Resonite Shards$() yield one raw crystal."
+    },
+    {
+      "anchor": "analysis",
+      "type": "blocks/1",
+      "header": "Analysis",
+      "block": "nuclearcraft:analyzer",
+      "text": "Run a raw crystal through an $(item)Analyzer$(). Analysis rolls a $(o)grade$() (Common, Rare, Epic, Legendary - higher is rarer) and a $(o)resonance$() (one random beneficial effect), then writes them in for good."
+    },
+    {
+      "type": "text",
+      "title": "Certified for Life",
+      "text": "Re-analyzing an already-analyzed crystal is safe: it keeps its grade and resonance rather than rerolling. (The certification stamp does not come off.) $(br)The resonance pool includes radiation resistance, a vitality boost, and a quickdraw boost."
+    },
+    {
+      "type": "text",
+      "title": "Carrying a Crystal",
+      "text": "An analyzed crystal works passively while it is $(o)in your inventory or worn in a Curios slot$(). $(br)$(li)$(o)Resonance:$() you continuously gain its effect, scaled by grade. Duplicate resonances don't stack - the strongest wins; different ones all apply. $(li)$(o)Power:$() it acts as a bottomless FE battery that never drains. Higher grades output more FE/t."
+    }
+  ]
+}

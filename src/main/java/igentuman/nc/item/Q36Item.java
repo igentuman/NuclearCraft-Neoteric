@@ -3,6 +3,7 @@ package igentuman.nc.item;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.entity.Q36EnergyFlash;
 import igentuman.nc.entity.Q36PulseProjectile;
+import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.setup.registration.Entities;
 import igentuman.nc.setup.registration.NCSounds;
@@ -212,9 +213,15 @@ public class Q36Item extends Item {
                 e -> !e.isSpectator() && e.isPickable() && e != player);
 
         Vec3 end = blockEnd;
+        boolean hitAnomaly = false;
         if (entityHit != null) {
             end = entityHit.getLocation();
             Entity target = entityHit.getEntity();
+            // Anomalies are immune to hurt(); the Q36 beam is their explicit counterplay (direct hit only).
+            if (target instanceof AnomalyEntity anomaly) {
+                anomaly.onQ36Hit(player);
+                hitAnomaly = true;
+            }
             DamageSource src = level.damageSources().mobProjectile(player, player);
             target.hurt(src, mode.damage());
             if (target instanceof LivingEntity living) {
@@ -225,11 +232,15 @@ public class Q36Item extends Item {
             }
         }
 
-        int breakRadius = CommonConfig.Q36_CONFIG.BEAM_BLOCK_BREAK_RADIUS.get();
-        if (breakRadius > 0) {
-            breakBlocksAt(level, player, end, breakRadius);
+        // A counterplay hit resolves the anomaly and spawns its shard drop at the impact point; skip the
+        // crater + AoE so the blast doesn't bury or destroy the reward it just dropped.
+        if (!hitAnomaly) {
+            int breakRadius = CommonConfig.Q36_CONFIG.BEAM_BLOCK_BREAK_RADIUS.get();
+            if (breakRadius > 0) {
+                breakBlocksAt(level, player, end, breakRadius);
+            }
+            damageEntitiesAt(level, end, 3, mode, player, entityHit != null ? entityHit.getEntity() : null);
         }
-        damageEntitiesAt(level, end, 3, mode, player, entityHit != null ? entityHit.getEntity() : null);
         spawnBeamParticles(level, start, end);
         spawnImpactParticles(level, end, 3.0D);
         spawnMuzzleFlash(level, start);

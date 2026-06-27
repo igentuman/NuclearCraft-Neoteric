@@ -1,5 +1,6 @@
 package igentuman.nc.setup.registration;
 
+import igentuman.nc.entity.anomaly.AnomalyType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.registries.RegistryObject;
 import java.util.HashMap;
@@ -40,7 +41,32 @@ public final class NCSounds {
     public static final RegistryObject<SoundEvent> BOMB_BLAST_THIRD = SOUND_EVENTS.register("bomb.third_distance", () -> SoundEvent.createVariableRangeEvent(rl("bomb.third_distance")));
     public static final RegistryObject<SoundEvent> BOMB_BLAST_FOURTH = SOUND_EVENTS.register("bomb.fourth_distance", () -> SoundEvent.createVariableRangeEvent(rl("bomb.fourth_distance")));
 
+    public static final RegistryObject<SoundEvent> ANOMALY_GRAVITATIONAL = SOUND_EVENTS.register("entity.anomaly.gravitational", () -> SoundEvent.createVariableRangeEvent(rl("entity.anomaly.gravitational")));
+    public static final RegistryObject<SoundEvent> ANOMALY_ELECTRIC = SOUND_EVENTS.register("entity.anomaly.electric", () -> SoundEvent.createVariableRangeEvent(rl("entity.anomaly.electric")));
+    public static final RegistryObject<SoundEvent> ANOMALY_RADIOACTIVE = SOUND_EVENTS.register("entity.anomaly.radioactive", () -> SoundEvent.createVariableRangeEvent(rl("entity.anomaly.radioactive")));
+    public static final RegistryObject<SoundEvent> ANOMALY_BURNING = SOUND_EVENTS.register("entity.anomaly.burning", () -> SoundEvent.createVariableRangeEvent(rl("entity.anomaly.burning")));
+    public static final RegistryObject<SoundEvent> ANOMALY_PSYCHO = SOUND_EVENTS.register("entity.anomaly.psycho", () -> SoundEvent.createVariableRangeEvent(rl("entity.anomaly.psycho")));
+    public static final RegistryObject<SoundEvent> ANOMALY_TELEPORTING = SOUND_EVENTS.register("entity.anomaly.teleporting", () -> SoundEvent.createVariableRangeEvent(rl("entity.anomaly.teleporting")));
+
+    public static final HashMap<String, RegistryObject<SoundEvent>> ANOMALY_SOUNDS = initAnomalySounds();
+
     public static final HashMap<String, RegistryObject<SoundEvent>> SOUND_MAP = initSoundMap();
+
+    private static HashMap<String, RegistryObject<SoundEvent>> initAnomalySounds() {
+        HashMap<String, RegistryObject<SoundEvent>> map = new HashMap<>();
+        map.put("gravitational", ANOMALY_GRAVITATIONAL);
+        map.put("electric", ANOMALY_ELECTRIC);
+        map.put("radioactive", ANOMALY_RADIOACTIVE);
+        map.put("burning", ANOMALY_BURNING);
+        map.put("psycho", ANOMALY_PSYCHO);
+        map.put("teleporting", ANOMALY_TELEPORTING);
+        return map;
+    }
+
+    public static SoundEvent getAnomalySound(AnomalyType type) {
+        RegistryObject<SoundEvent> ro = ANOMALY_SOUNDS.get(type.id());
+        return ro == null ? null : ro.get();
+    }
 
     private static HashMap<String, RegistryObject<SoundEvent>> initSoundMap() {
         HashMap<String, RegistryObject<SoundEvent>> soundMap = new HashMap<>();

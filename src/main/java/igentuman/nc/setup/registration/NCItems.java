@@ -82,6 +82,8 @@ public class NCItems {
 
     public static final RegistryObject<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter", () -> new GeigerCounterItem(ONE_ITEM_PROPERTIES));
     public static final RegistryObject<Item> LITHIUM_ION_CELL = ITEMS.register("lithium_ion_cell", () -> new BatteryItem(ONE_ITEM_PROPERTIES));
+    public static final RegistryObject<Item> RESONITE_SHARD = ITEMS.register("resonite_shard", () -> new Item(ITEM_PROPERTIES));
+    public static final RegistryObject<Item> RESONITE_CRYSTAL = ITEMS.register("resonite_crystal", () -> new ResoniteCrystalItem(ITEM_PROPERTIES));
     public static final RegistryObject<Item> SPAXELHOE_TOUGH = ITEMS.register("spaxelhoe_tough", () -> new PaxelItem(7, 2, Tiers.TOUGH, TOUGH_PAXEL_PROPS));
     public static final RegistryObject<Item> SPAXELHOE_THORIUM = ITEMS.register("spaxelhoe_thorium", () -> new PaxelItem(3, 1, Tiers.THORIUM, THORIUM_PAXEL_PROPS));
     public static final RegistryObject<Item> QNP = ITEMS.register("qnp", () -> new QNP(Tiers.QNP, 11, 2F, ONE_ITEM_PROPERTIES));

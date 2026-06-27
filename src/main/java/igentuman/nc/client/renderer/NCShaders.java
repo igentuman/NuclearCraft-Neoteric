@@ -28,6 +28,7 @@ public class NCShaders {
     public static PostChain blackholePostEffect;
     public static PostChain nukePostEffect;
     public static PostChain q36FlashPostEffect;
+    public static PostChain anomalyPostEffect;
 
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException {
@@ -47,6 +48,10 @@ public class NCShaders {
         q36FlashPostEffect = new PostChain(mc.getTextureManager(), mc.getResourceManager(),
                 mc.getMainRenderTarget(), rl("shaders/post/q36_flash.json"));
         q36FlashPostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
+
+        anomalyPostEffect = new PostChain(mc.getTextureManager(), mc.getResourceManager(),
+                mc.getMainRenderTarget(), rl("shaders/post/anomaly.json"));
+        anomalyPostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
     }
 
     private static void registerShader(RegisterShadersEvent event, ResourceLocation shaderLocation, VertexFormat vertexFormat, ShaderTracker tracker) throws IOException {

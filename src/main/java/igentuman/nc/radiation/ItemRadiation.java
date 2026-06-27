@@ -17,8 +17,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.content.materials.Materials.*;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
-import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
-import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
+import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.util.NcUtils.getNCBlock;
 import static igentuman.nc.util.NcUtils.rlFromString;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
@@ -72,6 +71,8 @@ public class ItemRadiation {
         for(Block block: getBlocksByTagKey("forge:storage_blocks/uranium")) {
             add(block.asItem().toString(), 0.00004D);
         }
+
+        add(RESONITE_CRYSTAL.get(), 0.01D);
 
         add(getNCBlock("americium241").asItem(), 0.05D);
         add(getNCBlock("uranium238").asItem(),0.0005D);

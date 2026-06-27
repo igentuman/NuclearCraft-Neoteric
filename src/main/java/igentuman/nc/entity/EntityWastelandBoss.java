@@ -98,6 +98,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         this.xpReward = 250;
         this.refreshDimensions();
         this.setPersistenceRequired();
+        this.setHealth(getMaxHealth());
     }
 
     @Override
@@ -128,7 +129,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Zombie.createAttributes()
-                .add(Attributes.MAX_HEALTH, 250.0D)
+                .add(Attributes.MAX_HEALTH, 500.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.40F)
                 .add(Attributes.ATTACK_DAMAGE, 20.0D)
                 .add(Attributes.FOLLOW_RANGE, 70.0D)

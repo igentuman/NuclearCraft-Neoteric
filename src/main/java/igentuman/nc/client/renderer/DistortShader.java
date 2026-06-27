@@ -11,23 +11,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.joml.Matrix4f;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.client.renderer.NCShaders.blackholePostEffect;
 import static igentuman.nc.handler.config.KugelblitzConfig.KUGELBLITZ_CONFIG;
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 
-@Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class DistortShader {
 
     private static int currentSize = 0;

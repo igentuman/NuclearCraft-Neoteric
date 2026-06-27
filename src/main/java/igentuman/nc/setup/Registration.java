@@ -3,6 +3,8 @@ package igentuman.nc.setup;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.content.particles.ParticleSources;
+import igentuman.nc.effect.MaxHealthBoost;
+import igentuman.nc.effect.QuickdrawBoost;
 import igentuman.nc.effect.RadiationDecay;
 import igentuman.nc.effect.RadiationResistance;
 import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
@@ -32,6 +34,8 @@ public class Registration {
 
     public static final RegistryObject<MobEffect> RADIATION_RESISTANCE = EFFECTS.register("radiation_resistance", () -> new RadiationResistance(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
     public static final RegistryObject<MobEffect> RADIATION_DECAY = EFFECTS.register("radiation_decay", () -> new RadiationDecay(MobEffectCategory.BENEFICIAL, 0xd4ffFF));
+    public static final RegistryObject<MobEffect> QUICKDRAW_BOOST = EFFECTS.register("quickdraw_boost", () -> new QuickdrawBoost(MobEffectCategory.BENEFICIAL, 0xE0C068));
+    public static final RegistryObject<MobEffect> MAX_HEALTH_BOOST = EFFECTS.register("max_health_boost", () -> new MaxHealthBoost(MobEffectCategory.BENEFICIAL, 0xF05050));
     public static final RegistryObject<MenuType<MultiblockControllerContainer>> MULTIBLOCK_REPORT_CONTAINER = CONTAINERS.register("multilblock_report_container",
             () -> IForgeMenuType.create((windowId, inv, data) -> new MultiblockControllerContainer(windowId, data.readBlockPos(), inv))
     );

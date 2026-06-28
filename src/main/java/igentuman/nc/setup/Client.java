@@ -8,6 +8,7 @@ import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.MultiblockPartBlock;
+import igentuman.nc.registration.FuelEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.MaterialFluidType;
 import igentuman.nc.registration.ModEntry;
@@ -101,34 +102,40 @@ public class Client {
     static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.materialEntry() instanceof MaterialEntry mat && mat.hasFluid()) {
-                var materialFluid = mat.materialFluid();
-                var fluidType = materialFluid.fluidType().get();
-
-                if (fluidType instanceof MaterialFluidType mft) {
-                    event.registerFluidType(new IClientFluidTypeExtensions() {
-                        @Override
-                        public ResourceLocation getStillTexture() {
-                            return mft.getStillTexture();
-                        }
-
-                        @Override
-                        public ResourceLocation getFlowingTexture() {
-                            return mft.getFlowingTexture();
-                        }
-
-                        @Override
-                        public ResourceLocation getOverlayTexture() {
-                            return mft.getOverlayTexture();
-                        }
-
-                        @Override
-                        public int getTintColor() {
-                            // Full ARGB; alpha drives translucency for gases/acids.
-                            return mft.getTintColor();
-                        }
-                    }, fluidType);
-                }
+                registerFluidExtension(event, mat.materialFluid().fluidType().get());
             }
+        }
+        for (FuelEntry fuel : ModEntries.FUELS.values()) {
+            for (MaterialEntry mat : fuel.fluids()) {
+                registerFluidExtension(event, mat.materialFluid().fluidType().get());
+            }
+        }
+    }
+
+    private static void registerFluidExtension(RegisterClientExtensionsEvent event, net.neoforged.neoforge.fluids.FluidType fluidType) {
+        if (fluidType instanceof MaterialFluidType mft) {
+            event.registerFluidType(new IClientFluidTypeExtensions() {
+                @Override
+                public ResourceLocation getStillTexture() {
+                    return mft.getStillTexture();
+                }
+
+                @Override
+                public ResourceLocation getFlowingTexture() {
+                    return mft.getFlowingTexture();
+                }
+
+                @Override
+                public ResourceLocation getOverlayTexture() {
+                    return mft.getOverlayTexture();
+                }
+
+                @Override
+                public int getTintColor() {
+                    // Full ARGB; alpha drives translucency for gases/acids.
+                    return mft.getTintColor();
+                }
+            }, fluidType);
         }
     }
 
@@ -142,6 +149,11 @@ public class Client {
         DynamicFluidContainerModel.Colors bucketColors = new DynamicFluidContainerModel.Colors();
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.materialEntry() instanceof MaterialEntry mat && mat.hasFluid()) {
+                event.register(bucketColors, mat.bucket());
+            }
+        }
+        for (FuelEntry fuel : ModEntries.FUELS.values()) {
+            for (MaterialEntry mat : fuel.fluids()) {
                 event.register(bucketColors, mat.bucket());
             }
         }

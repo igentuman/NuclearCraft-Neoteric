@@ -1,13 +1,18 @@
 package igentuman.nc.compat.kubejs;
 
+import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
+import dev.latvian.mods.kubejs.script.ScriptManager;
+import dev.latvian.mods.kubejs.script.ScriptType;
+import igentuman.nc.content.fuel.FuelDef;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.entries.FissionFuel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -42,6 +47,25 @@ public class ModKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerBuilderTypes(BuilderTypeRegistry registry) {
+    }
+
+    @Override
+    public void registerEvents(EventGroupRegistry registry) {
+        registry.register(NCKubeEvents.GROUP);
+    }
+
+    @Override
+    public void afterScriptsLoaded(ScriptManager manager) {
+        // Only the startup script pass may add fuels; their items/fluids must be registered before
+        // the registries freeze (the startup pass runs during mod setup, ahead of registration).
+        if (manager.scriptType != ScriptType.STARTUP) {
+            return;
+        }
+        RegisterFissionFuelKubeEvent event = new RegisterFissionFuelKubeEvent();
+        NCKubeEvents.REGISTER_FISSION_FUEL.post(ScriptType.STARTUP, event);
+        for (FuelDef def : event.getCollected()) {
+            FissionFuel.register(def);
+        }
     }
 
     @Override

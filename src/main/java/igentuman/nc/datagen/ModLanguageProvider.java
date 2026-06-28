@@ -1,6 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.registration.ArmorSetEntry;
+import igentuman.nc.registration.FuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ToolSetEntry;
@@ -84,6 +85,28 @@ public class ModLanguageProvider  extends LanguageProvider {
             isotope.variants().forEach((suffix, item) ->
                     add(item.get(), convertToName(isotope.itemId + suffix)));
         }
+        for (FuelEntry fuel : ModEntries.FUELS.values()) {
+            fuel.fuelItems().forEach((variant, item) ->
+                    add(item.get(), fuelDisplayName("Fuel", fuel.group, fuel.name, variant)));
+            fuel.depletedItems().forEach((variant, item) ->
+                    add(item.get(), fuelDisplayName("Depleted", fuel.group, fuel.name, variant)));
+            for (MaterialEntry mat : fuel.fluids()) {
+                String fluidName = mat.fluidDefinition.resolveName(mat.name);
+                add(mat.bucket().get(), convertToName(fluidName + "_bucket"));
+                add("fluid_type.nuclearcraft." + fluidName, convertToName(fluidName));
+            }
+        }
+    }
+
+    /** Builds a readable fuel name, e.g. {@code "Fuel Uranium HEU-233 OX"}. */
+    private static String fuelDisplayName(String typeWord, String group, String name, String variant) {
+        StringBuilder sb = new StringBuilder(typeWord).append(' ')
+                .append(convertToName(group)).append(' ')
+                .append(name.toUpperCase());
+        if (!variant.isEmpty()) {
+            sb.append(' ').append(variant.substring(1).toUpperCase());
+        }
+        return sb.toString();
     }
 
     private void labels() {
@@ -93,5 +116,10 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.multiblock.not_assembled", "Not Assembled");
         add("tooltip.fluid.empty", "Empty");
         add("death.attack.acid", "%1$s dissolved in acid");
+        add("tooltip.nuclearcraft.fuel.forge_energy", "Power: %s");
+        add("tooltip.nuclearcraft.fuel.criticality", "Criticality: %s N/t");
+        add("tooltip.nuclearcraft.fuel.heat", "Heat: %s H/t");
+        add("tooltip.nuclearcraft.fuel.depletion", "Depletion: %s");
+        add("tooltip.nuclearcraft.fuel.efficiency", "Efficiency: %s%%");
     }
 }

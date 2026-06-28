@@ -1,0 +1,7 @@
+{
+  "parent": "neoforge:item/bucket",
+  "apply_tint": true,
+  "flip_gas": false,
+  "fluid": "nuclearcraft:molten_fuel_plutonium_hep_239_za",
+  "loader": "neoforge:fluid_container"
+}

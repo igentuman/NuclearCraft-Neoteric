@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.tag;
 
+import igentuman.nc.registration.FuelEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
@@ -53,6 +54,19 @@ public class ModFluidTagProvider extends FluidTagsProvider {
                             .add(materialFluid.source().getKey())
                             .add(materialFluid.flowing().getKey());
                 }
+            }
+        }
+
+        for (FuelEntry fuel : ModEntries.FUELS.values()) {
+            for (MaterialEntry mat : fuel.fluids()) {
+                var materialFluid = mat.materialFluid();
+                String fluidName = mat.fluidDefinition.resolveName(mat.name);
+                tag(net.minecraft.tags.FluidTags.create(rl(fluidName)))
+                        .add(materialFluid.source().getKey())
+                        .add(materialFluid.flowing().getKey());
+                tag(net.minecraft.tags.FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", fluidName)))
+                        .add(materialFluid.source().getKey())
+                        .add(materialFluid.flowing().getKey());
             }
         }
     }

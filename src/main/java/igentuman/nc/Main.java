@@ -11,7 +11,9 @@ import igentuman.nc.network.PacketMultiblockBroken;
 import igentuman.nc.network.PacketMultiblockFormed;
 import igentuman.nc.network.PacketAE2PatternTransfer;
 import igentuman.nc.network.PacketSideConfigToggle;
+import igentuman.nc.registration.FuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
+import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.Registers;
@@ -264,6 +266,19 @@ public class Main {
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
                 isotope.variants().values().forEach(item -> event.accept(item));
+            }
+            for (FuelEntry fuel : ModEntries.FUELS.values()) {
+                if (!fuel.isEnabled()) continue;
+                fuel.fuelItems().values().forEach(item -> event.accept(item));
+                fuel.depletedItems().values().forEach(item -> event.accept(item));
+            }
+        }
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            for (FuelEntry fuel : ModEntries.FUELS.values()) {
+                if (!fuel.isEnabled()) continue;
+                for (MaterialEntry mat : fuel.fluids()) {
+                    event.accept(mat.bucket());
+                }
             }
         }
     }

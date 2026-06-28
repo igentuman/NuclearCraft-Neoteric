@@ -1,6 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.registration.ArmorSetEntry;
+import igentuman.nc.registration.FuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ToolSetEntry;
@@ -86,6 +87,22 @@ public class ModItemModelProvider  extends ItemModelProvider {
             // the model file itself is named after the registered item id (uranium_238).
             isotope.variants().forEach((suffix, item) ->
                     simpleItem(item, "material/isotope/" + isotope.name + suffix));
+        }
+        for (FuelEntry fuel : ModEntries.FUELS.values()) {
+            String nm = fuel.name.replace("-", "_");
+            fuel.fuelItems().forEach((variant, item) ->
+                    simpleItem(item, "fuel/" + fuel.group + "/" + nm + variant));
+            fuel.depletedItems().forEach((variant, item) ->
+                    simpleItem(item, "fuel/" + fuel.group + "/depleted/" + nm + variant));
+            for (MaterialEntry mat : fuel.fluids()) {
+                var fluid = mat.materialFluid();
+                ResourceLocation bucketKey = BuiltInRegistries.ITEM.getKey(fluid.bucket().asItem());
+                withExistingParent(bucketKey.toString(), "neoforge:item/bucket")
+                        .customLoader(DynamicFluidContainerModelBuilder::begin)
+                        .fluid(fluid.source().get())
+                        .flipGas(mat.fluidDefinition.isGas)
+                        .applyTint(true);
+            }
         }
     }
 

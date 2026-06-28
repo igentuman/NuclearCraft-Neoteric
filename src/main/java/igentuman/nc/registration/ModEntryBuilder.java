@@ -110,10 +110,6 @@ public class ModEntryBuilder {
         return add(name).item(itemSupplier);
     }
 
-    /**
-     * Registers an isotope (item-form variants + decay metadata) into {@link igentuman.nc.setup.ModEntries#ISOTOPES}.
-     * Isotopes live in their own registry, not {@code ENTRIES}; see {@link IsotopeEntry}.
-     */
     public static IsotopeEntry addIsotope(String name, double radiation) {
         return IsotopeEntry.register(name, radiation);
     }
@@ -389,13 +385,6 @@ public class ModEntryBuilder {
     public static DeferredHolder<MobEffect, MobEffect> addMobEffect(String name, Supplier<MobEffect> factory) {
         return MOB_EFFECTS.register(name, factory);
     }
-
-    // ---- Persistent data builders (backed by AttachmentType) ----
-    // NeoForge 1.21.1 has no "level capability" type; per-world and per-entity persistent data
-    // both use AttachmentType. The holder is attached at use-site: level.getData(holder) for world
-    // data, entity.getData(holder) for entity data. Supply a fully-built AttachmentType via the
-    // factory, e.g. () -> AttachmentType.builder(MyData::new).serialize(MyData.CODEC).build().
-
     public static <T> DeferredHolder<AttachmentType<?>, AttachmentType<T>> addWorldCapability(String name, Supplier<AttachmentType<T>> attachmentFactory) {
         return ATTACHMENT_TYPES.register(name, attachmentFactory);
     }

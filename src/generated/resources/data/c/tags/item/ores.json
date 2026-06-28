@@ -1,14 +1,14 @@
 {
   "values": [
     "nuclearcraft:thorium_ore",
+    "nuclearcraft:lithium_ore",
+    "nuclearcraft:tin_ore",
     "nuclearcraft:zinc_ore",
     "nuclearcraft:magnesium_ore",
     "nuclearcraft:silver_ore",
     "nuclearcraft:cobalt_ore",
     "nuclearcraft:lead_ore",
-    "nuclearcraft:lithium_ore",
     "nuclearcraft:platinum_ore",
-    "nuclearcraft:tin_ore",
     "nuclearcraft:uranium_ore",
     "nuclearcraft:boron_ore"
   ]

@@ -12,7 +12,7 @@ import static igentuman.nc.setup.Registers.ITEMS;
 
 /**
  * Registration unit for a NuclearCraft isotope. Parallels {@link ModEntry} but lives in its own
- * {@link ModEntries#ISOTOPES} registry rather than the universal {@code ENTRIES} map, because an
+ * {@link entries#ISOTOPES} registry rather than the universal {@code ENTRIES} map, because an
  * isotope is not a block/machine/material-product but a family of fuel-cladding item variants
  * carrying decay metadata.
  *
@@ -53,7 +53,7 @@ public class IsotopeEntry {
     }
 
     /**
-     * Registers an isotope and its item-form variants, then records it in {@link ModEntries#ISOTOPES}.
+     * Registers an isotope and its item-form variants, then records it in {@link entries#ISOTOPES}.
      */
     public static IsotopeEntry register(String name, double radiation) {
         IsotopeEntry entry = new IsotopeEntry(name, radiation);

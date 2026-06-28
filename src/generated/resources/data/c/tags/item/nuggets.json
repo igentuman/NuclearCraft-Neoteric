@@ -1,20 +1,20 @@
 {
   "values": [
     "nuclearcraft:thorium_nugget",
+    "nuclearcraft:bronze_nugget",
+    "nuclearcraft:aluminum_nugget",
+    "nuclearcraft:electrum_nugget",
+    "nuclearcraft:lithium_nugget",
+    "nuclearcraft:tin_nugget",
+    "nuclearcraft:beryllium_nugget",
     "nuclearcraft:zinc_nugget",
     "nuclearcraft:magnesium_nugget",
-    "nuclearcraft:bronze_nugget",
     "nuclearcraft:silver_nugget",
     "nuclearcraft:steel_nugget",
     "nuclearcraft:cobalt_nugget",
-    "nuclearcraft:aluminum_nugget",
     "nuclearcraft:zirconium_nugget",
-    "nuclearcraft:electrum_nugget",
     "nuclearcraft:lead_nugget",
-    "nuclearcraft:lithium_nugget",
     "nuclearcraft:platinum_nugget",
-    "nuclearcraft:tin_nugget",
-    "nuclearcraft:beryllium_nugget",
     "nuclearcraft:uranium_nugget",
     "nuclearcraft:boron_nugget"
   ]

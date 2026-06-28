@@ -1,0 +1,25 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:kumanderite_block"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 12,
+      "item": "nuclearcraft:xenorium_298"
+    },
+    {
+      "count": 16,
+      "item": "nuclearcraft:quantite"
+    },
+    {
+      "count": 8,
+      "item": "nuclearcraft:californium_252"
+    }
+  ],
+  "process_time": 200
+}

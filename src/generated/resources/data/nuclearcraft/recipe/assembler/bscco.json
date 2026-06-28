@@ -1,0 +1,29 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:bismuth_dust"
+    },
+    {
+      "count": 2,
+      "item": "nuclearcraft:strontium_dust"
+    },
+    {
+      "count": 2,
+      "item": "nuclearcraft:calcium_dust"
+    },
+    {
+      "count": 2,
+      "item": "nuclearcraft:copper_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:bscco_dust"
+    }
+  ],
+  "process_time": 200
+}

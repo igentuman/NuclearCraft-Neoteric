@@ -1,0 +1,19 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 7,
+      "item": "minecraft:basalt"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:tungsten_dust"
+    },
+    {
+      "item": "nuclearcraft:niobium_dust"
+    }
+  ],
+  "process_time": 200
+}

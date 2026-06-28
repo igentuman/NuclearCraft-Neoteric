@@ -1,0 +1,25 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:carbon_dioxide"
+    },
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:hydrogen"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:carbon_monoxide"
+    },
+    {
+      "amount": 250,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 4000,
+      "fluid": "nuclearcraft:molten_potassium_hydroxide"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_potassium_iodide"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:iodine_dust"
+    }
+  ],
+  "process_time": 200
+}

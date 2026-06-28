@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_lithium"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_manganese_dioxide"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 180,
+      "fluid": "nuclearcraft:molten_lithium_manganese_dioxide"
+    }
+  ],
+  "process_time": 200
+}

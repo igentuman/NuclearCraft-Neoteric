@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 12,
+      "item": "minecraft:purpur_block"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 4,
+      "item": "nuclearcraft:purpur_dust"
+    },
+    {
+      "item": "nuclearcraft:iridium_dust"
+    }
+  ],
+  "process_time": 200
+}

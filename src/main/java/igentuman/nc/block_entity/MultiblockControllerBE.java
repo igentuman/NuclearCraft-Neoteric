@@ -145,7 +145,7 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.nc." + name);
+        return Component.translatable("block.nuclearcraft." + name);
     }
 
     @Nullable

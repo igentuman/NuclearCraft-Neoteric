@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 4,
+      "item": "minecraft:diorite"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:zirconium_dust"
+    },
+    {
+      "item": "nuclearcraft:fluorite_gem"
+    },
+    {
+      "item": "nuclearcraft:carobbiite_gem"
+    }
+  ],
+  "process_time": 200
+}

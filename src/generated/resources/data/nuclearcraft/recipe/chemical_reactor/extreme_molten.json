@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_tough_alloy"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_hard_carbon"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 180,
+      "fluid": "nuclearcraft:molten_extreme"
+    }
+  ],
+  "process_time": 200
+}

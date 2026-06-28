@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:iron_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:iron_plate"
+    }
+  ],
+  "process_time": 200
+}

@@ -20,6 +20,22 @@ public class SlotsLayout {
         return new SlotsLayout();
     }
 
+    /**
+     * Builds a layout in the canonical slot order the container/screen expect:
+     * input items, input fluids, output items, output fluids. Inputs sit on the left,
+     * outputs on the right.
+     */
+    public static SlotsLayout forProcessor(int inputItems, int inputFluids, int outputItems, int outputFluids) {
+        SlotsLayout layout = create();
+        int lx = 30;
+        for (int i = 0; i < inputItems; i++)  { layout.addDefault(lx, 30); lx += 20; }
+        for (int i = 0; i < inputFluids; i++) { layout.addDefault(lx, 30); lx += 20; }
+        int rx = 115;
+        for (int i = 0; i < outputItems; i++)  { layout.addDefault(rx, 30); rx += 20; }
+        for (int i = 0; i < outputFluids; i++) { layout.addDefault(rx, 30); rx += 20; }
+        return layout;
+    }
+
     public SlotsLayout addDefault(int x, int y) {
         slots.add(new SlotDef(x, y));
         return this;

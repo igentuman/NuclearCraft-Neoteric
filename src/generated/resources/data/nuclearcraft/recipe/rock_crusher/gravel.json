@@ -1,0 +1,19 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 4,
+      "item": "minecraft:gravel"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:sand"
+    },
+    {
+      "item": "nuclearcraft:silicon_gem"
+    }
+  ],
+  "process_time": 200
+}

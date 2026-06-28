@@ -1,0 +1,28 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:silicon_n_doped"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:redstone"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:silver_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:basic_processor"
+    }
+  ],
+  "process_time": 200
+}

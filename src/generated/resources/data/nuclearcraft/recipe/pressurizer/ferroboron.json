@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:ferroboron_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:ferroboron_plate"
+    }
+  ],
+  "process_time": 200
+}

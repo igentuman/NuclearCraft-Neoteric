@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "nuclearcraft:block/processor/bottom",
+    "front": "nuclearcraft:block/processor/fuel_reprocessor_powered",
+    "side": "nuclearcraft:block/processor/side",
+    "top": "nuclearcraft:block/processor/top"
+  }
+}

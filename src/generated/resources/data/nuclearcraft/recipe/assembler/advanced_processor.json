@@ -1,0 +1,28 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:hafnium_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:basic_processor"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:redstone"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:silicon_p_doped"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:advanced_processor"
+    }
+  ],
+  "process_time": 200
+}

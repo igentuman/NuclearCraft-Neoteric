@@ -1,0 +1,19 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 7,
+      "item": "minecraft:deepslate"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:iodine_dust"
+    },
+    {
+      "item": "nuclearcraft:obsidian_dust"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:electrum_plate"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:bioplastic"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:energetic_blend_dust"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:redstone"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:coil_copper"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:basic_electric_circuit"
+    }
+  ],
+  "process_time": 200
+}

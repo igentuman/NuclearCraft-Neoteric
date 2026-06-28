@@ -23,33 +23,40 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
-
-import static igentuman.nc.setup.ModEntries.COMMON_BLOCK_PROPS;
 
 public class UniversalProcessorBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static MapCodec<UniversalProcessorBlock> CODEC;
     private final String name;
 
     public UniversalProcessorBlock(String name) {
-        super(COMMON_BLOCK_PROPS);
+        super(BlockBehaviour.Properties.of()
+                .mapColor(MapColor.METAL)
+                .strength(3.5f)
+                .requiresCorrectToolForDrops()
+                .lightLevel(state -> state.getValue(POWERED) ? 7 : 0));
         this.name = name;
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(POWERED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(FACING, POWERED);
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+        return defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection().getOpposite())
+                .setValue(POWERED, false);
     }
 
     @Override

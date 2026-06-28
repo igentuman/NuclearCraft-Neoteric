@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:extreme_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:boron_arsenide_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:thermoconducting_ingot"
+    }
+  ],
+  "process_time": 200
+}

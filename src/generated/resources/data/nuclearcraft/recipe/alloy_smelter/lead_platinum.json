@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:lead_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:platinum_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 4,
+      "item": "nuclearcraft:lead_platinum_ingot"
+    }
+  ],
+  "process_time": 200
+}

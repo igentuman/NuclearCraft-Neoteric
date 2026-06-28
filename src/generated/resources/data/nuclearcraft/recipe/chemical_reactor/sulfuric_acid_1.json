@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:sulfur_dioxide"
+    },
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:oxygen"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:sulfur_trioxide"
+    }
+  ],
+  "process_time": 200
+}

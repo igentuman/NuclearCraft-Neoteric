@@ -1,0 +1,19 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 12,
+      "item": "minecraft:tuff"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:chromium_dust"
+    },
+    {
+      "item": "nuclearcraft:coal_dust"
+    }
+  ],
+  "process_time": 200
+}

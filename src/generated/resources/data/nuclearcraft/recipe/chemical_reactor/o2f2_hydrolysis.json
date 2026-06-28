@@ -1,0 +1,25 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:oxygen_difluoride"
+    },
+    {
+      "amount": 250,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:oxygen"
+    },
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:hydrofluoric_acid"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 15,
+      "item": "nuclearcraft:molybdenum_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:zirconium_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 16,
+      "item": "nuclearcraft:zirconium_molybdenum_ingot"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 2,
+      "item": "minecraft:netherrack"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:sulfur_dust"
+    }
+  ],
+  "process_time": 200
+}

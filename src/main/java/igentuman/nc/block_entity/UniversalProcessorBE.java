@@ -1,5 +1,6 @@
 package igentuman.nc.block_entity;
 
+import igentuman.nc.block.UniversalProcessorBlock;
 import igentuman.nc.block_entity.catalyst.Catalyst;
 import igentuman.nc.block_entity.catalyst.CatalystDef;
 import igentuman.nc.block_entity.catalyst.CatalystRegistry;
@@ -9,6 +10,7 @@ import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.caps.ItemCapDefinition;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -38,6 +40,17 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
         for (Catalyst c : activeCatalysts.values()) c.preTick();
         super.serverTick();
         for (Catalyst c : activeCatalysts.values()) c.postTick();
+        updatePoweredState();
+    }
+
+    private void updatePoweredState() {
+        if (level == null || level.isClientSide) return;
+        BlockState state = getBlockState();
+        if (!state.hasProperty(UniversalProcessorBlock.POWERED)) return;
+        boolean powered = recipeInfo.active;
+        if (state.getValue(UniversalProcessorBlock.POWERED) != powered) {
+            level.setBlock(worldPosition, state.setValue(UniversalProcessorBlock.POWERED, powered), Block.UPDATE_ALL);
+        }
     }
 
     /** Rebuilds {@link #activeCatalysts} from the per-type catalyst slots and refreshes each power. */
@@ -84,7 +97,7 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.nc." + name);
+        return Component.translatable("block.nuclearcraft." + name);
     }
 
     @Nullable

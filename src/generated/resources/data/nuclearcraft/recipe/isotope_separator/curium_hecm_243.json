@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:isotope_separator",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:fuel_curium_hecm_243"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:curium_243"
+    },
+    {
+      "count": 6,
+      "item": "nuclearcraft:curium_246"
+    }
+  ],
+  "process_time": 200
+}

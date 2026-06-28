@@ -1,0 +1,27 @@
+{
+  "type": "nuclearcraft:fuel_reprocessor",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:depleted_fuel_californium_hecf_249"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 6,
+      "item": "nuclearcraft:californium_252"
+    },
+    {
+      "count": 2,
+      "item": "nuclearcraft:californium_250"
+    },
+    {
+      "item": "nuclearcraft:ruthenium_106_dust"
+    },
+    {
+      "item": "nuclearcraft:promethium_147_dust"
+    }
+  ],
+  "process_time": 200
+}

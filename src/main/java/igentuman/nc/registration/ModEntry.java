@@ -33,6 +33,7 @@ public record ModEntry (
         FluidCapDefinition fluidCap,
         EnergyCapDefinition energyCap,
         SlotsLayout slotsLayout,
+        int progressBar,
         ToolSetEntry toolSetEntry,
         ArmorSetEntry armorSetEntry,
         Set<MultiblockEntry> linkedMultiblocks,

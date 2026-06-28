@@ -20,6 +20,7 @@ import static igentuman.nc.setup.entries.Fluids.fluids;
 import static igentuman.nc.setup.entries.Isotopes.isotopes;
 import static igentuman.nc.setup.entries.Materials.materials;
 import static igentuman.nc.setup.entries.Parts.*;
+import static igentuman.nc.setup.entries.Processors.processors;
 
 public class ModEntries {
     public static final HashMap<String, ModEntry> ENTRIES = new HashMap<>();
@@ -37,6 +38,7 @@ public class ModEntries {
         blocks();
         tools();
         armor();
+        processors();
     }
 
     public static void deco(String name, BlockBehaviour.Properties props) {

@@ -1,0 +1,29 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:rhodochrosite_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:calcium_sulfate_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:magnesium_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:obsidian_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:crystal_binder_dust"
+    }
+  ],
+  "process_time": 200
+}

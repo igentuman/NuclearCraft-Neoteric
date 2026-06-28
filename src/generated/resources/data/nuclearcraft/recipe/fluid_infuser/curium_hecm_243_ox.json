@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:oxygen"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:fuel_curium_hecm_243"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:fuel_curium_hecm_243_ox"
+    }
+  ],
+  "process_time": 200
+}

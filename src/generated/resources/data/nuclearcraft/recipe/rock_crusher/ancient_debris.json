@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:ancient_debris"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "nuclearcraft:titanium_dust"
+    }
+  ],
+  "process_time": 200
+}

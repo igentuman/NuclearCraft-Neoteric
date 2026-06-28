@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:nitrogen"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:fuel_americium_hea_242"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:fuel_americium_hea_242_ni"
+    }
+  ],
+  "process_time": 200
+}

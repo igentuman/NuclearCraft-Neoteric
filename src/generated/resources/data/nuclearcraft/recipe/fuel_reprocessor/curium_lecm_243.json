@@ -1,0 +1,33 @@
+{
+  "type": "nuclearcraft:fuel_reprocessor",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:depleted_fuel_curium_lecm_243"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 4,
+      "item": "nuclearcraft:curium_246"
+    },
+    {
+      "item": "nuclearcraft:curium_247"
+    },
+    {
+      "count": 2,
+      "item": "nuclearcraft:berkelium_247"
+    },
+    {
+      "item": "nuclearcraft:berkelium_248"
+    },
+    {
+      "item": "nuclearcraft:molybdenum_dust"
+    },
+    {
+      "item": "nuclearcraft:promethium_147_dust"
+    }
+  ],
+  "process_time": 200
+}

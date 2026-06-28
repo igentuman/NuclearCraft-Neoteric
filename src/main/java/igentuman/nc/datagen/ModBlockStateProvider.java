@@ -1,5 +1,7 @@
 package igentuman.nc.datagen;
 
+import igentuman.nc.block.UniversalProcessorBlock;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -60,7 +62,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
             if (entry.hasBlock()) {
                 String path = BuiltInRegistries.BLOCK.getKey(entry.block().get()).getPath();
                 if (blockStateExists(path)) continue;
-                if (entry.block().get().defaultBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+                if (entry.block().get() instanceof UniversalProcessorBlock) {
+                    processorBlock(entry.block());
+                } else if (entry.block().get().defaultBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
                     horizontalBlockWithItem(entry.block());
                 } else {
                     blockWithItem(entry.block());
@@ -127,12 +131,41 @@ public class ModBlockStateProvider extends BlockStateProvider {
             ResourceLocation texture = rl("block/" + path);
             model = models().orientable(path, texture, texture, texture);
         } else {
-            ResourceLocation side = rl("block/" + path + "/side");
-            model = models().orientable(path, side, side, side);
+            // Placeholder until textures exist; keeps datagen and rendering valid.
+            ResourceLocation placeholder = ResourceLocation.withDefaultNamespace("block/iron_block");
+            model = models().orientable(path, placeholder, placeholder, placeholder);
         }
 
         horizontalBlock(block, model);
         itemModels().getBuilder("item/" + path).parent(model);
+    }
+
+    private void processorBlock(DeferredBlock<Block> deferredBlock) {
+        Block block = deferredBlock.get();
+        String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
+
+        ResourceLocation side = rl("block/processor/side");
+        ResourceLocation top = rl("block/processor/top");
+        ResourceLocation bottom = rl("block/processor/bottom");
+        ResourceLocation front = rl("block/processor/" + path);
+        ResourceLocation frontPowered = textureExists("block/processor/" + path + "_powered")
+                ? rl("block/processor/" + path + "_powered") : front;
+
+        ModelFile idle = models().orientableWithBottom(path, side, front, bottom, top);
+        ModelFile powered = models().orientableWithBottom(path + "_powered", side, frontPowered, bottom, top);
+
+        getVariantBuilder(block).forAllStates(state -> {
+            boolean on = state.getValue(UniversalProcessorBlock.POWERED);
+            int yRot = switch (state.getValue(UniversalProcessorBlock.FACING)) {
+                case EAST -> 90;
+                case SOUTH -> 180;
+                case WEST -> 270;
+                default -> 0;
+            };
+            return ConfiguredModel.builder().modelFile(on ? powered : idle).rotationY(yRot).build();
+        });
+
+        itemModels().getBuilder("item/" + path).parent(idle);
     }
 
     private void blockWithItem(DeferredBlock<Block> deferredBlock) {

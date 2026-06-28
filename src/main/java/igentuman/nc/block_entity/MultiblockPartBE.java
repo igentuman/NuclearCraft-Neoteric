@@ -82,7 +82,7 @@ public class MultiblockPartBE extends GlobalBlockEntity implements MenuProvider 
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.nc." + name);
+        return Component.translatable("block.nuclearcraft." + name);
     }
 
     @Nullable

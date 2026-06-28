@@ -74,7 +74,9 @@ public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalP
                 this.addRenderableWidget(widget);
             }
         }
-        progressBar = new ProgressBar((this.width - this.imageWidth) / 2 + 72, (this.height - this.imageHeight) / 2 + 30);
+        ModEntry progressEntry = ModEntries.get(menu.getBlockEntity().name);
+        int barIndex = progressEntry != null ? progressEntry.progressBar() : 0;
+        progressBar = new ProgressBar((this.width - this.imageWidth) / 2 + 72, (this.height - this.imageHeight) / 2 + 30, barIndex);
         addRenderableWidget(progressBar);
 
         GlobalBlockEntity be = menu.getBlockEntity();

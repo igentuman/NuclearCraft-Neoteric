@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:decay_hastener",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:irradiated_borax_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:borax_dust"
+    }
+  ],
+  "process_time": 200
+}

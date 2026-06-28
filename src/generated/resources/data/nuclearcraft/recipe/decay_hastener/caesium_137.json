@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:decay_hastener",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:caesium_137_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:barium_dust"
+    }
+  ],
+  "process_time": 200
+}

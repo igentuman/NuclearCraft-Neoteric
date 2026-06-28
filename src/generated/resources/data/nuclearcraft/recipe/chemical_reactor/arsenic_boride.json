@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 333,
+      "fluid": "nuclearcraft:molten_arsenic"
+    },
+    {
+      "amount": 45,
+      "fluid": "nuclearcraft:molten_boron"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 180,
+      "fluid": "nuclearcraft:molten_boron_arsenide"
+    }
+  ],
+  "process_time": 200
+}

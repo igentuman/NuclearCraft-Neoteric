@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "energy_per_tick": 50,
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_thermoconducting"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:thermoconducting_ingot"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:magnesium_dust"
+    },
+    {
+      "count": 2,
+      "item": "nuclearcraft:boron_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:magnesium_diboride_ingot"
+    }
+  ],
+  "process_time": 200
+}

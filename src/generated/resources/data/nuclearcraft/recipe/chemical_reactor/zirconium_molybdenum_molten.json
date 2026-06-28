@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1350,
+      "fluid": "nuclearcraft:molten_molybdenum"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_zirconium"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 1440,
+      "fluid": "nuclearcraft:molten_zirconium_molybdenum"
+    }
+  ],
+  "process_time": 200
+}

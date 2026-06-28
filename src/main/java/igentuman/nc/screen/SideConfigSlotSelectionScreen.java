@@ -36,7 +36,7 @@ public class SideConfigSlotSelectionScreen extends Screen {
     private final List<SlotEntry> slotEntries = new ArrayList<>();
 
     public SideConfigSlotSelectionScreen(AbstractContainerScreen<UniversalProcessorContainer> parent) {
-        super(__("screen.nc.slot_selection"));
+        super(__("screen.nuclearcraft.slot_selection"));
         this.parentScreen = parent;
         width  = WIN_W;
         height = WIN_H;

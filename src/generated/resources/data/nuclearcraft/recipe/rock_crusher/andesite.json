@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 4,
+      "item": "minecraft:andesite"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:beryllium_dust"
+    },
+    {
+      "item": "nuclearcraft:arsenic_dust"
+    }
+  ],
+  "process_time": 200
+}

@@ -31,6 +31,7 @@ public class RecipeInfo {
 
     public boolean stuck = false;
     public boolean changed = false;
+    public boolean active = false;
     /** True only on the tick an operation's outputs were produced; read by catalysts. */
     public boolean justProduced = false;
     public int ticks = 0;
@@ -54,6 +55,7 @@ public class RecipeInfo {
     public void tick() {
         changed = false;
         justProduced = false;
+        active = false;
         if (!be.supportRecipes()) {
             return;
         }
@@ -92,6 +94,7 @@ public class RecipeInfo {
         ticks+=multiplier;
         be.progress = getProgress();
         changed = true;
+        active = true;
 
         if (isDone()) {
             lastRecipe = recipe;

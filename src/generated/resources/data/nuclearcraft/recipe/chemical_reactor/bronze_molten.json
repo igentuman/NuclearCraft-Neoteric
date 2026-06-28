@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 270,
+      "fluid": "nuclearcraft:molten_copper"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_tin"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 360,
+      "fluid": "nuclearcraft:molten_bronze"
+    }
+  ],
+  "process_time": 200
+}

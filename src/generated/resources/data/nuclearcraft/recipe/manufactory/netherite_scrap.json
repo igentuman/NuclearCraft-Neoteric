@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:netherite_scrap"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:netherite_dust"
+    }
+  ],
+  "process_time": 200
+}

@@ -28,7 +28,7 @@ public class SideConfigScreen extends Screen {
     private int winY;
 
     public SideConfigScreen(AbstractContainerScreen<UniversalProcessorContainer> parentScreen, int slotId) {
-        super(__("screen.nc.side_config"));
+        super(__("screen.nuclearcraft.side_config"));
         this.parentScreen = parentScreen;
         this.slotId = slotId;
     }

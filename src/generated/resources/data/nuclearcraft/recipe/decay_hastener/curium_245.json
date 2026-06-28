@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:decay_hastener",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:curium_245"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:plutonium_241"
+    }
+  ],
+  "process_time": 200
+}

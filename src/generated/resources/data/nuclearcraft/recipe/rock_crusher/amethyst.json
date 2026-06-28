@@ -1,0 +1,19 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 32,
+      "item": "minecraft:amethyst_block"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:yttrium_dust"
+    },
+    {
+      "item": "nuclearcraft:hafnium_dust"
+    }
+  ],
+  "process_time": 200
+}

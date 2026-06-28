@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:nitric_acid"
+    },
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:hydrochloric_acid"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "nuclearcraft:aqua_regia_acid"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:decay_hastener",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:strontium_90_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:strontium_dust"
+    }
+  ],
+  "process_time": 200
+}

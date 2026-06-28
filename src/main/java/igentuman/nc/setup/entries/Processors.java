@@ -1,9 +1,73 @@
 package igentuman.nc.setup.entries;
 
+import igentuman.nc.registration.ModEntryBuilder;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.util.SlotsLayout;
+
+import static igentuman.nc.registration.ModEntryBuilder.addProcessor;
 
 public class Processors extends ModEntries {
-    public static void processors() {
 
+    public static final String GAS_SCRUBBER = "gas_scrubber";
+    public static final String PUMP = "pump";
+    public static final String NUCLEAR_FURNACE = "nuclear_furnace";
+    public static final String MANUFACTORY = "manufactory";
+    public static final String ALLOY_SMELTER = "alloy_smelter";
+    public static final String ASSEMBLER = "assembler";
+    public static final String CENTRIFUGE = "centrifuge";
+    public static final String CHEMICAL_REACTOR = "chemical_reactor";
+    public static final String CRYSTALLIZER = "crystallizer";
+    public static final String FUEL_REPROCESSOR = "fuel_reprocessor";
+    public static final String DECAY_HASTENER = "decay_hastener";
+    public static final String ELECTROLYZER = "electrolyzer";
+    public static final String EXTRACTOR = "extractor";
+    public static final String FLUID_ENRICHER = "fluid_enricher";
+    public static final String FLUID_INFUSER = "fluid_infuser";
+    public static final String INGOT_FORMER = "ingot_former";
+    public static final String ISOTOPE_SEPARATOR = "isotope_separator";
+    public static final String MELTER = "melter";
+    public static final String PRESSURIZER = "pressurizer";
+    public static final String ROCK_CRUSHER = "rock_crusher";
+    public static final String STEAM_TURBINE = "steam_turbine";
+    public static final String SUPERCOOLER = "supercooler";
+    public static final String SUBATOMIC_LIQUIFIER = "subatomic_liquifier";
+
+    public static void processors() {
+        proc(GAS_SCRUBBER, 1, 0, 1, 0, 0);
+        proc(PUMP, 0, 1, 1, 0, 0);
+        proc(NUCLEAR_FURNACE, 0, 2, 0, 1, 0);
+        proc(MANUFACTORY, 0, 1, 0, 1, 13);
+        proc(ALLOY_SMELTER, 0, 2, 0, 1, 0);
+        proc(ASSEMBLER, 0, 6, 0, 1, 15);
+        proc(CENTRIFUGE, 1, 0, 6, 0, 16);
+        proc(CHEMICAL_REACTOR, 2, 0, 2, 0, 5);
+        proc(CRYSTALLIZER, 1, 0, 0, 1, 6);
+        proc(DECAY_HASTENER, 0, 1, 0, 1, 0);
+        proc(ELECTROLYZER, 1, 0, 4, 0, 0);
+        proc(EXTRACTOR, 0, 1, 1, 1, 7);
+        proc(FLUID_ENRICHER, 1, 1, 1, 0, 0);
+        proc(FLUID_INFUSER, 1, 1, 0, 1, 4);
+        proc(FUEL_REPROCESSOR, 0, 1, 0, 8, 16);
+        proc(INGOT_FORMER, 1, 0, 0, 1, 4);
+        proc(ISOTOPE_SEPARATOR, 0, 1, 0, 2, 10);
+        proc(MELTER, 0, 1, 1, 0, 0);
+        proc(PRESSURIZER, 0, 1, 0, 1, 9);
+        proc(ROCK_CRUSHER, 0, 1, 0, 3, 12);
+        proc(STEAM_TURBINE, 1, 0, 1, 0, 4);
+        proc(SUPERCOOLER, 1, 0, 1, 0, 11);
+        proc(SUBATOMIC_LIQUIFIER, 1, 1, 1, 0, 0);
+    }
+
+    private static void proc(String name, int inFluids, int inItems, int outFluids, int outItems, int progressBar) {
+        ModEntryBuilder b = addProcessor(name);
+        if (inItems > 0 || outItems > 0) {
+            b.itemCap(inItems, outItems);
+        }
+        if (inFluids > 0 || outFluids > 0) {
+            b.fluidCap(inFluids, outFluids, 0);
+        }
+        b.withLayout(SlotsLayout.forProcessor(inItems, inFluids, outItems, outFluids))
+                .progressBar(progressBar)
+                .build();
     }
 }

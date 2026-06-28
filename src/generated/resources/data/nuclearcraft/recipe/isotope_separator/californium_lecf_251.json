@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:isotope_separator",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:fuel_californium_lecf_251"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:californium_251"
+    },
+    {
+      "count": 8,
+      "item": "nuclearcraft:californium_252"
+    }
+  ],
+  "process_time": 200
+}

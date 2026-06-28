@@ -1,0 +1,29 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:fuel_plutonium_lep_239"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:graphite_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:pyrolitic_carbon_ingot"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:silicon_carbide_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:fuel_plutonium_lep_239_tr"
+    }
+  ],
+  "process_time": 200
+}

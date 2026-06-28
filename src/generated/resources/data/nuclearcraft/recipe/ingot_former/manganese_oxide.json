@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_manganese_oxide"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:manganese_oxide_ingot"
+    }
+  ],
+  "process_time": 200
+}

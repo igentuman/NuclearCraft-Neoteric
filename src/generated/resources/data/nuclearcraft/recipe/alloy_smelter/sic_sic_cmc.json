@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:carbon_manganese_dust"
+    },
+    {
+      "count": 11,
+      "item": "nuclearcraft:titanium_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 12,
+      "item": "nuclearcraft:sic_sic_cmc_ingot"
+    }
+  ],
+  "process_time": 200
+}

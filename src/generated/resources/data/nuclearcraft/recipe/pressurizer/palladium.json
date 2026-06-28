@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:palladium_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:palladium_plate"
+    }
+  ],
+  "process_time": 200
+}

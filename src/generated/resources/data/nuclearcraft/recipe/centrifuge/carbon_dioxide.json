@@ -1,0 +1,29 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:carbon_dioxide"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 125,
+      "fluid": "nuclearcraft:carbon_dioxide"
+    },
+    {
+      "amount": 125,
+      "fluid": "nuclearcraft:carbon_monoxide"
+    },
+    {
+      "amount": 375,
+      "fluid": "nuclearcraft:carbon"
+    },
+    {
+      "amount": 375,
+      "fluid": "nuclearcraft:oxygen"
+    }
+  ],
+  "process_time": 200
+}

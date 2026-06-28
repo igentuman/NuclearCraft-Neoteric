@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_silicon_carbide"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:silicon_carbide_ingot"
+    }
+  ],
+  "process_time": 200
+}

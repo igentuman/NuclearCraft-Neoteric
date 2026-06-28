@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:oxygen"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:manganese_oxide_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:manganese_dioxide_ingot"
+    }
+  ],
+  "process_time": 200
+}

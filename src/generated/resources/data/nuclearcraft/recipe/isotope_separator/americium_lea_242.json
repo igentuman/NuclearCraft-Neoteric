@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:isotope_separator",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:fuel_americium_lea_242"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:americium_242"
+    },
+    {
+      "count": 8,
+      "item": "nuclearcraft:americium_243"
+    }
+  ],
+  "process_time": 200
+}

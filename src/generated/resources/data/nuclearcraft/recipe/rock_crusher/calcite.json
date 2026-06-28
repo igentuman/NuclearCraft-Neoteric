@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 5,
+      "item": "minecraft:calcite"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:calcium_dust"
+    },
+    {
+      "item": "nuclearcraft:potassium_dust"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 5,
+      "item": "nuclearcraft:tough_alloy_plate"
+    },
+    {
+      "count": 2,
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:spaxelhoe_tough"
+    }
+  ],
+  "process_time": 200
+}

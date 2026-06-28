@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:hard_carbon_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:hard_carbon_plate"
+    }
+  ],
+  "process_time": 200
+}

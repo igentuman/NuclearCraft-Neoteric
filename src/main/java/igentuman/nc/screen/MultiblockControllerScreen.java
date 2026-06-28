@@ -100,8 +100,8 @@ public class MultiblockControllerScreen extends AbstractContainerScreen<Multiblo
     private void renderAssemblyState(GuiGraphics guiGraphics) {
         boolean formed = menu.isFormed();
         Component label = formed
-                ? Component.translatable("screen.nc.multiblock.assembled").withStyle(ChatFormatting.GREEN)
-                : Component.translatable("screen.nc.multiblock.not_assembled").withStyle(ChatFormatting.RED);
+                ? Component.translatable("screen.nuclearcraft.multiblock.assembled").withStyle(ChatFormatting.GREEN)
+                : Component.translatable("screen.nuclearcraft.multiblock.not_assembled").withStyle(ChatFormatting.RED);
         int textWidth = font.width(label);
         int x = (imageWidth - textWidth) / 2;
         int y = imageHeight - 102;

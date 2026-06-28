@@ -76,6 +76,7 @@ public class ModEntryBuilder {
     private Supplier<RecipeSerializer<?>> recipeSerializerSupplier;
     public MaterialEntry material;
     private SlotsLayout slotsLayout;
+    private int progressBar = 0;
     private Tier toolTier;
     private String toolItemPrefix;
     private Holder<ArmorMaterial> armorMaterialHolder;
@@ -284,6 +285,12 @@ public class ModEntryBuilder {
         return this;
     }
 
+    /** Index into {@code progress_bars.png} (see {@code ProgressBar.bars}) used by the GUI overlay. */
+    public ModEntryBuilder progressBar(int index) {
+        this.progressBar = index;
+        return this;
+    }
+
     /**
      * Declares which catalyst types this processor accepts. One catalyst slot is allocated
      * per type (in {@link CatalystType} ordinal order) during {@link #build()}.
@@ -343,7 +350,7 @@ public class ModEntryBuilder {
                         CONTAINERS.register(name, () -> IMenuTypeExtension.create(
                                 (IContainerFactory<MultiblockPortContainer>) MultiblockPortContainer::new));
 
-        ModEntry entry = new ModEntry(name, block, item, menu, beHolder[0], false, null, null, null, null, null, null, null, null, null, Set.of(), Set.of());
+        ModEntry entry = new ModEntry(name, block, item, menu, beHolder[0], false, null, null, null, null, null, null, null, 0, null, null, Set.of(), Set.of());
         ENTRIES.put(name, entry);
         return entry;
     }
@@ -361,7 +368,6 @@ public class ModEntryBuilder {
                 .blockEntity(UniversalProcessorBE::new)
                 .menu(UniversalProcessorContainer::new)
                 .withEnergyInput(100000)
-                .withLayout(SlotsLayout.ONE_TO_ONE)
                 .withRecipes();
     }
 
@@ -536,7 +542,7 @@ public class ModEntryBuilder {
             itemCapDefinition.catalyst(supportedCatalysts.size());
         }
 
-        ModEntry entry = new ModEntry(name, block, item, menu, blockEntity, recipeTypeSupplier != null, recipeType, recipeSerializer, material, itemCapDefinition, fluidCapDefinition, energy, slotsLayout, toolSetEntry, armorSetEntry, Set.of(), supportedCatalysts);
+        ModEntry entry = new ModEntry(name, block, item, menu, blockEntity, recipeTypeSupplier != null, recipeType, recipeSerializer, material, itemCapDefinition, fluidCapDefinition, energy, slotsLayout, progressBar, toolSetEntry, armorSetEntry, Set.of(), supportedCatalysts);
         ENTRIES.put(name, entry);
         return entry;
 

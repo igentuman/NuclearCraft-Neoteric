@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:sulfur_trioxide"
+    },
+    {
+      "amount": 250,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:sulfuric_acid"
+    }
+  ],
+  "process_time": 200
+}

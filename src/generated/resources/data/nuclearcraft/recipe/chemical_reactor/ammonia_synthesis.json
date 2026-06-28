@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:nitrogen"
+    },
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:hydrogen"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:ammonia"
+    }
+  ],
+  "process_time": 200
+}

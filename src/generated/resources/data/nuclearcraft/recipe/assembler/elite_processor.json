@@ -1,0 +1,28 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:hafnium_dust"
+    },
+    {
+      "count": 4,
+      "item": "nuclearcraft:coil_bscco"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:advanced_processor"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:platinum_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:elite_processor"
+    }
+  ],
+  "process_time": 200
+}

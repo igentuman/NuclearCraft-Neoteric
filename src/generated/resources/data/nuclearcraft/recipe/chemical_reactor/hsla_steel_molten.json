@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1350,
+      "fluid": "nuclearcraft:molten_iron"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_carbon_manganese"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 1440,
+      "fluid": "nuclearcraft:molten_hsla_steel"
+    }
+  ],
+  "process_time": 200
+}

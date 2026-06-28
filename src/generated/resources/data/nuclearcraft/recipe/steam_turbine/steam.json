@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:steam_turbine",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 100,
+      "fluid": "nuclearcraft:steam"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 100,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "process_time": 200
+}

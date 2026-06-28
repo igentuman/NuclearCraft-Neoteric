@@ -1,0 +1,19 @@
+{
+  "type": "nuclearcraft:rock_crusher",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "minecraft:end_stone"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:borax_dust"
+    },
+    {
+      "item": "nuclearcraft:germanium_dust"
+    }
+  ],
+  "process_time": 200
+}

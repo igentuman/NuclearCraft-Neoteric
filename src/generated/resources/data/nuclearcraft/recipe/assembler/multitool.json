@@ -1,0 +1,28 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:steel_plate"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:lead_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:motor"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:actuator"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:multitool"
+    }
+  ],
+  "process_time": 200
+}

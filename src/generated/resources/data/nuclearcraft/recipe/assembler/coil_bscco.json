@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:bscco_dust"
+    },
+    {
+      "count": 6,
+      "item": "nuclearcraft:silver_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:coil_bscco"
+    }
+  ],
+  "process_time": 200
+}

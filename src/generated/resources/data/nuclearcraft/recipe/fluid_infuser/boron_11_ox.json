@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 100,
+      "fluid": "nuclearcraft:oxygen"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:boron_11"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:boron_11_ox"
+    }
+  ],
+  "process_time": 200
+}

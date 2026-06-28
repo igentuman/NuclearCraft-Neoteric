@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:isotope_separator",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 10,
+      "item": "nuclearcraft:yellowcake_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 7,
+      "item": "nuclearcraft:uranium_238"
+    },
+    {
+      "count": 2,
+      "item": "nuclearcraft:uranium_235"
+    }
+  ],
+  "process_time": 200
+}

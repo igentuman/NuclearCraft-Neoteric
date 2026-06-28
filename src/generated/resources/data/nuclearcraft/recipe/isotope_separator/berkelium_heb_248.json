@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:isotope_separator",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:fuel_berkelium_heb_248"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:berkelium_248"
+    },
+    {
+      "count": 6,
+      "item": "nuclearcraft:berkelium_247"
+    }
+  ],
+  "process_time": 200
+}

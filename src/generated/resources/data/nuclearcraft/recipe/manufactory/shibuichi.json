@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:shibuichi_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:shibuichi_dust"
+    }
+  ],
+  "process_time": 200
+}

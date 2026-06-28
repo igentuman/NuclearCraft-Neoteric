@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:gold_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:silver_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:electrum_ingot"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:oxygen"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:fuel_neptunium_hen_236"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:fuel_neptunium_hen_236_ox"
+    }
+  ],
+  "process_time": 200
+}

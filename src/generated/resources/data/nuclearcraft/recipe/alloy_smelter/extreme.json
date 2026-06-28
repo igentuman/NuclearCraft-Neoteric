@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:tough_alloy_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:hard_carbon_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:extreme_ingot"
+    }
+  ],
+  "process_time": 200
+}

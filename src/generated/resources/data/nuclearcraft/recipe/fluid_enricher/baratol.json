@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 200,
+      "fluid": "nuclearcraft:molten_tnt"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 200,
+      "fluid": "nuclearcraft:molten_baratol"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:barium_nitrate_dust"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,29 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:quartz_dust"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:redstone"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:emerald_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:energetic_blend_dust"
+    }
+  ],
+  "process_time": 200
+}

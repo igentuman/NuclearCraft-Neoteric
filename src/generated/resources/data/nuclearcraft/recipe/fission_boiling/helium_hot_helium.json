@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_boiling",
+  "heat_required": 400,
+  "input_fluid": {
+    "amount": 10,
+    "fluid": "nuclearcraft:helium"
+  },
+  "output_fluid": {
+    "amount": 10,
+    "fluid": "nuclearcraft:hot_helium"
+  }
+}

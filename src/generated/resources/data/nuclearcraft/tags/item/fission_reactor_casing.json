@@ -1,0 +1,8 @@
+{
+  "values": [
+    "nuclearcraft:fission_reactor_controller",
+    "nuclearcraft:fission_reactor_casing",
+    "nuclearcraft:fission_reactor_glass",
+    "nuclearcraft:fission_reactor_port"
+  ]
+}

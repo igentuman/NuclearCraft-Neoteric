@@ -1,6 +1,10 @@
 package igentuman.nc.setup.entries;
 
+import igentuman.nc.block_entity.fission.FissionReactorControllerBE;
+import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.ValidationScheduler;
+import igentuman.nc.multiblock.fission.FissionReactorCache;
+import igentuman.nc.multiblock.fission.FissionReactorValidator;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.ModEntry;
@@ -55,7 +59,11 @@ public class FissionReactor extends ModEntries {
         if (initialized) return;
         initialized = true;
 
-        addMultiblockController("fission_reactor_controller").build();
+        addMultiblockController("fission_reactor_controller")
+                .blockEntity(FissionReactorControllerBE::new)
+                .itemCap(1, 1)
+                .withEnergyOutput(100_000_000)
+                .build();
         addMultiblockBlock("fission_reactor_casing");
         addMultiblockBlock("fission_reactor_glass", BlockBehaviour.Properties.of()
                 .mapColor(MapColor.METAL).strength(3.5f, 6.0f).requiresCorrectToolForDrops().noOcclusion());
@@ -108,6 +116,18 @@ public class FissionReactor extends ModEntries {
         register(new HeatSinkDef("active_liquid_helium").heat(420).rules("redstone_heat_sink", "#nuclearcraft:fission_reactor_casing"));
 
         ModEntries.HS_SCHEDULE = computeSchedule();
+
+        MultiblockEntryBuilder.name("fission_reactor")
+                .controller(ModEntries.get("fission_reactor_controller"))
+                .ports(ModEntries.get("fission_reactor_port"))
+                .casing(
+                        () -> ModEntries.get("fission_reactor_casing").block().get(),
+                        () -> ModEntries.get("fission_reactor_glass").block().get())
+                .interior(() -> ModEntries.get("fission_reactor_solid_fuel_cell").block().get())
+                .sizeRange(3, 26, 3, 26, 3, 26)
+                .validator(FissionReactorValidator::new)
+                .cache(FissionReactorCache::new)
+                .build();
     }
 
     public static HeatSinkEntry register(HeatSinkDef def) {

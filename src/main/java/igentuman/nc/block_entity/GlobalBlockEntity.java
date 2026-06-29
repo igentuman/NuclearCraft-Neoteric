@@ -4,6 +4,7 @@ import igentuman.nc.handler.SidedContentHandler;
 import igentuman.nc.handler.energy.CustomEnergyStorage;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.ItemCapabilityHandler;
+import igentuman.nc.multiblock.fission.HeatBuffer;
 import igentuman.nc.recipe.ProcessorRecipeInput;
 import igentuman.nc.recipe.RecipeInfo;
 import igentuman.nc.registration.ModEntry;
@@ -550,6 +551,10 @@ public class GlobalBlockEntity extends BlockEntity {
         }
 
         return new ProcessorRecipeInput(items, fluids);
+    }
+
+    public HeatBuffer heatBuffer() {
+        return null;
     }
 }
 

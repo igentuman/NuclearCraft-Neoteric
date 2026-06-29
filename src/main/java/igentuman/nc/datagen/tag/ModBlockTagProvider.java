@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.tag;
 
+import igentuman.nc.multiblock.fission.FissionTags;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
@@ -64,6 +65,34 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 tag(blockTag("storage_blocks/" + name)).add(material.storageBlock().get());
             }
         }
+
+        addFissionStructureTags();
+    }
+
+    private void addFissionStructureTags() {
+        tag(FissionTags.CASING).add(
+                b("fission_reactor_controller"), b("fission_reactor_casing"),
+                b("fission_reactor_glass"), b("fission_reactor_port"));
+
+        tag(FissionTags.MODERATORS).add(storage("graphite"), storage("beryllium"));
+
+        var inner = tag(FissionTags.REACTOR_INNER);
+        inner.add(storage("graphite"), storage("beryllium"));
+        inner.add(
+                b("fission_reactor_solid_fuel_cell"),
+                b("fission_reactor_irradiation_chamber"),
+                b("fission_reactor_pile-driver_irradiation_chamber"));
+        for (HeatSinkEntry hs : ModEntries.HEAT_SINKS.values()) {
+            if (!hs.name.equals("empty")) inner.add(hs.block().get());
+        }
+    }
+
+    private static Block b(String name) {
+        return ModEntries.get(name).block().get();
+    }
+
+    private static Block storage(String material) {
+        return ModEntries.get(material).materialEntry().storageBlock().get();
     }
 
     private static TagKey<Block> blockTag(String path) {

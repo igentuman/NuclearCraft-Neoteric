@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "heat": 225,
+  "input": {
+    "item": "nuclearcraft:fuel_californium_lecf_251_ni"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_californium_lecf_251_ni"
+  },
+  "power": 720,
+  "process_time": 1440
+}

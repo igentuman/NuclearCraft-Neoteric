@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "heat": 112,
+  "input": {
+    "item": "nuclearcraft:fuel_curium_lecm_243"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_curium_lecm_243"
+  },
+  "power": 420,
+  "process_time": 1500
+}

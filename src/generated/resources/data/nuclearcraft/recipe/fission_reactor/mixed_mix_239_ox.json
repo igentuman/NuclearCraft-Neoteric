@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "heat": 72,
+  "input": {
+    "item": "nuclearcraft:fuel_mixed_mix_239_ox"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_mixed_mix_239_ox"
+  },
+  "power": 434,
+  "process_time": 3960
+}

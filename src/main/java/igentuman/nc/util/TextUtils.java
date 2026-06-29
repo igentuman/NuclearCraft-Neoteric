@@ -205,4 +205,17 @@ public class TextUtils
 		}
 		return String.format(Locale.US,"%.2f", (float)radiation)+" uRad";
 	}
+
+	public static String formatHeat(double value) {
+		if(value >= 1000000000) {
+			return TextUtils.numberFormat(value/1000000000d)+" GH";
+		}
+		if(value >= 1000000) {
+			return TextUtils.numberFormat(value/1000000d)+" MH";
+		}
+		if(value >= 1000) {
+			return TextUtils.numberFormat(value/1000d)+" kH";
+		}
+		return TextUtils.numberFormat(value)+" H";
+	}
 }

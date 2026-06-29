@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "heat": 94,
+  "input": {
+    "item": "nuclearcraft:fuel_uranium_leu_235_ni"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_uranium_leu_235_ni"
+  },
+  "power": 384,
+  "process_time": 3480
+}

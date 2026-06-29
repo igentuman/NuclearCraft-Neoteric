@@ -27,6 +27,8 @@ import static igentuman.nc.datagen.recipe.processors.CrystallizerRecipes.crystal
 import static igentuman.nc.datagen.recipe.processors.DecayHastenerRecipes.decayHastener;
 import static igentuman.nc.datagen.recipe.processors.ElectrolyzerRecipes.electrolyzer;
 import static igentuman.nc.datagen.recipe.processors.ExtractorRecipes.extractor;
+import static igentuman.nc.datagen.recipe.processors.FissionBoilingRecipes.fissionBoiling;
+import static igentuman.nc.datagen.recipe.processors.FissionFuelRecipes.fissionFuel;
 import static igentuman.nc.datagen.recipe.processors.FluidEnricherRecipes.fluidEnricher;
 import static igentuman.nc.datagen.recipe.processors.FluidInfuserRecipes.fluidInfuser;
 import static igentuman.nc.datagen.recipe.processors.FuelReprocessorRecipes.fuelReprocessor;
@@ -77,6 +79,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         extractor(recipeOutput);
         supercooler(recipeOutput);
         subatomicLiquifier(recipeOutput);
+        fissionFuel(recipeOutput);
+        fissionBoiling(recipeOutput);
     }
 
     // --- record helpers ---

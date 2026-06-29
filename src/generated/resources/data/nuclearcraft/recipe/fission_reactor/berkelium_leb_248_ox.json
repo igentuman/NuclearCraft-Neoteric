@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "heat": 65,
+  "input": {
+    "item": "nuclearcraft:fuel_berkelium_leb_248_ox"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_berkelium_leb_248_ox"
+  },
+  "power": 378,
+  "process_time": 1960
+}

@@ -74,9 +74,9 @@ public class MultiblockControllerScreen extends AbstractContainerScreen<Multiblo
 
         GlobalBlockEntity be = menu.getBlockEntity();
         if (be.hasEnergyStorage()) {
-            int barX = leftPos + imageWidth - 10;
+            int barX = leftPos + 8;
             int barY = topPos + 10;
-            addRenderableWidget(new EnergyBar(barX, barY, () -> menu.getBlockEntity().energyStorage));
+            addRenderableWidget(new EnergyBar(barX, barY, 8, 70, () -> menu.getBlockEntity().energyStorage));
         }
     }
 

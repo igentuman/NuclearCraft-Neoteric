@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.tag;
 
+import igentuman.nc.multiblock.fission.FissionTags;
 import igentuman.nc.registration.ArmorSetEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
@@ -28,6 +29,9 @@ public class ModItemTagProvider extends ItemTagsProvider {
 
     @Override
     public void addTags(HolderLookup.Provider provider) {
+        copy(FissionTags.CASING, FissionTags.CASING_ITEM);
+        copy(FissionTags.MODERATORS, FissionTags.MODERATORS_ITEM);
+
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.toolSetEntry() instanceof ToolSetEntry toolSet) {
                 tag(ItemTags.SWORDS).add(toolSet.sword().get());

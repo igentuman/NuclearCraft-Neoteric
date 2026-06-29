@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "heat": 216,
+  "input": {
+    "item": "nuclearcraft:fuel_neptunium_hen_236"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_neptunium_hen_236"
+  },
+  "power": 720,
+  "process_time": 1980
+}

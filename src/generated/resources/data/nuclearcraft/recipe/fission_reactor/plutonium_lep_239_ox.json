@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "heat": 50,
+  "input": {
+    "item": "nuclearcraft:fuel_plutonium_lep_239_ox"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_plutonium_lep_239_ox"
+  },
+  "power": 294,
+  "process_time": 4160
+}

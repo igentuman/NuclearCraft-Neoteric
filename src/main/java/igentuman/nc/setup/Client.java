@@ -12,6 +12,7 @@ import igentuman.nc.registration.FuelEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.MaterialFluidType;
 import igentuman.nc.registration.ModEntry;
+import igentuman.nc.screen.FissionReactorScreen;
 import igentuman.nc.screen.MultiblockControllerScreen;
 import igentuman.nc.screen.MultiblockPortScreen;
 import igentuman.nc.screen.UniversalProcessorScreen;
@@ -77,10 +78,13 @@ public class Client {
                 .forEach(entry -> {
                     var block = entry.block() != null ? entry.block().get() : null;
                     if (block instanceof MultiblockControllerBlock) {
-                        event.register(
-                                (MenuType<MultiblockControllerContainer>) (MenuType<?>) entry.menu().get(),
-                                MultiblockControllerScreen::new
-                        );
+                        MenuType<MultiblockControllerContainer> menuType =
+                                (MenuType<MultiblockControllerContainer>) (MenuType<?>) entry.menu().get();
+                        if (entry.name().equals("fission_reactor_controller")) {
+                            event.register(menuType, FissionReactorScreen::new);
+                        } else {
+                            event.register(menuType, MultiblockControllerScreen::new);
+                        }
                     } else if (block instanceof MultiblockPartBlock) {
                         event.register(
                                 (MenuType<MultiblockPortContainer>) (MenuType<?>) entry.menu().get(),

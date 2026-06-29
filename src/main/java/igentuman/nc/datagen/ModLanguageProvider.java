@@ -144,6 +144,10 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.slot_selection", "Select Slot");
         add("screen.nuclearcraft.multiblock.assembled", "Assembled");
         add("screen.nuclearcraft.multiblock.not_assembled", "Not Assembled");
+        add("screen.nuclearcraft.heat", "Heat");
+        add("screen.nuclearcraft.fission.energy", "Output");
+        add("screen.nuclearcraft.fission.reactivity", "Reactivity");
+        add("screen.nuclearcraft.cooling", "Cooling");
         add("tooltip.fluid.empty", "Empty");
         add("death.attack.acid", "%1$s dissolved in acid");
         add("tooltip.nuclearcraft.fuel.forge_energy", "Power: %s");

@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "heat": 925,
+  "input": {
+    "item": "nuclearcraft:fuel_curium_hecm_243_za"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_curium_hecm_243_za"
+  },
+  "power": 2100,
+  "process_time": 1420
+}

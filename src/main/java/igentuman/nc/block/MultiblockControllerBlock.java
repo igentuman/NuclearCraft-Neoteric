@@ -82,7 +82,7 @@ public class MultiblockControllerBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new MultiblockControllerBE(beTypeSupplier.get(), pos, state, multiblockName);
+        return beTypeSupplier.get().create(pos, state);
     }
 
     @Override

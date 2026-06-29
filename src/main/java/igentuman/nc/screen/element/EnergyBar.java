@@ -16,11 +16,19 @@ public class EnergyBar extends AbstractWidget {
     private static final int COLOR_BORDER = 0xFF555555;
     private static final int COLOR_BG = 0xFF222222;
     private static final int COLOR_FILL = 0xFF00AA00;
+    private int width = 12;
+    private int height = 70;
 
     private final Supplier<IEnergyStorage> energySupplier;
 
     public EnergyBar(int x, int y, Supplier<IEnergyStorage> energySupplier) {
-        super(x, y, 12, 70, Component.empty());
+        this(x, y, 12, 70, energySupplier);
+    }
+
+    public EnergyBar(int x, int y, int w, int h, Supplier<IEnergyStorage> energySupplier) {
+        super(x, y, w, h, Component.empty());
+        width = w;
+        height = h;
         this.energySupplier = energySupplier;
     }
 
@@ -31,8 +39,8 @@ public class EnergyBar extends AbstractWidget {
 
         int x = getX();
         int y = getY();
-        int w = 12;
-        int h = 70;
+        int w = width;
+        int h = height;
 
         graphics.fill(x, y, x + w, y + h, COLOR_BORDER);
         graphics.fill(x + 1, y + 1, x + w - 1, y + h - 1, COLOR_BG);

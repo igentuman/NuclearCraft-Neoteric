@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "heat": 413,
+  "input": {
+    "item": "nuclearcraft:fuel_uranium_heu_235_za"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_uranium_heu_235_za"
+  },
+  "power": 1200,
+  "process_time": 4560
+}

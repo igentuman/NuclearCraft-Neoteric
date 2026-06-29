@@ -4,6 +4,7 @@ import igentuman.nc.registration.FluidDefinition;
 import igentuman.nc.registration.FuelEntry;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.IsotopeEntry;
+import igentuman.nc.recipe.fission.FissionRecipes;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.registration.ModEntryBuilder;
 import net.minecraft.world.level.block.Block;
@@ -49,6 +50,7 @@ public class ModEntries {
         tools();
         armor();
         processors();
+        FissionRecipes.init();
         fissionReactor();
         accelerator();
         fusionReactor();

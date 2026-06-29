@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "heat": 25,
+  "input": {
+    "item": "nuclearcraft:fuel_thorium_tbu_za"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_thorium_tbu_za"
+  },
+  "power": 150,
+  "process_time": 13720
+}

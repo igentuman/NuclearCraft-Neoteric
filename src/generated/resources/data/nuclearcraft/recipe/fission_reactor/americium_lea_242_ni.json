@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fission_reactor",
+  "heat": 177,
+  "input": {
+    "item": "nuclearcraft:fuel_americium_lea_242_ni"
+  },
+  "output": {
+    "item": "nuclearcraft:depleted_fuel_americium_lea_242_ni"
+  },
+  "power": 614,
+  "process_time": 1060
+}

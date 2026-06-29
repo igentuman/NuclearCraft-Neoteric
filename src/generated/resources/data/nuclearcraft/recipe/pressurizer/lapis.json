@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:lapis_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "process_time": 200
+}

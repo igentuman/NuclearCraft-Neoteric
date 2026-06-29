@@ -6,26 +6,25 @@ import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.registration.ModEntry;
+import igentuman.nc.screen.UniversalProcessorScreen;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.MultiblockStructure;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.gui.handlers.IGuiClickableArea;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
-import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.registration.*;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.neoforged.fml.ModList;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @JeiPlugin
 public class ModJeiPlugin implements IModPlugin {
@@ -105,5 +104,27 @@ public class ModJeiPlugin implements IModPlugin {
         if (!mbRecipes.isEmpty()) {
             registration.addRecipes(MultiblockExampleCategory.TYPE, mbRecipes);
         }
+    }
+
+    @Override
+    public void onRuntimeAvailable(@NotNull IJeiRuntime jeiRuntime) {
+        JeiHelper.setRuntime(jeiRuntime);
+        JeiHelper.setRecipeTypes(recipeTypes);
+    }
+
+    @Override
+    public void registerGuiHandlers(@NotNull IGuiHandlerRegistration registration) {
+        registration.addGuiContainerHandler(UniversalProcessorScreen.class, new IGuiContainerHandler<UniversalProcessorScreen>() {
+            @Override
+            public @NotNull Collection<IGuiClickableArea> getGuiClickableAreas(@NotNull UniversalProcessorScreen containerScreen, double mouseX, double mouseY) {
+                String name = containerScreen.getRecipeTypeName();
+                if (name == null || name.contains("creative")) {
+                    return List.of();
+                }
+                RecipeType<UniversalProcessorRecipe> type = recipeTypes.getOrDefault(name, null);
+                if (type == null) return List.of();
+                return List.of(IGuiClickableArea.createBasic(112, 74, 18, 18, type));
+            }
+        });
     }
 }

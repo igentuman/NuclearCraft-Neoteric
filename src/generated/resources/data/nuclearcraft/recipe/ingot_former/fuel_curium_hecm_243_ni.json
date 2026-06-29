@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_fuel_curium_hecm_243_ni"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:fuel_curium_hecm_243_ni"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "energy_per_tick": 100,
+  "fluid_outputs": [
+    {
+      "amount": 180,
+      "fluid": "nuclearcraft:molten_obsidian"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:obsidian"
+    }
+  ],
+  "process_time": 400
+}

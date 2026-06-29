@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "energy_per_tick": 50,
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_depleted_fuel_plutonium_hep_241_ni"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:depleted_fuel_plutonium_hep_241_ni"
+    }
+  ],
+  "process_time": 200
+}

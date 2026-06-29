@@ -69,5 +69,18 @@ public class ModFluidTagProvider extends FluidTagsProvider {
                         .add(materialFluid.flowing().getKey());
             }
         }
+
+        for (igentuman.nc.registration.IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
+            for (MaterialEntry mat : isotope.fluids()) {
+                var materialFluid = mat.materialFluid();
+                String fluidName = mat.fluidDefinition.resolveName(mat.name);
+                tag(net.minecraft.tags.FluidTags.create(rl(fluidName)))
+                        .add(materialFluid.source().getKey())
+                        .add(materialFluid.flowing().getKey());
+                tag(net.minecraft.tags.FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", fluidName)))
+                        .add(materialFluid.source().getKey())
+                        .add(materialFluid.flowing().getKey());
+            }
+        }
     }
 }

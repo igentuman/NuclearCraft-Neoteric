@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:lithium_ingot"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:manganese_dioxide_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:lithium_manganese_dioxide_ingot"
+    }
+  ],
+  "process_time": 360
+}

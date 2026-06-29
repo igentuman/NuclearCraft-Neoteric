@@ -31,7 +31,7 @@ public class SideConfigSlotSelectionScreen extends Screen {
     private int winX;
     private int winY;
 
-    private record SlotEntry(int handlerSlotId, boolean isFluid, int x, int y) {}
+    private record SlotEntry(int handlerSlotId, boolean isFluid, boolean output, int x, int y) {}
 
     private final List<SlotEntry> slotEntries = new ArrayList<>();
 
@@ -63,19 +63,19 @@ public class SideConfigSlotSelectionScreen extends Screen {
 
         int layoutIndex = 0;
         for (int i = 0; i < inputItemCount; i++, layoutIndex++) {
-            slotEntries.add(new SlotEntry(i, false,
+            slotEntries.add(new SlotEntry(i, false, false,
                     layout.slots.get(layoutIndex).x, layout.slots.get(layoutIndex).y));
         }
         for (int i = 0; i < inputFluidCount; i++, layoutIndex++) {
-            slotEntries.add(new SlotEntry(totalItemSlots + i, true,
+            slotEntries.add(new SlotEntry(totalItemSlots + i, true, false,
                     layout.slots.get(layoutIndex).x, layout.slots.get(layoutIndex).y));
         }
         for (int i = 0; i < outputItemCount; i++, layoutIndex++) {
-            slotEntries.add(new SlotEntry(inputItemCount + i, false,
+            slotEntries.add(new SlotEntry(inputItemCount + i, false, true,
                     layout.slots.get(layoutIndex).x, layout.slots.get(layoutIndex).y));
         }
         for (int i = 0; i < outputFluidCount; i++, layoutIndex++) {
-            slotEntries.add(new SlotEntry(totalItemSlots + inputFluidCount + i, true,
+            slotEntries.add(new SlotEntry(totalItemSlots + inputFluidCount + i, true, true,
                     layout.slots.get(layoutIndex).x, layout.slots.get(layoutIndex).y));
         }
 
@@ -83,6 +83,7 @@ public class SideConfigSlotSelectionScreen extends Screen {
             final int slotId = se.handlerSlotId();
             SlotWidget btn = new SlotWidget(se.x(), se.y(), BTN + 2, BTN + 2, Component.empty());
             if (se.isFluid()) btn.fluid(); else btn.item();
+            if (se.output()) btn.output();
             btn.onPress(() -> Minecraft.getInstance().setScreen(new SideConfigScreen(parentScreen, slotId)));
             addRenderableWidget(btn);
         }

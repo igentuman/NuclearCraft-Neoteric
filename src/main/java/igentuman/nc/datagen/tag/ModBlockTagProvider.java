@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.tag;
 
+import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
@@ -22,8 +23,22 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         super(output, lookupProvider, MODID, existingFileHelper);
     }
 
+    private static final TagKey<Block> HEAT_SINKS_TAG = TagKey.create(
+            net.minecraft.core.registries.Registries.BLOCK,
+            ResourceLocation.fromNamespaceAndPath(MODID, "heat_sinks"));
+
     @Override
     public void addTags(HolderLookup.Provider provider) {
+        for (HeatSinkEntry entry : ModEntries.HEAT_SINKS.values()) {
+            if (!entry.name.equals("empty")) {
+                tag(BlockTags.MINEABLE_WITH_PICKAXE).add(entry.block().get());
+                tag(BlockTags.NEEDS_IRON_TOOL).add(entry.block().get());
+                if (!entry.def().isActive()) {
+                    tag(HEAT_SINKS_TAG).add(entry.block().get());
+                }
+            }
+        }
+
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.hasBlock()) {
                 tag(BlockTags.MINEABLE_WITH_PICKAXE).add(entry.block().get());

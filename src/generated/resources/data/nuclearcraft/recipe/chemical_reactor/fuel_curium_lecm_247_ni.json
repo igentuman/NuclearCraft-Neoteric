@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 30,
+      "fluid": "nuclearcraft:molten_curium_247_ni"
+    },
+    {
+      "amount": 270,
+      "fluid": "nuclearcraft:molten_curium_246_ni"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_fuel_curium_lecm_247_ni"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_boron"
+    },
+    {
+      "amount": 666,
+      "fluid": "nuclearcraft:hydrogen"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:diborane"
+    }
+  ],
+  "process_time": 100
+}

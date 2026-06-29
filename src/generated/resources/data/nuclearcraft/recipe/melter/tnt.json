@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:melter",
+  "energy_per_tick": 50,
+  "fluid_outputs": [
+    {
+      "fluid": "nuclearcraft:molten_tnt"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:tnt"
+    }
+  ],
+  "process_time": 200
+}

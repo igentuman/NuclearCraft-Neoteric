@@ -8,6 +8,7 @@ import igentuman.nc.block_entity.catalyst.CatalystType;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.util.NBTField;
 import igentuman.nc.util.caps.ItemCapDefinition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
@@ -26,6 +27,9 @@ import java.util.Set;
 
 public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvider {
 
+    @NBTField(syncToClient = true)
+    public int redstoneMode = 0;
+
     private final Map<CatalystType, Catalyst> activeCatalysts = new EnumMap<>(CatalystType.class);
 
     public UniversalProcessorBE(BlockPos pos, BlockState state, String name) {
@@ -35,12 +39,18 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
     @Override
     public void serverTick() {
         if (name != null && !ModEntries.isEnabled(name)) return;
+        if (redstoneMode == 1 && level != null && !level.hasNeighborSignal(worldPosition)) return;
         refreshCatalysts();
         recipeInfo.resetCatalystModifiers();
         for (Catalyst c : activeCatalysts.values()) c.preTick();
         super.serverTick();
         for (Catalyst c : activeCatalysts.values()) c.postTick();
         updatePoweredState();
+    }
+
+    public void toggleRedstoneMode() {
+        redstoneMode = (redstoneMode + 1) % 2;
+        setChanged();
     }
 
     private void updatePoweredState() {

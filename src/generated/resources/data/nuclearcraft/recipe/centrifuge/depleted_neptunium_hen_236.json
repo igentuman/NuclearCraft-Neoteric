@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 810,
+      "fluid": "nuclearcraft:molten_depleted_fuel_neptunium_hen_236"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 360,
+      "fluid": "nuclearcraft:molten_uranium_238"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_neptunium_237"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_plutonium_241"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_plutonium_242"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_molybdenum"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_caesium_137"
+    }
+  ],
+  "process_time": 100
+}

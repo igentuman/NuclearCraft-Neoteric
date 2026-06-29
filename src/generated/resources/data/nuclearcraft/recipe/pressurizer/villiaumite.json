@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:villiaumite_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:villiaumite_gem"
+    }
+  ],
+  "process_time": 200
+}

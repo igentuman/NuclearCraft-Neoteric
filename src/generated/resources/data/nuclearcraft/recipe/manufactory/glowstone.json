@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "energy_per_tick": 25,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:glowstone"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 4,
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "process_time": 100
+}

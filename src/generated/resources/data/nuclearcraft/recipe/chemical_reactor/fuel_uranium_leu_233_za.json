@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 30,
+      "fluid": "nuclearcraft:molten_uranium_233_za"
+    },
+    {
+      "amount": 270,
+      "fluid": "nuclearcraft:molten_uranium_238_za"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_fuel_uranium_leu_233_za"
+    }
+  ],
+  "process_time": 200
+}

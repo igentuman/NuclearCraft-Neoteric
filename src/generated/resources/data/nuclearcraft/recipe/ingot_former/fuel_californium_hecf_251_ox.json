@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_fuel_californium_hecf_251_ox"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:fuel_californium_hecf_251_ox"
+    }
+  ],
+  "process_time": 200
+}

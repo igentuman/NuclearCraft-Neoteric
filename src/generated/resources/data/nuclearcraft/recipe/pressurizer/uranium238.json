@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 9,
+      "item": "nuclearcraft:uranium_238"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:uranium238_block"
+    }
+  ],
+  "process_time": 200
+}

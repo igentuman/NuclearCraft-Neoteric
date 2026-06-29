@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 30,
+      "fluid": "nuclearcraft:molten_americium_242"
+    },
+    {
+      "amount": 270,
+      "fluid": "nuclearcraft:molten_americium_243"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_fuel_americium_lea_242"
+    }
+  ],
+  "process_time": 200
+}

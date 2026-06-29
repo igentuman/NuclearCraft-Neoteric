@@ -61,6 +61,9 @@ public class MultiblockControllerScreen extends AbstractContainerScreen<Multiblo
                 if (isInputFluid || isOutputFluid) {
                     widget.fluid();
                 }
+                if (slotDef.output) {
+                    widget.output();
+                }
 
                 slotWidgets.add(widget);
                 this.addRenderableWidget(widget);

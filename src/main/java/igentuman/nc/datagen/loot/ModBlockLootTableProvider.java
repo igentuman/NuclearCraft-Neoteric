@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.loot;
 
+import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
@@ -19,6 +20,10 @@ public class ModBlockLootTableProvider  extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
+        for (HeatSinkEntry entry : ModEntries.HEAT_SINKS.values()) {
+            dropSelf(entry.block().get());
+        }
+
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.hasBlock()) {
                 dropSelf(entry.block().get());
@@ -44,6 +49,9 @@ public class ModBlockLootTableProvider  extends BlockLootSubProvider {
     @Override
     protected Iterable<Block> getKnownBlocks() {
         ArrayList<Block> blocks = new ArrayList<>();
+        for (HeatSinkEntry entry : ModEntries.HEAT_SINKS.values()) {
+            blocks.add(entry.block().get());
+        }
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.hasBlock()) {
                 blocks.add(entry.block().get());

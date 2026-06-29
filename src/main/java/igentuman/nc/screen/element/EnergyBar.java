@@ -20,7 +20,7 @@ public class EnergyBar extends AbstractWidget {
     private final Supplier<IEnergyStorage> energySupplier;
 
     public EnergyBar(int x, int y, Supplier<IEnergyStorage> energySupplier) {
-        super(x, y, 4, 60, Component.empty());
+        super(x, y, 12, 70, Component.empty());
         this.energySupplier = energySupplier;
     }
 
@@ -31,8 +31,8 @@ public class EnergyBar extends AbstractWidget {
 
         int x = getX();
         int y = getY();
-        int w = 4;
-        int h = 60;
+        int w = 12;
+        int h = 70;
 
         graphics.fill(x, y, x + w, y + h, COLOR_BORDER);
         graphics.fill(x + 1, y + 1, x + w - 1, y + h - 1, COLOR_BG);
@@ -41,7 +41,18 @@ public class EnergyBar extends AbstractWidget {
         int max = energy.getMaxEnergyStored();
         if (max > 0 && stored > 0) {
             int fillHeight = (int) ((double) stored / max * (h - 2));
-            graphics.fill(x + 1, y + h - 1 - fillHeight, x + w - 1, y + h - 1, COLOR_FILL);
+            int fillTop = y + h - 1 - fillHeight;
+            int fillBottom = y + h - 1;
+            int fillLeft = x + 1;
+            int fillRight = x + w - 1;
+            for (int row = fillTop; row < fillBottom; row++) {
+                float t = (float) (row - fillTop) / Math.max(fillHeight - 1, 1);
+                int r = (int) (255 * (1.0f - t));
+                int g = 0;
+                int b = 0;
+                int color = 0xFF000000 | (r << 16) | (g << 8) | b;
+                graphics.fill(fillLeft, row, fillRight, row + 1, color);
+            }
         }
 
         if (isHovered) {

@@ -1,11 +1,15 @@
 package igentuman.nc.registration;
 
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.util.TextureUtil;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.registries.DeferredItem;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static igentuman.nc.setup.Registers.ITEMS;
@@ -45,6 +49,8 @@ public class IsotopeEntry {
     private String decaysInto;
 
     private final LinkedHashMap<String, DeferredItem<Item>> variants = new LinkedHashMap<>();
+    private final LinkedHashMap<String, MaterialEntry> fluidByVariant = new LinkedHashMap<>();
+    private final List<MaterialEntry> fluids = new ArrayList<>();
 
     private IsotopeEntry(String name, double radiation) {
         this.name = name;
@@ -62,8 +68,21 @@ public class IsotopeEntry {
             entry.variants.put(type, ITEMS.register(id, () -> new Item(new Item.Properties())));
             if (name.matches(SPECIAL_FAMILY)) break;
         }
+        for (String type : entry.variants.keySet()) {
+            int color = TextureUtil.getAverageColor("textures/item/material/isotope/" + name + type + ".png");
+            MaterialEntry fluid = makeMoltenFluid(entry.itemId + type, color);
+            entry.fluidByVariant.put(type, fluid);
+            entry.fluids.add(fluid);
+        }
         ModEntries.ISOTOPES.put(name, entry);
         return entry;
+    }
+
+    private static MaterialEntry makeMoltenFluid(String fluidBaseName, int color) {
+        MaterialEntry mat = new MaterialEntry(fluidBaseName, color);
+        mat.setFluidDefinition(FluidDefinition.metal());
+        mat.build();
+        return mat;
     }
 
     public IsotopeEntry halfLife(double halfLife) {
@@ -96,5 +115,21 @@ public class IsotopeEntry {
     /** The base ({@code ""}) item form. */
     public DeferredItem<Item> base() {
         return variants.get("");
+    }
+
+    /** Molten fluid carriers, one per registered variant (mirrors {@link #variants()}). */
+    public List<MaterialEntry> fluids() {
+        return Collections.unmodifiableList(fluids);
+    }
+
+    /** The molten fluid {@link MaterialEntry} for a variant suffix, or {@code null}. */
+    public MaterialEntry fluidEntry(String variant) {
+        return fluidByVariant.get(variant);
+    }
+
+    /** The molten source {@link Fluid} for a variant suffix, or {@code null}. */
+    public Fluid fluid(String variant) {
+        MaterialEntry mat = fluidByVariant.get(variant);
+        return mat == null ? null : mat.materialFluid().source().get();
     }
 }

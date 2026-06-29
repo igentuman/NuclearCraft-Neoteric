@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:netherite_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:netherite_plate"
+    }
+  ],
+  "process_time": 200
+}

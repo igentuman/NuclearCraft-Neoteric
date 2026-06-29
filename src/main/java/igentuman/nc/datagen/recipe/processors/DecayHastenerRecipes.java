@@ -8,8 +8,8 @@ import static igentuman.nc.setup.entries.Processors.DECAY_HASTENER;
 public class DecayHastenerRecipes {
 
     public static void decayHastener(RecipeOutput out) {
-        i2i(out, DECAY_HASTENER, "irradiated_borax",   dust("irradiated_borax"),       dust("borax"),            2);
-        i2i(out, DECAY_HASTENER, "strontium_90",       dust("strontium_90"),            dust("strontium"),        2);
+        i2i(out, DECAY_HASTENER, "irradiated_borax",   dust("irradiated_borax"),       dust("borax"),            2, 400);
+        i2i(out, DECAY_HASTENER, "strontium_90",       dust("strontium_90"),            dust("strontium"),        2, 400);
         i2i(out, DECAY_HASTENER, "radium",             dust("radium"),                  dust("lead"),             1);
         i2i(out, DECAY_HASTENER, "polonium",           dust("polonium"),                dust("lead"),             1);
         i2i(out, DECAY_HASTENER, "protactinium_233",   dust("protactinium_233"),        isotope("uranium/233"),   1);

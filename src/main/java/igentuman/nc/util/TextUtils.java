@@ -4,9 +4,17 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.Block;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+
+import static igentuman.nc.Main.rl;
 
 public class TextUtils
 {
@@ -21,6 +29,25 @@ public class TextUtils
 		for(ChatFormatting format : color)
 			style = style.applyFormat(format);
 		return component.copy().setStyle(style);
+	}
+
+	public static List<String> getBlockNames(String rawLine) {
+
+		List<String> names = new ArrayList<>();
+		String[] conditionParts = rawLine.split("=|-|>|<|\\^");
+		String[] blocks = conditionParts[0].split("\\|");
+
+		for(String code: blocks) {
+			String id = code;
+			if(!id.contains(":")) {
+				ResourceLocation res = rl(id);
+				Optional<Block> block = BuiltInRegistries.BLOCK.getOptional(res);
+				block.ifPresent(b -> names.add(b.getName().getString()));
+			} else {
+				names.add(convertToName(id.split(":")[1]));
+			}
+		}
+		return names;
 	}
 
 	public static String numberFormat(double value)

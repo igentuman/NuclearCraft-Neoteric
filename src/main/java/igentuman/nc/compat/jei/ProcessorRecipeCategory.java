@@ -1,20 +1,27 @@
 package igentuman.nc.compat.jei;
 
 import igentuman.nc.Main;
+import igentuman.nc.compat.ProcessorCategoryLayout;
+import igentuman.nc.compat.ProcessorCategoryLayout.Slot;
 import igentuman.nc.recipe.FluidOutput;
 import igentuman.nc.recipe.ItemOutput;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.registration.ModEntry;
-import igentuman.nc.util.caps.FluidCapDefinition;
-import igentuman.nc.util.caps.ItemCapDefinition;
+import igentuman.nc.screen.element.ProgressBar;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawableAnimated;
+import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -22,56 +29,43 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static igentuman.nc.Main.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcessorRecipe> {
 
-    private static final int SLOT_SIZE = 18;
-    private static final int SLOT_SPACING = 20;
-    private static final int START_X = 1;
-    private static final int START_Y = 1;
-    private static final int OUTPUT_GAP = 30;
+    private static final ResourceLocation SLOTS_TEX = rl("textures/gui/slots.png");
+    private static final ResourceLocation PROGRESS_TEX = rl("textures/gui/progress_bars.png");
 
     public final RecipeType<UniversalProcessorRecipe> recipeType;
-    private final ModEntry modEntry;
+    private final IGuiHelper guiHelper;
+    private final ProcessorCategoryLayout layout;
     private final IDrawable background;
     private final IDrawable icon;
     private final Component title;
 
-    private final int itemInputCount;
-    private final int fluidInputCount;
-    private final int itemOutputCount;
-    private final int fluidOutputCount;
+    private final IDrawableStatic arrowBackground;
+    private final Map<Integer, IDrawableAnimated> arrowCache = new HashMap<>();
 
     public ProcessorRecipeCategory(IGuiHelper guiHelper, ModEntry entry, RecipeType<UniversalProcessorRecipe> recipeType) {
         this.recipeType = recipeType;
-        this.modEntry = entry;
+        this.guiHelper = guiHelper;
         this.title = __("block." + Main.MODID + "." + entry.name());
+        this.layout = new ProcessorCategoryLayout(entry);
+        this.background = guiHelper.createBlankDrawable(layout.width, layout.height);
 
-        ItemCapDefinition itemCap = entry.itemCap();
-        FluidCapDefinition fluidCap = entry.fluidCap();
-
-        this.itemInputCount = itemCap != null ? itemCap.inputSlots : 0;
-        this.fluidInputCount = fluidCap != null ? fluidCap.inputTanks.size() : 0;
-        this.itemOutputCount = itemCap != null ? itemCap.outputSlots : 0;
-        this.fluidOutputCount = fluidCap != null ? fluidCap.outputTanks.size() : 0;
-
-        int totalInputs = itemInputCount + fluidInputCount;
-        int totalOutputs = itemOutputCount + fluidOutputCount;
-        int totalSlots = totalInputs + totalOutputs;
-
-        int width = START_X + totalSlots * SLOT_SPACING + (totalOutputs > 0 ? OUTPUT_GAP : 0) + 4;
-        int height = START_Y + SLOT_SPACING + 4;
-
-        this.background = guiHelper.createBlankDrawable(Math.max(width, 40), Math.max(height, 24));
-
-        if (entry.hasItem()) {
-            this.icon = guiHelper.createDrawableItemStack(new ItemStack(entry.item().get()));
+        if (layout.hasArrow) {
+            int[] bar = ProgressBar.bars.get(layout.progressBar);
+            this.arrowBackground = guiHelper.createDrawable(PROGRESS_TEX, bar[0], bar[1], ProcessorCategoryLayout.BAR_W, layout.barH);
         } else {
-            this.icon = null;
+            this.arrowBackground = null;
         }
+
+        this.icon = entry.hasItem() ? guiHelper.createDrawableItemStack(new ItemStack(entry.item().get())) : null;
     }
 
     @Override
@@ -101,79 +95,83 @@ public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcess
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, UniversalProcessorRecipe recipe, IFocusGroup focuses) {
-        int x = START_X;
-        int y = START_Y;
-
-        // Item input slots
         List<SizedIngredient> itemInputs = recipe.getItemInputs();
-        for (int i = 0; i < itemInputCount; i++) {
-            if (i < itemInputs.size()) {
-                SizedIngredient si = itemInputs.get(i);
-                builder.addSlot(RecipeIngredientRole.INPUT, x, y)
-                        .addItemStacks(Arrays.stream(si.ingredient().getItems())
+        List<SizedFluidIngredient> fluidInputs = recipe.getFluidInputs();
+        List<ItemOutput> itemOutputs = recipe.getItemOutputs();
+        List<FluidOutput> fluidOutputs = recipe.getFluidOutputs();
+        int itemIn = 0, fluidIn = 0, itemOut = 0, fluidOut = 0;
+
+        for (Slot s : layout.slots) {
+            switch (s.type) {
+                case ITEM_IN -> {
+                    IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.INPUT, s.ingX, s.ingY);
+                    if (itemIn < itemInputs.size()) {
+                        SizedIngredient si = itemInputs.get(itemIn);
+                        slot.addItemStacks(Arrays.stream(si.ingredient().getItems())
                                 .map(stack -> {
                                     ItemStack copy = stack.copy();
                                     copy.setCount(si.count());
                                     return copy;
                                 })
                                 .toList());
-            } else {
-                builder.addSlot(RecipeIngredientRole.INPUT, x, y);
-            }
-            x += SLOT_SPACING;
-        }
-
-        // Fluid input slots
-        List<SizedFluidIngredient> fluidInputs = recipe.getFluidInputs();
-        for (int i = 0; i < fluidInputCount; i++) {
-            if (i < fluidInputs.size()) {
-                SizedFluidIngredient sfi = fluidInputs.get(i);
-                var slot = builder.addSlot(RecipeIngredientRole.INPUT, x, y);
-                for (FluidStack fs : sfi.getFluids()) {
-                    FluidStack copy = fs.copy();
-                    copy.setAmount(sfi.amount());
-                    slot.addFluidStack(copy.getFluid(), copy.getAmount());
+                    }
+                    itemIn++;
                 }
-                slot.setFluidRenderer(sfi.amount(), false, SLOT_SIZE - 2, SLOT_SIZE - 2);
-            } else {
-                builder.addSlot(RecipeIngredientRole.INPUT, x, y);
-            }
-            x += SLOT_SPACING;
-        }
-
-        // Gap before outputs
-        x += OUTPUT_GAP;
-
-        // Item output slots (tag outputs show all members, primary first)
-        List<ItemOutput> itemOutputs = recipe.getItemOutputs();
-        for (int i = 0; i < itemOutputCount; i++) {
-            if (i < itemOutputs.size()) {
-                List<ItemStack> members = itemOutputs.get(i).members();
-                var slot = builder.addSlot(RecipeIngredientRole.OUTPUT, x, y);
-                if (!members.isEmpty()) slot.addItemStacks(members);
-            } else {
-                builder.addSlot(RecipeIngredientRole.OUTPUT, x, y);
-            }
-            x += SLOT_SPACING;
-        }
-
-        // Fluid output slots (tag outputs show all members, primary first)
-        List<FluidOutput> fluidOutputs = recipe.getFluidOutputs();
-        for (int i = 0; i < fluidOutputCount; i++) {
-            if (i < fluidOutputs.size()) {
-                List<FluidStack> members = fluidOutputs.get(i).members();
-                var slot = builder.addSlot(RecipeIngredientRole.OUTPUT, x, y);
-                int amount = members.isEmpty() ? 0 : members.getFirst().getAmount();
-                for (FluidStack fs : members) {
-                    slot.addFluidStack(fs.getFluid(), fs.getAmount());
+                case FLUID_IN -> {
+                    IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.INPUT, s.ingX, s.ingY);
+                    if (fluidIn < fluidInputs.size()) {
+                        SizedFluidIngredient sfi = fluidInputs.get(fluidIn);
+                        for (FluidStack fs : sfi.getFluids()) {
+                            FluidStack copy = fs.copy();
+                            copy.setAmount(sfi.amount());
+                            slot.addFluidStack(copy.getFluid(), copy.getAmount());
+                        }
+                        slot.setFluidRenderer(sfi.amount(), false, ProcessorCategoryLayout.SLOT - 2, ProcessorCategoryLayout.SLOT - 2);
+                    }
+                    fluidIn++;
                 }
-                if (amount > 0) {
-                    slot.setFluidRenderer(amount, false, SLOT_SIZE - 2, SLOT_SIZE - 2);
+                case ITEM_OUT -> {
+                    IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.OUTPUT, s.ingX, s.ingY);
+                    if (itemOut < itemOutputs.size()) {
+                        List<ItemStack> members = itemOutputs.get(itemOut).members();
+                        if (!members.isEmpty()) slot.addItemStacks(members);
+                    }
+                    itemOut++;
                 }
-            } else {
-                builder.addSlot(RecipeIngredientRole.OUTPUT, x, y);
+                case FLUID_OUT -> {
+                    IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.OUTPUT, s.ingX, s.ingY);
+                    if (fluidOut < fluidOutputs.size()) {
+                        List<FluidStack> members = fluidOutputs.get(fluidOut).members();
+                        int amount = members.isEmpty() ? 0 : members.getFirst().getAmount();
+                        for (FluidStack fs : members) {
+                            slot.addFluidStack(fs.getFluid(), fs.getAmount());
+                        }
+                        if (amount > 0) {
+                            slot.setFluidRenderer(amount, false, ProcessorCategoryLayout.SLOT - 2, ProcessorCategoryLayout.SLOT - 2);
+                        }
+                    }
+                    fluidOut++;
+                }
             }
-            x += SLOT_SPACING;
         }
+    }
+
+    @Override
+    public void draw(UniversalProcessorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        for (Slot s : layout.slots) {
+            graphics.blit(SLOTS_TEX, s.spriteX, s.spriteY, s.type.u, s.type.v, ProcessorCategoryLayout.SLOT, ProcessorCategoryLayout.SLOT);
+        }
+        if (layout.hasArrow) {
+            arrowBackground.draw(graphics, layout.arrowX, layout.arrowY);
+            arrow(recipe.getProcessTime()).draw(graphics, layout.arrowX, layout.arrowY);
+        }
+    }
+
+    private IDrawableAnimated arrow(int processTime) {
+        return arrowCache.computeIfAbsent(Math.max(1, processTime), ticks -> {
+            int[] bar = ProgressBar.bars.get(layout.progressBar);
+            IDrawableStatic fill = guiHelper.createDrawable(PROGRESS_TEX, bar[0], bar[1] - layout.barH - 1, ProcessorCategoryLayout.BAR_W, layout.barH);
+            return guiHelper.createAnimatedDrawable(fill, ticks, IDrawableAnimated.StartDirection.LEFT, false);
+        });
     }
 }

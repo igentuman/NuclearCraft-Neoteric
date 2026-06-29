@@ -13,6 +13,7 @@ import igentuman.nc.block_entity.catalyst.CatalystType;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.container.UniversalProcessorContainer;
+import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.MultiblockPartBlock;
 import igentuman.nc.block_entity.MultiblockControllerBE;
@@ -322,6 +323,18 @@ public class ModEntryBuilder {
         b.menuType = () -> IMenuTypeExtension.create(
                 (IContainerFactory<MultiblockControllerContainer>) MultiblockControllerContainer::new);
         return b.withRecipes();
+    }
+
+    public static ModEntry addMultiblockBlock(String name) {
+        return addMultiblockBlock(name, defaultMultiblockProps());
+    }
+
+    public static ModEntry addMultiblockBlock(String name, BlockBehaviour.Properties props) {
+        DeferredBlock<Block> block = BLOCKS.register(name, () -> new MultiblockBlock(props));
+        DeferredItem<Item> item = ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        ModEntry entry = new ModEntry(name, block, item, null, null, false, null, null, null, null, null, null, null, 0, null, null, Set.of(), Set.of());
+        ENTRIES.put(name, entry);
+        return entry;
     }
 
     public static ModEntry addMultiblockPart(String name) {

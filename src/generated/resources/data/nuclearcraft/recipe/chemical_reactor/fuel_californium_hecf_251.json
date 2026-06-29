@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_californium_251"
+    },
+    {
+      "amount": 180,
+      "fluid": "nuclearcraft:molten_californium_252"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_fuel_californium_hecf_251"
+    }
+  ],
+  "process_time": 200
+}

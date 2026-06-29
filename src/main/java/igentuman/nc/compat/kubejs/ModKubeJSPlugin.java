@@ -10,9 +10,11 @@ import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.script.ScriptManager;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import igentuman.nc.content.fuel.FuelDef;
+import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.entries.FissionFuel;
+import igentuman.nc.setup.entries.FissionReactor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -61,10 +63,16 @@ public class ModKubeJSPlugin implements KubeJSPlugin {
         if (manager.scriptType != ScriptType.STARTUP) {
             return;
         }
-        RegisterFissionFuelKubeEvent event = new RegisterFissionFuelKubeEvent();
-        NCKubeEvents.REGISTER_FISSION_FUEL.post(ScriptType.STARTUP, event);
-        for (FuelDef def : event.getCollected()) {
+        RegisterFissionFuelKubeEvent fuelEvent = new RegisterFissionFuelKubeEvent();
+        NCKubeEvents.REGISTER_FISSION_FUEL.post(ScriptType.STARTUP, fuelEvent);
+        for (FuelDef def : fuelEvent.getCollected()) {
             FissionFuel.register(def);
+        }
+
+        RegisterHeatSinkKubeEvent heatSinkEvent = new RegisterHeatSinkKubeEvent();
+        NCKubeEvents.REGISTER_HEAT_SINK.post(ScriptType.STARTUP, heatSinkEvent);
+        for (HeatSinkDef def : heatSinkEvent.getCollected()) {
+            FissionReactor.register(def);
         }
     }
 

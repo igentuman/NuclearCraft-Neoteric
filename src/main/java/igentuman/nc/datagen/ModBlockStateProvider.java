@@ -1,7 +1,6 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.block.UniversalProcessorBlock;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -11,13 +10,17 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.ModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
+import igentuman.nc.block.fission.HeatSinkBlock;
+import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.MaterialFluidType;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.Function;
 
@@ -58,6 +61,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     public void registerStatesAndModels() {
+        for (HeatSinkEntry entry : ModEntries.HEAT_SINKS.values()) {
+            heatSinkBlock(entry.block());
+        }
+
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.hasBlock()) {
                 String path = BuiltInRegistries.BLOCK.getKey(entry.block().get()).getPath();
@@ -108,7 +115,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private void horizontalBlockWithItem(DeferredBlock<Block> deferredBlock) {
         Block block = deferredBlock.get();
         String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
-
+        path = applySpecialRules(path);
+        // models() only auto-prepends the block/ folder when the name has no slash.
+        // applySpecialRules can introduce slashes (e.g. fission/controller), so prefix explicitly.
+        String modelName = ModelProvider.BLOCK_FOLDER + "/" + path;
         boolean hasSide = textureExists("block/" + path + "/side");
         boolean hasFront = textureExists("block/" + path + "/front");
         boolean hasTop = textureExists("block/" + path + "/top");
@@ -125,19 +135,29 @@ public class ModBlockStateProvider extends BlockStateProvider {
             ResourceLocation front = rl("block/" + path + "/" + (hasFront ? "front" : "side"));
             ResourceLocation top = hasTop ? rl("block/" + path + "/top") : side;
             ResourceLocation bottom = hasBottom ? rl("block/" + path + "/bottom") : top;
-            model = models().orientableWithBottom(path, side, front, top, bottom);
+            model = models().orientableWithBottom(modelName, side, front, top, bottom);
         } else if (hasSingleTexture) {
             // single texture for all faces, use orientable with same texture everywhere
             ResourceLocation texture = rl("block/" + path);
-            model = models().orientable(path, texture, texture, texture);
+            model = models().orientable(modelName, texture, texture, texture);
         } else {
             // Placeholder until textures exist; keeps datagen and rendering valid.
             ResourceLocation placeholder = ResourceLocation.withDefaultNamespace("block/iron_block");
-            model = models().orientable(path, placeholder, placeholder, placeholder);
+            model = models().orientable(modelName, placeholder, placeholder, placeholder);
         }
 
         horizontalBlock(block, model);
-        itemModels().getBuilder("item/" + path).parent(model);
+        itemModels().getBuilder("item/" + BuiltInRegistries.BLOCK.getKey(block).getPath()).parent(model);
+    }
+
+    private String applySpecialRules(String path) {
+        if (path.contains("fission_reactor_")) {
+            path = path.replace("fission_reactor_", "fission/");
+            if (path.contains("port")) {
+                path += "/front";
+            }
+        }
+        return path;
     }
 
     private void processorBlock(DeferredBlock<Block> deferredBlock) {
@@ -168,17 +188,36 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().getBuilder("item/" + path).parent(idle);
     }
 
+    @Override
+    public @NonNull ResourceLocation blockTexture(Block block) {
+        ResourceLocation name = BuiltInRegistries.BLOCK.getKey(block);
+        String path = name.getPath();
+        path = applySpecialRules(path);
+        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + path);
+    }
+
     private void blockWithItem(DeferredBlock<Block> deferredBlock) {
         Block block = deferredBlock.get();
         ModelFile model = cubeAll(deferredBlock.get());
         simpleBlock(block, model);
-        itemModels().getBuilder("item/" + BuiltInRegistries.BLOCK.getKey(block).getPath()).parent(model);
+        String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
+        itemModels().getBuilder("item/" + path).parent(model);
     }
 
     private void blockWithItem(DeferredBlock<Block> deferredBlock, String subfolder) {
         Block block = deferredBlock.get();
         String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
         ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(MODID, "block/" + subfolder + "/" + path);
+        ModelFile model = models().cubeAll(path, texture);
+        simpleBlock(block, model);
+        itemModels().getBuilder("item/" + path).parent(model);
+    }
+
+    private void heatSinkBlock(DeferredBlock<HeatSinkBlock> deferredBlock) {
+        Block block = deferredBlock.get();
+        String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
+        String textureName = path.endsWith("_heat_sink") ? path.substring(0, path.length() - "_heat_sink".length()) : path;
+        ResourceLocation texture = rl("block/heat_sink/" + textureName);
         ModelFile model = models().cubeAll(path, texture);
         simpleBlock(block, model);
         itemModels().getBuilder("item/" + path).parent(model);

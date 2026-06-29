@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "count": 4,
+      "item": "nuclearcraft:chromium_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 5,
+      "item": "nuclearcraft:nichrome_ingot"
+    }
+  ],
+  "process_time": 500
+}

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:raw_tin"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:tin_dust"
+    }
+  ],
+  "process_time": 200
+}

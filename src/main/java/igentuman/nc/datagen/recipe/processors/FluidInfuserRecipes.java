@@ -4,8 +4,11 @@ import igentuman.nc.registration.FuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluids;
 
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
+import static igentuman.nc.setup.entries.Processors.FLUID_INFUSER;
 
 public class FluidInfuserRecipes {
 
@@ -31,5 +34,26 @@ public class FluidInfuserRecipes {
         infuse(out, "carbon_manganese",        fluidOf("carbon"), 1000, dust("manganese"),     1, dust("carbon_manganese"),   1);
         infuse(out, "manganese_dioxide_ingot", fluidOf("oxygen"), 1000, ingot("manganese_oxide"), 1, ingot("manganese_dioxide"), 1);
         infuse(out, "manganese_dioxide_dust",  fluidOf("oxygen"), 1000, dust("manganese_oxide"),  1, dust("manganese_dioxide"),  1);
+
+        infuse(out, "supercold_ice", fluidOf("liquid_helium"), 50, Items.ICE, 1, blockItem("supercold_ice"), 1);
+
+        infuse(out, "cryotheum_heat_sink",       fluidOf("cryotheum"),       1000, part("empty_heat_sink"), 1, part("cryotheum_heat_sink"),       1);
+        infuse(out, "liquid_helium_heat_sink",   fluidOf("liquid_helium"),   1000, part("empty_heat_sink"), 1, part("liquid_helium_heat_sink"),   1);
+        infuse(out, "liquid_nitrogen_heat_sink", fluidOf("liquid_nitrogen"), 1000, part("empty_heat_sink"), 1, part("liquid_nitrogen_heat_sink"), 1);
+        infuse(out, "water_heat_sink",           Fluids.WATER,               1000, part("empty_heat_sink"), 1, part("water_heat_sink"),           1);
+
+        infuse(out, "active_cryotheum_heat_sink",       fluidOf("cryotheum"),       1000, part("empty_active_heat_sink"), 1, part("active_cryotheum_heat_sink"),       1);
+        infuse(out, "active_liquid_helium_heat_sink",   fluidOf("liquid_helium"),   1000, part("empty_active_heat_sink"), 1, part("active_liquid_helium_heat_sink"),   1);
+        infuse(out, "active_liquid_nitrogen_heat_sink", fluidOf("liquid_nitrogen"), 1000, part("empty_active_heat_sink"), 1, part("active_liquid_nitrogen_heat_sink"), 1);
+        infuse(out, "active_water_heat_sink",           Fluids.WATER,               1000, part("empty_active_heat_sink"), 1, part("active_water_heat_sink"),           1);
+
+        infuse(out, "water_cooler",           Fluids.WATER,               1000, part("empty_cooler"), 1, part("water_cooler"),           1);
+        infuse(out, "liquid_helium_cooler",   fluidOf("liquid_helium"),   1000, part("empty_cooler"), 1, part("liquid_helium_cooler"),   1);
+        infuse(out, "liquid_nitrogen_cooler", fluidOf("liquid_nitrogen"), 1000, part("empty_cooler"), 1, part("liquid_nitrogen_cooler"), 1);
+        infuse(out, "cryotheum_cooler",       fluidOf("cryotheum"),       1000, part("empty_cooler"), 1, part("cryotheum_cooler"),       1);
+        infuse(out, "enderium_cooler",        fluidOf("enderium"),        576,  part("empty_cooler"), 1, part("enderium_cooler"),        1);
+
+        infuse(out, "radaway",      fluidOf("radaway"),      250, part("bioplastic"), 2, part("radaway"),      1);
+        infuse(out, "radaway_slow", fluidOf("radaway_slow"), 250, part("bioplastic"), 2, part("radaway_slow"), 1);
     }
 }

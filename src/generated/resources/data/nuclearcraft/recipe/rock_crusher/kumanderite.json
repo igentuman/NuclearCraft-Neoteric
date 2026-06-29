@@ -1,6 +1,6 @@
 {
   "type": "nuclearcraft:rock_crusher",
-  "energy_per_tick": 50,
+  "energy_per_tick": 100,
   "item_inputs": [
     {
       "count": 2,
@@ -21,5 +21,5 @@
       "item": "nuclearcraft:californium_252"
     }
   ],
-  "process_time": 200
+  "process_time": 2000
 }

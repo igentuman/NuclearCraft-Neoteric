@@ -110,6 +110,11 @@ public class Client {
                 registerFluidExtension(event, mat.materialFluid().fluidType().get());
             }
         }
+        for (igentuman.nc.registration.IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
+            for (MaterialEntry mat : isotope.fluids()) {
+                registerFluidExtension(event, mat.materialFluid().fluidType().get());
+            }
+        }
     }
 
     private static void registerFluidExtension(RegisterClientExtensionsEvent event, net.neoforged.neoforge.fluids.FluidType fluidType) {
@@ -154,6 +159,11 @@ public class Client {
         }
         for (FuelEntry fuel : ModEntries.FUELS.values()) {
             for (MaterialEntry mat : fuel.fluids()) {
+                event.register(bucketColors, mat.bucket());
+            }
+        }
+        for (igentuman.nc.registration.IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
+            for (MaterialEntry mat : isotope.fluids()) {
                 event.register(bucketColors, mat.bucket());
             }
         }

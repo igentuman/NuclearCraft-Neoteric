@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "energy_per_tick": 100,
+  "fluid_inputs": [
+    {
+      "amount": 180,
+      "fluid": "nuclearcraft:molten_obsidian"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:obsidian"
+    }
+  ],
+  "process_time": 400
+}

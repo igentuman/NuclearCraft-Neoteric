@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_neptunium_237_za"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:neptunium_237_za"
+    }
+  ],
+  "process_time": 200
+}

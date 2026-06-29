@@ -1,0 +1,33 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 810,
+      "fluid": "nuclearcraft:molten_depleted_fuel_curium_hecm_243"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 360,
+      "fluid": "nuclearcraft:molten_curium_245"
+    },
+    {
+      "amount": 180,
+      "fluid": "nuclearcraft:molten_berkelium_247"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_berkelium_248"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_molybdenum"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_promethium_147"
+    }
+  ],
+  "process_time": 300
+}

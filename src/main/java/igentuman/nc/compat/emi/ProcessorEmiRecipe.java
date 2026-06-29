@@ -5,12 +5,13 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
+import igentuman.nc.compat.ProcessorCategoryLayout;
+import igentuman.nc.compat.ProcessorCategoryLayout.Slot;
 import igentuman.nc.recipe.FluidOutput;
 import igentuman.nc.recipe.ItemOutput;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.registration.ModEntry;
-import igentuman.nc.util.caps.FluidCapDefinition;
-import igentuman.nc.util.caps.ItemCapDefinition;
+import igentuman.nc.screen.element.ProgressBar;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -22,42 +23,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static igentuman.nc.Main.rl;
+
 public class ProcessorEmiRecipe implements EmiRecipe {
 
-    private static final int SLOT_SPACING = 20;
-    private static final int START_X = 1;
-    private static final int START_Y = 1;
-    private static final int OUTPUT_GAP = 30;
+    private static final ResourceLocation SLOTS_TEX = rl("textures/gui/slots.png");
+    private static final ResourceLocation PROGRESS_TEX = rl("textures/gui/progress_bars.png");
 
     private final EmiRecipeCategory category;
     private final ResourceLocation id;
-    private final ModEntry modEntry;
+    private final ProcessorCategoryLayout layout;
+    private final int processTime;
     private final List<EmiIngredient> inputs = new ArrayList<>();
     private final List<EmiStack> outputs = new ArrayList<>();
     private final List<EmiIngredient> outputIngredients = new ArrayList<>();
-    private final int width;
-    private final int height;
-
-    private final int itemInputCount;
-    private final int fluidInputCount;
-    private final int itemOutputCount;
-    private final int fluidOutputCount;
 
     public ProcessorEmiRecipe(EmiRecipeCategory category, ResourceLocation id, UniversalProcessorRecipe recipe, ModEntry entry) {
         this.category = category;
         this.id = id;
-        this.modEntry = entry;
-
-        ItemCapDefinition itemCap = entry.itemCap();
-        FluidCapDefinition fluidCap = entry.fluidCap();
-
-        itemInputCount = itemCap != null ? itemCap.inputSlots : 0;
-        fluidInputCount = fluidCap != null ? fluidCap.inputTanks.size() : 0;
-        itemOutputCount = itemCap != null ? itemCap.outputSlots : 0;
-        fluidOutputCount = fluidCap != null ? fluidCap.outputTanks.size() : 0;
+        this.layout = new ProcessorCategoryLayout(entry);
+        this.processTime = recipe.getProcessTime();
 
         List<SizedIngredient> itemInputs = recipe.getItemInputs();
-        for (int i = 0; i < itemInputCount; i++) {
+        for (int i = 0; i < layout.itemInputCount; i++) {
             if (i < itemInputs.size()) {
                 SizedIngredient si = itemInputs.get(i);
                 inputs.add(EmiIngredient.of(
@@ -75,7 +63,7 @@ public class ProcessorEmiRecipe implements EmiRecipe {
         }
 
         List<SizedFluidIngredient> fluidInputs = recipe.getFluidInputs();
-        for (int i = 0; i < fluidInputCount; i++) {
+        for (int i = 0; i < layout.fluidInputCount; i++) {
             if (i < fluidInputs.size()) {
                 SizedFluidIngredient sfi = fluidInputs.get(i);
                 inputs.add(EmiIngredient.of(
@@ -89,7 +77,7 @@ public class ProcessorEmiRecipe implements EmiRecipe {
         }
 
         List<ItemOutput> itemOutputs = recipe.getItemOutputs();
-        for (int i = 0; i < itemOutputCount; i++) {
+        for (int i = 0; i < layout.itemOutputCount; i++) {
             if (i < itemOutputs.size()) {
                 List<ItemStack> members = itemOutputs.get(i).members();
                 outputs.add(members.isEmpty() ? EmiStack.EMPTY : EmiStack.of(members.getFirst()));
@@ -103,7 +91,7 @@ public class ProcessorEmiRecipe implements EmiRecipe {
         }
 
         List<FluidOutput> fluidOutputs = recipe.getFluidOutputs();
-        for (int i = 0; i < fluidOutputCount; i++) {
+        for (int i = 0; i < layout.fluidOutputCount; i++) {
             if (i < fluidOutputs.size()) {
                 List<FluidStack> members = fluidOutputs.get(i).members();
                 outputs.add(members.isEmpty()
@@ -117,11 +105,6 @@ public class ProcessorEmiRecipe implements EmiRecipe {
                 outputIngredients.add(EmiStack.EMPTY);
             }
         }
-
-        int totalInputs = itemInputCount + fluidInputCount;
-        int totalOutputs = itemOutputCount + fluidOutputCount;
-        width = Math.max(START_X + totalInputs * SLOT_SPACING + (totalOutputs > 0 ? OUTPUT_GAP : 0) + totalOutputs * SLOT_SPACING + 4, 40);
-        height = Math.max(START_Y + SLOT_SPACING + 4, 24);
     }
 
     @Override
@@ -146,40 +129,32 @@ public class ProcessorEmiRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayWidth() {
-        return width;
+        return layout.width;
     }
 
     @Override
     public int getDisplayHeight() {
-        return height;
+        return layout.height;
     }
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        int x = START_X;
-        int y = START_Y;
-        int idx = 0;
-
-        for (int i = 0; i < itemInputCount; i++, idx++) {
-            widgets.addSlot(inputs.get(idx), x, y);
-            x += SLOT_SPACING;
+        int inIdx = 0;
+        int outIdx = 0;
+        for (Slot s : layout.slots) {
+            widgets.addTexture(SLOTS_TEX, s.spriteX, s.spriteY, ProcessorCategoryLayout.SLOT, ProcessorCategoryLayout.SLOT, s.type.u, s.type.v);
+            if (s.type.output) {
+                widgets.addSlot(outputIngredients.get(outIdx++), s.spriteX, s.spriteY).drawBack(false).recipeContext(this);
+            } else {
+                widgets.addSlot(inputs.get(inIdx++), s.spriteX, s.spriteY).drawBack(false);
+            }
         }
 
-        for (int i = 0; i < fluidInputCount; i++, idx++) {
-            widgets.addSlot(inputs.get(idx), x, y).drawBack(true);
-            x += SLOT_SPACING;
-        }
-
-        x += OUTPUT_GAP;
-
-        for (int i = 0; i < itemOutputCount; i++) {
-            widgets.addSlot(outputIngredients.get(i), x, y).recipeContext(this);
-            x += SLOT_SPACING;
-        }
-
-        for (int i = 0; i < fluidOutputCount; i++) {
-            widgets.addSlot(outputIngredients.get(itemOutputCount + i), x, y).drawBack(true).recipeContext(this);
-            x += SLOT_SPACING;
+        if (layout.hasArrow) {
+            int[] bar = ProgressBar.bars.get(layout.progressBar);
+            widgets.addTexture(PROGRESS_TEX, layout.arrowX, layout.arrowY, ProcessorCategoryLayout.BAR_W, layout.barH, bar[0], bar[1]);
+            widgets.addAnimatedTexture(PROGRESS_TEX, layout.arrowX, layout.arrowY, ProcessorCategoryLayout.BAR_W, layout.barH,
+                    bar[0], bar[1] - layout.barH - 1, Math.max(1, processTime) * 50, true, false, false);
         }
     }
 

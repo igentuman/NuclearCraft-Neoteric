@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "nuclearcraft:block/fission/controller",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/fission/controller"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/fission/controller",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/fission/controller",
+      "y": 270
+    }
+  }
+}

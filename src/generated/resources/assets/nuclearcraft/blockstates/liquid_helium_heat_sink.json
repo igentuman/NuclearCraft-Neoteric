@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/liquid_helium_heat_sink"
+    }
+  }
+}

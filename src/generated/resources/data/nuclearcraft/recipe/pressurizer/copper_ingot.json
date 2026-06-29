@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:copper_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:copper_plate"
+    }
+  ],
+  "process_time": 200
+}

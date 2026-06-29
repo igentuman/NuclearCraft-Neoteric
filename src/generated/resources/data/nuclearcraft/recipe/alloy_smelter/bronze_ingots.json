@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "minecraft:copper_ingot"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:tin_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 4,
+      "item": "nuclearcraft:bronze_ingot"
+    }
+  ],
+  "process_time": 300
+}

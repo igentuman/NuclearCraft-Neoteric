@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_californium_250_ni"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:californium_250_ni"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 30,
+      "fluid": "nuclearcraft:molten_plutonium_239_za"
+    },
+    {
+      "amount": 270,
+      "fluid": "nuclearcraft:molten_plutonium_242_za"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_fuel_plutonium_lep_239_za"
+    }
+  ],
+  "process_time": 200
+}

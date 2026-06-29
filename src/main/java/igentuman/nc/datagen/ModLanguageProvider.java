@@ -2,6 +2,7 @@ package igentuman.nc.datagen;
 
 import igentuman.nc.registration.ArmorSetEntry;
 import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ToolSetEntry;
@@ -20,6 +21,7 @@ public class ModLanguageProvider  extends LanguageProvider {
     @Override
     protected void addTranslations() {
         labels();
+        heatSinks();
         for (String name : ModEntries.ENTRIES.keySet()) {
             if(ModEntries.get(name).hasBlock()) {
                 add(ModEntries.get(name).block().get(), convertToName(name));
@@ -84,6 +86,11 @@ public class ModLanguageProvider  extends LanguageProvider {
         for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
             isotope.variants().forEach((suffix, item) ->
                     add(item.get(), convertToName(isotope.itemId + suffix)));
+            for (MaterialEntry mat : isotope.fluids()) {
+                String fluidName = mat.fluidDefinition.resolveName(mat.name);
+                add(mat.bucket().get(), convertToName(fluidName + "_bucket"));
+                add("fluid_type.nuclearcraft." + fluidName, convertToName(fluidName));
+            }
         }
         for (FuelEntry fuel : ModEntries.FUELS.values()) {
             fuel.fuelItems().forEach((variant, item) ->
@@ -109,7 +116,30 @@ public class ModLanguageProvider  extends LanguageProvider {
         return sb.toString();
     }
 
+    private void heatSinks() {
+        for (HeatSinkEntry entry : ModEntries.HEAT_SINKS.values()) {
+            add(entry.block().get(), convertToName(entry.name + "_heat_sink"));
+        }
+        add("tooltip.nuclearcraft.heat_sink.heat", "Cooling: %s H/t");
+        add("tooltip.nuclearcraft.heat_sink.active", "Needs coolant fluid supply into reactor to work.");
+        add("tooltip.nuclearcraft.shift", "Hold Shift for placement rule");
+        add("heat_sink.placement.rule", "Must be placed %s");
+        add("heat_sink.atleast", "next to at least %s %s");
+        add("heat_sink.atleasts", "next to at least %s %s blocks");
+        add("heat_sink.between", "between %s %s");
+        add("heat_sink.exact", "next to exactly %s %s");
+        add("heat_sink.exacts", "next to exactly %s %s blocks");
+        add("heat_sink.less_than", "next to less than %s %s");
+        add("heat_sink.in_corner", "in the corner of %s %s blocks");
+        add("heat_sink.or", "or");
+        add("heat_sink.and", "and");
+    }
+
     private void labels() {
+        add("itemGroup.nuclearcraft.fission_reactor", "NuclearCraft: Fission Reactor");
+        add("screen.nuclearcraft.redstone_config_0", "Redstone: Active always");
+        add("screen.nuclearcraft.redstone_config_1", "Redstone: Active on signal");
+        add("screen.nuclearcraft.show_recipes", "Show Recipes");
         add("screen.nuclearcraft.side_config", "Side Configuration");
         add("screen.nuclearcraft.slot_selection", "Select Slot");
         add("screen.nuclearcraft.multiblock.assembled", "Assembled");

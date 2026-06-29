@@ -47,6 +47,8 @@ public class FuelEntry {
     private final Map<String, DeferredItem<Item>> fuelItems = new LinkedHashMap<>();
     private final Map<String, DeferredItem<Item>> depletedItems = new LinkedHashMap<>();
     private final List<MaterialEntry> fluids = new ArrayList<>();
+    private final Map<String, MaterialEntry> fuelFluidByVariant = new LinkedHashMap<>();
+    private final Map<String, MaterialEntry> depletedFluidByVariant = new LinkedHashMap<>();
 
     private boolean enabled = true;
 
@@ -94,8 +96,12 @@ public class FuelEntry {
         for (String v : fluidVariants) {
             int activeColor = TextureUtil.getAverageColor("textures/item/fuel/" + group + "/" + nm + v + ".png");
             int depletedColor = TextureUtil.getAverageColor("textures/item/fuel/" + group + "/depleted/" + nm + v + ".png");
-            fluids.add(makeFuelFluid(idStem + v, activeColor));
-            fluids.add(makeFuelFluid("depleted_" + idStem + v, depletedColor));
+            MaterialEntry active = makeFuelFluid(idStem + v, activeColor);
+            MaterialEntry depleted = makeFuelFluid("depleted_" + idStem + v, depletedColor);
+            fluids.add(active);
+            fluids.add(depleted);
+            fuelFluidByVariant.put(v, active);
+            depletedFluidByVariant.put(v, depleted);
         }
     }
 
@@ -141,5 +147,17 @@ public class FuelEntry {
 
     public List<MaterialEntry> fluids() {
         return Collections.unmodifiableList(fluids);
+    }
+
+    /** Molten fuel source {@link net.minecraft.world.level.material.Fluid} for a fluid variant ({@code "", _za, _ox, _ni}), or {@code null}. */
+    public net.minecraft.world.level.material.Fluid fuelFluid(String variant) {
+        MaterialEntry mat = fuelFluidByVariant.get(variant);
+        return mat == null ? null : mat.materialFluid().source().get();
+    }
+
+    /** Molten depleted-fuel source {@link net.minecraft.world.level.material.Fluid} for a fluid variant, or {@code null}. */
+    public net.minecraft.world.level.material.Fluid depletedFluid(String variant) {
+        MaterialEntry mat = depletedFluidByVariant.get(variant);
+        return mat == null ? null : mat.materialFluid().source().get();
     }
 }

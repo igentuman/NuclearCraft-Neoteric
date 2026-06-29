@@ -6,6 +6,8 @@ import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -24,22 +26,28 @@ import static igentuman.nc.datagen.recipe.processors.ChemicalReactorRecipes.chem
 import static igentuman.nc.datagen.recipe.processors.CrystallizerRecipes.crystallizer;
 import static igentuman.nc.datagen.recipe.processors.DecayHastenerRecipes.decayHastener;
 import static igentuman.nc.datagen.recipe.processors.ElectrolyzerRecipes.electrolyzer;
+import static igentuman.nc.datagen.recipe.processors.ExtractorRecipes.extractor;
 import static igentuman.nc.datagen.recipe.processors.FluidEnricherRecipes.fluidEnricher;
 import static igentuman.nc.datagen.recipe.processors.FluidInfuserRecipes.fluidInfuser;
 import static igentuman.nc.datagen.recipe.processors.FuelReprocessorRecipes.fuelReprocessor;
+import static igentuman.nc.datagen.recipe.processors.GasScrubberRecipes.gasScrubber;
 import static igentuman.nc.datagen.recipe.processors.IngotFormerRecipes.ingotFormer;
 import static igentuman.nc.datagen.recipe.processors.IsotopeSeparatorRecipes.isotopeSeparator;
 import static igentuman.nc.datagen.recipe.processors.ManufactoryRecipes.manufactory;
 import static igentuman.nc.datagen.recipe.processors.MelterRecipes.melter;
 import static igentuman.nc.datagen.recipe.processors.PressurizerRecipes.pressurizer;
+import static igentuman.nc.datagen.recipe.processors.PumpRecipes.pump;
 import static igentuman.nc.datagen.recipe.processors.RockCrusherRecipes.rockCrusher;
 import static igentuman.nc.datagen.recipe.processors.SteamTurbineRecipes.steamTurbine;
+import static igentuman.nc.datagen.recipe.processors.SubatomicLiquifierRecipes.subatomicLiquifier;
+import static igentuman.nc.datagen.recipe.processors.SupercoolerRecipes.supercooler;
 
 public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
 
     public static final int TIME = 200;
     public static final int ENERGY = 50;
     public static final int MOLTEN_INGOT = 90;
+    public static final int MOLTEN_NUGGET = 10;
 
     public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
@@ -64,6 +72,11 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         centrifuge(recipeOutput);
         electrolyzer(recipeOutput);
         steamTurbine(recipeOutput);
+        gasScrubber(recipeOutput);
+        pump(recipeOutput);
+        extractor(recipeOutput);
+        supercooler(recipeOutput);
+        subatomicLiquifier(recipeOutput);
     }
 
     // --- record helpers ---
@@ -86,89 +99,103 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     public static I van(Item it, int n)     { return i(it, n); }
     public static F fl(String name, int n)  { return f(fluidOf(name), n); }
 
-    public static void rec(RecipeOutput out, String proc, String name, I[] ii, F[] fi, I[] io, F[] fo) {
+    public static void rec(RecipeOutput out, String proc, String name, I[] ii, F[] fi, I[] io, F[] fo, int... modifiers) {
         for (I x : ii) if (x == null) return;
         for (F x : fi) if (x == null) return;
         for (I x : io) if (x == null) return;
         for (F x : fo) if (x == null) return;
+        int time = modifiers.length > 0 ? modifiers[0] : TIME;
+        int power = modifiers.length > 1 ? modifiers[1] : ENERGY;
         UniversalProcessorRecipeBuilder b = UniversalProcessorRecipeBuilder.processor(proc);
         for (I x : ii) b.itemInput(x.item(), x.n());
         for (F x : fi) b.fluidInput(x.fluid(), x.n());
         for (I x : io) b.itemOutput(x.item(), x.n());
         for (F x : fo) b.fluidOutput(x.fluid(), x.n());
-        b.processTime(TIME).energyPerTick(ENERGY).save(out, name);
+        b.processTime(time).energyPerTick(power).save(out, name);
     }
 
-    public static void i2i(RecipeOutput out, String proc, String name, Item in, Item o, int on) {
-        rec(out, proc, name, new I[]{i(in, 1)}, NF, new I[]{i(o, on)}, NF);
+    public static void i2i(RecipeOutput out, String proc, String name, Item in, Item o, int on, int... modifiers) {
+        rec(out, proc, name, new I[]{i(in, 1)}, NF, new I[]{i(o, on)}, NF, modifiers);
     }
 
-    public static void sep(RecipeOutput out, String name, Item in, int inN, Item o1, int n1, Item o2, int n2) {
+    public static void sep(RecipeOutput out, String name, Item in, int inN, Item o1, int n1, Item o2, int n2, int... modifiers) {
         if (o1 != null && o1 == o2) {
-            rec(out, "isotope_separator", name, new I[]{i(in, inN)}, NF, new I[]{i(o1, n1 + n2)}, NF);
+            rec(out, "isotope_separator", name, new I[]{i(in, inN)}, NF, new I[]{i(o1, n1 + n2)}, NF, modifiers);
         } else {
-            rec(out, "isotope_separator", name, new I[]{i(in, inN)}, NF, new I[]{i(o1, n1), i(o2, n2)}, NF);
+            rec(out, "isotope_separator", name, new I[]{i(in, inN)}, NF, new I[]{i(o1, n1), i(o2, n2)}, NF, modifiers);
         }
     }
 
-    public static void crush(RecipeOutput out, String name, Item in, int inN, I... outs) {
-        rec(out, "rock_crusher", name, new I[]{i(in, inN)}, NF, outs, NF);
+    public static void crush(RecipeOutput out, String name, Item in, int inN, I[] outs, int... modifiers) {
+        rec(out, "rock_crusher", name, new I[]{i(in, inN)}, NF, outs, NF, modifiers);
     }
 
-    public static void reproc(RecipeOutput out, String key, I... outs) {
+    public static void reproc(RecipeOutput out, String key, I[] outs, int... modifiers) {
         for (String t : new String[]{"", "_tr"}) {
             rec(out, "fuel_reprocessor", key.replace('/', '_').replace('-', '_') + t,
-                    new I[]{i(depletedFuel(key, t), 1)}, NF, outs, NF);
+                    new I[]{i(depletedFuel(key, t), 1)}, NF, outs, NF, modifiers);
         }
     }
 
-    public static void assemble(RecipeOutput out, String name, Item o, int on, I... ins) {
-        rec(out, "assembler", name, ins, NF, new I[]{i(o, on)}, NF);
+    public static void assemble(RecipeOutput out, String name, Item o, int on, I[] ins, int... modifiers) {
+        rec(out, "assembler", name, ins, NF, new I[]{i(o, on)}, NF, modifiers);
     }
 
-    public static void chem(RecipeOutput out, String name, Fluid a, int an, Fluid b, int bn, F... outs) {
-        rec(out, "chemical_reactor", name, NI, new F[]{f(a, an), f(b, bn)}, NI, outs);
+    public static void chem(RecipeOutput out, String name, Fluid a, int an, Fluid b, int bn, F[] outs, int... modifiers) {
+        rec(out, "chemical_reactor", name, NI, new F[]{f(a, an), f(b, bn)}, NI, outs, modifiers);
     }
 
-    public static void crystal(RecipeOutput out, String name, Fluid fluid, int fn, I o) {
-        rec(out, "crystallizer", name, NI, new F[]{f(fluid, fn)}, new I[]{o}, NF);
+    public static void crystal(RecipeOutput out, String name, Fluid fluid, int fn, I o, int... modifiers) {
+        rec(out, "crystallizer", name, NI, new F[]{f(fluid, fn)}, new I[]{o}, NF, modifiers);
     }
 
-    public static void enrich(RecipeOutput out, String name, Fluid fluid, int fn, I in, Fluid o, int on) {
-        rec(out, "fluid_enricher", name, new I[]{in}, new F[]{f(fluid, fn)}, NI, new F[]{f(o, on)});
+    public static void enrich(RecipeOutput out, String name, Fluid fluid, int fn, I in, Fluid o, int on, int... modifiers) {
+        rec(out, "fluid_enricher", name, new I[]{in}, new F[]{f(fluid, fn)}, NI, new F[]{f(o, on)}, modifiers);
     }
 
-    public static void infuse(RecipeOutput out, String name, Fluid fluid, int fn, Item in, int inN, Item o, int on) {
-        rec(out, "fluid_infuser", name, new I[]{i(in, inN)}, new F[]{f(fluid, fn)}, new I[]{i(o, on)}, NF);
+    public static void infuse(RecipeOutput out, String name, Fluid fluid, int fn, Item in, int inN, Item o, int on, int... modifiers) {
+        rec(out, "fluid_infuser", name, new I[]{i(in, inN)}, new F[]{f(fluid, fn)}, new I[]{i(o, on)}, NF, modifiers);
     }
 
-    public static void split(RecipeOutput out, String proc, String name, Fluid in, int inN, F... outs) {
-        rec(out, proc, name, NI, new F[]{f(in, inN)}, NI, outs);
+    public static void split(RecipeOutput out, String proc, String name, Fluid in, int inN, F[] outs, int... modifiers) {
+        rec(out, proc, name, NI, new F[]{f(in, inN)}, NI, outs, modifiers);
     }
 
-    public static void f2f(RecipeOutput out, String proc, String name, Fluid in, int inN, Fluid o, int on) {
-        rec(out, proc, name, NI, new F[]{f(in, inN)}, NI, new F[]{f(o, on)});
+    public static void f2f(RecipeOutput out, String proc, String name, Fluid in, int inN, Fluid o, int on, int... modifiers) {
+        rec(out, proc, name, NI, new F[]{f(in, inN)}, NI, new F[]{f(o, on)}, modifiers);
+    }
+
+    public static void melt(RecipeOutput out, String proc, String name, Item in, int inN, Fluid o, int on, int... modifiers) {
+        rec(out, proc, name, new I[]{i(in, inN)}, NF, NI, new F[]{f(o, on)}, modifiers);
+    }
+
+    public static void f2i(RecipeOutput out, String proc, String name, Fluid in, int inN, Item o, int on, int... modifiers) {
+        rec(out, proc, name, NI, new F[]{f(in, inN)}, new I[]{i(o, on)}, NF, modifiers);
     }
 
     public static void alloy(RecipeOutput out, String processor, String recipeName,
-                       ItemLike output, int outCount, ItemLike a, int aCount, ItemLike b, int bCount) {
+                       ItemLike output, int outCount, ItemLike a, int aCount, ItemLike b, int bCount, int...modifiers) {
         if (output == null || a == null || b == null) return;
+        int time = modifiers.length>0 ? modifiers[0] : TIME;
+        int power = modifiers.length>1 ? modifiers[1] : ENERGY;
         UniversalProcessorRecipeBuilder.processor(processor)
                 .itemInput(a, aCount)
                 .itemInput(b, bCount)
                 .itemOutput(output, outCount)
-                .processTime(TIME).energyPerTick(ENERGY)
+                .processTime(time).energyPerTick(power)
                 .save(out, recipeName);
     }
 
     // --- legacy helper kept for ManufactoryRecipes ---
 
-    public static void grind(RecipeOutput out, String processor, String recipeName, ItemLike input, ItemLike output, int outCount) {
+    public static void grind(RecipeOutput out, String processor, String recipeName, ItemLike input, ItemLike output, int outCount, int... modifiers) {
         if (input == null || output == null) return;
+        int time = modifiers.length > 0 ? modifiers[0] : TIME;
+        int power = modifiers.length > 1 ? modifiers[1] : ENERGY;
         UniversalProcessorRecipeBuilder.processor(processor)
                 .itemInput(input)
                 .itemOutput(output, outCount)
-                .processTime(TIME).energyPerTick(ENERGY)
+                .processTime(time).energyPerTick(power)
                 .save(out, recipeName);
     }
 
@@ -205,6 +232,11 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     public static Item part(String name) {
         ModEntry e = ModEntries.get(name);
         return (e != null && e.hasItem()) ? e.item().get() : null;
+    }
+
+    public static Item modItem(String rl) {
+        ResourceLocation id = ResourceLocation.parse(rl);
+        return BuiltInRegistries.ITEM.containsKey(id) ? BuiltInRegistries.ITEM.get(id) : null;
     }
 
     public static Item oreItem(String name) {
@@ -246,5 +278,20 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         ModEntry e = ModEntries.get(name);
         return (e != null && e.materialEntry() != null && e.materialEntry().hasFluid())
                 ? e.materialEntry().materialFluid().source().get() : null;
+    }
+
+    public static Fluid isotopeFluid(String name, String variant) {
+        IsotopeEntry e = ModEntries.ISOTOPES.get(name);
+        return e == null ? null : e.fluid(variant);
+    }
+
+    public static Fluid fuelFluid(String key, String variant) {
+        FuelEntry e = ModEntries.FUELS.get(key);
+        return e == null ? null : e.fuelFluid(variant);
+    }
+
+    public static Fluid depletedFuelFluid(String key, String variant) {
+        FuelEntry e = ModEntries.FUELS.get(key);
+        return e == null ? null : e.depletedFluid(variant);
     }
 }

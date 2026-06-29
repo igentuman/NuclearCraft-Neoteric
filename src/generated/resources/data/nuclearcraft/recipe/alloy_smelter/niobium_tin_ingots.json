@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:niobium_ingot"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:tin_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:niobium_tin_ingot"
+    }
+  ],
+  "process_time": 800
+}

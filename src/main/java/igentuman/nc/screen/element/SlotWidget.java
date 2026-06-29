@@ -33,6 +33,16 @@ public class SlotWidget extends AbstractWidget {
         xOffset = 0;
     }
 
+    public void input()
+    {
+        yOffset = 0;
+    }
+
+    public void output()
+    {
+        yOffset = 36;
+    }
+
     public int Y()
     {
         return RELATIVE_Y+y;

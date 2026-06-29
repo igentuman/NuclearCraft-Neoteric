@@ -1,5 +1,8 @@
 package igentuman.nc;
 
+import igentuman.nc.block.MultiblockBlock;
+import igentuman.nc.block.MultiblockControllerBlock;
+import igentuman.nc.block.MultiblockPartBlock;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.config.*;
 import igentuman.nc.compat.cc.CCCompatHandler;
@@ -10,6 +13,7 @@ import igentuman.nc.block_entity.MultiblockPartBE;
 import igentuman.nc.network.PacketMultiblockBroken;
 import igentuman.nc.network.PacketMultiblockFormed;
 import igentuman.nc.network.PacketAE2PatternTransfer;
+import igentuman.nc.network.PacketProcessorButtonPress;
 import igentuman.nc.network.PacketSideConfigToggle;
 import igentuman.nc.registration.FuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
@@ -94,6 +98,11 @@ public class Main {
                 PacketSideConfigToggle.TYPE,
                 PacketSideConfigToggle.STREAM_CODEC,
                 PacketSideConfigToggle::handle
+        );
+        registrar.playToServer(
+                PacketProcessorButtonPress.TYPE,
+                PacketProcessorButtonPress.STREAM_CODEC,
+                PacketProcessorButtonPress::handle
         );
         registrar.playToServer(
                 PacketAE2PatternTransfer.TYPE,
@@ -222,12 +231,19 @@ public class Main {
             }
             if (!entry.isEnabled()) continue;
             if(entry.hasBlockEntity()) {
+                if (entry.hasBlock()) {
+                    var block = entry.block().get();
+                    if (block instanceof MultiblockControllerBlock || block instanceof MultiblockPartBlock) {
+                        continue;
+                    }
+                }
                 if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
                     event.accept(entry.item());
                 }
                 continue;
             }
             if(entry.hasBlock()) {
+                if (entry.block().get() instanceof MultiblockBlock) continue;
                 if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
                     event.accept(entry.item());
                 }
@@ -277,6 +293,11 @@ public class Main {
             for (FuelEntry fuel : ModEntries.FUELS.values()) {
                 if (!fuel.isEnabled()) continue;
                 for (MaterialEntry mat : fuel.fluids()) {
+                    event.accept(mat.bucket());
+                }
+            }
+            for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
+                for (MaterialEntry mat : isotope.fluids()) {
                     event.accept(mat.bucket());
                 }
             }

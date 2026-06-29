@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_berkelium_248_ni"
+    },
+    {
+      "amount": 180,
+      "fluid": "nuclearcraft:molten_berkelium_247_ni"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_fuel_berkelium_heb_248_ni"
+    }
+  ],
+  "process_time": 200
+}

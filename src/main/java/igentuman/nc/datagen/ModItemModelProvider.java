@@ -28,9 +28,9 @@ public class ModItemModelProvider  extends ItemModelProvider {
     @Override
     public void registerModels() {
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
-            if (entry.hasBlock()) {
-                withExistingParent(entry.name(), modLoc("block/" + entry.name()));
-            } else if (entry.hasItem()) {
+            // Block item models come from ModBlockStateProvider, which knows the special-ruled
+            // model path (e.g. fission/controller); only standalone items are built here.
+            if (entry.hasItem() && !entry.hasBlock()) {
                 simpleItem(entry.item(), entry.name());
             }
             if (entry.toolSetEntry() instanceof ToolSetEntry toolSet) {
@@ -87,6 +87,15 @@ public class ModItemModelProvider  extends ItemModelProvider {
             // the model file itself is named after the registered item id (uranium_238).
             isotope.variants().forEach((suffix, item) ->
                     simpleItem(item, "material/isotope/" + isotope.name + suffix));
+            for (MaterialEntry mat : isotope.fluids()) {
+                var fluid = mat.materialFluid();
+                ResourceLocation bucketKey = BuiltInRegistries.ITEM.getKey(fluid.bucket().asItem());
+                withExistingParent(bucketKey.toString(), "neoforge:item/bucket")
+                        .customLoader(DynamicFluidContainerModelBuilder::begin)
+                        .fluid(fluid.source().get())
+                        .flipGas(mat.fluidDefinition.isGas)
+                        .applyTint(true);
+            }
         }
         for (FuelEntry fuel : ModEntries.FUELS.values()) {
             String nm = fuel.name.replace("-", "_");

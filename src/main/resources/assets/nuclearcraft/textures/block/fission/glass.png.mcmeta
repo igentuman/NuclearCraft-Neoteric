@@ -1,0 +1,17 @@
+{
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "CUTOUT",
+    "textures": [
+      "nuclearcraft:block/fission/glass-ctm"
+    ],
+    "extra": {
+      "connect_to": [
+        {
+          "block": "nuclearcraft:fission_reactor_glass"
+        }
+      ]
+    }
+  }
+}

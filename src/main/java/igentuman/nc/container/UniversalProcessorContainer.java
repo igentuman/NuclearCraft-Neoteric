@@ -101,6 +101,11 @@ public class UniversalProcessorContainer extends AbstractContainerMenu {
                 ? data.get(blockEntity.getSyncFieldIndex("maxProgress")) : 0;
     }
 
+    public int getRedstoneMode() {
+        return blockEntity.getSyncFieldIndex("redstoneMode") != -1
+                ? data.get(blockEntity.getSyncFieldIndex("redstoneMode")) : 0;
+    }
+
     public UniversalProcessorBE getBlockEntity() {
         return blockEntity;
     }
@@ -172,4 +177,5 @@ public class UniversalProcessorContainer extends AbstractContainerMenu {
     public boolean stillValid(Player player) {
         return stillValid(access, player, ModEntries.get(blockEntity.name).block().get());
     }
+
 }

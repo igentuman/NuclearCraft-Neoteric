@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 810,
+      "fluid": "nuclearcraft:molten_depleted_fuel_berkelium_leb_248"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 450,
+      "fluid": "nuclearcraft:molten_berkelium_247"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_berkelium_248"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_californium_249"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_californium_251"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_ruthenium_106"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_promethium_147"
+    }
+  ],
+  "process_time": 100
+}

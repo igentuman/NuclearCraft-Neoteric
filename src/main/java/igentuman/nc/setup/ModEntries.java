@@ -2,6 +2,7 @@ package igentuman.nc.setup;
 
 import igentuman.nc.registration.FluidDefinition;
 import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.registration.ModEntryBuilder;
@@ -9,16 +10,23 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import static igentuman.nc.registration.ModEntryBuilder.add;
 import static igentuman.nc.registration.ModEntryBuilder.addMetalOreMaterial;
+import static igentuman.nc.setup.entries.Accelerator.accelerator;
 import static igentuman.nc.setup.entries.Blocks.blocks;
 import static igentuman.nc.setup.entries.FissionFuel.fissionFuel;
+import static igentuman.nc.setup.entries.FissionReactor.fissionReactor;
 import static igentuman.nc.setup.entries.Fluids.fluids;
+import static igentuman.nc.setup.entries.FusionReactor.fusionReactor;
 import static igentuman.nc.setup.entries.Isotopes.isotopes;
+import static igentuman.nc.setup.entries.Kugelblitz.kugelblitz;
 import static igentuman.nc.setup.entries.Materials.materials;
+import static igentuman.nc.setup.entries.ParticleChamber.particleChamber;
 import static igentuman.nc.setup.entries.Parts.*;
 import static igentuman.nc.setup.entries.Processors.processors;
 
@@ -26,6 +34,8 @@ public class ModEntries {
     public static final HashMap<String, ModEntry> ENTRIES = new HashMap<>();
     public static final HashMap<String, IsotopeEntry> ISOTOPES = new HashMap<>();
     public static final LinkedHashMap<String, FuelEntry> FUELS = new LinkedHashMap<>();
+    public static final LinkedHashMap<String, HeatSinkEntry> HEAT_SINKS = new LinkedHashMap<>();
+    public static List<String> HS_SCHEDULE = new ArrayList<>();
     public static BlockBehaviour.Properties COMMON_BLOCK_PROPS = BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f).requiresCorrectToolForDrops();
     public static final int DEFAULT_COLOR = 0xFFFFFFFF;
 
@@ -39,6 +49,11 @@ public class ModEntries {
         tools();
         armor();
         processors();
+        fissionReactor();
+        accelerator();
+        fusionReactor();
+        particleChamber();
+        kugelblitz();
     }
 
     public static void deco(String name, BlockBehaviour.Properties props) {

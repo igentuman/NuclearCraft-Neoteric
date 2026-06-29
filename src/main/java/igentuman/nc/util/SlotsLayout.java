@@ -6,13 +6,19 @@ import java.util.List;
 public class SlotsLayout {
     public final List<SlotDef> slots = new ArrayList<>();
 
-    public final static SlotsLayout ONE_TO_ONE = SlotsLayout.create().addDefault(30, 30).addBig(115, 30);
-    public final static SlotsLayout ONE_TO_TWO = SlotsLayout.create().addDefault(30, 30).addDefault(115, 30).addDefault(135, 30);
-    public final static SlotsLayout TWO_TO_ONE = SlotsLayout.create().addDefault(30, 30).addDefault(50, 30).addDefault(115, 30);
-    public final static SlotsLayout TWO_TO_TWO = SlotsLayout.create().addDefault(30, 30).addDefault(50, 30).addDefault(115, 30).addDefault(135, 30);
-    public final static SlotsLayout ONE_TO_THREE = SlotsLayout.create().addDefault(30, 30).addDefault(50, 30).addDefault(115, 30).addDefault(135, 30).addDefault(155, 30);
-    public final static SlotsLayout THREE_TO_ONE = SlotsLayout.create().addDefault(10, 30).addDefault(30, 30).addDefault(50, 30).addDefault(115, 30);
-    public final static SlotsLayout THREE_TO_TWO = SlotsLayout.create().addDefault(10, 30).addDefault(30, 30).addDefault(50, 30).addDefault(115, 30).addDefault(135, 30);
+    private static final int STRIDE = 20;
+    private static final int ROW_Y = 30;
+    private static final int GRID_TOP_Y = 20;
+
+    public final static SlotsLayout ONE_TO_ONE   = create().addInputRow(30, 1).addOutputRow(115, 1);
+    public final static SlotsLayout ONE_TO_TWO   = create().addInputRow(30, 1).addOutputRow(115, 2);
+    public final static SlotsLayout ONE_TO_THREE = create().addInputRow(30, 1).addOutputRow(115, 3);
+    public final static SlotsLayout ONE_TO_FOUR  = create().addInputRow(30, 1).addOutputGrid(115, 4);
+    public final static SlotsLayout ONE_TO_SIX   = create().addInputRow(30, 1).addOutputGrid(115, 6);
+    public final static SlotsLayout ONE_TO_EIGHT = create().addInputRow(30, 1).addOutputGrid(99, 8);
+    public final static SlotsLayout TWO_TO_ONE   = create().addInputRow(30, 2).addOutputRow(115, 1);
+    public final static SlotsLayout TWO_TO_TWO   = create().addInputRow(30, 2).addOutputRow(115, 2);
+    public final static SlotsLayout SIX_TO_ONE   = create().addInputGrid(30, 6).addOutputRow(135, 1);
 
     private SlotsLayout() {}
 
@@ -21,39 +27,55 @@ public class SlotsLayout {
     }
 
     /**
-     * Builds a layout in the canonical slot order the container/screen expect:
-     * input items, input fluids, output items, output fluids. Inputs sit on the left,
-     * outputs on the right.
+     * Resolves a curated preset for the processor's total input/output slot counts.
+     * Slot order within the preset is canonical: inputs (left) then outputs (right),
+     * matching the container order input items, input fluids, output items, output fluids.
      */
     public static SlotsLayout forProcessor(int inputItems, int inputFluids, int outputItems, int outputFluids) {
-        SlotsLayout layout = create();
-        int lx = 30;
-        for (int i = 0; i < inputItems; i++)  { layout.addDefault(lx, 30); lx += 20; }
-        for (int i = 0; i < inputFluids; i++) { layout.addDefault(lx, 30); lx += 20; }
-        int rx = 115;
-        for (int i = 0; i < outputItems; i++)  { layout.addDefault(rx, 30); rx += 20; }
-        for (int i = 0; i < outputFluids; i++) { layout.addDefault(rx, 30); rx += 20; }
-        return layout;
+        int in = inputItems + inputFluids;
+        int out = outputItems + outputFluids;
+        return switch (in * 100 + out) {
+            case 101 -> ONE_TO_ONE;
+            case 102 -> ONE_TO_TWO;
+            case 103 -> ONE_TO_THREE;
+            case 104 -> ONE_TO_FOUR;
+            case 106 -> ONE_TO_SIX;
+            case 108 -> ONE_TO_EIGHT;
+            case 201 -> TWO_TO_ONE;
+            case 202 -> TWO_TO_TWO;
+            case 601 -> SIX_TO_ONE;
+            default -> throw new IllegalArgumentException(
+                    "No slot layout preset for " + in + " inputs -> " + out + " outputs");
+        };
     }
 
-    public SlotsLayout addDefault(int x, int y) {
-        slots.add(new SlotDef(x, y));
+    public SlotsLayout addInput(int x, int y) {
+        slots.add(new SlotDef(x, y, false));
         return this;
     }
 
-    public SlotsLayout addBig(int x, int y) {
-        slots.add(new SlotDef(x, y, SlotDef.SlotType.BIG));
+    public SlotsLayout addOutput(int x, int y) {
+        slots.add(new SlotDef(x, y, true));
         return this;
     }
 
-    public SlotsLayout addBar(int x, int y) {
-        slots.add(new SlotDef(x, y, SlotDef.SlotType.VERTICAL_BAR));
+    private SlotsLayout addInputRow(int startX, int count) {
+        for (int i = 0; i < count; i++) addInput(startX + i * STRIDE, ROW_Y);
         return this;
     }
 
-    public SlotsLayout addRound(int x, int y) {
-        slots.add(new SlotDef(x, y, SlotDef.SlotType.ROUND));
+    private SlotsLayout addOutputRow(int startX, int count) {
+        for (int i = 0; i < count; i++) addOutput(startX + i * STRIDE, ROW_Y);
         return this;
     }
 
+    private SlotsLayout addInputGrid(int startX, int count) {
+        for (int i = 0; i < count; i++) addInput(startX + (i / 2) * STRIDE, GRID_TOP_Y + (i % 2) * STRIDE);
+        return this;
+    }
+
+    private SlotsLayout addOutputGrid(int startX, int count) {
+        for (int i = 0; i < count; i++) addOutput(startX + (i / 2) * STRIDE, GRID_TOP_Y + (i % 2) * STRIDE);
+        return this;
+    }
 }

@@ -1,8 +1,10 @@
 package igentuman.nc.setup.entries;
 
+import igentuman.nc.block_entity.fission.FissionPortBE;
 import igentuman.nc.block_entity.fission.FissionReactorControllerBE;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.ValidationScheduler;
+import igentuman.nc.multiblock.fission.ActiveCoolant;
 import igentuman.nc.multiblock.fission.FissionReactorCache;
 import igentuman.nc.multiblock.fission.FissionReactorValidator;
 import igentuman.nc.multiblock.fission.HeatSinkDef;
@@ -12,6 +14,7 @@ import igentuman.nc.setup.ModEntries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -62,13 +65,15 @@ public class FissionReactor extends ModEntries {
         addMultiblockController("fission_reactor_controller")
                 .blockEntity(FissionReactorControllerBE::new)
                 .itemCap(1, 1)
+                .fluidCap(1 + ActiveCoolant.COUNT, 1, 0)
                 .withEnergyOutput(100_000_000)
                 .build();
         addMultiblockBlock("fission_reactor_casing");
         addMultiblockBlock("fission_reactor_glass", BlockBehaviour.Properties.of()
+                .mapColor(MapColor.METAL).strength(3.5f, 6.0f).sound(SoundType.GLASS).requiresCorrectToolForDrops().noOcclusion());
+        addMultiblockPart("fission_reactor_port", FissionPortBE::new);
+        addMultiblockBlock("fission_reactor_solid_fuel_cell", BlockBehaviour.Properties.of()
                 .mapColor(MapColor.METAL).strength(3.5f, 6.0f).requiresCorrectToolForDrops().noOcclusion());
-        addMultiblockPart("fission_reactor_port");
-        addMultiblockBlock("fission_reactor_solid_fuel_cell");
         addMultiblockBlock("fission_reactor_irradiation_chamber");
         addMultiblockBlock("fission_reactor_pile-driver_irradiation_chamber");
 

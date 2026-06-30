@@ -14,14 +14,17 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +45,7 @@ public final class MultiblockHandler {
     private static final Map<ResourceKey<Level>, ExecutorService> LEVEL_THREADS = new ConcurrentHashMap<>();
     private static final Map<ResourceKey<Level>, Map<Long, MultiblockInstance>> INSTANCES = new ConcurrentHashMap<>();
     private static final Map<ResourceKey<Level>, Map<Long, Long>> STRUCTURE_INDEX = new ConcurrentHashMap<>();
+    private static final Map<ResourceKey<Level>, Map<Long, BlockState>> PENDING_CHANGES = new ConcurrentHashMap<>();
 
     private MultiblockHandler() {}
 
@@ -56,6 +60,7 @@ public final class MultiblockHandler {
         }));
         INSTANCES.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
         STRUCTURE_INDEX.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
+        PENDING_CHANGES.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
     }
 
     @SubscribeEvent
@@ -66,6 +71,32 @@ public final class MultiblockHandler {
         if (ex != null) ex.shutdownNow();
         INSTANCES.remove(dim);
         STRUCTURE_INDEX.remove(dim);
+        PENDING_CHANGES.remove(dim);
+    }
+
+    @SubscribeEvent
+    public static void onLevelTick(LevelTickEvent.Post event) {
+        if (!(event.getLevel() instanceof ServerLevel serverLevel)) return;
+        ResourceKey<Level> dim = serverLevel.dimension();
+        Map<Long, BlockState> pending = PENDING_CHANGES.get(dim);
+        if (pending == null || pending.isEmpty()) return;
+        Map<Long, BlockState> snapshot = new HashMap<>(pending);
+        pending.clear();
+        Map<Long, Long> idx = STRUCTURE_INDEX.get(dim);
+        if (idx == null) return;
+        for (Map.Entry<Long, BlockState> e : snapshot.entrySet()) {
+            Long controllerKey = idx.get(e.getKey());
+            if (controllerKey == null) continue;
+            MultiblockInstance instance = INSTANCES.getOrDefault(dim, Collections.emptyMap()).get(controllerKey);
+            if (instance != null) {
+                instance.onStructureBlockChanged(serverLevel, BlockPos.of(controllerKey), BlockPos.of(e.getKey()));
+            }
+        }
+    }
+
+    public static void trackBlockChange(Level level, BlockPos pos, BlockState state) {
+        if (level.isClientSide()) return;
+        PENDING_CHANGES.computeIfAbsent(level.dimension(), k -> new ConcurrentHashMap<>()).put(pos.asLong(), state);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -91,11 +122,12 @@ public final class MultiblockHandler {
     }
 
     /** Initialize a new multiblock at the controller position. Attempts immediate validation. */
-    public static void initMultiblock(ServerLevel level, BlockPos controllerPos, Direction facing, MultiblockEntry entry) {
+    public static MultiblockInstance initMultiblock(ServerLevel level, BlockPos controllerPos, Direction facing, MultiblockEntry entry) {
         ResourceKey<Level> dim = level.dimension();
         Map<Long, MultiblockInstance> map = INSTANCES.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
         MultiblockInstance instance = new MultiblockInstance(entry, facing);
         map.put(controllerPos.asLong(), instance);
+        return instance;
     }
 
     /** Destroy a multiblock. Called on controller-block removal. */
@@ -135,16 +167,26 @@ public final class MultiblockHandler {
         Map<Long, MultiblockInstance> map = INSTANCES.get(level.dimension());
         if (map == null) return;
         MultiblockInstance instance = map.get(controllerPos.asLong());
-        if (instance == null) return;
+        submitTick(level, instance, controllerPos);
+    }
+
+    public static void submitTick(ServerLevel level, MultiblockInstance instance, BlockPos controllerPos) {
+        if (instance == null) {
+            instance = getInstance(level, controllerPos);
+        }
+        if (instance == null) {
+            return;
+        }
         ExecutorService ex = LEVEL_THREADS.get(level.dimension());
         if (ex == null || ex.isShutdown()) return;
         IMultiblockLogic logic = instance.logic;
         IMultiblockCache cache = instance.cache;
+        MultiblockInstance finalInstance = instance;
         ex.submit(() -> {
             try {
-                if (!instance.formed) {
+                if (!finalInstance.formed) {
                     if (TICK_COUNTER % 5 == 0) {
-                        instance.tryValidate(level, controllerPos);
+                        finalInstance.tryValidate(level, controllerPos);
                     }
                     return;
                 }
@@ -158,6 +200,14 @@ public final class MultiblockHandler {
     public static MultiblockInstance getInstance(ServerLevel level, BlockPos controllerPos) {
         Map<Long, MultiblockInstance> map = INSTANCES.get(level.dimension());
         return map == null ? null : map.get(controllerPos.asLong());
+    }
+
+    public static BlockPos getControllerForPos(ServerLevel level, BlockPos pos) {
+        Map<Long, Long> idx = STRUCTURE_INDEX.get(level.dimension());
+        if (idx == null) return null;
+        Long controllerKey = idx.get(pos.asLong());
+        if (controllerKey == null) return null;
+        return BlockPos.of(controllerKey);
     }
 
     static void indexStructure(ResourceKey<Level> dim, long controllerKey, Set<Long> positions) {

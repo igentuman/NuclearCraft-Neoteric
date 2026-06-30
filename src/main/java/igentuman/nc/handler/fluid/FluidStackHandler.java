@@ -263,14 +263,6 @@ public class FluidStackHandler implements IFluidHandler, INBTSerializable<Compou
         return FluidStack.EMPTY;
     }
 
-    /**
-     * Drains from a specific tank.
-     *
-     * @param tank     the tank index
-     * @param maxDrain the maximum amount to drain
-     * @param action   SIMULATE or EXECUTE
-     * @return the fluid that was (or would be) drained
-     */
     public void voidTank(int tank) {
         validateTankIndex(tank);
         this.fluids[tank] = FluidStack.EMPTY;

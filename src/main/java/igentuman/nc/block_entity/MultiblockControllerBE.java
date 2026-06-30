@@ -4,6 +4,7 @@ import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.MultiblockRegistry;
+import igentuman.nc.util.BoilingBuffer;
 import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,9 +35,10 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     /** Buffered cache NBT read in {@link #loadAdditional} before the instance is built in {@link #onLoad}. */
     private CompoundTag pendingCacheNbt;
     private HolderLookup.Provider pendingRegistries;
-
+    protected MultiblockHandler.MultiblockInstance mbInstance;
     @NBTField(syncToClient = true)
     public boolean formed = false;
+
 
     public MultiblockControllerBE(BlockEntityType<?> type, BlockPos pos, BlockState state, String multiblockName) {
         super(type, pos, state, multiblockName);
@@ -50,7 +52,7 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     public void onControllerPlaced(ServerLevel level) {
         MultiblockEntry entry = MultiblockRegistry.getByController(name);
         if (entry == null) return;
-        MultiblockHandler.initMultiblock(level, worldPosition, facing(), entry);
+        mbInstance = MultiblockHandler.initMultiblock(level, worldPosition, facing(), entry);
         setChanged();
     }
 
@@ -59,12 +61,18 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
         MultiblockHandler.destroyMultiblock(level, worldPosition);
     }
 
+    public void tickMultiblock(ServerLevel level) {
+        MultiblockHandler.submitTick(level, mbInstance, worldPosition);
+        if (mbInstance == null) {
+            mbInstance = MultiblockHandler.getInstance(level, worldPosition);
+        }
+    }
+
     @Override
     public void serverTick() {
         if (!(level instanceof ServerLevel serverLevel)) return;
-        MultiblockHandler.submitTick(serverLevel, worldPosition);
-        MultiblockHandler.MultiblockInstance instance = MultiblockHandler.getInstance(serverLevel, worldPosition);
-        boolean newFormed = instance != null && instance.formed;
+        tickMultiblock(serverLevel);
+        boolean newFormed = mbInstance != null && mbInstance.formed;
         if (formed != newFormed) {
             formed = newFormed;
             wasChanged = true;

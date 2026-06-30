@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nuclearcraft:spaxelhoe_thorium"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nuclearcraft:thorium_plate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "item"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nuclearcraft:spaxelhoe_thorium"
+    ]
+  }
+}

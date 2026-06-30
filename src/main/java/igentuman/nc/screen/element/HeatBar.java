@@ -1,13 +1,12 @@
 package igentuman.nc.screen.element;
 
-import igentuman.nc.multiblock.fission.HeatBuffer;
+import igentuman.nc.util.HeatBuffer;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -22,23 +21,23 @@ public class HeatBar extends AbstractWidget {
     private int width = 12;
     private int height = 70;
 
-    private final Supplier<HeatBuffer> energySupplier;
+    private final Supplier<HeatBuffer> heatBufferSupplier;
 
-    public HeatBar(int x, int y, Supplier<HeatBuffer> energySupplier) {
-        this(x, y, 12, 70, energySupplier);
+    public HeatBar(int x, int y, Supplier<HeatBuffer> heatBufferSupplier) {
+        this(x, y, 12, 70, heatBufferSupplier);
     }
 
-    public HeatBar(int x, int y, int w, int h, Supplier<HeatBuffer> energySupplier) {
+    public HeatBar(int x, int y, int w, int h, Supplier<HeatBuffer> heatBufferSupplier) {
         super(x, y, w, h, Component.empty());
-        this.energySupplier = energySupplier;
+        this.heatBufferSupplier = heatBufferSupplier;
         width = w;
         height = h;
     }
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        HeatBuffer energy = energySupplier.get();
-        if (energy == null) return;
+        HeatBuffer heatBuffer = heatBufferSupplier.get();
+        if (heatBuffer == null) return;
 
         int x = getX();
         int y = getY();
@@ -48,8 +47,8 @@ public class HeatBar extends AbstractWidget {
         graphics.fill(x, y, x + w, y + h, COLOR_BORDER);
         graphics.fill(x + 1, y + 1, x + w - 1, y + h - 1, COLOR_BG);
 
-        double stored = energy.currentHeat;
-        double max = energy.capacity;
+        double stored = heatBuffer.currentHeat;
+        double max = heatBuffer.capacity;
         if (max > 0 && stored > 0) {
             int fillHeight = (int) ((double) stored / max * (h - 2));
             int fillTop = y + h - 1 - fillHeight;
@@ -67,11 +66,14 @@ public class HeatBar extends AbstractWidget {
         }
 
         if (isHovered) {
-            double safeStored = energy.currentHeat;
-            double safeMax = energy.capacity;
             graphics.renderComponentTooltip(
                     Minecraft.getInstance().font,
-                    List.of(__("screen.nuclearcraft.fission.heat").append(": ").append(TextUtils.formatHeat(safeStored) + " / " + TextUtils.formatHeat(safeMax))),
+                    List.of(
+                            __("screen.nuclearcraft.heat").append(": ").append(TextUtils.formatHeat(heatBuffer.currentHeat) + " / " + TextUtils.formatHeat(heatBuffer.capacity)),
+                            __("screen.nuclearcraft.heat_rate", TextUtils.formatHeat(heatBuffer.heatPerTick)),
+                            __("screen.nuclearcraft.cooldown_rate", TextUtils.formatHeat(heatBuffer.cooldownPerTick)),
+                            __("screen.nuclearcraft.net_heat", TextUtils.formatHeat(heatBuffer.netRate()))
+                    ),
                     mouseX, mouseY
             );
         }

@@ -17,7 +17,7 @@ import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.MultiblockPartBlock;
 import igentuman.nc.block_entity.MultiblockControllerBE;
-import igentuman.nc.block_entity.MultiblockPartBE;
+import igentuman.nc.block_entity.MultiblockPortBE;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.recipe.UniversalProcessorRecipeSerializer;
 import net.minecraft.core.BlockPos;
@@ -338,20 +338,28 @@ public class ModEntryBuilder {
     }
 
     public static ModEntry addMultiblockPart(String name) {
-        return addMultiblockPart(name, defaultMultiblockProps());
+        return addMultiblockPart(name, defaultMultiblockProps(), MultiblockPortBE::new);
+    }
+
+    public static ModEntry addMultiblockPart(String name, MultiblockPortBE.Factory beFactory) {
+        return addMultiblockPart(name, defaultMultiblockProps(), beFactory);
+    }
+
+    public static ModEntry addMultiblockPart(String name, BlockBehaviour.Properties props) {
+        return addMultiblockPart(name, props, MultiblockPortBE::new);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static ModEntry addMultiblockPart(String name, BlockBehaviour.Properties props) {
+    public static ModEntry addMultiblockPart(String name, BlockBehaviour.Properties props, MultiblockPortBE.Factory beFactory) {
         final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>[] beHolder = new DeferredHolder[1];
 
         DeferredBlock<Block> block = BLOCKS.register(name, () ->
                 new MultiblockPartBlock(props, name,
-                        () -> (BlockEntityType<? extends MultiblockPartBE>) beHolder[0].get()));
+                        () -> (BlockEntityType<? extends MultiblockPortBE>) beHolder[0].get()));
 
         DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> beReg =
                 BLOCK_ENTITIES.register(name, () -> BlockEntityType.Builder.of(
-                        (pos, state) -> new MultiblockPartBE(beHolder[0].get(), pos, state, name),
+                        (pos, state) -> beFactory.create(beHolder[0].get(), pos, state, name),
                         block.get()
                 ).build(null));
         beHolder[0] = (DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>) (DeferredHolder) beReg;

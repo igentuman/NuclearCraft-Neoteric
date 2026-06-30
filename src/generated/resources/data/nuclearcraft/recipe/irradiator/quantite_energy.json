@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "energy_per_tick": 100,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:subliquid_matter"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "nuclearcraft:quantite_energy"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:quantite"
+    }
+  ],
+  "process_time": 50
+}

@@ -23,4 +23,13 @@ public class MultiblockRegistry {
         }
         return null;
     }
+
+    public static MultiblockEntry getByPort(String name) {
+        for (MultiblockEntry entry : ENTRIES.values()) {
+            for (ModEntry port : entry.portEntries()) {
+                if (port.name().equals(name)) return entry;
+            }
+        }
+        return null;
+    }
 }

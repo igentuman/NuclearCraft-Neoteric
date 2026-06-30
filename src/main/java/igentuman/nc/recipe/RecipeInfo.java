@@ -74,6 +74,7 @@ public class RecipeInfo {
         }
 
         if (!hasRecipe()) {
+            ticks = 0;
             return;
         }
 
@@ -92,6 +93,7 @@ public class RecipeInfo {
         }
 
         ticks+=multiplier;
+        ticks = Math.min(ticks, ticksNeeded);
         be.progress = getProgress();
         changed = true;
         active = true;

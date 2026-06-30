@@ -39,7 +39,11 @@ public class FissionReactorCache extends MultiblockCacheImpl {
     public volatile double cellsEnergyMult;
     public volatile double moderatorsHeatMult;
     public volatile double moderatorsEnergyMult;
+    /** Passive (always-on) heat-sink cooling only; active sinks cool at runtime when fed coolant. */
     public volatile double totalCooling;
+    /** Count of valid active heat sinks per {@link ActiveCoolant} (indexed by ordinal). Replaced
+     *  atomically each validation pass; the reactor logic reads it on the main thread. */
+    public volatile int[] activeCoolantCounts = new int[ActiveCoolant.COUNT];
     public volatile int width;
     public volatile int height;
     public volatile int depth;
@@ -60,6 +64,7 @@ public class FissionReactorCache extends MultiblockCacheImpl {
         moderatorsHeatMult = 0;
         moderatorsEnergyMult = 0;
         totalCooling = 0;
+        activeCoolantCounts = new int[ActiveCoolant.COUNT];
         width = 0;
         height = 0;
         depth = 0;
@@ -81,6 +86,7 @@ public class FissionReactorCache extends MultiblockCacheImpl {
         tag.putDouble("moderatorsHeatMult", moderatorsHeatMult);
         tag.putDouble("moderatorsEnergyMult", moderatorsEnergyMult);
         tag.putDouble("totalCooling", totalCooling);
+        tag.putIntArray("activeCoolantCounts", activeCoolantCounts.clone());
         tag.putInt("width", width);
         tag.putInt("height", height);
         tag.putInt("depth", depth);
@@ -96,6 +102,8 @@ public class FissionReactorCache extends MultiblockCacheImpl {
         moderatorsHeatMult = tag.getDouble("moderatorsHeatMult");
         moderatorsEnergyMult = tag.getDouble("moderatorsEnergyMult");
         totalCooling = tag.getDouble("totalCooling");
+        int[] counts = tag.getIntArray("activeCoolantCounts");
+        activeCoolantCounts = counts.length == ActiveCoolant.COUNT ? counts : new int[ActiveCoolant.COUNT];
         width = tag.getInt("width");
         height = tag.getInt("height");
         depth = tag.getInt("depth");

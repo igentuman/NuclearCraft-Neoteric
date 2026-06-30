@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:supercooler",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:helium"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 100,
+      "fluid": "nuclearcraft:liquid_helium"
+    }
+  ],
+  "process_time": 200
+}

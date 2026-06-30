@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "c:ingots/bronze"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "T": {
+      "tag": "c:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    "STS",
+    "TBT",
+    "STS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:steel_frame"
+  }
+}

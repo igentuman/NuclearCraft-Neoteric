@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_nuggets",
+  "ingredients": [
+    {
+      "tag": "c:ingots/bronze"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "nuclearcraft:bronze_nugget"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 100,
+      "fluid": "nuclearcraft:molten_uranium_238"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 100,
+      "fluid": "nuclearcraft:molten_uranium_235"
+    }
+  ],
+  "process_time": 1100
+}

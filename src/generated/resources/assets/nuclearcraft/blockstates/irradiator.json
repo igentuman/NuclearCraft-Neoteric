@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,powered=false": {
+      "model": "nuclearcraft:block/irradiator",
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "nuclearcraft:block/irradiator_powered",
+      "y": 90
+    },
+    "facing=north,powered=false": {
+      "model": "nuclearcraft:block/irradiator"
+    },
+    "facing=north,powered=true": {
+      "model": "nuclearcraft:block/irradiator_powered"
+    },
+    "facing=south,powered=false": {
+      "model": "nuclearcraft:block/irradiator",
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "nuclearcraft:block/irradiator_powered",
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "nuclearcraft:block/irradiator",
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "nuclearcraft:block/irradiator_powered",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:molten_boron"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:irradiated_boron"
+    }
+  ],
+  "process_time": 500
+}

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:bismuth_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:polonium_dust"
+    }
+  ],
+  "process_time": 400
+}

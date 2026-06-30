@@ -114,12 +114,25 @@ public class ModEntries {
         mat(name, color).fluid(FluidDefinition.gas(temperature).setName(name)).build();
     }
 
+    public static void coolant(String name, int color) {
+        mat(name, color).fluid(FluidDefinition.liquid().setName(name)).build();
+    }
+
     public static FluidDefinition molten(int temperature) {
         return FluidDefinition.metal().setTemperature(temperature);
     }
 
     public static ModEntry get(String name) {
         return ENTRIES.getOrDefault(name, null);
+    }
+
+    /** Resolves the source {@link net.minecraft.world.level.material.Fluid} registered for a material
+     *  by its entry name ({@code water} maps to vanilla water). Null when the material has no fluid. */
+    public static net.minecraft.world.level.material.Fluid fluidOf(String name) {
+        if (name.equals("water")) return net.minecraft.world.level.material.Fluids.WATER;
+        ModEntry e = get(name);
+        return (e != null && e.materialEntry() != null && e.materialEntry().hasFluid())
+                ? e.materialEntry().materialFluid().source().get() : null;
     }
 
     public static boolean isEnabled(String name) {

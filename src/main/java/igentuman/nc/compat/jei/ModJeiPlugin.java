@@ -5,6 +5,9 @@ import igentuman.nc.compat.ae2.JEI2PatternEncoderTransfer;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
+import igentuman.nc.recipe.fission.BoilingRecipe;
+import igentuman.nc.recipe.fission.FissionFuelRecipe;
+import igentuman.nc.recipe.fission.FissionRecipes;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.UniversalProcessorScreen;
 import igentuman.nc.setup.ModEntries;
@@ -52,6 +55,8 @@ public class ModJeiPlugin implements IModPlugin {
         }
 
         registration.addRecipeCategories(new MultiblockExampleCategory(guiHelper));
+        registration.addRecipeCategories(new FissionFuelRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new BoilingRecipeCategory(guiHelper));
     }
 
     @Override
@@ -60,6 +65,12 @@ public class ModJeiPlugin implements IModPlugin {
             if (!entry.hasRecipes() || !entry.hasItem() || !entry.isEnabled()) continue;
             RecipeType<UniversalProcessorRecipe> jeiType = getOrCreateRecipeType(entry);
             registration.addRecipeCatalyst(new ItemStack(entry.item().get()), jeiType);
+        }
+        ModEntry controller = ModEntries.get("fission_reactor_controller");
+        if (controller != null && controller.hasItem()) {
+            ItemStack stack = new ItemStack(controller.item().get());
+            registration.addRecipeCatalyst(stack, FissionFuelRecipeCategory.TYPE);
+            registration.addRecipeCatalyst(stack, BoilingRecipeCategory.TYPE);
         }
     }
 
@@ -104,6 +115,13 @@ public class ModJeiPlugin implements IModPlugin {
         if (!mbRecipes.isEmpty()) {
             registration.addRecipes(MultiblockExampleCategory.TYPE, mbRecipes);
         }
+
+        registration.addRecipes(FissionFuelRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(FissionRecipes.FUEL_TYPE.get())
+                        .stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(BoilingRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(FissionRecipes.BOILING_TYPE.get())
+                        .stream().map(RecipeHolder::value).toList());
     }
 
     @Override

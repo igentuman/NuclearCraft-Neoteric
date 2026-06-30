@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "tag": "c:ingots/magnesium_diboride"
+    },
+    "T": {
+      "tag": "c:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    "MM ",
+    "TT ",
+    "MM "
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:coil_magnesium_diboride"
+  }
+}

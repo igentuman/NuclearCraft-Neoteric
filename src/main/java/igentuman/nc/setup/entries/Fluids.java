@@ -42,5 +42,13 @@ public class Fluids extends ModEntries {
         gas("sulfur_dioxide", 0xCCC3BC7A, 400);
         gas("sulfur_trioxide", 0xCCD3AE5D, 400);
         gas("radon", 0xFFFFFFFF, 260);
+
+        coolant("redstone", 0xFFD40000);
+        coolant("cryotheum", 0xCC5BC8F5);
+        coolant("liquid_nitrogen", 0xCCAEE3FF);
+        coolant("liquid_helium", 0xCCCFF3FF);
+        coolant("irradiated_lithium", 0XFFBCC661);
+        coolant("irradiated_boron", 0XFF6F896C);
+        coolant("subliquid_matter", 0x50C90076);
     }
 }

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:subatomic_liquifier",
+  "energy_per_tick": 50,
+  "fluid_outputs": [
+    {
+      "amount": 450,
+      "fluid": "nuclearcraft:subliquid_matter"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:aluminum_dust"
+    }
+  ],
+  "process_time": 200
+}

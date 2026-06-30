@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:empty_heat_sink"
+    },
+    "I": {
+      "tag": "c:dusts/redstone"
+    },
+    "S": {
+      "item": "nuclearcraft:servo"
+    }
+  },
+  "pattern": [
+    "SIS",
+    "IBI",
+    "SIS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:active_redstone_heat_sink"
+  }
+}

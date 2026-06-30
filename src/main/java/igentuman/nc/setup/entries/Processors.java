@@ -1,5 +1,6 @@
 package igentuman.nc.setup.entries;
 
+import igentuman.nc.block_entity.IrradiatorBE;
 import igentuman.nc.registration.ModEntryBuilder;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.SlotsLayout;
@@ -31,8 +32,10 @@ public class Processors extends ModEntries {
     public static final String STEAM_TURBINE = "steam_turbine";
     public static final String SUPERCOOLER = "supercooler";
     public static final String SUBATOMIC_LIQUIFIER = "subatomic_liquifier";
+    public static final String IRRADIATOR = "irradiator";
 
     public static void processors() {
+        irradiator();
         proc(GAS_SCRUBBER, 1, 0, 1, 0, 0);
         proc(PUMP, 0, 1, 1, 0, 0);
         proc(NUCLEAR_FURNACE, 0, 2, 0, 1, 0);
@@ -56,6 +59,16 @@ public class Processors extends ModEntries {
         proc(STEAM_TURBINE, 1, 0, 1, 0, 4);
         proc(SUPERCOOLER, 1, 0, 1, 0, 11);
         proc(SUBATOMIC_LIQUIFIER, 1, 1, 1, 0, 0);
+    }
+
+    private static void irradiator() {
+        ModEntryBuilder b = addProcessor(IRRADIATOR)
+                .blockEntity(IrradiatorBE::new);
+        b.itemCap(1, 1);
+        b.fluidCap(1, 1, 0);
+        b.withLayout(SlotsLayout.forProcessor(1, 1, 1, 1))
+                .progressBar(0)
+                .build();
     }
 
     private static void proc(String name, int inFluids, int inItems, int outFluids, int outItems, int progressBar) {

@@ -1,4 +1,4 @@
-// 1.21.1	2026-06-28T20:45:17.802484273	Loot Tables
+// 1.21.1	2026-06-29T09:56:56.671769637	Loot Tables
 a04ceb1e40d590051f8ba1b14dbd606dda79b8b8 data/nuclearcraft/loot_table/blocks/active_cryotheum_heat_sink.json
 5c6ee279cf9632c3dd659bcf92277bc2e35f1df0 data/nuclearcraft/loot_table/blocks/active_enderium_heat_sink.json
 960cbf3bce7ade8bd0acd3f15bad425219aabc0d data/nuclearcraft/loot_table/blocks/active_liquid_helium_heat_sink.json
@@ -54,6 +54,7 @@ fd601d02b2f1d11a76ac9364fa18933f388427e9 data/nuclearcraft/loot_table/blocks/gol
 60b2366335573794b9f0dcdbb267db660c5e3ccc data/nuclearcraft/loot_table/blocks/graphite_block.json
 cc9bd66b3fa97c6666e591cbf58727587eb492c1 data/nuclearcraft/loot_table/blocks/ingot_former.json
 77e787b2ccc330d5e32fd8b671e77c5a85dd271a data/nuclearcraft/loot_table/blocks/iron_heat_sink.json
+9377ee81673056f8aad123b5afd77cc233cacbe2 data/nuclearcraft/loot_table/blocks/irradiator.json
 30f42aa84e063edb9ed2be2408c0585c4f0c640d data/nuclearcraft/loot_table/blocks/isotope_separator.json
 7982e1dfd2aaf48ae5084b765d1d702e31d114ec data/nuclearcraft/loot_table/blocks/kumanderite_block.json
 3872467c90bab5451a19ca06776e40099cc29a58 data/nuclearcraft/loot_table/blocks/lapis_heat_sink.json

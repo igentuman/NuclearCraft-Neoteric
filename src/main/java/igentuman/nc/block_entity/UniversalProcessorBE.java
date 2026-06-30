@@ -53,7 +53,7 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
         setChanged();
     }
 
-    private void updatePoweredState() {
+    protected void updatePoweredState() {
         if (level == null || level.isClientSide) return;
         BlockState state = getBlockState();
         if (!state.hasProperty(UniversalProcessorBlock.POWERED)) return;

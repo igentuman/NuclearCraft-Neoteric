@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "energy_per_tick": 20,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:sands"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:glowstone"
+    }
+  ],
+  "process_time": 600
+}

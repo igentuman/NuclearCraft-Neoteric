@@ -7,10 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.client.model.generators.ModelProvider;
+import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
@@ -145,7 +142,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
             ResourceLocation placeholder = ResourceLocation.withDefaultNamespace("block/iron_block");
             model = models().orientable(modelName, placeholder, placeholder, placeholder);
         }
-
+        if(path.matches(".*glass|.*cell.*|.*photon.*|.*event_horizon_stabilizer.*|.*quantum_transformer.*")) {
+            ((BlockModelBuilder) model).renderType(ResourceLocation.tryBuild("minecraft","cutout"));
+        }
         horizontalBlock(block, model);
         itemModels().getBuilder("item/" + BuiltInRegistries.BLOCK.getKey(block).getPath()).parent(model);
     }
@@ -188,6 +187,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().getBuilder("item/" + path).parent(idle);
     }
 
+
+
     @Override
     public @NonNull ResourceLocation blockTexture(Block block) {
         ResourceLocation name = BuiltInRegistries.BLOCK.getKey(block);
@@ -199,8 +200,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private void blockWithItem(DeferredBlock<Block> deferredBlock) {
         Block block = deferredBlock.get();
         ModelFile model = cubeAll(deferredBlock.get());
-        simpleBlock(block, model);
         String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
+        if(path.matches(".*glass|.*cell.*|.*photon.*|.*event_horizon_stabilizer.*|.*quantum_transformer.*")) {
+            ((BlockModelBuilder) model).renderType(ResourceLocation.tryBuild("minecraft","cutout"));
+        }
+        simpleBlock(block, model);
         itemModels().getBuilder("item/" + path).parent(model);
     }
 

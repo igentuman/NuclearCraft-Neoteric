@@ -145,9 +145,35 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.multiblock.assembled", "Assembled");
         add("screen.nuclearcraft.multiblock.not_assembled", "Not Assembled");
         add("screen.nuclearcraft.heat", "Heat");
+        add("screen.nuclearcraft.heat_rate", "Heat Rate: %s/t");
+        add("screen.nuclearcraft.net_heat", "Net Rate: %s/t");
+        add("screen.nuclearcraft.cooldown_rate", "Cooling Rate: %s/t");
         add("screen.nuclearcraft.fission.energy", "Output");
         add("screen.nuclearcraft.fission.reactivity", "Reactivity");
+        add("screen.nuclearcraft.fission.fe_per_tick", "Output");
+        add("screen.nuclearcraft.fission.steam_per_tick", "Steam");
+        add("screen.nuclearcraft.fission.mode.energy", "Energy");
+        add("screen.nuclearcraft.fission.mode.steam", "Steam");
+        add("message.nuclearcraft.redstone_mode", "Redstone mode: %s");
+        add("message.nuclearcraft.redstone_mode.none", "Off");
+        add("message.nuclearcraft.redstone_mode.energy", "Energy level");
+        add("message.nuclearcraft.redstone_mode.heat", "Heat level");
+        add("message.nuclearcraft.redstone_mode.progress", "Fuel progress");
+        add("message.nuclearcraft.redstone_mode.items", "Fuel amount");
+        add("message.nuclearcraft.redstone_mode.switch", "Activation switch");
+        add("message.nuclearcraft.redstone_mode.moderator", "Moderation control");
+        add("gui.nuclearcraft.fission_fuel", "Fission Reactor: Fuel");
+        add("gui.nuclearcraft.fission_boiling", "Fission Reactor: Boiling");
+        add("gui.nuclearcraft.fission_boiling.heat", "Heat: %s H");
+        add("screen.nuclearcraft.boiling.capacity", "Capacity");
+        add("screen.nuclearcraft.boiling.coolant", "Coolant");
+        add("screen.nuclearcraft.boiling.hot_coolant", "Hot Coolant");
+        add("screen.nuclearcraft.boiling.rate", "Boiling Rate");
         add("screen.nuclearcraft.cooling", "Cooling");
+        add("screen.nuclearcraft.fission_reactor", "Fission Reactor");
+        add("tooltip.nuclearcraft.wait", "Wait: %ss");
+        add("tooltip.nuclearcraft.switch_to_boiling", "Switch to Boiling Mode");
+        add("tooltip.nuclearcraft.switch_to_energy", "Switch to Energy Mode");
         add("tooltip.fluid.empty", "Empty");
         add("death.attack.acid", "%1$s dissolved in acid");
         add("tooltip.nuclearcraft.fuel.forge_energy", "Power: %s");
@@ -155,5 +181,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("tooltip.nuclearcraft.fuel.heat", "Heat: %s H/t");
         add("tooltip.nuclearcraft.fuel.depletion", "Depletion: %s");
         add("tooltip.nuclearcraft.fuel.efficiency", "Efficiency: %s%%");
+        add("tooltip.nuclearcraft.moderator","Fission Reactor moderator. Must be placed adjacent to a fuel cell. \n Each face adjacent to a fuel cell adds +%s%% efficiency and +%s%% heat gen.");
+
     }
 }

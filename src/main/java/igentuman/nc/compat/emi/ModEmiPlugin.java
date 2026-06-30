@@ -10,6 +10,9 @@ import igentuman.nc.Main;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
+import igentuman.nc.recipe.fission.BoilingRecipe;
+import igentuman.nc.recipe.fission.FissionFuelRecipe;
+import igentuman.nc.recipe.fission.FissionRecipes;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.MultiblockStructure;
@@ -91,6 +94,32 @@ public class ModEmiPlugin implements EmiPlugin {
                 mbCategoryAdded = true;
             }
             registry.addRecipe(new MultiblockExampleEmiRecipe(mbCategory, mb, structure));
+        }
+
+        registerFissionRecipes(registry, recipeManager);
+    }
+
+    private void registerFissionRecipes(EmiRegistry registry, RecipeManager recipeManager) {
+        ModEntry controller = ModEntries.get("fission_reactor_controller");
+        if (controller == null || !controller.hasItem()) return;
+        EmiStack workstation = EmiStack.of(new ItemStack(controller.item().get()));
+
+        EmiRecipeCategory fuelCategory = new EmiRecipeCategory(Main.rl("fission_fuel"), workstation);
+        registry.addCategory(fuelCategory);
+        registry.addWorkstation(fuelCategory, workstation);
+        List<FissionFuelRecipe> fuelRecipes = recipeManager.getAllRecipesFor(FissionRecipes.FUEL_TYPE.get())
+                .stream().map(RecipeHolder::value).toList();
+        for (int i = 0; i < fuelRecipes.size(); i++) {
+            registry.addRecipe(new FissionFuelEmiRecipe(fuelCategory, Main.rl("/fission_fuel/" + i), fuelRecipes.get(i)));
+        }
+
+        EmiRecipeCategory boilingCategory = new EmiRecipeCategory(Main.rl("fission_boiling"), workstation);
+        registry.addCategory(boilingCategory);
+        registry.addWorkstation(boilingCategory, workstation);
+        List<BoilingRecipe> boilingRecipes = recipeManager.getAllRecipesFor(FissionRecipes.BOILING_TYPE.get())
+                .stream().map(RecipeHolder::value).toList();
+        for (int i = 0; i < boilingRecipes.size(); i++) {
+            registry.addRecipe(new BoilingEmiRecipe(boilingCategory, Main.rl("/fission_boiling/" + i), boilingRecipes.get(i)));
         }
     }
 }

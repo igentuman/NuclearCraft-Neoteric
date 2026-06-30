@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "level=0": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=1": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=10": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=11": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=12": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=13": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=14": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=15": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=2": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=3": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=4": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=5": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=6": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=7": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=8": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    },
+    "level=9": {
+      "model": "nuclearcraft:block/liquid_nitrogen_block"
+    }
+  }
+}

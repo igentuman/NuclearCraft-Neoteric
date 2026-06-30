@@ -58,7 +58,7 @@ repositories {
 }
 
 base {
-    archivesName = mod_id
+    archivesName = "NuclearCraft-${minecraft_version}"
 }
 
 // Mojang ships Java 21 to end users in 1.21.1, so mods should target Java 21.
@@ -104,8 +104,9 @@ dependencies {
     compileOnly "curse.maven:emi-580555:8081408"
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-
+    implementation("curse.maven:nuclear-radiation-1148833:8337620")
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
+    runtimeOnly "curse.maven:multi-builder-tool-827020:8084902"
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
     compileOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE:api")
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
@@ -121,7 +122,7 @@ dependencies {
     implementation "curse.maven:applied-energistics-2-223794:7027323"
     implementation "curse.maven:guideme-1173950:7127444"
 
-    compileOnly "curse.maven:gregtechceu-modern-890405:6766269"
+    //compileOnly "curse.maven:gregtechceu-modern-890405:6766269"
 }
 
 tasks.withType(ProcessResources).configureEach {

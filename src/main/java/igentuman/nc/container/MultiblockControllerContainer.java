@@ -71,7 +71,7 @@ public class MultiblockControllerContainer extends AbstractContainerMenu {
                 for (int col = 0; col < 3; col++) {
                     int index = row * 3 + col;
                     if (index < blockEntity.slotCount) {
-                        addSlot(new SlotItemHandler(inv, index, 62 + col * 18, 17 + row * 18));
+                        addSlot(new SlotItemHandler(inv, index, 56 + col * 60, 35 + row * 18));
                     }
                 }
             }
@@ -79,11 +79,11 @@ public class MultiblockControllerContainer extends AbstractContainerMenu {
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
-                addSlot(new Slot(playerInventory, col + row * 9 + 9, 10 + col * 18, 96 + row * 18));
+                addSlot(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, 95 + row * 18));
             }
         }
         for (int col = 0; col < 9; col++) {
-            addSlot(new Slot(playerInventory, col, 10 + col * 18, 154));
+            addSlot(new Slot(playerInventory, col, 8 + col * 18, 153));
         }
     }
 

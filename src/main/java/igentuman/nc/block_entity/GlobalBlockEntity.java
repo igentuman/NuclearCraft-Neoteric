@@ -4,12 +4,14 @@ import igentuman.nc.handler.SidedContentHandler;
 import igentuman.nc.handler.energy.CustomEnergyStorage;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.ItemCapabilityHandler;
-import igentuman.nc.multiblock.fission.HeatBuffer;
+import igentuman.nc.util.BoilingBuffer;
+import igentuman.nc.util.HeatBuffer;
 import igentuman.nc.recipe.ProcessorRecipeInput;
 import igentuman.nc.recipe.RecipeInfo;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.NBTField;
+import igentuman.nc.util.NBTSerializable;
 import igentuman.nc.util.caps.EnergyCapDefinition;
 import igentuman.nc.util.caps.FluidCapDefinition;
 import igentuman.nc.util.caps.ItemCapDefinition;
@@ -68,6 +70,7 @@ public class GlobalBlockEntity extends BlockEntity {
     private final List<Field> longFields;
     private final List<Field> blockPosFields;
     private final List<Field> directionFields;
+    private final List<Field> bufferFields;
 
     /** Fields annotated with @NBTField(syncToClient = true), used for ContainerData sync. */
     private final List<Field> syncFields;
@@ -95,7 +98,7 @@ public class GlobalBlockEntity extends BlockEntity {
     }
 
     public boolean hasEnergyStorage() {
-        return energyStorage != null;
+        return energyStorage != null && energyStorage.getMaxEnergyStored() > 0;
     }
 
     public void markDirty() {
@@ -212,6 +215,7 @@ public class GlobalBlockEntity extends BlockEntity {
         floatFields = initFields(float.class);
         byteFields = initFields(byte.class);
         longFields = initFields(long.class);
+        bufferFields = initBufferFields();
 
         syncFields = initSyncFields();
 
@@ -280,6 +284,17 @@ public class GlobalBlockEntity extends BlockEntity {
         List<Field> fields = new ArrayList<>();
         for (Field field : collectAllNBTFields()) {
             if (field.getType().equals(fieldClass)) {
+                fields.add(field);
+            }
+        }
+        return fields;
+    }
+
+    /** Collects fields whose type implements {@link NBTSerializable} (HeatBuffer, BoilingBuffer, ...). */
+    private List<Field> initBufferFields() {
+        List<Field> fields = new ArrayList<>();
+        for (Field field : collectAllNBTFields()) {
+            if (NBTSerializable.class.isAssignableFrom(field.getType())) {
                 fields.add(field);
             }
         }
@@ -369,6 +384,14 @@ public class GlobalBlockEntity extends BlockEntity {
                     f.setLong(this, tag.getLong(f.getName()));
                 }
             }
+            for(Field f: bufferFields) {
+                if (tag.contains(f.getName())) {
+                    NBTSerializable buffer = (NBTSerializable) f.get(this);
+                    if (buffer != null) {
+                        buffer.load(tag.getCompound(f.getName()));
+                    }
+                }
+            }
             for(Field f: intArrayFields) {
                 if (tag.contains(f.getName())) {
                     f.set(this, tag.getIntArray(f.getName()));
@@ -423,6 +446,14 @@ public class GlobalBlockEntity extends BlockEntity {
             }
             for (Field f : longFields) {
                 tag.putLong(f.getName(), f.getLong(this));
+            }
+            for (Field f : bufferFields) {
+                NBTSerializable buffer = (NBTSerializable) f.get(this);
+                if (buffer != null) {
+                    CompoundTag bufferTag = new CompoundTag();
+                    buffer.save(bufferTag);
+                    tag.put(f.getName(), bufferTag);
+                }
             }
             for (Field f : intArrayFields) {
                 int[] array = (int[]) f.get(this);
@@ -554,6 +585,10 @@ public class GlobalBlockEntity extends BlockEntity {
     }
 
     public HeatBuffer heatBuffer() {
+        return null;
+    }
+
+    public BoilingBuffer boilingBuffer() {
         return null;
     }
 }

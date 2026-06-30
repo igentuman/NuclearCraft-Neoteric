@@ -2,7 +2,7 @@ package igentuman.nc.api.impl;
 
 import igentuman.nc.api.multiblock.IMultiblockCache;
 import igentuman.nc.api.multiblock.IMultiblockLogic;
-import igentuman.nc.block_entity.MultiblockPartBE;
+import igentuman.nc.block_entity.MultiblockPortBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,7 +15,7 @@ public class MultiblockLogicImpl implements IMultiblockLogic {
             if (key == controllerKey) continue;
             BlockPos pos = BlockPos.of(key);
             BlockEntity be = cache.getBlockEntity(level, pos);
-            if (be instanceof MultiblockPartBE part) {
+            if (be instanceof MultiblockPortBE part) {
                 part.setControllerPos(controllerPos);
             }
         }
@@ -28,7 +28,7 @@ public class MultiblockLogicImpl implements IMultiblockLogic {
             if (key == controllerKey) continue;
             BlockPos pos = BlockPos.of(key);
             BlockEntity be = cache.getBlockEntity(level, pos);
-            if (be instanceof MultiblockPartBE part) {
+            if (be instanceof MultiblockPortBE part) {
                 part.setControllerPos(null);
             }
         }

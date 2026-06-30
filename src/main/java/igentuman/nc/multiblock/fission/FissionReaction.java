@@ -1,39 +1,49 @@
 package igentuman.nc.multiblock.fission;
 
 import igentuman.nc.block_entity.fission.FissionReactorControllerBE;
+import igentuman.nc.config.Multiblocks;
 import igentuman.nc.handler.energy.CustomEnergyStorage;
+import igentuman.nc.handler.fluid.FluidStackHandler;
+import igentuman.nc.recipe.fission.BoilingRecipe;
 import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import igentuman.nc.recipe.fission.FissionRecipes;
+import igentuman.nc.util.BoilingBuffer;
+import igentuman.nc.util.HeatBuffer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 /**
- * Fission reactor runtime reaction (energy mode). Runs on the main server thread from the
- * controller BE tick; reads structure stats from {@link FissionReactorCache} (scalars only) and
- * mutates the controller's heat buffer, energy storage, and fuel inventory. Steam mode is added
- * in a later phase.
+ * Fission reactor runtime reaction. Runs on the main server thread from the controller BE tick;
+ * reads structure stats from {@link FissionReactorCache} (scalars only) and mutates the controller's
+ * heat buffer, energy storage, fuel inventory, and fluid tanks.
  *
- * <p>Formulas mirror NuclearCraft Neoteric; radiation is out of scope.
+ * <p>Two fluid subsystems run here. Active heat-sink coolant is drained every tick (independent of
+ * mode) and adds to the cooling total only for sinks whose coolant tank is supplied. The boiling
+ * steam mode converts reactor heat into steam in place of FE generation. Formulas mirror NuclearCraft
+ * Neoteric; radiation is out of scope.
  */
 public class FissionReaction {
 
-    private static final double HEAT_CAPACITY = 1_000_000;
-    private static final double HEAT_MULTIPLIER = 1;
-    private static final double HEAT_MULTIPLIER_CAP = 3;
-    private static final double FE_GENERATION_MULTIPLIER = 10;
     private static final double GENERATION_MULTIPLIER = 1;
-    private static final int EXPLOSION_RADIUS = 4;
     private static final int IRRADIATION_HEAT_PER_LINE = 15;
 
     private double reactivityLevel;
     private double ticksProcessed;
-    private FissionFuelRecipe currentRecipe;
+    public FissionFuelRecipe currentRecipe;
     private ItemStack lastFuel = ItemStack.EMPTY;
+    private BoilingRecipe currentBoiling;
+    private Fluid lastBoilFluid;
+    private boolean fuelConsumed = false;
+    private ItemStack consumedFuelStack = ItemStack.EMPTY;
 
     public void tick(FissionReactorControllerBE be, FissionReactorCache fc) {
         HeatBuffer heat = be.heatBuffer();
@@ -41,49 +51,76 @@ public class FissionReaction {
 
         double volume = Math.max(1, (double) fc.width * fc.height * fc.depth);
         double sizeMult = Math.max(1, Math.round(Math.log(volume) * 10) / 10.0 - 1);
-        heat.setCapacity(HEAT_CAPACITY * sizeMult);
+        heat.setCapacity(Multiblocks.fissionHeatCapacity * sizeMult);
 
         IItemHandler items = be.getItemHandler(null);
-        ItemStack fuel = items != null ? items.getStackInSlot(0) : ItemStack.EMPTY;
-        FissionFuelRecipe recipe = findRecipe(level, fuel);
+        FissionFuelRecipe recipe;
+        if (fuelConsumed && currentRecipe != null) {
+            recipe = currentRecipe;
+        } else {
+            ItemStack fuel = items != null ? items.getStackInSlot(0) : ItemStack.EMPTY;
+            recipe = findRecipe(level, fuel);
+        }
         int fuelCells = fc.fuelCellCount;
+        boolean processing = recipe != null && fuelCells > 0;
 
-        boolean enabled = true; // redstone control deferred to a later phase
+        double activeCooling = applyActiveCooling(be, fc, heat.currentHeat > 0 || processing);
+        double cooling = fc.totalCooling + activeCooling;
 
-        if (recipe == null || fuelCells <= 0) {
+        if (!processing) {
+            if (fuelConsumed) {
+                returnFuel(items);
+            }
             reactivityLevel = Math.max(0, reactivityLevel - 1);
             heat.heatPerTick = 0;
-            heat.cooldownPerTick = fc.totalCooling;
+            heat.cooldownPerTick = cooling;
             heat.cool();
             be.energyPerTick = 0;
+            be.steamPerTick = 0;
+            be.boilingBuffer().reset();
             syncDisplay(be, heat, recipe);
             return;
         }
 
-        reactivityLevel = clamp(reactivityLevel + (enabled ? 1 : -1), 0, 100);
+        if (!fuelConsumed && items != null) {
+            consumedFuelStack = items.extractItem(0, 1, false);
+            fuelConsumed = !consumedFuelStack.isEmpty();
+        }
 
+        reactivityLevel = clamp(reactivityLevel + 1, 0, 100);
+
+        double mod = be.moderationFactor();
         double cellsHeat = fc.cellsHeatMult + fc.moderatorsHeatMult;
         double cellsEnergy = fc.cellsEnergyMult + fc.moderatorsEnergyMult;
-        double cooling = fc.totalCooling;
-        double heatPerTick = recipe.heat() * cellsHeat + fc.irradiationLines * (double) IRRADIATION_HEAT_PER_LINE;
-        double factor = heatMultiplier(heatPerTick, cooling) + collectedHeatMultiplier(heat.currentHeat, heat.capacity) - 1;
+        double heatPerTick = (recipe.heat() * cellsHeat * Multiblocks.fissionFuelHeatMultiplier
+                + fc.irradiationLines * (double) IRRADIATION_HEAT_PER_LINE) * mod;
+        double heatMult = heatMultiplier(heatPerTick, cooling);
+        double factor = heatMult + collectedHeatMultiplier(heat.currentHeat, heat.capacity) - 1;
 
         ticksProcessed += Math.max(0, fuelCells * factor * reactivityLevel / 100.0);
 
-        int gen = (int) (recipe.power() * cellsEnergy * factor
-                * FE_GENERATION_MULTIPLIER / 10.0 * GENERATION_MULTIPLIER * reactivityLevel / 100.0);
-        addEnergy(be.energyStorage, gen);
-        be.energyPerTick = Math.max(0, gen);
+        if (be.isSteamMode()) {
+            be.energyPerTick = 0;
+            be.steamPerTick = boil(be, level, cooling, heatMult, mod);
+        } else {
+            int gen = (int) (recipe.power() * cellsEnergy * factor
+                    * Multiblocks.fissionFeGenerationMultiplier / 10.0 * GENERATION_MULTIPLIER * reactivityLevel / 100.0 * mod);
+            addEnergy(be.energyStorage, gen);
+            be.energyPerTick = Math.max(0, gen);
+            be.steamPerTick = 0;
+            be.boilingBuffer().reset();
+        }
 
         heat.heatPerTick = heatPerTick;
         heat.addHeat(heatPerTick * Math.max(0.5, reactivityLevel / 100.0));
         heat.cooldownPerTick = cooling;
         heat.cool();
 
-        if (recipe.processTime() > 0 && ticksProcessed >= recipe.processTime()) {
+        if (recipe.processTime() > 0 && ticksProcessed >= effectiveProcessTime(recipe)) {
             if (produceOutput(items, recipe)) {
-                items.extractItem(0, 1, false);
                 ticksProcessed = 0;
+                fuelConsumed = false;
+                consumedFuelStack = ItemStack.EMPTY;
                 currentRecipe = null;
             }
         }
@@ -99,11 +136,95 @@ public class FissionReaction {
     /** Called when the structure is not formed: bleed off reactivity and clear display values. */
     public void idle(FissionReactorControllerBE be) {
         reactivityLevel = Math.max(0, reactivityLevel - 1);
+        if (fuelConsumed) {
+            returnFuel(be.getItemHandler(null));
+        }
         HeatBuffer heat = be.heatBuffer();
         heat.heatPerTick = 0;
         heat.cooldownPerTick = 0;
         be.energyPerTick = 0;
+        be.steamPerTick = 0;
+        be.boilingBuffer().reset();
         syncDisplay(be, heat, null);
+    }
+
+    private void returnFuel(IItemHandler items) {
+        if (!consumedFuelStack.isEmpty() && items != null) {
+            items.insertItem(0, consumedFuelStack.copy(), false);
+        }
+        consumedFuelStack = ItemStack.EMPTY;
+        fuelConsumed = false;
+        ticksProcessed = 0;
+        currentRecipe = null;
+        lastFuel = ItemStack.EMPTY;
+    }
+
+    /** Drains each supplied active-coolant tank and returns the cooling those sinks contribute.
+     *  A coolant type only cools when its tank holds at least the full per-tick demand. */
+    private double applyActiveCooling(FissionReactorControllerBE be, FissionReactorCache fc, boolean consume) {
+        int[] counts = fc.activeCoolantCounts;
+        if (counts == null) return 0;
+        FluidStackHandler tanks = be.fluidTanks();
+        if (tanks == null) return 0;
+        double cooling = 0;
+        for (ActiveCoolant c : ActiveCoolant.VALUES) {
+            int n = c.ordinal() < counts.length ? counts[c.ordinal()] : 0;
+            if (n <= 0) continue;
+            int required = n * Multiblocks.fissionActiveCoolantPerTick;
+            FluidStack inTank = tanks.getFluidInTank(c.tankIndex());
+            if (inTank.getAmount() < required) continue;
+            if (consume) tanks.drainTank(c.tankIndex(), required, IFluidHandler.FluidAction.EXECUTE);
+            cooling += n * c.sinkHeat;
+        }
+        return cooling;
+    }
+
+    /** Converts available cooling throughput into steam, consuming boiling coolant from the input
+     *  tank and filling the steam output tank. Returns mB of steam produced this tick. */
+    private int boil(FissionReactorControllerBE be, Level level, double cooling, double heatMult, double mod) {
+        BoilingBuffer buf = be.boilingBuffer();
+        FluidStackHandler tanks = be.fluidTanks();
+        if (tanks == null) {
+            buf.reset();
+            return 0;
+        }
+        int inTank = ActiveCoolant.BOILING_INPUT_TANK;
+        int outTank = ActiveCoolant.STEAM_OUTPUT_TANK;
+        buf.capacity = tanks.getTankCapacity(inTank);
+        buf.boilingRate = 0;
+        buf.maxBoilingRate = 0;
+
+        FluidStack coolant = tanks.getFluidInTank(inTank);
+        buf.coolantAmount = coolant.getAmount();
+        buf.hotCoolantAmount = tanks.getFluidInTank(outTank).getAmount();
+        if (coolant.isEmpty()) return 0;
+
+        BoilingRecipe recipe = findBoilingRecipe(level, coolant);
+        if (recipe == null || recipe.heatRequired() <= 0) return 0;
+
+        double heatEff = cooling * (Multiblocks.fissionBoilingMult / 100.0) * heatMult * mod;
+        int maxOps = (int) (heatEff / recipe.heatRequired());
+        if (maxOps <= 0) return 0;
+
+        int inAmount = recipe.input().amount();
+        FluidStack out = recipe.output().resolve();
+        if (inAmount <= 0 || out.isEmpty()) return 0;
+        buf.maxBoilingRate = (double) maxOps * out.getAmount();
+
+        int ops = Math.min(maxOps, coolant.getAmount() / inAmount);
+        FluidStack curOut = tanks.getFluidInTank(outTank);
+        if (!curOut.isEmpty() && curOut.getFluid() != out.getFluid()) return 0;
+        int space = tanks.getTankCapacity(outTank) - curOut.getAmount();
+        ops = Math.min(ops, space / out.getAmount());
+        if (ops <= 0) return 0;
+
+        tanks.drainTank(inTank, ops * inAmount, IFluidHandler.FluidAction.EXECUTE);
+        tanks.fillTank(outTank, new FluidStack(out.getFluid(), ops * out.getAmount()), IFluidHandler.FluidAction.EXECUTE);
+        int produced = ops * out.getAmount();
+        buf.boilingRate = produced;
+        buf.coolantAmount = tanks.getFluidInTank(inTank).getAmount();
+        buf.hotCoolantAmount = tanks.getFluidInTank(outTank).getAmount();
+        return produced;
     }
 
     private FissionFuelRecipe findRecipe(Level level, ItemStack fuel) {
@@ -130,6 +251,25 @@ public class FissionReaction {
         return null;
     }
 
+    private BoilingRecipe findBoilingRecipe(Level level, FluidStack coolant) {
+        if (currentBoiling != null && coolant.getFluid() == lastBoilFluid) {
+            return currentBoiling;
+        }
+        if (!(level instanceof ServerLevel sl)) {
+            return currentBoiling;
+        }
+        for (RecipeHolder<BoilingRecipe> holder : sl.getRecipeManager().getAllRecipesFor(FissionRecipes.BOILING_TYPE.get())) {
+            if (holder.value().input().ingredient().test(coolant)) {
+                currentBoiling = holder.value();
+                lastBoilFluid = coolant.getFluid();
+                return currentBoiling;
+            }
+        }
+        currentBoiling = null;
+        lastBoilFluid = null;
+        return null;
+    }
+
     private boolean produceOutput(IItemHandler items, FissionFuelRecipe recipe) {
         ItemStack out = recipe.output().resolve();
         if (out.isEmpty()) return true;
@@ -148,52 +288,67 @@ public class FissionReaction {
 
     private void meltdown(FissionReactorControllerBE be) {
         Level level = be.getLevel();
-        if (level instanceof ServerLevel sl) {
+        double radius = Multiblocks.fissionExplosionRadius;
+        if (level instanceof ServerLevel sl && radius > 0) {
             BlockPos p = be.getBlockPos();
             sl.explode(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5,
-                    EXPLOSION_RADIUS, Level.ExplosionInteraction.BLOCK);
+                    (float) radius, Level.ExplosionInteraction.BLOCK);
         }
         be.heatBuffer().reset();
         reactivityLevel = 0;
         ticksProcessed = 0;
+        fuelConsumed = false;
+        consumedFuelStack = ItemStack.EMPTY;
         currentRecipe = null;
+        lastFuel = ItemStack.EMPTY;
     }
 
     private double heatMultiplier(double h, double cooling) {
         if (h <= 0) return 1;
         double c = Math.max(1, cooling);
-        double v = Math.log10(h / c) / (1 + Math.exp(h / c * HEAT_MULTIPLIER)) + 1;
+        double v = Math.log10(h / c) / (1 + Math.exp(h / c * Multiblocks.fissionHeatMultiplier)) + 1;
         return Math.round(v * 100) / 100.0;
     }
 
     private double collectedHeatMultiplier(double heat, double maxHeat) {
         if (maxHeat <= 0) return 1;
-        return Math.min(HEAT_MULTIPLIER_CAP, Math.pow((heat + maxHeat / 8) / maxHeat, 5) + 0.9999694824);
+        return Math.min(Multiblocks.fissionHeatMultiplierCap, Math.pow((heat + maxHeat / 8) / maxHeat, 5) + 0.9999694824);
     }
 
     private void syncDisplay(FissionReactorControllerBE be, HeatBuffer heat, FissionFuelRecipe recipe) {
-        be.heat = (int) heat.currentHeat;
-        be.maxHeat = (int) heat.capacity;
         be.reactivity = (int) reactivityLevel;
-        be.cooling = (int) heat.cooldownPerTick;
-        be.netHeat = (int) heat.netRate();
         be.progress = (recipe != null && recipe.processTime() > 0)
-                ? (int) Math.min(100, ticksProcessed / recipe.processTime() * 100) : 0;
+                ? (int) Math.min(100, ticksProcessed / effectiveProcessTime(recipe) * 100) : 0;
         be.maxProgress = 100;
+    }
+
+    /** Fuel burn duration after applying the depletion multiplier (higher = fuel lasts longer). */
+    private static double effectiveProcessTime(FissionFuelRecipe recipe) {
+        return recipe.processTime() * Multiblocks.fissionDepletionMultiplier;
     }
 
     private static double clamp(double v, double min, double max) {
         return Math.max(min, Math.min(max, v));
     }
 
-    public void save(CompoundTag tag) {
+    public void save(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putDouble("reactivity", reactivityLevel);
         tag.putDouble("ticksProcessed", ticksProcessed);
+        tag.putBoolean("fuelConsumed", fuelConsumed);
+        if (fuelConsumed && !consumedFuelStack.isEmpty()) {
+            tag.put("consumedFuel", consumedFuelStack.save(registries));
+        }
     }
 
-    public void load(CompoundTag tag) {
+    public void load(CompoundTag tag, HolderLookup.Provider registries) {
         reactivityLevel = tag.getDouble("reactivity");
         ticksProcessed = tag.getDouble("ticksProcessed");
+        fuelConsumed = tag.getBoolean("fuelConsumed");
+        if (fuelConsumed && tag.contains("consumedFuel")) {
+            consumedFuelStack = ItemStack.parseOptional(registries, tag.getCompound("consumedFuel"));
+        } else {
+            consumedFuelStack = ItemStack.EMPTY;
+        }
     }
 
     public double reactivity() {

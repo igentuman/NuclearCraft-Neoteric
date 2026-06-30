@@ -23,6 +23,10 @@ public class CustomEnergyStorage extends EnergyStorage {
         this.energy = energy;
     }
 
+    public void setCapacity(int energy) {
+        this.capacity = energy;
+    }
+
     public void drainEnergy(int energy) {
         setEnergyStored(this.energy - energy);
     }

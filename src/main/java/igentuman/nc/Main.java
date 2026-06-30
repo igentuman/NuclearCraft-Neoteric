@@ -9,11 +9,13 @@ import igentuman.nc.compat.cc.CCCompatHandler;
 import igentuman.nc.handler.event.ServerEvents;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
-import igentuman.nc.block_entity.MultiblockPartBE;
+import igentuman.nc.block_entity.MultiblockPortBE;
 import igentuman.nc.network.PacketMultiblockBroken;
 import igentuman.nc.network.PacketMultiblockFormed;
 import igentuman.nc.network.PacketAE2PatternTransfer;
+import igentuman.nc.network.PacketFissionToggleMode;
 import igentuman.nc.network.PacketProcessorButtonPress;
+import igentuman.nc.network.PacketRedstoneModeCycle;
 import igentuman.nc.network.PacketSideConfigToggle;
 import igentuman.nc.registration.FuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
@@ -100,9 +102,19 @@ public class Main {
                 PacketSideConfigToggle::handle
         );
         registrar.playToServer(
+                PacketRedstoneModeCycle.TYPE,
+                PacketRedstoneModeCycle.STREAM_CODEC,
+                PacketRedstoneModeCycle::handle
+        );
+        registrar.playToServer(
                 PacketProcessorButtonPress.TYPE,
                 PacketProcessorButtonPress.STREAM_CODEC,
                 PacketProcessorButtonPress::handle
+        );
+        registrar.playToServer(
+                PacketFissionToggleMode.TYPE,
+                PacketFissionToggleMode.STREAM_CODEC,
+                PacketFissionToggleMode::handle
         );
         registrar.playToServer(
                 PacketAE2PatternTransfer.TYPE,
@@ -169,17 +181,17 @@ public class Main {
                 event.registerBlockEntity(
                         Capabilities.ItemHandler.BLOCK,
                         port.blockEntity().get(),
-                        (be, side) -> be instanceof MultiblockPartBE part ? part.getItemHandler(side) : null
+                        (be, side) -> be instanceof MultiblockPortBE part ? part.getItemHandler(side) : null
                 );
                 event.registerBlockEntity(
                         Capabilities.FluidHandler.BLOCK,
                         port.blockEntity().get(),
-                        (be, side) -> be instanceof MultiblockPartBE part ? part.getFluidHandler(side) : null
+                        (be, side) -> be instanceof MultiblockPortBE part ? part.getFluidHandler(side) : null
                 );
                 event.registerBlockEntity(
                         Capabilities.EnergyStorage.BLOCK,
                         port.blockEntity().get(),
-                        (be, side) -> be instanceof MultiblockPartBE part ? part.getEnergyHandler(side) : null
+                        (be, side) -> be instanceof MultiblockPortBE part ? part.getEnergyHandler(side) : null
                 );
             }
         }
@@ -191,10 +203,12 @@ public class Main {
 
     private void onConfigLoad(ModConfigEvent.Loading event) {
         if (event.getConfig().getSpec() == Common.SPEC) Common.refreshTagPriority();
+        if (event.getConfig().getSpec() == Multiblocks.SPEC) Multiblocks.refresh();
     }
 
     private void onConfigReload(ModConfigEvent.Reloading event) {
         if (event.getConfig().getSpec() == Common.SPEC) Common.refreshTagPriority();
+        if (event.getConfig().getSpec() == Multiblocks.SPEC) Multiblocks.refresh();
     }
 
     private void onAddReloadListener(AddReloadListenerEvent event) {

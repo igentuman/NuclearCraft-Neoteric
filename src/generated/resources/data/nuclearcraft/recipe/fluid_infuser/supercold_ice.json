@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 50,
+      "fluid": "nuclearcraft:liquid_helium"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:ice"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:supercold_ice_block"
+    }
+  ],
+  "process_time": 200
+}

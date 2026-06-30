@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": {
+      "tag": "c:ingots/lead"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "T": {
+      "tag": "c:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    "LSL",
+    "STS",
+    "LSL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:chassis"
+  }
+}

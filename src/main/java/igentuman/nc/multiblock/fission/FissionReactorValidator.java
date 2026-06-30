@@ -5,6 +5,7 @@ import igentuman.nc.api.multiblock.BlockPredicate;
 import igentuman.nc.api.multiblock.IMultiblockCache;
 import igentuman.nc.api.multiblock.IMultiblockValidator;
 import igentuman.nc.block.fission.HeatSinkBlock;
+import igentuman.nc.config.Multiblocks;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
@@ -30,10 +31,6 @@ import java.util.Map;
  */
 public class FissionReactorValidator implements IMultiblockValidator {
 
-    private static final double MODERATOR_HEAT_MULTIPLIER = 33.333;
-    private static final double MODERATOR_FE_MULTIPLIER = 16.667;
-    private static final int MIN = 3;
-    private static final int MAX = 26;
     private static final int MAX_MODERATOR_RUN = 4;
 
     private final CubicMultiblockValidator shape;
@@ -43,11 +40,13 @@ public class FissionReactorValidator implements IMultiblockValidator {
     private Block pileDriverChamber = Blocks.AIR;
 
     public FissionReactorValidator() {
+        int min = Multiblocks.fissionMinSize;
+        int max = Multiblocks.fissionMaxSize;
         this.shape = new CubicMultiblockValidator(
                 (state, be) -> state.is(blockOf("fission_reactor_controller")),
                 BlockPredicate.ofTag(FissionTags.CASING),
                 (state, be) -> state.isAir() || state.is(FissionTags.REACTOR_INNER),
-                MIN, MAX, MIN, MAX, MIN, MAX);
+                min, max, min, max, min, max);
     }
 
     @Override
@@ -137,8 +136,8 @@ public class FissionReactorValidator implements IMultiblockValidator {
                     mods++;
                 }
             }
-            fc.moderatorsHeatMult += mods * (extra + 1) * (MODERATOR_HEAT_MULTIPLIER / 100.0);
-            fc.moderatorsEnergyMult += mods * (extra + 1) * (MODERATOR_FE_MULTIPLIER / 100.0);
+            fc.moderatorsHeatMult += mods * (extra + 1) * (Multiblocks.fissionModeratorHeatMultiplier / 100.0);
+            fc.moderatorsEnergyMult += mods * (extra + 1) * (Multiblocks.fissionModeratorFeMultiplier / 100.0);
         }
     }
 
@@ -203,12 +202,22 @@ public class FissionReactorValidator implements IMultiblockValidator {
         }
     }
 
+    /** Passive sinks contribute their cooling directly; active sinks are tallied per coolant so the
+     *  runtime logic can cool only when the matching coolant fluid is available. */
     private void sumCooling(FissionReactorCache fc) {
+        int[] active = new int[ActiveCoolant.COUNT];
         for (long key : fc.validHeatSinks) {
             String name = fc.heatSinks.get(key);
             HeatSinkEntry entry = ModEntries.HEAT_SINKS.get(name);
-            if (entry != null) fc.totalCooling += entry.def().heat;
+            if (entry == null) continue;
+            if (entry.def().isActive()) {
+                ActiveCoolant c = ActiveCoolant.bySinkName(name);
+                if (c != null) active[c.ordinal()]++;
+            } else {
+                fc.totalCooling += entry.def().heat;
+            }
         }
+        fc.activeCoolantCounts = active;
     }
 
     private static Block blockOf(String name) {

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:silicon_wafer"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:silicon_n_doped"
+    }
+  ],
+  "process_time": 150
+}

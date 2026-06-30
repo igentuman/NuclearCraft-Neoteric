@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "energy_per_tick": 20,
+  "fluid_inputs": [
+    {
+      "amount": 45,
+      "tag": "c:redstone"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:cobblestone"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:netherrack"
+    }
+  ],
+  "process_time": 100
+}

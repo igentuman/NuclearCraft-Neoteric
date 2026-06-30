@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_machines",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:chassis"
+    },
+    "G": {
+      "tag": "c:ingots/graphite"
+    },
+    "M": {
+      "item": "nuclearcraft:motor"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "S": {
+      "item": "nuclearcraft:coil_copper"
+    }
+  },
+  "pattern": [
+    "PGP",
+    "SCS",
+    "PMP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:electrolyzer"
+  }
+}

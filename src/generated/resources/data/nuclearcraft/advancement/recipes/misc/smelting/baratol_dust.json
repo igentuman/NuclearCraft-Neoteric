@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nuclearcraft:baratol_dust"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "nuclearcraft:smelting/baratol_dust"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ore"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "nuclearcraft:smelting/baratol_dust"
+    ]
+  }
+}

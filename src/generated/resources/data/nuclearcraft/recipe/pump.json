@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_machines",
+  "key": {
+    "C": {
+      "item": "minecraft:cauldron"
+    },
+    "M": {
+      "item": "nuclearcraft:motor"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    }
+  },
+  "pattern": [
+    "PMP",
+    "PCP",
+    "PMP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:pump"
+  }
+}

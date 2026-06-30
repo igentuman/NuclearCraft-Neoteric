@@ -11,14 +11,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 
 import java.util.concurrent.CompletableFuture;
 
+import static igentuman.nc.datagen.recipe.VanillaRecipes.craftingRecipes;
 import static igentuman.nc.datagen.recipe.processors.AlloySmelterRecipes.alloySmelter;
 import static igentuman.nc.datagen.recipe.processors.AssemblerRecipes.assembler;
 import static igentuman.nc.datagen.recipe.processors.CentrifugeRecipes.centrifuge;
@@ -34,6 +36,7 @@ import static igentuman.nc.datagen.recipe.processors.FluidInfuserRecipes.fluidIn
 import static igentuman.nc.datagen.recipe.processors.FuelReprocessorRecipes.fuelReprocessor;
 import static igentuman.nc.datagen.recipe.processors.GasScrubberRecipes.gasScrubber;
 import static igentuman.nc.datagen.recipe.processors.IngotFormerRecipes.ingotFormer;
+import static igentuman.nc.datagen.recipe.processors.IrradiatorRecipes.irradiator;
 import static igentuman.nc.datagen.recipe.processors.IsotopeSeparatorRecipes.isotopeSeparator;
 import static igentuman.nc.datagen.recipe.processors.ManufactoryRecipes.manufactory;
 import static igentuman.nc.datagen.recipe.processors.MelterRecipes.melter;
@@ -57,6 +60,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     @Override
     public void buildRecipes(RecipeOutput recipeOutput) {
+        craftingRecipes(recipeOutput);
         manufactory(recipeOutput);
         alloySmelter(recipeOutput);
         pressurizer(recipeOutput);
@@ -81,6 +85,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         subatomicLiquifier(recipeOutput);
         fissionFuel(recipeOutput);
         fissionBoiling(recipeOutput);
+        irradiator(recipeOutput);
     }
 
     // --- record helpers ---
@@ -116,6 +121,34 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         for (I x : io) b.itemOutput(x.item(), x.n());
         for (F x : fo) b.fluidOutput(x.fluid(), x.n());
         b.processTime(time).energyPerTick(power).save(out, name);
+    }
+
+    public static TagKey<Item> plateTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "plates/" + name));
+    }
+
+    public static TagKey<Item> dustTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "dusts/" + name));
+    }
+
+    public static TagKey<Item> rawTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "raw_ore/" + name));
+    }
+
+    public static TagKey<Item> ingotTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ingots/" + name));
+    }
+
+    public static TagKey<Item> blockTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + name));
+    }
+
+    public static TagKey<Item> gemTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "gems/" + name));
+    }
+
+    public static TagKey<Item> nuggetTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "nuggets/" + name));
     }
 
     public static void i2i(RecipeOutput out, String proc, String name, Item in, Item o, int on, int... modifiers) {
@@ -278,10 +311,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     }
 
     public static Fluid fluidOf(String name) {
-        if (name.equals("water")) return Fluids.WATER;
-        ModEntry e = ModEntries.get(name);
-        return (e != null && e.materialEntry() != null && e.materialEntry().hasFluid())
-                ? e.materialEntry().materialFluid().source().get() : null;
+        return ModEntries.fluidOf(name);
     }
 
     public static Fluid isotopeFluid(String name, String variant) {

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_machines",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:chassis"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "G": {
+      "tag": "c:dusts/glowstone"
+    },
+    "P": {
+      "tag": "c:ingots/tin_silver"
+    },
+    "S": {
+      "item": "nuclearcraft:coil_copper"
+    }
+  },
+  "pattern": [
+    "PGP",
+    "ECE",
+    "PSP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:fuel_reprocessor"
+  }
+}

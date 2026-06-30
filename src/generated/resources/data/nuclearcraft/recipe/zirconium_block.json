@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_blocks",
+  "ingredients": [
+    {
+      "tag": "c:ingots/zirconium"
+    },
+    {
+      "tag": "c:ingots/zirconium"
+    },
+    {
+      "tag": "c:ingots/zirconium"
+    },
+    {
+      "tag": "c:ingots/zirconium"
+    },
+    {
+      "tag": "c:ingots/zirconium"
+    },
+    {
+      "tag": "c:ingots/zirconium"
+    },
+    {
+      "tag": "c:ingots/zirconium"
+    },
+    {
+      "tag": "c:ingots/zirconium"
+    },
+    {
+      "tag": "c:ingots/zirconium"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:zirconium_block"
+  }
+}

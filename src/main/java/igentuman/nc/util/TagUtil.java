@@ -7,6 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -107,5 +108,33 @@ public class TagUtil {
     public static Set<ResourceLocation> tagNames(Stream<? extends TagKey<?>> stream) {
         return stream.map(TagKey::location)
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    public static TagKey<Item> plateTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "plates/" + name));
+    }
+
+    public static TagKey<Item> dustTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "dusts/" + name));
+    }
+
+    public static TagKey<Item> rawTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "raw_ore/" + name));
+    }
+
+    public static TagKey<Item> ingotTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ingots/" + name));
+    }
+
+    public static TagKey<Item> blockTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + name));
+    }
+
+    public static TagKey<Item> gemTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "gems/" + name));
+    }
+
+    public static TagKey<Item> nuggetTag(String name) {
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "nuggets/" + name));
     }
 }

@@ -21,6 +21,7 @@ import static igentuman.nc.Main.MODID;
 import static igentuman.nc.Main.rl;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.*;
+import static igentuman.nc.util.TagUtil.*;
 import static net.minecraft.world.item.Items.*;
 import static net.minecraft.world.item.Items.BUCKET;
 

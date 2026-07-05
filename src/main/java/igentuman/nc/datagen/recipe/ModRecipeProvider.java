@@ -123,33 +123,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         b.processTime(time).energyPerTick(power).save(out, name);
     }
 
-    public static TagKey<Item> plateTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "plates/" + name));
-    }
 
-    public static TagKey<Item> dustTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "dusts/" + name));
-    }
-
-    public static TagKey<Item> rawTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "raw_ore/" + name));
-    }
-
-    public static TagKey<Item> ingotTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ingots/" + name));
-    }
-
-    public static TagKey<Item> blockTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + name));
-    }
-
-    public static TagKey<Item> gemTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "gems/" + name));
-    }
-
-    public static TagKey<Item> nuggetTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "nuggets/" + name));
-    }
 
     public static void i2i(RecipeOutput out, String proc, String name, Item in, Item o, int on, int... modifiers) {
         rec(out, proc, name, new I[]{i(in, 1)}, NF, new I[]{i(o, on)}, NF, modifiers);

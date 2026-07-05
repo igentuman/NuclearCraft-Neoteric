@@ -1,6 +1,6 @@
 package igentuman.nc.datagen.tag;
 
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
@@ -57,7 +57,7 @@ public class ModFluidTagProvider extends FluidTagsProvider {
             }
         }
 
-        for (FuelEntry fuel : ModEntries.FUELS.values()) {
+        for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
             for (MaterialEntry mat : fuel.fluids()) {
                 var materialFluid = mat.materialFluid();
                 String fluidName = mat.fluidDefinition.resolveName(mat.name);

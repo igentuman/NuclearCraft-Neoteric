@@ -286,11 +286,14 @@ public class MaterialEntry {
         final DeferredItem<Item>[] bucketHolder = new DeferredItem[1];
 
         // Supplier that creates fresh Properties each time (all references resolved lazily)
-        Supplier<BaseFlowingFluid.Properties> propsSupplier = () -> new BaseFlowingFluid.Properties(
-                fluidType::get,
-                () -> sourceHolder[0].get(),
-                () -> flowingHolder[0].get()
-        ).block(() -> blockHolder[0].get()).bucket(() -> bucketHolder[0].get());
+        Supplier<BaseFlowingFluid.Properties> propsSupplier = () -> {
+            BaseFlowingFluid.Properties props = new BaseFlowingFluid.Properties(
+                    fluidType::get,
+                    () -> sourceHolder[0].get(),
+                    () -> flowingHolder[0].get()
+            ).block(() -> blockHolder[0].get()).bucket(() -> bucketHolder[0].get());
+            return props;
+        };
 
         // Register source and flowing fluids
         sourceHolder[0] = (DeferredHolder<Fluid, FlowingFluid>)
@@ -303,15 +306,15 @@ public class MaterialEntry {
 
         // Register fluid block
         blockHolder[0] = (DeferredBlock<LiquidBlock>)
-                (DeferredBlock<?>) BLOCKS.register(fluidName + "_block", () -> new NCFluidBlock(
-                        sourceHolder[0].get(),
-                        BlockBehaviour.Properties.of()
-                                .noCollission()
-                                .strength(100.0F)
-                                .noLootTable()
-                                .liquid()
-                                .replaceable()
-                ));
+                (DeferredBlock<?>) BLOCKS.register(fluidName + "_block", () -> {
+                    BlockBehaviour.Properties props = BlockBehaviour.Properties.of()
+                            .noCollission()
+                            .strength(100.0F)
+                            .noLootTable()
+                            .liquid()
+                            .replaceable();
+                    return new NCFluidBlock(sourceHolder[0].get(), props);
+                });
 
         // Register bucket item
         bucketHolder[0] = ITEMS.register(fluidName + "_bucket", () -> new BucketItem(

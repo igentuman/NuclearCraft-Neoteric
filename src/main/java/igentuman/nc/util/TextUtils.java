@@ -218,4 +218,22 @@ public class TextUtils
 		}
 		return TextUtils.numberFormat(value)+" H";
 	}
+
+	public static String formatTime(int time) {
+		if (time < 60) {
+			return time + "s";
+		}
+		if (time < 3600) {
+			int minutes = time / 60;
+			int seconds = time % 60;
+			return seconds > 0 ? minutes + "m " + seconds + "s" : minutes + "m";
+		}
+		int hours = time / 3600;
+		int minutes = (time % 3600) / 60;
+		int seconds = time % 60;
+		String result = hours + "h";
+		if (minutes > 0) result += " " + minutes + "m";
+		if (seconds > 0) result += " " + seconds + "s";
+		return result;
+	}
 }

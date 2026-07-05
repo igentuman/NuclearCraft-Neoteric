@@ -3,7 +3,7 @@ package igentuman.nc.datagen.recipe.processors;
 import igentuman.nc.content.fuel.FuelDef;
 import igentuman.nc.recipe.ItemOutput;
 import igentuman.nc.recipe.fission.FissionFuelRecipe;
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +15,7 @@ import static igentuman.nc.Main.MODID;
 public class FissionFuelRecipes {
 
     public static void fissionFuel(RecipeOutput out) {
-        for (FuelEntry fe : ModEntries.FUELS.values()) {
+        for (FissionFuelEntry fe : ModEntries.FISSION_FUEL.values()) {
             String[] variants = fe.base().isSpecial() ? new String[]{""} : FuelDef.ITEM_VARIANTS;
             for (String v : variants) {
                 if (v.equals("_tr")) continue; // triso has no in-reactor recipe (0 power)

@@ -1,7 +1,7 @@
 package igentuman.nc.datagen.recipe.processors;
 
 import igentuman.nc.content.fuel.FuelDef;
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.setup.ModEntries;
@@ -31,7 +31,7 @@ public class IngotFormerRecipes {
                 f2i(out, id, "isotope_" + iso.itemId + v, iso.fluid(v), MOLTEN_INGOT, iso.variants().get(v).get(), 1);
             }
         }
-        for (FuelEntry fe : ModEntries.FUELS.values()) {
+        for (FissionFuelEntry fe : ModEntries.FISSION_FUEL.values()) {
             for (String v : FuelDef.FLUID_VARIANTS) {
                 var fuelItem = fe.fuelItems().get(v);
                 var depItem = fe.depletedItems().get(v);

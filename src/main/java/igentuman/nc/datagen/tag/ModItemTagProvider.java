@@ -1,11 +1,7 @@
 package igentuman.nc.datagen.tag;
 
 import igentuman.nc.multiblock.fission.FissionTags;
-import igentuman.nc.registration.ArmorSetEntry;
-import igentuman.nc.registration.IsotopeEntry;
-import igentuman.nc.registration.MaterialEntry;
-import igentuman.nc.registration.ModEntry;
-import igentuman.nc.registration.ToolSetEntry;
+import igentuman.nc.registration.*;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -93,8 +89,14 @@ public class ModItemTagProvider extends ItemTagsProvider {
             }
         }
         for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
-            TagKey<Item> isoTag = materialTag("isotopes/" + isotope.itemId);
+            TagKey<Item> isoTag = materialTag("isotopes/" + isotope.name);
             isotope.variants().values().forEach(item -> tag(isoTag).add(item.get()));
+        }
+        for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
+            TagKey<Item> fuelTag = materialTag("fission_fuel/" + fuel.group + "/" + fuel.name.replace("-", "_"));
+            fuel.fuelItems().values().forEach(item -> tag(fuelTag).add(item.get()));
+            TagKey<Item> depletedFuelTag = materialTag("fission_fuel/depleted_" + fuel.group + "/" + fuel.name.replace("-", "_"));
+            fuel.depletedItems().values().forEach(item -> tag(depletedFuelTag).add(item.get()));
         }
     }
 

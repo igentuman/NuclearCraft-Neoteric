@@ -104,7 +104,7 @@ dependencies {
     compileOnly "curse.maven:emi-580555:8081408"
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-    implementation("curse.maven:nuclear-radiation-1148833:8337620")
+    implementation("igentuman.nr:NuclearRadiation:1.0.0-beta8") { transitive = false }
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     runtimeOnly "curse.maven:multi-builder-tool-827020:8084902"
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")

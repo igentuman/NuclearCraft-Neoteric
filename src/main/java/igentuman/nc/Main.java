@@ -17,7 +17,7 @@ import igentuman.nc.network.PacketFissionToggleMode;
 import igentuman.nc.network.PacketProcessorButtonPress;
 import igentuman.nc.network.PacketRedstoneModeCycle;
 import igentuman.nc.network.PacketSideConfigToggle;
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
@@ -297,14 +297,14 @@ public class Main {
             for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
                 isotope.variants().values().forEach(item -> event.accept(item));
             }
-            for (FuelEntry fuel : ModEntries.FUELS.values()) {
+            for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
                 if (!fuel.isEnabled()) continue;
                 fuel.fuelItems().values().forEach(item -> event.accept(item));
                 fuel.depletedItems().values().forEach(item -> event.accept(item));
             }
         }
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            for (FuelEntry fuel : ModEntries.FUELS.values()) {
+            for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
                 if (!fuel.isEnabled()) continue;
                 for (MaterialEntry mat : fuel.fluids()) {
                     event.accept(mat.bucket());

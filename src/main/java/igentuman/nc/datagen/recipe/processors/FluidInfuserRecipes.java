@@ -1,6 +1,6 @@
 package igentuman.nc.datagen.recipe.processors;
 
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -8,7 +8,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
-import static igentuman.nc.setup.entries.Processors.FLUID_INFUSER;
 
 public class FluidInfuserRecipes {
 
@@ -23,8 +22,8 @@ public class FluidInfuserRecipes {
                 infuse(out, iso.itemId + g[1], fluidOf(g[0]), 100, iso.base().get(), 1, var, 1);
             }
         }
-        for (var e : ModEntries.FUELS.entrySet()) {
-            FuelEntry fe = e.getValue();
+        for (var e : ModEntries.FISSION_FUEL.entrySet()) {
+            FissionFuelEntry fe = e.getValue();
             if (fe.base().isSpecial()) continue;
             for (String[] g : GASES) {
                 infuse(out, fe.idStem.replace("fuel_", "") + g[1], fluidOf(g[0]), 1000,

@@ -1,7 +1,7 @@
 package igentuman.nc.item;
 
 import igentuman.nc.content.fuel.FuelDef;
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -14,16 +14,16 @@ import java.util.List;
 import static igentuman.nc.util.TextUtils.__;
 
 /**
- * A fission fuel pellet item. Resolves its parameters live from the owning {@link FuelEntry}
+ * A fission fuel pellet item. Resolves its parameters live from the owning {@link FissionFuelEntry}
  * so that KubeJS parameter overrides are reflected in the tooltip. Radiation is intentionally
  * not modeled here (it lives in the separate NuclearRadiation mod).
  */
 public class ItemFuel extends Item {
 
-    private final FuelEntry entry;
+    private final FissionFuelEntry entry;
     public final String variant;
 
-    public ItemFuel(Properties properties, FuelEntry entry, String variant) {
+    public ItemFuel(Properties properties, FissionFuelEntry entry, String variant) {
         super(properties);
         this.entry = entry;
         this.variant = variant;
@@ -42,7 +42,6 @@ public class ItemFuel extends Item {
             tooltip.add(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.forge_energy", TextUtils.formatEnergy(def.forgeEnergy)), ChatFormatting.BLUE));
         }
         tooltip.add(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.heat", TextUtils.numberFormat(def.heat)), ChatFormatting.GOLD));
-        tooltip.add(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.depletion", def.depletion), ChatFormatting.GREEN));
-        tooltip.add(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.efficiency", def.efficiency), ChatFormatting.AQUA));
+        tooltip.add(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.depletion", TextUtils.formatTime(def.depletion)), ChatFormatting.GREEN));
     }
 }

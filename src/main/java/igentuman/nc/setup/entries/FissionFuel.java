@@ -1,7 +1,7 @@
 package igentuman.nc.setup.entries;
 
 import igentuman.nc.content.fuel.FuelDef;
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.setup.ModEntries;
 
 import java.util.function.Consumer;
@@ -64,13 +64,13 @@ public class FissionFuel extends ModEntries {
     }
 
     /** Registers a fuel (built-in or KubeJS) and all its item/fluid forms. */
-    public static FuelEntry register(FuelDef def) {
-        return FuelEntry.register(def);
+    public static FissionFuelEntry register(FuelDef def) {
+        return FissionFuelEntry.register(def);
     }
 
     /** Disables a fuel by {@code group} and {@code name} (KubeJS removal). */
     public static void remove(String group, String name) {
-        FuelEntry entry = ModEntries.FUELS.get(group + "/" + name);
+        FissionFuelEntry entry = ModEntries.FISSION_FUEL.get(group + "/" + name);
         if (entry != null) {
             entry.disable();
         }
@@ -78,7 +78,7 @@ public class FissionFuel extends ModEntries {
 
     /** Overrides parameters of an existing fuel in place (KubeJS override). */
     public static void override(String group, String name, Consumer<FuelDef> mutator) {
-        FuelEntry entry = ModEntries.FUELS.get(group + "/" + name);
+        FissionFuelEntry entry = ModEntries.FISSION_FUEL.get(group + "/" + name);
         if (entry != null) {
             entry.override(mutator);
         }

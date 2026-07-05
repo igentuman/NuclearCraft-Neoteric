@@ -1,6 +1,7 @@
 package igentuman.nc.multiblock;
 
 import igentuman.nc.Main;
+import igentuman.nc.api.impl.MultiblockCacheImpl;
 import igentuman.nc.api.multiblock.IMultiblockCache;
 import igentuman.nc.api.multiblock.IMultiblockLogic;
 import igentuman.nc.api.multiblock.IMultiblockValidator;
@@ -293,6 +294,20 @@ public final class MultiblockHandler {
                 removeFromStructureIndex(level.dimension(), previousPositions);
                 indexStructure(level.dimension(), controllerPos.asLong(), cache.getStructurePositions());
             }
+        }
+
+        public BlockPos getCenter(MultiblockCacheImpl multiblockCache) {
+            Set<Long> positions = multiblockCache.getStructurePositions();
+            if (positions.isEmpty()) return BlockPos.ZERO;
+            long sumX = 0, sumY = 0, sumZ = 0;
+            for (long packed : positions) {
+                BlockPos p = BlockPos.of(packed);
+                sumX += p.getX();
+                sumY += p.getY();
+                sumZ += p.getZ();
+            }
+            int count = positions.size();
+            return new BlockPos((int)(sumX / count), (int)(sumY / count), (int)(sumZ / count));
         }
     }
 }

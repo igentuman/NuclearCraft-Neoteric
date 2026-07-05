@@ -1,7 +1,7 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.registration.FluidDefinition;
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.recipe.fission.FissionRecipes;
@@ -34,7 +34,7 @@ import static igentuman.nc.setup.entries.Processors.processors;
 public class ModEntries {
     public static final HashMap<String, ModEntry> ENTRIES = new HashMap<>();
     public static final HashMap<String, IsotopeEntry> ISOTOPES = new HashMap<>();
-    public static final LinkedHashMap<String, FuelEntry> FUELS = new LinkedHashMap<>();
+    public static final LinkedHashMap<String, FissionFuelEntry> FISSION_FUEL = new LinkedHashMap<>();
     public static final LinkedHashMap<String, HeatSinkEntry> HEAT_SINKS = new LinkedHashMap<>();
     public static List<String> HS_SCHEDULE = new ArrayList<>();
     public static BlockBehaviour.Properties COMMON_BLOCK_PROPS = BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f).requiresCorrectToolForDrops();

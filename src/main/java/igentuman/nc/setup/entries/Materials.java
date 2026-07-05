@@ -60,7 +60,6 @@ public class Materials extends ModEntries {
         mat("lithium_manganese_dioxide", 0xFF696969).ingot().dust().fluid().plate().build();
         mat("graphite", 0xFF292929).ingot().dust().storageBlock().plate().build();
         mat("pyrolitic_carbon", 0xFF292929).ingot().dust().build();
-        mat("corium", 0xFF7C7C6F).storageBlock().fluid(molten(3000)).build();
         mat("baratol", 0xFFB8B0A0).ingot().dust().fluid(molten(800)).build();
         mat("tnt", 0xFFCC2A1F).fluid(molten(600)).build();
         mat("netherite", DEFAULT_COLOR).dust().plate().build();

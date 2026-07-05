@@ -1,6 +1,6 @@
 package igentuman.nc.datagen.recipe.processors;
 
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
@@ -44,8 +44,8 @@ public class AssemblerRecipes {
         assemble(out, "qnp",                   part("qnp"),                   1,
                 new I[]{plt("hsla_steel", 3), prt("basic_electric_circuit", 1), prt("lithium_ion_cell", 1), prt("coil_magnesium_diboride", 1), prt("actuator", 1)});
 
-        for (var e : ModEntries.FUELS.entrySet()) {
-            FuelEntry fe = e.getValue();
+        for (var e : ModEntries.FISSION_FUEL.entrySet()) {
+            FissionFuelEntry fe = e.getValue();
             if (fe.base().isSpecial()) continue;
             assemble(out, fe.idStem.replace("fuel_", "") + "_tr", fuel(e.getKey(), "_tr"), 9,
                     new I[]{i(fuel(e.getKey(), ""), 9), dst("graphite", 1), ing("pyrolitic_carbon", 1), ing("silicon_carbide", 1)});

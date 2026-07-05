@@ -1,6 +1,6 @@
 package igentuman.nc.datagen.recipe;
 
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
@@ -11,8 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
@@ -271,14 +269,14 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     }
 
     public static Item fuel(String key, String variant) {
-        FuelEntry e = ModEntries.FUELS.get(key);
+        FissionFuelEntry e = ModEntries.FISSION_FUEL.get(key);
         if (e == null) return null;
         var d = e.fuelItems().get(variant);
         return d != null ? d.get() : null;
     }
 
     public static Item depletedFuel(String key, String variant) {
-        FuelEntry e = ModEntries.FUELS.get(key);
+        FissionFuelEntry e = ModEntries.FISSION_FUEL.get(key);
         if (e == null) return null;
         var d = e.depletedItems().get(variant);
         return d != null ? d.get() : null;
@@ -294,12 +292,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     }
 
     public static Fluid fuelFluid(String key, String variant) {
-        FuelEntry e = ModEntries.FUELS.get(key);
+        FissionFuelEntry e = ModEntries.FISSION_FUEL.get(key);
         return e == null ? null : e.fuelFluid(variant);
     }
 
     public static Fluid depletedFuelFluid(String key, String variant) {
-        FuelEntry e = ModEntries.FUELS.get(key);
+        FissionFuelEntry e = ModEntries.FISSION_FUEL.get(key);
         return e == null ? null : e.depletedFluid(variant);
     }
 }

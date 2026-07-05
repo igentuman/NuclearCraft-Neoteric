@@ -1,7 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.registration.ArmorSetEntry;
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
@@ -92,7 +92,7 @@ public class ModLanguageProvider  extends LanguageProvider {
                 add("fluid_type.nuclearcraft." + fluidName, convertToName(fluidName));
             }
         }
-        for (FuelEntry fuel : ModEntries.FUELS.values()) {
+        for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
             fuel.fuelItems().forEach((variant, item) ->
                     add(item.get(), fuelDisplayName("Fuel", fuel.group, fuel.name, variant)));
             fuel.depletedItems().forEach((variant, item) ->

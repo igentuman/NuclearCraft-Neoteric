@@ -4,11 +4,19 @@ import igentuman.nc.block_entity.fission.FissionReactorControllerBE;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.handler.energy.CustomEnergyStorage;
 import igentuman.nc.handler.fluid.FluidStackHandler;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.recipe.fission.BoilingRecipe;
 import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import igentuman.nc.recipe.fission.FissionRecipes;
+import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.BoilingBuffer;
 import igentuman.nc.util.HeatBuffer;
+import igentuman.nr.api.RadiationProfile;
+import igentuman.nr.binding.RadiationBindings;
+import igentuman.nr.corium.Corium;
+import igentuman.nr.particle.MeltdownParticles;
+import igentuman.nr.util.tracking.LeftOverRadSource;
+import igentuman.nr.util.tracking.WorldSourceRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -16,10 +24,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
+
+import static igentuman.nc.block.MultiblockControllerBlock.FACING;
 
 /**
  * Fission reactor runtime reaction. Runs on the main server thread from the controller BE tick;
@@ -127,7 +144,7 @@ public class FissionReaction {
 
         be.markDirty();
         if (heat.isOverMax()) {
-            meltdown(be);
+            meltdown(be, fc);
             return;
         }
         syncDisplay(be, heat, recipe);
@@ -286,13 +303,28 @@ public class FissionReaction {
         if (add > 0) es.setEnergyStored(cur + add);
     }
 
-    private void meltdown(FissionReactorControllerBE be) {
+    private void meltdown(FissionReactorControllerBE be, FissionReactorCache fc) {
         Level level = be.getLevel();
-        double radius = Multiblocks.fissionExplosionRadius;
-        if (level instanceof ServerLevel sl && radius > 0) {
+        ItemStack fuelStack = consumedFuelStack;
+        if (fuelStack.isEmpty()) {
+            IItemHandler items = be.getItemHandler(null);
+            fuelStack = items != null ? items.getStackInSlot(0) : ItemStack.EMPTY;
+        }
+        int fuelCells = fc.fuelCellCount;
+        if (level instanceof ServerLevel sl) {
             BlockPos p = be.getBlockPos();
-            sl.explode(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5,
-                    (float) radius, Level.ExplosionInteraction.BLOCK);
+            BlockPos center = Objects.requireNonNull(MultiblockHandler.getInstance(sl, p)).getCenter(fc);
+
+            double radius = Multiblocks.fissionExplosionRadius;
+            if (radius > 0) {
+                sl.explode(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5,
+                        (float) radius, Level.ExplosionInteraction.BLOCK);
+            }
+            spillCorium(sl, fc);
+            int topY = breakCeilingBlocks(sl, fc, center);
+            spawnMeltdownRadiation(sl, p, fuelStack, fuelCells);
+            BlockPos emissionCenter = new BlockPos(center.getX(), topY, center.getZ());
+            MeltdownParticles.emit(sl, emissionCenter);
         }
         be.heatBuffer().reset();
         reactivityLevel = 0;
@@ -301,6 +333,67 @@ public class FissionReaction {
         consumedFuelStack = ItemStack.EMPTY;
         currentRecipe = null;
         lastFuel = ItemStack.EMPTY;
+    }
+
+    /** Replaces every fuel-cell block with a molten corium source block. Best-effort: the cell
+     *  position set is owned by the validator thread, so a concurrent rebuild just spills fewer. */
+    private void spillCorium(ServerLevel sl, FissionReactorCache fc) {
+        BlockState coriumState = Corium.MOLTEN_CORIUM.get().defaultFluidState().createLegacyBlock();
+        long[] cells;
+        try {
+            Long[] snapshot = fc.fuelCells.toArray(new Long[0]);
+            cells = new long[snapshot.length];
+            for (int i = 0; i < snapshot.length; i++) cells[i] = snapshot[i];
+        } catch (Exception e) {
+            return;
+        }
+        for (long key : cells) {
+            sl.setBlock(BlockPos.of(key), coriumState, Block.UPDATE_ALL);
+        }
+    }
+
+    private int breakCeilingBlocks(ServerLevel sl, FissionReactorCache fc, BlockPos center) {
+        int maxY = Integer.MIN_VALUE;
+        for (long key : fc.getStructurePositions()) {
+            int y = BlockPos.of(key).getY();
+            if (y > maxY) maxY = y;
+        }
+        if (maxY == Integer.MIN_VALUE) return 0;
+
+        List<BlockPos> ceiling = new ArrayList<>();
+        for (long key : fc.getStructurePositions()) {
+            BlockPos p = BlockPos.of(key);
+            if (p.getY() == maxY && !sl.getBlockState(p).isAir()) {
+                ceiling.add(p);
+            }
+        }
+        if (!ceiling.isEmpty()) {
+            int cx = center.getX();
+            int cz = center.getZ();
+            ceiling.sort((a, b) -> {
+                double da = (a.getX() - cx) * (a.getX() - cx) + (a.getZ() - cz) * (a.getZ() - cz);
+                double db = (b.getX() - cx) * (b.getX() - cx) + (b.getZ() - cz) * (b.getZ() - cz);
+                return Double.compare(da, db);
+            });
+            int count = Math.min(ceiling.size(), 2 + sl.getRandom().nextInt(4));
+            for (int i = 0; i < count; i++) {
+                sl.destroyBlock(ceiling.get(i), true);
+            }
+        }
+        return maxY;
+    }
+
+    /** Registers a persistent leftover radiation source whose activity scales with the fuel-cell
+     *  count and the isotope profile bound to the loaded fuel. */
+    private void spawnMeltdownRadiation(ServerLevel sl, BlockPos pos, ItemStack fuelStack, int fuelCells) {
+        if (fuelCells <= 0) return;
+        RadiationProfile fuelProfile = RadiationBindings.of(fuelStack);
+        if (fuelProfile.isEmpty()) return;
+        long now = sl.getGameTime();
+        RadiationProfile leftover = RadiationProfile.empty();
+        leftover.mergeAtoms(fuelProfile, fuelCells, now);
+        WorldSourceRegistry.get(sl).register(new LeftOverRadSource(sl, pos, leftover, now, true));
+
     }
 
     private double heatMultiplier(double h, double cooling) {

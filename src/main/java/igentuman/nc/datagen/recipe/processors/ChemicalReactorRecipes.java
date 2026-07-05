@@ -1,7 +1,7 @@
 package igentuman.nc.datagen.recipe.processors;
 
 import igentuman.nc.content.fuel.FuelDef;
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.material.Fluid;
@@ -18,7 +18,7 @@ public class ChemicalReactorRecipes {
     }
 
     private static void fuelMixing(RecipeOutput out) {
-        for (FuelEntry fe : ModEntries.FUELS.values()) {
+        for (FissionFuelEntry fe : ModEntries.FISSION_FUEL.values()) {
             if (fe.group.equals("mixed") || fe.base().isSpecial()) continue;
             int[] iso = fe.base().isotopes;
             boolean he = fe.name.startsWith("he");

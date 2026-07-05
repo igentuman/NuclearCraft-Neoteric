@@ -1,7 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.registration.ArmorSetEntry;
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ToolSetEntry;
@@ -97,7 +97,7 @@ public class ModItemModelProvider  extends ItemModelProvider {
                         .applyTint(true);
             }
         }
-        for (FuelEntry fuel : ModEntries.FUELS.values()) {
+        for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
             String nm = fuel.name.replace("-", "_");
             fuel.fuelItems().forEach((variant, item) ->
                     simpleItem(item, "fuel/" + fuel.group + "/" + nm + variant));

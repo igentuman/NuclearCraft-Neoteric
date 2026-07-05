@@ -8,7 +8,7 @@ import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.MultiblockPartBlock;
-import igentuman.nc.registration.FuelEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.MaterialFluidType;
 import igentuman.nc.registration.ModEntry;
@@ -109,7 +109,7 @@ public class Client {
                 registerFluidExtension(event, mat.materialFluid().fluidType().get());
             }
         }
-        for (FuelEntry fuel : ModEntries.FUELS.values()) {
+        for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
             for (MaterialEntry mat : fuel.fluids()) {
                 registerFluidExtension(event, mat.materialFluid().fluidType().get());
             }
@@ -161,7 +161,7 @@ public class Client {
                 event.register(bucketColors, mat.bucket());
             }
         }
-        for (FuelEntry fuel : ModEntries.FUELS.values()) {
+        for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
             for (MaterialEntry mat : fuel.fluids()) {
                 event.register(bucketColors, mat.bucket());
             }

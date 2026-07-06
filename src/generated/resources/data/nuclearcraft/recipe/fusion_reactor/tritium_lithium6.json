@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fusion_reactor",
+  "energy": 383000,
+  "input_a": {
+    "amount": 1000,
+    "fluid": "nuclearcraft:tritium"
+  },
+  "input_b": {
+    "amount": 90,
+    "fluid": "nuclearcraft:molten_lithium_6"
+  },
+  "optimal_temperature": 4.971E9,
+  "outputs": [
+    {
+      "fluid": "nuclearcraft:helium"
+    },
+    {
+      "fluid": "nuclearcraft:helium"
+    }
+  ],
+  "process_time": 450
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "nuclearcraft:block/electromagnet/magnesium_diboride_electromagnet_slope",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/electromagnet/magnesium_diboride_electromagnet_slope"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/electromagnet/magnesium_diboride_electromagnet_slope",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/electromagnet/magnesium_diboride_electromagnet_slope",
+      "y": 270
+    }
+  }
+}

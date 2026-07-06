@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "nuclearcraft:block/electromagnet/niobium_titanium_electromagnet"
+  }
+}

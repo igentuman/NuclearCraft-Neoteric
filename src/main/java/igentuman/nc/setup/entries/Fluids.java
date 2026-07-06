@@ -50,5 +50,7 @@ public class Fluids extends ModEntries {
         coolant("irradiated_lithium", 0XFFBCC661);
         coolant("irradiated_boron", 0XFF6F896C);
         coolant("subliquid_matter", 0x50C90076);
+
+        liquid("technical_water", 0x902F43F4, 310);
     }
 }

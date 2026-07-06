@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fusion",
+  "key": {
+    "L": {
+      "tag": "c:plates/lead"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "P P",
+    "LPL"
+  ],
+  "result": {
+    "count": 4,
+    "id": "nuclearcraft:fusion_reactor_casing"
+  }
+}

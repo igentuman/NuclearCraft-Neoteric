@@ -459,6 +459,11 @@ public class ModEntryBuilder {
         return this;
     }
 
+    public ModEntryBuilder withEnergy(int inputRate, int outputRate, int capacity) {
+        this.energy = EnergyCapDefinition.create(inputRate, outputRate, capacity);
+        return this;
+    }
+
     public ModEntryBuilder fluidCap(int inputTanks, int outputTanks, int defaultTanks) {
         FluidCapDefinition def = FluidCapDefinition.create();
         for (int i = 0; i < inputTanks; i++) def.addInput(100000);

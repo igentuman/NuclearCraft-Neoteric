@@ -12,7 +12,10 @@ import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.MaterialFluidType;
 import igentuman.nc.registration.ModEntry;
+import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
+import igentuman.nc.client.render.fusion.FusionCoreRenderer;
 import igentuman.nc.screen.FissionReactorScreen;
+import igentuman.nc.screen.FusionReactorScreen;
 import igentuman.nc.screen.MultiblockControllerScreen;
 import igentuman.nc.screen.MultiblockPortScreen;
 import igentuman.nc.screen.UniversalProcessorScreen;
@@ -26,6 +29,8 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -82,6 +87,8 @@ public class Client {
                                 (MenuType<MultiblockControllerContainer>) (MenuType<?>) entry.menu().get();
                         if (entry.name().equals("fission_reactor_controller")) {
                             event.register(menuType, FissionReactorScreen::new);
+                        } else if (entry.name().equals("fusion_reactor_core")) {
+                            event.register(menuType, FusionReactorScreen::new);
                         } else {
                             event.register(menuType, MultiblockControllerScreen::new);
                         }
@@ -97,6 +104,15 @@ public class Client {
                         );
                     }
                 });
+    }
+
+    @SuppressWarnings("unchecked")
+    @SubscribeEvent
+    static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(
+                (BlockEntityType<FusionReactorControllerBE>) (BlockEntityType<?>)
+                        ModEntries.get("fusion_reactor_core").blockEntity().get(),
+                FusionCoreRenderer::new);
     }
 
     /**

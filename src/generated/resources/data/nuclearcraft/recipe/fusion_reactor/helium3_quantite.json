@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:fusion_reactor",
+  "energy": 1148000,
+  "input_a": {
+    "amount": 1000,
+    "fluid": "nuclearcraft:helium_3"
+  },
+  "input_b": {
+    "amount": 90,
+    "fluid": "nuclearcraft:molten_quantite"
+  },
+  "optimal_temperature": 2.9574E10,
+  "outputs": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:deuterium"
+    },
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:deuterium"
+    },
+    {
+      "amount": 1500,
+      "fluid": "nuclearcraft:helium"
+    },
+    {
+      "amount": 1500,
+      "fluid": "nuclearcraft:helium"
+    }
+  ],
+  "process_time": 700
+}

@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:fusion_coolant",
+  "cooling_rate": 2500,
+  "input_fluid": {
+    "amount": 10,
+    "fluid": "nuclearcraft:liquid_helium"
+  },
+  "output_fluid": {
+    "amount": 10,
+    "fluid": "nuclearcraft:helium"
+  }
+}

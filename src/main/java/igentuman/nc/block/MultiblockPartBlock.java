@@ -2,7 +2,6 @@ package igentuman.nc.block;
 
 import com.mojang.serialization.MapCodec;
 import igentuman.nc.block_entity.MultiblockPortBE;
-import igentuman.nc.block_entity.fission.FissionPortBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -70,7 +69,7 @@ public class MultiblockPartBlock extends BaseEntityBlock {
     @Override
     protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         if (level.isClientSide) return 0;
-        return level.getBlockEntity(pos) instanceof FissionPortBE port ? port.getComparatorOutput() : 0;
+        return level.getBlockEntity(pos) instanceof MultiblockPortBE port ? port.getComparatorOutput() : 0;
     }
 
     @Override
@@ -78,10 +77,12 @@ public class MultiblockPartBlock extends BaseEntityBlock {
                                                 Player player, BlockHitResult hitResult) {
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof FissionPortBE port && player.isShiftKeyDown() && port.supportsRedstone()) {
+            if (be instanceof MultiblockPortBE port && player.isShiftKeyDown() && port.supportsRedstone()) {
                 int mode = port.cycleRedstoneMode();
+                String[] keys = port.redstoneModes();
+                String key = mode >= 0 && mode < keys.length ? keys[mode] : "none";
                 serverPlayer.displayClientMessage(Component.translatable("message.nuclearcraft.redstone_mode",
-                        Component.translatable("message.nuclearcraft.redstone_mode." + FissionPortBE.MODE_KEYS[mode])), true);
+                        Component.translatable("message.nuclearcraft.redstone_mode." + key)), true);
             } else if (be instanceof MultiblockPortBE partBE) {
                 serverPlayer.openMenu(partBE, pos);
             }

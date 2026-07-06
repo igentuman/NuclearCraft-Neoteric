@@ -1,0 +1,6 @@
+{
+	"parent": "nuclearcraft:block/dummy",
+	"textures": {
+		"particle": "nuclearcraft:block/fusion/proxy"
+	}
+}

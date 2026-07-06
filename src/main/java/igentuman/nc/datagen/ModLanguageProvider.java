@@ -183,5 +183,18 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("tooltip.nuclearcraft.fuel.efficiency", "Efficiency: %s%%");
         add("tooltip.nuclearcraft.moderator","Fission Reactor moderator. Must be placed adjacent to a fuel cell. \n Each face adjacent to a fuel cell adds +%s%% efficiency and +%s%% heat gen.");
 
+        add("itemGroup.nuclearcraft.fusion_reactor", "NuclearCraft: Fusion Reactor");
+        add("screen.nuclearcraft.fusion_reactor", "Fusion Reactor");
+        add("screen.nuclearcraft.fusion.charge", "Charge: %s%%");
+        add("screen.nuclearcraft.fusion.plasma", "Plasma: %s MK");
+        add("screen.nuclearcraft.fusion.heat", "Heat: %s H");
+        add("screen.nuclearcraft.fusion.efficiency", "Efficiency: %s%%");
+        add("screen.nuclearcraft.fusion.output", "Output: %s FE/t");
+        add("screen.nuclearcraft.fusion.amplification", "Amplification: %s%%");
+        add("message.nuclearcraft.redstone_mode.efficiency", "Efficiency level");
+        add("message.nuclearcraft.redstone_mode.charge", "Charge level");
+        add("message.nuclearcraft.redstone_mode.amplification", "RF amplification input");
+        add("tooltip.nuclearcraft.fusion.amplification_down", "Decrease amplification");
+        add("tooltip.nuclearcraft.fusion.amplification_up", "Increase amplification");
     }
 }

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fusion",
+  "key": {
+    "L": {
+      "tag": "c:plates/lead"
+    },
+    "M": {
+      "item": "nuclearcraft:basic_electric_circuit"
+    },
+    "T": {
+      "item": "nuclearcraft:fusion_reactor_casing"
+    }
+  },
+  "pattern": [
+    "LTL",
+    "TMT",
+    "LTL"
+  ],
+  "result": {
+    "count": 2,
+    "id": "nuclearcraft:fusion_reactor_connector"
+  }
+}

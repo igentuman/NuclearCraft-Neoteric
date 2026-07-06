@@ -1,6 +1,8 @@
 package igentuman.nc.datagen.tag;
 
 import igentuman.nc.multiblock.fission.FissionTags;
+import igentuman.nc.multiblock.fusion.FusionTags;
+import igentuman.nc.setup.entries.FusionReactor;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
@@ -67,6 +69,20 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         }
 
         addFissionStructureTags();
+        addFusionStructureTags();
+    }
+
+    private void addFusionStructureTags() {
+        var casing = tag(FusionTags.CASING);
+        casing.add(b("fusion_reactor_casing"), b("fusion_reactor_glass"),
+                b("fusion_reactor_connector"), b("fusion_reactor_port"));
+        var magnets = tag(FusionTags.ELECTROMAGNETS);
+        var amplifiers = tag(FusionTags.RF_AMPLIFIERS);
+        for (String t : FusionReactor.MAGNET_TIERS) {
+            casing.add(b(t + "_electromagnet"), b(t + "_electromagnet_slope"), b(t + "_rf_amplifier"));
+            magnets.add(b(t + "_electromagnet"), b(t + "_electromagnet_slope"));
+            amplifiers.add(b(t + "_rf_amplifier"));
+        }
     }
 
     private void addFissionStructureTags() {

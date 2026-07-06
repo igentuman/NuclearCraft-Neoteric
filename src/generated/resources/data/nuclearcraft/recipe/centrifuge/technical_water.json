@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:technical_water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 750,
+      "fluid": "nuclearcraft:deuterium"
+    },
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:oxygen"
+    }
+  ],
+  "process_time": 380
+}

@@ -5,6 +5,7 @@ import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.recipe.fission.FissionRecipes;
+import igentuman.nc.recipe.fusion.FusionRecipes;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.registration.ModEntryBuilder;
 import net.minecraft.world.level.block.Block;
@@ -53,6 +54,7 @@ public class ModEntries {
         FissionRecipes.init();
         fissionReactor();
         accelerator();
+        FusionRecipes.init();
         fusionReactor();
         particleChamber();
         kugelblitz();
@@ -116,6 +118,10 @@ public class ModEntries {
 
     public static void coolant(String name, int color) {
         mat(name, color).fluid(FluidDefinition.liquid().setName(name)).build();
+    }
+
+    public static void liquid(String name, int color, int temperature) {
+        mat(name, color).fluid(FluidDefinition.liquid().setName(name).setTemperature(temperature)).build();
     }
 
     public static FluidDefinition molten(int temperature) {

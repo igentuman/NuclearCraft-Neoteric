@@ -1,0 +1,17 @@
+{
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "SOLID",
+    "textures": [
+      "nuclearcraft:block/fusion/fusion_reactor_casing-ctm"
+    ],
+    "extra": {
+      "connect_to": [
+        {
+          "block": "nuclearcraft:fusion_reactor_casing"
+        }
+      ]
+    }
+  }
+}

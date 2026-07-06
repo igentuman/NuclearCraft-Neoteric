@@ -66,7 +66,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
             if (entry.hasBlock()) {
                 String path = BuiltInRegistries.BLOCK.getKey(entry.block().get()).getPath();
                 if (blockStateExists(path)) continue;
-                if (entry.block().get() instanceof UniversalProcessorBlock) {
+                if (isFusionBlock(path)) {
+                    fusionBlock(entry.block(), path);
+                } else if (entry.block().get() instanceof UniversalProcessorBlock) {
                     processorBlock(entry.block());
                 } else if (entry.block().get().defaultBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
                     horizontalBlockWithItem(entry.block());
@@ -156,6 +158,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 path += "/front";
             }
         }
+        if (path.contains("fusion_reactor_")) {
+            path = path.replace("fusion_reactor_", "fusion/");
+        }
         return path;
     }
 
@@ -213,6 +218,57 @@ public class ModBlockStateProvider extends BlockStateProvider {
         String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
         ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(MODID, "block/" + subfolder + "/" + path);
         ModelFile model = models().cubeAll(path, texture);
+        simpleBlock(block, model);
+        itemModels().getBuilder("item/" + path).parent(model);
+    }
+
+    private boolean isFusionBlock(String path) {
+        return path.startsWith("fusion_reactor_")
+                || path.endsWith("_electromagnet")
+                || path.endsWith("_electromagnet_slope")
+                || path.endsWith("_rf_amplifier");
+    }
+
+    private void fusionBlock(DeferredBlock<Block> deferredBlock, String path) {
+        Block block = deferredBlock.get();
+
+        if (path.equals("fusion_reactor_core_proxy")) {
+            ModelFile proxy = models().getExistingFile(rl("block/fusion/core_proxy"));
+            simpleBlock(block, proxy);
+            itemModels().getBuilder("item/" + path).parent(proxy);
+            return;
+        }
+
+        if (path.endsWith("_electromagnet_slope")) {
+            ModelFile slope = models().getExistingFile(rl("block/electromagnet/" + path));
+            horizontalBlock(block, slope);
+            itemModels().getBuilder("item/" + path).parent(slope);
+            return;
+        }
+
+        ResourceLocation texture;
+        boolean glass = path.equals("fusion_reactor_glass");
+        if (path.equals("fusion_reactor_casing")) {
+            texture = rl("block/fusion/fusion_reactor_casing");
+        } else if (glass) {
+            texture = rl("block/fusion/fusion_reactor_casing_glass");
+        } else if (path.equals("fusion_reactor_connector")) {
+            texture = rl("block/fusion/fusion_reactor_connector");
+        } else if (path.equals("fusion_reactor_core")) {
+            texture = rl("block/fusion/fusion_core/core_centre");
+        } else if (path.endsWith("_electromagnet")) {
+            texture = rl("block/electromagnet/" + path);
+        } else if (path.endsWith("_rf_amplifier")) {
+            String tier = path.substring(0, path.length() - "_rf_amplifier".length());
+            texture = rl("block/electromagnet/" + tier + "_electromagnet");
+        } else {
+            texture = rl("block/fusion/fusion_reactor_casing");
+        }
+
+        ModelFile model = models().cubeAll(path, texture);
+        if (glass) {
+            ((BlockModelBuilder) model).renderType(ResourceLocation.tryBuild("minecraft", "cutout"));
+        }
         simpleBlock(block, model);
         itemModels().getBuilder("item/" + path).parent(model);
     }

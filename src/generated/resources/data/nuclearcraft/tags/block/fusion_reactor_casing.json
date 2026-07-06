@@ -1,0 +1,23 @@
+{
+  "values": [
+    "nuclearcraft:fusion_reactor_casing",
+    "nuclearcraft:fusion_reactor_glass",
+    "nuclearcraft:fusion_reactor_connector",
+    "nuclearcraft:fusion_reactor_port",
+    "nuclearcraft:basic_electromagnet",
+    "nuclearcraft:basic_electromagnet_slope",
+    "nuclearcraft:basic_rf_amplifier",
+    "nuclearcraft:magnesium_diboride_electromagnet",
+    "nuclearcraft:magnesium_diboride_electromagnet_slope",
+    "nuclearcraft:magnesium_diboride_rf_amplifier",
+    "nuclearcraft:niobium_tin_electromagnet",
+    "nuclearcraft:niobium_tin_electromagnet_slope",
+    "nuclearcraft:niobium_tin_rf_amplifier",
+    "nuclearcraft:niobium_titanium_electromagnet",
+    "nuclearcraft:niobium_titanium_electromagnet_slope",
+    "nuclearcraft:niobium_titanium_rf_amplifier",
+    "nuclearcraft:bscco_electromagnet",
+    "nuclearcraft:bscco_electromagnet_slope",
+    "nuclearcraft:bscco_rf_amplifier"
+  ]
+}

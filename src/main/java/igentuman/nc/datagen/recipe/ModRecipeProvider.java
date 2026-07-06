@@ -29,6 +29,7 @@ import static igentuman.nc.datagen.recipe.processors.ElectrolyzerRecipes.electro
 import static igentuman.nc.datagen.recipe.processors.ExtractorRecipes.extractor;
 import static igentuman.nc.datagen.recipe.processors.FissionBoilingRecipes.fissionBoiling;
 import static igentuman.nc.datagen.recipe.processors.FissionFuelRecipes.fissionFuel;
+import static igentuman.nc.datagen.recipe.processors.FusionReactorRecipes.fusion;
 import static igentuman.nc.datagen.recipe.processors.FluidEnricherRecipes.fluidEnricher;
 import static igentuman.nc.datagen.recipe.processors.FluidInfuserRecipes.fluidInfuser;
 import static igentuman.nc.datagen.recipe.processors.FuelReprocessorRecipes.fuelReprocessor;
@@ -84,6 +85,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         fissionFuel(recipeOutput);
         fissionBoiling(recipeOutput);
         irradiator(recipeOutput);
+        fusion(recipeOutput);
     }
 
     // --- record helpers ---

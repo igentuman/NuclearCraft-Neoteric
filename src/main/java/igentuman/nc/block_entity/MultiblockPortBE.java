@@ -83,6 +83,16 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
         return 0;
     }
 
+    /** True when this port's controller exposes redstone signal modes. Server side only. */
+    public boolean supportsRedstone() {
+        return false;
+    }
+
+    /** Comparator strength (0-15) for the current mode; 0 when not an output mode. Server side only. */
+    public int getComparatorOutput() {
+        return 0;
+    }
+
     @Nullable
     @Override
     public IItemHandler getItemHandler(@Nullable Direction side) {

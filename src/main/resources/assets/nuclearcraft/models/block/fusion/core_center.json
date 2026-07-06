@@ -1,0 +1,23 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"3": "nuclearcraft:block/fusion/fusion_core/core_centre",
+		"particle": "nuclearcraft:block/fusion/fusion_core/core_centre"
+	},
+	"elements": [
+		{
+			"name": "core_centre",
+			"from": [2, 0, 2],
+			"to": [14, 32, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 16, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 4, 11], "texture": "#3"},
+				"east": {"uv": [0, 0, 4, 11], "texture": "#3"},
+				"south": {"uv": [0, 0, 4, 11], "texture": "#3"},
+				"west": {"uv": [0, 0, 4, 11], "texture": "#3"},
+				"up": {"uv": [0, 0, 4, 2.75], "texture": "#3"},
+				"down": {"uv": [0, 0, 4, 2.75], "texture": "#3"}
+			}
+		}
+	]
+}

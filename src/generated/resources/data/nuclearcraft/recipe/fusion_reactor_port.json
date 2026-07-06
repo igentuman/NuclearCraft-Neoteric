@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fusion",
+  "key": {
+    "L": {
+      "tag": "c:plates/tough_alloy"
+    },
+    "M": {
+      "item": "nuclearcraft:servo"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "T": {
+      "item": "nuclearcraft:fusion_reactor_casing"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "MTM",
+    "LPL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:fusion_reactor_port"
+  }
+}

@@ -596,6 +596,8 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").block()))
                 .save(recipeOutput);
 
+        fusionCraftingRecipes(recipeOutput);
+
 /*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger").get())
                 .pattern("LPL")
                 .pattern("PMP")
@@ -665,6 +667,71 @@ public class VanillaRecipes {
                         .save(recipeOutput);
             }
 
+        }
+    }
+
+    private static void fusionCraftingRecipes(RecipeOutput out) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_casing").block(), 4)
+                .pattern("LPL")
+                .pattern("P P")
+                .pattern("LPL")
+                .define('P', ModEntries.get("plate_advanced").item())
+                .define('L', plateTag("lead"))
+                .group(MODID + "_fusion")
+                .unlockedBy("item", has(ModEntries.get("plate_advanced").item()))
+                .save(out);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_glass").block())
+                .pattern(" P ")
+                .pattern("PTP")
+                .pattern(" P ")
+                .define('P', Tags.Items.GLASS_BLOCKS)
+                .define('T', ModEntries.get("fusion_reactor_casing").block())
+                .group(MODID + "_fusion")
+                .unlockedBy("item", has(ModEntries.get("fusion_reactor_casing").block()))
+                .save(out);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_connector").block(), 2)
+                .pattern("LTL")
+                .pattern("TMT")
+                .pattern("LTL")
+                .define('M', ModEntries.get("basic_electric_circuit").item())
+                .define('T', ModEntries.get("fusion_reactor_casing").block())
+                .define('L', plateTag("lead"))
+                .group(MODID + "_fusion")
+                .unlockedBy("item", has(ModEntries.get("fusion_reactor_casing").block()))
+                .save(out);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_port").block())
+                .pattern("LPL")
+                .pattern("MTM")
+                .pattern("LPL")
+                .define('M', ModEntries.get("servo").item())
+                .define('P', ModEntries.get("plate_advanced").item())
+                .define('T', ModEntries.get("fusion_reactor_casing").block())
+                .define('L', plateTag("tough_alloy"))
+                .group(MODID + "_fusion")
+                .unlockedBy("item", has(ModEntries.get("fusion_reactor_casing").block()))
+                .save(out);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_core").block())
+                .pattern("LPL")
+                .pattern("TDT")
+                .pattern("LPL")
+                .define('P', ModEntries.get("plate_advanced").item())
+                .define('D', ModEntries.get(Processors.DECAY_HASTENER).block())
+                .define('T', ModEntries.get("basic_electric_circuit").item())
+                .define('L', ModEntries.get("fusion_reactor_casing").item())
+                .group(MODID + "_fusion")
+                .unlockedBy("item", has(ModEntries.get("fusion_reactor_casing").block()))
+                .save(out);
+
+        for (String tier : new String[]{"basic", "magnesium_diboride", "niobium_tin", "niobium_titanium", "bscco"}) {
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModEntries.get(tier + "_electromagnet_slope").block())
+                    .requires(ModEntries.get(tier + "_electromagnet").block())
+                    .group(MODID + "_fusion")
+                    .unlockedBy("item", has(ModEntries.get(tier + "_electromagnet").block()))
+                    .save(out);
         }
     }
 

@@ -1,5 +1,7 @@
 package igentuman.nc.datagen.recipe;
 
+import igentuman.nc.registration.FissionFuelEntry;
+import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.entries.Processors;
@@ -87,6 +89,7 @@ public class VanillaRecipes {
         processors();
         parts();
         fissionBlocks();
+        fuelPellets();
         
 /*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, RESONITE_CRYSTAL.get())
                 .pattern("SSS")
@@ -663,6 +666,84 @@ public class VanillaRecipes {
             }
 
         }
+    }
+
+    private static void fuelPellets() {
+        for (IsotopeEntry iso : ModEntries.ISOTOPES.values()) {
+            for (String variant : new String[]{"_ox", "_ni", "_za"}) {
+                Item in = isotopeVar(iso, variant);
+                if (in == null) continue;
+                fuelSmelt(in, iso.base().get(), iso.itemId + variant + "_sml");
+            }
+        }
+
+        for (FissionFuelEntry fe : ModEntries.FISSION_FUEL.values()) {
+            String key = fe.key;
+            String idStem = fe.group + "_" + fe.name.replace('-', '_');
+            int iso1 = fe.base().isotopes[0];
+            int iso2 = fe.base().isotopes[1];
+
+            if (!fe.base().isSpecial()) {
+                for (String variant : new String[]{"_ox", "_ni", "_za"}) {
+                    fuelSmelt(fuel(key, variant), fuel(key, ""), "fuel_" + idStem + variant + "_sml");
+                    fuelSmelt(depletedFuel(key, variant), depletedFuel(key, ""), "depleted_" + idStem + variant + "_sml");
+                }
+                if (fe.group.equals("mixed")) {
+                    for (String variant : new String[]{"", "_ox", "_ni", "_za"}) {
+                        moxRecipe(key, idStem, variant, iso1);
+                    }
+                    continue;
+                }
+                for (String variant : new String[]{"_ox", "_ni", "_za"}) {
+                    fuelPelletRecipe(fe, key, idStem, variant, iso1, iso2);
+                }
+            }
+            fuelPelletRecipe(fe, key, idStem, "", iso1, iso2);
+        }
+    }
+
+    private static void fuelPelletRecipe(FissionFuelEntry fe, String key, String idStem, String variant, int iso1, int iso2) {
+        Item pellet = fuel(key, variant);
+        Item i1 = isotopeItem(fe.group, iso1, variant);
+        Item i2 = isotopeItem(fe.group, iso2, variant);
+        if (pellet == null || i1 == null || i2 == null) return;
+        int count1 = 1;
+        int count2 = 8;
+        if (fe.name.startsWith("h")) {
+            count1 = 3;
+            count2 = 6;
+        }
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, pellet, 3)
+                .group(MODID + "_ingots")
+                .requires(i1, count1)
+                .requires(i2, count2)
+                .unlockedBy("item", has(pellet))
+                .save(recipeOutput, rl("fuel_" + idStem + variant + "_cr"));
+    }
+
+    private static void moxRecipe(String key, String idStem, String variant, int plutoniumIsotope) {
+        Item pellet = fuel(key, variant);
+        Item plutonium = isotopeItem("plutonium", plutoniumIsotope, "");
+        Item uranium = isotopeItem("uranium", 238, variant);
+        if (pellet == null || plutonium == null || uranium == null) return;
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, pellet, 3)
+                .group(MODID + "_ingots")
+                .requires(plutonium, 1)
+                .requires(uranium, 8)
+                .unlockedBy("item", has(pellet))
+                .save(recipeOutput, rl("fuel_" + idStem + variant + "_cr"));
+    }
+
+    private static void fuelSmelt(Item in, Item out, String id) {
+        if (in == null || out == null) return;
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(in), RecipeCategory.MISC, out, 1.0f, 100)
+                .unlockedBy("item", has(in))
+                .save(recipeOutput, rl(id));
+    }
+
+    private static Item isotopeItem(String group, int number, String variant) {
+        IsotopeEntry e = ModEntries.ISOTOPES.get(group + "/" + number);
+        return e == null ? null : isotopeVar(e, variant);
     }
 
     private static void processors()

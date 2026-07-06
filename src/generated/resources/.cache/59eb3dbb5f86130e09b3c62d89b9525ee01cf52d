@@ -1,4 +1,4 @@
-// 1.21.1	2026-06-29T09:56:56.671769637	Loot Tables
+// 1.21.1	2026-07-06T18:51:42.616601967	Loot Tables
 a04ceb1e40d590051f8ba1b14dbd606dda79b8b8 data/nuclearcraft/loot_table/blocks/active_cryotheum_heat_sink.json
 5c6ee279cf9632c3dd659bcf92277bc2e35f1df0 data/nuclearcraft/loot_table/blocks/active_enderium_heat_sink.json
 960cbf3bce7ade8bd0acd3f15bad425219aabc0d data/nuclearcraft/loot_table/blocks/active_liquid_helium_heat_sink.json
@@ -24,7 +24,6 @@ cc9d23c247770ee8579e188e6205b56a8550fa5c data/nuclearcraft/loot_table/blocks/cob
 e49da0669a949b5ae4c7b4e3cb098d81b5adc107 data/nuclearcraft/loot_table/blocks/cobalt_heat_sink.json
 d790731998839a223ce4c3285f0f8185179e4d7f data/nuclearcraft/loot_table/blocks/cobalt_ore.json
 1248189eca5d64066533c11550166892e3c5174c data/nuclearcraft/loot_table/blocks/copper_heat_sink.json
-46c98e0a8cec7152a6108b0fa07a65bcd529fe45 data/nuclearcraft/loot_table/blocks/corium_block.json
 a614543e6103a406f455c58ae9467f52c4b63301 data/nuclearcraft/loot_table/blocks/cryotheum_heat_sink.json
 8e66e17f2c6cdc050a1abe29c8f664d9fedca08e data/nuclearcraft/loot_table/blocks/crystallizer.json
 65dce85ba65546fc7f3f591673628715d1533b68 data/nuclearcraft/loot_table/blocks/decay_hastener.json

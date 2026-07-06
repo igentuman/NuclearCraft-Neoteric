@@ -1,6 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.recipe.fission.BoilingRecipe;
 import igentuman.nc.setup.ModEntries;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class BoilingRecipeCategory implements IRecipeCategory<BoilingRecipe> {
 
     public static final RecipeType<BoilingRecipe> TYPE =
-            RecipeType.create(Main.MODID, "fission_boiling", BoilingRecipe.class);
+            RecipeType.create(NuclearCraft.MODID, "fission_boiling", BoilingRecipe.class);
 
     private static final int WIDTH = 124;
     private static final int HEIGHT = 46;

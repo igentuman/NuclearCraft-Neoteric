@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static igentuman.nc.Main.MODID;
+import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.Registers.ARMOR_MATERIALS;
 
 public class ArmorMaterialEntry {

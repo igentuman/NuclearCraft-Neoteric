@@ -19,7 +19,7 @@ import net.minecraft.data.loot.LootTableProvider.SubProviderEntry;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static igentuman.nc.Main.MODID;
+import static igentuman.nc.NuclearCraft.MODID;
 import static java.util.Collections.emptySet;
 
 @EventBusSubscriber(modid = MODID)

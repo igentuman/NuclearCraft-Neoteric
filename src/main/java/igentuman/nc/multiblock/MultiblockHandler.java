@@ -1,6 +1,6 @@
 package igentuman.nc.multiblock;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.api.impl.MultiblockCacheImpl;
 import igentuman.nc.api.multiblock.IMultiblockCache;
 import igentuman.nc.api.multiblock.IMultiblockLogic;
@@ -33,14 +33,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static igentuman.nc.Main.TICK_COUNTER;
+import static igentuman.nc.NuclearCraft.TICK_COUNTER;
 
 /**
  * Singleton manager: per-level executor for off-main-thread {@code tickServer},
  * active instances by controller position, and a structure-position index for O(1)
  * block-change lookup.
  */
-@EventBusSubscriber(modid = Main.MODID)
+@EventBusSubscriber(modid = NuclearCraft.MODID)
 public final class MultiblockHandler {
 
     private static final Map<ResourceKey<Level>, ExecutorService> LEVEL_THREADS = new ConcurrentHashMap<>();
@@ -193,7 +193,7 @@ public final class MultiblockHandler {
                 }
                 logic.tickServer(level, controllerPos, cache);
             } catch (Throwable t) {
-                Main.LOGGER.error("Multiblock tickServer error at {}", controllerPos, t);
+                NuclearCraft.LOGGER.error("Multiblock tickServer error at {}", controllerPos, t);
             }
         });
     }

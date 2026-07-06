@@ -1,6 +1,6 @@
 package igentuman.nc.util;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import static igentuman.nc.Main.rlFromString;
+import static igentuman.nc.NuclearCraft.rlFromString;
 
 public class MultiblocksProvider implements PreparableReloadListener {
 
@@ -108,12 +108,12 @@ public class MultiblocksProvider implements PreparableReloadListener {
      * @return loaded structure, or null if file missing or invalid
      */
     public static MultiblockStructure loadStructureFromClasspath(String name) {
-        String path = "/data/" + Main.MODID + "/structures/" + name + ".nbt";
+        String path = "/data/" + NuclearCraft.MODID + "/structures/" + name + ".nbt";
         try (InputStream is = MultiblocksProvider.class.getResourceAsStream(path)) {
             if (is == null) return null;
             CompoundTag nbt = NbtIo.readCompressed(is, NbtAccounter.unlimitedHeap());
             if (!validateStructureBlocks(nbt)) return null;
-            ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(Main.MODID,
+            ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(NuclearCraft.MODID,
                     "structures/" + name + ".nbt");
             return new MultiblockStructure(rl, nbt, name + ".nbt");
         } catch (IOException e) {

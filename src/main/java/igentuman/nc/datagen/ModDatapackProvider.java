@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import static igentuman.nc.Main.MODID;
+import static igentuman.nc.NuclearCraft.MODID;
 
 public class ModDatapackProvider extends DatapackBuiltinEntriesProvider {
     public ModDatapackProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> event) {

@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 
-import static igentuman.nc.Main.rlFromString;
+import static igentuman.nc.NuclearCraft.rlFromString;
 import static net.minecraft.world.level.block.Blocks.AIR;
 import static net.minecraft.world.level.block.state.StateHolder.PROPERTIES_TAG;
 

@@ -13,8 +13,8 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 
-import static igentuman.nc.Main.MODID;
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class ModFluidTagProvider extends FluidTagsProvider {
     public ModFluidTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper) {

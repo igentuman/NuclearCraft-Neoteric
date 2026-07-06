@@ -1,6 +1,6 @@
 package igentuman.nc.network;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block_entity.fission.FissionReactorControllerBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,7 +14,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 public record PacketFissionToggleMode(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<PacketFissionToggleMode> TYPE =
-            new Type<>(Main.rl("fission_toggle_mode"));
+            new Type<>(NuclearCraft.rl("fission_toggle_mode"));
 
     public static final StreamCodec<FriendlyByteBuf, PacketFissionToggleMode> STREAM_CODEC =
             StreamCodec.composite(

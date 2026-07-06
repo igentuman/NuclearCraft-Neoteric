@@ -1,12 +1,10 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.compat.ae2.JEI2PatternEncoderTransfer;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
-import igentuman.nc.recipe.fission.BoilingRecipe;
-import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import igentuman.nc.recipe.fission.FissionRecipes;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.UniversalProcessorScreen;
@@ -36,12 +34,12 @@ public class ModJeiPlugin implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid() {
-        return Main.rl("jei_plugin");
+        return NuclearCraft.rl("jei_plugin");
     }
 
     private RecipeType<UniversalProcessorRecipe> getOrCreateRecipeType(ModEntry entry) {
         return recipeTypes.computeIfAbsent(entry.name(), name ->
-                RecipeType.create(Main.MODID, name, UniversalProcessorRecipe.class));
+                RecipeType.create(NuclearCraft.MODID, name, UniversalProcessorRecipe.class));
     }
 
     @Override

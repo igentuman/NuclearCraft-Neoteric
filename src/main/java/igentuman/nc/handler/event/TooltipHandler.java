@@ -11,7 +11,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
-import static igentuman.nc.Main.MODID;
+import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.__;
 
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)

@@ -1,7 +1,6 @@
 package igentuman.nc.util;
 
 import igentuman.nc.config.Common;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static igentuman.nc.Main.rlFromString;
+import static igentuman.nc.NuclearCraft.rlFromString;
 
 
 public class TagUtil {

@@ -1,6 +1,6 @@
 package igentuman.nc.network;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block_entity.MultiblockPortBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,7 +14,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 public record PacketRedstoneModeCycle(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<PacketRedstoneModeCycle> TYPE =
-            new Type<>(Main.rl("redstone_mode_cycle"));
+            new Type<>(NuclearCraft.rl("redstone_mode_cycle"));
 
     public static final StreamCodec<FriendlyByteBuf, PacketRedstoneModeCycle> STREAM_CODEC =
             StreamCodec.composite(

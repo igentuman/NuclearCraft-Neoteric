@@ -26,9 +26,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalProcessorContainer> {

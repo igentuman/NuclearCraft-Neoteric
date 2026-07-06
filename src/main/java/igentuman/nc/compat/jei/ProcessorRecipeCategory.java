@@ -1,6 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.compat.ProcessorCategoryLayout;
 import igentuman.nc.compat.ProcessorCategoryLayout.Slot;
 import igentuman.nc.recipe.FluidOutput;
@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcessorRecipe> {
@@ -54,7 +54,7 @@ public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcess
     public ProcessorRecipeCategory(IGuiHelper guiHelper, ModEntry entry, RecipeType<UniversalProcessorRecipe> recipeType) {
         this.recipeType = recipeType;
         this.guiHelper = guiHelper;
-        this.title = __("block." + Main.MODID + "." + entry.name());
+        this.title = __("block." + NuclearCraft.MODID + "." + entry.name());
         this.layout = new ProcessorCategoryLayout(entry);
         this.background = guiHelper.createBlankDrawable(layout.width, layout.height);
 

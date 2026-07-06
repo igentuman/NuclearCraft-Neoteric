@@ -5,7 +5,6 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import igentuman.nc.Main;
 import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

@@ -15,7 +15,7 @@ import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class ModBiomeModifiers {
 

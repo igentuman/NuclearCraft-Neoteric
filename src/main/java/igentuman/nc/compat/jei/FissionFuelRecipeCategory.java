@@ -1,6 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import igentuman.nc.setup.ModEntries;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class FissionFuelRecipeCategory implements IRecipeCategory<FissionFuelRecipe> {
 
     public static final RecipeType<FissionFuelRecipe> TYPE =
-            RecipeType.create(Main.MODID, "fission_fuel", FissionFuelRecipe.class);
+            RecipeType.create(NuclearCraft.MODID, "fission_fuel", FissionFuelRecipe.class);
 
     private static final int WIDTH = 124;
     private static final int HEIGHT = 56;

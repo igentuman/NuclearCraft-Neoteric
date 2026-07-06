@@ -5,7 +5,6 @@ import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.entries.Processors;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.*;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -15,10 +14,8 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredItem;
 
-import java.util.function.Consumer;
-
-import static igentuman.nc.Main.MODID;
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.*;
 import static igentuman.nc.util.TagUtil.*;

@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 
-import static igentuman.nc.Main.MODID;
+import static igentuman.nc.NuclearCraft.MODID;
 
 public class FissionFuelRecipes {
 

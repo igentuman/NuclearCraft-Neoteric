@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class SideConfigSlotSelectionScreen extends Screen {

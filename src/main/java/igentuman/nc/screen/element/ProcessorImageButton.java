@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class ProcessorImageButton extends AbstractWidget {
 

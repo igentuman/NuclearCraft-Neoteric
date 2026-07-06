@@ -8,7 +8,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
-import static igentuman.nc.Main.MODID;
+import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.fluidOf;
 
 public class FissionBoilingRecipes {

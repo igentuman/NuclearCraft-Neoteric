@@ -59,7 +59,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.function.Function;
 
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.ModEntries.ENTRIES;
 import static igentuman.nc.setup.Registers.*;
 

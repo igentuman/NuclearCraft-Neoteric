@@ -1,7 +1,7 @@
 package igentuman.nc.client.renderer;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -22,7 +22,7 @@ import java.util.function.Supplier;
  *   <li>{@link #distortPostEffect} - screen-space lens distortion used by {@link DistortShader}.</li>
  * </ul>
  */
-@EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = NuclearCraft.MODID, value = Dist.CLIENT)
 public class ModShaders {
 
     public static final ShaderTracker BILLBOARD = new ShaderTracker();
@@ -32,7 +32,7 @@ public class ModShaders {
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
         event.registerShader(
-                new ShaderInstance(event.getResourceProvider(), Main.rl("rendertype_billboard"), DefaultVertexFormat.POSITION_TEX_COLOR),
+                new ShaderInstance(event.getResourceProvider(), NuclearCraft.rl("rendertype_billboard"), DefaultVertexFormat.POSITION_TEX_COLOR),
                 BILLBOARD::setInstance
         );
 
@@ -41,7 +41,7 @@ public class ModShaders {
                 mc.getTextureManager(),
                 mc.getResourceManager(),
                 mc.getMainRenderTarget(),
-                Main.rl("shaders/post/distort.json")
+                NuclearCraft.rl("shaders/post/distort.json")
         );
         distortPostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
     }

@@ -1,6 +1,6 @@
 package igentuman.nc.network;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,7 +11,7 @@ public record PacketMultiblockFormed(BlockPos controllerPos, long[] structurePos
         implements CustomPacketPayload {
 
     public static final Type<PacketMultiblockFormed> TYPE =
-            new Type<>(Main.rl("multiblock_formed"));
+            new Type<>(NuclearCraft.rl("multiblock_formed"));
 
     public static final StreamCodec<FriendlyByteBuf, PacketMultiblockFormed> STREAM_CODEC =
             StreamCodec.of(PacketMultiblockFormed::encode, PacketMultiblockFormed::decode);

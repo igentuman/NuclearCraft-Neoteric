@@ -10,7 +10,7 @@ import igentuman.nc.setup.ModEntries;
 import net.minecraft.data.DataGenerator;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
-import static igentuman.nc.Main.MODID;
+import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.convertToName;
 
 public class ModLanguageProvider  extends LanguageProvider {

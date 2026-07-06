@@ -1,7 +1,7 @@
 package igentuman.nc.client.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
@@ -181,7 +181,7 @@ public class DistortShader {
             List<PostPass> passes = (List<PostPass>) passesField.get(chain);
             return passes.isEmpty() ? null : passes.get(0);
         } catch (ReflectiveOperationException e) {
-            Main.LOGGER.error("DistortShader: unable to access PostChain passes; disabling effect", e);
+            NuclearCraft.LOGGER.error("DistortShader: unable to access PostChain passes; disabling effect", e);
             enabled = false;
             return null;
         }

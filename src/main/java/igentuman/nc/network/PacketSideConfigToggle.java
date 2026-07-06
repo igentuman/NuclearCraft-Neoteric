@@ -1,6 +1,6 @@
 package igentuman.nc.network;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.handler.SidedContentHandler.RelativeDirection;
 import net.minecraft.core.BlockPos;
@@ -18,7 +18,7 @@ public record PacketSideConfigToggle(BlockPos pos, int slotId, int direction)
         implements CustomPacketPayload {
 
     public static final Type<PacketSideConfigToggle> TYPE =
-            new Type<>(Main.rl("side_config_toggle"));
+            new Type<>(NuclearCraft.rl("side_config_toggle"));
 
     public static final StreamCodec<FriendlyByteBuf, PacketSideConfigToggle> STREAM_CODEC =
             StreamCodec.composite(

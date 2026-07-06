@@ -4,7 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.joml.Vector3f;
 
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.rl;
 
 /**
  * FluidType for material fluids. Picks the still/flow textures by fluid kind

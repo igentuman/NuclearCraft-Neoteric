@@ -18,7 +18,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 
-import static igentuman.nc.Main.MODID;
+import static igentuman.nc.NuclearCraft.MODID;
 
 public class ModItemModelProvider  extends ItemModelProvider {
     ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {

@@ -1,6 +1,5 @@
 package igentuman.nc.screen;
 
-import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.registration.ModEntry;
@@ -19,7 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPortContainer> {
 

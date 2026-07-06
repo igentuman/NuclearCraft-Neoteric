@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static igentuman.nc.Main.MODID;
-import static igentuman.nc.Main.rlFromString;
+import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rlFromString;
 import static igentuman.nc.util.StackUtils.getItemsByTagKey;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.getBlockNames;

@@ -1,6 +1,6 @@
 package igentuman.nc.network;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block_entity.UniversalProcessorBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -16,7 +16,7 @@ public record PacketProcessorButtonPress(BlockPos pos, int buttonId)
     public static final int REDSTONE_BTN_ID = 70;
 
     public static final Type<PacketProcessorButtonPress> TYPE =
-            new Type<>(Main.rl("processor_button_press"));
+            new Type<>(NuclearCraft.rl("processor_button_press"));
 
     public static final StreamCodec<FriendlyByteBuf, PacketProcessorButtonPress> STREAM_CODEC =
             StreamCodec.composite(

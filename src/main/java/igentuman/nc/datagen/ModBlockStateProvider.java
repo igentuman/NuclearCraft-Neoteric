@@ -21,8 +21,8 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.function.Function;
 
-import static igentuman.nc.Main.MODID;
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class ModBlockStateProvider extends BlockStateProvider {
     private final ExistingFileHelper existingFileHelper;

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class TextUtils
 {

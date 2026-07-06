@@ -23,9 +23,8 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 public class MultiblockControllerScreen extends AbstractContainerScreen<MultiblockControllerContainer> {

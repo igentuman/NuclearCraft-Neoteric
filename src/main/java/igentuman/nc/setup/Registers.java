@@ -21,7 +21,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import static igentuman.nc.Main.MODID;
+import static igentuman.nc.NuclearCraft.MODID;
 
 public class Registers {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);

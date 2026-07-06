@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static igentuman.nc.Main.rlFromString;
+import static igentuman.nc.NuclearCraft.rlFromString;
 
 public class RecipeInfo {
 

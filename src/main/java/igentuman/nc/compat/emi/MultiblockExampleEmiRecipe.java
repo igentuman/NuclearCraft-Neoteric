@@ -5,7 +5,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.util.MultiblockStructure;
 import igentuman.nc.util.StructurePreviewRenderer;
@@ -30,7 +30,7 @@ public class MultiblockExampleEmiRecipe implements EmiRecipe {
         this.category = category;
         this.entry = entry;
         this.structure = structure;
-        this.id = Main.rl("multiblock_examples/" + entry.name());
+        this.id = NuclearCraft.rl("multiblock_examples/" + entry.name());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MultiblockExampleEmiRecipe implements EmiRecipe {
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        Component name = Component.translatable("multiblock." + Main.MODID + "." + entry.name());
+        Component name = Component.translatable("multiblock." + NuclearCraft.MODID + "." + entry.name());
         widgets.addText(name, 2, 2, 0xFFFFFFFF, false);
 
         widgets.addDrawable(0, 12, WIDTH, HEIGHT - 14, (graphics, mouseX, mouseY, delta) ->

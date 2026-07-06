@@ -48,8 +48,8 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
-@Mod(Main.MODID)
-public class Main {
+@Mod(NuclearCraft.MODID)
+public class NuclearCraft {
     public static final String MODID = "nuclearcraft";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static int TICK_COUNTER = 0;
@@ -64,7 +64,7 @@ public class Main {
                 output.accept(EXAMPLE_MACHINE_BLOCK_ITEM.get());
             }).build());*/
 
-    public Main(IEventBus modEventBus, ModContainer modContainer) {
+    public NuclearCraft(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
         Registers.init(modEventBus);
         ModEntries.init();

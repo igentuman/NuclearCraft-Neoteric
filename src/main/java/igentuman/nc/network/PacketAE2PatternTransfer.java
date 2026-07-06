@@ -7,7 +7,7 @@ import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.parts.encoding.EncodingMode;
 import appeng.parts.encoding.PatternEncodingLogic;
 import appeng.util.ConfigInventory;
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class PacketAE2PatternTransfer implements CustomPacketPayload {
-    public static final Type<PacketAE2PatternTransfer> TYPE = new Type<>(Main.rl("ae2_pattern_transfer"));
+    public static final Type<PacketAE2PatternTransfer> TYPE = new Type<>(NuclearCraft.rl("ae2_pattern_transfer"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketAE2PatternTransfer> STREAM_CODEC = StreamCodec.composite(
         ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()), PacketAE2PatternTransfer::inputItems,

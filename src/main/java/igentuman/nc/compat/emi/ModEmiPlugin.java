@@ -6,7 +6,7 @@ import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
@@ -34,7 +34,7 @@ public class ModEmiPlugin implements EmiPlugin {
 
     private EmiRecipeCategory getOrCreateCategory(ModEntry entry) {
         return categories.computeIfAbsent(entry.name(), name -> {
-            ResourceLocation id = Main.rl(name);
+            ResourceLocation id = NuclearCraft.rl(name);
             EmiStack icon = entry.hasItem()
                 ? EmiStack.of(new ItemStack(entry.item().get()))
                 : EmiStack.EMPTY;
@@ -76,13 +76,13 @@ public class ModEmiPlugin implements EmiPlugin {
                 .toList();
 
             for (int i = 0; i < recipes.size(); i++) {
-                ResourceLocation recipeId = Main.rl("/" + entry.name() + "/" + i);
+                ResourceLocation recipeId = NuclearCraft.rl("/" + entry.name() + "/" + i);
                 registry.addRecipe(new ProcessorEmiRecipe(category, recipeId, recipes.get(i), entry));
             }
         }
 
         EmiRecipeCategory mbCategory = new EmiRecipeCategory(
-                Main.rl("multiblock_examples"),
+                NuclearCraft.rl("multiblock_examples"),
                 EmiStack.of(new ItemStack(net.minecraft.world.level.block.Blocks.IRON_BLOCK)));
         boolean mbCategoryAdded = false;
         for (MultiblockEntry mb : MultiblockRegistry.ENTRIES.values()) {
@@ -104,22 +104,22 @@ public class ModEmiPlugin implements EmiPlugin {
         if (controller == null || !controller.hasItem()) return;
         EmiStack workstation = EmiStack.of(new ItemStack(controller.item().get()));
 
-        EmiRecipeCategory fuelCategory = new EmiRecipeCategory(Main.rl("fission_fuel"), workstation);
+        EmiRecipeCategory fuelCategory = new EmiRecipeCategory(NuclearCraft.rl("fission_fuel"), workstation);
         registry.addCategory(fuelCategory);
         registry.addWorkstation(fuelCategory, workstation);
         List<FissionFuelRecipe> fuelRecipes = recipeManager.getAllRecipesFor(FissionRecipes.FUEL_TYPE.get())
                 .stream().map(RecipeHolder::value).toList();
         for (int i = 0; i < fuelRecipes.size(); i++) {
-            registry.addRecipe(new FissionFuelEmiRecipe(fuelCategory, Main.rl("/fission_fuel/" + i), fuelRecipes.get(i)));
+            registry.addRecipe(new FissionFuelEmiRecipe(fuelCategory, NuclearCraft.rl("/fission_fuel/" + i), fuelRecipes.get(i)));
         }
 
-        EmiRecipeCategory boilingCategory = new EmiRecipeCategory(Main.rl("fission_boiling"), workstation);
+        EmiRecipeCategory boilingCategory = new EmiRecipeCategory(NuclearCraft.rl("fission_boiling"), workstation);
         registry.addCategory(boilingCategory);
         registry.addWorkstation(boilingCategory, workstation);
         List<BoilingRecipe> boilingRecipes = recipeManager.getAllRecipesFor(FissionRecipes.BOILING_TYPE.get())
                 .stream().map(RecipeHolder::value).toList();
         for (int i = 0; i < boilingRecipes.size(); i++) {
-            registry.addRecipe(new BoilingEmiRecipe(boilingCategory, Main.rl("/fission_boiling/" + i), boilingRecipes.get(i)));
+            registry.addRecipe(new BoilingEmiRecipe(boilingCategory, NuclearCraft.rl("/fission_boiling/" + i), boilingRecipes.get(i)));
         }
     }
 }

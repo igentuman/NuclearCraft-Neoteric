@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static igentuman.nc.Main.rl;
+import static igentuman.nc.NuclearCraft.rl;
 
 /**
  * Fluent registry of mod damage types. Each {@link #builder} call defines a {@link DamageType}

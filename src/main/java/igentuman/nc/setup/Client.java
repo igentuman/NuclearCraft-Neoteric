@@ -1,6 +1,6 @@
 package igentuman.nc.setup;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.renderer.DelayedRenderHandler;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.container.MultiblockControllerContainer;
@@ -35,9 +35,9 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
-@Mod(value = Main.MODID, dist = Dist.CLIENT)
+@Mod(value = NuclearCraft.MODID, dist = Dist.CLIENT)
 // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-@EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = NuclearCraft.MODID, value = Dist.CLIENT)
 public class Client {
     public Client(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);

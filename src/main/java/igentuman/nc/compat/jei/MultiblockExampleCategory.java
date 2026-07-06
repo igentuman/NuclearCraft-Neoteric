@@ -1,6 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.Main;
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.util.StructurePreviewRenderer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class MultiblockExampleCategory implements IRecipeCategory<MultiblockStructureRecipe> {
 
     public static final RecipeType<MultiblockStructureRecipe> TYPE =
-            RecipeType.create(Main.MODID, "multiblock_examples", MultiblockStructureRecipe.class);
+            RecipeType.create(NuclearCraft.MODID, "multiblock_examples", MultiblockStructureRecipe.class);
 
     private static final int WIDTH = 140;
     private static final int HEIGHT = 140;
@@ -28,7 +28,7 @@ public class MultiblockExampleCategory implements IRecipeCategory<MultiblockStru
 
     public MultiblockExampleCategory(IGuiHelper guiHelper) {
         this.background = guiHelper.createBlankDrawable(WIDTH, HEIGHT);
-        this.title = Component.translatable("category." + Main.MODID + ".multiblock_examples");
+        this.title = Component.translatable("category." + NuclearCraft.MODID + ".multiblock_examples");
         this.icon = guiHelper.createDrawableItemStack(defaultIcon());
     }
 
@@ -58,7 +58,7 @@ public class MultiblockExampleCategory implements IRecipeCategory<MultiblockStru
     @Override
     public void draw(MultiblockStructureRecipe recipe, IRecipeSlotsView recipeSlotsView,
                      GuiGraphics graphics, double mouseX, double mouseY) {
-        Component name = Component.translatable("multiblock." + Main.MODID + "." + recipe.getName());
+        Component name = Component.translatable("multiblock." + NuclearCraft.MODID + "." + recipe.getName());
         graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, name, 2, 2, 0xFFFFFF, false);
 
         if (recipe.getStructure() != null) {

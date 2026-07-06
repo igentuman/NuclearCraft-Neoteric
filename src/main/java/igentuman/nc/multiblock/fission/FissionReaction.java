@@ -392,8 +392,11 @@ public class FissionReaction {
         long now = sl.getGameTime();
         RadiationProfile leftover = RadiationProfile.empty();
         leftover.mergeAtoms(fuelProfile, fuelCells, now);
-        WorldSourceRegistry.get(sl).register(new LeftOverRadSource(sl, pos, leftover, now, true));
-
+        WorldSourceRegistry registry = WorldSourceRegistry.get(sl);
+        registry.register(new LeftOverRadSource(sl, pos, leftover, now, true));
+        RadiationProfile chunk = leftover.copy(now);
+        chunk.reduceAtoms(2);
+        registry.setChunkRadiation(pos, RadiationProfile.empty(), RadiationProfile.empty(), chunk);
     }
 
     private double heatMultiplier(double h, double cooling) {

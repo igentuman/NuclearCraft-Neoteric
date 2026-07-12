@@ -2,6 +2,7 @@ package igentuman.nc.block_entity.fusion;
 
 import igentuman.nc.block_entity.MultiblockControllerBE;
 import igentuman.nc.block_entity.MultiblockPortBE;
+import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.container.FusionReactorContainer;
 import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
@@ -12,9 +13,12 @@ import igentuman.nc.recipe.fusion.FusionRecipes;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -28,16 +32,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Controller for the fusion reactor. The structure validator (off-thread) writes stats into the
- * {@link FusionReactorCache}; this BE runs the {@link FusionReaction} on the main thread each tick
- * when formed. FE-only output. Also owns the 3x3x3 proxy cage placed around itself.
- *
- * <p>Redstone follows the original NuclearCraft Neoteric core: incoming redstone anywhere on the
- * 3x3x3 core cage drives the RF-amplification ratio (and gates the reaction), while the comparator
- * output cycles between energy/heat/efficiency. There is no dedicated port block - the cage cells
- * ({@link FusionCoreProxyBE}) are the reactor's I/O surface.
- */
 public class FusionReactorControllerBE extends MultiblockControllerBE {
 
     public static final int MODE_ENERGY = 0;
@@ -138,6 +132,9 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
             updateRedstoneInput(serverLevel);
             if (hasRedstoneSignal() && mbInstance.cache instanceof FusionReactorCache fc) {
                 reaction.tick(this, fc);
+                if (running && energyPerTick > 0) {
+                    renderBeam(serverLevel, fc.size);
+                }
             } else {
                 reaction.idle(this);
             }
@@ -147,6 +144,27 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
         if (wasChanged) {
             getLevel().sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
             wasChanged = false;
+        }
+    }
+
+    /** Emits four beam particles tracing the plasma ring, one per edge of the square. */
+    private void renderBeam(ServerLevel level, int size) {
+        BlockPos mid = worldPosition.above();
+        float beamLength = size * 2 + 4;
+        sendBeamData(level, new FusionBeamParticleData(Direction.EAST, beamLength, 0.35f),
+                mid.relative(Direction.NORTH, size + 2).relative(Direction.WEST, size + 2));
+        sendBeamData(level, new FusionBeamParticleData(Direction.EAST, beamLength, 0.35f),
+                mid.relative(Direction.SOUTH, size + 2).relative(Direction.WEST, size + 2));
+        sendBeamData(level, new FusionBeamParticleData(Direction.SOUTH, beamLength, 0.35f),
+                mid.relative(Direction.EAST, size + 2).relative(Direction.NORTH, size + 2));
+        sendBeamData(level, new FusionBeamParticleData(Direction.SOUTH, beamLength, 0.35f),
+                mid.relative(Direction.WEST, size + 2).relative(Direction.NORTH, size + 2));
+    }
+
+    private void sendBeamData(ServerLevel level, FusionBeamParticleData data, BlockPos from) {
+        Vec3 vec = Vec3.atCenterOf(from);
+        for (ServerPlayer player : level.players()) {
+            level.sendParticles(player, data, true, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0);
         }
     }
 

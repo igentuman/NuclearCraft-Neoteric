@@ -16,6 +16,7 @@ import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.NcParticles;
 import igentuman.nc.setup.Registers;
 import igentuman.nc.util.MultiblocksProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -61,6 +62,7 @@ public class NuclearCraft {
     public NuclearCraft(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
         Registers.init(modEventBus);
+        NcParticles.init();
         ModEntries.init();
         NeoForge.EVENT_BUS.register(new ServerEvents());
         WorldGen.init(

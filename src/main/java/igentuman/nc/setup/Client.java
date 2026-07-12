@@ -13,6 +13,7 @@ import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.MaterialFluidType;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
+import igentuman.nc.client.particle.FusionBeamParticle;
 import igentuman.nc.client.render.fusion.FusionCoreRenderer;
 import igentuman.nc.screen.FissionReactorScreen;
 import igentuman.nc.screen.FusionReactorScreen;
@@ -33,6 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.model.DynamicFluidContainerModel;
@@ -104,6 +106,11 @@ public class Client {
                         );
                     }
                 });
+    }
+
+    @SubscribeEvent
+    static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(NcParticles.FUSION_BEAM.get(), FusionBeamParticle.Provider::new);
     }
 
     @SuppressWarnings("unchecked")

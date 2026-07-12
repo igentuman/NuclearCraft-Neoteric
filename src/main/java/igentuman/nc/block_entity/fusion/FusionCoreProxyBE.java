@@ -6,10 +6,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** One of the 26 invisible cells forming the fusion core's 3x3x3 cage. Proxies item/fluid/energy
- *  capabilities to the controller and exposes the reactor's comparator output plus the
- *  shift-right-click mode toggle - the cage is the reactor's redstone I/O surface (original NCN has
- *  no dedicated fusion port block). */
 public class FusionCoreProxyBE extends MultiblockPortBE {
 
     private int lastComparator = -1;

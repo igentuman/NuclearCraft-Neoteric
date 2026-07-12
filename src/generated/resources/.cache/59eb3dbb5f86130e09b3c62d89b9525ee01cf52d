@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-06T23:37:38.466322411	Loot Tables
+// 1.21.1	2026-07-12T12:07:39.392076513	Loot Tables
 a04ceb1e40d590051f8ba1b14dbd606dda79b8b8 data/nuclearcraft/loot_table/blocks/active_cryotheum_heat_sink.json
 5c6ee279cf9632c3dd659bcf92277bc2e35f1df0 data/nuclearcraft/loot_table/blocks/active_enderium_heat_sink.json
 960cbf3bce7ade8bd0acd3f15bad425219aabc0d data/nuclearcraft/loot_table/blocks/active_liquid_helium_heat_sink.json
@@ -55,9 +55,8 @@ ca1ab6e688273bef8b9a9bfc22470449378d1a77 data/nuclearcraft/loot_table/blocks/flu
 42213b64fdf7c7e81366d26d13666650d9c7e149 data/nuclearcraft/loot_table/blocks/fusion_reactor_casing.json
 76b9c2811fa8cc14ff799230aecbaf01bda8c4a1 data/nuclearcraft/loot_table/blocks/fusion_reactor_connector.json
 899ab66b494bb78c458949710503cd7d67235481 data/nuclearcraft/loot_table/blocks/fusion_reactor_core.json
-b6a22c31c87202a3e54cd430f1e3b43e33d3213a data/nuclearcraft/loot_table/blocks/fusion_reactor_core_proxy.json
+3687ae2241011bd201a00f83327b66ffd4aa48f5 data/nuclearcraft/loot_table/blocks/fusion_reactor_core_proxy.json
 53ff5f128118effa50580bb91733f9fdb94a4e9b data/nuclearcraft/loot_table/blocks/fusion_reactor_glass.json
-efa6fe871721fd05172378f15cb433037b0b99ff data/nuclearcraft/loot_table/blocks/fusion_reactor_port.json
 8afdfc80c6341b714bf349fb11262ffde59a8f60 data/nuclearcraft/loot_table/blocks/gas_scrubber.json
 e460f4415001db184928c94ee42d5fdd0811d080 data/nuclearcraft/loot_table/blocks/glowing_mushroom.json
 9b122b4738107b166e57773aaa8a372cda74a1f4 data/nuclearcraft/loot_table/blocks/glowstone_heat_sink.json

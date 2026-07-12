@@ -77,6 +77,10 @@ public class MultiblockControllerContainer extends AbstractContainerMenu {
             }
         }
 
+        layoutPlayerSlots(playerInventory);
+    }
+
+    protected void layoutPlayerSlots(Inventory playerInventory) {
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
                 addSlot(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, 95 + row * 18));

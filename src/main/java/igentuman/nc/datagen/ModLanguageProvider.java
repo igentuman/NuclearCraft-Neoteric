@@ -188,13 +188,26 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.fusion.charge", "Charge: %s%%");
         add("screen.nuclearcraft.fusion.plasma", "Plasma: %s MK");
         add("screen.nuclearcraft.fusion.heat", "Heat: %s H");
+        add("screen.nuclearcraft.fusion.temperature", "Temperature: %s");
         add("screen.nuclearcraft.fusion.efficiency", "Efficiency: %s%%");
         add("screen.nuclearcraft.fusion.output", "Output: %s FE/t");
         add("screen.nuclearcraft.fusion.amplification", "Amplification: %s%%");
+        add("screen.nuclearcraft.fusion.rf_amplifiers", "RF Amplifiers: %s%%");
+        add("screen.nuclearcraft.fusion.rf_adjustment", "RF Adjustment: %s%%");
+        add("screen.nuclearcraft.fusion.charging", "Charging: %s%%");
         add("message.nuclearcraft.redstone_mode.efficiency", "Efficiency level");
         add("message.nuclearcraft.redstone_mode.charge", "Charge level");
         add("message.nuclearcraft.redstone_mode.amplification", "RF amplification input");
         add("tooltip.nuclearcraft.fusion.amplification_down", "Decrease amplification");
         add("tooltip.nuclearcraft.fusion.amplification_up", "Increase amplification");
+        add("tooltip.nuclearcraft.rf_amplifier.power", "Power: %s FE/t");
+        add("tooltip.nuclearcraft.rf_amplifier.voltage", "Voltage: %s kV");
+        add("tooltip.nuclearcraft.rf_amplifier.efficiency", "Efficiency: %s%%");
+        add("tooltip.nuclearcraft.rf_amplifier.heat", "Heat: %s H/t");
+        add("tooltip.nuclearcraft.rf_amplifier.max_temp", "Max Temp: %s kK");
+        add("tooltip.nuclearcraft.electromagnet.magnetic_field", "Magnetic Field: %s T");
+        add("tooltip.nuclearcraft.electromagnet.efficiency", "Efficiency: %s%%");
+        add("tooltip.nuclearcraft.electromagnet.heat", "Heat: %s H/t");
+        add("tooltip.nuclearcraft.electromagnet.max_temp", "Max Temp: %s kK");
     }
 }

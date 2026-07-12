@@ -30,6 +30,6 @@ config="${mod_id}.mixins.json"
 [[dependencies.${mod_id}]]
     modId="nuclear_radiation"
     type="required"
-    versionRange="[1.0.0-beta8,)"
+    versionRange="[1.0.2,)"
     ordering="NONE"
     side="BOTH"

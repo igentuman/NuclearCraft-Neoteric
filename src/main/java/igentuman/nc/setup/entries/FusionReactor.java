@@ -1,9 +1,12 @@
 package igentuman.nc.setup.entries;
 
+import igentuman.nc.block.fusion.ElectromagnetBlock;
 import igentuman.nc.block.fusion.ElectromagnetSlopeBlock;
+import igentuman.nc.block.fusion.FusionCoreProxyBlock;
+import igentuman.nc.block.fusion.RFAmplifierBlock;
 import igentuman.nc.block_entity.fusion.FusionCoreProxyBE;
-import igentuman.nc.block_entity.fusion.FusionPortBE;
 import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
+import igentuman.nc.container.FusionReactorContainer;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.fusion.FusionReactorCache;
 import igentuman.nc.multiblock.fusion.FusionReactorValidator;
@@ -42,7 +45,6 @@ public class FusionReactor extends ModEntries {
         l.add("fusion_reactor_core");
         l.add("fusion_reactor_casing");
         l.add("fusion_reactor_glass");
-        l.add("fusion_reactor_port");
         l.add("fusion_reactor_connector");
         for (String t : MAGNET_TIERS) l.add(t + "_electromagnet");
         for (String t : MAGNET_TIERS) l.add(t + "_electromagnet_slope");
@@ -69,23 +71,23 @@ public class FusionReactor extends ModEntries {
                 .blockEntity(FusionReactorControllerBE::new)
                 .fluidCap(3, 5, 0)
                 .withEnergy(1_000_000, 100_000_000, ENERGY_BUFFER)
+                .menu(FusionReactorContainer::new)
                 .build();
 
         addMultiblockBlock("fusion_reactor_casing");
         addMultiblockBlock("fusion_reactor_glass", glassProps());
-        addMultiblockPart("fusion_reactor_port", FusionPortBE::new);
         addMultiblockBlock("fusion_reactor_connector");
-        addMultiblockPart("fusion_reactor_core_proxy", coreProxyProps(), FusionCoreProxyBE::new);
+        addMultiblockPart("fusion_reactor_core_proxy", coreProxyProps(), FusionCoreProxyBlock::new, FusionCoreProxyBE::new);
 
         for (String t : MAGNET_TIERS) {
-            addMultiblockBlock(t + "_electromagnet");
+            add(t + "_electromagnet").block(name -> new ElectromagnetBlock(magnetProps())).build();
             add(t + "_electromagnet_slope").block(name -> new ElectromagnetSlopeBlock(slopeProps())).build();
-            addMultiblockBlock(t + "_rf_amplifier");
+            add(t + "_rf_amplifier").block(name -> new RFAmplifierBlock(magnetProps())).build();
         }
 
         MultiblockEntryBuilder.name("fusion_reactor")
                 .controller(ModEntries.get("fusion_reactor_core"))
-                .ports(ModEntries.get("fusion_reactor_port"), ModEntries.get("fusion_reactor_core_proxy"))
+                .ports(ModEntries.get("fusion_reactor_core_proxy"))
                 .casing(
                         () -> ModEntries.get("fusion_reactor_casing").block().get(),
                         () -> ModEntries.get("fusion_reactor_glass").block().get(),
@@ -100,6 +102,12 @@ public class FusionReactor extends ModEntries {
         return BlockBehaviour.Properties.of()
                 .mapColor(MapColor.METAL).strength(3.5f, 6.0f).sound(SoundType.GLASS)
                 .requiresCorrectToolForDrops().noOcclusion();
+    }
+
+    private static BlockBehaviour.Properties magnetProps() {
+        return BlockBehaviour.Properties.of()
+                .mapColor(MapColor.METAL).strength(3.5f, 6.0f)
+                .requiresCorrectToolForDrops();
     }
 
     private static BlockBehaviour.Properties slopeProps() {

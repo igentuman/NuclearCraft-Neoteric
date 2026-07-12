@@ -349,12 +349,25 @@ public class ModEntryBuilder {
         return addMultiblockPart(name, props, MultiblockPortBE::new);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static ModEntry addMultiblockPart(String name, BlockBehaviour.Properties props, MultiblockPortBE.Factory beFactory) {
+        return addMultiblockPart(name, props, MultiblockPartBlock::new, beFactory);
+    }
+
+    /** Builds a multiblock part with a custom {@link MultiblockPartBlock} subclass. The block factory
+     *  receives the block entity type supplier so it can render/tick the port BE. */
+    @FunctionalInterface
+    public interface PartBlockFactory {
+        Block create(BlockBehaviour.Properties props, String name,
+                     Supplier<BlockEntityType<? extends MultiblockPortBE>> beTypeSupplier);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static ModEntry addMultiblockPart(String name, BlockBehaviour.Properties props,
+                                             PartBlockFactory blockFactory, MultiblockPortBE.Factory beFactory) {
         final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>[] beHolder = new DeferredHolder[1];
 
         DeferredBlock<Block> block = BLOCKS.register(name, () ->
-                new MultiblockPartBlock(props, name,
+                blockFactory.create(props, name,
                         () -> (BlockEntityType<? extends MultiblockPortBE>) beHolder[0].get()));
 
         DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> beReg =

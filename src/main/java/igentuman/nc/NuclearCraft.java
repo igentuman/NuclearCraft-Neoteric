@@ -10,13 +10,7 @@ import igentuman.nc.handler.event.ServerEvents;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.block_entity.MultiblockPortBE;
-import igentuman.nc.network.PacketMultiblockBroken;
-import igentuman.nc.network.PacketMultiblockFormed;
-import igentuman.nc.network.PacketAE2PatternTransfer;
-import igentuman.nc.network.PacketFissionToggleMode;
-import igentuman.nc.network.PacketProcessorButtonPress;
-import igentuman.nc.network.PacketRedstoneModeCycle;
-import igentuman.nc.network.PacketSideConfigToggle;
+import igentuman.nc.network.*;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
@@ -77,7 +71,7 @@ public class NuclearCraft {
         );
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(this::registerCapabilities);
-        modEventBus.addListener(this::registerPayloads);
+        modEventBus.addListener(Networking::registerPayloads);
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::onConfigReload);
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListener);
@@ -94,44 +88,7 @@ public class NuclearCraft {
         modContainer.registerConfig(ModConfig.Type.COMMON, Multiblocks.SPEC, MODID + "/multiblocks.toml");
     }
 
-    private void registerPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MODID).versioned("1");
-        registrar.playToServer(
-                PacketSideConfigToggle.TYPE,
-                PacketSideConfigToggle.STREAM_CODEC,
-                PacketSideConfigToggle::handle
-        );
-        registrar.playToServer(
-                PacketRedstoneModeCycle.TYPE,
-                PacketRedstoneModeCycle.STREAM_CODEC,
-                PacketRedstoneModeCycle::handle
-        );
-        registrar.playToServer(
-                PacketProcessorButtonPress.TYPE,
-                PacketProcessorButtonPress.STREAM_CODEC,
-                PacketProcessorButtonPress::handle
-        );
-        registrar.playToServer(
-                PacketFissionToggleMode.TYPE,
-                PacketFissionToggleMode.STREAM_CODEC,
-                PacketFissionToggleMode::handle
-        );
-        registrar.playToServer(
-                PacketAE2PatternTransfer.TYPE,
-                PacketAE2PatternTransfer.STREAM_CODEC,
-                PacketAE2PatternTransfer::handle
-        );
-        registrar.playToClient(
-                PacketMultiblockFormed.TYPE,
-                PacketMultiblockFormed.STREAM_CODEC,
-                PacketMultiblockFormed::handle
-        );
-        registrar.playToClient(
-                PacketMultiblockBroken.TYPE,
-                PacketMultiblockBroken.STREAM_CODEC,
-                PacketMultiblockBroken::handle
-        );
-    }
+
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
         for (ModEntry entry : ModEntries.ENTRIES.values()) {

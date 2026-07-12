@@ -702,18 +702,6 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("fusion_reactor_casing").block()))
                 .save(out);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_port").block())
-                .pattern("LPL")
-                .pattern("MTM")
-                .pattern("LPL")
-                .define('M', ModEntries.get("servo").item())
-                .define('P', ModEntries.get("plate_advanced").item())
-                .define('T', ModEntries.get("fusion_reactor_casing").block())
-                .define('L', plateTag("tough_alloy"))
-                .group(MODID + "_fusion")
-                .unlockedBy("item", has(ModEntries.get("fusion_reactor_casing").block()))
-                .save(out);
-
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_core").block())
                 .pattern("LPL")
                 .pattern("TDT")

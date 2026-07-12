@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.fission;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,10 +34,15 @@ public final class HeatSinkValidator {
 
     public static boolean isValid(HeatSinkDef def, Level level, BlockPos pos, FissionReactorCache fc) {
         Map<String[], List<Block>> conditions = def.getValidator().blocks();
-        if (conditions.isEmpty()) return true;
+        NuclearCraft.LOGGER.debug("[HeatSink] validate start name={} pos={} conditions={}", def.name, pos, conditions.size());
+        if (conditions.isEmpty()) {
+            NuclearCraft.LOGGER.debug("[HeatSink] validate OK name={} pos={} (no conditions)", def.name, pos);
+            return true;
+        }
         for (Map.Entry<String[], List<Block>> e : conditions.entrySet()) {
             String func = e.getKey()[0];
             int count = parseCount(e.getKey()[1]);
+            String rule = e.getKey()[2];
             List<Block> blocks = e.getValue();
             boolean ok = switch (func) {
                 case "<" -> isLessThan(count, blocks, level, pos, fc);
@@ -45,8 +51,14 @@ public final class HeatSinkValidator {
                 case "^" -> inCorner(count, blocks, level, pos, fc);
                 default -> isAtLeast(count, blocks, level, pos, fc);
             };
-            if (!ok) return false;
+            NuclearCraft.LOGGER.debug("[HeatSink] cond name={} pos={} func='{}' count={} rule='{}' blocks={} -> {}",
+                    def.name, pos, func, count, rule, blocks, ok);
+            if (!ok) {
+                NuclearCraft.LOGGER.debug("[HeatSink] validate FAIL name={} pos={} rule='{}'", def.name, pos, rule);
+                return false;
+            }
         }
+        NuclearCraft.LOGGER.debug("[HeatSink] validate OK name={} pos={}", def.name, pos);
         return true;
     }
 
@@ -61,10 +73,20 @@ public final class HeatSinkValidator {
     private static boolean qualifies(List<Block> blocks, Level level, BlockPos pos, FissionReactorCache fc) {
         BlockState bs = fc.getBlockState(level, pos);
         Block b = bs.getBlock();
-        if (!blocks.contains(b)) return false;
+        if (!blocks.contains(b)) {
+            NuclearCraft.LOGGER.debug("[HeatSink] qualify pos={} block={} -> false (not in list)", pos, b);
+            return false;
+        }
         long key = pos.asLong();
-        if (b instanceof HeatSinkBlock && !fc.validHeatSinks.contains(key)) return false;
-        if (bs.is(FissionTags.MODERATORS) && !fc.activeModerators.contains(key)) return false;
+        if (b instanceof HeatSinkBlock && !fc.validHeatSinks.contains(key)) {
+            NuclearCraft.LOGGER.debug("[HeatSink] qualify pos={} block={} -> false (heat sink not valid this pass)", pos, b);
+            return false;
+        }
+        if (bs.is(FissionTags.MODERATORS) && !fc.activeModerators.contains(key)) {
+            NuclearCraft.LOGGER.debug("[HeatSink] qualify pos={} block={} -> false (moderator inactive)", pos, b);
+            return false;
+        }
+        NuclearCraft.LOGGER.debug("[HeatSink] qualify pos={} block={} -> true", pos, b);
         return true;
     }
 

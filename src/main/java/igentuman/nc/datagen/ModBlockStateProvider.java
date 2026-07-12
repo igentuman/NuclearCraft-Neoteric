@@ -1,6 +1,8 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.block.UniversalProcessorBlock;
+import net.minecraft.core.Direction;
+import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -241,7 +243,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         if (path.endsWith("_electromagnet_slope")) {
             ModelFile slope = models().getExistingFile(rl("block/electromagnet/" + path));
-            horizontalBlock(block, slope);
+            getVariantBuilder(block).forAllStates(state -> {
+                FrontAndTop dir = state.getValue(BlockStateProperties.ORIENTATION);
+                return ConfiguredModel.builder()
+                        .modelFile(slope)
+                        .rotationX(dir.front() == Direction.DOWN ? 180 : 0)
+                        .rotationY((((int) dir.top().toYRot()) + 180) % 360)
+                        .build();
+            });
             itemModels().getBuilder("item/" + path).parent(slope);
             return;
         }
@@ -270,6 +279,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
             ((BlockModelBuilder) model).renderType(ResourceLocation.tryBuild("minecraft", "cutout"));
         }
         simpleBlock(block, model);
+        if (path.equals("fusion_reactor_core")) {
+            return; // custom item model shipped in main resources - don't overwrite it
+        }
         itemModels().getBuilder("item/" + path).parent(model);
     }
 

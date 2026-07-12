@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +27,11 @@ public class ModBlockLootTableProvider  extends BlockLootSubProvider {
 
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.hasBlock()) {
-                dropSelf(entry.block().get());
+                if (entry.name().equals("fusion_reactor_core_proxy")) {
+                    add(entry.block().get(), LootTable.lootTable()); // auto-placed cage cell - never drops
+                } else {
+                    dropSelf(entry.block().get());
+                }
             }
             if (entry.materialEntry() != null) {
                 if (entry.materialEntry().hasOre()) {

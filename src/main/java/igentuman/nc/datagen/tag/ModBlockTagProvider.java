@@ -75,7 +75,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     private void addFusionStructureTags() {
         var casing = tag(FusionTags.CASING);
         casing.add(b("fusion_reactor_casing"), b("fusion_reactor_glass"),
-                b("fusion_reactor_connector"), b("fusion_reactor_port"));
+                b("fusion_reactor_connector"));
         var magnets = tag(FusionTags.ELECTROMAGNETS);
         var amplifiers = tag(FusionTags.RF_AMPLIFIERS);
         for (String t : FusionReactor.MAGNET_TIERS) {

@@ -23,8 +23,8 @@ import java.util.function.Supplier;
 public class MultiblockPartBlock extends BaseEntityBlock {
 
     public static MapCodec<MultiblockPartBlock> CODEC;
-    private final String name;
-    private final Supplier<BlockEntityType<? extends MultiblockPortBE>> beTypeSupplier;
+    protected final String name;
+    protected final Supplier<BlockEntityType<? extends MultiblockPortBE>> beTypeSupplier;
 
     public MultiblockPartBlock(BlockBehaviour.Properties props, String name,
                                 Supplier<BlockEntityType<? extends MultiblockPortBE>> beTypeSupplier) {

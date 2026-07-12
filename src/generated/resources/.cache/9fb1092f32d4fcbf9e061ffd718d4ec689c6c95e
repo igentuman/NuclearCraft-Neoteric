@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-06T23:37:38.46700861	Recipes
+// 1.21.1	2026-07-11T20:55:21.167473378	Recipes
 3a5d0bc884d149cb53d9e26d4e76313e10390835 data/nuclearcraft/advancement/recipes/misc/active_enderium_heat_sink.json
 faa2d50526ec46faac58dff31e239dc6c50ae19e data/nuclearcraft/advancement/recipes/misc/active_redstone_heat_sink.json
 d2cef252c10f5984fee3d89c3296cb18ae702044 data/nuclearcraft/advancement/recipes/misc/actuator.json
@@ -474,7 +474,6 @@ edd32f7088ff0b6841efaff8058d066ee8cc894a data/nuclearcraft/advancement/recipes/m
 9db931aa0744649d3f6341f369564c4c903243eb data/nuclearcraft/advancement/recipes/misc/fusion_reactor_connector.json
 a2d75adda82d4d402313d742d475280d37a3a2ee data/nuclearcraft/advancement/recipes/misc/fusion_reactor_core.json
 fc18f8f8c8f679829d86f25c9cbc23aba1e1aedd data/nuclearcraft/advancement/recipes/misc/fusion_reactor_glass.json
-1480aecb9e57365269ce68eebf0d703f70a81939 data/nuclearcraft/advancement/recipes/misc/fusion_reactor_port.json
 72288b27d51f1e0509f9a8d50aca93e90758a6f1 data/nuclearcraft/advancement/recipes/misc/gas_scrubber.json
 7f4004376feb471b13eb404574eaab56cb6ebdf1 data/nuclearcraft/advancement/recipes/misc/glowstone_heat_sink.json
 989138f369603164b5888e73b391e7c918fa06a1 data/nuclearcraft/advancement/recipes/misc/gold_heat_sink.json
@@ -1821,7 +1820,6 @@ a0e0c0d5d4d22a78a396c65a26a554fb6e96aefe data/nuclearcraft/recipe/fusion_reactor
 bdea213134a81d775371c9d313591c649aa1ee23 data/nuclearcraft/recipe/fusion_reactor_connector.json
 2c5153a4609d2e73e440a84f4584ccf7e6255ab1 data/nuclearcraft/recipe/fusion_reactor_core.json
 5925586a9b0c521d353d80c1a953fd4ca536a054 data/nuclearcraft/recipe/fusion_reactor_glass.json
-4cb1a1b8e78f1fc135e6984c7f20dcf4dde67e49 data/nuclearcraft/recipe/fusion_reactor_port.json
 e0f0b2beed3d6e5dd18a3c693dd45fa055ebe174 data/nuclearcraft/recipe/gas_scrubber.json
 de011cef8da31e413e0432b88d7ebfcf70417a1b data/nuclearcraft/recipe/glowstone_heat_sink.json
 1dc1ec632afbe50c77841a3768c082a111005dd0 data/nuclearcraft/recipe/gold_heat_sink.json

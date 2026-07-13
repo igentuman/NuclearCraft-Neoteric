@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:potassium_hydroxide",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:potassium_hydroxide"
     }
   ],
   "timeModifier": 1.0,

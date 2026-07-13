@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:liquid_nitrogen",
-      "amount": 100
+      "amount": 100,
+      "fluid": "nuclearcraft:liquid_nitrogen"
     }
   ],
   "timeModifier": 1.0,

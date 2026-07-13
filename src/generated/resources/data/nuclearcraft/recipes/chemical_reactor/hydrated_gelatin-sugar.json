@@ -12,8 +12,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:marshmallow",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:marshmallow"
     }
   ],
   "timeModifier": 1.0,

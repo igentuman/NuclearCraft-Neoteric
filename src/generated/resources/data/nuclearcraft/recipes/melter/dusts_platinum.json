@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:platinum",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:platinum"
     }
   ],
   "timeModifier": 1.0,

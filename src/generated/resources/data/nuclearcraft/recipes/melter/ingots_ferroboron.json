@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:ferroboron",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:ferroboron"
     }
   ],
   "timeModifier": 1.0,

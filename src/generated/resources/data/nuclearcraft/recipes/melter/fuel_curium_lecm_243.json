@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:fuel_curium_lecm_243",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:fuel_curium_lecm_243"
     }
   ],
   "timeModifier": 1.0,

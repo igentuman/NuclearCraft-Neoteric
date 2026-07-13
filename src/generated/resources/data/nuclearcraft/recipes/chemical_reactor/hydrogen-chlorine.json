@@ -12,8 +12,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:hydrogen_chloride",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:hydrogen_chloride"
     }
   ],
   "timeModifier": 0.5,

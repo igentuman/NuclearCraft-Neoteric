@@ -8,24 +8,24 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:polonium",
-      "amount": 5
+      "amount": 5,
+      "fluid": "nuclearcraft:polonium"
     },
     {
-      "fluid": "nuclearcraft:plutonium_238",
-      "amount": 5
+      "amount": 5,
+      "fluid": "nuclearcraft:plutonium_238"
     },
     {
-      "fluid": "nuclearcraft:plutonium_242",
-      "amount": 5
+      "amount": 5,
+      "fluid": "nuclearcraft:plutonium_242"
     },
     {
-      "fluid": "nuclearcraft:plutonium_241",
-      "amount": 5
+      "amount": 5,
+      "fluid": "nuclearcraft:plutonium_241"
     },
     {
-      "fluid": "nuclearcraft:spent_nuclear_waste",
-      "amount": 1
+      "amount": 1,
+      "fluid": "nuclearcraft:spent_nuclear_waste"
     }
   ],
   "timeModifier": 15.0,

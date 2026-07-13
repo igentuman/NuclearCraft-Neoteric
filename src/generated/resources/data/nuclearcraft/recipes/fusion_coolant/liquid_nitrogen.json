@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:nitrogen",
-      "amount": 1
+      "amount": 1,
+      "fluid": "nuclearcraft:nitrogen"
     }
   ],
   "coolingRate": 2500.0

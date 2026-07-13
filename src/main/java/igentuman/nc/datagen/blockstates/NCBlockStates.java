@@ -11,6 +11,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.world.gen.feature.jigsaw.JigsawOrientation;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -296,15 +297,34 @@ public class NCBlockStates extends BlockStateProvider {
     }
 
     public void orientationalBlock(Block block, Function<BlockState, ModelFile> modelFunc) {
-/*        getVariantBuilder(block)
-                .forAllStates(state ->  {
-                    FrontAndTop dir = state.getValue(BlockStateProperties.ORIENTATION);
+        getVariantBuilder(block)
+                .forAllStates(state -> {
+                    JigsawOrientation dir = state.getValue(BlockStateProperties.ORIENTATION);
+                    int[] rot = orientationRotation(dir);
                     return ConfiguredModel.builder()
                             .modelFile(modelFunc.apply(state))
-                            .rotationX(dir.front() == DOWN ? 180 : 0)
-                            .rotationY((((int) dir.top().toYRot()) + 180) % 360)
+                            .rotationX(rot[0])
+                            .rotationY(rot[1])
                             .build();
-                });*/
+                });
+    }
+
+    private static int[] orientationRotation(JigsawOrientation o) {
+        switch (o) {
+            case DOWN_EAST: return new int[]{90, 90};
+            case DOWN_NORTH: return new int[]{90, 0};
+            case DOWN_SOUTH: return new int[]{90, 180};
+            case DOWN_WEST: return new int[]{90, 270};
+            case EAST_UP: return new int[]{0, 90};
+            case SOUTH_UP: return new int[]{0, 180};
+            case WEST_UP: return new int[]{0, 270};
+            case UP_EAST: return new int[]{270, 270};
+            case UP_NORTH: return new int[]{270, 180};
+            case UP_SOUTH: return new int[]{270, 0};
+            case UP_WEST: return new int[]{270, 90};
+            case NORTH_UP:
+            default: return new int[]{0, 0};
+        }
     }
 
     private void ores() {

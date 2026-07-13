@@ -3,21 +3,21 @@
   "inputFluids": [
     {
       "amount": 1296,
-      "fluid": "depleted_fuel_californium_lecf_251"
+      "fluid": "nuclearcraft:depleted_fuel_californium_lecf_251"
     }
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:californium_252",
-      "amount": 1152
+      "amount": 1152,
+      "fluid": "nuclearcraft:californium_252"
     },
     {
-      "fluid": "nuclearcraft:ruthenium_106",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:ruthenium_106"
     },
     {
-      "fluid": "nuclearcraft:promethium_147",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:promethium_147"
     }
   ],
   "timeModifier": 0.5,

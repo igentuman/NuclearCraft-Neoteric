@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:fuel_plutonium_hep_241_ni",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:fuel_plutonium_hep_241_ni"
     }
   ],
   "timeModifier": 1.0,

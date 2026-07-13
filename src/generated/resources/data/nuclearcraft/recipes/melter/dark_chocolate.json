@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:dark_chocolate",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:dark_chocolate"
     }
   ],
   "timeModifier": 0.25,

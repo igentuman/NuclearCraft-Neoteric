@@ -12,12 +12,12 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:ethene",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:ethene"
     },
     {
-      "fluid": "nuclearcraft:potassium_fluoride_solution",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:potassium_fluoride_solution"
     }
   ],
   "timeModifier": 0.5,

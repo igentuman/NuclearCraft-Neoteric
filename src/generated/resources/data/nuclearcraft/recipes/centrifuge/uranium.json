@@ -8,12 +8,12 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:uranium_238",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:uranium_238"
     },
     {
-      "fluid": "nuclearcraft:uranium_235",
-      "amount": 16
+      "amount": 16,
+      "fluid": "nuclearcraft:uranium_235"
     }
   ],
   "timeModifier": 0.9,

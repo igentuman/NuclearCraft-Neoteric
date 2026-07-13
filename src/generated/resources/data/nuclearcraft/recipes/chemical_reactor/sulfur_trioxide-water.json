@@ -7,13 +7,13 @@
     },
     {
       "amount": 250,
-      "fluid": "water"
+      "fluid": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:sulfuric_acid",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:sulfuric_acid"
     }
   ],
   "timeModifier": 0.5,

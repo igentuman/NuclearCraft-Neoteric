@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:thorium_230_za",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:thorium_230_za"
     }
   ],
   "timeModifier": 1.0,

@@ -12,12 +12,12 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:borax_solution",
-      "amount": 72
+      "amount": 72,
+      "fluid": "nuclearcraft:borax_solution"
     },
     {
-      "fluid": "nuclearcraft:hydrofluoric_acid",
-      "amount": 1500
+      "amount": 1500,
+      "fluid": "nuclearcraft:hydrofluoric_acid"
     }
   ],
   "timeModifier": 1.0,

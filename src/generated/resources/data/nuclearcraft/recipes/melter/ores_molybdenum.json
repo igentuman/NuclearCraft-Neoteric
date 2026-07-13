@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:molybdenum",
-      "amount": 288
+      "amount": 288,
+      "fluid": "nuclearcraft:molybdenum"
     }
   ],
   "timeModifier": 1.0,

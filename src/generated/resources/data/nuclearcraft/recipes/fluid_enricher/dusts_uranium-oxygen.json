@@ -13,8 +13,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:uranium_oxide",
-      "amount": 500
+      "amount": 500,
+      "fluid": "nuclearcraft:uranium_oxide"
     }
   ],
   "timeModifier": 1.0,

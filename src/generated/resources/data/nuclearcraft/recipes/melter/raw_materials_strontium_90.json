@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:strontium_90",
-      "amount": 216
+      "amount": 216,
+      "fluid": "nuclearcraft:strontium_90"
     }
   ],
   "timeModifier": 1.0,

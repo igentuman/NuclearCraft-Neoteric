@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:californium_250_ni",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:californium_250_ni"
     }
   ],
   "timeModifier": 1.0,

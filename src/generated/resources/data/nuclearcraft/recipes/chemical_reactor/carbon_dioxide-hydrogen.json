@@ -12,12 +12,12 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:carbon_monoxide",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:carbon_monoxide"
     },
     {
-      "fluid": "minecraft:water",
-      "amount": 250
+      "amount": 250,
+      "fluid": "minecraft:water"
     }
   ],
   "timeModifier": 0.5,

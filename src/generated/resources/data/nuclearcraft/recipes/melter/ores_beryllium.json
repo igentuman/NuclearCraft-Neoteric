@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:beryllium",
-      "amount": 288
+      "amount": 288,
+      "fluid": "nuclearcraft:beryllium"
     }
   ],
   "timeModifier": 1.0,

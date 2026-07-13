@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:hard_carbon",
-      "amount": 288
+      "amount": 288,
+      "fluid": "nuclearcraft:hard_carbon"
     }
   ],
   "timeModifier": 1.0,

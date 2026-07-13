@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:magnesium_diboride",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:magnesium_diboride"
     }
   ],
   "timeModifier": 1.0,

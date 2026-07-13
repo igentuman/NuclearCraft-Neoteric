@@ -12,12 +12,23 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nullable;
 
 import java.util.*;
 
 
 public final class NcUtils {
+
+    public static String getModId(ItemStack stack) {
+        if (stack == null || stack.isEmpty() || stack.getItem().getRegistryName() == null) return "";
+        return stack.getItem().getRegistryName().getNamespace();
+    }
+
+    public static String getModId(FluidStack stack) {
+        if (stack == null || stack.isEmpty() || stack.getFluid().getRegistryName() == null) return "";
+        return stack.getFluid().getRegistryName().getNamespace();
+    }
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
     public static final Codec<Direction> DIRECTION_CODEC = IStringSerializable.fromEnum(Direction::values, Direction::byName);

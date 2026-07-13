@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:curium_247",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:curium_247"
     }
   ],
   "timeModifier": 1.0,

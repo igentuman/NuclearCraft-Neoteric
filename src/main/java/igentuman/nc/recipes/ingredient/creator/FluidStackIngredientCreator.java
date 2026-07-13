@@ -211,7 +211,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             json.addProperty("amount", fluidInstance.getAmount());
-            json.addProperty("fluid", fluidInstance.getFluid().getRegistryName().getPath().toString());
+            json.addProperty("fluid", fluidInstance.getFluid().getRegistryName().toString());
             if (fluidInstance.hasTag()) {
                 json.addProperty("nbt", fluidInstance.getTag().toString());
             }

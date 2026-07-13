@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:boron_11",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:boron_11"
     }
   ],
   "timeModifier": 1.0,

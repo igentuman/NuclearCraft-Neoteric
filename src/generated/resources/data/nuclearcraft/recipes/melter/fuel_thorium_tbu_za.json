@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:fuel_thorium_tbu_za",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:fuel_thorium_tbu_za"
     }
   ],
   "timeModifier": 1.0,

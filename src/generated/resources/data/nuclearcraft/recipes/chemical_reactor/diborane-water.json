@@ -7,17 +7,17 @@
     },
     {
       "amount": 750,
-      "fluid": "water"
+      "fluid": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:boric_acid",
-      "amount": 500
+      "amount": 500,
+      "fluid": "nuclearcraft:boric_acid"
     },
     {
-      "fluid": "nuclearcraft:hydrogen",
-      "amount": 500
+      "amount": 500,
+      "fluid": "nuclearcraft:hydrogen"
     }
   ],
   "timeModifier": 0.5,

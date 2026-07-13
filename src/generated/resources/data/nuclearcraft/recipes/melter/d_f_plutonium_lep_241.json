@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:depleted_fuel_plutonium_lep_241",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:depleted_fuel_plutonium_lep_241"
     }
   ],
   "timeModifier": 1.0,

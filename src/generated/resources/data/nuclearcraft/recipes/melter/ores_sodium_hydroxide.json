@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:sodium_hydroxide",
-      "amount": 288
+      "amount": 288,
+      "fluid": "nuclearcraft:sodium_hydroxide"
     }
   ],
   "timeModifier": 1.0,

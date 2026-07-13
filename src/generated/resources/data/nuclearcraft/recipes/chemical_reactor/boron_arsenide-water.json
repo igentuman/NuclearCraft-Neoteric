@@ -7,13 +7,13 @@
     },
     {
       "amount": 100,
-      "fluid": "water"
+      "fluid": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:boron_arsenide_solution",
-      "amount": 350
+      "amount": 350,
+      "fluid": "nuclearcraft:boron_arsenide_solution"
     }
   ],
   "timeModifier": 1.0,

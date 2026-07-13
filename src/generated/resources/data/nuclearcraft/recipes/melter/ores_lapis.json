@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:lapis",
-      "amount": 288
+      "amount": 288,
+      "fluid": "nuclearcraft:lapis"
     }
   ],
   "timeModifier": 1.0,

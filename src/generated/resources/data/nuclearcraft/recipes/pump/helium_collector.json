@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:helium",
-      "amount": 50
+      "amount": 50,
+      "fluid": "nuclearcraft:helium"
     }
   ],
   "timeModifier": 0.1,

@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:plutonium_242",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:plutonium_242"
     }
   ],
   "timeModifier": 1.0,

@@ -12,8 +12,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:boron_arsenide",
-      "amount": 288
+      "amount": 288,
+      "fluid": "nuclearcraft:boron_arsenide"
     }
   ],
   "timeModifier": 0.5,

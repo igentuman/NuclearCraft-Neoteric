@@ -278,7 +278,7 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         double radiation = modifiers.length>2 ? modifiers[2] : 1.0;
         double temperature = modifiers.length>3 ? modifiers[3] : 1.0;
         NcRecipeBuilder.get(ID)
-                .fluids(input, output)
+                .fluids(input, toFluidIngredients(output))
                 .modifiers(timeModifier, radiation, powerModifier)
                 .temperature(temperature)
                 .build(consumer);

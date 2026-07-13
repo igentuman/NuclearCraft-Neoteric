@@ -7,13 +7,13 @@
     },
     {
       "amount": 250,
-      "fluid": "water"
+      "fluid": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:hydrated_gelatin",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:hydrated_gelatin"
     }
   ],
   "timeModifier": 0.5,

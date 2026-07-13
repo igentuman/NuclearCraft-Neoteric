@@ -78,8 +78,11 @@ public class FissionBoilingCategoryWrapper<T extends FissionControllerBE.Fission
 
     @Override
     public void draw(T recipe, MatrixStack stack, double mouseX, double mouseY) {
-        arrow.draw(stack, 34, 6);
-
+        if(arrow != null) arrow.draw(stack, 34, 6);
+        if(slots != null) {
+            if(slots[0] != null) slots[0].draw(stack, 8, 7);
+            if(slots[1] != null) slots[1].draw(stack, 79, 7);
+        }
     }
 
     @Override
@@ -104,12 +107,14 @@ public class FissionBoilingCategoryWrapper<T extends FissionControllerBE.Fission
     @Override
     public void setRecipe(IRecipeLayout iRecipeLayout, T t, IIngredients iIngredients) {
         slots = new IDrawable[2];
+        slots[0] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
+        slots[1] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 36, 18, 18);
         arrow = guiHelper.drawableBuilder(rl("textures/gui/progress.png"), 0, 0, 36, 15)
                 .buildAnimated(new TickTimer(100, 36, true), IDrawableAnimated.StartDirection.LEFT);
-
-
-        iIngredients.setInputs(FLUID, t.getInputFluids(0));
-        iIngredients.setOutputs(FLUID, t.getOutputFluids(0));
+        iRecipeLayout.getFluidStacks().init(0, true, 9, 8);
+        iRecipeLayout.getFluidStacks().set(0, t.getInputFluids(0));
+        iRecipeLayout.getFluidStacks().init(1, false, 80, 8);
+        iRecipeLayout.getFluidStacks().set(1, t.getOutputFluids(0));
     }
 
 }

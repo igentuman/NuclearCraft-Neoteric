@@ -44,20 +44,20 @@ public class BoilingRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
             NuclearCraft.LOGGER.warn("Unable to parse input fluid for recipe: "+recipeId);
         }
 
-        FluidStack[] outputFluids = new FluidStack[0];
+        FluidStackIngredient[] outputFluids = new FluidStackIngredient[0];
         try {
             if(json.has("outputFluids")) {
                 if (JSONUtils.isArrayNode(json, "outputFluids")) {
                     JsonElement output = JSONUtils.getAsJsonArray(json, "outputFluids");
-                    outputFluids = new FluidStack[output.getAsJsonArray().size()];
+                    outputFluids = new FluidStackIngredient[output.getAsJsonArray().size()];
                     int i = 0;
                     for (JsonElement out : output.getAsJsonArray()) {
-                        outputFluids[i] = SerializerHelper.getFluidStack(out.getAsJsonObject());
+                        outputFluids[i] = IngredientCreatorAccess.fluid().deserialize(out);
                         i++;
                     }
                 } else {
                     JsonElement output = JSONUtils.getAsJsonObject(json, "outputFluids");
-                    outputFluids = new FluidStack[]{SerializerHelper.getFluidStack(output.getAsJsonObject(), "outputFluids")};
+                    outputFluids = new FluidStackIngredient[]{IngredientCreatorAccess.fluid().deserialize(output)};
                 }
             }
         } catch (Exception ex) {
@@ -69,7 +69,7 @@ public class BoilingRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
         } catch (Exception ex) {
             NuclearCraft.LOGGER.warn("Unable to parse params for recipe: "+recipeId);
         }
-        return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStack[]{}, inputFluids, outputFluids, heatRequired, 1, 1, 1);
+        return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStackIngredient[]{}, inputFluids, outputFluids, heatRequired, 1, 1, 1);
     }
 
 
@@ -83,9 +83,9 @@ public class BoilingRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
             }
 
             int outputSize = buffer.readInt();
-            ItemStack[] outputItems = new ItemStack[outputSize];
+            ItemStackIngredient[] outputItems = new ItemStackIngredient[outputSize];
             for(int i = 0; i < outputSize; i++) {
-                outputItems[i] =  buffer.readItem();
+                outputItems[i] = IngredientCreatorAccess.item().read(buffer);
             }
 
             inputSize = buffer.readInt();
@@ -95,15 +95,15 @@ public class BoilingRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSe
             }
 
             outputSize = buffer.readInt();
-            FluidStack[] outputFluids = new FluidStack[outputSize];
+            FluidStackIngredient[] outputFluids = new FluidStackIngredient[outputSize];
             for(int i = 0; i < outputSize; i++) {
-                outputFluids[i] =  buffer.readFluidStack();
+                outputFluids[i] = IngredientCreatorAccess.fluid().read(buffer);
             }
             double heatRequired = buffer.readDouble();
             double powerModifier = buffer.readDouble();
             double radiation = buffer.readDouble();
 
-            return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStack[]{}, inputFluids,  outputFluids, heatRequired, 1, 1, 1);
+            return this.factory.create(recipeId, new ItemStackIngredient[]{}, new ItemStackIngredient[]{}, inputFluids,  outputFluids, heatRequired, 1, 1, 1);
         } catch (Exception e) {
             NuclearCraft.LOGGER.error("Error reading from packet.", e);
             throw e;

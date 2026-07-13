@@ -7,13 +7,13 @@
     },
     {
       "amount": 250,
-      "fluid": "water"
+      "fluid": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:nitric_acid",
-      "amount": 1000
+      "amount": 1000,
+      "fluid": "nuclearcraft:nitric_acid"
     }
   ],
   "timeModifier": 1.5,

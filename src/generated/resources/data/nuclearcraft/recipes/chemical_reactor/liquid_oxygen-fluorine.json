@@ -12,8 +12,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:oxygen_difluoride",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:oxygen_difluoride"
     }
   ],
   "timeModifier": 0.5,

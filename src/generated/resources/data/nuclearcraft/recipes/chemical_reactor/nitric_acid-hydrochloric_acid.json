@@ -12,8 +12,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:aqua_regia_acid",
-      "amount": 1000
+      "amount": 1000,
+      "fluid": "nuclearcraft:aqua_regia_acid"
     }
   ],
   "timeModifier": 1.5,

@@ -13,8 +13,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:sodium_fluoride_solution",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:sodium_fluoride_solution"
     }
   ],
   "timeModifier": 1.0,

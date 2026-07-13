@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:emergency_coolant",
-      "amount": 1000
+      "amount": 1000,
+      "fluid": "nuclearcraft:emergency_coolant"
     }
   ],
   "timeModifier": 1.0,

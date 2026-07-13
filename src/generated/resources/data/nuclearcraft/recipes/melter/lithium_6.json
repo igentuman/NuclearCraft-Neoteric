@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:lithium_6",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:lithium_6"
     }
   ],
   "timeModifier": 1.0,

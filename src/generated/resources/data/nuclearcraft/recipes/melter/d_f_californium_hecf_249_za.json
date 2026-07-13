@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:depleted_fuel_californium_hecf_249_za",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:depleted_fuel_californium_hecf_249_za"
     }
   ],
   "timeModifier": 1.0,

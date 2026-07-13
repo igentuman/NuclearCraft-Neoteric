@@ -14,8 +14,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:radaway",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:radaway"
     }
   ],
   "timeModifier": 1.0,

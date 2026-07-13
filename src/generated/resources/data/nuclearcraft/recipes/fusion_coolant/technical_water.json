@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:high_pressure_steam",
-      "amount": 500
+      "amount": 500,
+      "fluid": "nuclearcraft:high_pressure_steam"
     }
   ],
   "coolingRate": 2500.0

@@ -7,17 +7,17 @@
     },
     {
       "amount": 500,
-      "fluid": "water"
+      "fluid": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:ethanol",
-      "amount": 2000
+      "amount": 2000,
+      "fluid": "nuclearcraft:ethanol"
     },
     {
-      "fluid": "nuclearcraft:carbon_dioxide",
-      "amount": 1000
+      "amount": 1000,
+      "fluid": "nuclearcraft:carbon_dioxide"
     }
   ],
   "timeModifier": 0.5,

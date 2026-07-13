@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:silicon_carbide",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:silicon_carbide"
     }
   ],
   "timeModifier": 1.0,

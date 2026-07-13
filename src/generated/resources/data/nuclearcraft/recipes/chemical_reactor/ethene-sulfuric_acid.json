@@ -12,12 +12,12 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:ethanol",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:ethanol"
     },
     {
-      "fluid": "nuclearcraft:sulfur_trioxide",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:sulfur_trioxide"
     }
   ],
   "timeModifier": 0.5,

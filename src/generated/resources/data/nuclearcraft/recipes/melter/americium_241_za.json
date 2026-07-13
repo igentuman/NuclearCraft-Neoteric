@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:americium_241_za",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:americium_241_za"
     }
   ],
   "timeModifier": 1.0,

@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:tough_alloy",
-      "amount": 288
+      "amount": 288,
+      "fluid": "nuclearcraft:tough_alloy"
     }
   ],
   "timeModifier": 1.0,

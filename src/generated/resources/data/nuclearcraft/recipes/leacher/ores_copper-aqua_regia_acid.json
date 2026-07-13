@@ -13,8 +13,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:copper_slurry",
-      "amount": 1000
+      "amount": 1000,
+      "fluid": "nuclearcraft:copper_slurry"
     }
   ],
   "timeModifier": 1.0,

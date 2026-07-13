@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:depleted_fuel_curium_hecm_245_ox",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:depleted_fuel_curium_hecm_245_ox"
     }
   ],
   "timeModifier": 1.0,

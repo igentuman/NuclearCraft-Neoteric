@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "minecraft:lava",
-      "amount": 1000
+      "amount": 1000,
+      "fluid": "minecraft:lava"
     }
   ],
   "timeModifier": 1.0,

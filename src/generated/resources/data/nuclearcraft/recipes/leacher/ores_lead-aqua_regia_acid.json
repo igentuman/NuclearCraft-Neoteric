@@ -13,8 +13,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:lead_slurry",
-      "amount": 1000
+      "amount": 1000,
+      "fluid": "nuclearcraft:lead_slurry"
     }
   ],
   "timeModifier": 1.0,

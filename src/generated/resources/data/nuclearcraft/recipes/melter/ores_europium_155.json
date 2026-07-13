@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:europium_155",
-      "amount": 288
+      "amount": 288,
+      "fluid": "nuclearcraft:europium_155"
     }
   ],
   "timeModifier": 1.0,

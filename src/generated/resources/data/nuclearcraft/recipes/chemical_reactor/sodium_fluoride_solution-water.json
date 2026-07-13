@@ -7,17 +7,17 @@
     },
     {
       "amount": 500,
-      "fluid": "water"
+      "fluid": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:sodium_hydroxide_solution",
-      "amount": 72
+      "amount": 72,
+      "fluid": "nuclearcraft:sodium_hydroxide_solution"
     },
     {
-      "fluid": "nuclearcraft:hydrofluoric_acid",
-      "amount": 500
+      "amount": 500,
+      "fluid": "nuclearcraft:hydrofluoric_acid"
     }
   ],
   "timeModifier": 1.0,

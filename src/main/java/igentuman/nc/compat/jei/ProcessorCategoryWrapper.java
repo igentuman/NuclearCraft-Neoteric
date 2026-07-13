@@ -95,8 +95,8 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
             }
             iIngredients.setInputs(VanillaTypes.FLUID, inputFluids);
         }
-        if(t.getOutputFluids().length > 0) {
-            iIngredients.setOutputs(VanillaTypes.FLUID, Arrays.asList(t.getOutputFluids()));
+        if(t.getOutputFluids().size() > 0) {
+            iIngredients.setOutputs(VanillaTypes.FLUID, t.getOutputFluids());
         }
         if(t.getItemIngredients().size() > 0) {
             List<ItemStack> inputItems = new ArrayList<>();
@@ -210,31 +210,40 @@ public class ProcessorCategoryWrapper<T extends NcRecipe> implements IRecipeCate
         for(FluidStack fluidStack: recipe.getOutputFluids()) {
             fluidTankCapacity = Math.max(fluidTankCapacity, fluidStack.getAmount());
         }
+        List<List<ItemStack>> jeiInputItems = iIngredients.getInputs(VanillaTypes.ITEM);
+        List<List<ItemStack>> jeiOutputItems = iIngredients.getOutputs(VanillaTypes.ITEM);
+        List<List<FluidStack>> jeiInputFluids = iIngredients.getInputs(VanillaTypes.FLUID);
+        List<List<FluidStack>> jeiOutputFluids = iIngredients.getOutputs(VanillaTypes.FLUID);
         for(int[] pos: processor.getSlotsConfig().getSlotPositions()) {
-            if(processor.getSlotsConfig().getSlotType(itemIdx).contains("item_in")) {
+            String slotType = processor.getSlotsConfig().getSlotType(itemIdx);
+            if(slotType.contains("item_in")) {
                 iRecipeLayout.getItemStacks().init(itemIdx, true,  pos[0]+xShift-1+barXshift, pos[1]+yShift-1);
-                iRecipeLayout.getItemStacks().set(itemIdx, iIngredients.getInputs(VanillaTypes.ITEM).get(itemIdx));
+                if(inputCounter < jeiInputItems.size()) {
+                    iRecipeLayout.getItemStacks().set(itemIdx, jeiInputItems.get(inputCounter));
+                }
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 0, 0, 18, 18);
                 itemIdx++;
                 inputCounter++;
-            } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("item_out")) {
+            } else if(slotType.contains("item_out")) {
                 iRecipeLayout.getItemStacks().init(itemIdx, false,  pos[0]+xShift-1+barXshift, pos[1]+yShift-1);
-                iRecipeLayout.getItemStacks().set(itemIdx, iIngredients.getOutputs(VanillaTypes.ITEM).get(itemIdx-inputCounter-inputFluidCounter));
+                if(outputCounter < jeiOutputItems.size()) {
+                    iRecipeLayout.getItemStacks().set(itemIdx, jeiOutputItems.get(outputCounter));
+                }
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 0, 36, 18, 18);
                 itemIdx++;
                 outputCounter++;
-            } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("fluid_in")) {
-                if(!recipe.getInputFluids(inputFluidCounter).get(0).equals(FluidStack.EMPTY)) {
+            } else if(slotType.contains("fluid_in")) {
+                if(inputFluidCounter < jeiInputFluids.size() && !recipe.getInputFluids(inputFluidCounter).get(0).equals(FluidStack.EMPTY)) {
                     iRecipeLayout.getFluidStacks().init(itemIdx, true,  pos[0]+xShift+barXshift, pos[1]+yShift);
-                    iRecipeLayout.getFluidStacks().set(itemIdx, iIngredients.getInputs(VanillaTypes.FLUID).get(itemIdx));
+                    iRecipeLayout.getFluidStacks().set(itemIdx, jeiInputFluids.get(inputFluidCounter));
                 }
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 0, 18, 18);
                 itemIdx++;
                 inputFluidCounter++;
-            } else if(processor.getSlotsConfig().getSlotType(itemIdx).contains("fluid_out")) {
-                if (!recipe.getOutputFluids(putFluidCounter).get(0).equals(FluidStack.EMPTY)) {
+            } else if(slotType.contains("fluid_out")) {
+                if (putFluidCounter < jeiOutputFluids.size() && !recipe.getOutputFluids(putFluidCounter).get(0).equals(FluidStack.EMPTY)) {
                     iRecipeLayout.getFluidStacks().init(itemIdx, false,  pos[0]+xShift+barXshift, pos[1]+yShift);
-                    iRecipeLayout.getFluidStacks().set(itemIdx, iIngredients.getOutputs(VanillaTypes.FLUID).get(itemIdx-inputCounter-inputFluidCounter));
+                    iRecipeLayout.getFluidStacks().set(itemIdx, jeiOutputFluids.get(putFluidCounter));
                 }
                 slots[itemIdx] = guiHelper.createDrawable(rl("textures/gui/widgets.png"), 18, 36, 18, 18);
                 itemIdx++;

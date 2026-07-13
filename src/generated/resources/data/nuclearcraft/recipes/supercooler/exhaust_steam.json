@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:condensate_water",
-      "amount": 1000
+      "amount": 1000,
+      "fluid": "nuclearcraft:condensate_water"
     }
   ],
   "timeModifier": 1.0,

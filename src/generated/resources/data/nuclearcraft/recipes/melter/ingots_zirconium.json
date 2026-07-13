@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:zirconium",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:zirconium"
     }
   ],
   "timeModifier": 1.0,

@@ -7,13 +7,13 @@
     },
     {
       "amount": 250,
-      "fluid": "fluorine"
+      "fluid": "nuclearcraft:fluorine"
     }
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:hydrofluoric_acid",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:hydrofluoric_acid"
     }
   ],
   "timeModifier": 0.5,

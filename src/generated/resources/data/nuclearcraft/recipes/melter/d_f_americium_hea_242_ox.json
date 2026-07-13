@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:depleted_fuel_americium_hea_242_ox",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:depleted_fuel_americium_hea_242_ox"
     }
   ],
   "timeModifier": 1.0,

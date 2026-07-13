@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:cryotheum",
-      "amount": 1000
+      "amount": 1000,
+      "fluid": "nuclearcraft:cryotheum"
     }
   ],
   "timeModifier": 1.0,

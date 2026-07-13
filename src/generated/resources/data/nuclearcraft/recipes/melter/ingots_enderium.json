@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:enderium",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:enderium"
     }
   ],
   "timeModifier": 1.0,

@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:berkelium_248_za",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:berkelium_248_za"
     }
   ],
   "timeModifier": 1.0,

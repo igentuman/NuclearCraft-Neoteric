@@ -12,8 +12,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:methanol",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:methanol"
     }
   ],
   "timeModifier": 0.5,

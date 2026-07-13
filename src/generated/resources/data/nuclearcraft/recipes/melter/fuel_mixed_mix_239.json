@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:fuel_mixed_mix_239",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:fuel_mixed_mix_239"
     }
   ],
   "timeModifier": 1.0,

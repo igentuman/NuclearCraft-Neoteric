@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:fuel_neptunium_hen_236_ni",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:fuel_neptunium_hen_236_ni"
     }
   ],
   "timeModifier": 1.0,

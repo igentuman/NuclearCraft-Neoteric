@@ -13,8 +13,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:boron_nitride_solution",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:boron_nitride_solution"
     }
   ],
   "timeModifier": 1.0,

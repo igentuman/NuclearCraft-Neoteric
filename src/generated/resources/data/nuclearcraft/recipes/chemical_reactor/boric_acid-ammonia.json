@@ -12,12 +12,12 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:boron_nitride_solution",
-      "amount": 72
+      "amount": 72,
+      "fluid": "nuclearcraft:boron_nitride_solution"
     },
     {
-      "fluid": "minecraft:water",
-      "amount": 1000
+      "amount": 1000,
+      "fluid": "minecraft:water"
     }
   ],
   "timeModifier": 0.5,

@@ -85,6 +85,9 @@ dependencies {
     implementation fg.deobf("curse.maven:cc-tweaked-282001:3606344") {
         transitive = true
     }
+    implementation fg.deobf("curse.maven:kubejs-238086:3647098")
+    implementation fg.deobf("curse.maven:rhino-416294:3525704")
+    implementation fg.deobf("curse.maven:architectury-api-419699:4521290")
     runtimeOnly fg.deobf("curse.maven:patchouli-306770:3847029")
     implementation fg.deobf("curse.maven:jei-238222:4371666")
     implementation fg.deobf("curse.maven:mekanism-268560:3659389")

@@ -18,6 +18,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -38,6 +39,14 @@ public abstract class AbstractRecipeProvider {
     private static List<NcIngredient> input;
     private static List<NcIngredient> output;
     private static double[] params;
+
+    protected static List<FluidStackIngredient> toFluidIngredients(List<FluidStack> stacks) {
+        List<FluidStackIngredient> result = new ArrayList<>();
+        for (FluidStack stack : stacks) {
+            result.add(IngredientCreatorAccess.fluid().from(stack));
+        }
+        return result;
+    }
 
     protected static NcIngredient ingredient(ITag.INamedTag<Item> item, int...count) {
         return NcIngredient.of(item, count);
@@ -158,14 +167,14 @@ public abstract class AbstractRecipeProvider {
         double powerModifier = params.length>1 ? params[1] : 1.0;
         double radiation = params.length>2 ? params[2] : 1.0;
         NcRecipeBuilder.get(ID)
-                .fluids(input, output)
+                .fluids(input, toFluidIngredients(output))
                 .modifiers(timeModifier, radiation, powerModifier)
                 .build(consumer);
     }
 
     public static void coolantRecipe(List<FluidStackIngredient> input, List<FluidStack> output, double coolingRate) {
         NcRecipeBuilder.get(ID)
-                .fluids(input, output)
+                .fluids(input, toFluidIngredients(output))
                 .modifiers(0,0,0, 0)
                 .coolingRate(coolingRate)
                 .build(consumer);
@@ -173,7 +182,7 @@ public abstract class AbstractRecipeProvider {
 
     public static void boilingRecipe(List<FluidStackIngredient> input, List<FluidStack> output, double heatRequired) {
         NcRecipeBuilder.get(ID)
-                .fluids(input, output)
+                .fluids(input, toFluidIngredients(output))
                 .modifiers(0,0,0, 0)
                 .heatRequired(heatRequired)
                 .useInputForId(true)
@@ -189,7 +198,7 @@ public abstract class AbstractRecipeProvider {
         double radiation = params.length>2 ? params[2] : 1.0;
         NcRecipeBuilder.get(ID)
                 .items(inputItems, outputItems)
-                .fluids(inputFluids, outputFluids)
+                .fluids(inputFluids, toFluidIngredients(outputFluids))
                 .modifiers(timeModifier, radiation, powerModifier)
                 .build(consumer);
     }

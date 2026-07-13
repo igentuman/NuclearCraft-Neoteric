@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:irradiated_lithium",
-      "amount": 500
+      "amount": 500,
+      "fluid": "nuclearcraft:irradiated_lithium"
     }
   ],
   "timeModifier": 1.5,

@@ -52,24 +52,20 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
             NuclearCraft.LOGGER.warn("Unable to parse input for recipe: "+recipeId);
         }
 
-        ItemStack[] outputItems = new ItemStack[0];
+        ItemStackIngredient[] outputItems = new ItemStackIngredient[0];
         try {
             if(json.has(JsonConstants.OUTPUT)) {
                 if (JSONUtils.isArrayNode(json, JsonConstants.OUTPUT)) {
                     JsonElement output = JSONUtils.getAsJsonArray(json, JsonConstants.OUTPUT);
-                    outputItems = new ItemStack[output.getAsJsonArray().size()];
+                    outputItems = new ItemStackIngredient[output.getAsJsonArray().size()];
                     int i = 0;
                     for (JsonElement out : output.getAsJsonArray()) {
-                        try {
-                            outputItems[i] = SerializerHelper.getItemStack(out.getAsJsonObject());
-                        } catch (JsonSyntaxException ex) {
-                            NuclearCraft.LOGGER.error("Error parsing output itemstack for recipe: " + recipeId.toString());
-                        }
+                        outputItems[i] = IngredientCreatorAccess.item().deserialize(out);
                         i++;
                     }
                 } else {
                     JsonElement output = JSONUtils.getAsJsonObject(json, JsonConstants.OUTPUT);
-                    outputItems = new ItemStack[]{SerializerHelper.getItemStack(output.getAsJsonObject())};
+                    outputItems = new ItemStackIngredient[]{IngredientCreatorAccess.item().deserialize(output)};
                 }
             }
         } catch (Exception ex) {
@@ -96,20 +92,20 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
             NuclearCraft.LOGGER.warn("Unable to parse input fluid for recipe: "+recipeId);
         }
 
-        FluidStack[] outputFluids = new FluidStack[0];
+        FluidStackIngredient[] outputFluids = new FluidStackIngredient[0];
         try {
             if(json.has("outputFluids")) {
                 if (JSONUtils.isArrayNode(json, "outputFluids")) {
                     JsonElement output = JSONUtils.getAsJsonArray(json, "outputFluids");
-                    outputFluids = new FluidStack[output.getAsJsonArray().size()];
+                    outputFluids = new FluidStackIngredient[output.getAsJsonArray().size()];
                     int i = 0;
                     for (JsonElement out : output.getAsJsonArray()) {
-                        outputFluids[i] = SerializerHelper.getFluidStack(out.getAsJsonObject());
+                        outputFluids[i] = IngredientCreatorAccess.fluid().deserialize(out);
                         i++;
                     }
                 } else {
                     JsonElement output = JSONUtils.getAsJsonObject(json, "outputFluids");
-                    outputFluids = new FluidStack[]{SerializerHelper.getFluidStack(output.getAsJsonObject(), "outputFluids")};
+                    outputFluids = new FluidStackIngredient[]{IngredientCreatorAccess.fluid().deserialize(output)};
                 }
             }
         } catch (Exception ex) {
@@ -149,9 +145,9 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
             }
 
             int outputSize = buffer.readInt();
-            ItemStack[] outputItems = new ItemStack[outputSize];
+            ItemStackIngredient[] outputItems = new ItemStackIngredient[outputSize];
             for(int i = 0; i < outputSize; i++) {
-                outputItems[i] =  buffer.readItem();
+                outputItems[i] = IngredientCreatorAccess.item().read(buffer);
             }
 
             inputSize = buffer.readInt();
@@ -161,9 +157,9 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
             }
 
             outputSize = buffer.readInt();
-            FluidStack[] outputFluids = new FluidStack[outputSize];
+            FluidStackIngredient[] outputFluids = new FluidStackIngredient[outputSize];
             for(int i = 0; i < outputSize; i++) {
-                outputFluids[i] =  buffer.readFluidStack();
+                outputFluids[i] = IngredientCreatorAccess.fluid().read(buffer);
             }
 
             double timeModifier = buffer.readDouble();
@@ -190,8 +186,8 @@ public class NcRecipeSerializer<RECIPE extends NcRecipe> extends ForgeRegistryEn
     @FunctionalInterface
     public interface IFactory<RECIPE extends NcRecipe> {
         RECIPE create(ResourceLocation id,
-                      ItemStackIngredient[] inputItems, ItemStack[] outputItems,
-                      FluidStackIngredient[] inputFluids, FluidStack[] outputFluids,
+                      ItemStackIngredient[] inputItems, ItemStackIngredient[] outputItems,
+                      FluidStackIngredient[] inputFluids, FluidStackIngredient[] outputFluids,
                       double timeMultiplier, double powerMultiplier, double radiationMultiplier, double rarityMultiplier);
     }
 }

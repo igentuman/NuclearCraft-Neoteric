@@ -7,17 +7,17 @@
     },
     {
       "amount": 250,
-      "fluid": "water"
+      "fluid": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:liquid_oxygen",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:liquid_oxygen"
     },
     {
-      "fluid": "nuclearcraft:hydrofluoric_acid",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:hydrofluoric_acid"
     }
   ],
   "timeModifier": 1.0,

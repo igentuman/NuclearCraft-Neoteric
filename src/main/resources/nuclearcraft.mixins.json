@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "nuclearcraft.refmap.json",
   "mixins": [
-    "DummyMixin"
+    "DummyMixin",
+    "EntityMixin"
   ],
   "client": [
   ],

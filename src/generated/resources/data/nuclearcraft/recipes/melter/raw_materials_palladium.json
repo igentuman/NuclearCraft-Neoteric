@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:palladium",
-      "amount": 216
+      "amount": 216,
+      "fluid": "nuclearcraft:palladium"
     }
   ],
   "timeModifier": 1.0,

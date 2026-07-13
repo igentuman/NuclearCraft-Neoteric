@@ -12,8 +12,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:slurry_ice",
-      "amount": 500
+      "amount": 500,
+      "fluid": "nuclearcraft:slurry_ice"
     }
   ],
   "timeModifier": 1.0,

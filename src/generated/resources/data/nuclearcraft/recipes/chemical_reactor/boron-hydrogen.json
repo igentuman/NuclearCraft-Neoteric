@@ -12,8 +12,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:diborane",
-      "amount": 500
+      "amount": 500,
+      "fluid": "nuclearcraft:diborane"
     }
   ],
   "timeModifier": 0.5,

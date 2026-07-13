@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:manganese_oxide",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:manganese_oxide"
     }
   ],
   "timeModifier": 1.0,

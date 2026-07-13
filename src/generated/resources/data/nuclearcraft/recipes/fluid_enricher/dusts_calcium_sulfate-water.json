@@ -13,8 +13,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:calcium_sulfate_solution",
-      "amount": 250
+      "amount": 250,
+      "fluid": "nuclearcraft:calcium_sulfate_solution"
     }
   ],
   "timeModifier": 1.0,

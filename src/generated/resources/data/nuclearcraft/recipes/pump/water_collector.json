@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "minecraft:water",
-      "amount": 200
+      "amount": 200,
+      "fluid": "minecraft:water"
     }
   ],
   "timeModifier": 0.1,

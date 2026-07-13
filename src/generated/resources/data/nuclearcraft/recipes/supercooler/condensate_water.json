@@ -8,8 +8,8 @@
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:technical_water",
-      "amount": 1000
+      "amount": 1000,
+      "fluid": "nuclearcraft:technical_water"
     }
   ],
   "timeModifier": 1.0,

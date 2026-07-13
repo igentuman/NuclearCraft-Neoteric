@@ -3,33 +3,33 @@
   "inputFluids": [
     {
       "amount": 1296,
-      "fluid": "depleted_fuel_plutonium_lep_241"
+      "fluid": "nuclearcraft:depleted_fuel_plutonium_lep_241"
     }
   ],
   "outputFluids": [
     {
-      "fluid": "nuclearcraft:plutonium_242",
-      "amount": 720
+      "amount": 720,
+      "fluid": "nuclearcraft:plutonium_242"
     },
     {
-      "fluid": "nuclearcraft:americium_243",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:americium_243"
     },
     {
-      "fluid": "nuclearcraft:curium_246",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:curium_246"
     },
     {
-      "fluid": "nuclearcraft:berkelium_247",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:berkelium_247"
     },
     {
-      "fluid": "nuclearcraft:promethium_147",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:promethium_147"
     },
     {
-      "fluid": "nuclearcraft:caesium_137",
-      "amount": 144
+      "amount": 144,
+      "fluid": "nuclearcraft:caesium_137"
     }
   ],
   "timeModifier": 0.5,

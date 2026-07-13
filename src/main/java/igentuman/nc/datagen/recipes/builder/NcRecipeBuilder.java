@@ -22,7 +22,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     private List<NcIngredient> inputItems = Arrays.asList();
     private List<NcIngredient> outputItems = Arrays.asList();
     private List<FluidStackIngredient> inputFluids = Arrays.asList();
-    private List<FluidStack> outputFluids = Arrays.asList();
+    private List<FluidStackIngredient> outputFluids = Arrays.asList();
     private static NcRecipeBuilder instance;
     private double timeModifier = 1D;
     private double radiation = 1D;
@@ -58,7 +58,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         return instance;
     }
 
-    public NcRecipeBuilder fluids(List<FluidStackIngredient> input, List<FluidStack> output) {
+    public NcRecipeBuilder fluids(List<FluidStackIngredient> input, List<FluidStackIngredient> output) {
         instance.inputFluids = input;
         instance.outputFluids = output;
         return instance;
@@ -95,8 +95,8 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             name.append(in.getName()).append("-");
         }
         if(useInputForId) {
-            for(FluidStack out: outputFluids) {
-                name.append(out.getFluid().getRegistryName().getPath()).append("-");
+            for(FluidStackIngredient out: outputFluids) {
+                name.append(out.getRepresentations().get(0).getFluid().getRegistryName().getPath()).append("-");
             }
         }
         name.replace(name.length()-1, name.length(), "");
@@ -183,8 +183,8 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             }
 
             outJson = new JsonArray();
-            for (FluidStack out: outputFluids) {
-                outJson.add(serializeFluidStack(out));
+            for (FluidStackIngredient out: outputFluids) {
+                outJson.add(out.serialize());
             }
             if(!outputFluids.isEmpty()) {
                 json.add("outputFluids", outJson);

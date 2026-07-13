@@ -37,7 +37,7 @@ public class TargetChamberPortBE extends ParticleChamberPortBE<ParticleChamberCo
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(!isConnectedToController()) return LazyOptional.empty();
+        if(!isConnectedToController()) return super.getCapability(cap, side);
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
             return LazyOptional.empty();
         }

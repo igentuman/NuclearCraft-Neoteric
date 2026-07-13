@@ -38,7 +38,7 @@ public class TargetChamberPortContainer extends AbstractContainerMenu {
         slotIndex = 0;
         layoutPlayerInventorySlots();
         assert portBE != null;
-        if (portBE.hasItems()) {
+        if(portBE.isConnectedToController()) {
             portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
                 addSlot(new NCSlotItemHandler.Input(h, 0, 53, 38));
                 addSlot(new NCSlotItemHandler.Output(h, 1, 111, 38));

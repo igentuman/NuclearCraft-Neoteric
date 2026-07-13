@@ -63,21 +63,54 @@ public class FuelRecipes extends NCRecipes {
                                 .unlockedBy("item", inventoryTrigger(ItemPredicate.Builder.item().of(FissionFuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, "")).get()).build()))
                                 .save(consumer, MODID + "_depleted_" + name + subType + type + "_sml");
                     }
-                    fuelPelletRecipe(consumer, name, subType, "ox",
-                            FuelManager.all().get(name).get(subType).getOxide().isotopes[0],
-                            FuelManager.all().get(name).get(subType).getOxide().isotopes[1]);
+                    if(name.equals("mixed")) {
+                        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_FUEL.get(List.of("fuel", name, subType, "")).get(), 3)
+                                .group(MODID+"_ingots")
+                                .requires(getIsotope("plutonium", String.valueOf(FuelManager.all().get(name).get(subType).getOxide().isotopes[0]), ""), 1)
+                                .requires(getIsotope("uranium", "238", ""), 8)
+                                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of( getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getOxide().isotopes[0]), "")).build()))
+                                .save(consumer, MODID + "_fuel_" + name+subType +"_cr");
 
-                    fuelPelletRecipe(consumer, name, subType, "ni",
-                            FuelManager.all().get(name).get(subType).getNitride().isotopes[0],
-                            FuelManager.all().get(name).get(subType).getNitride().isotopes[1]);
+                        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_FUEL.get(List.of("fuel", name, subType, "ox")).get(), 3)
+                                .group(MODID+"_ingots")
+                                .requires(getIsotope("plutonium", String.valueOf(FuelManager.all().get(name).get(subType).getOxide().isotopes[0]), ""), 1)
+                                .requires(getIsotope("uranium", "238", "ox"), 8)
+                                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of( getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getOxide().isotopes[0]), "")).build()))
+                                .save(consumer, MODID + "_fuel_" + name+subType +"ox_cr");
 
-                    fuelPelletRecipe(consumer, name, subType, "za",
-                            FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[0],
-                            FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[1]);
+                        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_FUEL.get(List.of("fuel", name, subType, "ni")).get(), 3)
+                                .group(MODID+"_ingots")
+                                .requires(getIsotope("plutonium", String.valueOf(FuelManager.all().get(name).get(subType).getOxide().isotopes[0]), ""), 1)
+                                .requires(getIsotope("uranium", "238", "ni"), 8)
+                                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of( getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getOxide().isotopes[0]), "")).build()))
+                                .save(consumer, MODID + "_fuel_" + name+subType +"ni_cr");
+
+                        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NC_FUEL.get(List.of("fuel", name, subType, "za")).get(), 3)
+                                .group(MODID+"_ingots")
+                                .requires(getIsotope("plutonium", String.valueOf(FuelManager.all().get(name).get(subType).getOxide().isotopes[0]), ""), 1)
+                                .requires(getIsotope("uranium", "238", "za"), 8)
+                                .unlockedBy("has_ore", inventoryTrigger(ItemPredicate.Builder.item().of( getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getOxide().isotopes[0]), "")).build()))
+                                .save(consumer, MODID + "_fuel_" + name+subType +"za_cr");
+                        continue;
+                    } else {
+                        fuelPelletRecipe(consumer, name, subType, "ox",
+                                FuelManager.all().get(name).get(subType).getOxide().isotopes[0],
+                                FuelManager.all().get(name).get(subType).getOxide().isotopes[1]);
+
+                        fuelPelletRecipe(consumer, name, subType, "ni",
+                                FuelManager.all().get(name).get(subType).getNitride().isotopes[0],
+                                FuelManager.all().get(name).get(subType).getNitride().isotopes[1]);
+
+                        fuelPelletRecipe(consumer, name, subType, "za",
+                                FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[0],
+                                FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[1]);
+                    }
                 }
+
                 fuelPelletRecipe(consumer, name, subType, "",
                         FuelManager.all().get(name).get(subType).getDefault().isotopes[0],
                         FuelManager.all().get(name).get(subType).getDefault().isotopes[1]);
+
             }
         }
 

@@ -153,11 +153,11 @@ public class RadiationConfig {
 
             BIOME_RADIATION = builder
                     .comment("Natural radiation per biome: uRad", "Format: biome_id|radiation")
-                    .define("biome_radiation", List.of("nuclearcraft:wasteland|40000", "minecraft:nether_wastes|10000"), o -> o instanceof ArrayList);
+                    .define("biome_radiation", List.of("nuclearcraft:wasteland|40000", "minecraft:nether_wastes|5000"), o -> o instanceof ArrayList);
 
             DIMENSION_RADIATION = builder
                     .comment("Natural radiation per dimension: uRad", "Format: dim_id|radiation")
-                    .define("dimension_radiation", List.of("nuclearcraft:wasteland|50000", "minecraft:the_nether|5000"), o -> o instanceof ArrayList);
+                    .define("dimension_radiation", List.of("nuclearcraft:wasteland|50000", "minecraft:the_nether|1000"), o -> o instanceof ArrayList);
 
             RADIATION_UPDATE_INTERVAL = builder
                     .comment("Interval between radiation updates in ticks. 20 ticks = 1 second.", "Bigger interval - less lag, but less accurate radiation decay.")

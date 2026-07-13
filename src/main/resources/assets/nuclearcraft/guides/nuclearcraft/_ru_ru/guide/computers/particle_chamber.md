@@ -4,10 +4,6 @@ navigation:
   parent: computers.md
   icon: target_chamber_controller
   position: 1
-item_ids:
-  - nuclearcraft:target_chamber_controller
-  - nuclearcraft:decay_chamber_controller
-  - nuclearcraft:collision_chamber_controller
 ---
 
 # Камера частиц — управление компьютером

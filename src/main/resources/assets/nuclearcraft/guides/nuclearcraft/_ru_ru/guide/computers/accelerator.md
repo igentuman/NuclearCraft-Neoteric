@@ -4,9 +4,6 @@ navigation:
   parent: computers.md
   icon: linear_accelerator_controller
   position: 0
-item_ids:
-  - nuclearcraft:linear_accelerator_controller
-  - nuclearcraft:ring_accelerator_controller
 ---
 
 # Ускоритель — управление компьютером

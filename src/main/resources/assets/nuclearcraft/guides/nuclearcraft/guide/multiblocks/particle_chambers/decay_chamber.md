@@ -5,11 +5,6 @@ navigation:
   icon: decay_chamber_controller
 item_ids:
   - nuclearcraft:decay_chamber_controller
-  - nuclearcraft:target_chamber_casing
-  - nuclearcraft:target_chamber_casing_glass
-  - nuclearcraft:target_chamber_beam_port
-  - nuclearcraft:target_chamber_port
-  - nuclearcraft:target_chamber_camera
 ---
 
 # Decay Chamber

@@ -8,6 +8,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
@@ -799,6 +800,11 @@ public class NCLanguageProvider extends LanguageProvider {
             add(FISSION_BLOCKS.get(name).get(), prefix+title);
         }
 
+        for(String name: FUSION_BLOCKS.keySet()) {
+            String title = convertToName(name);
+            add(FUSION_BLOCKS.get(name).get(), prefix+title);
+        }
+
         for(String name: TURBINE_BLOCKS.keySet()) {
             String title = convertToName(name);
             add(TURBINE_BLOCKS.get(name).get(), title);
@@ -1128,6 +1134,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.mode.3x3x3","3x3x3");
         add("tooltip.mode.5x5","5x5");
         add("tooltip.mode.vein","Vein");
+        add("tootip.nc.charging_station","Allows to charge items with FE and Quantite Energy");
         add("tooltip.nc.chunk_position","Chunk Position: %s");
         add("nc.ore_vein.borax","Vein of Borax");
         add("nc.ore_vein.bornite","Vein of Bornite");

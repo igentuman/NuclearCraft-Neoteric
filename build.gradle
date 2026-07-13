@@ -144,7 +144,6 @@ dependencies {
     }
     implementation fg.deobf("curse.maven:curios-309927:6418456")
     implementation fg.deobf("net.createmod.ponder:Ponder-Forge-${mc_version}:${ponder_version}")
-
     jarJar("net.createmod.ponder:Ponder-Forge-${mc_version}:${ponder_version}") {
         version {
             strictly("[1.0,2.0)")
@@ -152,7 +151,7 @@ dependencies {
         }
     }
 
-    implementation fg.deobf("curse.maven:create-328085:7178761")
+    compileOnly fg.deobf("curse.maven:create-328085:7178761")
 
     compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-${mc_version}:${gtm_version}"){
         transitive = false
@@ -183,19 +182,21 @@ dependencies {
     }
     runtimeOnly fg.deobf("curse.maven:multi-builder-tool-827020:8291472")
     runtimeOnly fg.deobf("curse.maven:ctm-267602:5983309")
-    implementation fg.deobf("curse.maven:immersive-engineering-231951:5224387")
+    compileOnly fg.deobf("curse.maven:immersive-engineering-231951:5224387")
     compileOnly fg.deobf("curse.maven:thermal-foundation-222880:5443583")
     compileOnly fg.deobf("curse.maven:thermal-expansion-69163:5372749")
     compileOnly fg.deobf("curse.maven:cofh-core-69162:5374122")
     compileOnly fg.deobf("curse.maven:refined-storage-243076:4844585")
 
     implementation fg.deobf("curse.maven:flib-661261:6369719")
-    implementation fg.deobf("curse.maven:cyclic-239286:6373460")
+    compileOnly fg.deobf("curse.maven:cyclic-239286:6373460")
     compileOnly fg.deobf("curse.maven:the-lost-cities-269024:6174986")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    implementation fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
-    compileOnly fg.deobf("curse.maven:emi-580555:5872526")
+
+
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+    implementation fg.deobf("curse.maven:emi-580555:5872526")
 
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
@@ -212,9 +213,9 @@ dependencies {
         transitive = false
     }
     implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
-    implementation fg.deobf("curse.maven:ftb-library-forge-404465:5282375")
-    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:5267190")
-    implementation fg.deobf("curse.maven:ftb-chunks-forge-314906:5267364")
+    compileOnly fg.deobf("curse.maven:ftb-library-forge-404465:5282375")
+    compileOnly fg.deobf("curse.maven:ftb-teams-forge-404468:5267190")
+    compileOnly fg.deobf("curse.maven:ftb-chunks-forge-314906:5267364")
 
     //runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:4420565")
     //runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${ct_version}")

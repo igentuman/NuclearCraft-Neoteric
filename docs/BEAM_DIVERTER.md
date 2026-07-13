@@ -28,12 +28,12 @@ The inner 3×3×3 around the center holds the diverter optics:
 
 The electromagnet tier sets the diverter's `dipoleStrength`. Efficiency is fixed at **100 %**.
 
-## Beam Ports — input / output rules
+## Beam Ports - input / output rules
 
 Each `accelerator_beam_port` carries a `port_mode` of `input`, `output`, or `disabled`
 (cycled with the NuclearCraft Multitool, or set by redstone / a computer).
 
-- **Exactly one** port must be `input` — more or fewer fails with `WRONG_INNER`.
+- **Exactly one** port must be `input` - more or fewer fails with `WRONG_INNER`.
 - **At least one** port must be `output`.
 - Remaining ports may be `output` or `disabled`.
 
@@ -45,7 +45,7 @@ active output** port.
 - **Straight-through** (output port faces directly opposite the input): the beam only pays the
   normal focus loss of a 3-block segment.
 - **90° turn** (output on a perpendicular wall): the beam additionally pays a corner energy
-  loss that scales with dipole strength —
+  loss that scales with dipole strength -
   `cornerEnergyLoss(beam, 160 × (ln(dipoleStrength × 10) + 0.2))`. Stronger electromagnets make
   cheaper turns.
 
@@ -58,8 +58,8 @@ The Beam Diverter exposes a ComputerCraft peripheral (`nc_beam_diverter`) and an
 v2 device. Beyond reading the in-flight particle, the key use is **switching which port is the
 output at runtime**, so one accelerator can feed many targets in sequence:
 
-- `getParticleInfo()` — the beam currently inside the diverter
-- `getBeamPortsInfo()` — list of every port: `id`, `x`/`y`/`z`, `mode`, and its `particle`
-- `setBeamPortMode(id, mode)` — set a port to `"input"`, `"output"`, or `"disabled"`
+- `getParticleInfo()` - the beam currently inside the diverter
+- `getBeamPortsInfo()` - list of every port: `id`, `x`/`y`/`z`, `mode`, and its `particle`
+- `setBeamPortMode(id, mode)` - set a port to `"input"`, `"output"`, or `"disabled"`
 
 See [`COMPUTERS.md`](COMPUTERS.md) for the full method list and the OC2 mirror.

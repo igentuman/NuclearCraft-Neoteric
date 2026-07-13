@@ -11,6 +11,7 @@ import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.util.WorldUtil;
 import igentuman.nc.util.annotation.NBTField;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -22,7 +23,12 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,6 +52,10 @@ public abstract class MultiblockPortBE extends NuclearCraftBE implements Multibl
     @NBTField
     public boolean connected = false;
     protected long lastTickTime = 0;
+
+    private static final LazyOptional<IItemHandler> DUMMY_ITEM_HANDLER = LazyOptional.of(() -> new ItemStackHandler(0));
+    private static final LazyOptional<IFluidHandler> DUMMY_FLUID_HANDLER = LazyOptional.of(() -> new FluidTank(0));
+    private static final LazyOptional<IEnergyStorage> DUMMY_ENERGY_HANDLER = LazyOptional.of(() -> new EnergyStorage(0));
 
     public MultiblockPortBE(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -192,7 +202,18 @@ public abstract class MultiblockPortBE extends NuclearCraftBE implements Multibl
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(!isConnectedToController()) return LazyOptional.empty();
+        if(!isConnectedToController()) {
+            if (cap == ForgeCapabilities.FLUID_HANDLER) {
+                return DUMMY_FLUID_HANDLER.cast();
+            }
+            if (cap == ForgeCapabilities.ITEM_HANDLER) {
+                return DUMMY_ITEM_HANDLER.cast();
+            }
+            if (cap == ENERGY) {
+                return DUMMY_ENERGY_HANDLER.cast();
+            }
+            return super.getCapability(cap, side);
+        }
 
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return controller().getCapability(cap, side);
@@ -221,7 +242,7 @@ public abstract class MultiblockPortBE extends NuclearCraftBE implements Multibl
                 return controller().getPeripheral(cap, side);
             }
         }
-        return LazyOptional.empty();
+        return super.getCapability(cap, side);
     }
 
     public int getRedstoneSignal() {

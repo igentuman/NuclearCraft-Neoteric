@@ -49,12 +49,11 @@ public class MSREmiCategory extends BasicEmiRecipe {
         }
         
         // Add progress arrow
-        widgets.addFillingArrow(33, 5, (int) (recipe.getTimeModifier() * 5000));
+        widgets.addFillingArrow(33, 5, (int) (recipe.getDepletionTime()));
         
         // Add output slots
         for (int i = 0; i < outputs.size(); i++) {
             widgets.addSlot(outputs.get(i), 74 + 18 * i, 5).recipeContext(this);
         }
-
     }
 }

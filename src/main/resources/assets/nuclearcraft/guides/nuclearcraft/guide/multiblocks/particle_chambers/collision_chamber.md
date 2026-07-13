@@ -5,11 +5,6 @@ navigation:
   icon: collision_chamber_controller
 item_ids:
   - nuclearcraft:collision_chamber_controller
-  - nuclearcraft:target_chamber_casing
-  - nuclearcraft:target_chamber_casing_glass
-  - nuclearcraft:target_chamber_beam_port
-  - nuclearcraft:target_chamber_port
-  - nuclearcraft:target_chamber_camera
 ---
 
 # Collision Chamber

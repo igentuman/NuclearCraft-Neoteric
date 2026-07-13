@@ -75,12 +75,12 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(!isConnectedToController()) return LazyOptional.empty();
+        if(!isConnectedToController()) return super.getCapability(cap, side);
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
             return controller().particleHandler().cast();
         }
 
-        return LazyOptional.empty();
+        return super.getCapability(cap, side);
     }
 
     @Override

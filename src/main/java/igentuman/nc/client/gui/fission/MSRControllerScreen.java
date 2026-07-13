@@ -199,10 +199,15 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         graphics.pose().translate(0, 0, 200);
         Random rnd = new Random(200);
         graphics.pose().scale(0.5f, 0.5f, 0.5f);
-        for (int i = 0; i < getPebblesQty(); i++) {
-            int x = rnd.nextInt(25);
-            int y = rnd.nextInt(25);
-            graphics.blit(GUI, (relX+134+x)*2, (relY+29+y)*2, 250, 0, 5, 5);
+        double cx = 17.0, cy = 17.0, r = 17.0;
+        int placed = 0;
+        while (placed < getPebblesQty()) {
+            int x = rnd.nextInt(33);
+            int y = rnd.nextInt(33);
+            double dx = x - cx, dy = y - cy;
+            if (dx * dx + dy * dy > r * r) continue;
+            graphics.blit(GUI, (relX+129+x)*2, (relY+24+y)*2, 250, 0, 5, 5);
+            placed++;
         }
         graphics.pose().scale(2f, 2f, 2f);
         graphics.blit(GUI, relX+127, relY+19, 178, 0, 52, 50);

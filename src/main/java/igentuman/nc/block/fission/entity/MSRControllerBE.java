@@ -103,7 +103,7 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
     public static final double IRRADIATION_THRESHOLD = 50.0;    // avg effective irradiation yielding baseReactivity = 1.0 (TUNE)
     public static final double OPTIMAL_MODERATION = 3000.0;   // mB salt (cold+hot) per pebble sweet spot
     public static final double MAX_REACTIVITY = 10.0;          // reactivity clamp
-    public static final double TEMP_REACTIVITY_THRESHOLD = 1000.0; // temp above which reactivity is penalised
+    public static final double TEMP_REACTIVITY_THRESHOLD = 2000.0; // temp above which reactivity is penalised
     public static final double TEMP_MAX = 5000.0;             // temperature scale top (penalty + clamp)
     public static final double HEAT_PER_MB = 0.10;            // heat removed per mB cold→hot conversion
     public static final double GAMMA_HE = 2.0;               // high-enriched criticality decay
@@ -194,8 +194,8 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
             stopSound();
             return;
         }
-        if(isCritical) {
-            playSound(MSR_RUNNING, 0.8f);
+        if(isCritical && (hasRedstoneSignal|| enabledByController)) {
+            playSound(MSR_RUNNING, 0.4f);
         } else {
             stopSound();
         }
@@ -215,20 +215,15 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
 
         handleValidation();
 
-        if (getMultiblock().isFormed() && hasRedstoneSignal() && isInternalValid) {
+        if (getMultiblock().isFormed() && isInternalValid) {
             initializePorts();
             ((MSRContentHandler) contentHandler()).resetRateCounters();
             contentHandler().tick();
-            // 1. Sync internal state
-            syncInternalState();
-            
-            // 2. Simulation loop
-            updateSimulation();
-            
-            // 3. Handle I/O
-            handleIO();
-            
-            // 4. Block State Update
+            if(hasRedstoneSignal()) {
+                syncInternalState();
+                updateSimulation();
+                handleIO();
+            }
             updateBlockState();
         } else {
             powered = false;
@@ -249,13 +244,12 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
     }
 
     public boolean isProcessing() {
-        return isCritical && !isRemoved() && isInternalValid && reactivity > 0.5 && fuelCellsCount > 0;
+        return isCritical && !isRemoved() && isInternalValid && pebbleCount > 0 && hasRedstoneSignal();
     }
 
     private void updateSimulation() {
         if(fuelCellsCount < 1) return;
 
-        // 1. Aggregate neutron flux from all pebbles.
         double totalIrradiation = 0;
         for (ReactorPebble pebble : pebbles) {
             double effIrr = (pebble.irradiation + pebble.effectiveIrradiation()*2)/3;
@@ -266,13 +260,13 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
             }
         }
 
-        // 2. Moderation: salt (cold+hot) per pebble vs the 3000 mB sweet spot.
-        //    Below optimum -> flux rises (less dilution); above -> flux falls (sparsity).
         double saltPerPebble = (saltVolume + hotSaltVolume) / Math.max(1, pebbleCount);
-        double moderation = OPTIMAL_MODERATION / Math.max(OPTIMAL_MODERATION * 0.5, saltPerPebble);
+        double moderation = Math.pow(OPTIMAL_MODERATION / Math.max(1.0, saltPerPebble), 0.2);
+        if(depletion == 0 && saltVolume == 0) {
+            moderation = 0;
+        }
         avgIrradiation = (totalIrradiation / Math.max(1, pebbleCount)) * moderation;
 
-        // 3. Reactivity (0..10): flux vs threshold, penalised by temperature above 1000.
         double baseReactivity = avgIrradiation / IRRADIATION_THRESHOLD;
         double tempPenalty = temperature > TEMP_REACTIVITY_THRESHOLD
                 ? (temperature - TEMP_REACTIVITY_THRESHOLD) / (TEMP_MAX - TEMP_REACTIVITY_THRESHOLD)
@@ -281,11 +275,10 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
         double targetReactivity = Math.max(0.0, Math.min(MAX_REACTIVITY, baseReactivity * tempFactor));
         reactivity = (reactivity + targetReactivity) / 2.0;
 
-        isCritical = (reactivity >= 0.5) &&
+        isCritical = (reactivity >= 0.3) &&
                      (pebbleCount >= MIN_PEBBLES_FOR_CRITICALITY) &&
                      (saltVolume >= MIN_SALT_FOR_CRITICALITY);
 
-        // 4. Baseline temperature from stored salt heat.
         double initialHeat = T_AMBIENT
                 + (hotSaltVolume / globalVolume()) * 600.0
                 + (saltVolume / globalVolume()) * 300.0;
@@ -295,7 +288,6 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
             return;
         }
 
-        // 5. Fission heat production.
         double heatProduced = 0;
         depletion = 0;
         for (ReactorPebble pebble : new HashSet<>(pebbles)) {
@@ -315,7 +307,6 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
         depletion = depletion/pebbles.size();
         heatPerTick = (heatPerTick * 9 + heatProduced) / 10.0;
 
-        // 6. Convert cold salt -> hot salt, removing heat.
         double hotRoom = contentHandler().fluidHandler.tanks.get(1).getCapacity() - hotSaltVolume;
         double maxConversion = heatPerTick / HEAT_PER_MB;
         double converted = Math.min(Math.min(maxConversion, saltVolume), hotRoom);
@@ -328,7 +319,6 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
             changed = true;
         }
 
-        // 7. Temperature: initial heat + unremoved-heat backlog (poor conversion -> hotter).
         double conversionEfficiency = maxConversion > 0 ? converted / maxConversion : 1.0;
         double backlog = (1.0 - conversionEfficiency) * heatPerTick;
         temperature = Math.max(0.0, Math.min(TEMP_MAX, (temperature*49 + initialHeat + backlog) / 50.0));
@@ -620,7 +610,7 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
 
     @Override
     public int getIrradiativeFlux() {
-        return (int) (reactivity * (avgIrradiation + pebbleCount)/1.2D);
+        return (int) (reactivity * (avgIrradiation + pebbleCount) * 1.2D);
     }
 
     @Override

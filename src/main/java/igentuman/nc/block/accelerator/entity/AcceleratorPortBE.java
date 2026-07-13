@@ -89,7 +89,7 @@ public class AcceleratorPortBE extends MultiblockPortBE {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(!isConnectedToController()) return LazyOptional.empty();
+        if(!isConnectedToController()) return super.getCapability(cap, side);
         return controller().getCapability(cap, side);
     }
 

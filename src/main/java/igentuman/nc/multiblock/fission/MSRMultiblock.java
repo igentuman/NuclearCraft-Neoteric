@@ -13,6 +13,7 @@ import java.util.HashSet;
 
 import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
+import static igentuman.nc.handler.config.FissionConfig.MSR_CONFIG;
 import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
@@ -51,32 +52,32 @@ public class MSRMultiblock extends AbstractMultiblock {
 
     @Override
     public int maxHeight() {
-        return FISSION_CONFIG.MAX_SIZE.get();
+        return MSR_CONFIG.MAX_SIZE.get();
     }
 
     @Override
     public int maxWidth() {
-        return FISSION_CONFIG.MAX_SIZE.get();
+        return MSR_CONFIG.MAX_SIZE.get();
     }
 
     @Override
     public int maxDepth() {
-        return FISSION_CONFIG.MAX_SIZE.get();
+        return MSR_CONFIG.MAX_SIZE.get();
     }
 
     @Override
     public int minHeight() {
-        return FISSION_CONFIG.MIN_SIZE.get() + 2;
+        return MSR_CONFIG.MIN_SIZE.get() + 2;
     }
 
     @Override
     public int minWidth() {
-        return FISSION_CONFIG.MIN_SIZE.get() + 2;
+        return MSR_CONFIG.MIN_SIZE.get() + 2;
     }
 
     @Override
     public int minDepth() {
-        return FISSION_CONFIG.MIN_SIZE.get() + 2;
+        return MSR_CONFIG.MIN_SIZE.get() + 2;
     }
 
     @Override

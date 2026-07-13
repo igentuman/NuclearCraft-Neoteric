@@ -44,11 +44,11 @@ public class HeatExchangerConfig {
 
             MIN_SIZE = builder
                     .comment("Multiblock min size.")
-                    .defineInRange("min_size", 3, 3, 25);
+                    .defineInRange("min_size", 5, 3, 25);
 
             MAX_SIZE = builder
                     .comment("Multiblock max size.")
-                    .defineInRange("max_size", 11, 5, 25);
+                    .defineInRange("max_size", 15, 5, 25);
 
             ENERGY_PER_BLOCK = builder
                     .comment("Standby FE/t consumed per interior heat exchanger block while powered by redstone. Recipes themselves are free; running out of energy halts processing.")
@@ -56,23 +56,23 @@ public class HeatExchangerConfig {
 
             THROUGHPUT_PER_BLOCK = builder
                     .comment("Recipe progress units per server tick, per interior heat exchanger block.")
-                    .defineInRange("throughput_per_block", 5000.0D, 0.01D, 100000D);
+                    .defineInRange("throughput_per_block", 50000.0D, 0.01D, 100000D);
 
             ENERGY_CAPACITY = builder
                     .comment("Internal energy buffer (FE).")
-                    .defineInRange("energy_capacity", 10000000, 0, Integer.MAX_VALUE);
+                    .defineInRange("energy_capacity", 1000000, 0, Integer.MAX_VALUE);
 
             FLUID_CAPACITY = builder
                     .comment("Fluid tank capacity (mB) per interior heat exchanger block, for each tank.")
-                    .defineInRange("fluid_capacity_per_block", 10000, 1000, 1000000);
+                    .defineInRange("fluid_capacity_per_block", 100000, 1000, 1000000);
 
             RADIATOR_COOLING = builder
                     .comment("Heat removed from the buffer per tick (H/t) per radiator block in the shell. Passive: applies whenever the multiblock is formed.")
-                    .defineInRange("radiator_cooling", 500000, 0, Integer.MAX_VALUE);
+                    .defineInRange("radiator_cooling", 1000000, 0, Integer.MAX_VALUE);
 
             HEAT_CAPACITY_PER_BLOCK = builder
                     .comment("Heat buffer capacity per interior heat exchanger block.")
-                    .defineInRange("heat_capacity_per_block", 5000000, 1, Integer.MAX_VALUE);
+                    .defineInRange("heat_capacity_per_block", 10000000, 1, Integer.MAX_VALUE);
 
             builder.pop();
         }

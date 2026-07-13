@@ -32,10 +32,12 @@ public class MSRPortContainer extends AbstractContainerMenu {
         this.playerInventory = new InvWrapper(playerInventory);
         portBE = (MSRPortBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
         layoutPlayerInventorySlots();
-        portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
-        });
+        if(portBE.isConnectedToController()) {
+            portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
+                addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
+            });
+        }
     }
 
     public BlockPos getPosition() {

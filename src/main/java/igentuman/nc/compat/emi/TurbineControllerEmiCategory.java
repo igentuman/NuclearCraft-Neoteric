@@ -6,6 +6,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.block.turbine.entity.TurbineControllerBE;
+import net.minecraft.ChatFormatting;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -15,6 +16,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.BARRIER;
 
 public class TurbineControllerEmiCategory extends BasicEmiRecipe {
@@ -52,19 +54,12 @@ public class TurbineControllerEmiCategory extends BasicEmiRecipe {
         }
         
         // Add progress arrow
-        widgets.addFillingArrow(34, 16, (int) recipe.getTimeModifier() * 10);
+        widgets.addFillingArrow(39, 8, (int) recipe.getTimeModifier() * 200);
         
         // Add output fluid slots
         for (int i = 0; i < 4 && i < outputs.size(); i++) {
             widgets.addSlot(outputs.get(i), 75 + 10 * i, 6).recipeContext(this);
         }
-        
-        // Add tooltip for progress area
-        widgets.addTooltipText(List.of(
-            net.minecraft.network.chat.Component.translatable("turbine_controller.recipe.duration", 
-                (int)recipe.getTimeModifier()).withStyle(net.minecraft.ChatFormatting.AQUA),
-            net.minecraft.network.chat.Component.translatable("turbine_controller.recipe.power", 
-                (int)recipe.getEnergy()).withStyle(net.minecraft.ChatFormatting.RED)
-        ), 34, 16, 42, 16);
+
     }
 }

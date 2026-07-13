@@ -3,6 +3,7 @@ package igentuman.nc.setup.registration;
 import igentuman.nc.compat.kubejs.NCKubeJsEvents;
 import igentuman.nc.content.fuel.FuelDef;
 import igentuman.nc.content.fuel.FuelManager;
+import igentuman.nc.content.fuel.NCFuel;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.item.ItemFuel;
 import net.minecraft.world.item.Item;
@@ -95,7 +96,7 @@ public class FissionFuel {
         if (!FuelManager.all().containsKey(group)) {
             FuelManager.all().put(group, new HashMap<>());
         }
-        FuelManager.all().get(group).put(name, igentuman.nc.content.fuel.NCFuel.of(fuelDef));
+        FuelManager.all().get(group).put(name, NCFuel.of(fuelDef));
     }
 
     public static class RegisterFissionFuelEvent extends Event {

@@ -15,7 +15,7 @@ into water on the other side.
 - **Shape:** cuboid shell, **3×3×3** up to **11×11×11** (`MIN_SIZE` / `MAX_SIZE`). Non-cube
   shapes are allowed (e.g. 5×6×10).
 - **Corners/edges:** must be `heat_exchanger_casing`.
-- **Walls:** any casing-tag block — casing, controller, ports, radiators.
+- **Walls:** any casing-tag block - casing, controller, ports, radiators.
 - **Controller:** exactly one `heat_exchanger_controller`.
 - **Interior:** air and/or `heat_exchanger`
 - The interior count **N** drives throughput and heat capacity.
@@ -46,9 +46,9 @@ Heat enters from hot recipes, leaves through cold recipes and radiators.
 Recipes live under `data/nuclearcraft/recipes/heat_exchanger_controller/`. Each carries a signed
 `heat` value that classifies it and sets how much heat one operation moves:
 
-- **`heat > 0` — hot recipe.** Flows through Hot Coolant Ports. Adds `heat` to the buffer per op.
+- **`heat > 0` - hot recipe.** Flows through Hot Coolant Ports. Adds `heat` to the buffer per op.
   Stalls when the buffer is full.
-- **`heat < 0` — cold recipe.** Flows through Cold Coolant Ports. Removes `|heat|` from the buffer
+- **`heat < 0` - cold recipe.** Flows through Cold Coolant Ports. Removes `|heat|` from the buffer
   per op. Stalls when the buffer is empty.
 
 `isHot()` / `isCold()` are derived from the sign; `getHeat()` reuses the recipe's radiation slot
@@ -108,7 +108,7 @@ or stored energy.
 heat = max(0, heat − radiatorCount × RADIATOR_COOLING)
 ```
 
-Radiators are how you shed heat the cold loop can't consume fast enough — without them, a busy hot
+Radiators are how you shed heat the cold loop can't consume fast enough - without them, a busy hot
 loop fills the buffer and stalls. They are counted in `HeatExchangerMultiblock.processOuterBlock`.
 
 > Note: the in-game radiator tooltip (`heat_exchanger.radiator.descr`) currently reads **1000 H/t**,

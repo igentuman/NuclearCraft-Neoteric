@@ -358,7 +358,7 @@ public class QNP extends PickaxeItem
 
 	public String formatEnergy(int energy)
 	{
-		return TextUtils.numberFormat(energy/1000)+" KFE";
+		return TextUtils.numberFormat(energy/1000D)+" KFE";
 	}
 
 	public enum Mode {

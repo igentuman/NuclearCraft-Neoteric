@@ -6,14 +6,18 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.block.heat_exchanger.entity.HeatExchangerControllerBE;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
+import static igentuman.nc.util.TextUtils.__;
 import static net.minecraft.world.item.Items.BARRIER;
 
 public class HeatExchangerEmiCategory extends BasicEmiRecipe {
@@ -47,22 +51,20 @@ public class HeatExchangerEmiCategory extends BasicEmiRecipe {
             widgets.addSlot(inputs.get(i), 12 + 10 * i, 6);
         }
 
-        widgets.addFillingArrow(34, 16, (int) recipe.getTimeModifier() * 10);
+        widgets.addFillingArrow(39, 8, (int) recipe.getTimeModifier() * 200);
 
         for (int i = 0; i < 4 && i < outputs.size(); i++) {
             widgets.addSlot(outputs.get(i), 75 + 10 * i, 6).recipeContext(this);
         }
 
-        java.util.List<net.minecraft.network.chat.Component> tip = new java.util.ArrayList<>();
-        tip.add(net.minecraft.network.chat.Component.translatable("heat_exchanger_controller.recipe.duration",
-                (int) recipe.getTimeModifier()).withStyle(net.minecraft.ChatFormatting.AQUA));
+        List<Component> tip = new ArrayList<>();
         double h = recipe.getHeat();
         if (h > 0) {
-            tip.add(net.minecraft.network.chat.Component.translatable("heat_exchanger_controller.recipe.heat_add",
-                    (int) h).withStyle(net.minecraft.ChatFormatting.RED));
+            tip.add(__("heat_exchanger_controller.recipe.heat_add",
+                    (int) h).withStyle(ChatFormatting.RED));
         } else if (h < 0) {
-            tip.add(net.minecraft.network.chat.Component.translatable("heat_exchanger_controller.recipe.heat_remove",
-                    (int) Math.abs(h)).withStyle(net.minecraft.ChatFormatting.AQUA));
+            tip.add(__("heat_exchanger_controller.recipe.heat_remove",
+                    (int) Math.abs(h)).withStyle(ChatFormatting.AQUA));
         }
         widgets.addTooltipText(tip, 34, 16, 42, 16);
     }

@@ -52,7 +52,7 @@ public class FissionBoilingEmiCategory extends BasicEmiRecipe {
         }
 
         // Add progress arrow
-        widgets.addFillingArrow(34, 6, (int) (recipe.getTimeModifier()+1) * 200);
+        widgets.addFillingArrow(39, 8, (int) (recipe.getTimeModifier()+1) * 2);
 
         // Add output fluid slots
         for (int i = 0; i < 4 && i < outputs.size(); i++) {

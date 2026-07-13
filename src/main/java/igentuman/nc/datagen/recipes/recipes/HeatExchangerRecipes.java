@@ -14,7 +14,7 @@ public class HeatExchangerRecipes extends AbstractRecipeProvider {
         hxRecipe(
                 List.of(fluidIngredient("flibe_hot_molten_salt", 1)),
                 List.of(fluidIngredient("flibe_molten_salt", 1)),
-                1D, 1D, 600D
+                1D, 1D, 1800D
         );
 
         hxRecipe(

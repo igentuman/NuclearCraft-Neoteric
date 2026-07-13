@@ -110,7 +110,7 @@ public class BombFxManager {
             double z = cz + r * sinPhi * Math.sin(theta);
             double vy = 0.05 + rng.nextDouble() * 0.1;
 
-            level.addAlwaysVisibleParticle(NcParticleTypes.FIRE_VERTICAL.get(), true, x, y, z, 0, vy, 0);
+            level.addAlwaysVisibleParticle(NcParticleTypes.FIRE_VERTICAL1.get(), true, x, y, z, 0, vy, 0);
             if ((i & 1) == 0) {
                 level.addAlwaysVisibleParticle(ParticleTypes.LARGE_SMOKE, true, x, y, z, 0, vy * 0.5, 0);
             }
@@ -159,14 +159,14 @@ public class BombFxManager {
                 double vy = 0.08 + rng.nextDouble() * 0.06;
                 level.addAlwaysVisibleParticle(ParticleTypes.LARGE_SMOKE, true, x, y, z, 0, vy, 0);
                 if (i % 3 == 0) {
-                    level.addAlwaysVisibleParticle(NcParticleTypes.FIRE_VERTICAL.get(), true, x, y, z, 0, vy, 0);
+                    level.addAlwaysVisibleParticle(NcParticleTypes.FIRE_VERTICAL1.get(), true, x, y, z, 0, vy, 0);
                 }
                 if (i % 2 == 0) {
                     DustParticleOptions tint = (band < 3) ? DUST_EMBER : (rng.nextBoolean() ? DUST_DARK : DUST_BROWN);
                     level.addAlwaysVisibleParticle(tint, true, x, y, z, 0, vy * 0.5, 0);
                 }
                 if (band < 2 && i % 4 == 0) {
-                    level.addAlwaysVisibleParticle(NcParticleTypes.FIRE_VERTICAL.get(), true, x, y, z, 0, vy * 0.4, 0);
+                    level.addAlwaysVisibleParticle(NcParticleTypes.FIRE_VERTICAL1.get(), true, x, y, z, 0, vy * 0.4, 0);
                 }
                 if (i % 5 == 0) {
                     level.addAlwaysVisibleParticle(ParticleTypes.SQUID_INK, true, x, y, z, 0, vy * 0.3, 0);
@@ -207,7 +207,7 @@ public class BombFxManager {
                     level.addAlwaysVisibleParticle(NcParticleTypes.EXPLOSION_SEED.get(), true, x, y, z, vx * 0.5, 0.02, vz * 0.5);
                 }
                 if ((i & 3) == 0) {
-                    level.addAlwaysVisibleParticle(NcParticleTypes.FIRE_VERTICAL.get(), true, x, y + 2, z, vx, 0.05, vz);
+                    level.addAlwaysVisibleParticle(NcParticleTypes.FIRE_VERTICAL1.get(), true, x, y + 2, z, vx, 0.05, vz);
                 }
                 DustParticleOptions tint = (i & 1) == 0 ? DUST_DARK : DUST_BROWN;
                 level.addAlwaysVisibleParticle(tint, true, x, y, z, vx, 0.02, vz);
@@ -273,10 +273,10 @@ public class BombFxManager {
                 level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, true, x, y + 0.5, z, vx * 0.4, 0.02, vz * 0.4);
             }
             if ((i & 3) == 0) {
-                level.addAlwaysVisibleParticle(NcParticleTypes.FIRE_VERTICAL.get(), true, x, y, z, vx * 0.5, 0.01, vz * 0.5);
+                level.addAlwaysVisibleParticle(NcParticleTypes.SMOKE.get(), true, x, y, z, vx * 0.5, 0.01, vz * 0.5);
             }
             if ((i & 5) == 0) {
-                level.addAlwaysVisibleParticle(NcParticleTypes.EXPLOSION.get(), true, x, y, z, vx * 1.2, 0, vz * 1.2);
+                level.addAlwaysVisibleParticle(NcParticleTypes.FIRE_VERTICAL1.get(), true, x, y, z, vx * 1.2, 0, vz * 1.2);
             }
         }
 

@@ -1,5 +1,6 @@
 package igentuman.nc.block.entity;
 
+import igentuman.nc.item.HEVItem;
 import igentuman.nc.item.Q36Item;
 import igentuman.nc.setup.registration.NCFluids;
 import net.minecraft.core.BlockPos;
@@ -55,6 +56,7 @@ public class ChargingStationBE extends BlockEntity {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             if (stack.getItem() instanceof Q36Item) return true;
+            if (stack.getItem() instanceof HEVItem) return true;
             if (stack.getCapability(ForgeCapabilities.ENERGY).isPresent()) return true;
             return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM)
                     .map(h -> {
@@ -116,6 +118,23 @@ public class ChargingStationBE extends BlockEntity {
             Q36Item.setCharge(stack, Q36Item.getCharge(stack) + qcGained);
             markUpdated();
             return;
+        }
+
+        if (stack.getItem() instanceof HEVItem) {
+            int missing = HEVItem.MAX_QE_CHARGE - HEVItem.getQECharge(stack);
+            if (missing > 0) {
+                int fluidAvail = fluidTank.getFluidAmount();
+                if (fluidAvail > 0) {
+                    int fluidNeededForMissing = (int) Math.ceil((double) missing / Q36_QC_PER_FLUID);
+                    int fluidToUse = Math.min(Q36_FLUID_PER_TICK, Math.min(fluidAvail, fluidNeededForMissing));
+                    if (fluidToUse > 0) {
+                        int qeGained = Math.min(missing, fluidToUse * Q36_QC_PER_FLUID);
+                        fluidTank.drain(fluidToUse, IFluidHandler.FluidAction.EXECUTE);
+                        HEVItem.setQECharge(stack, HEVItem.getQECharge(stack) + qeGained);
+                        markUpdated();
+                    }
+                }
+            }
         }
 
         var fluidCap = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);

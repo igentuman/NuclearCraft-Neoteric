@@ -21,7 +21,7 @@ public class FireVerticalParticle extends TextureSheetParticle {
         this.xd = vx;
         this.yd = vy <= 0 ? 0.08D : vy;
         this.zd = vz;
-        this.lifetime = 24 + this.random.nextInt(12);
+        this.lifetime = 64 + this.random.nextInt(12);
         this.quadSize = 1.5F + this.random.nextFloat() * 1.5F;
         this.hasPhysics = false;
         this.gravity = 0.0F;

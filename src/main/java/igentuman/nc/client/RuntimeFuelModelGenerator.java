@@ -424,7 +424,8 @@ public class RuntimeFuelModelGenerator {
         Files.createDirectories(langDir);
         Path modelsDir = gameDir.resolve(MODELS_PATH);
         Files.createDirectories(modelsDir);
-        
+        Files.createDirectories(gameDir.resolve(TEXTURES_PATH));
+
         FissionFuel.getCustomFuels().stream()
             .map(fuelDef -> fuelDef.group) // Get group
             .distinct()

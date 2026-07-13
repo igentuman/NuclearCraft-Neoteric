@@ -41,10 +41,13 @@ public class AcceleratorIonSourcePortContainer extends AbstractContainerMenu {
         this.playerInventory =  new InvWrapper(playerInventory);
         portBE = (AcceleratorIonSourcePortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
-        portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 71, 26));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 89, 26));
-        });
+        assert portBE != null;
+        if(portBE.isConnectedToController()) {
+            portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                addSlot(new NCSlotItemHandler.Input(h, 0, 71, 26));
+                addSlot(new NCSlotItemHandler.Output(h, 1, 89, 26));
+            });
+        }
     }
 
     public BlockPos getPosition() {

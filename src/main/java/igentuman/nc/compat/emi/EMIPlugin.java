@@ -75,6 +75,12 @@ import static net.minecraft.world.item.Items.BARRIER;
 public class EMIPlugin implements EmiPlugin {
     
     private static final Map<String, EmiRecipeCategory> CATEGORIES = new HashMap<>();
+    private static final Set<String> SKIPPED_CATEGORIES = Set.of(
+        "fusion_core", "fusion_coolant", "fission_reactor_controller", "fission_boiling",
+        "kugelblitz_chamber", "target_chamber", "collision_chamber", "decay_chamber",
+        "turbine_controller", "accelerator_coolant", "msr_controller", "nc_ore_veins",
+        "nuclear_blast", "heat_exchanger_controller"
+    );
 
     public static void displayRecipes(AbstractContainerScreen<?> screen) {
         EmiRecipeCategory cat = getRecipeCategory(screen);
@@ -142,16 +148,7 @@ public class EMIPlugin implements EmiPlugin {
                 continue;
             }
             
-            // Skip special categories that have their own implementations
-            if (name.equals("fusion_core") || name.equals("fusion_coolant") ||
-                name.equals("fission_reactor_controller") || name.equals("fission_boiling") ||
-                name.equals("kugelblitz_chamber") || name.equals("target_chamber") ||
-                name.equals("collision_chamber") || name.equals("decay_chamber") ||
-                name.equals("turbine_controller") || name.equals("accelerator_coolant") ||
-                name.equals("msr_controller") || name.equals("nc_ore_veins") ||
-                name.equals("nuclear_blast")) {
-                continue;
-            }
+            if (SKIPPED_CATEGORIES.contains(name)) continue;
             
             EmiRecipeCategory category = ProcessorEmiCategory.createCategory(name);
             CATEGORIES.put(name, category);

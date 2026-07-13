@@ -195,6 +195,8 @@ public class ClientSetup {
         event.registerSpriteSet(NcParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
         event.registerSpriteSet(NcParticleTypes.FUSION_BEAM.get(), FusionBeamParticle.Factory::new);
         event.registerSpriteSet(NcParticleTypes.FIRE_VERTICAL.get(), FireVerticalParticle.Factory::new);
+        event.registerSpriteSet(NcParticleTypes.FIRE_VERTICAL1.get(), FireVerticalParticle.Factory::new);
+        event.registerSpriteSet(NcParticleTypes.SMOKE.get(), FireVerticalParticle.Factory::new);
         event.registerSpriteSet(NcParticleTypes.FLASH.get(), BombFlashParticle.Factory::new);
         event.registerSpriteSet(NcParticleTypes.EXPLOSION.get(), ExplosionParticle.Factory::new);
         event.registerSpriteSet(NcParticleTypes.EXPLOSION_SEED.get(), ExplosionSeedParticle.Factory::new);

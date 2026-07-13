@@ -35,10 +35,12 @@ public class FissionPortContainer extends AbstractContainerMenu {
         portBE = (FissionPortBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
         slotIndex = 0;
         layoutPlayerInventorySlots();
-        portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
-        });
+        if(portBE.isConnectedToController()) {
+            portBE.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
+                addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
+            });
+        }
     }
 
     public BlockPos getPosition() {

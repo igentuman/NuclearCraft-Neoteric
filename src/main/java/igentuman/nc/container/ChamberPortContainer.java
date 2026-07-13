@@ -36,10 +36,13 @@ public class ChamberPortContainer extends AbstractContainerMenu {
         this.playerInventory =  new InvWrapper(playerInventory);
         blockEntity = (ChamberPortBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
         layoutPlayerInventorySlots();
-        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-            addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
-        });
+        assert blockEntity != null;
+        if(blockEntity.isConnectedToController()) {
+            blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
+                addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
+            });
+        }
     }
 
     @Override

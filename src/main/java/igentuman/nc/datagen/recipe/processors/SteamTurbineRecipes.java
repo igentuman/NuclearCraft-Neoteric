@@ -6,6 +6,7 @@ import net.minecraft.world.level.material.Fluids;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.STEAM_TURBINE;
 
+/** Generates steam turbine recipes that convert steam into water and exhaust steam. */
 public class SteamTurbineRecipes {
 
     public static void steamTurbine(RecipeOutput out) {

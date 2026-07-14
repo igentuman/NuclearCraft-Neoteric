@@ -17,6 +17,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import static igentuman.nc.NuclearCraft.rl;
 
+/** Datapack bootstrap that adds each material's ore placed feature to overworld biomes. */
 public class ModBiomeModifiers {
 
     public static ResourceKey<BiomeModifier> registerKey(String name) {

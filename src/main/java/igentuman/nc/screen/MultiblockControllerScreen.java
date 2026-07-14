@@ -27,6 +27,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
+/** Base GUI screen for a multiblock controller: renders slots, fluid tanks, energy/progress bars and a formed indicator. */
 public class MultiblockControllerScreen extends AbstractContainerScreen<MultiblockControllerContainer> {
 
     private static final ResourceLocation TEXTURE = rl("textures/gui/processor.png");

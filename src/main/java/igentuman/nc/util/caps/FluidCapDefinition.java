@@ -2,6 +2,7 @@ package igentuman.nc.util.caps;
 
 import java.util.HashSet;
 
+/** Fluent descriptor of a block entity's input, output, and global fluid tanks and their capacities. */
 public class FluidCapDefinition {
 
     public final HashSet<Tank> inputTanks = new HashSet<>();

@@ -12,6 +12,7 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.List;
 
+/** Codec and stream codec for reading and syncing {@link FusionRecipe} instances. */
 public class FusionRecipeSerializer implements RecipeSerializer<FusionRecipe> {
 
     private static final MapCodec<FusionRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(

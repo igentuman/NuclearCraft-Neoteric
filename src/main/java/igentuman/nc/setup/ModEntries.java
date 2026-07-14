@@ -32,6 +32,7 @@ import static igentuman.nc.setup.entries.ParticleChamber.particleChamber;
 import static igentuman.nc.setup.entries.Parts.*;
 import static igentuman.nc.setup.entries.Processors.processors;
 
+/** Central registry of all mod content entries with the init entry-point and declaration helpers. */
 public class ModEntries {
     public static final HashMap<String, ModEntry> ENTRIES = new HashMap<>();
     public static final HashMap<String, IsotopeEntry> ISOTOPES = new HashMap<>();

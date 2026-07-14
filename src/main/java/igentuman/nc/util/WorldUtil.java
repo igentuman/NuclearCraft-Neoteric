@@ -9,9 +9,7 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 
 import static net.minecraft.world.level.block.Blocks.AIR;
 
-/**
- * Utility class for faster world-related operations.
- */
+/** Provides direct chunk-section access for fast block state and block entity lookups. */
 public class WorldUtil {
 
     public static BlockState getBlockState(BlockPos pos, ServerLevel level) {

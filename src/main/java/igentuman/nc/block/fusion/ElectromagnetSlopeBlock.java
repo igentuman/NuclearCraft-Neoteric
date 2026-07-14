@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
 
+/** Corner variant of the electromagnet with full front-and-top orientation for the toroid's sloped edges. */
 public class ElectromagnetSlopeBlock extends ElectromagnetBlock {
 
     public static final EnumProperty<FrontAndTop> ORIENTATION = BlockStateProperties.ORIENTATION;

@@ -23,6 +23,7 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.List;
 
+/** KubeJS plugin registering NuclearCraft's script events and processor recipe schemas. */
 public class ModKubeJSPlugin implements KubeJSPlugin {
 
     private static final RecipeKey<List<SizedIngredient>> ITEM_INPUTS =

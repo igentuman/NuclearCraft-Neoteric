@@ -9,6 +9,7 @@ import net.minecraft.world.level.material.Fluids;
 
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 
+/** Generates chemical reactor recipes for gases, acids, molten alloys, and fissile fuel mixing. */
 public class ChemicalReactorRecipes {
 
     public static void chemicalReactor(RecipeOutput out) {

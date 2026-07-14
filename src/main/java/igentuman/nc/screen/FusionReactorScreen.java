@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Inventory;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
+/** Fusion reactor controller screen with coolant/temperature/fuel/product bars, an amplifier slider and status readouts. */
 public class FusionReactorScreen extends MultiblockControllerScreen {
 
     private static final ResourceLocation TEXTURE = rl("textures/gui/fusion_reactor.png");

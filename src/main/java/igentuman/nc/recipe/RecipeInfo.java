@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
 
 import static igentuman.nc.NuclearCraft.rlFromString;
 
+/** Per-block-entity recipe runtime: matches a recipe, drains energy, tracks progress, consumes inputs and produces outputs. */
 public class RecipeInfo {
 
     public boolean stuck = false;

@@ -21,8 +21,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
-/** Block entity for non-controller multiblock parts (ports). Stores its controller's position and
- *  proxies capabilities to it. Subclasses add multiblock-specific behavior. */
+/** Base block entity for non-controller multiblock parts (ports); proxies capabilities to its controller. */
 public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider {
 
     /** Constructs a port BE; lets registration pick a subclass while sharing the type/pos/state/name wiring. */

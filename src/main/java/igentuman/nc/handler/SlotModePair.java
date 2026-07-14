@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 
+/** Binds a slot index to its I/O mode (input/output/push/pull/disabled) with packing for NBT storage. */
 public class SlotModePair {
     private SlotMode slotMode;
     private final int slot;

@@ -3,6 +3,7 @@ package igentuman.nc.handler.item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
+/** Item inventory handler with slot voiding and a factory that wires a change callback. */
 public class CustomInventoryHandler extends ItemStackHandler {
 
     public CustomInventoryHandler(int size) {

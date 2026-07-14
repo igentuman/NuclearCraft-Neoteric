@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
+/** Generates block tags for mining, ores, storage blocks, and fission/fusion structure membership. */
 public class ModBlockTagProvider extends BlockTagsProvider {
     public ModBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, MODID, existingFileHelper);

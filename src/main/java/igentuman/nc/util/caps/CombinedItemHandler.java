@@ -4,10 +4,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Combines multiple IItemHandler instances into a single view.
- * Slots are indexed sequentially across all delegates.
- */
+/** Exposes multiple item handlers as one, indexing their slots sequentially across delegates. */
 public class CombinedItemHandler implements IItemHandler {
 
     private final IItemHandler[] delegates;

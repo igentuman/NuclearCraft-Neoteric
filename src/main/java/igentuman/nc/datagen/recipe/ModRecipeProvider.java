@@ -46,6 +46,7 @@ import static igentuman.nc.datagen.recipe.processors.SteamTurbineRecipes.steamTu
 import static igentuman.nc.datagen.recipe.processors.SubatomicLiquifierRecipes.subatomicLiquifier;
 import static igentuman.nc.datagen.recipe.processors.SupercoolerRecipes.supercooler;
 
+/** Root recipe provider that dispatches to every processor generator and exposes shared recipe helpers. */
 public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
 
     public static final int TIME = 200;

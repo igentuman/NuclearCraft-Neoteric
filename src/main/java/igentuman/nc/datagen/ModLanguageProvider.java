@@ -13,6 +13,7 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.convertToName;
 
+/** Generates the en_us language file: display names for blocks, items, fluids, and GUI labels. */
 public class ModLanguageProvider  extends LanguageProvider {
     public ModLanguageProvider(DataGenerator gen, String locale) {
         super(gen.getPackOutput(), MODID, locale);

@@ -5,6 +5,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
+/** Declares decorative world blocks such as wasteland earth and glowing mushroom. */
 public class Blocks extends ModEntries {
     public static void blocks() {
         deco("wasteland_earth", BlockBehaviour.Properties.of()

@@ -2,6 +2,7 @@ package igentuman.nc.handler.energy;
 
 import net.neoforged.neoforge.energy.EnergyStorage;
 
+/** Energy storage with direct set/drain of stored energy and factories that fire a change callback. */
 public class CustomEnergyStorage extends EnergyStorage {
     public CustomEnergyStorage(int capacity) {
         super(capacity);

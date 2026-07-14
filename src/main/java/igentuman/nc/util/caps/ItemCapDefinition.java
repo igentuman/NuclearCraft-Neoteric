@@ -1,5 +1,6 @@
 package igentuman.nc.util.caps;
 
+/** Fluent descriptor of a block entity's input, output, global, catalyst, and hidden item slot counts. */
 public class ItemCapDefinition {
 
     public int inputSlots = 0;

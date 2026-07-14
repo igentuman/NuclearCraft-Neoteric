@@ -12,11 +12,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.awt.Color;
 
-/**
- * Generic redstone-mode switch button. Mode set is supplied by the port BE via
- * {@link igentuman.nc.block_entity.MultiblockPortBE#redstoneModes()}, so a single widget and a single
- * {@link igentuman.nc.screen.MultiblockPortScreen} serve every port regardless of how many modes it has.
- */
+/** Button that cycles a multiblock port's redstone control mode, coloring itself by the selected mode. */
 public class RedstoneModeButton extends AbstractWidget {
 
     private static final int SIZE = 16;

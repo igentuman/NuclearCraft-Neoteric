@@ -1,5 +1,6 @@
 package igentuman.nc.registration;
 
+/** Mutable spec for a fluid's physical properties (temperature, density, gas/molten/toxic) and derived registry name. */
 public class FluidDefinition {
     public int temperature;
     public int luminosity;

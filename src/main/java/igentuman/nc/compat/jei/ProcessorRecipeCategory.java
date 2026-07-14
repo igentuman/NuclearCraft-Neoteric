@@ -36,6 +36,7 @@ import java.util.Map;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
+/** JEI category displaying a universal processor recipe, laid out to match the in-game GUI. */
 public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcessorRecipe> {
 
     private static final ResourceLocation SLOTS_TEX = rl("textures/gui/slots.png");

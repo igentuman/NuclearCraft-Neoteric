@@ -19,6 +19,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.Set;
 
+/** Immutable record bundling all deferred registry refs and capability config for one registered content entry. */
 public record ModEntry (
         String name,
         DeferredBlock<Block> block,

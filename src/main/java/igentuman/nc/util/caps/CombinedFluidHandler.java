@@ -4,11 +4,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Combines multiple IFluidHandler instances into a single view.
- * Tanks are indexed sequentially across all delegates.
- * Supports separating fillable (input/global) tanks from drain-only (output) tanks.
- */
+/** Exposes multiple fluid handlers as one, with separate fillable and drainable tank groups. */
 public class CombinedFluidHandler implements IFluidHandler {
 
     private final IFluidHandler[] delegates;

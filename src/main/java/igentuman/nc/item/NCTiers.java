@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.function.Supplier;
 
+/** Defines the mod's custom tool material tiers (tough alloy, thorium) and their stats/repair ingredients. */
 public final class NCTiers {
 
     private NCTiers() {}

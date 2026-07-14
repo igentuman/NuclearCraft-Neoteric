@@ -30,11 +30,7 @@ import java.util.Optional;
 
 import static igentuman.nc.util.TextUtils.__;
 
-/**
- * Utility class for rendering fluids in GUI screens without depending on JEI.
- * Provides methods for getting fluid textures, tint colors, tooltips, and
- * rendering fluid tanks in container screens.
- */
+/** Renders fluid tanks, sprites, and tooltips in GUI screens without depending on JEI. */
 public class GuiFluidRenderer {
 
     private static final int TEX_WIDTH = 16;

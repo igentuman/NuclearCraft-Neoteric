@@ -14,19 +14,7 @@ import java.util.Map;
 
 import static igentuman.nc.setup.Registers.ITEMS;
 
-/**
- * Registration unit for a NuclearCraft isotope. Parallels {@link ModEntry} but lives in its own
- * {@link entries#ISOTOPES} registry rather than the universal {@code ENTRIES} map, because an
- * isotope is not a block/machine/material-product but a family of fuel-cladding item variants
- * carrying decay metadata.
- *
- * <p>Each isotope registers up to four item forms keyed by suffix: base ({@code ""}), zirconium
- * alloy ({@code "_za"}), oxide ({@code "_ox"}) and nitride ({@code "_ni"}). Isotopes in the
- * {@link #SPECIAL_FAMILY special families} register the base form only.</p>
- *
- * <p>The base name may contain a {@code '/'} (e.g. {@code "uranium/238"}); the registry/item id is
- * the slash-to-underscore form ({@code "uranium_238"}).</p>
- */
+/** Registration unit for an isotope: registers its item-form variants plus molten fluids and carries decay metadata. */
 public class IsotopeEntry {
 
     /** Item-form suffixes, in registration order. */

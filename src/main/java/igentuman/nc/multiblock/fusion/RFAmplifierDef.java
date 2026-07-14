@@ -3,6 +3,7 @@ package igentuman.nc.multiblock.fusion;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Defines fusion RF amplifier tiers and their power, heat, voltage, temperature, and efficiency stats. */
 public final class RFAmplifierDef {
 
     public final String name;

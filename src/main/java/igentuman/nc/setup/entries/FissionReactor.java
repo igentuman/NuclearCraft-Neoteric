@@ -29,6 +29,7 @@ import static igentuman.nc.registration.ModEntryBuilder.addMultiblockController;
 import static igentuman.nc.registration.ModEntryBuilder.addMultiblockPart;
 import static igentuman.nc.setup.Registers.CREATIVE_MODE_TABS;
 
+/** Declares fission reactor blocks, heat sinks, creative tab, and the multiblock definition. */
 public class FissionReactor extends ModEntries {
 
     private static final Pattern COND_SUFFIX = Pattern.compile("[><=^\\-]\\d+$");

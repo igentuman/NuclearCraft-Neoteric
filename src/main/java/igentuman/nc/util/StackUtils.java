@@ -25,6 +25,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rlFromString;
 
 
+/** Item/block stack helpers: placement state resolution, tag lookups, and multi-tool detection. */
 public final class StackUtils {
 
     private StackUtils() {

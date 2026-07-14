@@ -5,6 +5,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.SUBATOMIC_LIQUIFIER;
 
+/** Generates subatomic liquifier recipes that dissolve dusts, ingots, and blocks into subliquid matter. */
 public class SubatomicLiquifierRecipes {
 
     private static final String[] TYPES = {

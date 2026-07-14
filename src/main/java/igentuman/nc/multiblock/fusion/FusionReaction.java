@@ -18,15 +18,7 @@ import java.util.Random;
 
 import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
-/**
- * Fusion reactor runtime reaction. Runs on the main server thread from the controller BE tick;
- * reads structure stats from {@link FusionReactorCache} (scalars only) and mutates the controller's
- * plasma/heat state, energy buffer, and fluid tanks. Formulas mirror NuclearCraft Neoteric's
- * {@code FusionCoreBE}; radiation and beam particles are out of scope.
- *
- * <p>Fluid tank layout: 0/1 = fuel A/B (input), 2 = coolant (input), 3..6 = products (output),
- * 7 = hot coolant (output).
- */
+/** Runs the fusion reactor's per-tick reaction: charge, plasma amplification, energy output, cooling, and meltdown. */
 public class FusionReaction {
 
     private static final double RF_AMPLIFICATION_MULTIPLIER = 5.0;

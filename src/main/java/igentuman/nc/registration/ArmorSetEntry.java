@@ -7,6 +7,7 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import static igentuman.nc.setup.Registers.ITEMS;
 
+/** Registers and holds the four armor pieces (helmet, chestplate, leggings, boots) for one armor material. */
 public class ArmorSetEntry {
 
     public static final TriFunction<Holder<ArmorMaterial>, ArmorItem.Type, Item.Properties, ? extends Item> DEFAULT_FACTORY = ArmorItem::new;

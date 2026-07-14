@@ -6,10 +6,7 @@ import org.joml.Vector3f;
 
 import static igentuman.nc.NuclearCraft.rl;
 
-/**
- * FluidType for material fluids. Picks the still/flow textures by fluid kind
- * (molten / gas / liquid) and carries the ARGB tint color used for rendering.
- */
+/** FluidType for material fluids: selects still/flow textures by kind (molten/gas/liquid) and carries the ARGB tint color. */
 public class MaterialFluidType extends FluidType {
 
     private final ResourceLocation stillTexture;

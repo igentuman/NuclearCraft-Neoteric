@@ -7,6 +7,7 @@ import mezz.jei.api.runtime.IJeiRuntime;
 import java.util.List;
 import java.util.Map;
 
+/** JEI integration helper that opens the recipe view for a named processor entry. */
 public class JeiHelper {
 
     private static IJeiRuntime runtime;

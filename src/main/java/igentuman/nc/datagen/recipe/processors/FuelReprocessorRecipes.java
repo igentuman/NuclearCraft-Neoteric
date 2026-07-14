@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 
+/** Generates fuel reprocessor recipes and holds the depleted-fuel output table shared with the centrifuge. */
 public class FuelReprocessorRecipes {
 
     /** One reprocessing output: an isotope or a material dust, with a per-fuel-unit count. */

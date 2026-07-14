@@ -14,11 +14,7 @@ import java.util.Map;
 
 import static igentuman.nc.NuclearCraft.rl;
 
-/**
- * Fluent registry of mod damage types. Each {@link #builder} call defines a {@link DamageType}
- * that is emitted to the {@code minecraft:damage_type} datapack registry via {@link #bootstrap}
- * and resolved at runtime into a {@link DamageSource} through {@link #of}.
- */
+/** Fluent registry of mod damage types, emitted to the datapack registry and resolved into damage sources. */
 public class NCDamageSources {
 
     private static final Map<ResourceKey<DamageType>, DamageType> DEFINITIONS = new LinkedHashMap<>();

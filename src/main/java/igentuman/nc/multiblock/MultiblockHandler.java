@@ -35,11 +35,7 @@ import java.util.concurrent.Executors;
 
 import static igentuman.nc.NuclearCraft.TICK_COUNTER;
 
-/**
- * Singleton manager: per-level executor for off-main-thread {@code tickServer},
- * active instances by controller position, and a structure-position index for O(1)
- * block-change lookup.
- */
+/** Manages all multiblock instances: off-thread validation/ticking, controller lookup, and structure-change handling. */
 @EventBusSubscriber(modid = NuclearCraft.MODID)
 public final class MultiblockHandler {
 

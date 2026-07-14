@@ -4,6 +4,7 @@ import igentuman.nc.api.impl.MultiblockCacheImpl;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
+/** Multiblock cache for the fusion reactor; stores derived magnet/amplifier stats and structure size for the runtime. */
 public class FusionReactorCache extends MultiblockCacheImpl {
 
     public volatile double magneticFieldStrength;

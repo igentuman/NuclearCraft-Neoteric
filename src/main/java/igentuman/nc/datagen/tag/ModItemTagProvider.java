@@ -18,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
+/** Generates item tags for tools, armor, materials, isotopes, and fission fuels. */
 public class ModItemTagProvider extends ItemTagsProvider {
     public ModItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTags, ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, blockTags, MODID, existingFileHelper);

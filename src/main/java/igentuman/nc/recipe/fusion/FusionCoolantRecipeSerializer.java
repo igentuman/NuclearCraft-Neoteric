@@ -10,6 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
+/** Codec and stream codec for reading and syncing {@link FusionCoolantRecipe} instances. */
 public class FusionCoolantRecipeSerializer implements RecipeSerializer<FusionCoolantRecipe> {
 
     private static final MapCodec<FusionCoolantRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(

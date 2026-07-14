@@ -6,6 +6,7 @@ import net.minecraft.world.item.Items;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.ALLOY_SMELTER;
 
+/** Generates alloy smelter recipes that combine two dusts or ingots into an alloy ingot. */
 public class AlloySmelterRecipes {
 
     public static void alloySmelter(RecipeOutput out) {

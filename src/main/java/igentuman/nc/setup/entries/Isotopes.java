@@ -4,6 +4,7 @@ import igentuman.nc.setup.ModEntries;
 
 import static igentuman.nc.registration.ModEntryBuilder.addIsotope;
 
+/** Declares all radioactive isotope entries and their decay rates. */
 public class Isotopes extends ModEntries {
     public static void isotopes() {
         addIsotope("americium/241", 0.02);

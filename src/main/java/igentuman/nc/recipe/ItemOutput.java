@@ -17,12 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * A processor item output: either a concrete item or an item tag. A tag is resolved to one
- * concrete stack at production time via {@link TagOutputResolver}. {@code count} applies to both.
- *
- * JSON: {@code {"item":"minecraft:iron_ingot","count":1}} or {@code {"tag":"c:ingots/copper","count":2}}.
- */
+/** A processor item output: a concrete item or an item tag resolved to one stack at production time, with a count. */
 public record ItemOutput(@Nullable Item item, @Nullable TagKey<Item> tag, int count) {
 
     public static ItemOutput of(ItemLike item, int count) {

@@ -13,14 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Map;
 
-/**
- * Validator that loads a saved structure from {@code data/<modid>/structures/<name>.nbt}
- * and verifies the world matches it. Supports all 4 horizontal orientations via the
- * controller's {@code facing} direction (structure is assumed authored facing NORTH).
- *
- * <p>Match rule: world state must equal expected state exactly (after rotation), except
- * at the controller cell which is checked via {@code controllerPredicate}.
- */
+/** Validates a multiblock against a saved NBT structure, matched at any horizontal orientation. */
 public class DeterminedMultiblockValidator implements IMultiblockValidator {
 
     private final String structureName;

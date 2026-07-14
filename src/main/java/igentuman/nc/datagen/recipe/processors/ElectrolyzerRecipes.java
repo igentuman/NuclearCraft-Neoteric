@@ -6,6 +6,7 @@ import net.minecraft.world.level.material.Fluids;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.ELECTROLYZER;
 
+/** Generates electrolyzer recipes that split fluids into their constituent gases. */
 public class ElectrolyzerRecipes {
 
     public static void electrolyzer(RecipeOutput out) {

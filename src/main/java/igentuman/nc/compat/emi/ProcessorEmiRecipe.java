@@ -25,6 +25,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 
+/** EMI recipe display for a universal processor recipe, laid out to match the in-game GUI. */
 public class ProcessorEmiRecipe implements EmiRecipe {
 
     private static final ResourceLocation SLOTS_TEX = rl("textures/gui/slots.png");

@@ -12,10 +12,7 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.List;
 
-/**
- * A single serializer class that is instantiated per processor.
- * Each instance knows its processor name and bakes it into every recipe it deserializes.
- */
+/** Per-processor serializer that bakes its processor name into every {@link UniversalProcessorRecipe} it deserializes. */
 public class UniversalProcessorRecipeSerializer implements RecipeSerializer<UniversalProcessorRecipe> {
 
     private final String processorName;

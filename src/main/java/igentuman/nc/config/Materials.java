@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/** Per-material config: builds enable toggles for each product type (ore, ingot, dust, block, fluid, etc.). */
 public class Materials {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 

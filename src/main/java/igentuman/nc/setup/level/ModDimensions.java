@@ -8,6 +8,7 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 
+/** Datapack bootstrap hooks for the mod's dimension types, level stems, and noise settings. */
 public class ModDimensions {
 
     public static void bootstrapType(BootstrapContext<DimensionType> context) {

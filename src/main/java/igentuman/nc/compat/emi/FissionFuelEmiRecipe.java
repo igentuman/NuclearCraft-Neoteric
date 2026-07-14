@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/** EMI recipe display for a fission fuel, showing its power and heat output. */
 public class FissionFuelEmiRecipe implements EmiRecipe {
 
     private static final int WIDTH = 124;

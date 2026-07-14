@@ -30,6 +30,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
+/** GUI screen for a generic processor machine: renders slots, fluid tanks, energy/progress bars and control buttons. */
 public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalProcessorContainer> {
 
     private static final ResourceLocation TEXTURE = rl("textures/gui/processor.png");

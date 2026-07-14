@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+/** Block entity for the fusion reactor core cage cells; proxies capabilities and redstone modes to the controller. */
 public class FusionCoreProxyBE extends MultiblockPortBE {
 
     private int lastComparator = -1;

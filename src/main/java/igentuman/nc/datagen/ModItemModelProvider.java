@@ -20,6 +20,7 @@ import igentuman.nc.setup.ModEntries;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
+/** Generates item models for standalone items, tools, armor, materials, isotopes, and fuels. */
 public class ModItemModelProvider  extends ItemModelProvider {
     ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, MODID, existingFileHelper);

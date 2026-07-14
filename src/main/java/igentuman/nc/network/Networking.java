@@ -6,6 +6,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
+/** Registers all mod network payloads and their handlers with the payload registrar. */
 public class Networking {
 
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {

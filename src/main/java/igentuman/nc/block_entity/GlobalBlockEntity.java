@@ -41,6 +41,7 @@ import java.util.List;
 
 import static net.minecraft.world.level.block.Block.UPDATE_CLIENTS;
 
+/** Base block entity providing reflection-driven NBT/sync, sided item/fluid/energy capabilities, and recipe ticking. */
 public class GlobalBlockEntity extends BlockEntity {
 
     public String name;

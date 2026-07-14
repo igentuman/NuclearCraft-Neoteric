@@ -14,6 +14,7 @@ import java.util.List;
 
 import static net.minecraft.network.chat.Component.translatable;
 
+/** RF amplifier block; shows power, voltage, efficiency, heat and max-temperature stats in the tooltip. */
 public class RFAmplifierBlock extends MultiblockBlock {
 
     public RFAmplifierBlock(BlockBehaviour.Properties props) {

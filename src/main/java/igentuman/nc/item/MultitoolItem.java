@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+/** Utility item that safely triggers and removes a TNT block on right-click. */
 public class MultitoolItem extends Item {
 
     public MultitoolItem(Properties properties) {

@@ -1,5 +1,6 @@
 package igentuman.nc.util.caps;
 
+/** Describes a block entity's energy buffer via input rate, output rate, and capacity presets. */
 public class EnergyCapDefinition {
     private final int inputRate;
     private final int outputRate;

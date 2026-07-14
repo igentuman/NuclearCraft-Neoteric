@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.Block;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
+/** Holds the block and item tag keys used to identify fission reactor components (casing, moderators, inner blocks). */
 public final class FissionTags {
 
     private FissionTags() {}

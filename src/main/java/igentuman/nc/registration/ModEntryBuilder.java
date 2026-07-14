@@ -63,6 +63,7 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.ModEntries.ENTRIES;
 import static igentuman.nc.setup.Registers.*;
 
+/** Central fluent builder that registers blocks, items, machines, multiblocks, tools, and armor into a {@link ModEntry}. */
 public class ModEntryBuilder {
 
     private final String name;

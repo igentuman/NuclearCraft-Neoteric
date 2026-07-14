@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 
+/** Generates fluid tags for material, isotope, and fission-fuel fluids under mod and common namespaces. */
 public class ModFluidTagProvider extends FluidTagsProvider {
     public ModFluidTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, provider, MODID, existingFileHelper);

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/** EMI recipe rendering an interactive 3D preview of a multiblock's example structure. */
 public class MultiblockExampleEmiRecipe implements EmiRecipe {
 
     private static final int WIDTH = 140;

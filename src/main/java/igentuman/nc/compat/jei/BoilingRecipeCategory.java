@@ -22,6 +22,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
+/** JEI category displaying a fission reactor coolant boiling recipe. */
 public class BoilingRecipeCategory implements IRecipeCategory<BoilingRecipe> {
 
     public static final RecipeType<BoilingRecipe> TYPE =

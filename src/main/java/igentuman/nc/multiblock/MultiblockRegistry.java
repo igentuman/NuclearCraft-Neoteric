@@ -5,6 +5,7 @@ import igentuman.nc.registration.ModEntry;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Global registry of {@link MultiblockEntry} definitions, looked up by name, controller, or port. */
 public class MultiblockRegistry {
     public static final Map<String, MultiblockEntry> ENTRIES = new HashMap<>();
 

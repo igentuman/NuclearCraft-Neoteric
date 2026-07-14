@@ -25,6 +25,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
+/** Block entity for single-block processing machines; runs recipes with redstone control and catalyst modifiers. */
 public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvider {
 
     @NBTField(syncToClient = true)

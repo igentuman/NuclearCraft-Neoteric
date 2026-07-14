@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
+/** Generates fission reactor fuel recipes mapping fuel items to depleted output with time, power, and heat. */
 public class FissionFuelRecipes {
 
     public static void fissionFuel(RecipeOutput out) {

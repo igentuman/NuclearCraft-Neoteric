@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
 
+/** Text helpers for translation components, formatting, and human-readable unit display. */
 public class TextUtils
 {
 	public static MutableComponent __(String text, Object... pArgs)

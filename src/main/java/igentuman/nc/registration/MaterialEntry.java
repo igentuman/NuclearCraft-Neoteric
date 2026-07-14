@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import static igentuman.nc.setup.Registers.*;
 
+/** Fluent builder registering a material's product forms (ore, block, ingot, gem, dust, plate, nugget, raw ore, fluid). */
 public class MaterialEntry {
 
     public final int color;

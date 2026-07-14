@@ -2,11 +2,7 @@ package igentuman.nc.block_entity.catalyst;
 
 import igentuman.nc.block_entity.GlobalBlockEntity;
 
-/**
- * Reference ENERGY catalyst: lowers the recipe's effective energy-per-tick by its power.
- * The host resets {@code energyPerTick} to the recipe baseline before preTick each tick,
- * so the reduction is reapplied fresh and never compounds toward zero.
- */
+/** Energy catalyst that lowers the host processor's effective energy-per-tick by its power. */
 public class EnergyCatalyst extends Catalyst {
 
     private static final int REDUCTION_PER_POWER = 5;

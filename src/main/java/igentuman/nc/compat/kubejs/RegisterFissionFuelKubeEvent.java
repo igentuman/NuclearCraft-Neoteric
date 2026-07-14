@@ -8,24 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * Script-facing event for managing fission fuels. Newly registered fuels are collected here and
- * registered (items + fluids auto-generated) once the event finishes posting; removals and
- * overrides act on already-registered built-ins immediately.
- *
- * <p>Example KubeJS script:</p>
- * <pre>{@code
- * NuclearCraftEvents.registerFissionFuel(event => {
- *     // add a new fuel; oxide/nitride/zirconium/triso variants are derived automatically
- *     event.register('exotic', 'xyz-300')
- *          .forgeEnergy(2000).heat(500).criticality(40).depletion(120).efficiency(150)
- *          .isotopes(300, 238)
- *
- *     event.remove('uranium', 'leu-235')                  // disable a built-in
- *     event.override('uranium', 'heu-235', def => { def.heat = 400 })  // tweak params
- * })
- * }</pre>
- */
+/** KubeJS script event for registering, removing, or overriding fission fuels. */
 public class RegisterFissionFuelKubeEvent implements KubeEvent {
 
     private final List<FuelDef> collected = new ArrayList<>();

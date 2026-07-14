@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Controller block entity for the fusion reactor; manages the core cage, runs the reaction, and emits beam particles. */
 public class FusionReactorControllerBE extends MultiblockControllerBE {
 
     public static final int MODE_ENERGY = 0;
@@ -106,12 +107,12 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
     }
 
     public double rfAmplifierRatio() {
-        return Math.max(0, Math.min((rfAmplificationRatio / 100.0) * (amplificationAdjustment / 100.0), 1.0));
+        return Math.clamp((rfAmplificationRatio / 100.0) * (amplificationAdjustment / 100.0), 0, 1.0);
     }
 
     /** GUI slider (1..100) tuning the amplification ratio. */
     public void setAmplificationAdjustment(int value) {
-        int clamped = Math.min(100, Math.max(1, value));
+        int clamped = Math.clamp(value, 1, 100);
         if (clamped != amplificationAdjustment) {
             amplificationAdjustment = clamped;
             markDirty();
@@ -179,7 +180,7 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
                 }
             }
         }
-        int ratio = Math.max(0, Math.min(100, (int) (signal / 0.15)));
+        int ratio = Math.clamp((int) (signal / 0.15), 0, 100);
         if (signal != inputRedstoneSignal || ratio != rfAmplificationRatio) {
             inputRedstoneSignal = signal;
             rfAmplificationRatio = ratio;
@@ -206,14 +207,14 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
             case MODE_ENERGY ->
                     energyStorage != null ? scale(energyStorage.getEnergyStored(), energyStorage.getMaxEnergyStored()) : 0;
             case MODE_HEAT -> scale((int) reactorHeat, (int) maxHeat);
-            case MODE_EFFICIENCY -> Math.max(0, Math.min(15, (int) (efficiency * 15)));
+            case MODE_EFFICIENCY -> Math.clamp((int) (efficiency * 15), 0, 15);
             default -> 0;
         };
     }
 
     private static int scale(int value, int max) {
         if (max <= 0) return 0;
-        return Math.max(0, Math.min(15, (int) ((long) value * 15 / max)));
+        return Math.clamp((int) ((long) value * 15 / max), 0, 15);
     }
 
     @Override

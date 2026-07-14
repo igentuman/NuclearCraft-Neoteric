@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+/** Client -> server payload cycling the redstone control mode of a multiblock port. */
 public record PacketRedstoneModeCycle(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<PacketRedstoneModeCycle> TYPE =

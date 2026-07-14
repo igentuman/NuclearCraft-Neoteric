@@ -10,6 +10,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
+/** Coordinates a block entity's per-side item and fluid capability handlers, auto-transfer, and NBT. */
 public class SidedContentHandler {
 
     @Nullable

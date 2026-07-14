@@ -5,6 +5,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
+/** Per-face view of a FluidCapabilityHandler that gates fill/drain by that side's tank modes. */
 public class FluidHandlerWrapper implements IFluidHandler {
 
     private final FluidCapabilityHandler handler;

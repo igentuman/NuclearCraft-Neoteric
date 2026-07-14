@@ -13,6 +13,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/** Generates block loot tables for blocks, ores, storage blocks, and heat sinks. */
 public class ModBlockLootTableProvider  extends BlockLootSubProvider {
 
     public ModBlockLootTableProvider(HolderLookup.Provider registries) {

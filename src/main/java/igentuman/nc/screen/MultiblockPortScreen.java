@@ -20,6 +20,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 
+/** GUI screen for a multiblock I/O port: renders the controller's slots and tanks plus a redstone-mode button. */
 public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPortContainer> {
 
     private static final ResourceLocation TEXTURE = rl("textures/gui/processor.png");

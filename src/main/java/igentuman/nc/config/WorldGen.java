@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Builds per-material ore worldgen config (height range, vein size, veins per chunk) from material entries. */
 public class WorldGen {
     public static ModConfigSpec SPEC;
 

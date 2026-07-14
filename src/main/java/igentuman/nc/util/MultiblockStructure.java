@@ -16,6 +16,7 @@ import static igentuman.nc.NuclearCraft.rlFromString;
 import static net.minecraft.world.level.block.Blocks.AIR;
 import static net.minecraft.world.level.block.state.StateHolder.PROPERTIES_TAG;
 
+/** Parsed structure-template NBT exposing its block layout, bounds, and required materials. */
 public class MultiblockStructure {
     private final Map<BlockPos, BlockState> blocks = new HashMap<>();
     private CompoundTag nbt;

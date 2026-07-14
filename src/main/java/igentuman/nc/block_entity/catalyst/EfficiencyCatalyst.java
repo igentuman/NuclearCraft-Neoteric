@@ -6,10 +6,7 @@ import igentuman.nc.setup.ModEntries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-/**
- * Reference EFFICIENCY catalyst: on a tick where the host just finished an operation,
- * rolls a power-scaled chance to yield one bonus item into an existing output stack.
- */
+/** Efficiency catalyst that rolls a power-scaled chance to yield a bonus output item on each completed operation. */
 public class EfficiencyCatalyst extends Catalyst {
 
     private static final float CHANCE_PER_POWER = 0.05f;

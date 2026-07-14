@@ -8,13 +8,7 @@ import igentuman.nc.util.caps.ItemCapDefinition;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Shared geometry for the JEI and EMI processor recipe categories so both render
- * identically to the in-game processor GUI: same {@link SlotsLayout} positions, same
- * slot sprites ({@code slots.png}) and the same progress arrow ({@code progress_bars.png}).
- *
- * <p>All coordinates are category-local (origin at the recipe area top-left).
- */
+/** Shared slot and progress-bar geometry for the JEI and EMI processor recipe categories. */
 public class ProcessorCategoryLayout {
 
     public static final int SLOT = 18;

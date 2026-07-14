@@ -17,11 +17,7 @@ import static igentuman.nc.datagen.recipe.ModRecipeProvider.MOLTEN_INGOT;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.fluidOf;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.isotopeFluid;
 
-/**
- * Fusion reactor fuel + coolant process recipes. {@code energy} and {@code temperature} are ported
- * verbatim from NuclearCraft Neoteric ({@code temperature} scaled to the raw optimal plasma temp by
- * x1_000_000); {@code processTime = timeModifier x 10}. Radiation is dropped.
- */
+/** Generates fusion reactor fuel and coolant recipes with energy, plasma temperature, and process time. */
 public class FusionReactorRecipes {
 
     public static void fusion(RecipeOutput out) {

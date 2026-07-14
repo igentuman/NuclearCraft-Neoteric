@@ -6,6 +6,7 @@ import net.minecraft.world.level.material.Fluids;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.SUPERCOOLER;
 
+/** Generates supercooler recipes that chill gases and fluids into liquefied or cooled forms. */
 public class SupercoolerRecipes {
 
     public static void supercooler(RecipeOutput out) {

@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.Block;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
+/** Holds the block tag keys used to identify fusion reactor components (casing, electromagnets, RF amplifiers). */
 public final class FusionTags {
 
     private FusionTags() {}

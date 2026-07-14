@@ -29,6 +29,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
+/** Facing, power-lit block entity block for machine processors; opens its menu and ticks the backing BE. */
 public class UniversalProcessorBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;

@@ -23,6 +23,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
+/** Owns every DeferredRegister for the mod and registers them all to the mod event bus. */
 public class Registers {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);

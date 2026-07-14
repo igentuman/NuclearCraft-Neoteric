@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 import static igentuman.nc.NuclearCraft.MODID;
 import static java.util.Collections.emptySet;
 
+/** Registers all data providers (tags, recipes, models, lang, loot) on the datagen event. */
 @EventBusSubscriber(modid = MODID)
 public class ModDataGenerators {
 

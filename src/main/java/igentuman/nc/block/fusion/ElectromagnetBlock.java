@@ -23,6 +23,7 @@ import java.util.List;
 
 import static net.minecraft.network.chat.Component.translatable;
 
+/** Horizontally-facing electromagnet block; shows power, magnetic field, efficiency and heat stats. */
 public class ElectromagnetBlock extends MultiblockBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;

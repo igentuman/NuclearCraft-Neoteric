@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
+/** Facing block entity block for a multiblock controller; opens its menu, ticks the BE and handles form/break. */
 public class MultiblockControllerBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;

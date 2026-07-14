@@ -26,15 +26,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Controller block entity for the fission reactor. The structure validator (off-thread) produces
- * stats into the {@link FissionReactorCache}; this BE runs the {@link FissionReaction} on the main
- * thread each tick when formed, so all world/buffer mutation stays on the main thread.
- *
- * <p>Two runtime fluid subsystems share the controller tanks: active heat-sink coolant (drained
- * every tick regardless of mode) and the boiling steam mode (heat -> steam, toggled by the player).
- * In steam mode the energy output capability is withheld so the reactor produces steam instead of FE.
- */
+/** Controller block entity for the fission reactor; runs the reaction each tick and manages heat, energy/steam, and redstone modes. */
 public class FissionReactorControllerBE extends MultiblockControllerBE implements RedstoneModeController {
 
     private static final int TOGGLE_ARM_TICKS = 200;

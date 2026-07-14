@@ -27,6 +27,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
+/** Fluent builder that assembles and serializes universal processor recipes with item/fluid I/O. */
 public class UniversalProcessorRecipeBuilder implements RecipeBuilder {
 
     private final String processorName;

@@ -5,6 +5,7 @@ import net.minecraft.world.item.Items;
 
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 
+/** Generates rock crusher recipes that break stones and ores into dusts and gems. */
 public class RockCrusherRecipes {
 
     public static void rockCrusher(RecipeOutput out) {

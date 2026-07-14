@@ -10,6 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
+/** Codec and stream codec for reading and syncing {@link FissionFuelRecipe} instances. */
 public class FissionFuelRecipeSerializer implements RecipeSerializer<FissionFuelRecipe> {
 
     private static final MapCodec<FissionFuelRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(

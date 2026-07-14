@@ -18,6 +18,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
+/** Popup screen listing a machine's slots so the player picks one to open its per-face side configuration. */
 public class SideConfigSlotSelectionScreen extends Screen {
 
     private static final ResourceLocation TEXTURE = rl("textures/gui/window_no_inventory.png");

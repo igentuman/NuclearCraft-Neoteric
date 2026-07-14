@@ -6,6 +6,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 
+/** Generates isotope separator recipes that split dusts and fuels into their component isotopes. */
 public class IsotopeSeparatorRecipes {
 
     public static void isotopeSeparator(RecipeOutput out) {

@@ -14,6 +14,7 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.List;
 
+/** Fusion recipe: two input fluids fused at an optimal temperature over a process time, yielding output fluids and energy. */
 public record FusionRecipe(
         SizedFluidIngredient inputA,
         SizedFluidIngredient inputB,

@@ -14,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
+/** Generates built-in datapack entries: damage types, worldgen features, biomes, and dimensions. */
 public class ModDatapackProvider extends DatapackBuiltinEntriesProvider {
     public ModDatapackProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> event) {
         super(output, event, BUILDER, Set.of(MODID));

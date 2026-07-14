@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
+/** Menu opened from a multiblock port; mirrors the controller's inventory slots and exposes the redstone mode. */
 public class MultiblockPortContainer extends AbstractContainerMenu {
 
     private final MultiblockPortBE blockEntity;

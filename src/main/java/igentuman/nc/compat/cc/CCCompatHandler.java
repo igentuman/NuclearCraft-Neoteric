@@ -9,6 +9,7 @@ import igentuman.nc.setup.ModEntries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
+/** Registers CC:Tweaked peripheral capabilities on controller and processor block entities. */
 public class CCCompatHandler {
 
     public static void register(IEventBus modEventBus) {

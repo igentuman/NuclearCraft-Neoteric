@@ -4,6 +4,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.function.Predicate;
 
+/** Fluid tank handler with factories that wire capacity, optional validators, and change callbacks. */
 public class CustomFluidTank extends FluidStackHandler {
 
     public CustomFluidTank(int tanks, int defaultCapacity) {

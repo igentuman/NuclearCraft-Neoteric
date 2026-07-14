@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
+/** Menu for a machine processor: lays out its I/O slots and player inventory and exposes synced progress/redstone state. */
 public class UniversalProcessorContainer extends AbstractContainerMenu {
 
     private final UniversalProcessorBE blockEntity;

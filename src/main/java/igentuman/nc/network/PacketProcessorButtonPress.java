@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+/** Client -> server payload delivering a processor GUI button press, such as the redstone toggle. */
 public record PacketProcessorButtonPress(BlockPos pos, int buttonId)
         implements CustomPacketPayload {
 

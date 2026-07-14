@@ -8,18 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * Script-facing event for managing fission reactor heat sinks.
- *
- * <p>Example KubeJS script:</p>
- * <pre>{@code
- * NuclearCraftEvents.registerHeatSink(event => {
- *     event.register('my_custom', 200, ['water_heat_sink', 'redstone_heat_sink'])
- *     event.remove('glowstone')
- *     event.override('water', def => { def.heat = 100 })
- * })
- * }</pre>
- */
+/** KubeJS script event for registering, removing, or overriding fission reactor heat sinks. */
 public class RegisterHeatSinkKubeEvent implements KubeEvent {
 
     private final List<HeatSinkDef> collected = new ArrayList<>();

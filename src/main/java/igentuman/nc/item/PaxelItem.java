@@ -6,6 +6,7 @@ import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.block.state.BlockState;
 
+/** Combined pickaxe/axe/shovel tool that mines any block at its tier speed and always drops results. */
 public class PaxelItem extends PickaxeItem {
 
     private final Tier tier;

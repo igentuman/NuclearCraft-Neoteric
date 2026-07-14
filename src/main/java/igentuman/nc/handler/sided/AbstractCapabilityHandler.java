@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.HashMap;
 
+/** Base for sided capability handlers: tracks per-face slot modes, toggling, and access resolution. */
 public abstract class AbstractCapabilityHandler {
     public final int inputSlots;
     public final int outputSlots;

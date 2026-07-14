@@ -3,15 +3,7 @@ package igentuman.nc.content.fuel;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Parameter set for a single fission fuel form. A base fuel (e.g. {@code uranium/heu-233})
- * carries the authored values; its oxide / nitride / zirconium-alloy / triso variants are
- * derived from the base via {@link #variants()} using the same formulas as the original
- * NuclearCraft Neoteric {@code NCFuel}.
- *
- * <p>This is the single shared definition type: built-in fuels and KubeJS-registered fuels
- * both produce {@code FuelDef} instances that flow through the same registration path.</p>
- */
+/** Parameter set for a fission fuel; a base fuel derives its oxide/nitride/zirconium/triso variants via {@link #variants()}. */
 public class FuelDef {
 
     /** Item-form suffixes that get a fuel/depleted item. Triso ({@code _tr}) is item-only. */
@@ -70,7 +62,7 @@ public class FuelDef {
 
     /**
      * Resolves the parameter set for each item variant. Special fuels yield only the base form.
-     * Derivation mirrors the original mod: oxide is derived from the base; nitride, zirconium-alloy
+     * Derivation: oxide is derived from the base; nitride, zirconium-alloy
      * and triso are derived from the oxide.
      */
     public Map<String, FuelDef> variants() {

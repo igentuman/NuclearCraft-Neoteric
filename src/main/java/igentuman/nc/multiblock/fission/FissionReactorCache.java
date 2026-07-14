@@ -9,15 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Multiblock cache for the fission reactor. Extends the base cache (which owns the structure
- * position set) with derived structure stats produced by {@link FissionReactorValidator}:
- * classified components and the scalars consumed by the reactor runtime logic.
- *
- * <p>All stats are (re)computed during validation, which runs on the multiblock executor thread.
- * Scalars are persisted so a reloaded-but-formed reactor keeps its numbers until the next
- * validation pass; the component position sets are rebuilt lazily on the next structure change.
- */
+/** Multiblock cache for the fission reactor; stores classified components and derived stats for the runtime reaction. */
 public class FissionReactorCache extends MultiblockCacheImpl {
 
     public final Set<Long> fuelCells = new HashSet<>();

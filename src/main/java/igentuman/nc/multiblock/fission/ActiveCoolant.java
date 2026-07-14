@@ -1,14 +1,6 @@
 package igentuman.nc.multiblock.fission;
 
-/**
- * The active heat-sink coolant types. Each maps an {@code active_<coolant>} heat sink to the source
- * fluid it drains (resolved by material name via {@code ModEntries.fluidOf}) and the cooling a single
- * fed sink contributes. Active cooling is independent of the reactor's steam/energy mode.
- *
- * <p>Defines the controller's fluid tank layout: tank 0 is the boiling-mode coolant input, tanks
- * {@code 1..COUNT} are the per-coolant active inputs (in declaration order), and the last tank is the
- * boiling steam output.
- */
+/** Enumerates active heat-sink coolant types, mapping each to its source fluid, cooling value, and fluid tank index. */
 public enum ActiveCoolant {
     WATER("water", 250),
     REDSTONE("redstone", 270),

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/** JEI transfer handler that encodes a processor recipe into an AE2 pattern encoding terminal. */
 public class JEI2PatternEncoderTransfer implements IRecipeTransferHandler<PatternEncodingTermMenu, UniversalProcessorRecipe> {
 
     private final RecipeType<UniversalProcessorRecipe> recipeType;

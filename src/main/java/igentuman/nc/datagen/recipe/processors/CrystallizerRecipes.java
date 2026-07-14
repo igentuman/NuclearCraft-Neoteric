@@ -6,6 +6,7 @@ import net.minecraft.world.level.material.Fluids;
 
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 
+/** Generates crystallizer recipes that solidify fluids into dusts, gems, and crystal items. */
 public class CrystallizerRecipes {
 
     public static void crystallizer(RecipeOutput out) {

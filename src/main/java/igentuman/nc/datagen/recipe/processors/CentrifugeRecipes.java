@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.CENTRIFUGE;
 
+/** Generates centrifuge recipes that separate fluids into components, including molten depleted-fuel reprocessing. */
 public class CentrifugeRecipes {
 
     public static void centrifuge(RecipeOutput out) {

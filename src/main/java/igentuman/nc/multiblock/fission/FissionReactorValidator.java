@@ -21,14 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Fission reactor validator. Validates the cuboid casing shell + interior shape via a composed
- * {@link CubicMultiblockValidator}, then classifies interior components and derives reactor stats
- * into the {@link FissionReactorCache}.
- *
- * <p>Runs on the multiblock executor thread (single thread per dimension), so the transient
- * component-block fields are safe to reuse across {@link #validate} calls.
- */
+/** Validates the fission reactor's cuboid shell and interior, then classifies components and derives reactor stats. */
 public class FissionReactorValidator implements IMultiblockValidator {
 
     private static final int MAX_MODERATOR_RUN = 4;

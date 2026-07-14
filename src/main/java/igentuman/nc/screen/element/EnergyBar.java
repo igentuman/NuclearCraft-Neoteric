@@ -11,6 +11,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import java.util.List;
 import java.util.function.Supplier;
 
+/** Vertical bar showing an energy store's fill level with a formatted stored/max tooltip. */
 public class EnergyBar extends AbstractWidget {
 
     private static final int COLOR_BORDER = 0xFF555555;

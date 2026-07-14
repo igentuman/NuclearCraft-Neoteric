@@ -10,13 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * 3D pattern of {@link BlockPredicate}s indexed as [y][z][x].
- *
- * <p>NBT format stores width/height/depth, controllerOffset, and a flat list of predicate
- * registry-key strings in [y][z][x] order. Custom predicates must be registered via
- * {@link #registerPredicate} before world load to round-trip.
- */
+/** A 3D grid of block predicates defining a multiblock shape, with a builder and NBT serialization. */
 public class MultiblockPattern {
 
     private static final Map<String, BlockPredicate> REGISTRY = new HashMap<>();

@@ -6,6 +6,7 @@ import net.minecraft.world.level.material.Fluids;
 
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 
+/** Generates fluid enricher recipes that combine a fluid with an item into an enriched fluid. */
 public class FluidEnricherRecipes {
 
     public static void fluidEnricher(RecipeOutput out) {

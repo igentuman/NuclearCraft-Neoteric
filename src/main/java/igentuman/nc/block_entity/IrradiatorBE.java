@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
+/** Block entity for the fission irradiation chamber; speeds recipes using flux from its host reactor. */
 public class IrradiatorBE extends UniversalProcessorBE {
 
     @NBTField(syncToClient = true)

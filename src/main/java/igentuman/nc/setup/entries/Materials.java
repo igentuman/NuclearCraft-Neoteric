@@ -2,6 +2,7 @@ package igentuman.nc.setup.entries;
 
 import igentuman.nc.setup.ModEntries;
 
+/** Declares all material entries and their ore/ingot/dust/plate/fluid forms. */
 public class Materials extends ModEntries {
     public static void materials() {
         oreMetal("uranium", 0xFF476447);

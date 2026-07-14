@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 
 import static igentuman.nc.util.TextUtils.__;
 
+/** Vertical bar showing a boiling buffer's coolant (blue) and hot coolant (orange) with a rate tooltip. */
 public class BoilingBar extends AbstractWidget {
 
     private static final int COLOR_BORDER = 0xFF555555;

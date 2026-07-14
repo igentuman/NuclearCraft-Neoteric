@@ -2,6 +2,7 @@ package igentuman.nc.multiblock;
 
 import java.util.*;
 
+/** Computes a dependency-ordered validation schedule from a graph, resolving cycles via Tarjan SCC and topological sort. */
 public class ValidationScheduler {
 
     private final Map<String, List<String>> adjList = new HashMap<>();

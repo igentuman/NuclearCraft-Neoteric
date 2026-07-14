@@ -38,16 +38,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import static igentuman.nc.block.MultiblockControllerBlock.FACING;
 
-/**
- * Fission reactor runtime reaction. Runs on the main server thread from the controller BE tick;
- * reads structure stats from {@link FissionReactorCache} (scalars only) and mutates the controller's
- * heat buffer, energy storage, fuel inventory, and fluid tanks.
- *
- * <p>Two fluid subsystems run here. Active heat-sink coolant is drained every tick (independent of
- * mode) and adds to the cooling total only for sinks whose coolant tank is supplied. The boiling
- * steam mode converts reactor heat into steam in place of FE generation. Formulas mirror NuclearCraft
- * Neoteric; radiation is out of scope.
- */
+/** Runs the fission reactor's per-tick reaction: heat, energy/steam generation, cooling, fuel burn, and meltdown. */
 public class FissionReaction {
 
     private static final double GENERATION_MULTIPLIER = 1;

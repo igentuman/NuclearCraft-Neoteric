@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import static igentuman.nc.NuclearCraft.rl;
 
+/** Draws a slot background sprite chosen by item/fluid and input/output type, optionally clickable. */
 public class SlotWidget extends AbstractWidget {
     public static ResourceLocation TEXTURE = rl("textures/gui/slots.png");
     public static int RELATIVE_X = 0;

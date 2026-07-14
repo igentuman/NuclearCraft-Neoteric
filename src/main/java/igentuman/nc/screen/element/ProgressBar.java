@@ -11,6 +11,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 
+/** Widget rendering a machine's recipe progress by overlaying a filled arrow from a selectable atlas sprite. */
 public class ProgressBar extends AbstractWidget {
     private int x;
     private int y;

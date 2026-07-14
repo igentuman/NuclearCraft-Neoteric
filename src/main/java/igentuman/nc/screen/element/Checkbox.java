@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.function.Supplier;
 
+/** Toggleable checkbox widget that fills with a checked/hovered/unchecked color and shows a supplied tooltip. */
 public class Checkbox extends AbstractWidget {
 
     private static final int COLOR_BORDER = 0xFF444444;

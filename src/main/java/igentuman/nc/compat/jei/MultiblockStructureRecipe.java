@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static igentuman.nc.NuclearCraft.rl;
 
+/** JEI recipe holding a multiblock's example structure and the block counts required to build it. */
 public class MultiblockStructureRecipe {
     private final ResourceLocation id;
     private final CompoundTag structureNbt;

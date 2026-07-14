@@ -8,20 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-/**
- * Cubic (axis-aligned hollow box) validator. The controller may sit anywhere on the shell
- * (face, edge, or corner). Two-phase:
- * <ol>
- *   <li>Detect bounding box and controller's local position by scanning six axis-aligned rays
- *       from {@code controllerPos}. Tangent axes are found by counting consecutive
- *       shell-predicate matches; at most one wall-normal axis is found by walking into the
- *       interior until the opposite face matches the shell predicate.</li>
- *   <li>Validate full outer shell, then full interior.</li>
- * </ol>
- *
- * <p>Local-axis offsets are rotated by {@code facing} (NORTH = identity) before being applied
- * to {@code controllerPos}.
- */
+/** Validates an axis-aligned hollow-box multiblock by detecting its bounds, then its shell and interior. */
 public class CubicMultiblockValidator implements IMultiblockValidator {
 
     private final BlockPredicate controllerPredicate;

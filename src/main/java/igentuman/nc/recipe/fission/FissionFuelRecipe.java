@@ -11,11 +11,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-/**
- * Fission fuel processing recipe: one fuel item burned over {@code processTime} ticks, producing
- * {@code power} FE/t and {@code heat} heat/t, yielding a depleted item. Consumed by the reactor
- * runtime logic, not by the universal {@code RecipeInfo} loop.
- */
+/** Fission fuel recipe: a fuel item burned over a process time, producing power and heat and yielding a depleted item. */
 public record FissionFuelRecipe(Ingredient input, ItemOutput output, int processTime, int power, int heat)
         implements Recipe<ProcessorRecipeInput> {
 

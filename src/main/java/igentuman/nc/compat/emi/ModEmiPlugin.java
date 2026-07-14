@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/** EMI plugin registering processor, multiblock, and fission recipe categories and their recipes. */
 @EmiEntrypoint
 public class ModEmiPlugin implements EmiPlugin {
 

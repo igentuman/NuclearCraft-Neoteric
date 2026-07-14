@@ -43,6 +43,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
+/** Mod entrypoint: bootstraps registries, entries, worldgen, capabilities, network payloads and creative tabs. */
 @Mod(NuclearCraft.MODID)
 public class NuclearCraft {
     public static final String MODID = "nuclearcraft";

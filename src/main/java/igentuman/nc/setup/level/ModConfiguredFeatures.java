@@ -18,6 +18,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 
+/** Datapack bootstrap that registers configured ore features with config-driven vein sizes. */
 public class ModConfiguredFeatures {
 
     private static ResourceKey<ConfiguredFeature<?, ?>> registerKey(String name) {

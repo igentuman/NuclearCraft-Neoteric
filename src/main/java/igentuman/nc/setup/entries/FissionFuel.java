@@ -6,6 +6,7 @@ import igentuman.nc.setup.ModEntries;
 
 import java.util.function.Consumer;
 
+/** Declares all fission fuel entries and provides register/remove/override helpers. */
 public class FissionFuel extends ModEntries {
 
     private static boolean initialized = false;

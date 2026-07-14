@@ -5,6 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
+/** Per-face view of an ItemCapabilityHandler that gates insert/extract by that side's slot modes. */
 public class ItemHandlerWrapper implements IItemHandler {
 
     private final ItemCapabilityHandler handler;

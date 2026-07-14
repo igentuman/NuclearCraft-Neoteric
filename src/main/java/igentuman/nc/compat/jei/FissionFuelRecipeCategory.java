@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+/** JEI category displaying a fission fuel with its power, heat, and depletion stats. */
 public class FissionFuelRecipeCategory implements IRecipeCategory<FissionFuelRecipe> {
 
     public static final RecipeType<FissionFuelRecipe> TYPE =

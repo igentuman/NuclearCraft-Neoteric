@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 
 import static igentuman.nc.util.TextUtils.__;
 
+/** Vertical bar showing a heat buffer's fill with a tooltip of current/max heat and gain/cooldown rates. */
 public class HeatBar extends AbstractWidget {
 
     private static final int COLOR_BORDER = 0xFF555555;

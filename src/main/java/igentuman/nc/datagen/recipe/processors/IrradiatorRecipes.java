@@ -9,6 +9,7 @@ import net.minecraft.world.item.Items;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.IRRADIATOR;
 
+/** Generates irradiator recipes that transmute items and fluids under neutron exposure. */
 public class IrradiatorRecipes {
 
     public static void irradiator(RecipeOutput out) {

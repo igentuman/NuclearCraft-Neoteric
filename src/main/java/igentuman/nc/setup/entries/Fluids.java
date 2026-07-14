@@ -2,6 +2,7 @@ package igentuman.nc.setup.entries;
 
 import igentuman.nc.setup.ModEntries;
 
+/** Declares all fluid materials: acids, gases, coolants, and liquids. */
 public class Fluids extends ModEntries {
     public static void fluids() {
         acid("hydrofluoric_acid", 0xCCFFEE99);

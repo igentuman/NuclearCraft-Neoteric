@@ -12,10 +12,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
-/**
- * Boiling recipe: coolant fluid + reactor heat -> steam fluid. {@code heatRequired} is the reactor
- * heat spent to convert one batch (the input/output amount). Consumed by the reactor steam logic.
- */
+/** Boiling recipe: coolant fluid plus reactor heat converted to steam, spending {@code heatRequired} heat per batch. */
 public record BoilingRecipe(SizedFluidIngredient input, FluidOutput output, int heatRequired)
         implements Recipe<ProcessorRecipeInput> {
 

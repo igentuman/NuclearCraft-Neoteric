@@ -6,16 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
-/**
- * Computes the average tint color of an item texture, used to color molten-fuel fluids
- * (active and depleted) from their pellet texture instead of a hand-picked palette.
- *
- * <p>Ported from NuclearCraft Neoteric (1.20.1), where the molten-fuel fluid color was
- * sampled from the fuel item PNG at construction. The original read pixels via the
- * client-only {@code NativeImage}; here we use {@link ImageIO} so the sampler is
- * side-agnostic and headless-safe. Dedicated servers still fall back to {@link #DEFAULT_COLOR}
- * (no per-fuel tint is needed without a client), matching the original behavior.</p>
- */
+/** Samples the average color of a mod texture to tint molten-fuel fluids, with a server-safe fallback. */
 public final class TextureUtil {
 
     /** Fallback tint when sampling is skipped (server) or the texture is missing. */
@@ -55,7 +46,7 @@ public final class TextureUtil {
                     int r = (argb >> 16) & 0xFF;
                     int g = (argb >> 8) & 0xFF;
                     int b = argb & 0xFF;
-                    // Slight shift to better match the perceived item color (from the original mod).
+                    // Slight shift to better match the perceived item color.
                     redSum += Math.min(254, r + 20);
                     greenSum += g;
                     blueSum += Math.max(0, b - 30);

@@ -5,10 +5,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * A wrapper around an ItemStackHandler that exposes only a contiguous range of slots
- * and can restrict insertion and/or extraction.
- */
+/** Wraps an item handler to expose a contiguous slot range with optional insert/extract restrictions. */
 public class SidedItemHandler implements IItemHandler {
 
     private final ItemStackHandler inner;

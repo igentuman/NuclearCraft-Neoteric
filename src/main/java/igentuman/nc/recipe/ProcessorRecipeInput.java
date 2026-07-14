@@ -6,10 +6,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
 
-/**
- * A RecipeInput implementation that provides both item and fluid access
- * for universal processor recipe matching.
- */
+/** RecipeInput providing both item and fluid access for universal processor recipe matching. */
 public class ProcessorRecipeInput implements RecipeInput {
 
     private final List<ItemStack> items;

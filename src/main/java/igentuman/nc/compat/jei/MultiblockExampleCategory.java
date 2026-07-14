@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+/** JEI category rendering an interactive 3D preview of a multiblock's example structure. */
 public class MultiblockExampleCategory implements IRecipeCategory<MultiblockStructureRecipe> {
 
     public static final RecipeType<MultiblockStructureRecipe> TYPE =

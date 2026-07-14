@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
+/** Menu for a multiblock controller: lays out its I/O slots and player inventory and exposes synced progress/state. */
 public class MultiblockControllerContainer extends AbstractContainerMenu {
 
     private final MultiblockControllerBE blockEntity;

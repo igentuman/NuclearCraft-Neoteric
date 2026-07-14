@@ -16,23 +16,7 @@ import java.util.function.Consumer;
 
 import static igentuman.nc.setup.Registers.ITEMS;
 
-/**
- * Registration unit for one fission fuel (a {@code group/name} pair such as {@code uranium/heu-233}).
- * Parallels {@link IsotopeEntry}: it lives in {@link ModEntries#FISSION_FUEL} rather than the universal
- * {@code ENTRIES} map and owns the family of registered objects derived from a single {@link FuelDef}:
- *
- * <ul>
- *   <li>fuel items ({@link ItemFuel}) and depleted items, one per item variant
- *       ({@code "", _ox, _ni, _za, _tr});</li>
- *   <li>molten + depleted-molten fluids, one per fluid variant ({@code "", _za, _ox, _ni} — triso
- *       has no fluid), each tinted by the average color of the corresponding pellet texture.</li>
- * </ul>
- *
- * <p>Built-in fuels and KubeJS-registered fuels both enter through {@link #register(FuelDef)},
- * so the native and scripted surfaces share one registration path. Registration is idempotent
- * per {@code group/name}; this is the single point where fuel content reaches the deferred
- * registers, so it must run during mod construction (before registry freeze).</p>
- */
+/** Registration unit for one fission fuel: registers fuel/depleted items and molten fluids derived from a {@link FuelDef}. */
 public class FissionFuelEntry {
 
     public final String group;

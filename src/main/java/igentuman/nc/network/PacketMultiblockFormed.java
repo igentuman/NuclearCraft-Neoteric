@@ -7,6 +7,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+/** Server -> client payload notifying that a multiblock formed, carrying its structure positions. */
 public record PacketMultiblockFormed(BlockPos controllerPos, long[] structurePositions)
         implements CustomPacketPayload {
 

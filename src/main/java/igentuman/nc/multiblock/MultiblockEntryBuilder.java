@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+/** Fluent builder that assembles a {@link MultiblockEntry} from controller, ports, casing, interior, and size. */
 public class MultiblockEntryBuilder {
 
     private final String name;

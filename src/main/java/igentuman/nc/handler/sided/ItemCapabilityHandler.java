@@ -15,6 +15,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import java.util.EnumMap;
 import java.util.Map;
 
+/** Sided item handler backing an internal inventory, enforcing per-face access and auto push/pull. */
 public class ItemCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable {
 
     private final ItemStackHandler internal;

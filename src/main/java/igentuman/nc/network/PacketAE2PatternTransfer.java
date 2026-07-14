@@ -20,6 +20,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.lang.reflect.Field;
 import java.util.List;
 
+/** Client -> server payload that encodes a processing pattern into an AE2 pattern terminal menu. */
 public class PacketAE2PatternTransfer implements CustomPacketPayload {
     public static final Type<PacketAE2PatternTransfer> TYPE = new Type<>(NuclearCraft.rl("ae2_pattern_transfer"));
 

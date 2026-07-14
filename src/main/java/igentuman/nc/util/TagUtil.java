@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import static igentuman.nc.NuclearCraft.rlFromString;
 
 
+/** Helpers for resolving blocks, items, and fluids by tag and building common material tag keys. */
 public class TagUtil {
 
     public static Fluid getFirstMatchingFluidByTag(String key)

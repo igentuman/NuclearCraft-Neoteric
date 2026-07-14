@@ -14,6 +14,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.__;
 
+/** Client event subscriber that appends moderator stat tooltips to moderator-tagged item stacks. */
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class TooltipHandler {
     private static ItemTooltipEvent processedEvent;

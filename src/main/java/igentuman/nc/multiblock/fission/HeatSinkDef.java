@@ -17,6 +17,7 @@ import static igentuman.nc.util.StackUtils.getItemsByTagKey;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.getBlockNames;
 
+/** Defines a heat sink's cooling value and neighbor placement rules, parsing rule strings into validatable conditions. */
 public class HeatSinkDef {
 
     public String name;

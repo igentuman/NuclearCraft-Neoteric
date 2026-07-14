@@ -7,6 +7,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+/** Server -> client payload notifying that a multiblock at a controller position has disassembled. */
 public record PacketMultiblockBroken(BlockPos controllerPos) implements CustomPacketPayload {
 
     public static final Type<PacketMultiblockBroken> TYPE =

@@ -7,6 +7,7 @@ import net.minecraft.world.item.Items;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.MANUFACTORY;
 
+/** Generates manufactory grinding recipes turning ingots, ores, and blocks into dusts and byproducts. */
 public class ManufactoryRecipes {
 
     public static void manufactory(RecipeOutput out) {

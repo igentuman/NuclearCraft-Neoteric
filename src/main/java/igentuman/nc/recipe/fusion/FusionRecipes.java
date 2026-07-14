@@ -8,6 +8,7 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.Registers.RECIPE_SERIALIZERS;
 import static igentuman.nc.setup.Registers.RECIPE_TYPES;
 
+/** Registers the fusion reactor and fusion coolant recipe types and their serializers. */
 public final class FusionRecipes {
 
     private FusionRecipes() {}

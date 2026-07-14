@@ -2,6 +2,7 @@ package igentuman.nc.util;
 
 import net.neoforged.fml.ModList;
 
+/** Caches which optional compatibility mods are loaded and exposes them via lazy accessor methods. */
 public class ModUtil {
     protected static boolean initialized = false;
     protected static boolean isMekanismLoaded;

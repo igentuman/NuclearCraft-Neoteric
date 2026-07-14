@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import static igentuman.nc.setup.Registers.BLOCKS;
 import static igentuman.nc.setup.Registers.ITEMS;
 
+/** Registration unit for one heat sink: registers its block and item from a {@link HeatSinkDef} and holds cooling params. */
 public class HeatSinkEntry {
 
     public final String name;

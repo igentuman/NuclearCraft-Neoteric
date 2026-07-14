@@ -26,10 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.world.level.block.Block.UPDATE_CLIENTS;
 
-/**
- * Controller block entity for a multiblock. Bridges block lifecycle to {@link MultiblockHandler}
- * and persists the cache (which owns the structure position set) so re-validation is skipped on world reload.
- */
+/** Base controller block entity for a multiblock; bridges block lifecycle to {@link MultiblockHandler} and persists its cache. */
 public class MultiblockControllerBE extends GlobalBlockEntity implements MenuProvider {
 
     /** Buffered cache NBT read in {@link #loadAdditional} before the instance is built in {@link #onLoad}. */

@@ -8,6 +8,7 @@ import net.minecraft.world.item.Items;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.PRESSURIZER;
 
+/** Generates pressurizer recipes: plates, gems, obsidian, silicon boules, and isotope storage blocks. */
 public class PressurizerRecipes {
 
     public static void pressurizer(RecipeOutput out) {

@@ -7,6 +7,7 @@ import java.util.function.BiFunction;
 
 import static igentuman.nc.setup.Registers.ITEMS;
 
+/** Registers and holds the five tools (sword, pickaxe, axe, shovel, hoe) for one tool tier. */
 public class ToolSetEntry {
 
     public static final BiFunction<Tier, Item.Properties, ? extends Item> DEFAULT_SWORD   = SwordItem::new;

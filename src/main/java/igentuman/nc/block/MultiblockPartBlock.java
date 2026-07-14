@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
+/** Block entity block for a multiblock port; opens the port menu, exposes a comparator signal and cycles redstone mode. */
 public class MultiblockPartBlock extends BaseEntityBlock {
 
     public static MapCodec<MultiblockPartBlock> CODEC;

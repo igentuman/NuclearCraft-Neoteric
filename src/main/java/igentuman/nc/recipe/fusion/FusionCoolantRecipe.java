@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
+/** Fusion coolant recipe: an input fluid converted to a hot output fluid, removing reactor heat at {@code coolingRate}. */
 public record FusionCoolantRecipe(SizedFluidIngredient input, FluidOutput output, int coolingRate)
         implements Recipe<ProcessorRecipeInput> {
 

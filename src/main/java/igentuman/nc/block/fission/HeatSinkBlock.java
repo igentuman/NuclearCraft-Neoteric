@@ -19,6 +19,7 @@ import java.util.List;
 
 import static igentuman.nc.util.TextUtils.__;
 
+/** Fission reactor heat sink block; carries a {@link HeatSinkDef} and shows its cooling stats in the tooltip. */
 public class HeatSinkBlock extends Block {
 
     private final HeatSinkDef def;

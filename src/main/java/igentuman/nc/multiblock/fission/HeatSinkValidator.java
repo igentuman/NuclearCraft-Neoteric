@@ -11,19 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Evaluates a {@link HeatSinkDef}'s placement rules against a formed structure, reading neighbor
- * states from the {@link FissionReactorCache}. Rules are parsed by {@link HeatSinkDef} into
- * {@code [function, count, ruleText] -> blocks} conditions; all conditions must pass (AND).
- *
- * <p>A neighbor counts toward a condition only if its block is in the condition's block list and:
- * a neighboring heat sink must already be valid this pass (hence the topological
- * {@code HS_SCHEDULE}); a neighboring moderator must be active (face-adjacent to a fuel cell).
- *
- * <p>Deviation from legacy: the legacy "neighbor must also be adjacent to a fuel cell unless the
- * rule mentions casing" gate is dropped. It invalidated otherwise-correct basic sinks and was
- * keyed on a literal substring of the rule text; the operator counts already express the intent.
- */
+/** Evaluates a heat sink's neighbor placement rules against a formed fission structure to determine validity. */
 public final class HeatSinkValidator {
 
     private HeatSinkValidator() {}

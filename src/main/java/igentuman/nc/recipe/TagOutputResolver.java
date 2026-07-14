@@ -16,14 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Resolves tag-based recipe outputs to a concrete member using the {@code mod_tag_priority}
- * config order. The priority order is cached in a global map, rebuilt on config load/reload
- * (see {@code Common.refreshTagPriority}); resolution itself is not per-call config reads.
- *
- * Tiebreak between members of equal-priority (or unlisted) namespaces is the tag's iteration
- * order, which is stable.
- */
+/** Resolves tag-based recipe outputs to a concrete item/fluid member using the configured mod priority order. */
 public class TagOutputResolver {
 
     private static volatile Map<String, Integer> priorityIndex = new HashMap<>();

@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
 
+/** Client-side helpers for accessing the local level and player, plus transparent-block matching. */
 public class ClientUtil {
     @Nullable
     public static Level tryGetClientWorld() {

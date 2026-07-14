@@ -20,6 +20,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 
+/** Datapack bootstrap that registers placed ore features with config-driven counts and placement. */
 public class ModPlacedFeatures {
 
     private static ResourceKey<PlacedFeature> registerKey(String name) {

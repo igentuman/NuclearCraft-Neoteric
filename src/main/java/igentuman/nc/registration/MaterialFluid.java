@@ -9,9 +9,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
-/**
- * Holds the registered fluid objects for a material fluid (source, flowing, block, bucket, fluid type).
- */
+/** Holds the registered fluid objects for a material fluid (source, flowing, block, bucket, fluid type). */
 public class MaterialFluid {
     private final DeferredHolder<FluidType, FluidType> fluidType;
     private final DeferredHolder<Fluid, FlowingFluid> source;

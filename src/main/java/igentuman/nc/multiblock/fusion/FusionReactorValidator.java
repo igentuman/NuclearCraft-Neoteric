@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
+/** Validates the fusion reactor's toroidal ring and empty interior, then tallies magnet and amplifier stats. */
 public class FusionReactorValidator implements IMultiblockValidator {
 
     private static final int MIN_SIZE = 1;

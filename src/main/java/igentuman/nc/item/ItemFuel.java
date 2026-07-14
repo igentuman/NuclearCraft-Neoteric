@@ -13,11 +13,7 @@ import java.util.List;
 
 import static igentuman.nc.util.TextUtils.__;
 
-/**
- * A fission fuel pellet item. Resolves its parameters live from the owning {@link FissionFuelEntry}
- * so that KubeJS parameter overrides are reflected in the tooltip. Radiation is intentionally
- * not modeled here (it lives in the separate NuclearRadiation mod).
- */
+/** Fission fuel pellet item; resolves its stats live from the owning {@link FissionFuelEntry} for its tooltip. */
 public class ItemFuel extends Item {
 
     private final FissionFuelEntry entry;

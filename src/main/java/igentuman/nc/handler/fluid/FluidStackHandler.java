@@ -11,11 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
-/**
- * A multi-tank fluid handler that mirrors the ItemStackHandler pattern.
- * Each tank has its own capacity and optional fluid validator.
- * Implements IFluidHandler and INBTSerializable for seamless capability and NBT support.
- */
+/** Multi-tank fluid handler with per-tank capacity, validators, restricted external views, and NBT. */
 public class FluidStackHandler implements IFluidHandler, INBTSerializable<CompoundTag> {
 
     protected int tanks;

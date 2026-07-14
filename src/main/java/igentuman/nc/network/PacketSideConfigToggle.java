@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+/** Client -> server payload cycling the side-config I/O mode for a slot on a block entity's face. */
 public record PacketSideConfigToggle(BlockPos pos, int slotId, int direction)
         implements CustomPacketPayload {
 

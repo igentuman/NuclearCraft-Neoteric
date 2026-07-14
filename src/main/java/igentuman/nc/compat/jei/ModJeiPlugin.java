@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+/** JEI plugin registering processor, multiblock, and fission categories plus AE2 recipe transfer. */
 @JeiPlugin
 public class ModJeiPlugin implements IModPlugin {
 

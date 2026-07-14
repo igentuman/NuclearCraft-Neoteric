@@ -8,11 +8,7 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.Registers.RECIPE_SERIALIZERS;
 import static igentuman.nc.setup.Registers.RECIPE_TYPES;
 
-/**
- * Registers the two fission reactor recipe types and their serializers. Static fields register
- * into the deferred registers on classload; {@link #init()} forces that classload from
- * {@code ModEntries.init()} (before registry freeze).
- */
+/** Registers the fission reactor fuel and boiling recipe types and their serializers. */
 public final class FissionRecipes {
 
     private FissionRecipes() {}

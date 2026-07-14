@@ -10,11 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-/**
- * Cache layer over world block-state/block-entity lookups for a single multiblock instance.
- * Keys stored internally as {@link BlockPos#asLong()} to avoid BlockPos allocation per lookup.
- * Invalidated on relevant block-change events by {@code MultiblockHandler}.
- */
+/** Caches block-state and block-entity lookups plus structure positions for one multiblock instance. */
 public interface IMultiblockCache {
     BlockState getBlockState(Level level, BlockPos pos);
 

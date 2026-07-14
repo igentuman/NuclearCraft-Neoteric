@@ -15,11 +15,7 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.List;
 
-/**
- * Universal recipe class that works for any processor.
- * Each processor registers its own RecipeType and RecipeSerializer,
- * but they all share this single Recipe implementation.
- */
+/** Shared recipe implementation for every processor, holding item/fluid inputs and outputs, process time, and energy. */
 public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput> {
 
     private final String processorName;

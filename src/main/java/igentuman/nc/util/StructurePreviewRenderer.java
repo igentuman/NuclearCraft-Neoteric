@@ -16,10 +16,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.Map;
 
-/**
- * Renders a {@link MultiblockStructure} as an isometric 3D preview inside a GUI rectangle.
- * Auto-rotates around Y axis until user drags with LMB to manually rotate yaw/pitch.
- */
+/** Renders a rotatable, sliceable 3D preview of a multiblock structure inside a GUI rectangle. */
 public final class StructurePreviewRenderer {
 
     private static final float ROTATION_SPEED_DEG_PER_SEC = 15f;

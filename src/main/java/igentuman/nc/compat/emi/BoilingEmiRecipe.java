@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/** EMI recipe display for a fission reactor coolant boiling recipe. */
 public class BoilingEmiRecipe implements EmiRecipe {
 
     private static final int WIDTH = 124;

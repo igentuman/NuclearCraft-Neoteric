@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.rl;
 
+/** Image button blitted from the widgets atlas at supplier-driven UV coords, running a callback on click. */
 public class ProcessorImageButton extends AbstractWidget {
 
     private static final ResourceLocation WIDGETS = rl("textures/gui/widgets.png");

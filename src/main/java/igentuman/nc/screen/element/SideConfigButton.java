@@ -11,6 +11,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
+/** Clickable per-face square in the side-config screen; cycles a slot's I/O mode for one direction on click. */
 public class SideConfigButton extends AbstractWidget {
 
     private final int slotId;

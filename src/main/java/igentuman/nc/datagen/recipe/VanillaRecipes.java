@@ -24,6 +24,7 @@ import static igentuman.nc.util.TagUtil.*;
 import static net.minecraft.world.item.Items.*;
 import static net.minecraft.world.item.Items.BUCKET;
 
+/** Generates vanilla crafting and smelting recipes for materials, parts, processors, and structure blocks. */
 public class VanillaRecipes {
 
     private static RecipeOutput recipeOutput;

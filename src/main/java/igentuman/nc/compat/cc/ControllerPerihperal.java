@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+/** CC:Tweaked peripheral exposing a multiblock controller's state, inventory and tanks to Lua. */
 public class ControllerPerihperal implements IPeripheral {
 
     private final MultiblockControllerBE be;

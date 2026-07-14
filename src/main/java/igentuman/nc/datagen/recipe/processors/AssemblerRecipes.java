@@ -7,6 +7,7 @@ import net.minecraft.world.item.Items;
 
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 
+/** Generates assembler recipes that build processors, circuits, collectors, and other multi-part components. */
 public class AssemblerRecipes {
 
     public static void assembler(RecipeOutput out) {

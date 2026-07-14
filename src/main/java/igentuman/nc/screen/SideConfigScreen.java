@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
+/** Popup screen laying out six directional buttons to configure a single slot's I/O mode per face. */
 public class SideConfigScreen extends Screen {
 
     private static final ResourceLocation TEXTURE = rl("textures/gui/small_window.png");

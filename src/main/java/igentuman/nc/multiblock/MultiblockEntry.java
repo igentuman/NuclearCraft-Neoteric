@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+/** Immutable definition of a multiblock: its validator, logic, cache suppliers, required blocks, controller, and ports. */
 public class MultiblockEntry {
 
     private final String name;

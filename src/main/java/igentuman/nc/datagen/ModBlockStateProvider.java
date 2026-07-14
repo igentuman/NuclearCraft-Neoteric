@@ -26,6 +26,7 @@ import java.util.function.Function;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 
+/** Generates blockstates and block/item models for blocks, processors, heat sinks, and materials. */
 public class ModBlockStateProvider extends BlockStateProvider {
     private final ExistingFileHelper existingFileHelper;
 

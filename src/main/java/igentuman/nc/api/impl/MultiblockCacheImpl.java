@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/** Map-backed multiblock cache keyed by packed positions, with per-position invalidation and NBT. */
 public class MultiblockCacheImpl implements IMultiblockCache {
 
     private final Map<Long, BlockState> blockStateCache = new HashMap<>();

@@ -2,6 +2,7 @@ package igentuman.nc.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
+/** Multiblock tuning config: fission reactor sizing, heat, fuel and coolant values, mirrored into hot-path fields. */
 public class Multiblocks {
     public static final ModConfigSpec.ConfigValue<Boolean> DEBUG_LOGGING;
 

@@ -7,6 +7,7 @@ import igentuman.nc.util.SlotsLayout;
 
 import static igentuman.nc.registration.ModEntryBuilder.addProcessor;
 
+/** Declares all single-block machine processors with their item/fluid slots and progress bars. */
 public class Processors extends ModEntries {
 
     public static final String GAS_SCRUBBER = "gas_scrubber";

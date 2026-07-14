@@ -3,6 +3,7 @@ package igentuman.nc.util;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Builds and provides preset arrangements of input/output slots for processor GUIs. */
 public class SlotsLayout {
     public final List<SlotDef> slots = new ArrayList<>();
 

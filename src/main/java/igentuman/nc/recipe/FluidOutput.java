@@ -16,12 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * A processor fluid output: either a concrete fluid or a fluid tag, resolved to one concrete
- * stack at production time via {@link TagOutputResolver}. {@code amount} (mB) applies to both.
- *
- * JSON: {@code {"fluid":"minecraft:water","amount":1000}} or {@code {"tag":"c:molten_copper","amount":144}}.
- */
+/** A processor fluid output: a concrete fluid or a fluid tag resolved to one stack at production time, with an amount. */
 public record FluidOutput(@Nullable Fluid fluid, @Nullable TagKey<Fluid> tag, int amount) {
 
     public static FluidOutput of(Fluid fluid, int amount) {

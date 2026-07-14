@@ -6,6 +6,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+/** Predicate matching a block state and optional block entity, with factories for common cases. */
 @FunctionalInterface
 public interface BlockPredicate {
     boolean test(BlockState state, @Nullable BlockEntity be);

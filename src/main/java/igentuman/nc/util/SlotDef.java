@@ -1,5 +1,6 @@
 package igentuman.nc.util;
 
+/** Describes a single GUI slot by its position, visual type, and whether it is an output slot. */
 public class SlotDef {
     public int x;
     public int y;

@@ -11,6 +11,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import static igentuman.nc.registration.ModEntryBuilder.*;
 
+/** Declares crafting component items plus the mod's tool and armor sets. */
 public class Parts extends ModEntries {
     public static void parts() {
         String[] parts = {

@@ -14,6 +14,7 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 import java.util.stream.Stream;
 
+/** Placement modifier that positions ore veins at a config-driven random height per material. */
 public class ConfigurableOrePlacement extends PlacementModifier {
 
     public static final MapCodec<ConfigurableOrePlacement> CODEC = RecordCodecBuilder.mapCodec(instance ->

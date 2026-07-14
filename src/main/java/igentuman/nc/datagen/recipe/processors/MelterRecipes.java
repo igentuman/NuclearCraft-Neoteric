@@ -12,6 +12,7 @@ import net.minecraft.world.level.material.Fluid;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.MELTER;
 
+/** Generates melter recipes that liquefy ingots, dusts, gems, ores, isotopes, and fuels into molten fluids. */
 public class MelterRecipes {
 
     public static void melter(RecipeOutput out) {

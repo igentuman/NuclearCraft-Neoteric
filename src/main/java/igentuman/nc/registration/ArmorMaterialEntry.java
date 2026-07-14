@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.Registers.ARMOR_MATERIALS;
 
+/** Fluent builder that registers an {@link ArmorMaterial} (defense, toughness, layers, repair) and holds its holder. */
 public class ArmorMaterialEntry {
 
     public final String name;

@@ -19,6 +19,7 @@ import java.util.concurrent.Executor;
 
 import static igentuman.nc.NuclearCraft.rlFromString;
 
+/** Reload listener that loads, validates, and serves multiblock structure templates from resources. */
 public class MultiblocksProvider implements PreparableReloadListener {
 
     public static List<MultiblockStructure> structures = new ArrayList<>();

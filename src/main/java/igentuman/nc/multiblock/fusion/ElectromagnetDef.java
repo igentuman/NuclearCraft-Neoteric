@@ -3,6 +3,7 @@ package igentuman.nc.multiblock.fusion;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Defines fusion electromagnet tiers and their power, heat, magnetic field, temperature, and efficiency stats. */
 public final class ElectromagnetDef {
 
     public final String name;

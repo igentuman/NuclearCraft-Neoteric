@@ -14,6 +14,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import java.util.EnumMap;
 import java.util.Map;
 
+/** Sided fluid handler backing internal tanks, enforcing per-face access and auto push/pull of fluids. */
 public class FluidCapabilityHandler extends AbstractCapabilityHandler {
 
     private final FluidStackHandler internal;

@@ -5,6 +5,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.EXTRACTOR;
 
+/** Generates extractor recipes that split an item into a solid plus a fluid output. */
 public class ExtractorRecipes {
 
     public static void extractor(RecipeOutput out) {

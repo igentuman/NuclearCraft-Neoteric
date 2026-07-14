@@ -2,6 +2,7 @@ package igentuman.nc.util;
 
 import net.minecraft.nbt.CompoundTag;
 
+/** Tracks accumulated heat against a capacity with per-tick heating and cooling rates. */
 public class HeatBuffer implements NBTSerializable {
 
     public double capacity;

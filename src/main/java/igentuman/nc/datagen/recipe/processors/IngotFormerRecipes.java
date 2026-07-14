@@ -11,6 +11,7 @@ import net.minecraft.world.item.Items;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.INGOT_FORMER;
 
+/** Generates ingot former recipes that cast molten fluids into ingots, gems, isotopes, and fuel pellets. */
 public class IngotFormerRecipes {
 
     public static void ingotFormer(RecipeOutput out) {

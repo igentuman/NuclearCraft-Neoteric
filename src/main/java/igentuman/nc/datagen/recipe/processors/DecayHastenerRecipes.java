@@ -5,6 +5,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.DECAY_HASTENER;
 
+/** Generates decay hastener recipes converting radioactive isotopes and dusts into their decay products. */
 public class DecayHastenerRecipes {
 
     public static void decayHastener(RecipeOutput out) {

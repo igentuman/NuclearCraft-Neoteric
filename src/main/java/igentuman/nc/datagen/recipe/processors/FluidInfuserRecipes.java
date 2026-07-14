@@ -9,6 +9,7 @@ import net.minecraft.world.level.material.Fluids;
 
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 
+/** Generates fluid infuser recipes that infuse items with a fluid, including fuel variants and heat sinks. */
 public class FluidInfuserRecipes {
 
     private static final String[][] GASES = {{"oxygen", "_ox"}, {"nitrogen", "_ni"}, {"zircaloy", "_za"}};

@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+/** CC:Tweaked peripheral exposing a processor block entity's state, inventory and tanks to Lua. */
 public class ProcessorPeripheral implements IPeripheral {
 
     private final GlobalBlockEntity be;

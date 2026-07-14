@@ -11,6 +11,7 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.fluidOf;
 
+/** Generates fission reactor boiling recipes that convert coolant fluids into steam at a heat cost. */
 public class FissionBoilingRecipes {
 
     public static void fissionBoiling(RecipeOutput out) {

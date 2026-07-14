@@ -5,10 +5,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Holds every registered {@link CatalystDef} keyed by {@link CatalystType}.
- * Populated by {@code ModEntryBuilder.addCatalyst}; read by processor BEs each tick.
- */
+/** Global registry holding every registered {@link CatalystDef} keyed by {@link CatalystType}. */
 public class CatalystRegistry {
 
     public static final Map<CatalystType, List<CatalystDef>> ENTRIES = new EnumMap<>(CatalystType.class);

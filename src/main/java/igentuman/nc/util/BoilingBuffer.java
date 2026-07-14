@@ -2,6 +2,7 @@ package igentuman.nc.util;
 
 import net.minecraft.nbt.CompoundTag;
 
+/** Tracks coolant boiling: capacity, current/max boiling rate, and coolant/hot-coolant amounts. */
 public class BoilingBuffer implements NBTSerializable {
 
     public double capacity;

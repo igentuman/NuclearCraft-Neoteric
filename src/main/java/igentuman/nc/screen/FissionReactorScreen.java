@@ -18,6 +18,7 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
+/** Fission reactor controller screen adding heat/boiling bars, reactivity readout and an energy/steam mode toggle. */
 public class FissionReactorScreen extends MultiblockControllerScreen {
 
     private static final ResourceLocation TEXTURE = rl("textures/gui/fission_controller.png");

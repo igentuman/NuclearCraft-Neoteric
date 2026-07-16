@@ -5,6 +5,7 @@ import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.EmiStack;
 import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
 import igentuman.nc.block.collision_chamber.entity.CollisionChamberControllerBE;
@@ -41,6 +42,7 @@ import igentuman.nc.recipes.type.NuclearBlastRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.setup.registration.FissionFuel;
+import igentuman.nc.setup.registration.NCCrafter;
 import igentuman.nc.setup.registration.NCFluids;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.util.ModUtil;
@@ -136,6 +138,10 @@ public class EMIPlugin implements EmiPlugin {
 
         // Register recipe handlers
         registerRecipeHandlers(registry);
+
+        // Engineer's crafting table acts as a vanilla crafting workstation
+        registry.addWorkstation(VanillaEmiRecipeCategories.CRAFTING,
+                EmiStack.of(new ItemStack(NCCrafter.ENGINEERS_CRAFTING_TABLE_ITEM.get())));
 
         // Hide fuel and isotope variant items/fluids from EMI index
         hideFuelAndIsotopeVariants(registry);
@@ -611,6 +617,8 @@ public class EMIPlugin implements EmiPlugin {
             var menuType = NCProcessors.PROCESSORS_CONTAINERS.get(name).get();
             registry.addRecipeHandler((MenuType) menuType, new ProcessorEmiRecipeHandler<>());
         }
+        registry.addRecipeHandler(NCCrafter.ENGINEERS_CRAFTING_TABLE_CONTAINER.get(), new EngineersCrafterEmiRecipeHandler());
+        registry.addRecipeHandler(NCCrafter.ENGINEERS_ENCODER_CONTAINER.get(), new EngineersEncoderEmiRecipeHandler());
         if(ModUtil.isRefinedStorageLoaded()) {
             registry.addRecipeHandler(com.refinedmods.refinedstorage.RSContainerMenus.GRID.get(), new ProcessorEmiRecipeHandlerRS<>());
         }

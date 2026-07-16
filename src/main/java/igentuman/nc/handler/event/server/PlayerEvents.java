@@ -1,5 +1,6 @@
 package igentuman.nc.handler.event.server;
 
+import igentuman.nc.handler.storage.ContainerSyncDispatcher;
 import igentuman.nc.item.ContainerBlockItem;
 import igentuman.nc.item.HEVItem;
 import igentuman.nc.item.HazmatItem;
@@ -38,6 +39,10 @@ public class PlayerEvents {
             if (inventoryStack.getItem() instanceof ContainerBlockItem containerItem) {
                 // Check if magnet mode is enabled
                 if (containerItem.isMagnetModeEnabled(inventoryStack)) {
+                    // Ensure a UUID is assigned so the pickup writes into the store.
+                    if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                        containerItem.prepareServer(inventoryStack, serverLevel);
+                    }
                     // Get the container's inventory
                     IItemHandler inventory = containerItem.getInventory(inventoryStack);
                     
@@ -70,6 +75,13 @@ public class PlayerEvents {
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            ContainerSyncDispatcher.unsubscribeAll(serverPlayer);
         }
     }
 

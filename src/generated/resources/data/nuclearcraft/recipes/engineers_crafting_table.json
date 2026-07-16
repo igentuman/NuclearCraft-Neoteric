@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft",
+  "key": {
+    "C": {
+      "item": "minecraft:crafting_table"
+    },
+    "H": {
+      "item": "minecraft:chest"
+    },
+    "P": {
+      "item": "nuclearcraft:basic_electric_circuit"
+    },
+    "S": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "T": {
+      "item": "nuclearcraft:basic_voltaic_pile"
+    }
+  },
+  "pattern": [
+    "SCS",
+    "PHP",
+    "STS"
+  ],
+  "result": {
+    "item": "nuclearcraft:engineers_crafting_table"
+  },
+  "show_notification": true
+}

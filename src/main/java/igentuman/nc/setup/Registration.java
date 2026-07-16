@@ -53,6 +53,7 @@ public class Registration {
         Registries.init(context);
         NCStorageBlocks.init();
         NCBlocks.init();
+        NCCrafter.init();
         FissionFuel.init();
         ParticleSources.init();
         NCFluids.init();

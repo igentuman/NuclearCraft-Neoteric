@@ -16,6 +16,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BL
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
+import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_BLOCK;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
@@ -50,6 +51,7 @@ public class NCLootTables extends BaseLootTableProvider {
         add(WASTELAND_EARTH.get(), block -> createSimpleTable("block", WASTELAND_EARTH.get()));
         add(PORTAL_BLOCK.get(), block -> createSimpleTable("block", PORTAL_BLOCK.get()));
         add(CHARGING_STATION_BLOCK.get(), block -> createSimpleTable("block", CHARGING_STATION_BLOCK.get()));
+        add(ENGINEERS_CRAFTING_TABLE_BLOCK.get(), block -> createSimpleTable("block", ENGINEERS_CRAFTING_TABLE_BLOCK.get()));
         add(PU_239_BOMB.get(), block -> createSimpleTable("block", PU_239_BOMB.get()));
     }
 
@@ -109,6 +111,7 @@ public class NCLootTables extends BaseLootTableProvider {
         all.add(WASTELAND_EARTH.get());
         all.add(PORTAL_BLOCK.get());
         all.add(CHARGING_STATION_BLOCK.get());
+        all.add(ENGINEERS_CRAFTING_TABLE_BLOCK.get());
         all.add(PU_239_BOMB.get());
         return all;
     }

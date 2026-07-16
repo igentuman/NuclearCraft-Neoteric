@@ -4,6 +4,7 @@ import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.storage.entity.ContainerBE;
 import igentuman.nc.container.StorageContainerContainer;
 import igentuman.nc.content.storage.ContainerBlocks;
+import igentuman.nc.item.ContainerBlockItem;
 import igentuman.nc.setup.registration.NCStorageBlocks;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.ChatFormatting;
@@ -38,6 +39,7 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.UUID;
 
 import static igentuman.nc.util.StackUtils.isMultiTool;
 import static igentuman.nc.util.TextUtils.__;
@@ -140,10 +142,16 @@ public class ContainerBlock extends Block implements EntityBlock {
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
 
-        if (stack.hasTag()) {
-            ContainerBE tileEntity = (ContainerBE) world.getBlockEntity(pos);
-            CompoundTag nbtData = stack.getTag();
-            tileEntity.load(nbtData);
+        if (!(world.getBlockEntity(pos) instanceof ContainerBE be)) return;
+        UUID uuid = ContainerBlockItem.readUuid(stack);
+        if (uuid != null) be.setUuid(uuid);
+        if (!world.isClientSide) {
+            be.assignUuidIfAbsent();
+            CompoundTag tag = stack.getTag();
+            if (tag != null && tag.contains("Inventory")) {
+                be.migrateLegacyInventory(tag.getCompound("Inventory"));
+            }
+            be.setChanged();
         }
     }
 
@@ -151,10 +159,11 @@ public class ContainerBlock extends Block implements EntityBlock {
     public void playerDestroy(Level pLevel, Player pPlayer, BlockPos pPos, BlockState pState, @javax.annotation.Nullable BlockEntity pBlockEntity, ItemStack pTool) {
         pPlayer.awardStat(Stats.BLOCK_MINED.get(this));
         pPlayer.causeFoodExhaustion(0.005F);
-        ContainerBE ContainerBE = (ContainerBE) pBlockEntity;
-        CompoundTag data = ContainerBE.getUpdateTag();
         ItemStack drop = new ItemStack(this);
-        drop.setTag(data);
+        if (pBlockEntity instanceof ContainerBE be && !pLevel.isClientSide()) {
+            UUID uuid = be.assignUuidIfAbsent();
+            drop.getOrCreateTag().putUUID("uuid", uuid);
+        }
         if (!pLevel.isClientSide()) {
             ItemEntity itemEntity = new ItemEntity(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), drop);
             itemEntity.setDefaultPickUpDelay();

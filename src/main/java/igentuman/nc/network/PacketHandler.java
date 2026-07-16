@@ -2,8 +2,10 @@ package igentuman.nc.network;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.network.toClient.PacketBombDetonationStart;
+import igentuman.nc.network.toClient.PacketCraftDenied;
 import igentuman.nc.network.toClient.PacketPlayerRadiationData;
 import igentuman.nc.network.toClient.PacketQ36BeamFx;
+import igentuman.nc.network.toClient.PacketSyncContainerInventory;
 import igentuman.nc.network.toClient.PacketWorldRadiationData;
 import igentuman.nc.network.toServer.*;
 import igentuman.nc.util.ModUtil;
@@ -23,6 +25,12 @@ public class PacketHandler extends BasePacketHandler {
         //Client to server messages
         registerClientToServer(PacketSliderChanged.class, PacketSliderChanged::decode);
         registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::decode);
+        registerClientToServer(PacketCrafterInsert.class, PacketCrafterInsert::decode);
+        registerClientToServer(PacketCrafterExtract.class, PacketCrafterExtract::decode);
+        registerClientToServer(PacketCrafterFillGrid.class, PacketCrafterFillGrid::decode);
+        registerClientToServer(PacketEncoderFillGrid.class, PacketEncoderFillGrid::decode);
+        registerClientToServer(PacketTerminalCraft.class, PacketTerminalCraft::decode);
+        registerClientToServer(PacketCancelCraft.class, PacketCancelCraft::decode);
         registerClientToServer(PacketSideConfigToggle.class, PacketSideConfigToggle::decode);
         registerClientToServer(PacketFlushSlotContent.class, PacketFlushSlotContent::decode);
         registerClientToServer(PacketHandleFluidSlotClick.class, PacketHandleFluidSlotClick::decode);
@@ -39,5 +47,7 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketPlayerRadiationData.class, PacketPlayerRadiationData::decode);
         registerServerToClient(PacketQ36BeamFx.class, PacketQ36BeamFx::decode);
         registerServerToClient(PacketBombDetonationStart.class, PacketBombDetonationStart::decode);
+        registerServerToClient(PacketCraftDenied.class, PacketCraftDenied::decode);
+        registerServerToClient(PacketSyncContainerInventory.class, PacketSyncContainerInventory::decode);
     }
 }

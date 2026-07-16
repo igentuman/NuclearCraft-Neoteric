@@ -1,5 +1,6 @@
 package igentuman.nc.handler.event.client;
 
+import igentuman.nc.client.storage.ClientContainerInventory;
 import igentuman.nc.radiation.client.ClientRadiationData;
 import igentuman.nc.recipes.NcRecipeType;
 import net.minecraft.world.level.Level;
@@ -34,6 +35,7 @@ public class ServerLoad {
     public static void onLevelUnload(LevelEvent.Unload event) {
         if(event.getLevel().isClientSide()) {
             ClientRadiationData.clearAll();
+            ClientContainerInventory.clear();
             initialized = false;
         }
     }

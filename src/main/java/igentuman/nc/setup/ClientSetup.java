@@ -10,6 +10,8 @@ import igentuman.nc.client.block.turbine.TurbineRotorRenderer;
 import igentuman.nc.client.bomb.BombFlashOverlay;
 import igentuman.nc.client.gui.*;
 import igentuman.nc.client.gui.accelerator.*;
+import igentuman.nc.client.gui.crafter.EngineersCrafterScreen;
+import igentuman.nc.client.gui.crafter.EngineersEncoderScreen;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
 import igentuman.nc.client.gui.fission.MSRControllerScreen;
@@ -88,6 +90,9 @@ import static igentuman.nc.setup.registration.NCBlocks.CHARGING_STATION_BE;
 import static igentuman.nc.setup.registration.NCBlocks.CHARGING_STATION_CONTAINER;
 import static igentuman.nc.setup.registration.NCBlocks.MULTIBLOCK_BUILDER_CONTAINER;
 import static igentuman.nc.setup.registration.NCBlocks.REDSTONE_DIMMER_CONTAINER;
+import static igentuman.nc.setup.registration.NCCrafter.CRAFTING_PATTERN;
+import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_CONTAINER;
+import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_ENCODER_CONTAINER;
 import static igentuman.nc.setup.registration.NCItems.GEIGER_COUNTER;
 import static igentuman.nc.setup.registration.NCItems.Q36;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
@@ -130,6 +135,8 @@ public class ClientSetup {
             MenuScreens.register(CHAMBER_TERMINAL_CONTAINER.get(), ChamberTerminalScreen::new);
             MenuScreens.register(REDSTONE_DIMMER_CONTAINER.get(), RedstoneDimmerScreen::new);
             MenuScreens.register(CHARGING_STATION_CONTAINER.get(), ChargingStationScreen::new);
+            MenuScreens.register(ENGINEERS_CRAFTING_TABLE_CONTAINER.get(), EngineersCrafterScreen::new);
+            MenuScreens.register(ENGINEERS_ENCODER_CONTAINER.get(), EngineersEncoderScreen::new);
             MenuScreens.register(MULTIBLOCK_BUILDER_CONTAINER.get(), MultiblockBuilderScreen::new);
             MenuScreens.register(LINEAR_ACCELERATOR_CONTROLLER_CONTAINER.get(), LinearAcceleratorControllerScreen::new);
             MenuScreens.register(THOROIDAL_ACCELERATOR_CONTROLLER_CONTAINER.get(), RingAcceleratorControllerScreen::new);
@@ -166,6 +173,8 @@ public class ClientSetup {
                 if (world == null) return 0.0F;
                 return Q36Item.isFxActive(stack, world) ? 1.0F : 0.0F;
             });
+            setPropertyOverride(CRAFTING_PATTERN.get(), rl("encoded"), (stack, world, entity, seed) ->
+                    igentuman.nc.handler.crafter.CraftingPattern.isEncoded(stack) ? 1.0F : 0.0F);
         });
         PonderUtil.initPlugin();
     }

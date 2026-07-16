@@ -147,6 +147,7 @@ public class NCRecipes extends RecipeProvider {
                 .group(MODID)
                 .unlockedBy("item", has(ENERGY_BLOCKS.get("advanced_voltaic_pile").get()))
                 .save(consumer, rl("charging_station"));
+
         // Empty cooler (using steel instead of stainless steel as per current mod)
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ACCELERATOR_BLOCKS.get("empty_cooler").get(), 8)
                 .pattern("STS")
@@ -723,6 +724,20 @@ public class NCRecipes extends RecipeProvider {
 
     private void storageBlocks(Consumer<FinishedRecipe> consumer) {
 
+        // Engineer's Crafting Table
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NCCrafter.ENGINEERS_CRAFTING_TABLE_BLOCK.get(), 1)
+                .pattern("SCS")
+                .pattern("PHP")
+                .pattern("STS")
+                .define('S', NC_PARTS.get("plate_basic").get())
+                .define('H', CHEST)
+                .define('P', NC_PARTS.get("basic_electric_circuit").get())
+                .define('C', CRAFTING_TABLE)
+                .define('T', ENERGY_BLOCKS.get("basic_voltaic_pile").get())
+                .group(MODID)
+                .unlockedBy("item", has(NC_PARTS.get("plate_basic").get()))
+                .save(consumer, rl("engineers_crafting_table"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, STORAGE_BLOCKS.get("basic_storage_container").get())
                 .pattern(" P ")
                 .pattern("PCP")
@@ -949,6 +964,12 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void items(Consumer<FinishedRecipe> consumer) {
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, NCCrafter.CRAFTING_PATTERN.get())
+                .requires(PAPER)
+                .requires(forgeDust("coal"))
+                .unlockedBy("item", has(forgeDust("coal")))
+                .save(consumer, rl("crafting_pattern"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, NC_RF_AMPLIFIERS.get("basic_rf_amplifier").get())
                 .pattern("CCC")

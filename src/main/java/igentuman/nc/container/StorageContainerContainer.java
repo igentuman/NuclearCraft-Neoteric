@@ -1,6 +1,8 @@
 package igentuman.nc.container;
 
 import igentuman.nc.block.storage.entity.ContainerBE;
+import igentuman.nc.handler.storage.UuidBackedItemHandler;
+import igentuman.nc.handler.storage.UuidBackedSlot;
 import igentuman.nc.item.ContainerBlockItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -9,7 +11,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
@@ -39,7 +40,7 @@ public class StorageContainerContainer<T extends AbstractContainerMenu> extends 
          for(int l = 0; l < j; ++l) {
             x = 5 + l * 18;
             y = 5 + k * 18;
-            this.addSlot(new SlotItemHandler(containerInventory, idx++, x, y));
+            this.addSlot(new UuidBackedSlot((UuidBackedItemHandler) containerInventory, idx++, x, y));
          }
       }
       int xShift = 5;

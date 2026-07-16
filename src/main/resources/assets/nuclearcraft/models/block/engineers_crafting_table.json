@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/crafting_table",
+  "textures": {
+    "down": "nuclearcraft:block/processor/back",
+    "east": "nuclearcraft:block/processor/back",
+    "north": "nuclearcraft:block/processor/back",
+    "particle": "nuclearcraft:block/processor/back",
+    "south": "nuclearcraft:block/processor/back",
+    "up": "nuclearcraft:block/crafter_top",
+    "west": "nuclearcraft:block/processor/back"
+  }
+}

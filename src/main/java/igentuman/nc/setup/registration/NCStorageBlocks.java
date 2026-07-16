@@ -32,7 +32,7 @@ public class NCStorageBlocks {
     public static final RegistryObject<MenuType<StorageContainerContainer<?>>> STORAGE_CONTAINER = CONTAINERS.register("storage_container",
             () -> IForgeMenuType.create((windowId, inv, data) -> new StorageContainerContainer<>(windowId, data.readBlockPos(), inv)));
     public static final RegistryObject<MenuType<StorageContainerItemContainer<?>>> STORAGE_ITEM_CONTAINER = CONTAINERS.register("storage_item_container",
-            () -> IForgeMenuType.create((windowId, inv, data) -> new StorageContainerItemContainer<>(windowId, data.readBlockPos(), inv, data.readInt())));
+            () -> IForgeMenuType.create((windowId, inv, data) -> new StorageContainerItemContainer<>(windowId, data.readBlockPos(), inv, data.readInt(), data.readUUID())));
     public static void init() {
         registerBlocks();
         registerBlockEntities();

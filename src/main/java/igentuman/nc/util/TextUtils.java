@@ -146,7 +146,7 @@ public class TextUtils
 
 	public static String formatLiquid(int val)
 	{
-		return TextUtils.numberFormat(val/1000)+" B";
+		return TextUtils.numberFormat((double) val /1000)+" B";
 	}
 
 	public static String applySpeccialRules(String val)

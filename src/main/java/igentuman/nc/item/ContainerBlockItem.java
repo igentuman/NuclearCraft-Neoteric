@@ -2,11 +2,15 @@ package igentuman.nc.item;
 
 import igentuman.nc.container.StorageContainerItemContainer;
 import igentuman.nc.content.storage.ContainerBlocks;
+import igentuman.nc.handler.storage.ContainerInventoryStore;
+import igentuman.nc.handler.storage.StoredInventory;
 import igentuman.nc.util.capability.CapabilityUtils;
 import igentuman.nc.util.capability.ItemCapabilityProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -45,7 +49,9 @@ public class ContainerBlockItem extends BlockItem
         int slot = hand == InteractionHand.MAIN_HAND ? player.getInventory().selected : 40;
 
         if (!player.isSteppingCarefully()) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
+                prepareServer(itemStack, serverLevel);
+                UUID uuid = readUuid(itemStack);
                 NetworkHooks.openScreen((ServerPlayer) player, new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
@@ -54,11 +60,12 @@ public class ContainerBlockItem extends BlockItem
 
                     @Override
                     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-                        return new StorageContainerItemContainer<>(containerId, player.blockPosition(), playerInventory, slot);
+                        return new StorageContainerItemContainer<>(containerId, player.blockPosition(), playerInventory, slot, uuid);
                     }
                 }, buf -> {
                     buf.writeBlockPos(player.blockPosition());
                     buf.writeInt(slot);
+                    buf.writeUUID(uuid);
                 });
             }
             return InteractionResultHolder.success(itemStack);
@@ -100,7 +107,7 @@ public class ContainerBlockItem extends BlockItem
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new ItemCapabilityProvider(stack, getInventorySize(), 64);
+        return new ItemCapabilityProvider(stack, getInventorySize());
     }
 
     private int getInventorySize() {
@@ -115,15 +122,50 @@ public class ContainerBlockItem extends BlockItem
         return ContainerBlocks.all().get(code()).getColls();
     }
 
+    /** Reads the stored UUID; may be {@code null} (e.g. a never-touched item, or client before sync). */
     public UUID getUUID(ItemStack stack) {
-        try {
-            if(!stack.getOrCreateTag().contains("uuid")) {
-                stack.getOrCreateTag().putUUID("uuid", UUID.randomUUID());
-            }
-            return stack.getOrCreateTag().getUUID("uuid");
-        } catch(Exception e) {
-            return null;
+        return readUuid(stack);
+    }
+
+    /** Read-only UUID lookup. Never assigns — safe on the client. */
+    public static UUID readUuid(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return (tag != null && tag.hasUUID("uuid")) ? tag.getUUID("uuid") : null;
+    }
+
+    /** Server-only: assigns a fresh UUID when missing. Clients must never call this. */
+    public static UUID assignUuid(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if (!tag.hasUUID("uuid")) tag.putUUID("uuid", UUID.randomUUID());
+        return tag.getUUID("uuid");
+    }
+
+    /** Writes a server-authoritative UUID trusted from the network (does not generate one). */
+    public static void writeUuid(ItemStack stack, UUID uuid) {
+        if (uuid != null) stack.getOrCreateTag().putUUID("uuid", uuid);
+    }
+
+    /**
+     * Server-side entry point: ensures the item has a UUID and migrates any legacy in-NBT
+     * {@code "Inventory"} into the store exactly once. Idempotent.
+     */
+    public void prepareServer(ItemStack stack, ServerLevel level) {
+        assignUuid(stack);
+        migrateLegacy(stack, level.getServer());
+    }
+
+    private void migrateLegacy(ItemStack stack, MinecraftServer server) {
+        CompoundTag tag = stack.getTag();
+        if (tag == null || !tag.contains("Inventory")) return;
+        UUID uuid = readUuid(stack);
+        if (uuid == null) return;
+        ContainerInventoryStore store = ContainerInventoryStore.get(server);
+        if (!store.has(uuid)) {
+            StoredInventory inv = store.getOrCreate(uuid, getInventorySize());
+            inv.read(tag.getCompound("Inventory"));
+            store.markDirtyOnly();
         }
+        tag.remove("Inventory");
     }
 
     public String getTier() {

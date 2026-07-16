@@ -2,12 +2,14 @@ package igentuman.nc.block.storage.entity;
 
 import igentuman.api.nc.SideModeToggleable;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.handler.ItemStorageCapabilityHandler;
 import igentuman.nc.content.storage.ContainerBlocks;
-import igentuman.nc.item.ContainerBlockItem;
+import igentuman.nc.handler.storage.ContainerInventoryStore;
+import igentuman.nc.handler.storage.StoredInventory;
+import igentuman.nc.handler.storage.UuidBackedItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,33 +19,34 @@ import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.UUID;
 
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BE;
 
 public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
 
-    public final ItemStorageCapabilityHandler inventory;
+    public final UuidBackedItemHandler inventory;
+    protected final LazyOptional<IItemHandlerModifiable> itemHandler;
+
     private double loadRate = 0;
 
-    private ItemStorageCapabilityHandler createInventory() {
-        return new ItemStorageCapabilityHandler(ContainerBlocks.all().get(getName()).getCapacity(), 64) {
-            @Override
-            public boolean isItemValid(int slot, @org.jetbrains.annotations.NotNull ItemStack stack) {
-                return !(stack.getItem() instanceof ContainerBlockItem);
-            }
-        };
+    private UUID uuid;
+    private CompoundTag legacyInventory;
+    private boolean prepared = false;
+
+    private UuidBackedItemHandler createInventory() {
+        return new UuidBackedItemHandler(getCapacity(), () -> uuid);
     }
 
-    public LazyOptional<ItemStorageCapabilityHandler> getItemHandler() {
+    public LazyOptional<IItemHandlerModifiable> getItemHandler() {
         return itemHandler;
     }
-
-    protected final LazyOptional<ItemStorageCapabilityHandler> itemHandler;
 
     public static final ModelProperty<HashMap<Integer, SideMode>> SIDE_CONFIG = new ModelProperty<>();
 
@@ -54,6 +57,10 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
         }
         inventory = createInventory();
         itemHandler = LazyOptional.of(() -> inventory);
+    }
+
+    public int getCapacity() {
+        return ContainerBlocks.all().get(getName()).getCapacity();
     }
 
     @Nonnull
@@ -67,9 +74,29 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
     public void tickClient() {
 
     }
+
     public void tickServer() {
+        prepareIfNeeded();
         transferItems();
         updateLoadRate();
+    }
+
+    private void prepareIfNeeded() {
+        if (prepared) return;
+        if (!(level instanceof ServerLevel serverLevel)) return;
+        if (uuid == null) uuid = UUID.randomUUID();
+        if (legacyInventory != null) {
+            ContainerInventoryStore store = ContainerInventoryStore.get(serverLevel.getServer());
+            if (!store.has(uuid)) {
+                StoredInventory inv = store.getOrCreate(uuid, getCapacity());
+                inv.read(legacyInventory);
+                store.markDirtyOnly();
+            }
+            legacyInventory = null;
+        }
+        prepared = true;
+        setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
     }
 
     private void updateLoadRate() {
@@ -146,16 +173,41 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
         return super.getCapability(cap, side);
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public UUID assignUuidIfAbsent() {
+        if (uuid == null) uuid = UUID.randomUUID();
+        return uuid;
+    }
+
+    /** Imports a legacy {@code "Inventory"} tag (from a placed item) into the store under this block's UUID. */
+    public void migrateLegacyInventory(CompoundTag invTag) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            legacyInventory = invTag;
+            return;
+        }
+        if (uuid == null) uuid = UUID.randomUUID();
+        ContainerInventoryStore store = ContainerInventoryStore.get(serverLevel.getServer());
+        if (!store.has(uuid)) {
+            StoredInventory inv = store.getOrCreate(uuid, getCapacity());
+            inv.read(invTag);
+            store.markDirtyOnly();
+        }
+    }
+
     protected void saveClientData(CompoundTag tag) {
-        CompoundTag tank = new CompoundTag();
-        tag.put("Inventory", inventory.serializeNBT());
+        if (uuid != null) tag.putUUID("uuid", uuid);
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 
     public void loadClientData(CompoundTag tag) {
-        if(tag.contains("Inventory")) {
-            inventory.deserializeNBT(tag.getCompound("Inventory"));
-        }
+        if (tag.hasUUID("uuid")) uuid = tag.getUUID("uuid");
         if (!tag.contains("sideConfig")) return;
         loadSideConfig(tag.getIntArray("sideConfig"));
     }
@@ -163,10 +215,9 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        if(tag.contains("Inventory")) {
-            inventory.deserializeNBT(tag.getCompound("Inventory"));
-        }
-        if(!tag.contains("sideConfig")) return;
+        if (tag.hasUUID("uuid")) uuid = tag.getUUID("uuid");
+        if (tag.contains("Inventory")) legacyInventory = tag.getCompound("Inventory");
+        if (!tag.contains("sideConfig")) return;
         loadSideConfig(tag.getIntArray("sideConfig"));
     }
 
@@ -192,7 +243,7 @@ public class ContainerBE extends NuclearCraftBE implements SideModeToggleable {
     @Override
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.put("Inventory", inventory.serializeNBT());
+        if (uuid != null) tag.putUUID("uuid", uuid);
         tag.putIntArray("sideConfig", sideConfig.values().stream().mapToInt(Enum::ordinal).toArray());
     }
 

@@ -1,6 +1,7 @@
 package igentuman.nc.handler.event.client;
 
 import igentuman.nc.handler.config.RadiationConfig;
+import igentuman.nc.handler.crafter.CraftingPattern;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.ItemShielding;
 import igentuman.nc.radiation.RadiationCleaningItems;
@@ -18,8 +19,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
@@ -52,6 +55,7 @@ public class TooltipHandler {
         processedEvent = event;
         Item item = event.getItemStack().getItem();
         miscTooltips(event, event.getItemStack());
+        addPatternTooltip(event, event.getItemStack());
         if(RadiationConfig.RADIATION_CONFIG.ENABLED.get()) {
             addRadiationLevelTooltip(event, item);
             addShieldingTooltip(event, event.getItemStack());
@@ -59,6 +63,21 @@ public class TooltipHandler {
             addDecayGeneratorTooltip(event, event.getItemStack());
         }
         addModeratorTooltip(event, event.getItemStack());
+    }
+
+    private static void addPatternTooltip(ItemTooltipEvent event, ItemStack itemStack) {
+        CraftingPattern pattern = CraftingPattern.from(itemStack);
+        if (pattern == null) return;
+        ItemStack output = pattern.output();
+        event.getToolTip().add(__("tooltip.nc.pattern.output", output.getCount(), output.getHoverName()).withStyle(ChatFormatting.GOLD));
+        Map<Item, Integer> counts = new LinkedHashMap<>();
+        for (ItemStack in : pattern.inputs()) {
+            if (in.isEmpty()) continue;
+            counts.merge(in.getItem(), 1, Integer::sum);
+        }
+        for (Map.Entry<Item, Integer> e : counts.entrySet()) {
+            event.getToolTip().add(__("tooltip.nc.pattern.ingredient", e.getValue(), new ItemStack(e.getKey()).getHoverName()).withStyle(ChatFormatting.DARK_GRAY));
+        }
     }
 
     private static void addDecayGeneratorTooltip(ItemTooltipEvent event, @NotNull ItemStack itemStack) {

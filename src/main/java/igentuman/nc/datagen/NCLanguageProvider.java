@@ -485,6 +485,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("advancement.nc.basic_storage_container", "Basic Storage Container");
         add("advancement.nc.basic_storage_container.desc", "Better than chests");
 
+        add("advancement.nc.engineers_crafting_table", "Engineer's Crafting Table");
+        add("advancement.nc.engineers_crafting_table.desc", "Now with pattern encoding. Requisition form 27-B not required.");
+
         add("advancement.nc.basic_voltaic_pile", "Basic Voltaic Pile");
         add("advancement.nc.basic_voltaic_pile.desc", "Keeping energy, just in case");
 
@@ -492,7 +495,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("advancement.nc.alloy_smelter.desc", "Combine metals into alloys");
 
         add("advancement.nc.q36", "Q-36 Quantite Disruptor");
-        add("advancement.nc.q36.desc", "");
+        add("advancement.nc.q36.desc", "Disruptor who?");
 
         add("advancement.nc.qnp", "QNP");
         add("advancement.nc.qnp.desc", "Craft a QNP for advanced excavation");
@@ -802,7 +805,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
         for(String name: FUSION_BLOCKS.keySet()) {
             String title = convertToName(name);
-            add(FUSION_BLOCKS.get(name).get(), prefix+title);
+            add(FUSION_BLOCKS.get(name).get(), title);
         }
 
         for(String name: TURBINE_BLOCKS.keySet()) {
@@ -1391,6 +1394,31 @@ public class NCLanguageProvider extends LanguageProvider {
         }
         add("block."+MODID+".redstone_dimmer", "Redstone Dimmer");
         add("block."+MODID+".multiblock_builder", "Creative Multiblock Builder");
+        add("block."+MODID+".engineers_crafting_table", "Engineer's Crafting Table");
+        add("block."+MODID+".engineers_crafting_table.desc", "Requisition-grade autocrafting terminal. Feed it storage containers and a live power feed; it assembles to spec, one operation per tick. (Assembly to spec not guaranteed during scheduled brownouts.)");
+        add("tooltip.nc.engineers_crafting_table", "Powered autocrafting terminal");
+        add("container."+MODID+".engineers_encoder", "Pattern Encoder");
+        add("gui.nc.crafter.encoder", "Encoder");
+        add("gui.nc.encoder.encode", "Encode recipe onto a blank pattern");
+        add("item."+MODID+".crafting_pattern", "Crafting Pattern");
+        add("tooltip.nc.crafting_pattern.blank", "Blank stock. Feed it to a Pattern Encoder to imprint a recipe. (Ink not included; graphite works fine.)");
+        add("gui.nc.crafter.view", "View: %s");
+        add("gui.nc.crafter.mode.stored", "Stored");
+        add("gui.nc.crafter.mode.craftable", "Craftable");
+        add("gui.nc.crafter.mode.both", "Both");
+        add("gui.nc.crafter.stored", "In stock: %s");
+        add("gui.nc.crafter.craftable_tt", "Craftable");
+        add("gui.nc.crafter.confirm.title", "Confirm Craft");
+        add("gui.nc.crafter.qty", "QTY: %s");
+        add("gui.nc.crafter.confirm", "Confirm");
+        add("gui.nc.crafter.cancel", "Cancel");
+        add("gui.nc.crafter.back", "Back");
+        add("gui.nc.crafter.denied.title", "Crafting Denied");
+        add("gui.nc.crafter.denied.entry", "%sx %s");
+        add("gui.nc.crafter.denied.more", "...and %s more");
+        add("gui.nc.crafter.denied.too_complex", "Bill of materials exceeds planner limits.");
+        add("tooltip.nc.pattern.output", "Yields: %sx %s");
+        add("tooltip.nc.pattern.ingredient", "  %sx %s");
         add("block."+MODID+".charging_station", "Quantite Charging Station");
         add("block."+MODID+".charging_station.desc", "Bathes a Q-36 Quantite Disruptor in liquid Quantite Energy, restoring charge to the cell. 100 mB per refill tick; ten buckets bring an empty disruptor to full.");
         add("tooltip.nc.charging_station.fluid_empty", "No Quantite Energy");

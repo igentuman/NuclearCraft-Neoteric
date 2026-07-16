@@ -3,6 +3,7 @@ package igentuman.nc.network.toServer;
 import igentuman.nc.block.accelerator.entity.AcceleratorPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.entity.ParticleChamberPortBE;
+import igentuman.nc.block.crafter.entity.EngineersCrafterBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.block.fission.entity.MSRControllerBE;
@@ -157,6 +158,11 @@ public class PacketGuiButtonPress implements INcPacket {
             case Button.VoidPebbles.BTN_ID:
                 if (be instanceof MSRControllerBE msr) {
                     msr.voidPebbles();
+                }
+                break;
+            case EngineersCrafterBE.OPEN_ENCODER_BTN:
+                if (be instanceof EngineersCrafterBE crafter) {
+                    crafter.openEncoder(player);
                 }
                 break;
         }

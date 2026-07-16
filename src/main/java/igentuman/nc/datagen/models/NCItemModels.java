@@ -6,7 +6,9 @@ import igentuman.nc.content.storage.ContainerBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -83,7 +85,20 @@ public class NCItemModels extends ItemModelProvider {
                 mcLoc("item/generated"),
                 "layer0", modLoc("item/"+RESONITE_CRYSTAL.getId().getPath()));
 
+        craftingPattern();
+
         NCFluids.ALL_FLUID_ENTRIES.values().forEach(this::createBucket);
+    }
+
+    private void craftingPattern() {
+        // Encoded patterns route through a BEWLR (builtin/entity) so the icon becomes the recipe output.
+        ItemModelBuilder encoded = getBuilder("crafting_pattern_encoded")
+                .parent(new ModelFile.UncheckedModelFile("builtin/entity"))
+                .texture("particle", modLoc("item/crafting_pattern"));
+        singleTexture(NCCrafter.CRAFTING_PATTERN.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/crafting_pattern"))
+                .override().predicate(modLoc("encoded"), 1f).model(encoded).end();
     }
 
     private void multiblocks() {

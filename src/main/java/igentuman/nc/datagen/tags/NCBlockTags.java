@@ -30,6 +30,7 @@ import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CO
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
+import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_BLOCK;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 import static igentuman.nc.setup.registration.Tags.BLOCK_TAGS;
 import static igentuman.nc.setup.registration.Tags.ORE_TAGS;
@@ -193,10 +194,12 @@ public class NCBlockTags extends BlockTagsProvider {
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MULTIBLOCK_BUILDER_BLOCK.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(REDSTONE_DIMMER_BLOCK.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CHARGING_STATION_BLOCK.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ENGINEERS_CRAFTING_TABLE_BLOCK.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(PU_239_BOMB.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(REDSTONE_DIMMER_BLOCK.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(PU_239_BOMB.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(CHARGING_STATION_BLOCK.get());
+        tag(BlockTags.NEEDS_IRON_TOOL).add(ENGINEERS_CRAFTING_TABLE_BLOCK.get());
 
         for(String block: NCBlocks.NC_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NCBlocks.NC_BLOCKS.get(block).get());

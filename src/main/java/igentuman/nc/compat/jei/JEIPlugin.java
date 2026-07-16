@@ -513,6 +513,8 @@ public  class JEIPlugin implements IModPlugin {
             if (!Processors.all().containsKey(name)) continue;
             registration.addRecipeTransferHandler(new ProcessorRecipeTransferHandler<>(getRecipeType(name)), getRecipeType(name));
         }
+        registration.addRecipeTransferHandler(new EngineersCrafterRecipeTransferHandler(registration.getTransferHelper()), mezz.jei.api.constants.RecipeTypes.CRAFTING);
+        registration.addRecipeTransferHandler(new EngineersEncoderRecipeTransferHandler(), mezz.jei.api.constants.RecipeTypes.CRAFTING);
     }
 
     @Override
@@ -533,6 +535,8 @@ public  class JEIPlugin implements IModPlugin {
         if(CATALYSTS.containsKey(HeatExchangerControllerBE.NAME)) {
             registry.addRecipeCatalyst(CATALYSTS.get(HeatExchangerControllerBE.NAME).get(0), HEAT_EXCHANGER);
         }
+
+        registry.addRecipeCatalyst(new ItemStack(igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_ITEM.get()), mezz.jei.api.constants.RecipeTypes.CRAFTING);
 
         registry.addRecipeCatalyst(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(), ACCELERATOR_COOLANT);
         registry.addRecipeCatalyst(ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get(), ACCELERATOR_COOLANT);

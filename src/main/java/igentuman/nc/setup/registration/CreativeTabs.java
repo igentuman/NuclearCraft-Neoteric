@@ -187,6 +187,7 @@ public class CreativeTabs {
         items.add(new ItemStack(Q36.get()));
         items.add(new ItemStack(MULTITOOL.get()));
         items.add(new ItemStack(GEIGER_COUNTER.get()));
+        items.add(new ItemStack(NCCrafter.CRAFTING_PATTERN.get()));
         items.add(new ItemStack(LITHIUM_ION_CELL.get()));
         items.add(new ItemStack(RESONITE_SHARD.get()));
         items.add(new ItemStack(RESONITE_CRYSTAL.get()));
@@ -230,6 +231,7 @@ public class CreativeTabs {
         items.addAll(blockStacks(NC_BLOCKS.values()));
         items.add(new ItemStack(REDSTONE_DIMMER_ITEM_BLOCK.get()));
         items.add(new ItemStack(CHARGING_STATION_ITEM_BLOCK.get()));
+        items.add(new ItemStack(NCCrafter.ENGINEERS_CRAFTING_TABLE_BLOCK.get()));
         items.add(new ItemStack(MULTIBLOCK_BUILDER_BLOCK.get()));
         items.add(new ItemStack(EXPL_BLOCK.get()));
         items.add(new ItemStack(PU_239_BOMB.get()));

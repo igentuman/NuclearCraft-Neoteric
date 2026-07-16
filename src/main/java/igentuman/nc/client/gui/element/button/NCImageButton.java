@@ -37,7 +37,7 @@ public class NCImageButton extends Button {
    }
 
    public NCImageButton(int pX, int pY, int pWidth, int pHeight, int pXTexStart, int pYTexStart, int pYDiffTex, ResourceLocation pResourceLocation, int pTextureWidth, int pTextureHeight, Button.OnPress pOnPress, Button.OnPress pOnTooltip, Component pMessage) {
-      super(pX, pY, pWidth, pHeight, pMessage, pOnPress, null);
+      super(pX, pY, pWidth, pHeight, pMessage, pOnPress, Button.DEFAULT_NARRATION);
       this.textureWidth = pTextureWidth;
       this.textureHeight = pTextureHeight;
       this.xTexStart = pXTexStart;

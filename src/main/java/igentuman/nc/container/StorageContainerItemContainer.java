@@ -1,5 +1,7 @@
 package igentuman.nc.container;
 
+import igentuman.nc.handler.storage.UuidBackedItemHandler;
+import igentuman.nc.handler.storage.UuidBackedSlot;
 import igentuman.nc.item.ContainerBlockItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -10,7 +12,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class StorageContainerItemContainer<T extends AbstractContainerMenu> exte
     private final int rows;
     private final int colls;
 
-    public StorageContainerItemContainer(int pContainerId, BlockPos pos, Inventory pPlayerInventory, int slot) {
+    public StorageContainerItemContainer(int pContainerId, BlockPos pos, Inventory pPlayerInventory, int slot, UUID syncedUuid) {
         super(STORAGE_ITEM_CONTAINER.get(), pContainerId);
         this.playerSlot = slot;
         this.playerEntity = pPlayerInventory.player;
@@ -36,6 +37,9 @@ public class StorageContainerItemContainer<T extends AbstractContainerMenu> exte
 
         ItemStack stack = slot == 40 ? pPlayerInventory.offhand.get(0) : pPlayerInventory.items.get(slot);
         if (stack.getItem() instanceof ContainerBlockItem containerBlockItem) {
+            if (ContainerBlockItem.readUuid(stack) == null) {
+                ContainerBlockItem.writeUuid(stack, syncedUuid);
+            }
             this.containerInventory = containerBlockItem.getInventory(stack);
             uuid = containerBlockItem.getUUID(stack);
             rows = getRows(containerBlockItem);
@@ -57,7 +61,7 @@ public class StorageContainerItemContainer<T extends AbstractContainerMenu> exte
          for(int l = 0; l < colls; ++l) {
             x = 5 + l * 18;
             y = 5 + k * 18;
-            this.addSlot(new SlotItemHandler(containerInventory, idx++, x, y));
+            this.addSlot(new UuidBackedSlot((UuidBackedItemHandler) containerInventory, idx++, x, y));
          }
         }
         int xShift = 5;
@@ -100,7 +104,7 @@ public class StorageContainerItemContainer<T extends AbstractContainerMenu> exte
    public boolean stillValid(Player pPlayer) {
       ItemStack stack = pPlayer.getItemInHand(InteractionHand.MAIN_HAND);
        if(stack.getItem() instanceof ContainerBlockItem containerItem) {
-           return containerItem.getUUID(stack).equals(uuid);
+           return uuid != null && uuid.equals(containerItem.getUUID(stack));
        }
        return false;
    }

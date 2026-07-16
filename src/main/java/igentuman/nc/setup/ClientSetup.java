@@ -89,6 +89,7 @@ import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.H
 import static igentuman.nc.setup.registration.NCBlocks.CHARGING_STATION_BE;
 import static igentuman.nc.setup.registration.NCBlocks.CHARGING_STATION_CONTAINER;
 import static igentuman.nc.setup.registration.NCBlocks.MULTIBLOCK_BUILDER_CONTAINER;
+import static igentuman.nc.setup.registration.NCBlocks.PIPE_CONNECTOR_CONTAINER;
 import static igentuman.nc.setup.registration.NCBlocks.REDSTONE_DIMMER_CONTAINER;
 import static igentuman.nc.setup.registration.NCCrafter.CRAFTING_PATTERN;
 import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_CONTAINER;
@@ -135,6 +136,7 @@ public class ClientSetup {
             MenuScreens.register(CHAMBER_TERMINAL_CONTAINER.get(), ChamberTerminalScreen::new);
             MenuScreens.register(REDSTONE_DIMMER_CONTAINER.get(), RedstoneDimmerScreen::new);
             MenuScreens.register(CHARGING_STATION_CONTAINER.get(), ChargingStationScreen::new);
+            MenuScreens.register(PIPE_CONNECTOR_CONTAINER.get(), PipeConnectorScreen::new);
             MenuScreens.register(ENGINEERS_CRAFTING_TABLE_CONTAINER.get(), EngineersCrafterScreen::new);
             MenuScreens.register(ENGINEERS_ENCODER_CONTAINER.get(), EngineersEncoderScreen::new);
             MenuScreens.register(MULTIBLOCK_BUILDER_CONTAINER.get(), MultiblockBuilderScreen::new);

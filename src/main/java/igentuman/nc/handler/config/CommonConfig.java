@@ -28,6 +28,7 @@ public class CommonConfig {
     public static final Q36Config Q36_CONFIG = new Q36Config(BUILDER);
     public static final BombConfig BOMB_CONFIG = new BombConfig(BUILDER);
     public static final AnomalyConfig ANOMALY_CONFIG = new AnomalyConfig(BUILDER);
+    public static final PipeConfig PIPE_CONFIG = new PipeConfig(BUILDER);
 
     public static final StorageBlocksConfig STORAGE_BLOCKS = new StorageBlocksConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
@@ -97,6 +98,40 @@ public class CommonConfig {
             DECAY_GENERATOR = builder
                     .comment("Decay Generator base power gen")
                     .define("decay_generator_power_gen", 128);
+
+            builder.pop();
+        }
+    }
+
+    public static class PipeConfig {
+        public final ForgeConfigSpec.ConfigValue<Integer> TRANSFER_INTERVAL_TICKS;
+        public final ForgeConfigSpec.ConfigValue<Integer> ITEM_THROUGHPUT;
+        public final ForgeConfigSpec.ConfigValue<Integer> FLUID_THROUGHPUT;
+        public final ForgeConfigSpec.ConfigValue<Integer> ENERGY_THROUGHPUT;
+        public final ForgeConfigSpec.ConfigValue<Integer> MAX_NETWORK_SIZE;
+
+        public PipeConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("pipes");
+
+            TRANSFER_INTERVAL_TICKS = builder
+                    .comment("Ticks between active pipe transfer passes")
+                    .defineInRange("transfer_interval_ticks", 1, 1, 200);
+
+            ITEM_THROUGHPUT = builder
+                    .comment("Items moved per active-pull operation, per connector")
+                    .defineInRange("item_throughput", 512, 1, Integer.MAX_VALUE);
+
+            FLUID_THROUGHPUT = builder
+                    .comment("Fluid moved per active-pull operation, per connector (mB)")
+                    .defineInRange("fluid_throughput", 512000, 1, Integer.MAX_VALUE);
+
+            ENERGY_THROUGHPUT = builder
+                    .comment("Energy moved per active-pull operation, per connector (FE)")
+                    .defineInRange("energy_throughput", 512000, 1, Integer.MAX_VALUE);
+
+            MAX_NETWORK_SIZE = builder
+                    .comment("Node budget for a single pipe network's flood-fill discovery; caps recompute cost")
+                    .defineInRange("max_network_size", 4096, 16, Integer.MAX_VALUE);
 
             builder.pop();
         }

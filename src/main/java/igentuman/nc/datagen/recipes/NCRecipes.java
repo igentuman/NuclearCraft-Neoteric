@@ -1445,6 +1445,25 @@ public class NCRecipes extends RecipeProvider {
 
     private void parts(Consumer<FinishedRecipe> consumer) {
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PIPE_BLOCK.get(), 8)
+                .pattern("BSB")
+                .pattern("S S")
+                .pattern("BSB")
+                .define('B', NC_PARTS.get("bioplastic").get())
+                .define('S', forgePlate("steel"))
+                .unlockedBy("item", has(forgePlate("steel")))
+                .save(consumer, rl("pipe_block"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PIPE_CONNECTOR_BLOCK.get(), 2)
+                .pattern("BSB")
+                .pattern("SAS")
+                .pattern("BSB")
+                .define('A', NC_PARTS.get("servo").get())
+                .define('B', NC_PARTS.get("bioplastic").get())
+                .define('S', forgePlate("steel"))
+                .unlockedBy("item", has(forgePlate("steel")))
+                .save(consumer, rl("pipe_connector_block"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, SPAXELHOE_THORIUM.get())
                 .pattern("TTT")
                 .pattern("TIT")

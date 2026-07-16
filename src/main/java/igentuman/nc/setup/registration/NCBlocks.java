@@ -5,8 +5,12 @@ import igentuman.nc.block.bomb.entity.Pu239BombBE;
 import igentuman.nc.block.entity.ChargingStationBE;
 import igentuman.nc.block.entity.MultiblockBuilderBE;
 import igentuman.nc.block.entity.RedstoneDimmerBE;
+import igentuman.nc.block.pipe.PipeBlock;
+import igentuman.nc.block.pipe.PipeConnectorBlock;
+import igentuman.nc.block.pipe.entity.PipeConnectorBE;
 import igentuman.nc.container.ChargingStationContainer;
 import igentuman.nc.container.MultiblockBuilderContainer;
+import igentuman.nc.container.PipeConnectorContainer;
 import igentuman.nc.container.RedstoneDImmerContainer;
 import igentuman.nc.content.Electromagnets;
 import igentuman.nc.content.RFAmplifier;
@@ -71,6 +75,15 @@ public class NCBlocks {
             () -> BlockEntityType.Builder.of(ChargingStationBE::new, CHARGING_STATION_BLOCK.get()).build(null));
     public static final RegistryObject<MenuType<ChargingStationContainer>> CHARGING_STATION_CONTAINER = CONTAINERS.register("charging_station",
             () -> IForgeMenuType.create((windowId, inv, data) -> new ChargingStationContainer(windowId, data.readBlockPos(), inv)));
+
+    public static final RegistryObject<Block> PIPE_BLOCK = BLOCKS.register("pipe", PipeBlock::new);
+    public static final RegistryObject<Item> PIPE_ITEM_BLOCK = fromBlock(PIPE_BLOCK);
+    public static final RegistryObject<Block> PIPE_CONNECTOR_BLOCK = BLOCKS.register("pipe_connector", PipeConnectorBlock::new);
+    public static final RegistryObject<Item> PIPE_CONNECTOR_ITEM_BLOCK = fromBlock(PIPE_CONNECTOR_BLOCK);
+    public static final RegistryObject<BlockEntityType<PipeConnectorBE>> PIPE_CONNECTOR_BE = BLOCK_ENTITIES.register("pipe_connector",
+            () -> BlockEntityType.Builder.of(PipeConnectorBE::new, PIPE_CONNECTOR_BLOCK.get()).build(null));
+    public static final RegistryObject<MenuType<PipeConnectorContainer>> PIPE_CONNECTOR_CONTAINER = CONTAINERS.register("pipe_connector",
+            () -> IForgeMenuType.create((windowId, inv, data) -> new PipeConnectorContainer(windowId, data.readBlockPos(), inv)));
 
     public static final RegistryObject<Block> MULTIBLOCK_BUILDER_BLOCK = BLOCKS.register("multiblock_builder", MultiblockBuilderBlock::new);
     public static final RegistryObject<Item> MULTIBLOCK_BUILDER_ITEM_BLOCK = fromBlock(MULTIBLOCK_BUILDER_BLOCK);

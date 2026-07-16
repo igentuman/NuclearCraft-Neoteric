@@ -1,0 +1,115 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/core"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/arm_y",
+        "x": 270
+      },
+      "when": {
+        "up": "pipe|machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/arm_y",
+        "x": 90
+      },
+      "when": {
+        "down": "pipe|machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/arm_z"
+      },
+      "when": {
+        "north": "pipe|machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/arm_z",
+        "y": 180
+      },
+      "when": {
+        "south": "pipe|machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/arm_x",
+        "y": 90
+      },
+      "when": {
+        "east": "pipe|machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/arm_x",
+        "y": 270
+      },
+      "when": {
+        "west": "pipe|machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/connector/collar_y",
+        "x": 270
+      },
+      "when": {
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/connector/collar_y",
+        "x": 90
+      },
+      "when": {
+        "down": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/connector/collar_z"
+      },
+      "when": {
+        "north": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/connector/collar_z",
+        "y": 180
+      },
+      "when": {
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/connector/collar_x",
+        "y": 90
+      },
+      "when": {
+        "east": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nuclearcraft:block/pipe/connector/collar_x",
+        "y": 270
+      },
+      "when": {
+        "west": "machine"
+      }
+    }
+  ]
+}

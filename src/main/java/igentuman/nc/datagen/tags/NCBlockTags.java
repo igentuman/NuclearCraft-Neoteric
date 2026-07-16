@@ -196,6 +196,8 @@ public class NCBlockTags extends BlockTagsProvider {
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CHARGING_STATION_BLOCK.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ENGINEERS_CRAFTING_TABLE_BLOCK.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(PU_239_BOMB.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(PIPE_BLOCK.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(PIPE_CONNECTOR_BLOCK.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(REDSTONE_DIMMER_BLOCK.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(PU_239_BOMB.get());
         tag(BlockTags.NEEDS_IRON_TOOL).add(CHARGING_STATION_BLOCK.get());

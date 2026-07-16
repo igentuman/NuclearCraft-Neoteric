@@ -59,6 +59,7 @@ public class NCLanguageProvider extends LanguageProvider {
         parts();
         chunks();
         blocks();
+        pipes();
         food();
         armor();
         records();
@@ -81,6 +82,25 @@ public class NCLanguageProvider extends LanguageProvider {
         sounds();
         advancements();
         particles();
+    }
+
+    private void pipes() {
+        add("block." + MODID + ".pipe", "Universal Pipe");
+        add("block." + MODID + ".pipe.desc", "Universal conduit. Rated for simultaneous transport of matter, fluid, and current. Vault-Tec assumes no liability for cross-contamination.");
+        add("block." + MODID + ".pipe_connector", "Pipe Connector");
+        add("block." + MODID + ".pipe_connector.desc", "Interfaces a pipe network with an adjacent block. Enable each transport medium from its interface.");
+        add("gui." + MODID + ".pipe.capability.item", "Items");
+        add("gui." + MODID + ".pipe.capability.fluid", "Fluids");
+        add("gui." + MODID + ".pipe.capability.energy", "Energy");
+        add("gui." + MODID + ".pipe.mode.disabled", "Disabled");
+        add("gui." + MODID + ".pipe.mode.pull", "Pull");
+        add("gui." + MODID + ".pipe.mode.push", "Push");
+        add("gui." + MODID + ".pipe.mode.default", "Auto");
+        add("gui." + MODID + ".pipe.redstone.always", "Redstone: Ignored");
+        add("gui." + MODID + ".pipe.redstone.on_signal", "Redstone: Required");
+        add("tooltip.nc.pipe_connector.mode", "Cycle transfer direction: Disabled, Pull (out of the attached block), Push (into it), or Auto (let the block decide).");
+        add("tooltip.nc.pipe_connector.redstone", "Toggle whether a redstone signal is required to operate. Bureaucratically speaking, the safety interlock nobody reads.");
+        add("tooltip.nc.pipe_connector.capabilities", "Tick a box to permit item, fluid, or energy transport. All inert until authorized.");
     }
 
     private void ponders() {

@@ -53,6 +53,8 @@ public class NCLootTables extends BaseLootTableProvider {
         add(CHARGING_STATION_BLOCK.get(), block -> createSimpleTable("block", CHARGING_STATION_BLOCK.get()));
         add(ENGINEERS_CRAFTING_TABLE_BLOCK.get(), block -> createSimpleTable("block", ENGINEERS_CRAFTING_TABLE_BLOCK.get()));
         add(PU_239_BOMB.get(), block -> createSimpleTable("block", PU_239_BOMB.get()));
+        add(PIPE_BLOCK.get(), block -> createSimpleTable("block", PIPE_BLOCK.get()));
+        add(PIPE_CONNECTOR_BLOCK.get(), block -> createSimpleTable("block", PIPE_CONNECTOR_BLOCK.get()));
     }
 
     private void add(RegistryObject<Block> regBlock) {
@@ -113,6 +115,8 @@ public class NCLootTables extends BaseLootTableProvider {
         all.add(CHARGING_STATION_BLOCK.get());
         all.add(ENGINEERS_CRAFTING_TABLE_BLOCK.get());
         all.add(PU_239_BOMB.get());
+        all.add(PIPE_BLOCK.get());
+        all.add(PIPE_CONNECTOR_BLOCK.get());
         return all;
     }
 }

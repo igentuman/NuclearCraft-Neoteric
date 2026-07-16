@@ -15,7 +15,9 @@ import igentuman.nc.block.heat_exchanger.entity.HeatExchangerColdCoolantPortBE;
 import igentuman.nc.block.heat_exchanger.entity.HeatExchangerHotCoolantPortBE;
 import igentuman.nc.block.kugelblitz.entity.ChamberPortBE;
 import igentuman.nc.block.kugelblitz.entity.EXPLBE;
+import igentuman.nc.block.pipe.entity.PipeConnectorBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
+import igentuman.nc.container.PipeConnectorContainer;
 import igentuman.nc.block.turbine.entity.TurbinePortBE;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.button.Button.ReactorPortRedstoneModeButton;
@@ -163,6 +165,31 @@ public class PacketGuiButtonPress implements INcPacket {
             case EngineersCrafterBE.OPEN_ENCODER_BTN:
                 if (be instanceof EngineersCrafterBE crafter) {
                     crafter.openEncoder(player);
+                }
+                break;
+            case PipeConnectorContainer.BTN_MODE:
+                if (be instanceof PipeConnectorBE connector) {
+                    connector.cycleMode();
+                }
+                break;
+            case PipeConnectorContainer.BTN_REDSTONE:
+                if (be instanceof PipeConnectorBE connector) {
+                    connector.cycleRedstoneMode();
+                }
+                break;
+            case PipeConnectorContainer.BTN_CAP_ITEM:
+                if (be instanceof PipeConnectorBE connector) {
+                    connector.toggleCapability(PipeConnectorBE.CAP_ITEM);
+                }
+                break;
+            case PipeConnectorContainer.BTN_CAP_FLUID:
+                if (be instanceof PipeConnectorBE connector) {
+                    connector.toggleCapability(PipeConnectorBE.CAP_FLUID);
+                }
+                break;
+            case PipeConnectorContainer.BTN_CAP_ENERGY:
+                if (be instanceof PipeConnectorBE connector) {
+                    connector.toggleCapability(PipeConnectorBE.CAP_ENERGY);
                 }
                 break;
         }

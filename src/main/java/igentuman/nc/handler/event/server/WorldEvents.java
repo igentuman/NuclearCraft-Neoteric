@@ -3,6 +3,7 @@ package igentuman.nc.handler.event.server;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.multiblock.MultiblockExecutorManager;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.pipe.PipeNetworkManager;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.world.anomaly.AnomalySpawnManager;
@@ -33,6 +34,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.currentTick;
+import static igentuman.nc.handler.config.CommonConfig.PIPE_CONFIG;
 import static igentuman.nc.content.materials.Materials.plutonium239;
 import static igentuman.nc.handler.config.WorldConfig.VILLAGE_CONFIG;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
@@ -92,8 +94,19 @@ public class WorldEvents {
     }
 
     @SubscribeEvent
-    public void chunkUnloadEvent(ChunkEvent.Unload event) {
+    public void chunkLoadEvent(ChunkEvent.Load event) {
+        if (event.getLevel() == null || event.getLevel().isClientSide()) return;
+        if (event.getLevel() instanceof ServerLevel level) {
+            PipeNetworkManager.get(level.dimension()).onChunkLoaded(level, event.getChunk().getPos());
+        }
+    }
 
+    @SubscribeEvent
+    public void chunkUnloadEvent(ChunkEvent.Unload event) {
+        if (event.getLevel() == null || event.getLevel().isClientSide()) return;
+        if (event.getLevel() instanceof ServerLevel level) {
+            PipeNetworkManager.get(level.dimension()).onChunkUnloaded(event.getChunk().getPos());
+        }
     }
 
     @SubscribeEvent
@@ -121,8 +134,13 @@ public class WorldEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onTick(LevelTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.START) {
-            if(currentTick % 5 != 0 || event.level.getChunkSource().getLoadedChunksCount() < 1) return;
+            if(event.level.getChunkSource().getLoadedChunksCount() < 1) return;
             final ServerLevel level = (ServerLevel) event.level;
+            int pipeInterval = Math.max(1, PIPE_CONFIG.TRANSFER_INTERVAL_TICKS.get());
+            if(currentTick % pipeInterval == 0) {
+                PipeNetworkManager.get(level.dimension()).tickTransfers(level);
+            }
+            if(currentTick % 5 != 0) return;
             RadiationEvents.tickAsync(event);
             MultiblockHandler.trackChangesAsync(level);
             AnomalySpawnManager.tick(level);
@@ -133,6 +151,7 @@ public class WorldEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerStopping(ServerStoppingEvent event) {
         MultiblockHandler.clearAll();
+        PipeNetworkManager.clearAll();
         RadiationManager.clearAll();
         // Shutdown the executor service gracefully when the server is stopping
         MultiblockExecutorManager.shutdown();

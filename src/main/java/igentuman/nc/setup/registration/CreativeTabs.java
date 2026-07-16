@@ -231,6 +231,8 @@ public class CreativeTabs {
         items.addAll(blockStacks(NC_BLOCKS.values()));
         items.add(new ItemStack(REDSTONE_DIMMER_ITEM_BLOCK.get()));
         items.add(new ItemStack(CHARGING_STATION_ITEM_BLOCK.get()));
+        items.add(new ItemStack(PIPE_ITEM_BLOCK.get()));
+        items.add(new ItemStack(PIPE_CONNECTOR_ITEM_BLOCK.get()));
         items.add(new ItemStack(NCCrafter.ENGINEERS_CRAFTING_TABLE_BLOCK.get()));
         items.add(new ItemStack(MULTIBLOCK_BUILDER_BLOCK.get()));
         items.add(new ItemStack(EXPL_BLOCK.get()));

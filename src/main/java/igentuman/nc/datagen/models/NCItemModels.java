@@ -64,6 +64,8 @@ public class NCItemModels extends ItemModelProvider {
         withExistingParent(FERAL_GHOUL_SPAWN_EGG.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(NCBlocks.PORTAL_ITEM.getId().getPath(), modLoc("block/portal"));
         withExistingParent(NCBlocks.WASTELAND_EARTH.getId().getPath(), modLoc("block/wasteland_earth"));
+        withExistingParent(NCBlocks.PIPE_ITEM_BLOCK.getId().getPath(), modLoc("block/pipe/inventory"));
+        withExistingParent(NCBlocks.PIPE_CONNECTOR_ITEM_BLOCK.getId().getPath(), modLoc("block/pipe/connector/inventory"));
 
         singleTexture(MULTITOOL.getId().getPath(),
                 mcLoc("item/generated"),

@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "forge:neptunium/236"
+    },
+    {
+      "amount": 180,
+      "tag": "forge:neptunium/237"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 90,
+      "tag": "forge:fuel_neptunium_hen_236"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

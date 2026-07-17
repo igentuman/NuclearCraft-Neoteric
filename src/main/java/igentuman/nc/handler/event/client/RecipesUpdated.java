@@ -1,5 +1,6 @@
 package igentuman.nc.handler.event.client;
 
+import igentuman.nc.block.bomb.sim.BlockClassifier;
 import igentuman.nc.recipes.NcRecipeType;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
@@ -15,6 +16,7 @@ public class RecipesUpdated {
 
     public static RecipeManager manager;
     public static void recipesUpdated(RecipesUpdatedEvent event) {
+        BlockClassifier.invalidate();
         manager = event.getRecipeManager();
         for (String name: ALL_RECIPES.keySet()) {
             NcRecipeType recipeType = ALL_RECIPES.get(name).getRecipeType();

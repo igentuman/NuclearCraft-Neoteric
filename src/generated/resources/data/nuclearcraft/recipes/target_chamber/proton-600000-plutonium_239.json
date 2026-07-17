@@ -1,0 +1,41 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.2,
+  "energyReleased": -279000,
+  "input": [
+    {
+      "item": "nuclearcraft:plutonium_239"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 5000000,
+      "focus": 1.0,
+      "meanEnergy": 600000,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 5000000,
+  "output": [
+    {
+      "item": "nuclearcraft:plutonium_spallation_waste"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "pion_plus"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "pion_minus"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

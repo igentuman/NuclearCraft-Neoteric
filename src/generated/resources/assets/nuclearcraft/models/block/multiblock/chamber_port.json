@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "nuclearcraft:block/kugelblitz/port/top",
+    "east": "nuclearcraft:block/kugelblitz/port/side",
+    "north": "nuclearcraft:block/kugelblitz/port/chamber_port",
+    "particle": "nuclearcraft:block/kugelblitz/port/side",
+    "south": "nuclearcraft:block/kugelblitz/port/back",
+    "up": "nuclearcraft:block/kugelblitz/port/bottom",
+    "west": "nuclearcraft:block/kugelblitz/port/side"
+  }
+}

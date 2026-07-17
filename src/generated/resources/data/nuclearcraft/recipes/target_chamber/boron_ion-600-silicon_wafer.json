@@ -1,0 +1,27 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 1.0,
+  "energyReleased": 0,
+  "input": [
+    {
+      "item": "nuclearcraft:silicon_wafer"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 1000000,
+      "focus": 2.0,
+      "meanEnergy": 600,
+      "particle": "boron_ion"
+    }
+  ],
+  "maxEnergy": 1000,
+  "output": [
+    {
+      "item": "nuclearcraft:silicon_p_doped"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

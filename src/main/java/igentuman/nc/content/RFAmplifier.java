@@ -1,11 +1,6 @@
 package igentuman.nc.content;
 
-import igentuman.nc.block.entity.ElectromagnetBE;
-import igentuman.nc.block.entity.RFAmplifierBE;
-import igentuman.nc.block.entity.energy.NCEnergy;
 import igentuman.nc.handler.config.CommonConfig;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,16 +11,16 @@ import static igentuman.nc.handler.config.FusionConfig.RF_AMPLIFIERS_CONFIG;
 
 public class RFAmplifier {
 
-    private static HashMap<String, RFAmplifierPrefab> all = new HashMap<>();
-    private static HashMap<String, RFAmplifierPrefab> registered = new HashMap<>();
+    private static final HashMap<String, RFAmplifierPrefab> all = new HashMap<>();
+    private static final HashMap<String, RFAmplifierPrefab> registered = new HashMap<>();
 
     public static HashMap<String, RFAmplifierPrefab> all() {
         if(all.isEmpty()) {
-            all.put("basic_rf_amplifier", new RFAmplifierPrefab("basic_rf_amplifier",250, 300, 500000, 350000, 75));
-            all.put("magnesium_diboride_rf_amplifier", new RFAmplifierPrefab("magnesium_diboride_rf_amplifier",500, 500, 1000000, 39000, 80));
-            all.put("niobium_tin_rf_amplifier", new RFAmplifierPrefab("niobium_tin_rf_amplifier",750, 1140, 2000000, 18000, 90));
-            all.put("niobium_titanium_rf_amplifier", new RFAmplifierPrefab("niobium_titanium_rf_amplifier",1500, 2260, 3000000, 10000, 95));
-            all.put("bscco_rf_amplifier", new RFAmplifierPrefab("bscco_rf_amplifier",2500, 4500, 4000000, 104000, 99));
+            all.put("basic_rf_amplifier", new RFAmplifierPrefab("basic_rf_amplifier",500, 300, 200000, 350000, 50));
+            all.put("magnesium_diboride_rf_amplifier", new RFAmplifierPrefab("magnesium_diboride_rf_amplifier",1000, 580, 500000, 39000, 80));
+            all.put("niobium_tin_rf_amplifier", new RFAmplifierPrefab("niobium_tin_rf_amplifier",2000, 1140, 1000000, 18000, 90));
+            all.put("niobium_titanium_rf_amplifier", new RFAmplifierPrefab("niobium_titanium_rf_amplifier",4000, 2260, 2000000, 10000, 95));
+            all.put("bscco_rf_amplifier", new RFAmplifierPrefab("bscco_rf_amplifier",8000, 4500, 4000000, 104000, 99));
         }
         return all;
     }
@@ -89,7 +84,6 @@ public class RFAmplifier {
         protected int heat = 0;
         protected int maxTemp = 0;
         protected int efficiency = 0;
-        private BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  blockEntity = ElectromagnetBE::new;
 
         public RFAmplifierPrefab(String name, int energy, int heat, int voltage, int maxTemp, int efficiency) {
             this.power = energy;
@@ -98,7 +92,6 @@ public class RFAmplifier {
             this.voltage = voltage;
             this.maxTemp = maxTemp;
             this.efficiency = efficiency;
-            blockEntity = RFAmplifierBE::new;
         }
 
         public int getEfficiency() {
@@ -137,21 +130,16 @@ public class RFAmplifier {
             return  registered;
         }
 
-        public BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  getBlockEntity() {
-            return blockEntity;
-        }
-
-        public RFAmplifierPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends RFAmplifierBE>  blockEntity) {
-            this.blockEntity = blockEntity;
-            return this;
-        }
-
         public int getVoltage() {
             return voltage;
         }
 
         public int getHeat() {
             return heat;
+        }
+
+        public int getHeatRate() {
+            return 100; //todo implement heat rate
         }
     }
 }

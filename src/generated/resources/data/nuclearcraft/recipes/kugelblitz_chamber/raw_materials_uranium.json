@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": [
+    {
+      "tag": "forge:raw_materials/uranium"
+    }
+  ],
+  "output": [
+    {
+      "tag": "forge:raw_materials/uranium"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

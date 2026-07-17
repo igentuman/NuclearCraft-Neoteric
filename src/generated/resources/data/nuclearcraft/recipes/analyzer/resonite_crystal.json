@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:analyzer",
+  "input": [
+    {
+      "item": "nuclearcraft:resonite_crystal"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:resonite_crystal"
+    }
+  ],
+  "powerModifier": 16.0,
+  "radiation": 1.0,
+  "timeModifier": 8.0
+}

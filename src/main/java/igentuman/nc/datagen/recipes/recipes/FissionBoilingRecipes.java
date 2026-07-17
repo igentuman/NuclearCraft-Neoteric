@@ -16,13 +16,19 @@ public class FissionBoilingRecipes extends AbstractRecipeProvider {
         add(
                 fluidIngredient("minecraft:water", 10),
                 fluidIngredient("steam", 10),
-                1
+                100
         );
 
         add(
                 fluidIngredient("technical_water", 10),
                 fluidIngredient("high_pressure_steam", 10),
-                1
+                200
+        );
+
+        add(
+                fluidIngredient("helium", 10),
+                fluidIngredient("hot_helium", 10),
+                400
         );
     }
 

@@ -1,7 +1,7 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.multiblock.fusion.FusionReactor;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
+import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,25 +16,23 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
 import static igentuman.nc.util.TextUtils.*;
 
 public class FusionCoreContainer extends AbstractContainerMenu {
 
-    protected FusionCoreBE<?> blockEntity;
-    protected Player playerEntity;
-
-    protected String name = "fusion_core";
+    protected final FusionCoreBE blockEntity;
+    protected final Player playerEntity;
+    protected final String name = "fusion_core";
     private int slotIndex = 0;
-
-    protected IItemHandler playerInventory;
+    protected final IItemHandler playerInventory;
 
     public FusionCoreContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
-        super(FusionReactor.FUSION_CORE_CONTAINER.get(), pContainerId);
+        super(FusionReactorRegistration.FUSION_CORE_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (FusionCoreBE<?>) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (FusionCoreBE) playerEntity.getCommandSenderWorld().getExistingBlockEntity(pos);
         layoutPlayerInventorySlots();
     }
 
@@ -57,7 +55,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public boolean isCasingValid() {
@@ -73,7 +71,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public int getEnergy() {
-        return blockEntity.energyStorage.getEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getEnergyStored());
     }
 
     public double getHeat() {
@@ -104,7 +102,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return blockEntity.energyStorage.getMaxEnergyStored();
+        return energy2Display(blockEntity.energyStorage().getMaxEnergyStored());
     }
 
     public double getMaxHeat() {
@@ -116,7 +114,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public int energyPerTick() {
-        return blockEntity.energyPerTick;
+        return energy2Display(blockEntity.energyPerTick);
     }
 
     public boolean hasRecipe() {
@@ -151,7 +149,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
         return blockEntity.getFluidTank(i);
     }
 
-    public int getRfAmplifiersPowerRatio() {
+    public int getAmplification() {
         return blockEntity.rfAmplificationRatio;
     }
 
@@ -182,7 +180,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public boolean hasAmplifiers() {
-        return blockEntity.rfAmplifiersPower > 0;
+        return blockEntity.amplifiers > 0;
     }
 
     public int getCharge() {
@@ -198,7 +196,7 @@ public class FusionCoreContainer extends AbstractContainerMenu {
     }
 
     public int requiredEnergy() {
-        return blockEntity.rfAmplifiersPower+blockEntity.magnetsPower;
+        return energy2Display(blockEntity.rfAmplifiersPower+blockEntity.magnetsPower);
     }
 
     public boolean isRunning() {
@@ -207,5 +205,25 @@ public class FusionCoreContainer extends AbstractContainerMenu {
 
     public int getPlasmaStability() {
         return (int) (blockEntity.getPlasmaStability()*100);
+    }
+
+    public int getAmlificationAdjustment() {
+        return blockEntity.amplificationAdjustment;
+    }
+
+    public byte redstoneMode() {
+        return blockEntity.redstoneMode;
+    }
+
+    public byte analogSignal() {
+        return blockEntity.analogSignal;
+    }
+
+    public boolean canAnalyze() {
+        return blockEntity.canAnalyze();
+    }
+
+    public BlockPos getPosition() {
+        return blockEntity.getBlockPos();
     }
 }

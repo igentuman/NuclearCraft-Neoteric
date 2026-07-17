@@ -13,7 +13,9 @@ public class CustomRecipes extends NCRecipes {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {
         CustomRecipes.consumer = consumer;
+        KugelblitzRecipes.generate(consumer);
         FissionRecipes.generate(consumer);
+        MSRRecipes.generate(consumer);
         ManufactoryRecipes.generate(consumer);
         DecayHastenerRecipes.generate(consumer);
         PressurizerRecipes.generate(consumer);
@@ -43,5 +45,15 @@ public class CustomRecipes extends NCRecipes {
         FusionCoolantRecipes.generate(consumer);
         FissionBoilingRecipes.generate(consumer);
         TurbineControllerRecipes.generate(consumer);
+        HeatExchangerRecipes.generate(consumer);
+        SubatomicLiquifierRecipes.generate(consumer);
+        TargetChamberRecipes.generate(consumer);
+        NuclearBlastRecipes.generate(consumer);
+        DecayChamberRecipes.generate(consumer);
+        CollisionChamberRecipes.generate(consumer);
+        TConstructAlloyingRecipes.generate(consumer);
+        TConstructCastingRecipes.generate(consumer);
+        TConstructMeltingRecipes.generate(consumer);
+        AcceleratorCoolantRecipes.generate(consumer);
     }
 }

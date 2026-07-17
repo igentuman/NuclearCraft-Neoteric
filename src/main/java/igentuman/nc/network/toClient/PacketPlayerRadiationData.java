@@ -26,7 +26,7 @@ public class PacketPlayerRadiationData implements INcPacket {
     }
 
     public static PacketPlayerRadiationData decode(FriendlyByteBuf buffer) {
-        int playerRadiation = buffer.readInt();
+        long playerRadiation = buffer.readLong();
         return new PacketPlayerRadiationData(playerRadiation);
     }
 }

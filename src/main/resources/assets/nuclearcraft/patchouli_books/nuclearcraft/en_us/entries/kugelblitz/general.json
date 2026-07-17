@@ -1,0 +1,257 @@
+{
+  "name": "General Info",
+  "icon": "nuclearcraft:chamber_terminal",
+  "category": "nuclearcraft:kugelblitz",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "intro",
+      "type": "text",
+      "text": "A $(thing)Kugelblitz$() is a type of black hole formed from the energy of light, rather than from the collapse of a massive star. According to Einstein's theory of relativity, energy and mass are interchangeable, as described by the equation $$(m = \\frac{E}{c^2})$$. This means that a sufficiently concentrated beam of light can create a gravitational field strong enough to form a black hole."
+    },
+    {
+      "anchor": "concept",
+      "type": "text",
+      "text": "The $(thing)Kugelblitz chamber$() is a symmetric 11x11x11 spherical multiblock structure. It is used to create a black hole by firing an $(thing)EXPL$() laser burst from all 6 sides at the same moment in time. (Containment manual, page 1: do not improvise.)"
+    },
+    {
+      "anchor": "corners",
+      "type": "blocks/1",
+      "header": "Corners",
+      "block": "nuclearcraft:neutronium_frame",
+      "text": "Neutronium Frame is used mostly in the corners of the chamber. It is a frame block that holds the structure together."
+    },
+    {
+      "anchor": "wall1",
+      "type": "blocks/1",
+      "header": "Walls",
+      "block": "nuclearcraft:event_horizon_stabilizer",
+      "text": "Stabilizers allow the chamber to keep the black hole as stable as possible. They need to be placed in the walls of the chamber."
+    },
+    {
+      "anchor": "wall2",
+      "type": "blocks/2",
+      "header": "Energy and Transformation",
+      "block1": "nuclearcraft:quantum_flux_regulator",
+      "block2": "nuclearcraft:quantum_transformer",
+      "text": "The chamber harnesses black hole evaporation energy and quantum fields to generate power and transform one item into another. More Flux Regulators give better energy output. More Quantum Transformers give better transformation speed."
+    },
+    {
+      "anchor": "port",
+      "type": "blocks/1",
+      "header": "Chamber Port",
+      "block": "nuclearcraft:chamber_port",
+      "text": "The Chamber Port is used to transfer items, fluids, and energy into and out of the reactor. The port can also be used for redstone control and computers."
+    },
+    {
+      "anchor": "evaporation",
+      "type": "text",
+      "header": "Evaporation and Feeding",
+      "text": "A black hole loses its mass during evaporation. To feed the black hole you need to supply Subliquid Matter. If the black hole's mass gets too low, it will evaporate. If it gets too high, it will collapse."
+    },
+    {
+      "anchor": "quantum_transformation",
+      "type": "text",
+      "header": "Quantum transformation",
+      "text": "In JEI you can see which items can be produced by the quantum transformation process. Those products are also allowed as inputs. To start the transformation, you need to find the correct quantum frequency. The player has to discover which items can be produced by the process. Transformation pairs are bound to the world seed."
+    },
+    {
+      "anchor": "simple_reactor",
+      "header": "Simple Reactor",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "N": "nuclearcraft:neutronium_frame",
+          "E": "nuclearcraft:event_horizon_stabilizer",
+          "F": "nuclearcraft:quantum_flux_regulator",
+          "T": "nuclearcraft:quantum_transformer",
+          "P": "nuclearcraft:photon_concentrator",
+          "C": "nuclearcraft:chamber_port[facing=west]",
+          "X": "nuclearcraft:chamber_terminal[facing=west]",
+          "0": "nuclearcraft:black_hole",
+          " ": "minecraft:air"
+        },
+        "pattern": [
+          [
+            "           ",
+            "           ",
+            "           ",
+            "   FTETF   ",
+            "   TEEET   ",
+            "   EEPEE   ",
+            "   TEEET   ",
+            "   FTETF   ",
+            "           ",
+            "           ",
+            "           "
+          ],
+          [
+            "           ",
+            "           ",
+            "   NNNNN   ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "   NNNNN   ",
+            "           ",
+            "           "
+          ],
+          [
+            "           ",
+            "   NNNNN   ",
+            "  N     N  ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            "  N     N  ",
+            "   NNNNN   ",
+            "           "
+          ],
+          [
+            "   FTETF   ",
+            "  N     N  ",
+            " N       N ",
+            "F         F",
+            "T         T",
+            "E         E",
+            "T         T",
+            "F         F",
+            " N       N ",
+            "  N     N  ",
+            "   FTETF   "
+          ],
+          [
+            "   TEEET   ",
+            "  N     N  ",
+            " N       N ",
+            "T         T",
+            "E         E",
+            "E         E",
+            "E         E",
+            "T         T",
+            " N       N ",
+            "  N     N  ",
+            "   TEEET   "
+          ],
+          [
+            "   EEPEE   ",
+            "  N     N  ",
+            " N       N ",
+            "E         E",
+            "E         E",
+            "P         P",
+            "E         E",
+            "E         E",
+            " N       N ",
+            "  N     N  ",
+            "   EEPEE   "
+          ],
+          [
+            "   TEEET   ",
+            "  N     N  ",
+            " N       N ",
+            "T         T",
+            "E         E",
+            "E         E",
+            "E         E",
+            "T         T",
+            " N       N ",
+            "  N     N  ",
+            "   TEEET   "
+          ],
+          [
+            "   FTETF   ",
+            "  N     N  ",
+            " N       N ",
+            "F         F",
+            "T         T",
+            "E         E",
+            "T         T",
+            "F         F",
+            " N       N ",
+            "  N     N  ",
+            "   FTETF   "
+          ],
+          [
+            "           ",
+            "   NNNNN   ",
+            "  N     N  ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            " N       N ",
+            "  N     N  ",
+            "   NNNNN   ",
+            "           "
+          ],
+          [
+            "           ",
+            "           ",
+            "   CNXNC   ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "  N     N  ",
+            "   NNNNN   ",
+            "           ",
+            "           "
+          ],
+          [
+            "           ",
+            "           ",
+            "           ",
+            "   FTETF   ",
+            "   TEEET   ",
+            "   EEPEE   ",
+            "   TEEET   ",
+            "   FTETF   ",
+            "           ",
+            "           ",
+            "           "
+          ],
+          [
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           "
+          ],
+          [
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "     0     ",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "           "
+          ]
+
+        ],
+        "symmetrical": true
+      },
+      "text": "This is a simple chamber design. It is a good starting point. Best fuel for this chamber is HEU-235."
+    },
+    {
+      "anchor": "planner",
+      "type": "text",
+      "header": "Design Considerations",
+      "text": "When designing a reactor, the usage of a $(l:https://github.com/ThizThizzyDizzy/nc-reactor-generator/releases)reactor planner$() is recommended. Reactor planners assist with the design of the reactor, providing feedback on design rules, heat control, and predicted output."
+    }
+  ]
+}

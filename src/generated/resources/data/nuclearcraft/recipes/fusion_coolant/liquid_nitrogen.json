@@ -3,13 +3,13 @@
   "coolingRate": 2500.0,
   "inputFluids": [
     {
-      "amount": 1,
+      "amount": 10,
       "tag": "forge:liquid_nitrogen"
     }
   ],
   "outputFluids": [
     {
-      "amount": 1,
+      "amount": 10,
       "tag": "forge:nitrogen"
     }
   ]

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_turbine",
+  "key": {
+    "B": {
+      "item": "minecraft:cauldron"
+    },
+    "S": {
+      "tag": "forge:ingots/hsla_steel"
+    },
+    "T": {
+      "tag": "forge:ingots/zinc"
+    }
+  },
+  "pattern": [
+    "TST",
+    "SBS",
+    "TST"
+  ],
+  "result": {
+    "count": 2,
+    "item": "nuclearcraft:turbine_port"
+  },
+  "show_notification": true
+}

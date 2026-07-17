@@ -4,50 +4,47 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
 
-import java.util.List;
+public class PumpBE extends NCProcessorBE {
 
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
-
-public class PumpBE extends NCProcessorBE<PumpBE.Recipe> {
     public PumpBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.PUMP);
-    }
-    @Override
-    public String getName() {
-        return Processors.PUMP;
+        contentHandler().fluidHandler.tanks.get(0).setCapacity(1000000);
     }
 
     @Override
-    protected void updateRecipe() {
+    public void updateRecipe() {
         recipe = getRecipe();
         if (recipe != null) {
-            recipeInfo.setRecipe(recipe);
-            recipeInfo.ticks = (int) (getBaseProcessTime() * recipe.getTimeModifier());
-            recipeInfo.energy = getBasePower() * recipe.getEnergy();
-            recipeInfo.radiation = recipeInfo.recipe.getRadiation();
-            recipeInfo.be = this;
+            recipeInfo().setRecipe(recipe);
+            recipeInfo().setParallelProcessing(parallelRecipes());
+            recipeInfo().ticks = (int) (getBaseProcessTime() * recipe.getTimeModifier());
+            recipeInfo().energy = getBasePower() * recipe.getEnergy();
+            recipeInfo().radiation = recipeInfo.recipe.getRadiation();
+            recipeInfo().be = this;
+            recipeInfo().ticksProcessed = 0;
            // recipe.extractInputs(contentHandler);
         }
     }
 
     //just check if it has solid blocks below and is not busy on other recipes
     public boolean isInSituValid() {
-        NCBlockPos pos = NCBlockPos.of(getBlockPos());
-        for (int i = 0; i < 4; i++) {
+        BlockPosInstance pos = BlockPosInstance.of(getBlockPos());
+        for (int i = 0; i < 2; i++) {
             if (!level.getBlockState(pos.below()).isSolidRender(level, pos)) {
                 return false;
             }
         }
         return !hasRecipe();
+    }
+
+    public boolean hasRecipe() {
+        return recipeInfo().recipe != null && getRecipe() != null;
     }
 
     @NothingNullByDefault

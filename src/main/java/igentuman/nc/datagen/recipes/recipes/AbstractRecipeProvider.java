@@ -1,11 +1,13 @@
 package igentuman.nc.datagen.recipes.recipes;
 
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.datagen.recipes.builder.NcRecipeBuilder;
+import igentuman.nc.datagen.recipes.builder.TConstructRecipeBuilder;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
+import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
-import igentuman.nc.setup.registration.Fuel;
-import net.minecraft.core.Registry;
+import igentuman.nc.setup.registration.FissionFuel;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -19,11 +21,15 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.NuclearCraft.forgeRl;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.setup.registration.Fuel.*;
+import static igentuman.nc.setup.registration.FissionFuel.*;
 import static igentuman.nc.setup.registration.NCFluids.ALL_FLUID_ENTRIES;
 import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+import static igentuman.nc.setup.registration.Tags.*;
 import static igentuman.nc.util.DataGenUtil.*;
+import static igentuman.nc.util.NcUtils.rlFromString;
 import static net.minecraft.world.item.Items.AIR;
 import static net.minecraft.world.item.Items.BARRIER;
 
@@ -46,6 +52,12 @@ public abstract class AbstractRecipeProvider {
         return NcIngredient.stack(stack(item, count));
     }
 
+    protected static NcIngredient ingredient(Block item, int...pCount) {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return NcIngredient.stack(stack(item, count));
+    }
+
     protected static NcIngredient blockStack(String name, int...pCount) {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];
@@ -61,7 +73,7 @@ public abstract class AbstractRecipeProvider {
     }
 
     protected static ItemStack stack(String item, int count) {
-        return new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(item)), count);
+        return new ItemStack(ForgeRegistries.ITEMS.getValue(rlFromString(item)), count);
     }
 
     public static ItemStack[] stackArray(ItemStack... stacks) {
@@ -145,6 +157,74 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer, rl(ID+"/"+nameKey));
     }
 
+    public static void fluidsAndFluids(List<FluidStackIngredient> input, List<FluidStackIngredient> output, boolean useInputForId, double...params) {
+        double timeModifier = params.length>0 ? params[0] : 1.0;
+        double powerModifier = params.length>1 ? params[1] : 1.0;
+        double radiation = params.length>2 ? params[2] : 1.0;
+        NcRecipeBuilder.get(ID)
+                .fluids(input, output)
+                .useInputForId(useInputForId)
+                .modifiers(timeModifier, radiation, powerModifier)
+                .build(consumer);
+    }
+
+    public static void tconstructMelt(List<NcIngredient> input, List<FluidStackIngredient> output, boolean useInputForId, int temperature, int time) {
+        TConstructRecipeBuilder.get(ID)
+                .items(input, List.of())
+                .fluids(List.of(), output)
+                .useInputForId(useInputForId)
+                .temperature(temperature)
+                .time(time)
+                .build(consumer);
+    }
+
+    public static void tconstructAlloy(List<FluidStackIngredient> input, List<FluidStackIngredient> output, boolean useInputForId, int temperature) {
+        TConstructRecipeBuilder.get(ID)
+                .fluids(input, output)
+                .useInputForId(useInputForId)
+                .temperature(temperature)
+                .build(consumer);
+    }
+
+
+    public static void targetChamber(
+            List<FluidStackIngredient> inputFluids, List<NcIngredient> inputItems,
+            List<ParticleStack> inputParticles, List<ParticleStack> outputParticles,
+            List<FluidStackIngredient> outputFluids, List<NcIngredient> outputItems, long maxEnergy, double crossSection, long energyReleased) {
+        NcRecipeBuilder.get(ID)
+                .items(inputItems, outputItems)
+                .fluids(inputFluids, outputFluids)
+                .particles(inputParticles, outputParticles)
+                .maxEnergy(maxEnergy)
+                .crossSection(crossSection)
+                .energyReleased(energyReleased)
+                .modifiers(1D, 1D, 1D)
+                .build(consumer);
+    }
+
+    public static void decayChamber(ParticleStack input, List<ParticleStack> outputs,
+                                    long minEnergy, long maxEnergy, long energyReleased, double crossSection) {
+        NcRecipeBuilder.get(ID)
+                .particles(List.of(input), outputs)
+                .minEnergy(minEnergy)
+                .maxEnergy(maxEnergy)
+                .energyReleased(energyReleased)
+                .crossSection(crossSection)
+                .modifiers(1D, 1D, 1D)
+                .build(consumer);
+    }
+
+    public static void collisionChamber(ParticleStack inputA, ParticleStack inputB, List<ParticleStack> outputs,
+                                        long minEnergy, long maxEnergy, long energyReleased, double crossSection) {
+        NcRecipeBuilder.get(ID)
+                .particles(List.of(inputA, inputB), outputs)
+                .minEnergy(minEnergy)
+                .maxEnergy(maxEnergy)
+                .energyReleased(energyReleased)
+                .crossSection(crossSection)
+                .modifiers(1D, 1D, 1D)
+                .build(consumer);
+    }
 
     public static void fluidsAndFluids(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double...params) {
         double timeModifier = params.length>0 ? params[0] : 1.0;
@@ -153,6 +233,14 @@ public abstract class AbstractRecipeProvider {
         NcRecipeBuilder.get(ID)
                 .fluids(input, output)
                 .modifiers(timeModifier, radiation, powerModifier)
+                .build(consumer);
+    }
+
+    public static void hxRecipe(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double time, double power, double heat) {
+        NcRecipeBuilder.get(ID)
+                .fluids(input, output)
+                .heat(heat)
+                .modifiers(time, 0, power)
                 .build(consumer);
     }
 
@@ -187,13 +275,25 @@ public abstract class AbstractRecipeProvider {
                 .build(consumer);
     }
 
+    public static void tconstructCasting(
+            List<NcIngredient> inputItems, List<NcIngredient> outputItems,
+            List<FluidStackIngredient> inputFluids, List<FluidStackIngredient> outputFluids,
+            int coolingTime) {
+        TConstructRecipeBuilder.get(ID)
+                .items(inputItems, outputItems)
+                .fluids(inputFluids, outputFluids)
+                .cast()
+                .coolingTime(coolingTime)
+                .build(consumer);
+    }
+
     public static TagKey<Fluid> forgeFluid(String name) {
         String key = "forge";
         if(name.contains(":")) {
             key = name.split(":")[0];
             name = name.split(":")[1];
         }
-        return TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(key, name));
+        return TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), ResourceLocation.tryBuild(key, name));
     }
 
     public static Item blockItem(String name)
@@ -269,6 +369,19 @@ public abstract class AbstractRecipeProvider {
         int count = 1;
         if(pCount.length > 0) count = pCount[0];
         return NcIngredient.stack(stack(isotopeItem(name), count));
+    }
+
+    static NcIngredient blockIngredient(String name, int... pCount) {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return ingredient(forgeBlock(name), count);
+    }
+
+    public static NcIngredient forgeIngredient(String name, int...pCount)
+    {
+        int count = 1;
+        if(pCount.length > 0) count = pCount[0];
+        return ingredient(TagKey.create(ITEM_REGISTRY, forgeRl(name)), count);
     }
 
     public static NcIngredient dustIngredient(String name, int...pCount)
@@ -406,13 +519,13 @@ public abstract class AbstractRecipeProvider {
         if(!type.isEmpty()) {
             type = "_"+type;
         }
-        if(!Fuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
-            for(String isotope: Fuel.NC_ISOTOPES.keySet()) {
+        if(!FissionFuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
+            for(String isotope: FissionFuel.NC_ISOTOPES.keySet()) {
                 if(isotope.contains(id)) {
-                    return  Fuel.NC_ISOTOPES.get(isotope).get();
+                    return  FissionFuel.NC_ISOTOPES.get(isotope).get();
                 }
             }
         }
-        return Fuel.NC_ISOTOPES.get(name+"/"+id+type).get();
+        return FissionFuel.NC_ISOTOPES.get(name+"/"+id+type).get();
     }
 }

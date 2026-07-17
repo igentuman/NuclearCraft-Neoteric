@@ -1,0 +1,16 @@
+{
+  "name": "Paxels",
+  "icon": "nuclearcraft:spaxelhoe_tough",
+  "category": "nuclearcraft:weapons",
+  "sortnum": 2,
+  "pages": [
+    {
+      "anchor": "paxels",
+      "type": "items/2",
+      "header": "Paxels",
+      "item1": "nuclearcraft:spaxelhoe_thorium",
+      "item2": "nuclearcraft:spaxelhoe_tough",
+      "text": "A $(item)Paxel$() combines pickaxe, axe, shovel, sword, and hoe in one durable tool. The $(item)Thorium Paxel$() is the mid-tier option; the $(item)Tough Paxel$() is end-game grade - higher damage, much more durability. Field maintenance crews carry one each; field maintenance crews are never lightly armed."
+    }
+  ]
+}

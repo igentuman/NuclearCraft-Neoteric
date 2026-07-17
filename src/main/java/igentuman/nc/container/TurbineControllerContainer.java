@@ -1,7 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.turbine.TurbineControllerBE;
-import igentuman.nc.multiblock.turbine.TurbineRegistration;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -20,22 +19,21 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_CONTROLLER_CONTAINER;
-import static igentuman.nc.util.TextUtils.roundFormat;
+import static igentuman.nc.util.TextUtils.*;
 
 public class TurbineControllerContainer extends AbstractContainerMenu {
-    protected TurbineControllerBE<?> blockEntity;
-    protected Player playerEntity;
 
-    protected String name = "turbine_controller";
+    protected final TurbineControllerBE blockEntity;
+    protected final Player playerEntity;
+    protected final String name = "turbine_controller";
     private int slotIndex = 0;
-
-    protected IItemHandler playerInventory;
+    protected final IItemHandler playerInventory;
 
     public TurbineControllerContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(TURBINE_CONTROLLER_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (TurbineControllerBE<?>) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (TurbineControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
     }
 
@@ -54,7 +52,7 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public boolean isCasingValid() {
@@ -119,15 +117,15 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return blockEntity.energyStorage.getMaxEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getMaxEnergyStored());
     }
 
     public String getEfficiency() {
-        return roundFormat(blockEntity.efficiency);
+        return roundFormat(blockEntity.coilsEfficiency);
     }
 
     public int energyPerTick() {
-        return blockEntity.energyPerTick;
+        return energy2Display(blockEntity.energyPerTick);
     }
 
     public boolean hasRecipe() {
@@ -144,5 +142,29 @@ public class TurbineControllerContainer extends AbstractContainerMenu {
 
     public FluidTank getFluidTank(int i) {
         return blockEntity.getFluidTank(i);
+    }
+
+    public int getRealFlow() {
+        return blockEntity.realFlow;
+    }
+
+    public int getFlowRatio() {
+        return blockEntity.getFlowRatio();
+    }
+
+    public boolean isRunning() {
+        return blockEntity.powered;
+    }
+
+    public BlockPos getPosition() {
+        return blockEntity.getBlockPos();
+    }
+
+    public int getMaxFlow() {
+        return blockEntity.maxFlow;
+    }
+
+    public int getMaxEnergyGen() {
+        return blockEntity.maxEnergy;
     }
 }

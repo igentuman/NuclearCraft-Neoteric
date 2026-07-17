@@ -27,6 +27,7 @@
     "nuclearcraft:tough_alloy_dust",
     "nuclearcraft:steel_dust",
     "nuclearcraft:ferroboron_dust",
+    "nuclearcraft:protactinium_231_dust",
     "nuclearcraft:cobalt_dust",
     "nuclearcraft:strontium_90_dust",
     "nuclearcraft:potassium_hydroxide_dust",
@@ -45,6 +46,7 @@
     "nuclearcraft:iodine_dust",
     "nuclearcraft:zirconium_dust",
     "nuclearcraft:electrum_dust",
+    "nuclearcraft:barium_nitrate_dust",
     "nuclearcraft:caesium_137_dust",
     "nuclearcraft:strontium_dust",
     "nuclearcraft:rhodochrosite_dust",
@@ -89,6 +91,7 @@
     "nuclearcraft:titanium_dust",
     "nuclearcraft:dimensional_blend_dust",
     "nuclearcraft:thallium_dust",
+    "nuclearcraft:iridium_dust",
     "nuclearcraft:enderium_dust",
     "nuclearcraft:sodium_fluoride_dust",
     "nuclearcraft:irradiated_borax_dust",
@@ -106,6 +109,7 @@
     "nuclearcraft:iron_dust",
     "nuclearcraft:hsla_steel_dust",
     "nuclearcraft:boron_dust",
+    "nuclearcraft:baratol_dust",
     "nuclearcraft:bismuth_dust"
   ]
 }

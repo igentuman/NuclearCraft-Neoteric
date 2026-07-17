@@ -1,0 +1,47 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:hazmat_mask"
+    },
+    "title": {
+      "translate": "advancement.nc.hazmat_mask"
+    },
+    "description": {
+      "translate": "advancement.nc.hazmat_mask.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:light_shielding",
+  "criteria": {
+    "hazmat": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:hazmat_mask"]
+          },
+          {
+            "items": ["nuclearcraft:hazmat_chest"]
+          },
+          {
+            "items": ["nuclearcraft:hazmat_pants"]
+          },
+          {
+            "items": ["nuclearcraft:hazmat_boots"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "hazmat"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

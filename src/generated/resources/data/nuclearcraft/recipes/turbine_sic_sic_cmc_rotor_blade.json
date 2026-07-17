@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_turbine",
+  "key": {
+    "P": {
+      "tag": "forge:plates/sic_sic_cmc"
+    }
+  },
+  "pattern": [
+    " P ",
+    " P ",
+    " P "
+  ],
+  "result": {
+    "count": 2,
+    "item": "nuclearcraft:turbine_sic_sic_cmc_rotor_blade"
+  },
+  "show_notification": true
+}

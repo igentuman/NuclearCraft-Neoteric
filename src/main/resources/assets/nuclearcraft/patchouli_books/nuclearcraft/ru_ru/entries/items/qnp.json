@@ -1,0 +1,15 @@
+{
+  "name": "QNP",
+  "icon": "nuclearcraft:qnp",
+  "category": "nuclearcraft:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "qnp",
+      "type": "items/1",
+      "header": "QNP",
+      "item": "nuclearcraft:qnp",
+      "text": "$(item)QNP$() - продвинутый мультитул, способный добыть любой блок. Поддерживает режимы: 3x3, 3x3x3, 5x5, добыча жилы и одиночный блок. Для работы требуется энергия."
+    }
+  ]
+}

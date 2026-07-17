@@ -1,10 +1,9 @@
 package igentuman.nc.item;
 
+import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.handler.ItemEnergyHandler;
-import igentuman.nc.setup.registration.CreativeTabs;
-import igentuman.nc.util.CapabilityUtils;
-import igentuman.nc.util.CustomEnergyStorage;
-import igentuman.nc.util.TextUtils;
+import igentuman.nc.util.capability.CapabilityUtils;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -20,7 +19,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_STORAGE;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class BatteryBlockItem extends BlockItem
 {
@@ -34,13 +38,11 @@ public class BatteryBlockItem extends BlockItem
 		super(pBlock, new Properties().tab(group).stacksTo(1));
 	}
 
-
 	@Override
 	public boolean isRepairable(@Nonnull ItemStack stack)
 	{
 		return false;
 	}
-
 
 	@Override
 	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
@@ -58,7 +60,6 @@ public class BatteryBlockItem extends BlockItem
 	{
 		return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
 	}
-
 
 	protected int getEnergyMaxStorage() {
 		return ENERGY_STORAGE.getCapacityFor(toString());
@@ -81,25 +82,16 @@ public class BatteryBlockItem extends BlockItem
 		return (int) Math.min(13, 13*chargeRatio);
 	}
 
-
 	@Override
 	public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergy(stack).getMaxEnergyStored())).withStyle(ChatFormatting.BLUE));
-		list.add(Component.translatable("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
-	}
-
-	public String formatEnergy(int energy)
-	{
-		if(energy >= 1000000000) {
-			return TextUtils.numberFormat(energy/1000000000)+" GFE";
+		if(isGtLoaded() && isGTEUCapEnabled()) {
+			list.add(__("tooltip.nc.eu_energy_stored", formatEUEnergy(getEnergy(stack).getEnergyStored()), formatEUEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.GOLD));
+			list.add(__("tooltip.nc.energy_eu_tier", BatteryBlocks.all().get(toString()).getEnergyTier()).withStyle(ChatFormatting.GOLD));
 		}
-		if(energy >= 1000000) {
-			return TextUtils.numberFormat(energy/1000000)+" MFE";
+		if(!isGtLoaded() || !isOnlyGTCEUCapEnabled()) {
+			list.add(__("tooltip.nc.energy_stored", formatEnergy(getEnergy(stack).getEnergyStored()), formatEnergy(getEnergyMaxStorage())).withStyle(ChatFormatting.BLUE));
 		}
-		if(energy >= 1000) {
-			return TextUtils.numberFormat(energy/1000)+" kFE";
-		}
-		return TextUtils.numberFormat(energy)+" FE";
+		list.add(__("tooltip.nc.use_multitool").withStyle(ChatFormatting.YELLOW));
 	}
 }

@@ -2,6 +2,7 @@ package igentuman.nc.datagen.recipes.recipes;
 
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
+import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -9,8 +10,10 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Consumer;
 
-import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
+import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.setup.registration.Tags.INGOTS_TAG;
+import static igentuman.nc.setup.registration.Tags.forgeIngot;
 import static net.minecraft.world.item.Items.*;
 
 public class PressurizerRecipes extends AbstractRecipeProvider {
@@ -24,13 +27,17 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
                 itemToItem(ingredient(ingotTag(name)), plateStack(name));
             }
         }
+        itemToItem(ingredient(forgeIngot("silicon_carbide"), 3), ingredient(NC_PARTS.get("silicon_boule").get()));
         itemToItem(ingredient(IRON_INGOT), plateStack(Materials.iron));
         itemToItem(ingredient(COPPER_INGOT), plateStack(Materials.copper));
+        itemToItem(ingredient(WASTELAND_EARTH.get(), 32), ingredient(PORTAL_BLOCK.get()), 2D);
 
-        itemToItem(isotopeIngredient(Materials.americium241, 9), ingredient(NC_BLOCKS.get("americium241").get().asItem()));
-        itemToItem(isotopeIngredient(Materials.uranium238, 9), ingredient(NC_BLOCKS.get("uranium238").get().asItem()));
-        itemToItem(isotopeIngredient(Materials.californium250, 9), ingredient(NC_BLOCKS.get("californium250").get().asItem()));
-        itemToItem(isotopeIngredient(Materials.plutonium238, 9), ingredient(NC_BLOCKS.get("plutonium238").get().asItem()));
+        itemToItem(isotopeIngredient(Materials.americium241, 9), ingredient(NC_MATERIAL_BLOCKS.get("americium241").get().asItem()));
+        itemToItem(dustIngredient(Materials.polonium, 1), forgeIngredient("pellets/polonium"));
+        itemToItem(isotopeIngredient(Materials.plutonium239, 1), forgeIngredient("pellets/plutonium"));
+        itemToItem(isotopeIngredient(Materials.uranium238, 9), ingredient(NC_MATERIAL_BLOCKS.get("uranium238").get().asItem()));
+        itemToItem(isotopeIngredient(Materials.californium250, 9), ingredient(NC_MATERIAL_BLOCKS.get("californium250").get().asItem()));
+        itemToItem(isotopeIngredient(Materials.plutonium238, 9), ingredient(NC_MATERIAL_BLOCKS.get("plutonium238").get().asItem()));
         itemToItem(dustIngredient(Materials.graphite), plateStack(Materials.graphite));
         itemToItem(ingredient(ALL_NC_ITEMS.get("flour").get(), 2), ingredient(ALL_NC_ITEMS.get("graham_cracker").get()));
         itemToItem(ingredient(NC_FOOD.get("foursmore").get(), 2), ingredient(NC_FOOD.get("evenmoresmore").get()));
@@ -41,6 +48,8 @@ public class PressurizerRecipes extends AbstractRecipeProvider {
         itemToItem(dustIngredient(Materials.quartz), ingredient(Items.QUARTZ));
         itemToItem(dustIngredient(Materials.obsidian, 4), ingredient(Item.byBlock(Blocks.OBSIDIAN)));
         itemToItem(dustIngredient(Materials.boron_nitride), gemStack(Materials.boron_nitride));
+        itemToItem(dustIngredient(Materials.lapis), NcIngredient.of(LAPIS_LAZULI));
+        itemToItem(dustIngredient(Materials.emerald), NcIngredient.of(EMERALD));
         itemToItem(dustIngredient(Materials.fluorite), gemStack(Materials.fluorite));
         itemToItem(dustIngredient(Materials.villiaumite), gemStack(Materials.villiaumite));
         itemToItem(dustIngredient(Materials.carobbiite), gemStack(Materials.carobbiite));

@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:subatomic_liquifier",
+  "input": [
+    {
+      "tag": "forge:ingots/copper"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 450,
+      "tag": "forge:subliquid_matter"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.2
+}

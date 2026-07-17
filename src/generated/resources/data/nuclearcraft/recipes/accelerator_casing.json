@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "S": {
+      "tag": "forge:plates/cobalt"
+    },
+    "T": {
+      "tag": "forge:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    "STS",
+    "T T",
+    "STS"
+  ],
+  "result": {
+    "count": 4,
+    "item": "nuclearcraft:accelerator_casing"
+  },
+  "show_notification": true
+}

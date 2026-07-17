@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:potassium_iodide"
+      "amount": 90,
+      "tag": "forge:molten_potassium_iodide"
     }
   ],
   "powerModifier": 1.0,

@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:radaway"
+    },
+    "title": {
+      "translate": "advancement.nc.radaway"
+    },
+    "description": {
+      "translate": "advancement.nc.radaway.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:light_shielding",
+  "criteria": {
+    "radaway": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:radaway"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "radaway"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

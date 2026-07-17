@@ -1,12 +1,15 @@
 package igentuman.nc.client.gui.element.bar;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.List;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.formatEUEnergy;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.energy2Display;
 import static igentuman.nc.util.TextUtils.scaledFormat;
 
 public class EnergyBar extends NCGuiElement {
@@ -21,7 +24,12 @@ public class EnergyBar extends NCGuiElement {
     }
 
     public List<Component> getTooltips() {
-        tooltips.add(Component.literal(scaledFormat(energy.getEnergyStored())+"/"+scaledFormat(energy.getMaxEnergyStored())+" FE"));
+        if(isGtLoaded() && isGTEUCapEnabled()) {
+            tooltips.add(Component.literal(formatEUEnergy(energy.getEnergyStored())+"/"+formatEUEnergy(energy.getMaxEnergyStored())));
+            return tooltips;
+        }
+        tooltips.add(Component.literal(scaledFormat(energy.getEnergyStored()) + "/" + scaledFormat(energy.getMaxEnergyStored()) + " FE"));
+
         return tooltips;
     }
 

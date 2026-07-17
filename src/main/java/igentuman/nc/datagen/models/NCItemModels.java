@@ -1,29 +1,39 @@
 package igentuman.nc.datagen.models;
 
-import igentuman.nc.multiblock.fission.FissionReactor;
 import igentuman.nc.setup.registration.*;
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.content.storage.ContainerBlocks;
-import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
+import static igentuman.nc.NuclearCraft.forgeRl;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCKS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.FISSION_BLOCK_ITEMS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
+import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
+import static igentuman.nc.setup.registration.FissionFuel.NC_WASTE;
 import static igentuman.nc.setup.registration.NCItems.*;
 
 public class NCItemModels extends ItemModelProvider {
 
-    public NCItemModels(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MODID, existingFileHelper);
+    public NCItemModels(DataGenerator generator, GatherDataEvent event) {
+        super(generator.getPackOutput(), MODID, event.getExistingFileHelper());
     }
 
     @Override
@@ -42,15 +52,20 @@ public class NCItemModels extends ItemModelProvider {
         gems();
         parts();
         records();
+        particleSources();
         food();
         armor();
         items();
         shielding();
         fuel();
         isotopes();
+        waste();
         storageBlocks();
-        
+        withExistingParent(FERAL_GHOUL_SPAWN_EGG.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(NCBlocks.PORTAL_ITEM.getId().getPath(), modLoc("block/portal"));
+        withExistingParent(NCBlocks.WASTELAND_EARTH.getId().getPath(), modLoc("block/wasteland_earth"));
+        withExistingParent(NCBlocks.PIPE_ITEM_BLOCK.getId().getPath(), modLoc("block/pipe/inventory"));
+        withExistingParent(NCBlocks.PIPE_CONNECTOR_ITEM_BLOCK.getId().getPath(), modLoc("block/pipe/connector/inventory"));
 
         singleTexture(MULTITOOL.getId().getPath(),
                 mcLoc("item/generated"),
@@ -64,22 +79,58 @@ public class NCItemModels extends ItemModelProvider {
                 mcLoc("item/generated"),
                 "layer0", modLoc("item/tool/"+SPAXELHOE_THORIUM.getId().getPath()));
 
+        singleTexture(RESONITE_SHARD.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/"+RESONITE_SHARD.getId().getPath()));
+
+        singleTexture(RESONITE_CRYSTAL.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/"+RESONITE_CRYSTAL.getId().getPath()));
+
+        craftingPattern();
+
         NCFluids.ALL_FLUID_ENTRIES.values().forEach(this::createBucket);
+    }
+
+    private void craftingPattern() {
+        // Encoded patterns route through a BEWLR (builtin/entity) so the icon becomes the recipe output.
+        ItemModelBuilder encoded = getBuilder("crafting_pattern_encoded")
+                .parent(new ModelFile.UncheckedModelFile("builtin/entity"))
+                .texture("particle", modLoc("item/crafting_pattern"));
+        singleTexture(NCCrafter.CRAFTING_PATTERN.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/crafting_pattern"))
+                .override().predicate(modLoc("encoded"), 1f).model(encoded).end();
     }
 
     private void multiblocks() {
         for(String name: NCBlocks.MULTI_BLOCKS.keySet()) {
-            withExistingParent(NCBlocks.MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+            withExistingParent(MULTIBLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
-        for(String name: FissionReactor.FISSION_BLOCKS.keySet()) {
-            withExistingParent(FissionReactor.FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        for(String name: FISSION_BLOCKS.keySet()) {
+            withExistingParent(FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        }
+        for(String name: FISSION_BLOCKS.keySet()) {
+            withExistingParent(FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
         for(String name: TURBINE_BLOCKS.keySet()) {
             withExistingParent(TURBINE_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
+        for(String name: HX_BLOCKS.keySet()) {
+            withExistingParent(HX_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        }
         for(String name: FUSION_BLOCKS.keySet()) {
             if(name.contains("core")) continue;
             withExistingParent(FUSION_BLOCKS.get(name).getId().getPath(), modLoc("block/fusion/"+name));
+        }
+        for(String name: KUGELBLITZ_BLOCKS.keySet()) {
+            withExistingParent(KUGELBLITZ_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        }
+        for(String name: ACCELERATOR_BLOCKS.keySet()) {
+            withExistingParent(ACCELERATOR_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
+        }
+        for(String name: PARTICLE_CHAMBER_BLOCKS.keySet()) {
+            withExistingParent(PARTICLE_CHAMBER_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
         withExistingParent(FUSION_CORE_PROXY.getId().getPath(), modLoc("item/fusion_core"));
     }
@@ -107,12 +158,12 @@ public class NCItemModels extends ItemModelProvider {
 
     private String name(ItemLike item)
     {
-        return Registry.ITEM.getKey(item.asItem()).getPath();
+        return ForgeRegistries.ITEMS.getKey(item.asItem()).getPath();
     }
 
     private ResourceLocation forgeLoc(String s)
     {
-        return new ResourceLocation("forge", s);
+        return forgeRl(s);
     }
 
     private void createBucket(NCFluids.FluidEntry entry)
@@ -134,7 +185,7 @@ public class NCItemModels extends ItemModelProvider {
     }
 
     private void fuel() {
-        for(List<String> name: Fuel.NC_FUEL.keySet()) {
+        for(List<String> name: FissionFuel.NC_FUEL.keySet()) {
             String depleted = "/";
             if(name.get(0).equals("depleted")) {
                 depleted = "/depleted/";
@@ -144,12 +195,12 @@ public class NCItemModels extends ItemModelProvider {
             if(!name.get(3).isEmpty()) {
                 subPath+="_"+name.get(3);
             }
-            singleTexture(Fuel.NC_FUEL.get(name).getId().getPath(),
+            singleTexture(FissionFuel.NC_FUEL.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/fuel/"+subPath));
         }
 
-        for(List<String> name: Fuel.NC_DEPLETED_FUEL.keySet()) {
+        for(List<String> name: FissionFuel.NC_DEPLETED_FUEL.keySet()) {
             String depleted = "/";
             if(name.get(0).equals("depleted")) {
                 depleted = "/depleted/";
@@ -159,15 +210,23 @@ public class NCItemModels extends ItemModelProvider {
             if(!name.get(3).isEmpty()) {
                 subPath+="_"+name.get(3);
             }
-            singleTexture(Fuel.NC_DEPLETED_FUEL.get(name).getId().getPath(),
+            singleTexture(FissionFuel.NC_DEPLETED_FUEL.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/fuel/"+subPath));
         }
     }
 
+    private void waste() {
+        for(String name: NC_WASTE.keySet()) {
+            singleTexture(NC_WASTE.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/material/waste/"+name));
+        }
+    }
+
     private void isotopes() {
-        for(String name: Fuel.NC_ISOTOPES.keySet()) {
-            singleTexture(Fuel.NC_ISOTOPES.get(name).getId().getPath(),
+        for(String name: NC_ISOTOPES.keySet()) {
+            singleTexture(NC_ISOTOPES.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/material/isotope/"+name));
         }
@@ -179,6 +238,14 @@ public class NCItemModels extends ItemModelProvider {
             singleTexture(NCItems.NC_ITEMS.get(name).getId().getPath(),
                     mcLoc("item/generated"),
                     "layer0", modLoc("item/"+name));
+        }
+    }
+
+    private void particleSources() {
+        for(String name: ION_SOURCES.keySet()) {
+            singleTexture(NCItems.ION_SOURCES.get(name).getId().getPath(),
+                    mcLoc("item/generated"),
+                    "layer0", modLoc("item/particle_sources/"+name));
         }
     }
 
@@ -297,20 +364,20 @@ public class NCItemModels extends ItemModelProvider {
         }
     }
     private void ores() {
-        for(String ore: NCBlocks.ORE_BLOCK_ITEMS.keySet()) {
-            withExistingParent(NCBlocks.ORE_BLOCK_ITEMS.get(ore).getId().getPath(), modLoc("block/ore/"+ore+"_ore"));
+        for(String ore: ORE_BLOCK_ITEMS.keySet()) {
+            withExistingParent(ORE_BLOCK_ITEMS.get(ore).getId().getPath(), modLoc("block/ore/"+ore+"_ore"));
         }
     }
 
     private void blocks() {
-        for(String name: NCBlocks.NC_BLOCKS_ITEMS.keySet()) {
-            withExistingParent(NCBlocks.NC_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/material/"+name+"_block"));
+        for(String name: NC_BLOCKS_ITEMS.keySet()) {
+            withExistingParent(NC_BLOCKS_ITEMS.get(name).getId().getPath(), modLoc("block/material/"+name+"_block"));
         }
-        for(String name: NCBlocks.NC_ELECTROMAGNETS_ITEMS.keySet()) {
-            withExistingParent(NCBlocks.NC_ELECTROMAGNETS_ITEMS.get(name).getId().getPath(), modLoc("block/electromagnet/"+name));
+        for(String name: NC_ELECTROMAGNETS_ITEMS.keySet()) {
+            withExistingParent(NC_ELECTROMAGNETS_ITEMS.get(name).getId().getPath(), modLoc("block/electromagnet/"+name));
         }
-        for(String name: NCBlocks.NC_RF_AMPLIFIERS_ITEMS.keySet()) {
-            withExistingParent(NCBlocks.NC_RF_AMPLIFIERS_ITEMS.get(name).getId().getPath(), modLoc("block/rf_amplifier/"+name));
+        for(String name: NC_RF_AMPLIFIERS_ITEMS.keySet()) {
+            withExistingParent(NC_RF_AMPLIFIERS_ITEMS.get(name).getId().getPath(), modLoc("block/rf_amplifier/"+name));
         }
     }
 }

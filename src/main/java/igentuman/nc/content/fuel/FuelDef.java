@@ -1,10 +1,25 @@
 package igentuman.nc.content.fuel;
 
-import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.NuclearCraft;
+import org.apache.logging.log4j.Level;
 
 import static igentuman.nc.handler.config.FissionConfig.FUEL_CONFIG;
 
 public class FuelDef {
+
+    public final String name;
+    public final String group;
+    public double heat;
+    public int criticality;
+    public int depletion;
+    public int efficiency;
+    public int forge_energy;
+    public int[] isotopes;
+    
+    // Recipe modifiers for automatic recipe generation
+    public double timeModifier = 1.0;
+    public double powerModifier = 1.0;
+    public double radiationModifier = 1.0;
 
     public FuelDef(String group, String name, int forge_energy, double heat, int criticality, int depletion, int efficiency)
     {
@@ -21,65 +36,41 @@ public class FuelDef {
         this.isotopes = isotopes;
         return this;
     }
-
-    public int[] isotopes;
-
-    private boolean initialized = false;
-
-    public String name = "";
-
-    public String group = "";
-    public double heat = 0;
-
-    public int criticality = 0;
-
-    public int depletion = 0;
-
-    public int efficiency = 0;
-    public int forge_energy = 0;
+    
+    public FuelDef recipeModifiers(double timeModifier, double powerModifier, double radiationModifier) {
+        this.timeModifier = timeModifier;
+        this.powerModifier = powerModifier;
+        this.radiationModifier = radiationModifier;
+        return this;
+    }
 
     public FuelDef(String group, String name, int forge_energy, double heat, double criticality, double depletion, double efficiency) {
         this(group, name, forge_energy, heat, (int)criticality, (int)depletion, (int)efficiency);
     }
 
-    private Double heatMult()
+    private double boilingHeatMult()
     {
-        if(!CommonConfig.isLoaded()) {
-            return 3.24444444;
-        }
         return FUEL_CONFIG.HEAT_MULTIPLIER.get();
     }
 
-    public FuelDef config()
+    public double depletionMult()
     {
-        if(!CommonConfig.isLoaded()) {
-            return this;
-        }
-        if(!initialized) {
-            initialized = true;
-            int id = FuelManager.all().get(group).keySet().stream().toList().indexOf(name);
-            efficiency = FUEL_CONFIG.EFFICIENCY.get().get(id);
-            criticality = FUEL_CONFIG.CRITICALITY.get().get(id);
-            heat = FUEL_CONFIG.HEAT.get().get(id);
-            depletion = (int) (FUEL_CONFIG.DEPLETION.get().get(id)*FUEL_CONFIG.DEPLETION_MULTIPLIER.get());
-        }
-        return this;
+        return FUEL_CONFIG.DEPLETION_MULTIPLIER.get();
     }
-
 
     public double getHeatFEMode()
     {
-        return config().heat;
+        return heat*FUEL_CONFIG.FUEL_HEAT_MULTIPLIER.get();
     }
 
     public double getHeatBoilingMode() {
-        double mult = heatMult();
+        double mult = boilingHeatMult();
         try {
             if(name.substring(0,1).equalsIgnoreCase("l")) {
                 mult *=2;
             }
         } catch (NullPointerException ignore) {}
 
-        return Math.ceil(config().heat*mult);
+        return Math.ceil(heat*mult);
     }
 }

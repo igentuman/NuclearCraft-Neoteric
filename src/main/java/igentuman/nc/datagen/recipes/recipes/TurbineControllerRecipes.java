@@ -1,15 +1,11 @@
 package igentuman.nc.datagen.recipes.recipes;
 
-import igentuman.nc.block.entity.turbine.TurbineControllerBE;
-import igentuman.nc.content.processors.Processors;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 import java.util.function.Consumer;
-
-import static net.minecraft.world.level.material.Fluids.WATER;
 
 public class TurbineControllerRecipes extends AbstractRecipeProvider {
 
@@ -19,16 +15,21 @@ public class TurbineControllerRecipes extends AbstractRecipeProvider {
 
         add(
                 fluidIngredient("steam", 10),
-                fluidIngredient("minecraft:water", 10),
-                1.5D
+                fluidIngredient("exhaust_steam", 10),
+                1D, 0.75D
+        );
+
+        add(
+                fluidIngredient("low_pressure_steam", 10),
+                fluidIngredient("low_quality_steam", 10),
+                1D, 0.1D
         );
 
         add(
                 fluidIngredient("high_pressure_steam", 10),
-                fluidIngredient("exhaust_steam", 10),
-                2D, 2.5D
+                fluidIngredient("low_pressure_steam", 10),
+                1D, 1D
         );
-
     }
 
     protected static void add(FluidStackIngredient input, FluidStackIngredient output, double...modifiers) {

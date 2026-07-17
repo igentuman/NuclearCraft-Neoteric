@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#forge:biomes",
+  "features": "nuclearcraft:platinum_placed",
+  "step": "underground_ores"
+}

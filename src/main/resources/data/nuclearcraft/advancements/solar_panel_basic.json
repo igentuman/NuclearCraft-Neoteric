@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:solar_panel_basic"
+    },
+    "title": {
+      "translate": "advancement.nc.solar_panel_basic"
+    },
+    "description": {
+      "translate": "advancement.nc.solar_panel_basic.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:manufactory",
+  "criteria": {
+    "solar_panel_basic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:solar_panel_basic"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "solar_panel_basic"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

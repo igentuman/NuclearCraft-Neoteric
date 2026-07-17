@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:engineers_crafting_table"
+    },
+    "title": {
+      "translate": "advancement.nc.engineers_crafting_table"
+    },
+    "description": {
+      "translate": "advancement.nc.engineers_crafting_table.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:basic_storage_container",
+  "criteria": {
+    "engineers_crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:engineers_crafting_table"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "engineers_crafting_table"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

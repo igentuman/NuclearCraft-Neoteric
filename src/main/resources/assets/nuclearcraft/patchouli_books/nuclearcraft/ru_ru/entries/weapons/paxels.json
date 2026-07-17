@@ -1,0 +1,16 @@
+{
+  "name": "Паксели",
+  "icon": "nuclearcraft:spaxelhoe_tough",
+  "category": "nuclearcraft:weapons",
+  "sortnum": 2,
+  "pages": [
+    {
+      "anchor": "paxels",
+      "type": "items/2",
+      "header": "Паксели",
+      "item1": "nuclearcraft:spaxelhoe_thorium",
+      "item2": "nuclearcraft:spaxelhoe_tough",
+      "text": "$(item)Паксель$() сочетает кирку, топор, лопату, меч и мотыгу в одном надёжном инструменте. $(item)Ториевый паксель$() - средний уровень; $(item)Усиленный паксель$() - вершина: выше урон, значительно выше прочность. Полевые ремонтные бригады носят по одному; полевые ремонтные бригады лёгкого вооружения не признают."
+    }
+  ]
+}

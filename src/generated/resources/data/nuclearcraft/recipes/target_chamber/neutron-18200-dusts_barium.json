@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.016,
+  "energyReleased": -393,
+  "input": [
+    {
+      "tag": "forge:dusts/barium"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 62500000,
+      "focus": 1.0,
+      "meanEnergy": 18200,
+      "particle": "neutron"
+    }
+  ],
+  "maxEnergy": 34000,
+  "output": [
+    {
+      "tag": "forge:dusts/caesium_137"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "input": [
+    {
+      "item": "minecraft:coarse_dirt"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:wasteland_earth"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 3.0
+}

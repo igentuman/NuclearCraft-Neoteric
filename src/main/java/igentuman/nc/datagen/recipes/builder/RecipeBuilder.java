@@ -26,11 +26,13 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.util.NcUtils.rlFromString;
 
 public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
 
     protected static ResourceLocation ncSerializer(String name) {
-        return new ResourceLocation(MODID, name);
+        return rl(name);
     }
 
     protected final List<ICondition> conditions = new ArrayList<>();
@@ -105,7 +107,7 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
         validate(id);
         if (hasCriteria()) {
             //If there is a way to "unlock" this recipe then add an advancement with the criteria
-            advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+            advancementBuilder.parent(rlFromString("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                   .rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
         }
         consumer.accept(getResult(id));
@@ -172,7 +174,7 @@ public abstract class RecipeBuilder<BUILDER extends RecipeBuilder<BUILDER>> {
         @Nullable
         @Override
         public ResourceLocation getAdvancementId() {
-            return new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath());
+            return ResourceLocation.tryBuild(id.getNamespace(), "recipes/" + id.getPath());
         }
     }
     public static JsonElement serializeItemStack(@NotNull ItemStack stack) {

@@ -11,6 +11,7 @@ import static igentuman.nc.datagen.recipes.recipes.AbstractRecipeProvider.ingotI
 import static igentuman.nc.setup.registration.NCItems.LITHIUM_ION_CELL;
 
 public enum Tiers implements Tier {
+
    TOUGH(8, 10000, 12.0F, 10.0F, 22, () -> {
       return ingotIngredient(Materials.tough_alloy);
    }),

@@ -11,22 +11,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import igentuman.nc.block.entity.ElectromagnetBE;
-
 import static igentuman.nc.handler.config.FusionConfig.ELECTROMAGNETS_CONFIG;
 
 public class Electromagnets {
 
-    private static HashMap<String, MagnetPrefab> all = new HashMap<>();
-    private static HashMap<String, MagnetPrefab> registered = new HashMap<>();
+    private static final HashMap<String, MagnetPrefab> all = new HashMap<>();
+    private static final HashMap<String, MagnetPrefab> registered = new HashMap<>();
 
     public static HashMap<String, MagnetPrefab> all() {
         if(all.isEmpty()) {
-            all.put("basic_electromagnet", new MagnetPrefab("basic_electromagnet",500, 300, 0.25D, 350000, 75));
-            all.put("magnesium_diboride_electromagnet", new MagnetPrefab("magnesium_diboride_electromagnet",1000, 500, 0.5D, 39000, 80));
-            all.put("niobium_tin_electromagnet", new MagnetPrefab("niobium_tin_electromagnet",1500, 1140, 1D, 18000, 90));
-            all.put("niobium_titanium_electromagnet", new MagnetPrefab("niobium_titanium_electromagnet",2000, 2260, 2D, 10000, 95));
-            all.put("bscco_electromagnet", new MagnetPrefab("bscco_electromagnet",3000, 4500, 4D, 104000, 99));
+            all.put("basic_electromagnet", new MagnetPrefab("basic_electromagnet",1000, 300, 0.2D, 350000, 50));
+            all.put("magnesium_diboride_electromagnet", new MagnetPrefab("magnesium_diboride_electromagnet",2000, 580, 0.5D, 39000, 80));
+            all.put("niobium_tin_electromagnet", new MagnetPrefab("niobium_tin_electromagnet",4000, 1140, 1D, 18000, 90));
+            all.put("niobium_titanium_electromagnet", new MagnetPrefab("niobium_titanium_electromagnet",8000, 2260, 2D, 10000, 95));
+            all.put("bscco_electromagnet", new MagnetPrefab("bscco_electromagnet",16000, 4500, 4D, 104000, 99));
         }
         return all;
     }
@@ -82,7 +80,6 @@ public class Electromagnets {
         protected int heat = 0;
         protected int maxTemp = 0;
         protected int efficiency = 0;
-        private BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  blockEntity = ElectromagnetBE::new;
 
         public MagnetPrefab(String name, int energy, int heat, double magneticField, int maxTemp, int efficiency) {
             this.power = energy;
@@ -91,7 +88,6 @@ public class Electromagnets {
             this.magneticField = magneticField;
             this.maxTemp = maxTemp;
             this.efficiency = efficiency;
-            blockEntity = ElectromagnetBE::new;
 
         }
 
@@ -121,15 +117,6 @@ public class Electromagnets {
         }
         public boolean isRegistered() {
             return  registered;
-        }
-
-        public BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  getBlockEntity() {
-            return blockEntity;
-        }
-
-        public MagnetPrefab setBlockEntity(BlockEntityType.BlockEntitySupplier<? extends ElectromagnetBE>  blockEntity) {
-            this.blockEntity = blockEntity;
-            return this;
         }
 
         public double getMagneticField() {

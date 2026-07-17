@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.turbine.TurbinePortBE;
+import igentuman.nc.block.turbine.entity.TurbinePortBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,25 +22,23 @@ import java.util.Objects;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_PORT_CONTAINER;
+import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.energy2Display;
 
 public class TurbinePortContainer extends AbstractContainerMenu {
-    protected TurbinePortBE portBE;
-    protected Player playerEntity;
 
-
-    protected String name = "turbine_port";
+    protected final TurbinePortBE portBE;
+    protected final Player playerEntity;
+    protected final String name = "turbine_port";
     private int slotIndex = 0;
-
-    protected IItemHandler playerInventory;
+    protected final IItemHandler playerInventory;
 
     public TurbinePortContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
         super(TURBINE_PORT_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
         portBE = (TurbinePortBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
-
         layoutPlayerInventorySlots();
-
     }
 
     public BlockPos getPosition() {
@@ -99,7 +97,7 @@ public class TurbinePortContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
 
@@ -130,11 +128,11 @@ public class TurbinePortContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return portBE.getMaxEnergyStored();
+        return energy2Display(portBE.getMaxEnergyStored());
     }
 
     public int energyPerTick() {
-        return portBE.energyPerTick();
+        return energy2Display(portBE.energyPerTick());
     }
 
     public byte getComparatorMode() {

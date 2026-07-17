@@ -1,9 +1,12 @@
 package igentuman.nc.handler.event.client;
 
+import igentuman.nc.item.ResoniteCrystalItem;
 import igentuman.nc.setup.registration.NCFluids;
+import igentuman.nc.setup.registration.NCItems;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,7 +31,20 @@ public class ColorHandler {
     @SubscribeEvent
     public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
         registerBucketColorHandler(event);
+        event.register(CRYSTAL_ITEM_COLOR, NCItems.RESONITE_CRYSTAL.get());
     }
+
+    /**
+     * Tints the resonite crystal (layer0, tintIndex 0) with its rolled buff's particle colour so the
+     * crystal's hue signals which effect it grants. Raw or effect-less crystals return white (no tint).
+     */
+    private static final ItemColor CRYSTAL_ITEM_COLOR = (stack, tintIndex) -> {
+        if (tintIndex != 0) {
+            return 0xFFFFFF;
+        }
+        MobEffect effect = ResoniteCrystalItem.effect(stack);
+        return effect == null ? 0xFFFFFF : effect.getColor();
+    };
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event)

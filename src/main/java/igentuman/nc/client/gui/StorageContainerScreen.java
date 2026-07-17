@@ -1,7 +1,6 @@
 package igentuman.nc.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.container.StorageContainerContainer;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;

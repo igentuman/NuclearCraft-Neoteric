@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "input": [
+    {
+      "tag": "forge:dusts/lapis"
+    }
+  ],
+  "output": [
+    {
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,32 +1,43 @@
 package igentuman.nc.multiblock.turbine;
 
-import igentuman.nc.block.entity.turbine.*;
+import igentuman.nc.block.turbine.TurbineBearingBlock;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
-import igentuman.nc.multiblock.AbstractNCMultiblock;
+import igentuman.nc.block.turbine.entity.*;
+import igentuman.nc.compat.create.CreateTurbine;
+import igentuman.nc.multiblock.AbstractMultiblock;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.ValidationResult;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.*;
+import static igentuman.nc.util.ModUtil.isCreateLoaded;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
-public class TurbineMultiblock extends AbstractNCMultiblock {
+public class TurbineMultiblock extends AbstractMultiblock {
+
     public Direction turbineDirection;
     public boolean isRotorValid = false;
-    public List<BlockPos> bearingPositions = new ArrayList<>();
-    public List<BlockPos> rotorPositions = new ArrayList<>();
-    public List<BlockPos> coilPositions = new ArrayList<>();
-    public int flow = 0;
-    private List<BlockPos> bladePositions = new ArrayList<>();
+    public final List<BlockPos> bearingPositions = new ArrayList<>();
+    public final List<BlockPos> rotorPositions = new ArrayList<>();
+    public final HashSet<BlockPos> coilPositions = new HashSet<>();
+    public float flow = 0;
+    public int activeCoils = 0;
+    public double coilsEfficiency = 0;
+    public int blades = 0;
+    private final HashSet<BlockPos> bladePositions = new HashSet<>();
 
     @Override
     public int maxHeight() {
@@ -54,25 +65,43 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     @Override
     public int minDepth() { return TURBINE_CONFIG.MIN_SIZE.get(); }
 
-    public TurbineMultiblock(TurbineControllerBE<?> turbineControllerBE) {
+    public TurbineMultiblock(TurbineControllerBE turbineControllerBE) {
         super(
                 getBlocksByTagKey(CASING_BLOCKS.location().toString()),
-                getBlocksByTagKey(INNER_TURBINE_BLOCKS.location().toString())
+                getBlocksByTagKey(INNER_TURBINE_BLOCKS.location().toString()),
+                new TurbineController(turbineControllerBE)
         );
-        controller = new TurbineController(turbineControllerBE);
+        id = "turbine_"+turbineControllerBE.getBlockPos().toShortString();
+        MultiblockHandler.get(turbineControllerBE.getLevel().dimension()).addMultiblock(this);
     }
 
-    public List<Block> validCornerBlocks() {
-        return List.of(TURBINE_BLOCKS.get("turbine_casing").get());
+    public HashSet<Block> validCornerBlocks() {
+        return new HashSet<>(List.of(TURBINE_BLOCKS.get("turbine_casing").get()));
     }
 
     public void validateInner() {
-        if(!outerValid) return;
+        if(!outerValid) {
+            debugLog("Skipping inner validation - outer validation failed");
+            return;
+        }
+        
+        debugLog("Starting turbine inner validation");
         super.validateInner();
+        
+        debugLog("Detecting turbine orientation");
         detectOrientation();
+        debugLog("Turbine direction: " + (turbineDirection != null ? turbineDirection.getName() : "null"));
+        
+        debugLog("Validating rotor configuration");
         isRotorValid = validateRotor();
+        debugLog("Rotor validation result: " + isRotorValid + 
+                ", Bearings: " + bearingPositions.size() + 
+                ", Rotors: " + rotorPositions.size() + 
+                ", Blades: " + blades);
+        
         if(!isRotorValid) {
-            validationResult =  ValidationResult.WRONG_INNER;
+            debugLog("Rotor validation failed - setting result to WRONG_INNER");
+            validationResult = ValidationResult.WRONG_INNER;
         }
     }
 
@@ -83,24 +112,67 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         rotorPositions.clear();
         bearingPositions.clear();
         bladePositions.clear();
+
         super.validate();
+        
+        if(!validationResult.isValid) {
+            debugLog("Turbine validation failed with result: " + validationResult);
+            clearStats();
+            return;
+        }
         if(!validateProportions()) {
             validationResult = ValidationResult.WRONG_PROPORTIONS;
             innerValid = false;
             outerValid = false;
             isFormed = false;
+            clearStats();
+            return;
         } else {
             countCoils();
             countBlades();
+            if(blades % 4 != 0) {
+                validationResult = ValidationResult.WRONG_BLADES;
+                innerValid = false;
+                outerValid = false;
+                isFormed = false;
+                clearStats();
+                return;
+            }
         }
+        controllerBE().topRight = topRight;
+        controllerBE().bottomLeft = bottomLeft;
+        controllerBE().orientation = turbineDirection;
+        controllerBE().coilsEfficiency = coilsEfficiency;
+        controllerBE().activeCoils = activeCoils;
+        controllerBE().blades = blades;
+        controllerBE().flow = flow;
+        controllerBE().bearingPos = bearingPositions.get(0);
+        controllerBE().recalculate();
+    }
+
+    @Override
+    public TurbineController controller() {
+        return (TurbineController) controller;
+    }
+
+    @Override
+    protected TurbineControllerBE controllerBE() {
+        if (controllerBe == null) {
+            controllerBe = controller().controllerBE();
+        }
+        return (TurbineControllerBE) controllerBe;
     }
 
     private void countBlades() {
         flow = 0;
+        blades = 0;
         for(BlockPos pos : bladePositions) {
-            BlockEntity be = getLevel().getBlockEntity(pos);
+            BlockEntity be = getBlockEntity(pos);
             if(be instanceof TurbineBladeBE blade) {
-                flow++;
+                if(blade.isValid()) {
+                    flow += blade.getFlow();
+                    blades++;
+                }
             }
         }
     }
@@ -108,49 +180,41 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
     private void detectOrientation() {
         if(rotorPositions.isEmpty()) return;
         BlockPos rotorPos = rotorPositions.get(0);
-        BlockState st = getLevel().getBlockState(rotorPos);
+        BlockState st = getBlockState(rotorPos);
         turbineDirection = st.getValue(TurbineRotorBlock.FACING);
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        TurbineControllerBE<?> controller = (TurbineControllerBE<?>) controller().controllerBE();
-    }
-
-    @Override
     protected boolean processInnerBlock(BlockPos toCheck) {
-        BlockState bs = getLevel().getBlockState(toCheck);
+        BlockState bs = getBlockState(toCheck);
         if(bs.isAir()) return true;
-        super.processInnerBlock(new NCBlockPos(toCheck));
+        super.processInnerBlock(new BlockPosInstance(toCheck));
         if(bs.getBlock() instanceof TurbineRotorBlock) {
-            rotorPositions.add(new NCBlockPos(toCheck));
+            rotorPositions.add(new BlockPosInstance(toCheck));
         }
         if(bs.getBlock() instanceof TurbineBladeBlock) {
-            bladePositions.add(new NCBlockPos(toCheck));
+            bladePositions.add(new BlockPosInstance(toCheck));
         }
         return true;
     }
 
     protected void processOuterBlock(BlockPos pos) {
         super.processOuterBlock(pos);
-        BlockEntity bs = getLevel().getBlockEntity(pos);
-        if(bs instanceof TurbineBearingBE) {
-            bearingPositions.add(new NCBlockPos(pos));
+        BlockEntity be = getBlockEntity(pos);
+        BlockState bs = getBlockState(pos);
+        if(bs.getBlock() instanceof TurbineBearingBlock) {
+            bearingPositions.add(new BlockPosInstance(pos));
         }
-        if(bs instanceof TurbineCoilBE) {
-            coilPositions.add(new NCBlockPos(pos));
+        if(be instanceof TurbineCoilBE) {
+            coilPositions.add(new BlockPosInstance(pos));
         }
     }
-
-    public int activeCoils = 0;
-    public double coilsEfficiency = 0;
 
     public void countCoils() {
         activeCoils = 0;
         coilsEfficiency = 0;
         for(BlockPos pos : coilPositions) {
-            BlockEntity be = getLevel().getBlockEntity(pos);
+            BlockEntity be = getBlockEntity(pos);
             if(be instanceof TurbineCoilBE coil) {
                 coil.validatePlacement();
                 if(coilsEfficiency == 0) {
@@ -171,13 +235,13 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
                 return width() == depth() && width() % 2 != 0;
             case NORTH:
             case SOUTH:
-                if(getFacing().getAxis().equals(Direction.Axis.Z)) {
+                if(getControllerDirection().getAxis().equals(Direction.Axis.Z)) {
                     return height() == width() && height() % 2 != 0;
                 }
                 return depth() == height() && height() % 2 != 0;
             case EAST:
             case WEST:
-                if(getFacing().getAxis().equals(Direction.Axis.X)) {
+                if(getControllerDirection().getAxis().equals(Direction.Axis.X)) {
                     return height() == width() && height() % 2 != 0;
                 }
                 return height() == depth() && height() % 2 != 0;
@@ -190,7 +254,7 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
         boolean bearingConnected = true;
         Direction dir = turbineDirection;
         for(BlockPos pos : rotorPositions) {
-            BlockState bs = getLevel().getBlockState(pos);
+            BlockState bs = getBlockState(pos);
             if(!(bs.getBlock() instanceof TurbineRotorBlock)) {
                 return false;
             }
@@ -220,24 +284,38 @@ public class TurbineMultiblock extends AbstractNCMultiblock {
                     }
                     break;
             }
-            BlockEntity be = getLevel().getBlockEntity(pos);
+            BlockEntity be = getBlockEntity(pos);
             if(!(be instanceof TurbineRotorBE rotorBE)) {
                 return false;
             }
             rotorBE.updateBearingConnection();
             bearingConnected = bearingConnected && rotorBE.connectedToBearing;
         }
-        return bearingConnected && getLevel().getBlockEntity(getCenterBlock()) instanceof TurbineRotorBE;
+        return bearingConnected && getBlockEntity(getCenterBlock()) instanceof TurbineRotorBE;
     }
 
-
-    public void invalidateStats()
+    public void clearStats()
     {
         controller().clearStats();
     }
 
-    protected Direction getFacing() {
-        return ((TurbineControllerBE<?>)controller().controllerBE()).getFacing();
+    protected Direction getControllerDirection() {
+        return controller().controllerBE().getFacing();
     }
 
+    public void passKineticEnergy() {
+        if (!isCreateLoaded() || turbineDirection == null) return;
+        Direction.Axis axis = turbineDirection.getAxis();
+        float coilsDrag = (float) Math.log(controllerBE().activeCoils/controllerBE().coilsDrag())+1;
+        float rpm = Math.min(256, (float) (controllerBE().rotationSpeed*5000 / coilsDrag * TURBINE_CONFIG.KINETIC_ENERGY_CONVERTION.get()));
+        List<BlockPos> tmp = bearingPositions.stream().toList();
+        for(BlockPos pos: tmp) {
+            BlockState bs = getBlockState(pos);
+            if(bs.hasProperty(BlockStateProperties.AXIS) && bs.getValue(BlockStateProperties.AXIS) != axis) {
+                controllerBE().getLevel().setBlock(pos, bs.setValue(BlockStateProperties.AXIS, axis), Block.UPDATE_CLIENTS);
+            }
+            BlockEntity be = getBlockEntity(pos);
+            CreateTurbine.applyKinetic(be, rpm, (float) (Math.log1p(controllerBE().maxFlow) + Math.log1p(controllerBE().realFlow))*5F);
+        }
+    }
 }

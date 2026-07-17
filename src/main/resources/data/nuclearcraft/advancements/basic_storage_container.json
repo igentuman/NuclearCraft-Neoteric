@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:basic_storage_container"
+    },
+    "title": {
+      "translate": "advancement.nc.basic_storage_container"
+    },
+    "description": {
+      "translate": "advancement.nc.basic_storage_container.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:manufactory",
+  "criteria": {
+    "basic_storage_container": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:basic_storage_container"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "basic_storage_container"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

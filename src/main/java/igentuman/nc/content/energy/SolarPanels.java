@@ -17,15 +17,15 @@ import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
 
 public class SolarPanels {
 
-    private static HashMap<String, SolarPanelPrefab> all = new HashMap<>();
-    private static HashMap<String, SolarPanelPrefab> registered = new HashMap<>();
+    private static final HashMap<String, SolarPanelPrefab> all = new HashMap<>();
+    private static final HashMap<String, SolarPanelPrefab> registered = new HashMap<>();
 
     public static HashMap<String, SolarPanelPrefab> all() {
         if(all.isEmpty()) {
-            all.put("basic", new SolarPanelPrefab("basic",25).setBlockEntity(BasicSolarBE::new));
-            all.put("advanced", new SolarPanelPrefab("advanced",100).setBlockEntity(AdvancedSolarBE::new));
-            all.put("du", new SolarPanelPrefab("du",400).setBlockEntity(DuSolarBE::new));
-            all.put("elite", new SolarPanelPrefab("elite",1500).setBlockEntity(EliteSolarBE::new));
+            all.put("basic", new SolarPanelPrefab("basic",28, 0).setBlockEntity(BasicSolarBE::new));
+            all.put("advanced", new SolarPanelPrefab("advanced",112, 1).setBlockEntity(AdvancedSolarBE::new));
+            all.put("du", new SolarPanelPrefab("du",448, 2).setBlockEntity(DuSolarBE::new));
+            all.put("elite", new SolarPanelPrefab("elite",1792, 3).setBlockEntity(EliteSolarBE::new));
         }
         return all;
     }
@@ -70,14 +70,20 @@ public class SolarPanels {
         private boolean initialized = false;
         private final String name;
         protected int generation = 0;
+        protected int tier = 0;
 
-        public SolarPanelPrefab(String name, int generation) {
+        public SolarPanelPrefab(String name, int generation, int tier) {
             this.generation = generation;
             this.name = name;
+            this.tier = tier;
         }
 
         public int getGeneration() {
             return generation;
+        }
+
+        public int getActualGeneration() {
+            return (int) (config().generation * ENERGY_GENERATION.GENERATION_MULTIPLIER.get());
         }
 
         public SolarPanelPrefab setGeneration(int generation) {
@@ -112,5 +118,9 @@ public class SolarPanels {
             return this;
         }
         private BlockEntityType.BlockEntitySupplier<? extends NCEnergy>  blockEntity;
+
+        public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getEnergyTier() {
+            return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.values()[tier];
+        }
     }
 }

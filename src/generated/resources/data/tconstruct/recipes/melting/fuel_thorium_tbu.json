@@ -1,0 +1,18 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:fuel_thorium_tbu"
+  },
+  "result": {
+    "amount": 90,
+    "fluid": "nuclearcraft:fuel_thorium_tbu"
+  },
+  "temperature": 700,
+  "time": 40
+}

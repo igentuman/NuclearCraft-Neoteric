@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "A": {
+      "item": "nuclearcraft:advanced_processor"
+    },
+    "E": {
+      "tag": "forge:ingots/extreme"
+    },
+    "F": {
+      "item": "nuclearcraft:accelerator_casing"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_elite"
+    }
+  },
+  "pattern": [
+    "PEP",
+    "AFA",
+    "PEP"
+  ],
+  "result": {
+    "item": "nuclearcraft:ring_accelerator_controller"
+  },
+  "show_notification": true
+}

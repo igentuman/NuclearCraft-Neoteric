@@ -1,0 +1,246 @@
+{
+  "variants": {
+    "facing=west,level=0": {
+      "model": "nuclearcraft:block/redstone_dimmer/0",
+      "y": 270
+    },
+    "facing=west,level=1": {
+      "model": "nuclearcraft:block/redstone_dimmer/1",
+      "y": 270
+    },
+    "facing=west,level=2": {
+      "model": "nuclearcraft:block/redstone_dimmer/2",
+      "y": 270
+    },
+    "facing=west,level=3": {
+      "model": "nuclearcraft:block/redstone_dimmer/3",
+      "y": 270
+    },
+    "facing=west,level=4": {
+      "model": "nuclearcraft:block/redstone_dimmer/4",
+      "y": 270
+    },
+    "facing=west,level=5": {
+      "model": "nuclearcraft:block/redstone_dimmer/5",
+      "y": 270
+    },
+    "facing=west,level=6": {
+      "model": "nuclearcraft:block/redstone_dimmer/6",
+      "y": 270
+    },
+    "facing=west,level=7": {
+      "model": "nuclearcraft:block/redstone_dimmer/7",
+      "y": 270
+    },
+    "facing=west,level=8": {
+      "model": "nuclearcraft:block/redstone_dimmer/8",
+      "y": 270
+    },
+    "facing=west,level=9": {
+      "model": "nuclearcraft:block/redstone_dimmer/9",
+      "y": 270
+    },
+    "facing=west,level=10": {
+      "model": "nuclearcraft:block/redstone_dimmer/10",
+      "y": 270
+    },
+    "facing=west,level=11": {
+      "model": "nuclearcraft:block/redstone_dimmer/11",
+      "y": 270
+    },
+    "facing=west,level=12": {
+      "model": "nuclearcraft:block/redstone_dimmer/12",
+      "y": 270
+    },
+    "facing=west,level=13": {
+      "model": "nuclearcraft:block/redstone_dimmer/13",
+      "y": 270
+    },
+    "facing=west,level=14": {
+      "model": "nuclearcraft:block/redstone_dimmer/14",
+      "y": 270
+    },
+    "facing=west,level=15": {
+      "model": "nuclearcraft:block/redstone_dimmer/15",
+      "y": 270
+    },
+    "facing=east,level=0": {
+      "model": "nuclearcraft:block/redstone_dimmer/0",
+      "y": 90
+    },
+    "facing=east,level=1": {
+      "model": "nuclearcraft:block/redstone_dimmer/1",
+      "y": 90
+    },
+    "facing=east,level=2": {
+      "model": "nuclearcraft:block/redstone_dimmer/2",
+      "y": 90
+    },
+    "facing=east,level=3": {
+      "model": "nuclearcraft:block/redstone_dimmer/3",
+      "y": 90
+    },
+    "facing=east,level=4": {
+      "model": "nuclearcraft:block/redstone_dimmer/4",
+      "y": 90
+    },
+    "facing=east,level=5": {
+      "model": "nuclearcraft:block/redstone_dimmer/5",
+      "y": 90
+    },
+    "facing=east,level=6": {
+      "model": "nuclearcraft:block/redstone_dimmer/6",
+      "y": 90
+    },
+    "facing=east,level=7": {
+      "model": "nuclearcraft:block/redstone_dimmer/7",
+      "y": 90
+    },
+    "facing=east,level=8": {
+      "model": "nuclearcraft:block/redstone_dimmer/8",
+      "y": 90
+    },
+    "facing=east,level=9": {
+      "model": "nuclearcraft:block/redstone_dimmer/9",
+      "y": 90
+    },
+    "facing=east,level=10": {
+      "model": "nuclearcraft:block/redstone_dimmer/10",
+      "y": 90
+    },
+    "facing=east,level=11": {
+      "model": "nuclearcraft:block/redstone_dimmer/11",
+      "y": 90
+    },
+    "facing=east,level=12": {
+      "model": "nuclearcraft:block/redstone_dimmer/12",
+      "y": 90
+    },
+    "facing=east,level=13": {
+      "model": "nuclearcraft:block/redstone_dimmer/13",
+      "y": 90
+    },
+    "facing=east,level=14": {
+      "model": "nuclearcraft:block/redstone_dimmer/14",
+      "y": 90
+    },
+    "facing=east,level=15": {
+      "model": "nuclearcraft:block/redstone_dimmer/15",
+      "y": 90
+    },
+
+    "facing=north,level=0": {
+      "model": "nuclearcraft:block/redstone_dimmer/0"
+    },
+    "facing=north,level=1": {
+      "model": "nuclearcraft:block/redstone_dimmer/1"
+    },
+    "facing=north,level=2": {
+      "model": "nuclearcraft:block/redstone_dimmer/2"
+    },
+    "facing=north,level=3": {
+      "model": "nuclearcraft:block/redstone_dimmer/3"
+    },
+    "facing=north,level=4": {
+      "model": "nuclearcraft:block/redstone_dimmer/4"
+    },
+    "facing=north,level=5": {
+      "model": "nuclearcraft:block/redstone_dimmer/5"
+    },
+    "facing=north,level=6": {
+      "model": "nuclearcraft:block/redstone_dimmer/6"
+    },
+    "facing=north,level=7": {
+      "model": "nuclearcraft:block/redstone_dimmer/7"
+    },
+    "facing=north,level=8": {
+      "model": "nuclearcraft:block/redstone_dimmer/8"
+    },
+    "facing=north,level=9": {
+      "model": "nuclearcraft:block/redstone_dimmer/9"
+    },
+    "facing=north,level=10": {
+      "model": "nuclearcraft:block/redstone_dimmer/10"
+    },
+    "facing=north,level=11": {
+      "model": "nuclearcraft:block/redstone_dimmer/11"
+    },
+    "facing=north,level=12": {
+      "model": "nuclearcraft:block/redstone_dimmer/12"
+    },
+    "facing=north,level=13": {
+      "model": "nuclearcraft:block/redstone_dimmer/13"
+    },
+    "facing=north,level=14": {
+      "model": "nuclearcraft:block/redstone_dimmer/14"
+    },
+    "facing=north,level=15": {
+      "model": "nuclearcraft:block/redstone_dimmer/15"
+    },
+
+    "facing=south,level=0": {
+      "model": "nuclearcraft:block/redstone_dimmer/0",
+      "y": 180
+    },
+    "facing=south,level=1": {
+      "model": "nuclearcraft:block/redstone_dimmer/1",
+      "y": 180
+    },
+    "facing=south,level=2": {
+      "model": "nuclearcraft:block/redstone_dimmer/2",
+      "y": 180
+    },
+    "facing=south,level=3": {
+      "model": "nuclearcraft:block/redstone_dimmer/3",
+      "y": 180
+    },
+    "facing=south,level=4": {
+      "model": "nuclearcraft:block/redstone_dimmer/4",
+      "y": 180
+    },
+    "facing=south,level=5": {
+      "model": "nuclearcraft:block/redstone_dimmer/5",
+      "y": 180
+    },
+    "facing=south,level=6": {
+      "model": "nuclearcraft:block/redstone_dimmer/6",
+      "y": 180
+    },
+    "facing=south,level=7": {
+      "model": "nuclearcraft:block/redstone_dimmer/7",
+      "y": 180
+    },
+    "facing=south,level=8": {
+      "model": "nuclearcraft:block/redstone_dimmer/8",
+      "y": 180
+    },
+    "facing=south,level=9": {
+      "model": "nuclearcraft:block/redstone_dimmer/9",
+      "y": 180
+    },
+    "facing=south,level=10": {
+      "model": "nuclearcraft:block/redstone_dimmer/10",
+      "y": 180
+    },
+    "facing=south,level=11": {
+      "model": "nuclearcraft:block/redstone_dimmer/11",
+      "y": 180
+    },
+    "facing=south,level=12": {
+      "model": "nuclearcraft:block/redstone_dimmer/12",
+      "y": 180
+    },
+    "facing=south,level=13": {
+      "model": "nuclearcraft:block/redstone_dimmer/13",
+      "y": 180
+    },
+    "facing=south,level=14": {
+      "model": "nuclearcraft:block/redstone_dimmer/14",
+      "y": 180
+    },
+    "facing=south,level=15": {
+      "model": "nuclearcraft:block/redstone_dimmer/15",
+      "y": 180
+    }
+  }
+}

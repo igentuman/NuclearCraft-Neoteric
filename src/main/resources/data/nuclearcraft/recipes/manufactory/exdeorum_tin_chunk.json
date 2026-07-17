@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "exdeorum"
+        }
+      ],
+      "recipe": {
+        "type": "nuclearcraft:manufactory",
+        "input": [
+          {
+            "item": "exdeorum:tin_ore_chunk",
+            "count": 4
+          }
+        ],
+        "output": [
+          {
+            "item": "nuclearcraft:tin_dust",
+            "count": 2
+          }
+        ],
+        "powerModifier": 1.0,
+        "radiation": 1.0,
+        "timeModifier": 1.0
+      }
+    }
+  ]
+}

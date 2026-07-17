@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/multiblock/beam_diverter_controller",
+  "textures": {
+    "north": "nuclearcraft:block/accelerator/controller/beam_diverter_controller_powered"
+  }
+}

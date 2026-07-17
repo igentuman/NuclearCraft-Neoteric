@@ -15,14 +15,18 @@ import java.util.function.Predicate;
  *
  */
 public class ItemHandlerWrapper implements IItemHandlerModifiable {
-    private final IItemHandlerModifiable handler;
+    private final ItemCapabilityHandler handler;
     private final Predicate<Integer> extract;
     private final BiPredicate<Integer, ItemStack> insert;
 
     private final Direction side;
 
-    public ItemHandlerWrapper(Direction side, IItemHandlerModifiable handler, Predicate<Integer> extract,
-                                  BiPredicate<Integer, ItemStack> insert) {
+    public ItemHandlerWrapper(
+            Direction side,
+            ItemCapabilityHandler handler,
+            Predicate<Integer> extract,
+            BiPredicate<Integer, ItemStack> insert
+    ) {
         this.handler = handler;
         this.extract = extract;
         this.insert = insert;
@@ -55,8 +59,8 @@ public class ItemHandlerWrapper implements IItemHandlerModifiable {
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if( side != null &&
-                (((ItemCapabilityHandler) handler).getMode(slot, 0) == SlotModePair.SlotMode.INPUT ||
-                        ((ItemCapabilityHandler) handler).getMode(slot, 0) == SlotModePair.SlotMode.PULL)
+                (handler.getMode(slot, 0) == SlotModePair.SlotMode.INPUT ||
+                        handler.getMode(slot, 0) == SlotModePair.SlotMode.PULL)
         ) {
             return ItemStack.EMPTY;
         }

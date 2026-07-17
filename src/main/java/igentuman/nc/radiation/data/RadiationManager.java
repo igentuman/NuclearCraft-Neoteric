@@ -2,13 +2,17 @@ package igentuman.nc.radiation.data;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.compat.mekanism.MekanismRadiation;
+import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.network.toClient.PacketPlayerRadiationData;
 import igentuman.nc.network.toClient.PacketWorldRadiationData;
 import igentuman.nc.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -17,17 +21,30 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
-import static igentuman.nc.radiation.data.WorldRadiation.pack;
+import static igentuman.nc.radiation.data.WorldRadiation.packChunkPos;
 
 public class RadiationManager extends SavedData {
 
+    public static final long ENTITY_RADIATION_THRESHOLD = 5_000_000L;
+
     private WorldRadiation worldRadiation;
     private int tickCounter = RADIATION_CONFIG.RADIATION_UPDATE_INTERVAL.get();
-
+    private static final Map<ResourceKey<Level>, RadiationManager> instances = new ConcurrentHashMap<>();
     public static void clear(Level level) {
         get(level).worldRadiation.chunkRadiation.clear();
         get(level).worldRadiation.updatedChunks.clear();
+        get(level).worldRadiation.newChunks.clear();
+    }
+
+    public static void clearAll() {
+        instances.clear();
     }
 
     public WorldRadiation getWorldRadiation() {
@@ -42,36 +59,66 @@ public class RadiationManager extends SavedData {
     public RadiationManager() {
         worldRadiation = new WorldRadiation();
     }
+
     @Nonnull
     public static RadiationManager get(Level level) {
         if (level.isClientSide) {
             throw new RuntimeException("Don't access this client-side!");
         }
+        if(instances.containsKey(level.dimension())) {
+            return instances.get(level.dimension());
+        }
         DimensionDataStorage storage = ((ServerLevel)level).getDataStorage();
-        return storage.computeIfAbsent(RadiationManager::new, RadiationManager::new, "nc_world_radiation");
+        instances.put(level.dimension(), storage.computeIfAbsent(RadiationManager::new, RadiationManager::new, "nc_world_radiation"));
+        return instances.get(level.dimension());
     }
 
     public void tick(Level level) {
+        if(!RADIATION_CONFIG.ENABLED.get()) return;
         level.players().forEach(player -> {
-            long wasRadiation = 0;
             long playerRadiation = 0;
             if (player instanceof ServerPlayer serverPlayer) {
-                int playerChunkX = player.chunkPosition().x;
-                int playerChunkZ = player.chunkPosition().z;
-                long id = pack(playerChunkX, playerChunkZ);
                 PlayerRadiation playerRadiationCap = serverPlayer.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).orElse(null);
                 if(playerRadiationCap != null) {
-                    wasRadiation = playerRadiationCap.getRadiation();
                     playerRadiationCap.updateRadiation(level, player);
                     playerRadiation = playerRadiationCap.getRadiation();
+                    if(ModUtil.isMekanismLoaded() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
+                        MekanismRadiation.syncEntityRadiation(serverPlayer, playerRadiation);
+                    }
                 }
 
-                if(worldRadiation.chunkRadiation.get(id) != null) {
-                    NuclearCraft.packetHandler().sendTo(new PacketWorldRadiationData(id, worldRadiation.chunkRadiation.get(id)), serverPlayer);
-                } else if(wasRadiation != playerRadiation) {
-                    NuclearCraft.packetHandler().sendTo(new PacketPlayerRadiationData(playerRadiation), serverPlayer);
+                // Sync nearby chunks
+                HashMap<Long, Long> nearbyRadiation = new HashMap<>();
+                int syncRadius = 8;
+                int px = player.chunkPosition().x;
+                int pz = player.chunkPosition().z;
+
+                for (int x = px - syncRadius; x <= px + syncRadius; x++) {
+                    for (int z = pz - syncRadius; z <= pz + syncRadius; z++) {
+                        long id = WorldRadiation.packChunkPos(x, z);
+                        if (worldRadiation.chunkRadiation.containsKey(id)) {
+                            nearbyRadiation.put(id, worldRadiation.chunkRadiation.get(id));
+                        }
+                    }
                 }
+                // Also sync recently updated chunks even if they are slightly further away, 
+                // but only if they belong to this world.
+                for (long id : worldRadiation.updatedChunks.keySet()) {
+                    if (!nearbyRadiation.containsKey(id)) {
+                        int cx = WorldRadiation.unpackX(id);
+                        int cz = WorldRadiation.unpackZ(id);
+                        if (Math.abs(cx - px) <= 16 && Math.abs(cz - pz) <= 16) {
+                            nearbyRadiation.put(id, worldRadiation.updatedChunks.get(id));
+                        }
+                    }
+                }
+
+                if (!nearbyRadiation.isEmpty()) {
+                    NuclearCraft.packetHandler().sendTo(new PacketWorldRadiationData(nearbyRadiation), serverPlayer);
+                }
+                NuclearCraft.packetHandler().sendTo(new PacketPlayerRadiationData(playerRadiation), serverPlayer);
             }
+
         });
         tickCounter--;
         if (tickCounter == RADIATION_CONFIG.RADIATION_UPDATE_INTERVAL.get()/2) {
@@ -80,11 +127,24 @@ public class RadiationManager extends SavedData {
         }
         if (tickCounter == 0) {
             tickCounter = RADIATION_CONFIG.RADIATION_UPDATE_INTERVAL.get();
+            damageEntities(level);
             if(worldRadiation.updatedChunks.isEmpty()) {
                 return;
             }
 
             setDirty();
+        }
+    }
+
+    private void damageEntities(Level level) {
+        if(!(level instanceof ServerLevel serverLevel)) return;
+        for(net.minecraft.world.entity.Entity entity : serverLevel.getAllEntities()) {
+            if(!(entity instanceof LivingEntity living) || entity instanceof Player) continue;
+            if(!living.isAlive()) continue;
+            int chunkRadiation = worldRadiation.getChunkRadiation(living.chunkPosition().x, living.chunkPosition().z);
+            if(chunkRadiation < ENTITY_RADIATION_THRESHOLD) continue;
+            float damage = (float)(chunkRadiation / ENTITY_RADIATION_THRESHOLD);
+            living.hurt(NCRadiationDamageSource.RADIATION(level), damage);
         }
     }
 
@@ -101,17 +161,26 @@ public class RadiationManager extends SavedData {
     public @NotNull CompoundTag save(CompoundTag tag) {
         return worldRadiation.serializeNBT();
     }
-    protected int[] ignoredPos;
     public void addRadiation(Level level, double value, int x, int y, int z) {
-        if(ignoredPos != null && ignoredPos[0] == x && ignoredPos[1] == y && ignoredPos[2] == z) {
-            ignoredPos = null;
-            return;
-        }
+        if(!RADIATION_CONFIG.ENABLED.get() || MekanismRadiation.MIRRORING.get()) return;
         LevelChunk chunk = level.getChunkAt(new BlockPos(x, y, z));
         int appliedRadiation = worldRadiation.addRadiation(level, value, chunk.getPos().x, chunk.getPos().z);
-        if(ModUtil.isMekanismLoadeed() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()) {
-            ignoredPos = new int[]{x, y, z};
-            MekanismRadiation.radiate(x, y, z, appliedRadiation/1000, level);
+        if(ModUtil.isMekanismLoaded() && RADIATION_CONFIG.MEKANISM_RADIATION_INTEGRATION.get()
+                && !MekanismRadiation.MIRRORING.get()) {
+            MekanismRadiation.radiate(x, y, z, appliedRadiation, level);
         }
+    }
+
+    public void clearChunk(int x, int z) {
+        worldRadiation.chunkRadiation.remove(packChunkPos(x,z));
+    }
+
+    public void addRadiation(Level level, double v, BlockPos worldPosition) {
+        addRadiation(level, v, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+    }
+
+    public void setChunkRadiation(BlockPos blockPos, int value) {
+        worldRadiation.setChunkRadiation(blockPos, value);
+        setDirty();
     }
 }

@@ -1,32 +1,34 @@
 package igentuman.nc.datagen.tags;
 
-import net.minecraft.data.BuiltinRegistries;
-
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.tags.BiomeTags;
-import net.minecraft.tags.TagEntry;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.setup.registration.WorldGeneration.*;
+import static net.minecraft.tags.BiomeTags.IS_OVERWORLD;
 
 public class NCBiomeTags extends TagsProvider<Biome> {
 
-    public NCBiomeTags(DataGenerator generator, ExistingFileHelper helper) {
-        super(generator, BuiltinRegistries.BIOME, MODID, helper);
+    public NCBiomeTags(DataGenerator generator, GatherDataEvent event) {
+        super(generator.getPackOutput(), ForgeRegistries.BIOMES.getRegistryKey(), event.getLookupProvider(), MODID, event.getExistingFileHelper());
     }
 
     @Override
-    protected void addTags() {
-        ForgeRegistries.BIOMES.getValues().forEach(biome -> {
-
-        });
+    protected void addTags(HolderLookup.Provider provider) {
+        tag(WASTELAND).addOptional(WASTELAND_BIOME.location());
+        tag(Tags.Biomes.IS_WASTELAND).addOptional(WASTELAND_BIOME.location());
+        tag(IS_OVERWORLD).addOptional(WASTELAND_BIOME.location());
+        tag(IS_OVERWORLD).addOptional(WASTELAND.location());
     }
 
     @Override
     public String getName() {
-        return "NuclearCraft Tags";
+        return "NuclearCraft Biome Tags";
     }
 }
+

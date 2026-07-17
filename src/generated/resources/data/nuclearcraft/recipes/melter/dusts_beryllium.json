@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:beryllium"
+      "amount": 90,
+      "tag": "forge:molten_beryllium"
     }
   ],
   "powerModifier": 1.0,

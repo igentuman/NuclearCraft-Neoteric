@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_target_chamber",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:empty_detector"
+    },
+    "S": {
+      "item": "nuclearcraft:scintillator_pwo"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SCS",
+    "SSS"
+  ],
+  "result": {
+    "item": "nuclearcraft:em_calorimeter"
+  },
+  "show_notification": true
+}

@@ -27,6 +27,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static igentuman.nc.util.NcUtils.rlFromString;
+
 @NothingNullByDefault
 public class FluidStackIngredientCreator implements IFluidStackIngredientCreator {
 
@@ -39,10 +41,15 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     public FluidStackIngredient from(FluidStack instance) {
         Objects.requireNonNull(instance, "FluidStackIngredients cannot be created from a null FluidStack.");
         if (instance.isEmpty()) {
-            throw new IllegalArgumentException("FluidStackIngredients cannot be created using the empty stack.");
+           // throw new IllegalArgumentException("FluidStackIngredients cannot be created using the empty stack.");
         }
         //Copy the stack to ensure it doesn't get modified afterwards
         return new SingleFluidStackIngredient(instance.copy());
+    }
+
+    @Override
+    public FluidStackIngredient from(JsonElement instance) {
+        return deserialize(instance);
     }
 
     @Override
@@ -109,7 +116,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             if (amount < 1) {
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
-            ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(jsonObject, "tag"));
+            ResourceLocation resourceLocation = rlFromString(GsonHelper.getAsString(jsonObject, "tag"));
             ITagManager<Fluid> tagManager = TagUtil.manager(ForgeRegistries.FLUIDS);
             TagKey<Fluid> key = tagManager.createTagKey(resourceLocation);
             return from(key, amount);
@@ -262,6 +269,13 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean testType(FluidStack fluidStack) {
+            if (tag.isEmpty()) {
+                for(FluidStack type: getRepresentations()) {
+                    if (type.isFluidEqual(fluidStack)) {
+                        return true;
+                    }
+                }
+            }
             return tag.contains(Objects.requireNonNull(fluidStack).getFluid());
         }
 
@@ -292,7 +306,12 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
                 representations.add(new FluidStack(fluid, amount));
             }
             if(representations.isEmpty()) {
-                NuclearCraft.LOGGER.error("Fluid Tag {} is empty!", tag.getKey().location());
+                Fluid fallbackFluid = TagUtil.getFirstMatchingFluidByTag(tag.getKey().location().toString());
+                if (fallbackFluid != FluidStack.EMPTY.getFluid()) {
+                    representations.add(new FluidStack(fallbackFluid, amount));
+                } else {
+                    NuclearCraft.LOGGER.error("No fluid found for tag {}", tag.getKey().location());
+                }
             }
             return representations;
         }

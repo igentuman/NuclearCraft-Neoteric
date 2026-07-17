@@ -1,19 +1,20 @@
 package igentuman.nc;
 
-import igentuman.nc.handler.command.CommandNcPatrons;
-import igentuman.nc.handler.command.NCRadiationCommand;
-import igentuman.nc.handler.command.StructureCommand;
+import igentuman.nc.content.particles.CapabilityParticleStackHandler;
+import igentuman.nc.handler.command.*;
 import igentuman.nc.handler.config.*;
 import igentuman.nc.handler.event.server.WorldEvents;
-import igentuman.nc.handler.command.CommandNcVeinCheck;
+import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.network.PacketHandler;
 import igentuman.nc.radiation.data.PlayerRadiation;
 import igentuman.nc.radiation.data.RadiationEvents;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.radiation.data.WorldRadiation;
-import igentuman.nc.network.PacketHandler;
 import igentuman.nc.setup.ClientSetup;
 import igentuman.nc.setup.ModSetup;
 import igentuman.nc.setup.Registration;
+import igentuman.nc.util.insitu_leaching.WorldVeinOres;
+import igentuman.nc.util.insitu_leaching.WorldVeinsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,23 +27,20 @@ import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ConfigTracker;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.file.Path;
-import java.util.EnumMap;
-import java.util.Set;
+import static igentuman.nc.handler.config.CommonConfig.MISC_CONFIG;
+import static igentuman.nc.util.FileExtractor.preFetchProcessorsConfig;
+import static igentuman.nc.util.FileExtractor.unpackFilesFromFolderToConfig;
 
 @Mod(NuclearCraft.MODID)
 public class NuclearCraft {
@@ -53,62 +51,56 @@ public class NuclearCraft {
     public static final String MODID = "nuclearcraft";
     public static NuclearCraft instance;
     private final PacketHandler packetHandler;
+    private static boolean isBetaBuild = false;
+    public static long currentTick = 0;
 
-    /**
-     * Sorry but has to load config before registration stage
-     */
-    @SuppressWarnings("unchecked")
-    private void forceLoadConfig()
+    public static void registerConfigs(FMLJavaModLoadingContext context)
     {
-        try {
-            Method openConfig = ConfigTracker.INSTANCE.getClass()
-                    .getDeclaredMethod("openConfig", ModConfig.class, Path.class);
-            openConfig.setAccessible(true);
-            Field configSets = ConfigTracker.INSTANCE.getClass().getDeclaredField("configSets");
-            configSets.setAccessible(true);
-            EnumMap<ModConfig.Type, Set<ModConfig>> configSetsValue = (EnumMap<ModConfig.Type, Set<ModConfig>>) configSets.get(ConfigTracker.INSTANCE);
-            ModConfig ncConfig = null;
-            for(ModConfig config : configSetsValue.get(ModConfig.Type.COMMON)) {
-                if(config.getModId().equals(MODID)) {
-                    ncConfig = config;
-                    break;
-                }
-            }
-            openConfig.invoke(ConfigTracker.INSTANCE, ncConfig, FMLPaths.CONFIGDIR.get());
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | NoSuchFieldException e) {
-            LOGGER.error("Unable to force load NC config. And this is why:");
-            LOGGER.error(e);
-        }
+        preFetchProcessorsConfig();
+        unpackFilesFromFolderToConfig("data/nuclearcraft/fission_fuel", "NuclearCraft/fission_fuel");
+        unpackFilesFromFolderToConfig("data/nuclearcraft/heat_sinks", "NuclearCraft/heat_sinks");
+        unpackFilesFromFolderToConfig("data/nuclearcraft/accelerator_coolers", "NuclearCraft/accelerator_coolers");
+
+        ModContainer container = ModLoadingContext.get().getActiveContainer();
+        container.addConfig(new ModConfig(ModConfig.Type.CLIENT, ClientConfig.spec, container,"NuclearCraft/client.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, MaterialsConfig.spec, container,"NuclearCraft/materials.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, OreGenConfig.spec, container,"NuclearCraft/ore_generation.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, CommonConfig.spec, container,"NuclearCraft/common.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, KugelblitzConfig.spec, container,"NuclearCraft/kugelblitz.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, AcceleratorConfig.spec, container,"NuclearCraft/accelerator.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, ProcessorsConfig.spec, container,"NuclearCraft/processors.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, FissionConfig.spec, container,"NuclearCraft/fission.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, FusionConfig.spec, container,"NuclearCraft/fusion.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, TurbineConfig.spec, container,"NuclearCraft/turbine.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, HeatExchangerConfig.spec, container,"NuclearCraft/heat_exchanger.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, RadiationConfig.spec, container,"NuclearCraft/radiation.toml"));
+        container.addConfig(new ModConfig(ModConfig.Type.COMMON, WorldConfig.spec, container,"NuclearCraft/world.toml"));
     }
 
-    public static void registerConfigs()
-    {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MaterialsConfig.spec, "NuclearCraft/materials.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.spec, "NuclearCraft/common.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ProcessorsConfig.spec, "NuclearCraft/processors.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FissionConfig.spec, "NuclearCraft/fission.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FusionConfig.spec, "NuclearCraft/fusion.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, TurbineConfig.spec, "NuclearCraft/turbine.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, RadiationConfig.spec, "NuclearCraft/radiation.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, WorldConfig.spec, "NuclearCraft/world.toml");
-    }
-
+    @Deprecated
     public NuclearCraft() {
+        this(FMLJavaModLoadingContext.get());
+    }
+
+    public NuclearCraft(FMLJavaModLoadingContext context) {
         instance = this;
-        registerConfigs();
+        IEventBus modbus = context.getModEventBus();
+        registerConfigs(context);
         packetHandler = new PacketHandler();
-        forceLoadConfig();
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
         MinecraftForge.EVENT_BUS.addListener(this::gameShuttingDownEvent);
         ModSetup.setup();
-        Registration.init();
-        IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
-
+        Registration.init(context);
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         modbus.addListener(ModSetup::init);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(ClientSetup::init));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modbus.addListener(this::registerClientEventHandlers));
+        try {
+            isBetaBuild = ModList.get().getModFileById("nuclearcraft").getMods().get(0).getVersion().getQualifier().contains("beta");
+        } catch (Exception e) {
+            isBetaBuild = false;
+        }
     }
 
     public static PacketHandler packetHandler() {
@@ -122,10 +114,13 @@ public class NuclearCraft {
     }
 
     private void registerCommands(RegisterCommandsEvent event) {
-        event.getDispatcher().register(CommandNcVeinCheck.register());
-        event.getDispatcher().register(CommandNcPatrons.register());
+        event.getDispatcher().register(VeinCheckCommand.register());
+        event.getDispatcher().register(PatronsCommand.register());
         StructureCommand.register(event.getDispatcher());
-        NCRadiationCommand.register(event.getDispatcher());
+        RadiationCommand.register(event.getDispatcher());
+        DebugCommand.register(event.getDispatcher());
+        DetonateCommand.register(event.getDispatcher());
+        FuelModelsCommand.register(event.getDispatcher());
     }
 
     private void registerClientEventHandlers(FMLClientSetupEvent event) {
@@ -134,16 +129,30 @@ public class NuclearCraft {
 
     public static ResourceLocation rl(String path)
     {
-        return new ResourceLocation(MODID, path);
+        return ResourceLocation.tryBuild(MODID, path);
+    }
+
+    public static ResourceLocation forgeRl(String path)
+    {
+        return ResourceLocation.tryBuild("forge", path);
+    }
+
+    public static ResourceLocation resourceLoc(String path)
+    {
+        return ResourceLocation.tryBuild("c", path);
     }
 
     private void serverStopped(ServerStoppedEvent event) {
         NuclearCraft.instance.isNcBeStopped = true;
         //stop capability tracking
         RadiationEvents.stopTracking();
+        WorldVeinsProvider.stopTracking();
         for(ServerLevel level: event.getServer().getAllLevels()) {
+            MultiblockHandler.get(level.dimension()).clear();
             RadiationManager.clear(level);
         }
+        MultiblockHandler.clearAll();
+        RadiationManager.clearAll();
     }
     private void gameShuttingDownEvent(GameShuttingDownEvent event) {
         NuclearCraft.instance.isNcBeStopped = true;
@@ -151,12 +160,21 @@ public class NuclearCraft {
 
     private void serverStarted(ServerStartedEvent event) {
         NuclearCraft.instance.isNcBeStopped = false;
+        currentTick = 0;
         RadiationEvents.startTracking();
+        WorldVeinsProvider.startTracking();
     }
 
     @SubscribeEvent
     public void registerCaps(RegisterCapabilitiesEvent event) {
-        event.register(WorldRadiation.class);
         event.register(PlayerRadiation.class);
+        event.register(WorldVeinOres.class);
+        event.register(CapabilityParticleStackHandler.class);
+    }
+
+    public static void debugLog(String message) {
+        if (MISC_CONFIG.DEBUG_LOG.get() || isBetaBuild) {
+            LOGGER.info(message);
+        }
     }
 }

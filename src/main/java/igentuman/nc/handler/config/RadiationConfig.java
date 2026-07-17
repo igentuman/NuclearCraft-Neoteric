@@ -36,20 +36,18 @@ public class RadiationConfig {
     }
 
     public static class RadiationConf {
-        public ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
-        public ForgeConfigSpec.ConfigValue<Integer> SPREAD_GATE;
-        public ForgeConfigSpec.ConfigValue<Integer> NATURAL_RADIATION;
-        public ForgeConfigSpec.ConfigValue<Double> SPREAD_MULTIPLIER;
-        public ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED;
-        public ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED_FOR_PLAYER;
-        public ForgeConfigSpec.ConfigValue<Double> GAIN_SPEED_FOR_PLAYER;
-        public ForgeConfigSpec.ConfigValue<List<String>> ITEM_RADIATION;
-        public ForgeConfigSpec.ConfigValue<List<String>> RADIATION_REMOVAL_ITEMS;
-        public ForgeConfigSpec.ConfigValue<List<String>> ARMOR_PROTECTION;
-        public ForgeConfigSpec.ConfigValue<List<String>> BIOME_RADIATION;
-        public ForgeConfigSpec.ConfigValue<List<String>> DIMENSION_RADIATION;
-        public ForgeConfigSpec.ConfigValue<Integer> RADIATION_UPDATE_INTERVAL;
-        public ForgeConfigSpec.ConfigValue<Boolean> MEKANISM_RADIATION_INTEGRATION;
+        public final ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
+        public final ForgeConfigSpec.ConfigValue<Integer> NATURAL_RADIATION;
+        public final ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED;
+        public final ForgeConfigSpec.ConfigValue<Integer> DECAY_SPEED_FOR_PLAYER;
+        public final ForgeConfigSpec.ConfigValue<Double> GAIN_SPEED_FOR_PLAYER;
+        public final ForgeConfigSpec.ConfigValue<List<String>> ITEM_RADIATION;
+        public final ForgeConfigSpec.ConfigValue<List<String>> RADIATION_REMOVAL_ITEMS;
+        public final ForgeConfigSpec.ConfigValue<List<String>> ARMOR_PROTECTION;
+        public final ForgeConfigSpec.ConfigValue<List<String>> BIOME_RADIATION;
+        public final ForgeConfigSpec.ConfigValue<List<String>> DIMENSION_RADIATION;
+        public final ForgeConfigSpec.ConfigValue<Integer> RADIATION_UPDATE_INTERVAL;
+        public final ForgeConfigSpec.ConfigValue<Boolean> MEKANISM_RADIATION_INTEGRATION;
         protected HashMap<String, Integer> biomeRadiationMap;
         public int biomeRadiation(String id)
         {
@@ -97,19 +95,11 @@ public class RadiationConfig {
 
             NATURAL_RADIATION = builder
                     .comment("General background radiation everywhere (pRad).","Total radiation = background_radiation + dimension_radiation + chunk_radiation + in-game exposure")
-                    .defineInRange("background_radiation", 50, 0, 10000);
-
-            SPREAD_MULTIPLIER = builder
-                    .comment("Spread multiplier. How much radiation spreads from chunk to chunk per simulation. Bigger values might cause lag.")
-                    .defineInRange("spread_multiplier", 0.3d, 0.01d, 0.9d);
-
-            SPREAD_GATE = builder
-                    .comment("If chunk radiation (uRad) less than this value it won't affect chunks nearby.", "Bigger values - less lag, but less accurate radiation spread.")
-                    .defineInRange("spread_gate", 1000, 100, 100000);
+                    .defineInRange("background_radiation", 20, 0, 10000);
 
             DECAY_SPEED = builder
                     .comment("How fast contamination decays (pRad/s).")
-                    .defineInRange("decay_speed", 1500, 1000, 10000);
+                    .defineInRange("decay_speed", 2000, 1000, 10000);
 
             DECAY_SPEED_FOR_PLAYER = builder
                     .comment("How fast contamination decays in player's body (uRad/s).")
@@ -117,18 +107,18 @@ public class RadiationConfig {
 
             GAIN_SPEED_FOR_PLAYER = builder
                     .comment("Rate at which player gets radiation dose.")
-                    .defineInRange("gain_speed_for_player", 0.015D, 0, 5D);
+                    .defineInRange("gain_speed_for_player", 0.1D, 0, 5D);
 
             RADIATION_REMOVAL_ITEMS = builder
                     .comment("List of items what cleans player radiation when used (pRad). Format: item_id|radiation")
                     .define("radiation_removal_items", List.of(
-                            "minecraft:golden_carrot|50000000",
-                            "minecraft:golden_apple|200000000",
-                            "minecraft:enchanted_golden_apple|5000000000",
-                            "nuclearcraft:dominos|500000000",
-                            "nuclearcraft:moresmore|5000000000",
-                            "nuclearcraft:evenmoresmore|2000000000",
-                            "nuclearcraft:radaway|10000000000"
+                            "minecraft:golden_carrot|10000000",
+                            "minecraft:golden_apple|100000000",
+                            "minecraft:enchanted_golden_apple|2500000000",
+                            "nuclearcraft:dominos|250000000",
+                            "nuclearcraft:moresmore|2500000000",
+                            "nuclearcraft:evenmoresmore|1000000000",
+                            "nuclearcraft:radaway|50000000000"
                     ), o -> o instanceof ArrayList);
 
             ITEM_RADIATION = builder
@@ -163,14 +153,14 @@ public class RadiationConfig {
 
             BIOME_RADIATION = builder
                     .comment("Natural radiation per biome: uRad", "Format: biome_id|radiation")
-                    .define("biome_radiation", List.of("nuclearcraft:wasteland|2000", "minecraft:nether_wastes|500"), o -> o instanceof ArrayList);
+                    .define("biome_radiation", List.of("nuclearcraft:wasteland|40000", "minecraft:nether_wastes|5000"), o -> o instanceof ArrayList);
 
             DIMENSION_RADIATION = builder
                     .comment("Natural radiation per dimension: uRad", "Format: dim_id|radiation")
-                    .define("dimension_radiation", List.of("nuclearcraft:wasteland|200000", "minecraft:the_nether|1000"), o -> o instanceof ArrayList);
+                    .define("dimension_radiation", List.of("nuclearcraft:wasteland|50000", "minecraft:the_nether|1000"), o -> o instanceof ArrayList);
 
             RADIATION_UPDATE_INTERVAL = builder
-                    .comment("Interval between radiation updates in ticks. 20 ticks = 1 second.", "Bigger interval - less lag, but less accurate radiation spread.")
+                    .comment("Interval between radiation updates in ticks. 20 ticks = 1 second.", "Bigger interval - less lag, but less accurate radiation decay.")
                     .defineInRange("update_interval", 40, 2, 1000);
 
             MEKANISM_RADIATION_INTEGRATION = builder

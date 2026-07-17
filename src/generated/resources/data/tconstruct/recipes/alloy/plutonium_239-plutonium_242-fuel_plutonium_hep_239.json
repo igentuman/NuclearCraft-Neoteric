@@ -1,0 +1,45 @@
+{
+  "type": "tconstruct:alloy",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:plutonium/239"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:plutonium/242"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:fuel_plutonium_hep_239"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "amount": 90,
+      "tag": "forge:plutonium/239"
+    },
+    {
+      "amount": 180,
+      "tag": "forge:plutonium/242"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "tag": "forge:fuel_plutonium_hep_239"
+  },
+  "temperature": 800
+}

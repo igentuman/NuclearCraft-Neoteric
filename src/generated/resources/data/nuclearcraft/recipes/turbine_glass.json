@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_turbine",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:turbine_casing"
+    },
+    {
+      "tag": "forge:glass"
+    }
+  ],
+  "result": {
+    "item": "nuclearcraft:turbine_glass"
+  }
+}

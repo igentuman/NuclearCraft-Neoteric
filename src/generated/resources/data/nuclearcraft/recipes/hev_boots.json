@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "nuclearcraft:lithium_ion_cell"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:hev_boots"
-  }
+  },
+  "show_notification": true
 }

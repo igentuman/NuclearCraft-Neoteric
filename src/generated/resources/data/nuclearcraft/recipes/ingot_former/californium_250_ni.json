@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:californium_250_ni"
+      "amount": 90,
+      "tag": "forge:californium/250_ni"
     }
   ],
   "output": [

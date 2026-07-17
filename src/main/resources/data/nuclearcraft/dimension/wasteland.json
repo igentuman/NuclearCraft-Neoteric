@@ -1,11 +1,65 @@
 {
-  "type": "nuclearcraft:wasteland",
-  "generator": {
-    "type": "nuclearcraft:wasteland_chunkgen",
-    "settings": {
-      "base": 65,
-      "verticalvariance": 10,
-      "horizontalvariance": 8
+  "forge:conditions": [
+    {
+      "type": "nuclearcraft:wasteland_enabled"
     }
+  ],
+  "type": "nuclearcraft:wasteland_type",
+  "generator": {
+    "type": "minecraft:noise",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "nuclearcraft:wasteland",
+          "parameters": {
+            "continentalness": 0.0,
+            "depth": 0.0,
+            "erosion": 0.0,
+            "humidity": 0.0,
+            "offset": 0.0,
+            "temperature": 1.2,
+            "weirdness": 0.0
+          }
+        },
+        {
+          "biome": "minecraft:desert",
+          "parameters": {
+            "continentalness": 0.0,
+            "depth": 0.0,
+            "erosion": 0.2,
+            "humidity": 0.2,
+            "offset": 0.0,
+            "temperature": 1.9,
+            "weirdness": 0.0
+          }
+        },
+        {
+          "biome": "nuclearcraft:wasteland",
+          "parameters": {
+            "continentalness": 0.1,
+            "depth": 0.0,
+            "erosion": 0.1,
+            "humidity": 0.6,
+            "offset": 0.0,
+            "temperature": 1.3,
+            "weirdness": 0.0
+          }
+        },
+        {
+          "biome": "nuclearcraft:wasteland",
+          "parameters": {
+            "continentalness": 0.2,
+            "depth": 0.0,
+            "erosion": 0.1,
+            "humidity": 0.3,
+            "offset": 0.0,
+            "temperature": 2.0,
+            "weirdness": 0.0
+          }
+        }
+      ]
+    },
+    "settings": "nuclearcraft:custom_overworld"
   }
 }

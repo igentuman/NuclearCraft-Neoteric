@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "nuclearcraft_ingots",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:xenorium_298"
+    },
+    {
+      "item": "nuclearcraft:xenorium_298"
+    },
+    {
+      "item": "nuclearcraft:xenorium_298"
+    },
+    {
+      "item": "nuclearcraft:xenorium_298"
+    },
+    {
+      "item": "nuclearcraft:xenorium_298"
+    },
+    {
+      "item": "nuclearcraft:xenorium_298"
+    },
+    {
+      "item": "nuclearcraft:xenorium_298"
+    },
+    {
+      "item": "nuclearcraft:xenorium_298"
+    },
+    {
+      "item": "nuclearcraft:xenorium_298"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "item": "nuclearcraft:fuel_xenorium_xen_298"
+  }
+}

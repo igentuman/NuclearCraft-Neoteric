@@ -6,23 +6,15 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
 
-import java.util.List;
+public class IsotopeSeparatorBE extends NCProcessorBE {
 
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
-
-public class IsotopeSeparatorBE extends NCProcessorBE<IsotopeSeparatorBE.Recipe> {
     public IsotopeSeparatorBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.ISOTOPE_SEPARATOR);
-    }
-    @Override
-    public String getName() {
-        return Processors.ISOTOPE_SEPARATOR;
+        particle1 = ParticleTypes.HAPPY_VILLAGER;
     }
 
     @NothingNullByDefault

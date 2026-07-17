@@ -1,0 +1,25 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:potassium_hydroxide"
+      }
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:dusts/potassium_hydroxide"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:potassium_hydroxide"
+  },
+  "temperature": 500,
+  "time": 20
+}

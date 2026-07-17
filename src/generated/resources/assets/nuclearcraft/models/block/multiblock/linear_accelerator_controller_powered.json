@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/multiblock/linear_accelerator_controller",
+  "textures": {
+    "north": "nuclearcraft:block/accelerator/controller/linear_accelerator_controller_powered"
+  }
+}

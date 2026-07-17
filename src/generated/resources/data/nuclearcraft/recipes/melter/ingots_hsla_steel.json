@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:hsla_steel"
+      "amount": 90,
+      "tag": "forge:molten_hsla_steel"
     }
   ],
   "powerModifier": 1.0,

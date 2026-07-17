@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fission",
+  "key": {
+    "L": {
+      "tag": "forge:plates/thermoconducting"
+    },
+    "M": {
+      "item": "nuclearcraft:chassis"
+    },
+    "P": {
+      "tag": "forge:plates/copper"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "PMP",
+    "LPL"
+  ],
+  "result": {
+    "item": "nuclearcraft:heat_exchanger"
+  },
+  "show_notification": true
+}

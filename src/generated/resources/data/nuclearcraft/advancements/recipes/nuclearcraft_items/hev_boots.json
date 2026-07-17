@@ -30,5 +30,6 @@
     "recipes": [
       "nuclearcraft:hev_boots"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

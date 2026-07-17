@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 216,
-      "tag": "forge:zircaloy"
+      "amount": 120,
+      "tag": "forge:molten_zircaloy"
     }
   ],
   "powerModifier": 1.0,

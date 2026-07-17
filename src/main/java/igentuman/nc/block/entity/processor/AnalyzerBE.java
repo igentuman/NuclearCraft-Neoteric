@@ -1,35 +1,35 @@
 package igentuman.nc.block.entity.processor;
 
 import igentuman.nc.content.processors.Processors;
-import igentuman.nc.handler.OreVeinProvider;
+import igentuman.nc.item.CrystalAnalysis;
+import igentuman.nc.item.ResoniteCrystalItem;
+import igentuman.nc.setup.registration.NCItems;
+import igentuman.nc.util.insitu_leaching.OreVeinProvider;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
-
 import java.util.HashMap;
 
 import static net.minecraft.world.item.Items.FILLED_MAP;
 import static net.minecraft.world.item.Items.PAPER;
 
-public class AnalyzerBE extends NCProcessorBE<AnalyzerBE.Recipe> {
-    public AnalyzerBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, Processors.ANALYZER);
-    }
+public class AnalyzerBE extends NCProcessorBE {
+
     public HashMap<Long, OreVeinRecipe> veinsCache = new HashMap<>();
     private BlockPos alreadySearched;
 
-    @Override
-    public String getName() {
-        return Processors.ANALYZER;
+    public AnalyzerBE(BlockPos pPos, BlockState pBlockState) {
+        super(pPos, pBlockState, Processors.ANALYZER);
+        particle1 = ParticleTypes.WAX_OFF;
     }
 
     @NothingNullByDefault
@@ -56,14 +56,32 @@ public class AnalyzerBE extends NCProcessorBE<AnalyzerBE.Recipe> {
     }
 
 
-    protected void handleRecipeOutput() {
+    public void handleRecipeOutput() {
         if (hasRecipe() && recipeInfo.isCompleted()) {
             handleChunkAnalyzeWithPaper();
             handleMapAnalyze();
+            if(contentHandler().itemHandler.getStackInSlot(1).isEmpty()) {
+                handleCrystalAnalyze();
+            }
             if (recipe.handleOutputs(contentHandler)) {
                 recipeInfo.clear();
             } else {
                 recipeInfo.stuck = true;
+            }
+        }
+    }
+
+    // Rolls rarity + buff onto the output crystal. Re-analysing an already-analyzed crystal preserves
+    // its NBT instead of rerolling, so feeding one back in never destroys an existing artifact.
+    private void handleCrystalAnalyze() {
+        if (recipe.getInputIngredient(0).test(new ItemStack(NCItems.RESONITE_CRYSTAL.get()))) {
+            ItemStack input = contentHandler.itemHandler.holdedInputs.get(0);
+            for (ItemStack output : recipe.getResultItems()) {
+                if (ResoniteCrystalItem.isAnalyzed(input)) {
+                    output.setTag(input.getOrCreateTag().copy());
+                } else {
+                    CrystalAnalysis.applyAnalysis(output, level.random);
+                }
             }
         }
     }

@@ -1,0 +1,25 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:molten_tough_alloy"
+      }
+    }
+  ],
+  "ingredient": {
+    "tag": "forge:dusts/tough_alloy"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:molten_tough_alloy"
+  },
+  "temperature": 800,
+  "time": 40
+}

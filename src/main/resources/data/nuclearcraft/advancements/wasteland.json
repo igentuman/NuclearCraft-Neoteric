@@ -1,0 +1,34 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:wasteland_earth"
+    },
+    "title": {
+      "translate": "advancement.nc.wasteland"
+    },
+    "description": {
+      "translate": "advancement.nc.wasteland.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:root",
+  "criteria": {
+    "in_wasteland": {
+      "trigger": "minecraft:changed_dimension",
+      "conditions": {
+        "to": "nuclearcraft:wasteland"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "in_wasteland"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

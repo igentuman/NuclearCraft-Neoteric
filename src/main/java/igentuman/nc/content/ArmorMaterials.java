@@ -1,6 +1,5 @@
 package igentuman.nc.content;
 
-import igentuman.nc.setup.registration.NCItems;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.LazyLoadedValue;
@@ -10,15 +9,16 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
-import static igentuman.nc.setup.registration.NCItems.NC_SHIELDING;
+import static igentuman.nc.setup.registration.NCItems.*;
+import static igentuman.nc.setup.registration.Tags.forgeIngot;
 
 public enum ArmorMaterials implements ArmorMaterial {
+
    HAZMAT(MODID+":hazmat", 5, new int[]{1, 2, 3, 1}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> {
-      return Ingredient.of(NCItems.NC_ITEMS.get("bioplastic").get());
+      return Ingredient.of(NC_PARTS.get("bioplastic").get());
    }),
    TOUGH(MODID+":tough", 33, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_DIAMOND, 3.5F, 0.2F, () -> {
-      return Ingredient.of(NC_INGOTS.get("tough_alloy").get());
+      return Ingredient.of(forgeIngot("tough_alloy"));
    }),
    HEV(MODID+":hev", 37, new int[]{3, 5, 7, 3}, 25, SoundEvents.ARMOR_EQUIP_NETHERITE, 4.0F, 0.3F, () -> {
       return Ingredient.of(NC_SHIELDING.get("dps").get());

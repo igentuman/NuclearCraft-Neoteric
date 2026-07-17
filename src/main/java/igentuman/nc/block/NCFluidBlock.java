@@ -13,6 +13,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -107,6 +108,20 @@ public class NCFluidBlock extends LiquidBlock
 
 	public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
 		super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
+		if(!pLevel.isClientSide()
+				&& pState.getFluidState().isSource()
+				&& entry.type().getId().getPath().equals("quantite_energy")) {
+			pLevel.explode(null,
+					pPos.getX() + 0.5, pPos.getY() + 0.5, pPos.getZ() + 0.5,
+					2.0F, Level.ExplosionInteraction.NONE);
+			for(BlockPos p : BlockPos.betweenClosed(pPos.offset(-2, -2, -2), pPos.offset(2, 2, 2))) {
+				if(pLevel.random.nextFloat() < 0.4F
+						&& pLevel.getBlockState(p).isAir()
+						&& Blocks.FIRE.defaultBlockState().canSurvive(pLevel, p)) {
+					pLevel.setBlock(p.immutable(), Blocks.FIRE.defaultBlockState(), 11);
+				}
+			}
+		}
 		if(pLevel.getFluidState(pPos).getFluidType().getDensity() == -1000) {
 			pLevel.setBlock(pPos, AIR.defaultBlockState(), 3);
 		}

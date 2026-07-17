@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:zinc"
+      "amount": 240,
+      "tag": "forge:molten_zinc"
     }
   ],
   "powerModifier": 1.0,

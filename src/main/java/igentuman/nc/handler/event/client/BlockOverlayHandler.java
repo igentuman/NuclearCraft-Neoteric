@@ -1,16 +1,16 @@
 package igentuman.nc.handler.event.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import igentuman.nc.block.ISizeToggable;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import igentuman.api.nc.SideModeToggleable;
+import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.block.entity.NuclearCraftBE;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.item.MultitoolItem;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
+import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.item.QNP;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
+import igentuman.nc.util.collection.HashList;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -40,18 +40,52 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.commons.lang3.tuple.Pair;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.mojang.math.Axis.XP;
+import static com.mojang.math.Axis.YP;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.item.QNP.getMode;
 import static igentuman.nc.util.AreaUtil.getArea;
+import static igentuman.nc.util.StackUtils.isMultiTool;
 
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class BlockOverlayHandler {
+
+    private static int outlineCooldown = 5;
+    private final static HashList<BlockPos> highlightsToRemove = new HashList<>();
+    private final static HashMap<Long, RenderBox> boxes = new HashMap<>();
+    public final static HashList<FissionControllerBE> reactors = new HashList<>();
+    private final static Set<MultiblockControllerBE> debugControllers = ConcurrentHashMap.newKeySet();
+
+    public static void registerDebugController(MultiblockControllerBE be) {
+        debugControllers.add(be);
+    }
+
+    public static void unregisterDebugController(MultiblockControllerBE be) {
+        debugControllers.remove(be);
+    }
+
+    public static Set<MultiblockControllerBE> getDebugControllers() {
+        return debugControllers;
+    }
+
+    public static boolean isDebugOverlayActive() {
+        Player p = Minecraft.getInstance().player;
+        if (p == null) return false;
+        if (!CommonConfig.MISC_CONFIG.DEBUG_LOG.get()) return false;
+        return isMultiTool(p.getMainHandItem()) || isMultiTool(p.getOffhandItem());
+    }
 
     public static void register(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(BlockOverlayHandler::blockOverlayEvent);
@@ -65,7 +99,7 @@ public class BlockOverlayHandler {
         if(e.getStage().equals(RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS)) {
             for(BlockPos pos: fusionReactors) {
                 if(true) continue; //disable for now
-                BlockEntity be = player.level.getBlockEntity(pos);
+                BlockEntity be = player.level().getBlockEntity(pos);
                 if(! (be instanceof FusionCoreBE)) continue;
                 FusionCoreBE fusionBe = (FusionCoreBE) be;
                 int size = fusionBe.size+2;
@@ -79,14 +113,34 @@ public class BlockOverlayHandler {
                 // drawBoundingBoxAtBlockPos(e.getPoseStack(), box4, 1, 0, 0.5f, 1, pos.above(), player.blockPosition());
             }
         }
+        if(!highlightsToRemove.isEmpty()) {
+            outlineCooldown--;
+            if (outlineCooldown < 1) {
+                outlineCooldown = 400;
+                for (BlockPos pos : highlightsToRemove) {
+                    outlineBlocks.remove(pos);
+                }
+                highlightsToRemove.clear();
+            }
+        }
         if(e.getStage().equals(RenderLevelStageEvent.Stage.AFTER_PARTICLES)) {
             gameRenderer.resetProjectionMatrix(e.getProjectionMatrix());
-            if (player.level.isClientSide) {
+            if (player.level().isClientSide) {
+                for (FissionControllerBE reactor : reactors) {
+                    //todo enable this later
+                    //renderFilledBox(e.getPoseStack(), reactor.getGlowAABB(), 0.1f, 0.6f, 0.7f, 0.2f, reactor.getBlockPos(), player.blockPosition());
+                }
+                for(RenderBox box: boxes.values()) {
+                    drawBoundingBoxAtBlockPos(e.getPoseStack(), box.boundingBox, box.red, box.green, box.blue, box.alpha, box.relative, player.blockPosition());
+                }
+                renderMultiblockDebugOverlays(e.getPoseStack(), player);
+                if (outlineBlocks.isEmpty()) return;
                 for (BlockPos pos: outlineBlocks) {
+                    if(pos.equals(BlockPos.ZERO)) continue;
                     AABB aabb = new AABB(0, 0,0,1,1,1);
                     drawBoundingBoxAtBlockPos(e.getPoseStack(), aabb, 1, 0, 0, 1, pos, player.blockPosition());
+                    highlightsToRemove.add(pos);
                 }
-
             }
         }
     }
@@ -100,12 +154,12 @@ public class BlockOverlayHandler {
     }
 
     private static void handleMultitool(RenderHighlightEvent.Block event, HitResult hit, ItemStack stackItem) {
-        if (hit.getType() == HitResult.Type.BLOCK && stackItem.getItem() instanceof MultitoolItem multitool) {
+        if (hit.getType() == HitResult.Type.BLOCK && isMultiTool(stackItem)) {
             BlockHitResult blockRayTraceResult = (BlockHitResult) hit;
             event.setCanceled(true);
             BlockPos blockPos = blockRayTraceResult.getBlockPos();
 
-            Level world = Minecraft.getInstance().player.level;
+            Level world = Minecraft.getInstance().player.level();
             BlockEntity be = world.getBlockEntity(blockPos);
             if(! (be instanceof NuclearCraftBE)) return;
             NuclearCraftBE ncBe = (NuclearCraftBE) be;
@@ -114,7 +168,7 @@ public class BlockOverlayHandler {
             if(Minecraft.getInstance().player.isShiftKeyDown()) {
                 hitSide = hitSide.getOpposite();
             }
-            ISizeToggable.SideMode mode = ncBe.sideConfig.get(hitSide.ordinal());
+            SideModeToggleable.SideMode mode = ncBe.sideConfig.get(hitSide.ordinal());
             if(mode == null) return;
             float[] color = new float[]{0, 1, 0};
             switch (mode) {
@@ -126,8 +180,8 @@ public class BlockOverlayHandler {
             PoseStack stack = new PoseStack();
             stack.pushPose();
             Camera info = event.getCamera();
-            stack.mulPose(Vector3f.XP.rotationDegrees(info.getXRot()));
-            stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
+            stack.mulPose(XP.rotationDegrees(info.getXRot()));
+            stack.mulPose(YP.rotationDegrees(info.getYRot() + 180));
             double d0 = info.getPosition().x();
             double d1 = info.getPosition().y();
             double d2 = info.getPosition().z();
@@ -153,14 +207,14 @@ public class BlockOverlayHandler {
             BlockHitResult blockRayTraceResult = (BlockHitResult) hit;
             event.setCanceled(true);
             QNP.Mode mode = getMode(stackItem);
-            Level world = Minecraft.getInstance().player.level;
+            Level world = Minecraft.getInstance().player.level();
             Pair<BlockPos, BlockPos> area = getArea(blockRayTraceResult.getBlockPos(), blockRayTraceResult.getDirection(),  mode.radius, mode.depth);
 
             PoseStack stack = new PoseStack();
             stack.pushPose();
             Camera info = event.getCamera();
-            stack.mulPose(Vector3f.XP.rotationDegrees(info.getXRot()));
-            stack.mulPose(Vector3f.YP.rotationDegrees(info.getYRot() + 180));
+            stack.mulPose(XP.rotationDegrees(info.getXRot()));
+            stack.mulPose(YP.rotationDegrees(info.getYRot() + 180));
             double d0 = info.getPosition().x();
             double d1 = info.getPosition().y();
             double d2 = info.getPosition().z();
@@ -185,8 +239,25 @@ public class BlockOverlayHandler {
             event.getEntity().startUsingItem(InteractionHand.OFF_HAND);
     }
 
-    public static List<BlockPos> outlineBlocks = new ArrayList<>();
-    public static List<BlockPos> fusionReactors = new ArrayList<>();
+    public static List<BlockPos> outlineBlocks = new CopyOnWriteArrayList<>();
+    public static List<BlockPos> fusionReactors = new CopyOnWriteArrayList<>();
+
+    private static void renderMultiblockDebugOverlays(PoseStack poseStack, Player player) {
+        if (!isDebugOverlayActive()) return;
+        BlockPos playerPos = player.blockPosition();
+        AABB unit = new AABB(0, 0, 0, 1, 1, 1);
+        for (MultiblockControllerBE be : debugControllers) {
+            if (be.isRemoved()) continue;
+            BlockPos bl = be.bottomLeft;
+            BlockPos tr = be.topRight;
+            if (bl == null || tr == null) continue;
+            if (bl.equals(BlockPos.ZERO) && tr.equals(BlockPos.ZERO)) continue;
+            drawBoundingBoxAtBlockPos(poseStack, unit, 0f, 1f, 0f, 1f, bl, playerPos);
+            drawBoundingBoxAtBlockPos(poseStack, unit, 0f, 0f, 1f, 1f, tr, playerPos);
+            AABB full = new AABB(bl.getX(), bl.getY(), bl.getZ(), tr.getX() + 1, tr.getY() + 1, tr.getZ() + 1);
+            drawBoundingBoxAtBlockPos(poseStack, full, 1f, 1f, 0f, 1f, BlockPos.ZERO, playerPos);
+        }
+    }
 
     public static void drawBoundingBoxAtBlockPos(PoseStack matrixStackIn, AABB aabbIn, float red, float green, float blue, float alpha, BlockPos pos, BlockPos aimed) {
         Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
@@ -223,6 +294,119 @@ public class BlockOverlayHandler {
         renderTypeBuffer.endBatch(RenderType.lines());
     }
 
+    public static void renderFilledBox(PoseStack poseStack, AABB box, float r, float g, float b, float alpha, BlockPos pos, BlockPos player) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+        // Get camera position for proper translation
+        Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        double camX = cam.x, camY = cam.y, camZ = cam.z;
+
+        // Push matrix to apply transformations
+        poseStack.pushPose();
+
+        // Important: Don't translate to the block position since the AABB already contains world coordinates
+        // Just translate relative to camera
+        poseStack.translate(-camX, -camY, -camZ);
+
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder buffer = tesselator.getBuilder();
+
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+
+        Matrix4f matrix = poseStack.last().pose();
+
+        // Use the box coordinates directly - they're already in world space
+        float x1 = (float) box.minX;
+        float y1 = (float) box.minY;
+        float z1 = (float) box.minZ;
+        float x2 = (float) box.maxX;
+        float y2 = (float) box.maxY;
+        float z2 = (float) box.maxZ;
+
+        // Bottom face
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, alpha).endVertex();
+
+        // Top face
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, alpha).endVertex();
+
+        // North
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, alpha).endVertex();
+
+        // South
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, alpha).endVertex();
+
+        // West
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha).endVertex();
+
+        // East
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha).endVertex();
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, alpha).endVertex();
+
+        tesselator.end();
+
+        // Pop the matrix stack to restore previous state
+        poseStack.popPose();
+        RenderSystem.disableBlend();
+    }
+
+    public static void removeFromOutline(BlockPosInstance pos, boolean instant) {
+        if (instant) {
+            outlineBlocks.remove(pos);
+        } else {
+            removeFromOutline(pos);
+        }
+    }
+
+    public static void removeBoxFromOutline(BlockPos blockPos) {
+        if (boxes.containsKey(blockPos.asLong())) {
+            boxes.remove(blockPos.asLong());
+        }
+    }
+
+    private static class RenderBox {
+        public final AABB boundingBox;
+        public final float red;
+        public final float green;
+        public final float blue;
+        public final float alpha;
+        public final BlockPos relative;
+
+        public RenderBox(AABB boundingBox, float red, float green, float blue, float alpha, BlockPos relative) {
+            this.boundingBox = boundingBox;
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
+            this.alpha = alpha;
+            this.relative = relative;
+        }
+    }
+
+    public static void addBoxToOutline(AABB boundingBox, float v, float v1, float v2, float v3, BlockPos pos) {
+        if(boxes.containsKey(pos.asLong())) {
+            return; // already added
+        }
+        boxes.put(pos.asLong(), new RenderBox(boundingBox, v, v1, v2, v3, pos));
+    }
+
     public void addQuad(Matrix4f matrixPos, Matrix3f matrixNormal, VertexConsumer renderBuffer,
                         Vector3f blpos, Vector3f brpos, Vector3f trpos, Vector3f tlpos,
                         Vec2 blUVpos, Vec2 brUVpos, Vec2 trUVpos, Vec2 tlUVpos,
@@ -257,15 +441,16 @@ public class BlockOverlayHandler {
         }
     }
 
-    public static void addToOutline(NCBlockPos ncBlockPos) {
-        if(!outlineBlocks.contains(ncBlockPos)) {
-            outlineBlocks.add(ncBlockPos);
+    public static void addToOutline(BlockPosInstance blockPosInstance) {
+        if(!outlineBlocks.contains(blockPosInstance)) {
+            outlineBlocks.add(blockPosInstance);
+            highlightsToRemove.remove(blockPosInstance);
         }
     }
 
-    public static void removeFromOutline(NCBlockPos ncBlockPos) {
-        if(outlineBlocks.contains(ncBlockPos)) {
-            outlineBlocks.remove(ncBlockPos);
+    public static void removeFromOutline(BlockPosInstance blockPosInstance) {
+        if(!highlightsToRemove.contains(blockPosInstance)) {
+            highlightsToRemove.add(blockPosInstance);
         }
     }
 }

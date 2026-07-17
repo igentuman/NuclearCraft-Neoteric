@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_nether",
+  "features": "nuclearcraft:glowing_mushroom_placed",
+  "step": "underground_decoration"
+}

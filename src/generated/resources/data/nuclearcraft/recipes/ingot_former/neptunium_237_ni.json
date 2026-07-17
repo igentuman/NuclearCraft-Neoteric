@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:neptunium_237_ni"
+      "amount": 90,
+      "tag": "forge:neptunium/237_ni"
     }
   ],
   "output": [

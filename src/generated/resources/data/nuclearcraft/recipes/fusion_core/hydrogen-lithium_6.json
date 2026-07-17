@@ -6,7 +6,7 @@
       "tag": "forge:hydrogen"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:lithium/6"
     }
   ],
@@ -28,7 +28,7 @@
       "tag": "forge:helium"
     }
   ],
-  "powerModifier": 135100.0,
+  "powerModifier": 270200.0,
   "radiation": 1.5,
   "temperature": 7278.0,
   "timeModifier": 35.0

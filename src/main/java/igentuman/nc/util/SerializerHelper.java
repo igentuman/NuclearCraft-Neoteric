@@ -16,6 +16,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
+import static igentuman.nc.util.NcUtils.rlFromString;
+
 
 @NothingNullByDefault
 public class SerializerHelper {
@@ -110,7 +112,7 @@ public class SerializerHelper {
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
-        ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(json, "fluid"));
+        ResourceLocation resourceLocation = rlFromString(GsonHelper.getAsString(json, "fluid"));
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourceLocation);
         if (fluid == null || fluid == Fluids.EMPTY) {
             throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");

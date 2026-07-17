@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:empty_cooler"
+    },
+    "I": {
+      "tag": "forge:dusts/end_stone"
+    }
+  },
+  "pattern": [
+    " I ",
+    "IBI",
+    " I "
+  ],
+  "result": {
+    "item": "nuclearcraft:end_stone_cooler"
+  },
+  "show_notification": true
+}

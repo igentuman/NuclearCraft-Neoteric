@@ -41,11 +41,12 @@ public class TurbineConfig {
     }
 
     public static class TurbineConf {
-        public ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
-        public ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
-        public ForgeConfigSpec.ConfigValue<Integer> ENERGY_GEN;
-        public ForgeConfigSpec.ConfigValue<Integer> BLADE_FLOW;
-        public ForgeConfigSpec.ConfigValue<List<Double>> EFFICIENCY;
+        public final ForgeConfigSpec.ConfigValue<Integer> MIN_SIZE;
+        public final ForgeConfigSpec.ConfigValue<Integer> MAX_SIZE;
+        public final ForgeConfigSpec.ConfigValue<Double> ENERGY_GEN;
+        public final ForgeConfigSpec.ConfigValue<Double> KINETIC_ENERGY_CONVERTION;
+        public final ForgeConfigSpec.ConfigValue<Integer> BLADE_FLOW;
+        public final ForgeConfigSpec.ConfigValue<List<Double>> EFFICIENCY;
         public HashMap<String, ForgeConfigSpec.ConfigValue<List<String>>> PLACEMENT_RULES = new HashMap<>();
 
         public TurbineConf(ForgeConfigSpec.Builder builder) {
@@ -57,15 +58,19 @@ public class TurbineConfig {
 
             MAX_SIZE = builder
                     .comment("Multiblock max size.")
-                    .defineInRange("max_size", 24, 5, 25);
+                    .defineInRange("max_size", 17, 5, 25);
 
             BLADE_FLOW = builder
                     .comment("Steam flow per blade mB/t")
                     .defineInRange("blade_flow", 2000, 100, 1000000);
 
             ENERGY_GEN = builder
-                    .comment("Energy gen per mB of steam")
-                    .defineInRange("energy_gen", 1, 1, 1000000);
+                    .comment("Energy gen multiplier")
+                    .defineInRange("energy_gen", 10D, 1D, 1000000D);
+
+            KINETIC_ENERGY_CONVERTION = builder
+                    .comment("Create energy convertion rate")
+                    .defineInRange("create_energy_convertion", 0.2D, 0.01D, 2D);
 
             EFFICIENCY = builder
                     .comment("Efficiency %: " + String.join(", ", TurbineRegistration.initialEfficiency().keySet()))
@@ -97,12 +102,12 @@ public class TurbineConfig {
     }
 
     public static class EnergyGenerationConfig {
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_RTG;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> RTG_GENERATION;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> RTG_RADIATION;
-        public ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
+        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_SOLAR_PANELS;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> SOLAR_PANELS_GENERATION;
+        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_RTG;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> RTG_GENERATION;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> RTG_RADIATION;
+        public final ForgeConfigSpec.ConfigValue<Integer> STEAM_TURBINE;
 
 
         public EnergyGenerationConfig(ForgeConfigSpec.Builder builder) {
@@ -137,8 +142,8 @@ public class TurbineConfig {
     }
 
     public static class StorageBlocksConfig {
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_BARREL;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> BARREL_CAPACITY;
+        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_BARREL;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> BARREL_CAPACITY;
 
         public StorageBlocksConfig(ForgeConfigSpec.Builder builder) {
             builder.push("storage_blocks")
@@ -162,11 +167,11 @@ public class TurbineConfig {
     }
 
     public static class EnergyStorageConfig {
-        public ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_ENERGY_BLOCK;
-        public ForgeConfigSpec.ConfigValue<List<Integer>> ENERGY_BLOCK_STORAGE;
-        public ForgeConfigSpec.ConfigValue<Integer> LITHIUM_ION_BATTERY_STORAGE;
-        public ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_STORAGE;
-        public ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_PER_BLOCK;
+        public final ForgeConfigSpec.ConfigValue<List<Boolean>> REGISTER_ENERGY_BLOCK;
+        public final ForgeConfigSpec.ConfigValue<List<Integer>> ENERGY_BLOCK_STORAGE;
+        public final ForgeConfigSpec.ConfigValue<Integer> LITHIUM_ION_BATTERY_STORAGE;
+        public final ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_STORAGE;
+        public final ForgeConfigSpec.ConfigValue<Integer> QNP_ENERGY_PER_BLOCK;
 
         public EnergyStorageConfig(ForgeConfigSpec.Builder builder) {
             builder.push("energy_storage");

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": [
+    {
+      "tag": "forge:dyes/blue"
+    }
+  ],
+  "output": [
+    {
+      "tag": "forge:dyes/blue"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:electrum"
+      "amount": 90,
+      "tag": "forge:molten_electrum"
     }
   ],
   "powerModifier": 1.0,

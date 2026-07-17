@@ -7,6 +7,7 @@ import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import static net.minecraft.world.item.Items.BARRIER;
 @NothingNullByDefault
 public abstract class NcRecipe extends AbstractRecipe {
 
-    public final double rarityModifier;
+    public double rarityModifier;
 
     public NcRecipe(
             ResourceLocation id,
@@ -71,9 +72,13 @@ public abstract class NcRecipe extends AbstractRecipe {
             this(id, new ItemStackIngredient[0], new ItemStackIngredient[0], inputFluids, outputFluids, timeModifier, powerModifier, radiationModifier, rarityModifier);
     }
 
-    protected ItemStackIngredient getBarrier()
+    public NcRecipe(ResourceLocation id) {
+        super(id);
+    }
+
+    public static ItemStackIngredient getBarrier()
     {
-        return IngredientCreatorAccess.item().from(BARRIER);
+        return IngredientCreatorAccess.item().from(new ItemStack(BARRIER));
     }
 
     protected FluidStackIngredient getEmptyFluid()
@@ -83,10 +88,9 @@ public abstract class NcRecipe extends AbstractRecipe {
 
     @Override
     public void write(FriendlyByteBuf buffer) {
-
         buffer.writeInt(inputItems.length);
         for (ItemStackIngredient input : inputItems) {
-            if(input == null) {
+            if(input == null || input.getRepresentations().isEmpty()) {
                 input = getBarrier();
             }
             input.write(buffer);
@@ -94,7 +98,7 @@ public abstract class NcRecipe extends AbstractRecipe {
 
         buffer.writeInt(outputItems.length);
         for (ItemStackIngredient output : outputItems) {
-            if(output == null) {
+            if(output == null || output.getRepresentations().isEmpty()) {
                 output = getBarrier();
             }
             output.write(buffer);

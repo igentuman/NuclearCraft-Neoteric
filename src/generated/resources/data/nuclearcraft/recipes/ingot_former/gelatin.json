@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:gelatin"
+      "amount": 90,
+      "tag": "forge:gelatin"
     }
   ],
   "output": [

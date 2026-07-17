@@ -1,0 +1,65 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "q36_flash",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "auxtargets": [
+        {
+          "name": "DepthSampler",
+          "id": "minecraft:main:depth"
+        }
+      ],
+      "uniforms": [
+        {
+          "name": "BlurPos",
+          "values": [ 500.0, 500.0 ]
+        },
+        {
+          "name": "BlurDir",
+          "values": [ 1.0, 0.0 ]
+        },
+        {
+          "name": "Radius",
+          "values": [ 5.0, 10.0 ]
+        },
+        {
+          "name": "BlackHoleDepth",
+          "values": [ 1.0 ]
+        }
+      ]
+    },
+    {
+      "name": "q36_flash",
+      "intarget": "swap",
+      "outtarget": "minecraft:main",
+      "auxtargets": [
+        {
+          "name": "DepthSampler",
+          "id": "minecraft:main:depth"
+        }
+      ],
+      "uniforms": [
+        {
+          "name": "BlurDir",
+          "values": [ 0.0, 1.0 ]
+        },
+        {
+          "name": "BlurPos",
+          "values": [ 500.0, 500.0 ]
+        },
+        {
+          "name": "Radius",
+          "values": [ 5.0, 10.0 ]
+        },
+        {
+          "name": "BlackHoleDepth",
+          "values": [ 1.0 ]
+        }
+      ]
+    }
+  ]
+}

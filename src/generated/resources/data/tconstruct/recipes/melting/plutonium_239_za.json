@@ -1,0 +1,25 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:plutonium/239_za"
+      }
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:plutonium_239_za"
+  },
+  "result": {
+    "amount": 90,
+    "tag": "forge:plutonium/239_za"
+  },
+  "temperature": 700,
+  "time": 30
+}

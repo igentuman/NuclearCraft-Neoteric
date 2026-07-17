@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:manufactory"
+    },
+    "title": {
+      "translate": "advancement.nc.manufactory"
+    },
+    "description": {
+      "translate": "advancement.nc.manufactory.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:root",
+  "criteria": {
+    "manufactory": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:manufactory"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "manufactory"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

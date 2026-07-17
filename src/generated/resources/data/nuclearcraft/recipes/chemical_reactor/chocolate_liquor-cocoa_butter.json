@@ -2,17 +2,17 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 72,
+      "amount": 45,
       "tag": "forge:chocolate_liquor"
     },
     {
-      "amount": 72,
+      "amount": 45,
       "tag": "forge:cocoa_butter"
     }
   ],
   "outputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:unsweetened_chocolate"
     }
   ],

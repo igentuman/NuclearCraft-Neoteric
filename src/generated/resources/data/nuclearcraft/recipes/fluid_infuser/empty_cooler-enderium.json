@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "input": [
+    {
+      "item": "nuclearcraft:empty_cooler"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 576,
+      "tag": "forge:enderium"
+    }
+  ],
+  "output": [
+    {
+      "item": "nuclearcraft:enderium_cooler"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

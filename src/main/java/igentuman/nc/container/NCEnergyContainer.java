@@ -23,34 +23,34 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.util.TextUtils.__;
 
 public class NCEnergyContainer extends AbstractContainerMenu {
+
     protected NCProcessorBE blockEntity;
     protected Player playerEntity;
     protected IItemHandler playerInventory;
-
-    public ProcessorPrefab getProcessor() {
-        return processor;
-    }
-
     protected ProcessorPrefab processor;
-
     public int slotIndex = 0;
-
     protected String name;
+
     public NCEnergyContainer(@Nullable MenuType<?> pMenuType, int pContainerId) {
         super(pMenuType, pContainerId);
     }
 
     public NCEnergyContainer(int windowId, BlockPos pos, Inventory playerInventory, Player player, String name) {
         this(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), windowId);
-        blockEntity = (NCProcessorBE) player.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (NCProcessorBE) player.getCommandSenderWorld().getExistingBlockEntity(pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
         this.name = name;
         this.processor = Processors.all().get(name);
         processorSlots();
         layoutPlayerInventorySlots();
+    }
+
+    public ProcessorPrefab getProcessor() {
+        return processor;
     }
 
     private void processorSlots() {
@@ -121,10 +121,8 @@ public class NCEnergyContainer extends AbstractContainerMenu {
 
             slot.onTake(pPlayer, stack);
         }
-
         return itemstack;
     }
-
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
@@ -140,7 +138,6 @@ public class NCEnergyContainer extends AbstractContainerMenu {
             y += dy;
         }
     }
-
 
     protected void layoutPlayerInventorySlots() {
         int leftCol = 10;
@@ -162,7 +159,7 @@ public class NCEnergyContainer extends AbstractContainerMenu {
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public IEnergyStorage getEnergy() {

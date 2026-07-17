@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:berkelium_248_za"
+      "amount": 90,
+      "tag": "forge:berkelium/248_za"
     }
   ],
   "output": [

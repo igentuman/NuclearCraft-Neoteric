@@ -1,7 +1,6 @@
 package igentuman.nc.compat.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.compat.jei.util.TickTimer;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
@@ -27,7 +26,11 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
+import static igentuman.nc.util.TextUtils.__;
+import static net.minecraft.world.item.Items.*;
 
+@SuppressWarnings("removal")
 public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRecipeCategory<T> {
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(MODID, "textures/gui/processor_jei.png");
@@ -46,9 +49,9 @@ public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRe
         this.guiHelper = guiHelper;
         this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 136, 45);
         if(CATALYSTS.containsKey(getRecipeType().getUid().getPath())) {
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, CATALYSTS.get(getRecipeType().getUid().getPath()).get(0));
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(FUSION_BLOCKS.get("fusion_core").get()));
         } else{
-            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
+            this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BARRIER));
         }
     }
 
@@ -59,7 +62,7 @@ public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRe
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("nc_jei_cat."+getRecipeType().getUid().getPath());
+        return __("nc_jei_cat."+getRecipeType().getUid().getPath());
     }
 
     @Override
@@ -92,10 +95,10 @@ public class FusionCategoryWrapper<T extends FusionCoreBE.Recipe> implements IRe
     public @NotNull List<Component> getTooltipStrings(T recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         List<Component> lines = new ArrayList<>();
         if(mouseX > 34 && mouseX < 76 && mouseY > 16 && mouseY < 32) {
-            lines.add(Component.translatable("fusion_core.recipe.duration", (int)recipe.getTimeModifier()).withStyle(ChatFormatting.AQUA));
-            lines.add(Component.translatable("fusion_core.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
-            lines.add(Component.translatable("fusion_core.recipe.radiation", recipe.getRadiation()*1000).withStyle(ChatFormatting.GREEN));
-            lines.add(Component.translatable("fusion_core.recipe.temperature", (int)recipe.getOptimalTemperature()).withStyle(ChatFormatting.GOLD));
+            lines.add(__("fusion_core.recipe.duration", (int)recipe.getTimeModifier()).withStyle(ChatFormatting.AQUA));
+            lines.add(__("fusion_core.recipe.power", (int)recipe.getEnergy()).withStyle(ChatFormatting.RED));
+            lines.add(__("fusion_core.recipe.radiation", recipe.getRadiation()*1000).withStyle(ChatFormatting.GREEN));
+            lines.add(__("fusion_core.recipe.temperature", (int)recipe.getOptimalTemperature()).withStyle(ChatFormatting.GOLD));
         }
         return lines;
     }

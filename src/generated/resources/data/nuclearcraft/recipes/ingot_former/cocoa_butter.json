@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:cocoa_butter"
+      "amount": 90,
+      "tag": "forge:cocoa_butter"
     }
   ],
   "output": [

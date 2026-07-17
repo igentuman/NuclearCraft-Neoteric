@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.1,
+  "energyReleased": 764,
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:helium_3"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 10000000,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "neutron"
+    }
+  ],
+  "maxEnergy": 18000,
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "triton"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

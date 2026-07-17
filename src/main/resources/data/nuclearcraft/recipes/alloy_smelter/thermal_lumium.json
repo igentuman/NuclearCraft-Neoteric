@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "thermal_expansion"
+        }
+      ],
+      "recipe": {
+        "type": "nuclearcraft:alloy_smelter",
+        "input": [
+          {
+            "tag": "forge:ingots/tin_silver"
+          },
+          {
+            "tag": "forge:dusts/glowstone"
+          }
+        ],
+        "output": [
+          {
+            "count": 2,
+            "item": "thermal:lumium_ingot"
+          }
+        ],
+        "powerModifier": 2.0,
+        "radiation": 1.0,
+        "timeModifier": 4.0
+      }
+    }
+  ]
+}

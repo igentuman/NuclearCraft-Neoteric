@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.25,
+  "energyReleased": 0,
+  "input": [
+    {
+      "tag": "forge:ingots/lead"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 4000000,
+      "focus": 1.0,
+      "meanEnergy": 200000,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 600000,
+  "output": [
+    {
+      "item": "nuclearcraft:light_spallation_waste"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

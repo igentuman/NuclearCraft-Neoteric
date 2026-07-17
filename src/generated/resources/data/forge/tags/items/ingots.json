@@ -33,6 +33,7 @@
     "nuclearcraft:tough_alloy_ingot",
     "nuclearcraft:steel_ingot",
     "nuclearcraft:potassium_ingot",
+    "nuclearcraft:neutronium_ingot",
     "nuclearcraft:ferroboron_ingot",
     "nuclearcraft:titanium_ingot",
     "nuclearcraft:super_alloy_ingot",
@@ -40,6 +41,7 @@
     "nuclearcraft:aluminum_ingot",
     "nuclearcraft:manganese_ingot",
     "nuclearcraft:sic_sic_cmc_ingot",
+    "nuclearcraft:iridium_ingot",
     "nuclearcraft:hard_carbon_ingot",
     "nuclearcraft:niobium_ingot",
     "nuclearcraft:zirconium_ingot",
@@ -56,6 +58,7 @@
     "nuclearcraft:nichrome_ingot",
     "nuclearcraft:boron_ingot",
     "nuclearcraft:magnesium_diboride_ingot",
+    "nuclearcraft:baratol_ingot",
     "nuclearcraft:hafnium_ingot"
   ]
 }

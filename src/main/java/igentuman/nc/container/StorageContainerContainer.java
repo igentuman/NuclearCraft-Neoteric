@@ -1,6 +1,9 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.ContainerBE;
+import igentuman.nc.block.storage.entity.ContainerBE;
+import igentuman.nc.handler.storage.UuidBackedItemHandler;
+import igentuman.nc.handler.storage.UuidBackedSlot;
+import igentuman.nc.item.ContainerBlockItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -8,17 +11,16 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_CONTAINER;
 
 public class StorageContainerContainer<T extends AbstractContainerMenu> extends AbstractContainerMenu {
+
    private final ContainerBE blockEntity;
    private final Player playerEntity;
    private final IItemHandler playerInventory;
    private final IItemHandler containerInventory;
-
 
    public StorageContainerContainer(int pContainerId, BlockPos pos, Inventory pPlayerInventory) {
       super(STORAGE_CONTAINER.get(), pContainerId);
@@ -38,7 +40,7 @@ public class StorageContainerContainer<T extends AbstractContainerMenu> extends 
          for(int l = 0; l < j; ++l) {
             x = 5 + l * 18;
             y = 5 + k * 18;
-            this.addSlot(new SlotItemHandler(containerInventory, idx++, x, y));
+            this.addSlot(new UuidBackedSlot((UuidBackedItemHandler) containerInventory, idx++, x, y));
          }
       }
       int xShift = 5;
@@ -46,13 +48,13 @@ public class StorageContainerContainer<T extends AbstractContainerMenu> extends 
          case 12 -> xShift = 32;
          case 13 -> xShift = 41;
       }
-      y += 24;
+      y += 23;
       for(int i1 = 0; i1 < 3; ++i1) {
          for(int k1 = 0; k1 < 9; ++k1) {
             this.addSlot(new Slot(pPlayerInventory, k1 + i1 * 9 + 9, xShift + k1 * 18, y + i1 * 18));
          }
       }
-      y += 18*3+2;
+      y += 18*3+4;
       for(int j1 = 0; j1 < 9; ++j1) {
          this.addSlot(new Slot(pPlayerInventory, j1, xShift + j1 * 18, y));
       }
@@ -71,7 +73,7 @@ public class StorageContainerContainer<T extends AbstractContainerMenu> extends 
     * Determines whether supplied player can use this container
     */
    public boolean stillValid(Player pPlayer) {
-      return true;
+      return pPlayer.getOnPos().distSqr(blockEntity.getBlockPos()) <= 64.0D;
    }
 
    /**
@@ -88,8 +90,13 @@ public class StorageContainerContainer<T extends AbstractContainerMenu> extends 
             if (!this.moveItemStackTo(itemstack1, this.containerInventory.getSlots(), this.slots.size(), true)) {
                return ItemStack.EMPTY;
             }
-         } else if (!this.moveItemStackTo(itemstack1, 0, this.containerInventory.getSlots(), false)) {
-            return ItemStack.EMPTY;
+         } else {
+            if (itemstack1.getItem() instanceof ContainerBlockItem) {
+               return ItemStack.EMPTY;
+            }
+            if (!this.moveItemStackTo(itemstack1, 0, this.containerInventory.getSlots(), false)) {
+               return ItemStack.EMPTY;
+            }
          }
 
          if (itemstack1.isEmpty()) {

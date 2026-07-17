@@ -7,22 +7,12 @@ import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
 
-import java.util.List;
+public class FluidEnricherBE extends NCProcessorBE {
 
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
-
-public class FluidEnricherBE extends NCProcessorBE<FluidEnricherBE.Recipe> {
     public FluidEnricherBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.FLUID_ENRICHER);
-    }
-    @Override
-    public String getName() {
-        return Processors.FLUID_ENRICHER;
     }
 
     @NothingNullByDefault

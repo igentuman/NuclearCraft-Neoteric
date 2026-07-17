@@ -7,11 +7,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.forgeRl;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
+import static igentuman.nc.util.NcUtils.rlFromString;
 import static net.minecraft.world.item.Items.AIR;
 
 public class ItemShielding {
-    protected static HashMap<Item, Integer> shieldingItems = new HashMap<>();
+
+    protected static final HashMap<Item, Integer> shieldingItems = new HashMap<>();
     protected static boolean initialized = false;
     public static HashMap<Item, Integer> get()
     {
@@ -58,7 +61,7 @@ public class ItemShielding {
         if(!name.contains(":")) {
             name = MODID +":" + name;
         }
-        ResourceLocation itemKey = new ResourceLocation(name.replace("/", "_"));
+        ResourceLocation itemKey = rlFromString(name.replace("/", "_"));
         return ForgeRegistries.ITEMS.getValue(itemKey);
     }
 

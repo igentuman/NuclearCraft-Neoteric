@@ -5,12 +5,22 @@ import igentuman.nc.content.materials.Materials;
 import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
+import static net.minecraft.world.item.Items.NETHERITE_INGOT;
+import static net.minecraft.world.item.Items.NETHERITE_SCRAP;
+
 public class AlloySmelterRecipes extends AbstractRecipeProvider {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {
         AlloySmelterRecipes.consumer = consumer;
         ID = Processors.ALLOY_SMELTER;
-
+        doubleToItem(ID, ingredient(NETHERITE_SCRAP, 3), dustIngredient(Materials.gold, 3),
+                ingredient(NETHERITE_INGOT, 1), 2D);
+        doubleToItem(ID, dustIngredient(Materials.iron, 1), dustIngredient(Materials.chromium, 4),
+                ingotStack(Materials.nichrome, 5), 2D);
+        doubleToItem(ID, dustIngredient(Materials.osmium, 3), dustIngredient(Materials.iridium, 1),
+                ingotStack(Materials.osmiridium, 4), 2D);
+        doubleToItem(ID, dustIngredient(Materials.carbon_manganese, 1), dustIngredient(Materials.titanium, 11),
+                ingotStack(Materials.sic_sic_cmc, 12), 4D);
         doubleToItem(ID, dustIngredient(Materials.niobium, 1), dustIngredient(Materials.titanium),
                 ingotStack(Materials.niobium_titanium, 1), 4D);
         doubleToItem(ID, dustIngredient(Materials.niobium, 2), dustIngredient(Materials.tin),
@@ -45,6 +55,8 @@ public class AlloySmelterRecipes extends AbstractRecipeProvider {
                 ingotStack(Materials.extreme, 2));
         doubleToItem(ID, gemIngredient(Materials.silicon), dustIngredient(Materials.graphite),
                 ingotStack(Materials.silicon_carbide, 2), 2d, 2d);
+        doubleToItem(ID, dustIngredient(Materials.manganese), dustIngredient(Materials.graphite),
+                ingotStack(Materials.carbon_manganese, 2), 5d, 5d);
         doubleToItem(ID, dustIngredient(Materials.zirconium, 7), dustIngredient(Materials.tin),
                 ingotStack(Materials.zircaloy, 8));
         doubleToItem(ID, dustIngredient(Materials.iron, 15), dustIngredient(Materials.carbon_manganese),
@@ -52,6 +64,12 @@ public class AlloySmelterRecipes extends AbstractRecipeProvider {
         doubleToItem(ID, dustIngredient(Materials.molybdenum, 15), dustIngredient(Materials.zirconium),
                 ingotStack(Materials.zirconium_molybdenum, 16),8D, 2D);
 
+        doubleToItem(ID, ingotIngredient(Materials.osmium, 3), ingotIngredient(Materials.iridium, 1),
+                ingotStack(Materials.osmiridium, 4), 4D);
+        doubleToItem(ID, ingotIngredient(Materials.iron, 1), ingotIngredient(Materials.chromium, 4),
+                ingotStack(Materials.nichrome, 5), 2.5D);
+        doubleToItem(ID, ingotIngredient(Materials.carbon_manganese, 1), ingotIngredient(Materials.titanium, 11),
+                ingotStack(Materials.sic_sic_cmc, 12), 7D);
         doubleToItem(ID, ingotIngredient(Materials.niobium, 1), ingotIngredient(Materials.titanium),
                 ingotStack(Materials.niobium_titanium, 1), 5D);
         doubleToItem(ID, ingotIngredient(Materials.niobium, 2), ingotIngredient(Materials.tin),

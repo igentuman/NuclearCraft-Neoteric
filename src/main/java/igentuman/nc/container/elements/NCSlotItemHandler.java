@@ -7,18 +7,21 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NCSlotItemHandler extends SlotItemHandler {
 
-    private List<Item> allowed = new ArrayList<>();
+    private final List<Item> allowed = new ArrayList<>();
+    public boolean hidden = false;
+
     public NCSlotItemHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
     }
 
-    public Slot allowed(Item item) {
+    public Slot allowed(Item...item) {
         allowed.clear();
-        allowed.add(item);
+        allowed.addAll(Arrays.asList(item));
         return this;
     }
 
@@ -36,7 +39,7 @@ public class NCSlotItemHandler extends SlotItemHandler {
             return allowed.contains(stack.getItem());
         return super.mayPlace(stack);
     }
-    public boolean hidden = false;
+
     public Slot hidden() {
         hidden = true;
         return this;

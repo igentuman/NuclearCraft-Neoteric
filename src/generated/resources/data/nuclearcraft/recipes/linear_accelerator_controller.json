@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:basic_processor"
+    },
+    "E": {
+      "tag": "forge:ingots/extreme"
+    },
+    "F": {
+      "item": "nuclearcraft:accelerator_casing"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_elite"
+    }
+  },
+  "pattern": [
+    "PEP",
+    "BFB",
+    "PEP"
+  ],
+  "result": {
+    "item": "nuclearcraft:linear_accelerator_controller"
+  },
+  "show_notification": true
+}

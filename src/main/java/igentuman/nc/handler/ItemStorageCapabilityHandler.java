@@ -19,7 +19,6 @@ public class ItemStorageCapabilityHandler extends AbstractCapabilityHandler impl
 
     protected int slots;
     protected int stackSize;
-
     protected NonNullList<ItemStack> stacks;
     public BlockEntity tile;
 
@@ -33,6 +32,9 @@ public class ItemStorageCapabilityHandler extends AbstractCapabilityHandler impl
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
         validateSlotIndex(slot);
+        if (!stack.isEmpty() && !isItemValid(slot, stack)) {
+            return;
+        }
         this.stacks.set(slot, stack);
     //    onContentsChanged(slot);
     }

@@ -1,13 +1,13 @@
 package igentuman.nc.content.storage;
 
-import igentuman.nc.block.entity.BarrelBE;
-import igentuman.nc.handler.config.CommonConfig;
+import igentuman.nc.block.storage.entity.BarrelBE;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import static igentuman.nc.handler.config.CommonConfig.STORAGE_BLOCKS;
 
 public class BarrelBlockPrefab {
+
     private boolean registered = true;
     private boolean initialized = false;
     private String name;
@@ -16,10 +16,11 @@ public class BarrelBlockPrefab {
     public BarrelBlockPrefab(String name, int capacity) {
         this.capacity = capacity;
         blockEntity = BarrelBE::new;
+        this.name = name;
     }
 
     public int getCapacity() {
-        return capacity*1000;
+        return capacity;
     }
 
     public BarrelBlockPrefab setCapacity(int capacity) {
@@ -30,9 +31,6 @@ public class BarrelBlockPrefab {
     public BarrelBlockPrefab config()
     {
         if(!initialized) {
-            if(!CommonConfig.isLoaded()) {
-                return this;
-            }
             int id = BarrelBlocks.all().keySet().stream().toList().indexOf(name);
             registered = STORAGE_BLOCKS.REGISTER_BARREL.get().get(id);
             capacity = STORAGE_BLOCKS.BARREL_CAPACITY.get().get(id);
@@ -40,6 +38,7 @@ public class BarrelBlockPrefab {
         }
         return this;
     }
+
     public boolean isRegistered() {
         return  registered;
     }
@@ -52,5 +51,6 @@ public class BarrelBlockPrefab {
         this.blockEntity = blockEntity;
         return this;
     }
+
     private BlockEntityType.BlockEntitySupplier<? extends BlockEntity>  blockEntity;
 }

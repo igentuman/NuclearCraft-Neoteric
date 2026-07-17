@@ -3,8 +3,9 @@ package igentuman.nc.radiation;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.energy.RTGs;
-import igentuman.nc.setup.registration.Fuel;
+import igentuman.nc.setup.registration.FissionFuel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.AirItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -15,16 +16,16 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.content.materials.Materials.*;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
-import static igentuman.nc.setup.registration.NCBlocks.NC_BLOCKS;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
-import static igentuman.nc.setup.registration.NCItems.NC_DUSTS;
-import static igentuman.nc.setup.registration.NCItems.NC_INGOTS;
+import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.util.NcUtils.getNCBlock;
+import static igentuman.nc.util.NcUtils.rlFromString;
 import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 import static net.minecraft.world.item.Items.AIR;
 
 public class ItemRadiation {
-    protected static HashMap<Item, Double> radiationMap = new HashMap<>();
+
+    protected static final HashMap<Item, Double> radiationMap = new HashMap<>();
     protected static boolean initialized = false;
     public static HashMap<Item, Double> get()
     {
@@ -64,14 +65,17 @@ public class ItemRadiation {
         for(String name: Materials.isotopes()) {
             for(String type: List.of("", "_ox", "_ni", "_za", "_tr")) {
                 add(name+type, Materials.isotopes.get(name));
+                if(name.matches("xenorium.*|quantite.*")) break;
             }
         }
         for(Block block: getBlocksByTagKey("forge:storage_blocks/uranium")) {
             add(block.asItem().toString(), 0.00004D);
         }
 
+        add(RESONITE_CRYSTAL.get(), 0.01D);
+
         add(getNCBlock("americium241").asItem(), 0.05D);
-        add(getNCBlock("uranium238").asItem(),0.00005D);
+        add(getNCBlock("uranium238").asItem(),0.0005D);
         add(getNCBlock("californium250").asItem(),3D);
         add(getNCBlock("plutonium238").asItem(), 0.034D);
 
@@ -86,8 +90,12 @@ public class ItemRadiation {
                     }
                     Item isotope1 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[0]), type);
                     Item isotope2 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[1]), type);
-                    double radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
-                    add(Fuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), radiation/2);
+                    double radiation = 50000;
+                    if(isotope1 != null && isotope2 != null) {
+                        radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
+                    }
+                    add(FissionFuel.NC_FUEL.get(List.of("fuel", name, subType, type)).get(), radiation/2);
+                    if(name.matches("xenorium.*|quantite.*")) break;
                 }
             }
         }
@@ -104,7 +112,8 @@ public class ItemRadiation {
                     Item isotope1 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[0]), type);
                     Item isotope2 = getIsotope(name, String.valueOf(FuelManager.all().get(name).get(subType).getDefault().isotopes[1]), type);
                     double radiation = ItemRadiation.byItem(isotope1)*isotope1Cnt + ItemRadiation.byItem(isotope2)*isotope2Cnt;
-                    add(Fuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, type)).get(), radiation/1.5);
+                    add(FissionFuel.NC_DEPLETED_FUEL.get(List.of("depleted", name, subType, type)).get(), radiation/1.5);
+                    if(name.matches("xenorium.*|quantite.*")) break;
                 }
             }
         }
@@ -115,14 +124,17 @@ public class ItemRadiation {
         if(!type.isEmpty()) {
             type = "_"+type;
         }
-        if(!Fuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
-            for(String isotope: Fuel.NC_ISOTOPES.keySet()) {
+        if(!FissionFuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
+            for(String isotope: FissionFuel.NC_ISOTOPES.keySet()) {
                 if(isotope.contains(id)) {
-                    return  Fuel.NC_ISOTOPES.get(isotope).get();
+                    return  FissionFuel.NC_ISOTOPES.get(isotope).get();
                 }
             }
         }
-        return Fuel.NC_ISOTOPES.get(name+"/"+id+type).get();
+        if(FissionFuel.NC_ISOTOPES.containsKey(name+"/"+id+type)) {
+            return  FissionFuel.NC_ISOTOPES.get(name+"/"+id+type).get();
+        }
+        return null;
     }
 
     public static void add(String item, double radiation)
@@ -144,11 +156,14 @@ public class ItemRadiation {
         if(!name.contains(":")) {
             name = MODID +":" + name;
         }
-        ResourceLocation itemKey = new ResourceLocation(name.replace("/", "_"));
+        ResourceLocation itemKey = rlFromString(name.replace("/", "_"));
         return ForgeRegistries.ITEMS.getValue(itemKey);
     }
 
     public static double byItem(Item item) {
+        if(item instanceof AirItem) {
+            return 0;
+        }
         if(!initialized) {
             init();
             initialized = true;

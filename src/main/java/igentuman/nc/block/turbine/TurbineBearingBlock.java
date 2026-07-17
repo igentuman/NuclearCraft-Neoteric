@@ -1,7 +1,7 @@
 package igentuman.nc.block.turbine;
 
-import igentuman.nc.block.entity.turbine.TurbineBE;
-import igentuman.nc.block.entity.turbine.TurbineBladeBE;
+import igentuman.nc.block.MultiblockBlock;
+import igentuman.nc.compat.create.CreateTurbine;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -12,67 +12,63 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
+import static igentuman.nc.util.ModUtil.isCreateLoaded;
+import static igentuman.nc.util.TextUtils.__;
 
-public class TurbineBearingBlock extends Block implements EntityBlock {
+public class TurbineBearingBlock extends MultiblockBlock implements EntityBlock {
 
     public TurbineBearingBlock(Properties pProperties) {
         super(pProperties);
     }
 
-    private String codeID()
-    {
-        return ForgeRegistries.BLOCKS.getKey(this).getPath();
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(BlockStateProperties.AXIS);
     }
 
-    @Nullable
     @Override
-    public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction.Axis axis = context.getNearestLookingDirection().getAxis();
+        for (Direction direction : Direction.values()) {
+            if (context.getLevel().getBlockState(context.getClickedPos().relative(direction)).getBlock() instanceof TurbineRotorBlock) {
+                axis = direction.getAxis();
+                break;
+            }
+        }
+        return defaultBlockState().setValue(BlockStateProperties.AXIS, axis);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
+        list.add(TextUtils.applyFormat(__("tooltip.nc.bearing.desc"), ChatFormatting.BLUE));
+        list.add(TextUtils.applyFormat(__("tooltip.nc.bearing.create"), ChatFormatting.GOLD));
+    }
+
+    @Override
+    public @Nullable BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return TURBINE_BE.get("turbine_bearing").get().create(pPos, pState);
     }
 
     @javax.annotation.Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return (lvl, pos, blockState, t) -> {
-                if (t instanceof TurbineBladeBE tile) {
-                    tile.tickClient();
-                }
-            };
+        if (!isCreateLoaded()) {
+            return null;
         }
-        return (lvl, pos, blockState, t)-> {
-            if (t instanceof TurbineBladeBE tile) {
-                tile.tickServer();
-            }
-        };
-    }
-
-    @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        ((TurbineBE) Objects.requireNonNull(level.getBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
-    }
-
-    @Override
-    public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
-        list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.bearing.desc"), ChatFormatting.BLUE));
+        return (lvl, pos, blockState, t) -> CreateTurbine.tickBearing(t);
     }
 }

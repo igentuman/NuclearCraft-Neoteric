@@ -1,0 +1,6 @@
+{
+  "message_id": "turbine",
+  "scaling": "always",
+  "exhaustion": 1,
+  "death_message_type": "default"
+}

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": [
+    {
+      "tag": "forge:raw_materials/zinc"
+    }
+  ],
+  "output": [
+    {
+      "tag": "forge:raw_materials/zinc"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

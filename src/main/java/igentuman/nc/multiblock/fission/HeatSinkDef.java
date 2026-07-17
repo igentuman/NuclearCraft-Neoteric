@@ -1,58 +1,69 @@
 package igentuman.nc.multiblock.fission;
 
-import igentuman.nc.block.entity.fission.FissionBE;
-import igentuman.nc.block.entity.fission.FissionHeatSinkBE;
-import igentuman.nc.handler.config.CommonConfig;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import igentuman.nc.NuclearCraft;
+import igentuman.nc.block.fission.FissionFuelCellBlock;
+import igentuman.nc.block.fission.HeatSinkBlock;
+import igentuman.nc.multiblock.AbstractMultiblock;
+import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.handler.config.FissionConfig.HEAT_SINK_CONFIG;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
+import static igentuman.nc.util.NcUtils.rlFromString;
+import static igentuman.nc.util.StackUtils.getItemsByTagKey;
+import static igentuman.nc.util.TagUtil.getFirstMatchingFluidByTag;
 
 public class HeatSinkDef {
+
     public double heat = 0;
     public String name = "";
     public String[] rules;
+    protected Validator validator;
+    public final Pattern COND_FUNC = Pattern.compile("=|-|>|<|\\^");
+    public final Pattern ACTIVE_CHECK = Pattern.compile("^(?!.*active_).+_heat_sink$");
+    private List<FluidStack> allowedFluids;
+    public static HeatSinkDef of(JsonObject asJsonObject) {
+        HeatSinkDef def = new HeatSinkDef();
+        try {
+            def.heat = asJsonObject.get("heat").getAsDouble();
+            def.name = asJsonObject.get("type").getAsString();
+            JsonArray rules = asJsonObject.getAsJsonArray("placement_rule");
+            String[] ruleArray = new String[rules.size()];
+            for (int i = 0; i < rules.size(); i++) {
+                ruleArray[i] = rules.get(i).getAsString();
+            }
+            def.rules = ruleArray;
+            return def;
+        } catch (Exception e) {
+            NuclearCraft.LOGGER.error("Error parsing heatsink definition: " + e.getMessage());
+            return null;
+        }
+    }
 
     public Validator getValidator() {
         if(validator == null) {
-            rules = HEAT_SINK_CONFIG.PLACEMENT_RULES.get(name).get()
-                    .toArray(new String[ HEAT_SINK_CONFIG.PLACEMENT_RULES.get(name).get().size()]);
             initCondition(rules);
         }
         return validator;
     }
 
-    protected Validator validator;
-    private boolean initialized = false;
-
-    public HeatSinkDef() {
-
-    }
-
-    public HeatSinkDef(String name, int h, String...rules) {
-        heat = h;
-        this.name = name;
-        this.rules = rules;
+    private HeatSinkDef() {
     }
 
     private void initCondition(String[] rules) {
@@ -68,13 +79,11 @@ public class HeatSinkDef {
             List<String> actualBlocks = collectBlocks(blocks);
             conditions.put(new String[] {getConditionFunc(rule), String.valueOf(cnt), rule}, actualBlocks);
         }
-        validator = new Validator();
-        validator.blockLines = conditions;
+        validator = new Validator(conditions);
     }
 
     private String getConditionFunc(String rule) {
-        Pattern func = Pattern.compile("=|-|>|<|\\^");
-        Matcher matcher = func.matcher(rule);
+        Matcher matcher = COND_FUNC.matcher(rule);
         List<String> matches = new ArrayList<>();
         String funcType = ">";
         while (matcher.find()) {
@@ -86,96 +95,71 @@ public class HeatSinkDef {
         return funcType;
     }
 
-    public List<String> getItemsByTagKey(String key)
-    {
-        List<String> tmp = new ArrayList<>();
-        TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
-        Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
-        for (ItemStack item: ing.getItems()) {
-            tmp.add(item.getItem().toString());
-        }
-        return tmp;
-    }
-
-    public static List<Block> getBlocksByTagKey(String key)
-    {
-        List<Block> tmp = new ArrayList<>();
-        TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
-        for(Holder<Block> holder : Registry.BLOCK.getTagOrEmpty(tag)) {
-            tmp.add(holder.get());
-        }
-        return tmp;
-    }
-
     private List<String> collectBlocks(String[] blocks) {
         List<String> tmp = new ArrayList<>();
         for(String block: blocks) {
             if(block.contains("#")) {
                 tmp.addAll(getItemsByTagKey(block.replace("#","")));
             } else {
+                String blockName = block;
                 if(!block.contains(":")) {
-                    block = MODID+":"+block;
+                    blockName = MODID + ":" + block;
                 }
-                tmp.add(block);
+                tmp.add(blockName);
+                if (FISSION_CONFIG.ACTIVE_HEATSINK_PRIME.get() && ACTIVE_CHECK.matcher(block).matches()) {
+                    if (block.contains(":")) {
+                        String[] blockParts = block.split(":");
+                        blockName = blockParts[0] + ":active_" + blockParts[1];
+                    } else {
+                        blockName = MODID + ":active_" + block;
+                    }
+                    tmp.add(blockName);
+                }
             }
         }
         return tmp;
     }
 
-    public HeatSinkDef(int i) {
-        heat = i;
-    }
-
-    public HeatSinkDef config()
-    {
-        if(!CommonConfig.isLoaded()) {
-            return this;
-        }
-        if(!initialized) {
-            initialized = true;
-            int id = FissionBlocks.heatsinks.keySet().stream().toList().indexOf(name);
-            heat =  HEAT_SINK_CONFIG.HEAT.get().get(id);
-        }
-        return this;
-    }
-
     public double getHeat() {
-        return config().heat;
+        return heat;
     }
 
-    public boolean mustdDirectlyTouchFuelCell() {
-        return validator.hasToTouchFuelCell();
+    public List<FluidStack> getAllowedFluids() {
+        if(allowedFluids == null) {
+            allowedFluids = getFluidByTagKey("forge:"+name);
+        }
+        return allowedFluids;
+    }
+
+    private List<FluidStack> getFluidByTagKey(String name) {
+        List<FluidStack> tmp = new ArrayList<>();
+        Fluid fluid = getFirstMatchingFluidByTag(name);
+        tmp.add(new FluidStack(fluid,1));
+        return tmp;
     }
 
     public static class Validator {
 
-        private FissionHeatSinkBE be;
+        private final HashMap<String[], List<String>> blockLines;
+        private final HashMap<String[], List<Block>> blocks = new HashMap<>();
 
-        private HashMap<String[], List<String>> blockLines = new HashMap<>();
-        private HashMap<String[], List<Block>> blocks = new HashMap<>();
+        public Validator(HashMap<String[], List<String>> conditions) {
+            this.blockLines = conditions;
+        }
 
-        public boolean isValid(FissionHeatSinkBE be)
+        public boolean isValid(Level level, BlockPos pos, FissionReactorMultiblock multiblock)
         {
-            this.be = be;
             boolean result = false;
+            BlockPos p = new BlockPos(pos);
             for(String[] condition: blocks().keySet()) {
-                switch (condition[0]) {
-                    case ">":
-                       result = isMoreThan(Integer.parseInt(condition[1]), blocks().get(condition));
-                       break;
-                    case "<":
-                        result = isLessThan(Integer.parseInt(condition[1]), blocks().get(condition));
-                        break;
-                    case "-":
-                        result = isBetween(2, blocks().get(condition));
-                        break;
-                    case "=":
-                        result = isExact(Integer.parseInt(condition[1]), blocks().get(condition));
-                        break;
-                    case "^":
-                        result = inCorner(Integer.parseInt(condition[1]), blocks().get(condition));
-                        break;
-                }
+                result = switch (condition[0]) {
+                    case ">" -> isAtLeast(Integer.parseInt(condition[1]), condition, level, p, multiblock);
+                    case "<" -> isLessThan(Integer.parseInt(condition[1]), condition, level, p, multiblock);
+                    case "-" -> isBetween(condition, level, p, multiblock);
+                    case "=" -> isExact(Integer.parseInt(condition[1]), condition, level, p, multiblock);
+                    case "^" -> inCorner(Integer.parseInt(condition[1]), condition, level, p, multiblock);
+                    default -> result;
+                };
                 if(!result) {
                     return false;
                 }
@@ -183,26 +167,67 @@ public class HeatSinkDef {
             return result;
         }
 
-        public boolean validateFuelCellAttachment(BlockPos pos)
+        public boolean validateFuelCellAttachment(Level level, AbstractMultiblock multiblock, BlockPos...pos)
         {
-            BlockEntity testBe = be.getLevel().getBlockEntity(pos);
-            if(testBe instanceof FissionBE) {
-                if(!((FissionBE)testBe).isAttachedToFuelCell()) {
-                    return false;
+            for(BlockPos p: pos) {
+                for(Direction dir: Direction.values()) {
+                    if(multiblock != null) {
+                        if(multiblock.checkAttachmentToBlock(FissionFuelCellBlock.class, level, p, dir)) {
+                            return true;
+                        }
+                    } else if(MultiblockHandler.get(level.dimension()).checkAttachmentToBlock(FissionFuelCellBlock.class, level, p, dir)) {
+                        return true;
+                    }
+                    BlockState block = null;
+                    if(multiblock != null) {
+                        block = multiblock.getBlockState(p.relative(dir));
+                    }
+                    if(block == null) {
+                        block = level.getBlockState(p.relative(dir));
+                    }
+                    if(block.getBlock() instanceof FissionFuelCellBlock) {
+                        return true;
+                    }
                 }
             }
-            return true;
+
+            return false;
         }
 
-        private boolean inCorner(int qty, List<Block> blocks) {
-            BlockPos pos = be.getBlockPos();
-            Level level = Objects.requireNonNull(be.getLevel());
-            int initial = blocks.contains(level.getBlockState(pos.above(1)).getBlock()) ? 1 : 0;
-            initial = blocks.contains(level.getBlockState(pos.below(1)).getBlock()) ? 1 : initial;
+        private BlockState getBlockState(Level level, BlockPos pos, AbstractMultiblock multiblock) {
+            BlockState target = null;
+            if(multiblock != null) {
+                target = multiblock.getBlockState(pos);
+            }
+            if(target == null){
+                target = level.getBlockState(pos);
+            }
+            return target;
+        }
+
+        private boolean validatePlacement(String[] condition, Level level, FissionReactorMultiblock multiblock, BlockPos ...pos) {
+            BlockState target = getBlockState(level, pos[0], multiblock);
+            if (blocks.get(condition).contains(target.getBlock())) {
+                if(multiblock != null) {
+                    if (target.getBlock() instanceof HeatSinkBlock && !multiblock.validHeatSinks.containsKey(pos[0].asLong())) {
+                        return false;
+                    }
+                    if (multiblock.isModerator(target) && !multiblock.moderators.contains(pos[0].asLong())) {
+                        return false;
+                    }
+                }
+                return mustCheckFuelCellConnection(condition) || validateFuelCellAttachment(level, multiblock, pos);
+            }
+            return false;
+        }
+
+        private boolean inCorner(int qty, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
+            int initial = blocks.get(condition).contains(getBlockState(level, pos.above(1), multiblock).getBlock()) ? 1 : 0;
+            initial = blocks.get(condition).contains(getBlockState(level, pos.below(1), multiblock).getBlock()) ? 1 : initial;
             int[] matches = new int[4];
             int i = 0;
             for (Direction dir: List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
-                if(blocks.contains(level.getBlockState(pos.relative(dir)).getBlock())) {
+                if(validatePlacement(condition, level, multiblock, pos.relative(dir))) {
                     if(1+initial >= qty) return true;
                     matches[i] = 1;
                 }
@@ -216,13 +241,10 @@ public class HeatSinkDef {
             return false;
         }
 
-        private boolean isExact(int s, List<Block> blocks) {
+        private boolean isExact(int s, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             int counter = 0;
             for (Direction dir: Direction.values()) {
-                if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
-                    if(!validateFuelCellAttachment(be.getBlockPos().relative(dir))) {
-                        continue;
-                    }
+                if(validatePlacement(condition, level, multiblock, pos.relative(dir))) {
                     counter++;
                     if(counter > s) return false;
                 }
@@ -230,13 +252,11 @@ public class HeatSinkDef {
             return counter == s;
         }
 
-        private boolean isBetween(int s, List<Block> blocks) {
+        private boolean isBetween(String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             for (Direction dir: Direction.values()) {
                 if(
-                        blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock()) &&
-                                blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir.getOpposite())).getBlock()) &&
-                                validateFuelCellAttachment(be.getBlockPos().relative(dir)) &&
-                                validateFuelCellAttachment(be.getBlockPos().relative(dir.getOpposite()))
+                        validatePlacement(condition, level, multiblock, pos.relative(dir)) &&
+                        validatePlacement(condition, level, multiblock, pos.relative(dir.getOpposite()))
                 ) {
                     return true;
                 }
@@ -244,13 +264,10 @@ public class HeatSinkDef {
             return false;
         }
 
-        private boolean isLessThan(int s, List<Block> blocks) {
+        private boolean isLessThan(int s, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             int counter = 0;
             for (Direction dir: Direction.values()) {
-                if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
-                    if(!validateFuelCellAttachment(be.getBlockPos().relative(dir))) {
-                        continue;
-                    }
+                if(validatePlacement(condition, level, multiblock, pos.relative(dir))) {
                     counter++;
                     if(counter >= s) return false;
                 }
@@ -258,13 +275,14 @@ public class HeatSinkDef {
             return counter < s;
         }
 
-        private boolean isMoreThan(int s, List<Block> blocks) {
+        private boolean mustCheckFuelCellConnection(String[] condition) {
+            return condition[2].contains("casing");
+        }
+
+        private boolean isAtLeast(int s, String[] condition, Level level, BlockPos pos, FissionReactorMultiblock multiblock) {
             int counter = 0;
             for (Direction dir: Direction.values()) {
-                if(blocks.contains(Objects.requireNonNull(be.getLevel()).getBlockState(be.getBlockPos().relative(dir)).getBlock())) {
-                    if(!validateFuelCellAttachment(be.getBlockPos().relative(dir))) {
-                        continue;
-                    }
+                if(validatePlacement(condition, level, multiblock, pos.relative(dir))) {
                     counter++;
                     if(counter >= s) return true;
                 }
@@ -284,27 +302,18 @@ public class HeatSinkDef {
                     List<Block> tmp = new ArrayList<>();
                     for(String bStr: blockLines().get(condition)) {
                         if(bStr.contains("#")) {
-                            tmp.addAll(getBlocksByTagKey(bStr));
+                            tmp.addAll(TagUtil.getBlocksByTagKey(bStr));
                         } else {
                             if (!bStr.contains(":")) {
                                 bStr = MODID + ":" + bStr;
                             }
-                            tmp.add(Registry.BLOCK.get(new ResourceLocation(bStr)));
+                            tmp.add(ForgeRegistries.BLOCKS.getValue(rlFromString(bStr)));
                         }
                     }
                     blocks.put(condition, tmp);
                 }
             }
             return blocks;
-        }
-
-        public boolean hasToTouchFuelCell() {
-            for(List<Block> blockList: blocks().values()) {
-                if(blockList.contains(FISSION_BLOCKS.get("fission_reactor_solid_fuel_cell").get())) {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

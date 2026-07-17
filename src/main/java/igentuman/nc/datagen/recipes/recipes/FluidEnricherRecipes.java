@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
 import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_ITEM;
 import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
+import static net.minecraft.world.item.Items.REDSTONE;
 import static net.minecraft.world.level.material.Fluids.WATER;
 
 public class FluidEnricherRecipes extends AbstractRecipeProvider {
@@ -20,11 +22,15 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
     public static void generate(Consumer<FinishedRecipe> consumer) {
         FluidEnricherRecipes.consumer = consumer;
         ID = Processors.FLUID_ENRICHER;
-
+        add(
+                fluidIngredient("ethanol", 250),
+                ingredient(REDSTONE, 1),
+                fluidIngredient("redstone_ethanol", 250)
+        );
         add(
                 fluidIngredient(Materials.potassium_hydroxide, 4000),
                 dustIngredient(Materials.iodine),
-                fluidIngredient(Materials.potassium_iodide, 144)
+                fluidIngredient(Materials.potassium_iodide, MOLTEN_INGOT)
         );
 
         add(
@@ -36,13 +42,14 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
         add(
                 fluidIngredient("minecraft:water", 500),
                 ingredient(NC_ITEMS.get("salt").get(), 3),
-                fluidIngredient("chlorine", 500)
+                fluidIngredient("chlorine", 500),
+                2D, 2D
         );
 
         add(
-                fluidIngredient("oxygen", 144),
+                fluidIngredient("oxygen", MOLTEN_INGOT),
                 dustIngredient(Materials.uranium),
-                fluidIngredient("uranium_oxide", 432)
+                fluidIngredient("uranium_oxide", MOLTEN_INGOT*3)
         );
 
         add(
@@ -103,6 +110,13 @@ public class FluidEnricherRecipes extends AbstractRecipeProvider {
                 fluidIngredient("redstone_ethanol", 250),
                 ingredient(MUSHROOM_ITEM.get(), 3),
                 fluidIngredient("radaway_slow", 250)
+        );
+
+        // Baratol: dustBariumNitrate + tnt fluid -> baratol fluid (Trinity port)
+        add(
+                fluidIngredient(Materials.tnt, 200),
+                dustIngredient(Materials.barium_nitrate),
+                fluidIngredient(Materials.baratol, 200)
         );
     }
 

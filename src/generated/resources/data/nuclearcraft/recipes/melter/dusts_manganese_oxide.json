@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:manganese_oxide"
+      "amount": 90,
+      "tag": "forge:molten_manganese_oxide"
     }
   ],
   "powerModifier": 1.0,

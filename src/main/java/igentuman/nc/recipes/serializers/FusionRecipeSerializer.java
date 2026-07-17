@@ -3,13 +3,12 @@ package igentuman.nc.recipes.serializers;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
-import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.NcRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+
+import static igentuman.nc.NuclearCraft.debugLog;
 
 public class FusionRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSerializer<RECIPE> {
 
@@ -20,8 +19,10 @@ public class FusionRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSer
     @Override
     public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
         try {
-
-            readIngredients(buffer);
+            ItemStackIngredient[] inputItems = readItems(buffer);
+            ItemStackIngredient[] outputItems = readItems(buffer);
+            FluidStackIngredient[] inputFluids = readFluids(buffer);
+            FluidStackIngredient[] outputFluids = readFluids(buffer);
 
             double timeModifier = buffer.readDouble();
             double powerModifier = buffer.readDouble();
@@ -30,7 +31,7 @@ public class FusionRecipeSerializer<RECIPE extends NcRecipe> extends NcRecipeSer
 
             return this.factory.create(recipeId, inputItems, outputItems, inputFluids,  outputFluids, timeModifier, powerModifier, radiation, temperature);
         } catch (Exception e) {
-            NuclearCraft.LOGGER.error("Error reading from packet.", e);
+            debugLog("Error reading from packet." + e);
             throw e;
         }
     }

@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:boron_11"
+      "amount": 90,
+      "tag": "forge:boron/11"
     }
   ],
   "output": [

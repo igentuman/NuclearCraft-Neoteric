@@ -1,9 +1,11 @@
 package igentuman.nc.radiation.data;
 
+import igentuman.nc.advancements.NCAdvancementTriggers;
 import igentuman.nc.content.NCRadiationDamageSource;
 import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.radiation.ItemShielding;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -30,7 +32,7 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
 
     private int contaminationStage = 0;
 
-    public static int maxPlayerRadiation = 500000000;
+    public static long maxPlayerRadiation = 500000000;
 
     public PlayerRadiation() {
     }
@@ -51,9 +53,8 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        CompoundTag radiationTag = nbt.getCompound("radiation");
-        radiation = radiationTag.getInt("radiation");
-        timestamp = radiationTag.getInt("timestamp");
+        radiation = nbt.getLong("radiation");
+        timestamp = nbt.getInt("timestamp");
     }
 
     public void copyFrom(PlayerRadiation source) {
@@ -62,11 +63,11 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
     }
 
     public int getInventoryRadiation(Player player) {
-        int rad = 0;
+        long rad = 0;
         for(ItemStack itemStack: player.getInventory().items) {
-            rad += (int) (ItemRadiation.byItem(itemStack.getItem())*1000000);
+            rad += (int) (ItemRadiation.byItem(itemStack.getItem())*1000000*(itemStack.getCount()+1)*0.75D);
         }
-        return rad/5;//player is not getting radiation instantly
+        return Math.toIntExact(Math.min(rad / 5, Integer.MAX_VALUE));//player is not getting radiation instantly
     }
 
     public static int getRadiationShielding(LivingEntity player, String...modFilter)
@@ -101,26 +102,30 @@ public class PlayerRadiation implements IPlayerRadiationCapability {
         this.level = level;
         WorldRadiation worldRadiation = RadiationManager.get(level).getWorldRadiation();
         int chunkRadiation = worldRadiation.getChunkRadiation(player.chunkPosition().x, player.chunkPosition().z);
+        double intensityMult = Math.max(0.5, Math.sqrt(chunkRadiation / 1000000.0));
         double shieldingRate = Math.max(0.001, 0.7 - getRadiationShielding(player)/100.0);
-        if(chunkRadiation > radiation) {
-            radiation = (int) (((chunkRadiation + radiation)/10D * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
-        } else {
-            radiation = (int) ((chunkRadiation * (RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()/1000D)) * shieldingRate + radiation);
+        long wasRadiation = radiation;
+        if(chunkRadiation < radiation) {
+            intensityMult *= 0.5d;
         }
+        radiation = (int) ((chunkRadiation * intensityMult * RADIATION_CONFIG.GAIN_SPEED_FOR_PLAYER.get()) * shieldingRate + radiation);
         if(player instanceof Player) {
             radiation += (int) (getInventoryRadiation((Player) player) * shieldingRate);
         }
+        radiation = (wasRadiation + radiation)/2;
         radiation -= (int) decaySpeed;
         radiation = Math.min(maxPlayerRadiation, Math.max(0, radiation));
         assert player instanceof Player;
+        if (wasRadiation < 1_000_000 && radiation >= 1_000_000 && player instanceof ServerPlayer sp) {
+            NCAdvancementTriggers.RADIATION_CONTAMINATION.trigger(sp, radiation / 1_000_000.0);
+        }
         updateContaminationStage((Player) player);
     }
 
     public void updateContaminationStage(Player player)
     {
         if(radiation >= maxPlayerRadiation) {
-            radiation = radiation/3;
-            player.hurt(NCRadiationDamageSource.RADIATION, 1000000);
+            player.hurt(NCRadiationDamageSource.RADIATION((ServerPlayer) player), 1000000);
             return;
         }
         if(radiation >= maxPlayerRadiation*0.66) {

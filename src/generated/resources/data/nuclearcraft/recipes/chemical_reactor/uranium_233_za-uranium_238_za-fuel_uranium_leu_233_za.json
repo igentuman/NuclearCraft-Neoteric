@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 30,
+      "tag": "forge:uranium/233_za"
+    },
+    {
+      "amount": 270,
+      "tag": "forge:uranium/238_za"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 90,
+      "tag": "forge:fuel_uranium_leu_233_za"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

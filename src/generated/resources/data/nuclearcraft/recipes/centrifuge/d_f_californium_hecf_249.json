@@ -2,25 +2,25 @@
   "type": "nuclearcraft:centrifuge",
   "inputFluids": [
     {
-      "amount": 1296,
+      "amount": 810,
       "fluid": "nuclearcraft:depleted_fuel_californium_hecf_249"
     }
   ],
   "outputFluids": [
     {
-      "amount": 864,
+      "amount": 540,
       "tag": "forge:californium/252"
     },
     {
-      "amount": 288,
+      "amount": 180,
       "tag": "forge:californium/250"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:ruthenium_106"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:promethium_147"
     }
   ],

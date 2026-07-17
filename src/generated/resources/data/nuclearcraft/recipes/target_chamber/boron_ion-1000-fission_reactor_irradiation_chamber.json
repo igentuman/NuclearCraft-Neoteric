@@ -1,0 +1,47 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.25,
+  "energyReleased": 0,
+  "input": [
+    {
+      "item": "nuclearcraft:fission_reactor_irradiation_chamber"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 4000000,
+      "focus": 3.0,
+      "meanEnergy": 1000,
+      "particle": "boron_ion"
+    }
+  ],
+  "maxEnergy": 2000,
+  "output": [
+    {
+      "item": "nuclearcraft:fission_reactor_pile-driver_irradiation_chamber"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "positron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "electron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

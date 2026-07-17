@@ -12,11 +12,12 @@
     }
   },
   "pattern": [
-    " R ",
-    "TPT",
-    " R "
+    " P ",
+    "TRT",
+    " P "
   ],
   "result": {
+    "count": 2,
     "item": "nuclearcraft:plate_advanced"
   }
 }

@@ -1,0 +1,18 @@
+{
+  "type": "nuclearcraft:heat_exchanger_controller",
+  "heat": -300.0,
+  "inputFluids": [
+    {
+      "amount": 1,
+      "tag": "forge:technical_water"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1,
+      "tag": "forge:high_pressure_steam"
+    }
+  ],
+  "powerModifier": 1.0,
+  "timeModifier": 1.0
+}

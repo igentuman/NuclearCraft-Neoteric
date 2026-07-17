@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.applyFormat;
 import static net.minecraft.ChatFormatting.*;
 
@@ -55,8 +56,8 @@ public class SideConfig extends NCGuiElement {
     @Override
     public List<Component> getTooltips() {
         tooltips.clear();
-        tooltips.add(applyFormat(Component.translatable("side_config."+getDirectionName()), AQUA)
-                .append(applyFormat(Component.translatable("side_config."+screen.getSlotMode(direction, slotId).name().toLowerCase()),GOLD)));
+        tooltips.add(applyFormat(__("side_config."+getDirectionName()), AQUA)
+                .append(applyFormat(__("side_config."+screen.getSlotMode(direction, slotId).name().toLowerCase()),GOLD)));
         return tooltips;
     }
 

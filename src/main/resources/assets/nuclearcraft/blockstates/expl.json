@@ -1,0 +1,58 @@
+{
+  "variants": {
+    "facing=down,powered=false": {
+      "model": "nuclearcraft:block/expl",
+      "x": 180
+    },
+    "facing=down,powered=true": {
+      "model": "nuclearcraft:block/expl",
+      "x": 180
+    },
+    "facing=up,powered=false": {
+      "model": "nuclearcraft:block/expl"
+    },
+    "facing=up,powered=true": {
+      "model": "nuclearcraft:block/expl"
+    },
+    "facing=north,powered=false": {
+      "model": "nuclearcraft:block/expl",
+      "x": 90,
+      "y": 0
+    },
+    "facing=north,powered=true": {
+      "model": "nuclearcraft:block/expl",
+      "x": 90,
+      "y": 0
+    },
+    "facing=south,powered=false": {
+      "model": "nuclearcraft:block/expl",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "nuclearcraft:block/expl",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "nuclearcraft:block/expl",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "nuclearcraft:block/expl",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east,powered=false": {
+      "model": "nuclearcraft:block/expl",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "nuclearcraft:block/expl",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

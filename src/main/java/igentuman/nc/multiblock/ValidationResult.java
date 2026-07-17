@@ -1,6 +1,7 @@
 package igentuman.nc.multiblock;
 
 public enum ValidationResult {
+
     TOO_BIG(false, 0, "validation.structure.too_big"),
     TOO_SMALL(false, 1, "validation.structure.too_small"),
     INCOMPLETE(false, 2, "validation.structure.incomplete"),
@@ -11,8 +12,14 @@ public enum ValidationResult {
     NO_PORT(false, 7, "validation.structure.no_port"),
     VALID(true, 8, "validation.structure.valid"),
     WRONG_PROPORTIONS(false,9, "validation.structure.wrong_proportions"),
-    WRONG_CORNER(false,10, "validation.structure.wrong_corner");
-
+    WRONG_CORNER(false,10, "validation.structure.wrong_corner"),
+    WRONG_BLADES(false,11, "validation.structure.wrong_blades"),
+    PHOTON_CONCENTRATOR(false,12, "validation.structure.photon_concentrator"),
+    INCORRECT_CONTROLLER_PLACEMENT(false,13, "validation.structure.incorrect_controller_placement"),
+    ASYMETRIC_WALLS(false,14, "validation.structure.asymetric_walls"),
+    WRONG_BLOCK(false,15, "validation.structure.wrong_block"),
+    NO_DETECTORS(false,16, "validation.structure.no_detectors"),
+    ;
 
     public boolean isValid;
     public int id;
@@ -31,5 +38,4 @@ public enum ValidationResult {
         }
         return ValidationResult.VALID;
     }
-
 }

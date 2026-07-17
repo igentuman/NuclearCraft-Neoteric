@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 216,
-      "tag": "forge:arsenic"
+      "amount": 120,
+      "tag": "forge:molten_arsenic"
     }
   ],
   "powerModifier": 1.0,

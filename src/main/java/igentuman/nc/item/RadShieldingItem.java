@@ -1,12 +1,9 @@
 package igentuman.nc.item;
 
-import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -17,11 +14,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class RadShieldingItem extends Item
 {
 	private int burnTime = -1;
 	private boolean isHidden = false;
-
 	private int radShieldingLevel = 0;
 
 	public RadShieldingItem()
@@ -93,6 +91,6 @@ public class RadShieldingItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable("tooltip.nc.shielding.desc").withStyle(net.minecraft.ChatFormatting.GRAY));
+		list.add(__("tooltip.nc.shielding.desc").withStyle(net.minecraft.ChatFormatting.GRAY));
 	}
 }

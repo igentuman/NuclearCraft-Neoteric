@@ -1,6 +1,0 @@
-{
-  "parent": "nuclearcraft:block/processor/leacher",
-  "textures": {
-    "north": "nuclearcraft:block/processor/leacher_powered"
-  }
-}

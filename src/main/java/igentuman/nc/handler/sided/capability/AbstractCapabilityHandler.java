@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import java.util.HashMap;
 
 public abstract class AbstractCapabilityHandler {
+
     public int inputSlots;
     public int outputSlots;
     public BlockEntity tile;
@@ -95,8 +96,10 @@ public abstract class AbstractCapabilityHandler {
     }
 
     public boolean haveAccessFromSide(Direction side, int slot) {
+        if(side == null) return true;
         SidedContentHandler.RelativeDirection relativeDirection =
                 SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
+        assert relativeDirection != null;
         return sideMap.get(relativeDirection.ordinal())[slot].getMode() != SlotModePair.SlotMode.DISABLED;
     }
 

@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:thorium"
+      "amount": 240,
+      "tag": "forge:molten_thorium"
     }
   ],
   "powerModifier": 1.0,

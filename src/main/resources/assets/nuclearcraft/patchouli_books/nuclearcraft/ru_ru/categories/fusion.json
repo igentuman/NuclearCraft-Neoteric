@@ -1,0 +1,7 @@
+{
+  "name": "Термоядерная энергетика",
+  "description": "$(l)Слияние атомов для большей выгоды.",
+  "icon": "nuclearcraft:fusion_core",
+  "parent": "nuclearcraft:multiblocks",
+  "sortnum": 1
+}

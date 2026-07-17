@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:americium_243_za"
+      "amount": 90,
+      "tag": "forge:americium/243_za"
     }
   ],
   "output": [

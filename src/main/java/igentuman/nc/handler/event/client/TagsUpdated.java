@@ -1,5 +1,6 @@
 package igentuman.nc.handler.event.client;
 
+import igentuman.nc.block.bomb.sim.BlockClassifier;
 import igentuman.nc.recipes.NcRecipeType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TagsUpdatedEvent;
@@ -12,6 +13,7 @@ public class TagsUpdated {
         MinecraftForge.EVENT_BUS.addListener(TagsUpdated::tagsUpated);
     }
     public static void tagsUpated(TagsUpdatedEvent event) {
+        BlockClassifier.invalidate();
         if(RecipesUpdated.manager != null) {
             for (String name: ALL_RECIPES.keySet()) {
                 NcRecipeType recipeType = ALL_RECIPES.get(name).getRecipeType();

@@ -10,7 +10,6 @@ import igentuman.nc.fluid.NCFluid;
 import igentuman.nc.block.NCFluidBlock;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.util.TextureUtil;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -21,15 +20,11 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -41,31 +36,30 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.forgeRl;
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.content.materials.Materials.slurries;
-import static igentuman.nc.util.ModUtil.isMekanismLoadeed;
+import static igentuman.nc.content.materials.Materials.*;
+import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
+import static igentuman.nc.setup.registration.Registries.*;
+import static igentuman.nc.setup.registration.Tags.GASES_TAG;
+import static igentuman.nc.setup.registration.Tags.LIQUIDS_TAG;
+import static igentuman.nc.util.ModUtil.isMekanismLoaded;
 
 public class NCFluids {
-    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MODID);
-    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(
-            ForgeRegistries.Keys.FLUID_TYPES, MODID
-    );
+
     public static final HashMap<String, FluidEntry> ALL_FLUID_ENTRIES = new HashMap<>();
     public static final Set<NCBlocks.BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
     public static HashMap<String, FluidEntry> NC_MATERIALS = new HashMap<>();
     public static HashMap<String, FluidEntry> NC_GASES = new HashMap<>();
+    private static boolean initialized = false;
 
-    public static HashMap<String, TagKey<Fluid>> GASES_TAG = new HashMap<>();
-    public static HashMap<String, TagKey<Fluid>> LIQUIDS_TAG = new HashMap<>();
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }
 
     public static void init() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        FLUIDS.register(bus);
-        FLUID_TYPES.register(bus);
+        if(initialized) return;
+        initialized = true;
         materialFluids();
         gases();
         fuel();
@@ -86,7 +80,7 @@ public class NCFluids {
 
     private static void liquids() {
         HashMap<String, LiquidDefinition> items = new HashMap<>();
-        if(isMekanismLoadeed()) {
+        if(isMekanismLoaded()) {
             items.put("spent_nuclear_waste", new LiquidDefinition("spent_nuclear_waste", 0X901F1B14));
             items.put("nuclear_waste", new LiquidDefinition("nuclear_waste", 0X903D3323));
             items.put("fissile_fuel", new LiquidDefinition("fissile_fuel", 0X903D3323));
@@ -116,41 +110,48 @@ public class NCFluids {
         items.put("potassium_hydroxide_solution", new LiquidDefinition("potassium_hydroxide_solution", 0x50B8C6B0));
         items.put("borax_solution", new LiquidDefinition("borax_solution", 0x50EEEEEE));
         items.put("irradiated_borax_solution", new LiquidDefinition("irradiated_borax_solution", 0x90FFD0A3));
-        items.put("ice", new LiquidDefinition("ice", 0x90AFF1FF));
-        items.put("slurry_ice", new LiquidDefinition("slurry_ice", 0x907EAEB7));
+        items.put("ice", new LiquidDefinition("ice", 0x90AFF1FF, 100));
+        items.put("slurry_ice", new LiquidDefinition("slurry_ice", 0x907EAEB7, 100));
         items.put("heavy_water", new LiquidDefinition("heavy_water", 0x807EAEB7));
-        items.put("chocolate_liquor", new LiquidDefinition("chocolate_liquor", 0xFF41241C));
-        items.put("cocoa_butter", new LiquidDefinition("cocoa_butter", 0xFFF6EEBF));
-        items.put("unsweetened_chocolate", new LiquidDefinition("unsweetened_chocolate", 0xFF2C0A08));
-        items.put("dark_chocolate", new LiquidDefinition("dark_chocolate", 0xFF2C0B06));
-        items.put("milk_chocolate", new LiquidDefinition("milk_chocolate", 0xFF884121));
-        items.put("sugar", new LiquidDefinition("sugar", 0x50FFD59A));
+        items.put("chocolate_liquor", new LiquidDefinition("chocolate_liquor", 0xFF41241C, 400));
+        items.put("cocoa_butter", new LiquidDefinition("cocoa_butter", 0xFFF6EEBF, 400));
+        items.put("unsweetened_chocolate", new LiquidDefinition("unsweetened_chocolate", 0xFF2C0A08, 400));
+        items.put("dark_chocolate", new LiquidDefinition("dark_chocolate", 0xFF2C0B06, 400));
+        items.put("milk_chocolate", new LiquidDefinition("milk_chocolate", 0xFF884121, 400));
+        items.put("sugar", new LiquidDefinition("sugar", 0x50FFD59A, 400));
         items.put("gelatin", new LiquidDefinition("gelatin", 0x50DDD09C));
         items.put("hydrated_gelatin", new LiquidDefinition("hydrated_gelatin", 0x50DDD09C));
         items.put("marshmallow", new LiquidDefinition("marshmallow", 0x90E1E1E3));
         items.put("pasteurized_milk", new LiquidDefinition("pasteurized_milk", 0xFFFFF2F2));
-        items.put("technical_water", new LiquidDefinition("technical_water", 0x902F43F4));
-        items.put("condensate_water", new LiquidDefinition("condensate_water", 0x902F43F4));
-        items.put("emergency_coolant", new LiquidDefinition("emergency_coolant", 0x906DD0E7));
+        items.put("technical_water", new LiquidDefinition("technical_water", 0x902F43F4, 310));
+        items.put("condensate_water", new LiquidDefinition("condensate_water", 0x902F43F4, 300));
+        items.put("emergency_coolant", new LiquidDefinition("emergency_coolant", 0x906DD0E7, 50));
         items.put("emergency_coolant_heated", new LiquidDefinition("emergency_coolant_heated", 0x90CDBEE7));
-
+        items.put(Materials.irradiated_sodium, new LiquidDefinition(Materials.irradiated_sodium, 0x90CDBEE7));
+        items.put("mercury", new LiquidDefinition("mercury", 0xFFB5B5B5));
+        items.put("flibe_hot_molten_salt", new LiquidDefinition("flibe_hot_molten_salt", 0xFFB5B5B5, 800));
+        items.put("flibe_molten_salt", new LiquidDefinition("flibe_molten_salt", 0x90FFD0A3, 400));
         for(LiquidDefinition liquid: items.values()) {
-            LIQUIDS_TAG.put(liquid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", liquid.name)));
+            LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(liquid.name)));
             NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
 
+            if (!liquid.name.matches(".*_solution|.*_water|.*_liquor|.*_chocolate|.*_milk|.*_coolant.*")) {
+                LIQUIDS_TAG.put("molten_" + liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("molten_" + liquid.name)));
+            }
         }
     }
 
     private static void liquidGases() {
         HashMap<String, LiquidDefinition> items = new HashMap<>();
-        items.put("liquid_hydrogen", new LiquidDefinition("liquid_hydrogen", 0x50B37AC4));
-        items.put("liquid_helium", new LiquidDefinition("liquid_helium", 0x50A0EFFF));
-        items.put("liquid_oxygen", new LiquidDefinition("liquid_oxygen", 0x507E8CC8));
-        items.put("liquid_nitrogen", new LiquidDefinition("liquid_nitrogen", 0x5031C23A));
+        items.put("liquid_hydrogen", new LiquidDefinition("liquid_hydrogen", 0x50B37AC4, 90));
+        items.put("liquid_helium", new LiquidDefinition("liquid_helium", 0x50A0EFFF, 4));
+        items.put("liquid_oxygen", new LiquidDefinition("liquid_oxygen", 0x507E8CC8, 85));
+        items.put("liquid_nitrogen", new LiquidDefinition("liquid_nitrogen", 0x5031C23A, 4));
+        items.put(subliquid_matter, new LiquidDefinition(subliquid_matter, 0x50C90076));
 
         for(LiquidDefinition liquid: items.values()) {
-            LIQUIDS_TAG.put(liquid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", liquid.name)));
-            NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid.name, liquid.color));
+            LIQUIDS_TAG.put(liquid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(liquid.name)));
+            NC_MATERIALS.put(liquid.name, FluidEntry.makeLiquid(liquid));
         }
     }
 
@@ -175,7 +176,7 @@ public class NCFluids {
             items.put(material+"_clean_slurry", new AcidDefinition(material+"_clean_slurry", TextureUtil.rgbaToInt(rgba)));
         }
         for(AcidDefinition acid: items.values()) {
-            LIQUIDS_TAG.put(acid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", acid.name)));
+            LIQUIDS_TAG.put(acid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(acid.name)));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
         }
     }
@@ -190,17 +191,19 @@ public class NCFluids {
         items.put("aqua_regia_acid", new AcidDefinition("aqua_regia_acid", 0XCCFFBB99));
 
         for(AcidDefinition acid: items.values()) {
-            LIQUIDS_TAG.put(acid.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", acid.name)));
+            LIQUIDS_TAG.put(acid.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(acid.name)));
             NC_MATERIALS.put(acid.name, FluidEntry.makeAcid(acid));
-
         }
     }
 
     private static void materialFluids() {
         for (String name: Materials.fluids().keySet()) {
-            LIQUIDS_TAG.put(name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", name)));
+            LIQUIDS_TAG.put(name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(name)));
             NC_MATERIALS.put(name, FluidEntry.makeMoltenLiquid(name, Materials.fluids().get(name).color));
+            LIQUIDS_TAG.put("molten_" + name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("molten_" + name)));
         }
+        LIQUIDS_TAG.put("aluminium", TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("aluminium")));
+        LIQUIDS_TAG.put("molten_aluminium", TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("molten_aluminium")));
     }
 
     private static void fuel() {
@@ -218,51 +221,54 @@ public class NCFluids {
                     NC_MATERIALS.put(key,
                             FluidEntry.makeMoltenLiquid(key.replace("-","_"),
                                     colorFuel));
-                    LIQUIDS_TAG.put(key, TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation("forge", key.replace("-","_"))));
+                    LIQUIDS_TAG.put(key, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), forgeRl(key.replace("-","_"))));
                     NC_MATERIALS.put("depleted_"+key,
                             FluidEntry.makeMoltenLiquid("depleted_"+key.replace("-","_"), colorDepleted));
-                    LIQUIDS_TAG.put("depleted_"+key, TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation("forge", "depleted_"+key.replace("-","_"))));
+                    LIQUIDS_TAG.put("depleted_"+key, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), forgeRl("depleted_"+key.replace("-","_"))));
+                    if(name.matches("xenorium.*|quantite.*|")) break;
                 }
             }
         }
     }
 
-
     private static void gases() {
         HashMap<String, GasDefinition> items = new HashMap<>();
 
-        items.put("steam", new GasDefinition("steam", 0xCC929292));
-        items.put("high_pressure_steam", new GasDefinition("high_pressure_steam", 0xCCBDBDBD));
-        items.put("exhaust_steam", new GasDefinition("exhaust_steam", 0xCC7E7E7E));
-        items.put("low_pressure_steam", new GasDefinition("low_pressure_steam", 0xCCA8A8A8));
-        items.put("low_quality_steam", new GasDefinition("low_quality_steam", 0xCC828282));
-        items.put("argon", new GasDefinition("argon", 0xCCFF75DD));
-        items.put("neon", new GasDefinition("neon", 0xCCFF9F7A));
-        items.put("chlorine", new GasDefinition("chlorine", 0xCCFFFF8F));
-        items.put("nitric_oxide", new GasDefinition("nitric_oxide", 0xCCC9EEFF));
-        items.put("nitrogen_dioxide", new GasDefinition("nitrogen_dioxide", 0xCC782A10));
-        items.put("hydrogen", new GasDefinition("hydrogen", 0xCCA0EFFF));
-        items.put("helium", new GasDefinition("helium", 0xCCC57B81));
-        items.put("helium_3", new GasDefinition("helium_3", 0xCCCBBB67));
-        items.put("tritium", new GasDefinition("tritium", 0xCC5DBBD6));
-        items.put("deuterium", new GasDefinition("deuterium", 0xCC9E6FEF));
-        items.put("oxygen", new GasDefinition("oxygen", 0xCC7E8CC8));
-        items.put("nitrogen", new GasDefinition("nitrogen", 0xCC7CC37B));
-        items.put("fluorine", new GasDefinition("fluorine", 0xCCD3C75D));
-        items.put("carbon", new GasDefinition("carbon", 0xCC5C635A));
-        items.put("carbon_dioxide", new GasDefinition("carbon_dioxide", 0xCC5C635A));
-        items.put("carbon_monoxide", new GasDefinition("carbon_monoxide", 0xCC4C5649));
-        items.put("ethene", new GasDefinition("ethene", 0xCCFFE4A3));
-        items.put("fluoromethane", new GasDefinition("fluoromethane", 0xCC424C05));
-        items.put("ammonia", new GasDefinition("ammonia", 0xCC7AC3A0));
-        items.put("oxygen_difluoride", new GasDefinition("oxygen_difluoride", 0xCCEA1B01));
-        items.put("diborane", new GasDefinition("diborane", 0xCCCC6E8C));
-        items.put("sulfur_dioxide", new GasDefinition("sulfur_dioxide", 0xCCC3BC7A));
-        items.put("sulfur_trioxide", new GasDefinition("sulfur_trioxide", 0xCCD3AE5D));
-        items.put("radon", new GasDefinition("radon", 0xFFFFFFFF));
+        items.put(quantite_energy, new GasDefinition(quantite_energy, 0x369cd192, 2372));
+        items.put("steam", new GasDefinition("steam", 0xCC929292, 373));
+        items.put("high_pressure_steam", new GasDefinition("high_pressure_steam", 0xCCBDBDBD, 383));
+        items.put("exhaust_steam", new GasDefinition("exhaust_steam", 0xCC7E7E7E, 292));
+        items.put("low_pressure_steam", new GasDefinition("low_pressure_steam", 0xCCA8A8A8, 272));
+        items.put("low_quality_steam", new GasDefinition("low_quality_steam", 0xCC828282, 272));
+        items.put("argon", new GasDefinition("argon", 0xCCFF75DD, 87));
+        items.put("neon", new GasDefinition("neon", 0xCCFF9F7A, 27));
+        items.put("chlorine", new GasDefinition("chlorine", 0xCCFFFF8F, 239));
+        items.put("nitric_oxide", new GasDefinition("nitric_oxide", 0xCCC9EEFF, 121));
+        items.put("nitrogen_dioxide", new GasDefinition("nitrogen_dioxide", 0xCC782A10, 294));
+        items.put("hydrogen", new GasDefinition("hydrogen", 0xCCA0EFFF, 239));
+        items.put("helium", new GasDefinition("helium", 0xCCC57B81, 293));
+        items.put("hot_helium", new GasDefinition("hot_helium", 0xAAC57B81, 693));
+        items.put("helium_3", new GasDefinition("helium_3", 0xCCCBBB67, 293));
+        items.put("tritium", new GasDefinition("tritium", 0xCC5DBBD6, 20));
+        items.put("deuterium", new GasDefinition("deuterium", 0xCC9E6FEF, 239));
+        items.put("oxygen", new GasDefinition("oxygen", 0xCC7E8CC8, 293));
+        items.put("nitrogen", new GasDefinition("nitrogen", 0xCC7CC37B, 293));
+        items.put("fluorine", new GasDefinition("fluorine", 0xCCD3C75D, 293));
+        items.put("carbon", new GasDefinition("carbon", 0xCC5C635A, 400));
+        items.put("carbon_dioxide", new GasDefinition("carbon_dioxide", 0xCC5C635A, 394));
+        items.put("carbon_monoxide", new GasDefinition("carbon_monoxide", 0xCC4C5649, 381));
+        items.put("ethene", new GasDefinition("ethene", 0xCCFFE4A3, 169));
+        items.put("fluoromethane", new GasDefinition("fluoromethane", 0xCC424C05, 194));
+        items.put("ammonia", new GasDefinition("ammonia", 0xCC7AC3A0, 240));
+        items.put("oxygen_difluoride", new GasDefinition("oxygen_difluoride", 0xCCEA1B01, 128));
+        items.put("diborane", new GasDefinition("diborane", 0xCC5DBBD6, 180));
+        items.put("sulfur_dioxide", new GasDefinition("sulfur_dioxide", 0xCCC3BC7A, 400));
+        items.put("sulfur_trioxide", new GasDefinition("sulfur_trioxide", 0xCCD3AE5D, 400));
+        items.put("radon", new GasDefinition("radon", 0xFFFFFFFF, 260));
+
         for(GasDefinition gas: items.values()) {
-            LIQUIDS_TAG.put(gas.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", gas.name)));
-            GASES_TAG.put(gas.name, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", "gases/"+gas.name)));
+            LIQUIDS_TAG.put(gas.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(gas.name)));
+            GASES_TAG.put(gas.name, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl("gases/"+gas.name)));
             NC_GASES.put(gas.name, FluidEntry.makeGas(gas));
         }
     }
@@ -271,6 +277,9 @@ public class NCFluids {
     {
         for(String name: Materials.isotopes()) {
             for(String type: new String[]{"", "_za", "_ox","_ni"}) {
+                if(!NC_ISOTOPES.containsKey(name+type)) {
+                    continue;
+                }
                 if(NC_MATERIALS.containsKey(name+type)) continue;
                 int color = 0xFFCCCCCC;
                 if(FMLEnvironment.dist.isClient()) {
@@ -278,8 +287,8 @@ public class NCFluids {
                 }
                 NC_MATERIALS.put(name+type,
                         FluidEntry.makeMoltenLiquid(name.replace("/", "_")+type,color));
-                LIQUIDS_TAG.put(name+type, TagKey.create(Registry.FLUID_REGISTRY,  new ResourceLocation("forge", name+type)));
-
+                LIQUIDS_TAG.put(name+type, TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  forgeRl(name+type)));
+                if(name.matches("xenorium.*|quantite.*|")) break;
             }
         }
     }
@@ -315,6 +324,8 @@ public class NCFluids {
     )
     {
 
+        public static final List<RegistryObject<BucketItem>> ALL_BUCKETS = new ArrayList<>();
+
         public static FluidEntry makeAcid(AcidDefinition acid) {
             return make(acid.name,0, rl("block/material/fluid/liquid_still"), rl("block/material/fluid/liquid_flow"), liquidBuilder(acid.temperature), acid.color, false);
         }
@@ -330,6 +341,10 @@ public class NCFluids {
         private static FluidEntry makeLiquid(String name, int color)
         {
             return make(name,0, rl("block/material/fluid/liquid_still"), rl("block/material/fluid/liquid_flow"), liquidBuilder(400), color, false);
+        }
+
+        public static FluidEntry makeLiquid(LiquidDefinition liquid) {
+            return make(liquid.name,0, rl("block/material/fluid/liquid_still"), rl("block/material/fluid/liquid_flow"), liquidBuilder(liquid.temperature), liquid.color, false);
         }
 
         private static FluidEntry make(String name, ResourceLocation stillTex, ResourceLocation flowingTex, int color)
@@ -419,7 +434,8 @@ public class NCFluids {
                     () -> BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable().noCollission(),
                     p -> new NCFluidBlock(thisMutable.getValue(), p)
             );
-            RegistryObject<BucketItem> bucket = NCItems.ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));
+            RegistryObject<BucketItem> bucket = ITEMS.register(name+"_bucket", () -> makeBucket(still, burnTime));
+            ALL_BUCKETS.add(bucket);
             FluidEntry entry = new FluidEntry(flowing, still, block, bucket, type, properties, color);
             thisMutable.setValue(entry);
             ALL_FLUID_BLOCKS.add(block);
@@ -486,8 +502,6 @@ public class NCFluids {
             };
         }
 
-
-
         public NCFluid getFlowing()
         {
             return flowing.get();
@@ -513,7 +527,6 @@ public class NCFluids {
             return new NCBucketItem(
                     still, new Item.Properties()
                     .stacksTo(1)
-                    .tab(CreativeTabs.NC_ITEMS)
                     .craftRemainder(Items.BUCKET))
             {
                 @Override

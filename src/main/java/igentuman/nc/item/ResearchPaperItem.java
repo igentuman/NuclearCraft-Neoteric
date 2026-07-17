@@ -13,6 +13,8 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static igentuman.nc.util.TextUtils.__;
+
 public class ResearchPaperItem extends Item {
     public ResearchPaperItem(Properties pProperties) {
         super(pProperties);
@@ -28,12 +30,12 @@ public class ResearchPaperItem extends Item {
     {
         CompoundTag tag = stack.getOrCreateTag();
         if(tag.contains("vein")) {
-            list.add(Component.translatable(tag.getString("vein")).withStyle(ChatFormatting.AQUA));
+            list.add(__(tag.getString("vein")).withStyle(ChatFormatting.AQUA));
         }
         if(tag.contains("pos")) {
             BlockPos pos = BlockPos.of(tag.getLong("pos"));
-            list.add(Component.translatable("tooltip.nc.chunk_position", pos.toShortString()).withStyle(ChatFormatting.BLUE));
-            list.add(Component.translatable("tooltip.nc.use_in_leacher", pos.toShortString()).withStyle(ChatFormatting.GREEN));
+            list.add(__("tooltip.nc.chunk_position", pos.toShortString()).withStyle(ChatFormatting.BLUE));
+            list.add(__("tooltip.nc.use_in_leacher", pos.toShortString()).withStyle(ChatFormatting.GREEN));
         }
     }
 

@@ -1,0 +1,44 @@
+{
+  "type": "nuclearcraft:collision_chamber",
+  "crossSection": 0.25,
+  "energyReleased": 420,
+  "inputParticles": [
+    {
+      "amount": 1,
+      "focus": 5.0,
+      "meanEnergy": 700,
+      "particle": "antiproton"
+    },
+    {
+      "amount": 1,
+      "focus": 5.0,
+      "meanEnergy": 700,
+      "particle": "antiproton"
+    }
+  ],
+  "maxEnergy": 10000,
+  "minEnergy": 700,
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "antideuteron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "electron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 0,
+      "particle": "electron_antineutrino"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

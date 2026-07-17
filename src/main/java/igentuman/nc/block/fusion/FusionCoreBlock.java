@@ -1,16 +1,13 @@
 package igentuman.nc.block.fusion;
 
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.block.entity.fusion.FusionCoreProxyBE;
-import igentuman.nc.block.entity.processor.NCProcessorBE;
-import igentuman.nc.container.FissionControllerContainer;
+import igentuman.nc.block.entity.MultiblockControllerBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
+import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
+import igentuman.nc.compat.gregtech.GTUtils;
 import igentuman.nc.container.FusionCoreContainer;
-import igentuman.nc.content.processors.Processors;
-import igentuman.nc.setup.registration.NCProcessors;
-import igentuman.nc.util.TextUtils;
+import igentuman.nc.handler.config.CommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,7 +16,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,8 +26,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -40,8 +34,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -49,13 +41,18 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BE;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
+import static igentuman.nc.handler.config.FusionConfig.FUSION_CONFIG;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BE;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
-public class FusionCoreBlock extends FusionBlock {
+public class FusionCoreBlock extends FusionBeBlock {
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
 
     public FusionCoreBlock(Properties pProperties) {
@@ -142,12 +139,12 @@ public class FusionCoreBlock extends FusionBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide()) {
-            BlockEntity be = level.getBlockEntity(pos);
+            BlockEntity be = level.getExistingBlockEntity(pos);
             if (be instanceof FusionCoreBE)  {
                 MenuProvider containerProvider = new MenuProvider() {
                     @Override
                     public Component getDisplayName() {
-                        return Component.translatable("fusion_core");
+                        return __("fusion_core");
                     }
 
                     @Override
@@ -166,14 +163,14 @@ public class FusionCoreBlock extends FusionBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return (lvl, pos, blockState, t) -> {
-                if (t instanceof FusionCoreBE<?> tile) {
+                if (t instanceof FusionCoreBE tile) {
                     tile.tickClient();
                    // level.setBlockAndUpdate(pos, blockState.setValue(ACTIVE, tile.isActive));
                 }
             };
         }
         return (lvl, pos, blockState, t)-> {
-            if (t instanceof FusionCoreBE<?> tile) {
+            if (t instanceof FusionCoreBE tile) {
                 tile.tickServer();
             }
         };
@@ -182,6 +179,34 @@ public class FusionCoreBlock extends FusionBlock {
     @Override
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag) {
         if(asItem().toString().contains("empty") || this.asItem().equals(Items.AIR)) return;
+        if(isGtLoaded() && isGTEUCapEnabled()) {
+            list.add(__("tooltip.nc.energy_eu_tier", getTier(pStack)).withStyle(ChatFormatting.GOLD));
+        }
+        if(isGtLoaded() && GTCEU_CONFIG.COMPATIBILITY.get() == CommonConfig.GTCEUCompatibilityConfig.GTCEUCompatibility.GTCEU_AND_FE && GTCEU_CONFIG.LIMIT_FE_OUTPUT.get()) {
+            list.add(__("tooltip.nc.max_fe_extract_per_tick", formatEnergy(GTUtils.getMaxOutputFE(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get()))).withStyle(ChatFormatting.GOLD));
+        }
+        list.add(__("multiblock.build_in_chunk.advise").withStyle(ChatFormatting.GREEN));
+        int min = FUSION_CONFIG.MIN_SIZE.get();
+        int max = FUSION_CONFIG.MAX_SIZE.get();
+        list.add(__("tooltip.structure.sizes", min+"x3x"+min, max+"x3x"+max).withStyle(ChatFormatting.ITALIC));
     }
 
+    private CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier(ItemStack pStack) {
+        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.byId(GTCEU_CONFIG.FUSION_REACTOR_ENERGY_TIER.get().ordinal()+pStack.getOrCreateTag().getInt("upgrade_tier"));
+    }
+
+    @Override
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(world, pos, state, placer, stack);
+
+        if (stack.hasTag()) {
+            MultiblockControllerBE tileEntity = (MultiblockControllerBE) world.getExistingBlockEntity(pos);
+            CompoundTag nbtData = stack.getTag();
+            CompoundTag tag = new CompoundTag();
+            tag.put("Info", nbtData);
+            tileEntity.load(tag);
+            tileEntity.upgrade_tier = nbtData.getInt("upgrade_tier");
+            tileEntity.updateEnergyTier(tileEntity.upgrade_tier);
+        }
+    }
 }

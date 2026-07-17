@@ -23,19 +23,20 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Supplier;
 
 import static igentuman.nc.handler.sided.SlotModePair.SlotMode.*;
 
 public class ItemCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
-    public List<ItemStack> allowedInputItems;
-    public HashMap<Integer, List<Item>> validItemsForSlot = new HashMap<>();
+    public Supplier<List<ItemStack>> allowedInputItems;
+    public final HashMap<Integer, List<Item>> validItemsForSlot = new HashMap<>();
     protected NonNullList<ItemStack> stacks;
     protected ItemStack[] sortedStacks;
-    private Map<Direction, LazyOptional<ItemHandlerWrapper>> handlerCache = new HashMap<>();
+    private final Map<Direction, LazyOptional<ItemHandlerWrapper>> handlerCache = new HashMap<>();
+    public final LinkedList<ItemStack> holdedInputs = new LinkedList<>();
 
-    public List<ItemStack> holdedInputs = new ArrayList<>();
-
+    public ItemCapabilityHandler() {}
     public ItemCapabilityHandler(int input, int output) {
         this.inputSlots = input;
         this.outputSlots = output;
@@ -64,7 +65,11 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     @Override
     @NotNull
     public ItemStack getStackInSlot(int slot) {
-        validateSlotIndex(slot);
+        try {
+            validateSlotIndex(slot);
+        } catch (Exception ignored) {
+            return ItemStack.EMPTY;
+        }
         return this.stacks.get(slot);
     }
 
@@ -105,10 +110,8 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public ItemStack insertItemInternal(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (stack.isEmpty())
-            return ItemStack.EMPTY;
-        if (!isItemValid(slot, stack))
-            return stack;
+        if (stack.isEmpty()) return ItemStack.EMPTY;
+        if (!isValidForSlotInternal(stack, slot)) return stack;
 
         validateSlotIndex(slot);
 
@@ -117,7 +120,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         int limit = getStackLimit(slot, stack);
 
         if (!existing.isEmpty()) {
-            if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
+            if (!(ItemHandlerHelper.canItemStacksStack(stack, existing) && existing.getCount() <= limit))
                 return stack;
 
             limit -= existing.getCount();
@@ -159,7 +162,13 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
 
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        return true;
+        if(isValidInputItem(stack)) {
+            return true;
+        }
+        if(validItemsForSlot.containsKey(slot)) {
+            return validItemsForSlot.get(slot).contains(stack.getItem());
+        }
+        return false;
     }
 
     private int isValidForAnyInputSlot(ItemStack stack) {
@@ -171,6 +180,12 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
             }
         }
         return -1;
+    }
+
+    protected boolean isValidForSlotInternal(ItemStack stack, int slot) {
+        return getStackInSlot(slot).isEmpty()
+                || (ItemHandlerHelper.canItemStacksStack(getStackInSlot(slot), stack)
+                && getStackInSlot(slot).getCount() < getSlotLimit(slot));
     }
 
     private int isValidForAnyOutputSlot(ItemStack stack) {
@@ -258,7 +273,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     private LazyOptional<ItemHandlerWrapper> globalCap() {
 
         if(globalCap == null) {
-            globalCap =  LazyOptional.of(() -> new ItemHandlerWrapper(null, this, (i) -> true, (i, s) -> true));
+            globalCap =  LazyOptional.of(() -> new ItemHandlerWrapper(null, this, (i) -> outputAllowed(i, null), (i, s) -> inputAllowed(i, s, null)));
         }
         return globalCap;
     }
@@ -280,28 +295,32 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
             validForSlot = validItemsForSlot.get(i).contains(stack.getItem());
         }
         if (!validForSlot) return false;
+        if (side == null) {
+        //todo remove
+            return i == isValidForAnyInputSlot(stack);
+        }
         SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(side, getFacing());
         SlotModePair.SlotMode mode = sideMap.get(relativeDirection.ordinal())[i].getMode();
-        return mode == INPUT || mode == PULL && isValidInputItem(stack);
+        return (mode == INPUT || mode == PULL || mode == DEFAULT) && isValidInputItem(stack);
     }
 
     public boolean isValidInputItem(ItemStack item)
     {
-        if(allowedInputItems == null) return true;
-        if(allowedInputItems.contains(item)) return true;
-        for(ItemStack stack: allowedInputItems) {
-            if(stack.sameItem(item)) {
+        if(allowedInputItems == null) return false;
+        if(allowedInputItems.get().contains(item)) return true;
+        for(ItemStack stack: allowedInputItems.get()) {
+            if(stack.is(item.getItem())) {
                 return true;
             }
         }
-        return allowedInputItems.isEmpty();
+        return allowedInputItems.get().isEmpty();
     }
     public boolean pushItems(Direction dir) {
        return pushItems(dir, false, tile.getBlockPos());
     }
 
     public boolean pushItems(Direction dir, boolean forceFlag, BlockPos pos) {
-        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
+        BlockEntity be = tile.getLevel().getExistingBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
         if(cap.isPresent()) {
@@ -326,7 +345,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public boolean pullItems(Direction dir, boolean forceFlag, BlockPos pos) {
-        BlockEntity be = tile.getLevel().getBlockEntity(pos.relative(dir));
+        BlockEntity be = tile.getLevel().getExistingBlockEntity(pos.relative(dir));
         if(be == null) return false;
         LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
         if(!cap.isPresent()) {
@@ -359,17 +378,18 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public boolean isValidForOutputSlot(int i, ItemStack outputItem) {
-        if(outputAllowed(i, null)) {
+        if (outputAllowed(i, null)) {
             ItemStack stack = getStackInSlot(i);
             if(stack.isEmpty()) return true;
-            if(ItemHandlerHelper.canItemStacksStack(stack, outputItem)) return true;
+            return ItemHandlerHelper.canItemStacksStack(stack, outputItem)
+                    && stack.getMaxStackSize() >= outputItem.getCount() + stack.getCount();
         }
         return false;
     }
 
     public boolean canPushExcessItems(int i, ItemStack outputItem) {
         for(Direction dir: Direction.values()) {
-            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+            BlockEntity be = tile.getLevel().getExistingBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) continue;
             LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
             if(cap.isPresent()) {
@@ -391,7 +411,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
 
     public ItemStack pushExcessItems(int i, ItemStack outputItem) {
         for(Direction dir: Direction.values()) {
-            BlockEntity be = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(dir));
+            BlockEntity be = tile.getLevel().getExistingBlockEntity(tile.getBlockPos().relative(dir));
             if(be == null) continue;
             LazyOptional<IItemHandler> cap = be.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
             if(cap.isPresent()) {
@@ -399,7 +419,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
                 SidedContentHandler.RelativeDirection relativeDirection = SidedContentHandler.RelativeDirection.toRelative(dir, getFacing());
                 for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
                     if(pair.getSlot() != i) continue;
-                    if(pair.getMode() == PUSH) {
+                    if(pair.getMode() == PUSH || pair.getMode() == PUSH_EXCESS) {
                         ItemStack remainder = ItemHandlerHelper.insertItem(handler, outputItem, true);
                         if(remainder.isEmpty()) {
                             return ItemHandlerHelper.insertItem(handler, outputItem, false);

@@ -1,8 +1,5 @@
 package igentuman.nc.radiation;
 
-import igentuman.nc.content.fuel.FuelManager;
-import igentuman.nc.content.materials.Materials;
-import igentuman.nc.setup.registration.Fuel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -10,11 +7,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.HashMap;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.forgeRl;
 import static igentuman.nc.handler.config.RadiationConfig.RADIATION_CONFIG;
+import static igentuman.nc.util.NcUtils.rlFromString;
 import static net.minecraft.world.item.Items.AIR;
 
 public class RadiationCleaningItems {
-    protected static HashMap<Item, Long> radiationMap = new HashMap<>();
+
+    protected static final HashMap<Item, Long> radiationMap = new HashMap<>();
     protected static boolean initialized = false;
     public static HashMap<Item, Long> get()
     {
@@ -61,7 +61,7 @@ public class RadiationCleaningItems {
         if(!name.contains(":")) {
             name = MODID +":" + name;
         }
-        ResourceLocation itemKey = new ResourceLocation(name.replace("/", "_"));
+        ResourceLocation itemKey = rlFromString(name.replace("/", "_"));
         return ForgeRegistries.ITEMS.getValue(itemKey);
     }
 

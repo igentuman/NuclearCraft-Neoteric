@@ -1,6 +1,8 @@
 package igentuman.nc.block.entity.processor;
 
+import com.mojang.authlib.GameProfile;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.compat.ie.IEMineralVein;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
 import igentuman.nc.handler.sided.SlotModePair;
@@ -8,15 +10,20 @@ import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
-import igentuman.nc.util.NCBlockPos;
+import igentuman.nc.util.BlockPosInstance;
 import igentuman.nc.util.annotation.NBTField;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
@@ -25,60 +32,50 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
-import static igentuman.nc.compat.GlobalVars.CATALYSTS;
-import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 import static igentuman.nc.radiation.ItemRadiation.getItemByName;
 import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
 import static net.minecraft.world.item.Items.*;
 import static igentuman.nc.util.ModUtil.isIeLoaded;;
 
-public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
-    public LeacherBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, Processors.LEACHER);
-    }
+public class LeacherBE extends NCProcessorBE {
 
     public static final byte PUMPS_ERROR = 4;
     public static final byte NO_SOURCE = 3;
     public static final byte WRONG_POSITION = 2;
     public static final byte POSITION_IS_CORRECT = 1;
     public static final byte NO_ACID = 0;
-
+    public final UUID fakePlayerUUID = UUID.nameUUIDFromBytes("729b293e-9ac8-4873-a530-f38ed1e24fcb".getBytes());
     protected List<ItemStack> minableOres;
+    protected Player player;
 
     @NBTField
     public BlockPos currentMiningPos;
     @NBTField
     public boolean pumpsAreValid = false;
-
     @NBTField
     public byte leacherState = 2;
-
     @NBTField
     public ItemStack catalyst = ItemStack.EMPTY;
 
     protected PumpBE[] pumps = new PumpBE[4];
+    protected byte pumpValidationTimeout = 80;
 
-    protected byte pumpValidationTimeout = 40;
-
-    @Override
-    public String getName() {
-        return Processors.LEACHER;
+    public LeacherBE(BlockPos pPos, BlockState pBlockState) {
+        super(pPos, pBlockState, Processors.LEACHER);
+        particle1 = ParticleTypes.BUBBLE;
     }
 
     @Override
@@ -97,8 +94,9 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         }
 
         if(lastState != leacherState) {
+            setChanged();
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(ACTIVE, isActive));
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_ALL);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState().setValue(ACTIVE, isActive), Block.UPDATE_NEIGHBORS);
         }
         if(leacherState == POSITION_IS_CORRECT) {
             super.tickServer();
@@ -108,9 +106,8 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     private void handleState() {
         pumpValidationTimeout--;
-        if(pumpValidationTimeout <= 0) {
-            pumpValidationTimeout = 40;
-            clearHighligts();
+        if(pumpValidationTimeout <= 0 || getLevel().isClientSide()) {
+            pumpValidationTimeout = 80;
             validatePumps();
         }
     }
@@ -126,14 +123,20 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         ChunkPos chunkPos = new ChunkPos(getBlockPos());
         boolean isClientSide = Objects.requireNonNull(getLevel()).isClientSide;
         if(isClientSide) {
-            BlockOverlayHandler.removeFromOutline(new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
-            BlockOverlayHandler.removeFromOutline(new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
-            BlockOverlayHandler.removeFromOutline(new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
-            BlockOverlayHandler.removeFromOutline(new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
+            BlockOverlayHandler.removeFromOutline(new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
+            BlockOverlayHandler.removeFromOutline(new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
+            BlockOverlayHandler.removeFromOutline(new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
+            BlockOverlayHandler.removeFromOutline(new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
         }
     }
 
     public PumpBE[] getPumpsForClient() {
+        if(pumpsAreValid) {
+            if(pumps[0] == null) {
+                validatePumps();
+            }
+            return pumps;
+        }
         validatePumps();
         return pumps;
     }
@@ -155,11 +158,48 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     public void tickClient() {
         handleState();
+        if (pumpsAreValid && recipeInfo().recipe != null) {
+            assert getLevel() != null;
+            RandomSource rand = getLevel().getRandom();
+            ChunkPos chunkPos = new ChunkPos(getBlockPos());
+            int minX = chunkPos.getMinBlockX();
+            int minZ = chunkPos.getMinBlockZ();
+
+            for (int i = 0; i < 3; i++) {
+                int x = minX + rand.nextInt(16);
+                int z = minZ + rand.nextInt(16);
+                int y = getLevel().getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+                double px = x + rand.nextDouble();
+                double pz = z + rand.nextDouble();
+                double py = y + 0.1D + rand.nextDouble() * 0.2D;
+                getLevel().addParticle(ParticleTypes.MYCELIUM, px, py, pz, 0.0D, 0.0D, 0.0D);
+                if (rand.nextInt(40) == 0) {
+                    getLevel().addParticle(ParticleTypes.POOF, px, py, pz, 0.0D, 0.0D, 0.0D);
+                }
+                if (rand.nextInt(50) == 0) {
+                    getLevel().addParticle(ParticleTypes.EFFECT, worldPosition.getX() + rand.nextDouble(), worldPosition.getY() + 0.5d + rand.nextDouble(), worldPosition.getZ() + rand.nextDouble(), 0.0D, 0.0D, 0.0D);
+                }
+            }
+
+            if (rand.nextInt(80) == 0) {
+                int x = minX + rand.nextInt(16);
+                int z = minZ + rand.nextInt(16);
+                int y = getLevel().getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+                getLevel().playLocalSound(
+                        x + 0.5D, y + 0.5D, z + 0.5D,
+                        SoundEvents.FIRE_EXTINGUISH,
+                        SoundSource.BLOCKS,
+                        0.3F,
+                        0.6F + rand.nextFloat() * 0.2F,
+                        false
+                );
+            }
+        }
     }
 
-    public boolean isPumpValid(NCBlockPos pos, int id) {
-        for (int y = 0; y < 20; y++) {
-            BlockEntity be = getLevel().getBlockEntity( pos.below());
+    public boolean isPumpValid(BlockPosInstance pos, int id) {
+        for (int y = 0; y < 2; y++) {
+            BlockEntity be = getLevel().getExistingBlockEntity(pos.below());
             if (be instanceof PumpBE) {
                 pumps[id] = (PumpBE) be;
                 return pumps[id].isInSituValid();
@@ -172,40 +212,40 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         ChunkPos chunkPos = new ChunkPos(getBlockPos());
         boolean isClientSide = Objects.requireNonNull(getLevel()).isClientSide;
         pumpsAreValid = isPumpValid(
-                new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY()+5, chunkPos.getMinBlockZ()),
+                new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY()+1, chunkPos.getMinBlockZ()),
                 0
         );
         if(!pumpsAreValid) {
             if(isClientSide) {
-                BlockOverlayHandler.addToOutline(new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
+                BlockOverlayHandler.addToOutline(new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
             }
         }
         if(!isPumpValid(
-                new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY()+5, chunkPos.getMaxBlockZ()),
+                new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY()+1, chunkPos.getMaxBlockZ()),
                 1
         )) {
             pumpsAreValid = false;
             if(isClientSide) {
-                BlockOverlayHandler.addToOutline(new NCBlockPos(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
+                BlockOverlayHandler.addToOutline(new BlockPosInstance(chunkPos.getMinBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
             }
         }
 
         if(!isPumpValid(
-                new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY()+5, chunkPos.getMaxBlockZ()),
+                new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY()+1, chunkPos.getMaxBlockZ()),
                 2
         )) {
             if(isClientSide) {
-                BlockOverlayHandler.addToOutline(new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
+                BlockOverlayHandler.addToOutline(new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMaxBlockZ()));
             }
             pumpsAreValid = false;
         }
 
         if(!isPumpValid(
-                new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY()+5, chunkPos.getMinBlockZ()),
+                new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY()+1, chunkPos.getMinBlockZ()),
                 3
         )) {
             if(isClientSide) {
-                BlockOverlayHandler.addToOutline(new NCBlockPos(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
+                BlockOverlayHandler.addToOutline(new BlockPosInstance(chunkPos.getMaxBlockX(), worldPosition.getY(), chunkPos.getMinBlockZ()));
             }
             pumpsAreValid = false;
         }
@@ -218,24 +258,28 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
     @Override
     public void processRecipe() {
         if(!hasCatalyst()) return;
+        if(contentHandler().itemHandler.getStackInSlot(0).isEmpty()) {
+            gatherOre();
+        }
         super.processRecipe();
-    }
-
-    protected void updateRecipe() {
-        gatherOre();
-        super.updateRecipe();
     }
 
     public void gatherOre()
     {
+        if(
+                !contentHandler().itemHandler.getStackInSlot(0).isEmpty()
+                && !contentHandler().itemHandler.getStackInSlot(0).is(BARRIER)
+        ) {
+            return;
+        }
         if(!hasCatalyst()) {
             catalyst = ItemStack.EMPTY;
             return;
         }
 
-        catalyst = catalystHandler.getStackInSlot(0);
+        catalyst = catalystHandler().getStackInSlot(0);
         ItemStack ore = ItemStack.EMPTY;
-        if(contentHandler.fluidCapability.getFluidInSlot(0).isEmpty()) {
+        if(contentHandler().fluidHandler.getFluidInSlot(0).isEmpty()) {
             leacherState = NO_ACID;
             return;
         }
@@ -251,12 +295,19 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
                 ore = useIECoreSample();
             }
         }
-        contentHandler.itemHandler.insertItemInternal(0, ore, false);
+        contentHandler().itemHandler.insertItemInternal(0, ore, false);
     }
 
-    //todo implement
     protected ItemStack useIECoreSample() {
-        return ItemStack.EMPTY;
+        assert level != null;
+        if (
+                !level.getChunk(worldPosition).getPos().equals(IEMineralVein.getChunkPos(catalyst)) ||
+                        !level.dimension().equals(IEMineralVein.getDimension(catalyst))
+        ) {
+            leacherState = WRONG_POSITION;
+            return ItemStack.EMPTY;
+        }
+        return IEMineralVein.getNextVeinItem(level, catalyst, allowedInputItems);
     }
 
 
@@ -279,7 +330,6 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
 
     int currentMiningTimeout = 0;
     protected ItemStack useMapCatalyst() {
-
         MapItemSavedData mapData = ((MapItem)catalyst.getItem()).getSavedData(catalyst, getLevel());
         if(mapData == null) return ItemStack.EMPTY;
         if(worldPosition.getX() < mapData.x-64 || worldPosition.getX() > mapData.x+64 &&
@@ -292,7 +342,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
             if(currentMiningTimeout > 200) {
                 currentMiningTimeout = 0;
 
-                currentMiningPos = new NCBlockPos(getBlockPos().getX(), getBlockPos().getY()-1, getBlockPos().getZ());
+                currentMiningPos = new BlockPosInstance(getBlockPos().getX(), getBlockPos().getY()-1, getBlockPos().getZ());
             } else {
                 currentMiningTimeout++;
                 return ItemStack.EMPTY;
@@ -328,7 +378,7 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         int startY = currentMiningPos.getY();
         int startX = new ChunkPos(currentMiningPos).getMinBlockX();
         int startZ = new ChunkPos(currentMiningPos).getMinBlockZ();
-        NCBlockPos tempMiningPos = new NCBlockPos(currentMiningPos);
+        BlockPosInstance tempMiningPos = new BlockPosInstance(currentMiningPos);
         for(int y = startY; y > getLevel().getMinBuildHeight(); y--) {
            for(int x = 0; x < 16; x++) {
                for(int z = 0; z < 16; z++) {
@@ -337,10 +387,21 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
                         ItemStack toMine = new ItemStack(toCheck.getBlock());
                         if(isMinable(toMine)) {
                             currentMiningPos = new BlockPos(tempMiningPos);
-                            if(contentHandler.itemHandler.insertItemInternal(0, toMine, true).isEmpty()) {
-                                //todo add permissions check support
-                                getLevel().destroyBlock(tempMiningPos.y(y).x(x+startX).z(z+startZ), false);
-                                contentHandler.itemHandler.insertItemInternal(0, toMine, false);
+                            if(contentHandler().itemHandler.insertItemInternal(0, toMine, true).isEmpty()) {
+                                if(player == null) {
+                                    if (playerUID == null) {
+                                        playerUID = fakePlayerUUID;
+                                    }
+                                    if (playerUID == fakePlayerUUID) {
+                                        player = FakePlayerFactory.get((ServerLevel) getLevel(), new GameProfile(playerUID, "[NC]LEACHER"));
+                                    } else {
+                                        player = getLevel().getPlayerByUUID(playerUID);
+                                    }
+                                }
+                                if(player == null) return false;
+                                if(!getLevel().mayInteract(player, tempMiningPos.y(y).x(x+startX).z(z+startZ))) return false;
+                                if(!getLevel().destroyBlock(tempMiningPos.y(y).x(x+startX).z(z+startZ), false, player)) return false;
+                                contentHandler().itemHandler.insertItemInternal(0, toMine, false);
                                 return true;
                             }
                         }
@@ -384,6 +445,6 @@ public class LeacherBE extends NCProcessorBE<LeacherBE.Recipe> {
         if(slotId == 1) return SlotModePair.SlotMode.DISABLED.ordinal();
         setChanged();
         saveSideMapFlag = true;
-        return contentHandler.toggleSideConfig(slotId, direction);
+        return contentHandler().toggleSideConfig(slotId, direction);
     }
 }

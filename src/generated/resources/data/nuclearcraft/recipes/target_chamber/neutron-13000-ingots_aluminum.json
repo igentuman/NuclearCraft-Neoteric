@@ -1,0 +1,41 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.8,
+  "energyReleased": -8270,
+  "input": [
+    {
+      "tag": "forge:ingots/aluminum"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 1250000,
+      "focus": 1.0,
+      "meanEnergy": 13000,
+      "particle": "neutron"
+    }
+  ],
+  "maxEnergy": 30000,
+  "output": [
+    {
+      "item": "nuclearcraft:magnesium_26"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

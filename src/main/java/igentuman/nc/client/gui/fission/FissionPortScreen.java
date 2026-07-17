@@ -1,7 +1,6 @@
 package igentuman.nc.client.gui.fission;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
@@ -10,8 +9,8 @@ import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.container.FissionPortContainer;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -22,16 +21,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
-import static igentuman.nc.util.TextUtils.applyFormat;
+import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.energyGenLine;
 
 public class FissionPortScreen extends AbstractContainerScreen<FissionPortContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fission/port.png");
+    protected final ResourceLocation GUI = rl("textures/gui/fission/port.png");
     protected int relX;
     protected int relY;
     private int xCenter;
-    private Button.ReactorComparatorModeButton redstoneConfigBtn;
+    private Button.ReactorPortRedstoneModeButton redstoneConfigBtn;
     private VerticalBar coolantBar;
     private VerticalBar hotCoolantBar;
     private FluidTankRenderer coolantTank;
@@ -45,7 +47,6 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
     public List<NCGuiElement> widgets = new ArrayList<>();
 
     private VerticalBar energyBar;
-
 
     public FissionPortScreen(FissionPortContainer container, Inventory inv, Component name) {
         super(container, inv, name);
@@ -68,7 +69,7 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
         widgets.clear();
         energyBar = new VerticalBar.Energy(17, 16,  this, container().getMaxEnergy());
         widgets.add(new ProgressBar(74, 35, this,  7));
-        redstoneConfigBtn = new Button.ReactorComparatorModeButton(150, 74, this, menu.getPosition());
+        redstoneConfigBtn = new Button.ReactorPortRedstoneModeButton(150, 74, this, menu.getPosition());
         coolantBar = new VerticalBar.Coolant(17, 16,  this, 1000000);
         hotCoolantBar = new VerticalBar.HotCoolant(26, 16,  this, 1000000);
         coolantTank = new FluidTankRenderer(getFluidTank(0), SHOW_AMOUNT_AND_CAPACITY,6, 73, 18, 17);
@@ -81,33 +82,33 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         xCenter = getGuiLeft()-imageWidth/2;
-        this.renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
+        this.renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(graphics, mouseX, mouseY);
     }
 
-    private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         redstoneConfigBtn.setMode(getMenu().getComparatorMode());
         redstoneConfigBtn.strength = getMenu().getAnalogSignalStrength();
         for(NCGuiElement widget: widgets) {
-            widget.draw(matrix, mouseX, mouseY, partialTicks);
+            widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
-        if(!getMenu().getMode()) {
-            energyBar.draw(matrix, mouseX, mouseY, partialTicks);
+        if(!getMenu().isBoilingMode()) {
+            energyBar.draw(graphics, mouseX, mouseY, partialTicks);
         } else {
-            coolantBar.draw(matrix, mouseX, mouseY, partialTicks);
-            hotCoolantBar.draw(matrix, mouseX, mouseY, partialTicks);
-            coolantTank.draw(matrix, mouseX, mouseY, partialTicks);
-            steamTank.draw(matrix, mouseX, mouseY, partialTicks);
+            coolantBar.draw(graphics, mouseX, mouseY, partialTicks);
+            hotCoolantBar.draw(graphics, mouseX, mouseY, partialTicks);
+            coolantTank.draw(graphics, mouseX, mouseY, partialTicks);
+            steamTank.draw(graphics, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
-        renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
+        renderTooltips(graphics, mouseX-relX, mouseY-relY);
     }
 
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
@@ -120,38 +121,38 @@ public class FissionPortScreen extends AbstractContainerScreen<FissionPortContai
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
-        renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
+        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 
-    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+    private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
 
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
-               renderTooltip(pPoseStack, widget.getTooltips(),
+               graphics.renderTooltip(font, widget.getTooltips(),
                        Optional.empty(), pMouseX, pMouseY);
            }
         }
 
-        if(!container().getMode()) {
+        if(!container().isBoilingMode()) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
-            if(energyBar.isMouseOver(pMouseX, pMouseY)) {
-                renderTooltip(pPoseStack, energyBar.getTooltips(),
+            energyBar.addTooltip(__(energyGenLine(), container().energyPerTick()));
+            if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
+                graphics.renderTooltip(font, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }
         } else {
-            if(coolantTank.isMouseOver(pMouseX, pMouseY)) {
-                renderTooltip(pPoseStack, coolantTank.getTooltips(),
+            if(coolantTank.isMouseOver(pMouseX, pMouseY+10)) {
+                graphics.renderTooltip(font, coolantTank.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }
-            if(steamTank.isMouseOver(pMouseX, pMouseY)) {
+            if(steamTank.isMouseOver(pMouseX, pMouseY+10)) {
                 List<Component> tooltips = steamTank.getTooltips();
-                tooltips.add(Component.translatable("reactor.steam_per_tick", container().getSteamPerTick()));
-                renderTooltip(pPoseStack, tooltips,
+                tooltips.add(__("reactor.steam_per_tick", container().getSteamPerTick()));
+                graphics.renderTooltip(font, tooltips,
                         Optional.empty(), pMouseX, pMouseY);
             }
         }

@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.5,
+  "energyReleased": -2990,
+  "input": [
+    {
+      "item": "nuclearcraft:plutonium_241"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 2000000,
+      "focus": 1.0,
+      "meanEnergy": 10500,
+      "particle": "deuteron"
+    }
+  ],
+  "maxEnergy": 19500,
+  "output": [
+    {
+      "item": "nuclearcraft:americium_241"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

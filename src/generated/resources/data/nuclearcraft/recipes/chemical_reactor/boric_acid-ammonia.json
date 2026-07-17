@@ -12,7 +12,7 @@
   ],
   "outputFluids": [
     {
-      "amount": 72,
+      "amount": 45,
       "tag": "forge:boron_nitride_solution"
     },
     {

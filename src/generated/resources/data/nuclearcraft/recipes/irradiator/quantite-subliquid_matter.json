@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:irradiator",
+  "input": [
+    {
+      "item": "nuclearcraft:quantite"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:subliquid_matter"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:quantite_energy"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 2.0,
+  "timeModifier": 0.25
+}

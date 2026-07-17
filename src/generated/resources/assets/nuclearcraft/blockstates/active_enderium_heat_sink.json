@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/multiblock/active_enderium_heat_sink"
+    }
+  }
+}

@@ -1,30 +1,28 @@
 package igentuman.nc.multiblock.fusion;
 
-import igentuman.nc.block.entity.fusion.FusionCoreBE;
-import igentuman.nc.multiblock.INCMultiblockController;
-import net.minecraft.core.BlockPos;
+import igentuman.nc.block.entity.MultiblockControllerBE;
+import igentuman.nc.block.fusion.entity.FusionCoreBE;
+import igentuman.api.nc.multiblock.MultiblockController;
 
-public class FusionReactorController implements INCMultiblockController {
-    protected FusionCoreBE<?> controllerBE;
-    public FusionReactorController(FusionCoreBE<?> FusionCoreBE) {
+public class FusionReactorController implements MultiblockController {
+
+    protected FusionCoreBE controllerBE;
+    public FusionReactorController(FusionCoreBE FusionCoreBE) {
         controllerBE = FusionCoreBE;
     }
 
     @Override
-    public FusionCoreBE<?> controllerBE() {
+    public FusionCoreBE controllerBE() {
         return controllerBE;
     }
 
     @Override
     public void clearStats() {
-        controllerBE().errorBlockPos = null;
-        controllerBE().isCasingValid = false;
-        controllerBE().plasmaTemperature = 0;
         controllerBE().reactorHeat = 0;
     }
 
     @Override
-    public void addErroredBlock(BlockPos relative) {
-        controllerBE().errorBlockPos = relative;
+    public void setControllerBe(MultiblockControllerBE multiblockControllerBE) {
+        controllerBE = (FusionCoreBE)multiblockControllerBE;
     }
 }

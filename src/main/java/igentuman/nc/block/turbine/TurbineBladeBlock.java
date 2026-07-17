@@ -1,9 +1,8 @@
 package igentuman.nc.block.turbine;
 
-import igentuman.nc.block.entity.turbine.TurbineBE;
-import igentuman.nc.block.entity.turbine.TurbineBladeBE;
+import igentuman.nc.block.turbine.entity.TurbineBE;
+import igentuman.nc.block.turbine.entity.TurbineBladeBE;
 import igentuman.nc.multiblock.turbine.BladeDef;
-import igentuman.nc.multiblock.turbine.CoilDef;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -12,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -26,6 +24,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,11 +36,29 @@ import java.util.Objects;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BE;
+import static igentuman.nc.util.TextUtils.__;
+import static net.minecraft.world.level.block.Blocks.IRON_BARS;
 
 public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
-
+    public static final BooleanProperty HIDDEN = BlockStateProperties.POWERED;
     public TurbineBladeBlock(Properties pProperties) {
-        super(pProperties.sound(SoundType.METAL).noOcclusion());
+        super(Properties.copy(IRON_BARS).noCollission().forceSolidOff());
+    }
+
+    @Override
+    public boolean isCollisionShapeFullBlock(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
+        if(pState.getValue(HIDDEN)) {
+            return false;
+        }
+        return super.isCollisionShapeFullBlock(pState, pLevel, pPos);
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        if(pState.getValue(HIDDEN)) {
+            return Block.box(0, 0, 0, 0, 0, 0);
+        }
+        return super.getCollisionShape(pState, pLevel, pPos, pContext);
     }
 
     public double efficiency = 0;
@@ -82,7 +101,7 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
                 }
             }
         }
-        return this.defaultBlockState().setValue(FACING, dir);
+        return this.defaultBlockState().setValue(FACING, dir).setValue(HIDDEN, false);
     }
 
     public static boolean processBlockPlace(LevelAccessor level, BlockPos pos, BlockState block, BlockState blockState, BlockState attachment)
@@ -128,7 +147,7 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.FACING);
+        builder.add(BlockStateProperties.FACING).add(HIDDEN);
     }
 
     private String blockEntityCode()
@@ -155,7 +174,7 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
     @Override
     public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor){
-        ((TurbineBE) Objects.requireNonNull(level.getBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
+        ((TurbineBE) Objects.requireNonNull(level.getExistingBlockEntity(pos))).onNeighborChange(state,  pos, neighbor);
     }
 
 
@@ -165,14 +184,14 @@ public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
 
         if(DESCRIPTIONS_SHOW) {
             list.add(TextUtils.applyFormat(
-                    Component.translatable("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
+                    __("tooltip.nc.description.efficiency", TextUtils.numberFormat(def.getEfficiency())),
                     ChatFormatting.AQUA));
-            list.add(TextUtils.applyFormat(
-                    Component.translatable("tooltip.nc.description.expansion", TextUtils.numberFormat(def.getExpansion())),
-                    ChatFormatting.GOLD));
+            /*list.add(TextUtils.applyFormat(
+                    __("tooltip.nc.description.expansion", TextUtils.numberFormat(def.getExpansion())),
+                    ChatFormatting.GOLD));*/
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.nc.blade.desc", TURBINE_CONFIG.BLADE_FLOW.get()), ChatFormatting.BLUE));
+            list.add(TextUtils.applyFormat(__("tooltip.nc.blade.desc", TURBINE_CONFIG.BLADE_FLOW.get()), ChatFormatting.BLUE));
         }
-        list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+        list.add(TextUtils.applyFormat(__("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
     }
 }

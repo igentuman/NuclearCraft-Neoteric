@@ -1,0 +1,202 @@
+{
+  "name": "Общее",
+  "icon": "nuclearcraft:fission_reactor_casing",
+  "category": "nuclearcraft:fission",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "intro",
+      "type": "text",
+      "text": "$(thing)Реакторы деления$() вырабатывают тепло за счёт самоподдерживающейся цепной реакции деления топлива. В итоге это тепло преобразуется в электричество. Способ выработки можно переключать между прямым и кипящим режимом. (Чикагская поленница-1 обошлась без переключателя - у вас всё-таки прогресс.)"
+    },
+    {
+      "anchor": "reactor_modes",
+      "type": "text",
+      "text": "$(thing)Реактор деления$() работает в двух режимах: энергетический и кипящий. В энергетическом режиме реактор сразу вырабатывает энергию. В кипящем - использует выделяемое тепло для кипячения теплоносителя. Подача и отвод теплоносителя осуществляется через $(item)Порт реактора$()."
+    },
+    {
+      "anchor": "casing",
+      "type": "blocks/2",
+      "header": "Обшивка реактора",
+      "block1": "nuclearcraft:fission_reactor_casing",
+      "block2": "nuclearcraft:fission_reactor_glass",
+      "text": "Внутренние компоненты реактора размещаются внутри прямоугольного параллелепипеда. Рёбра конструкции должны быть сложены из $(thing)Обшивки реактора$(), а стены - из $(thing)Реакторного стекла$(), обшивки или их сочетания."
+    },
+    {
+      "anchor": "controller",
+      "type": "blocks/1",
+      "header": "Контроллеры реактора",
+      "block": "nuclearcraft:fission_reactor_controller",
+      "text": "Без контроллера многоблочная структура реактора не соберётся. Его интерфейс отображает сводные сведения о работе реактора - в том числе усреднённые показатели по компонентам."
+    },
+    {
+      "anchor": "port",
+      "type": "blocks/1",
+      "header": "Порт реактора",
+      "block": "nuclearcraft:fission_reactor_port",
+      "text": "Порт реактора служит для передачи предметов, жидкостей и энергии в реактор и обратно. Каждый порт можно настроить на ввод или вывод по любому из этих типов. Также поддерживается управление по сигналу редстоуна и взаимодействие с компьютерами."
+    },
+    {
+      "anchor": "fuel_cell",
+      "header": "Топливный элемент",
+      "type": "blocks/1",
+      "block": "nuclearcraft:fission_reactor_solid_fuel_cell",
+      "text": "Топливные элементы преобразуют тепло топлива в энергию - напрямую либо через кипящий режим. Каждый дополнительный элемент увеличивает суммарный расход топлива."
+    },
+    {
+      "anchor": "moderator",
+      "header": "Модераторы",
+      "type": "blocks/2",
+      "block1": "nuclearcraft:graphite_block",
+      "block2": "nuclearcraft:beryllium_block",
+      "text": "$(thing)Модераторы$() замедляют высокоэнергетические нейтроны, испускаемые $(l:fission/general#fuel_cell)Топливными элементами$(), превращая их в тепловые - те, что вызывают новые деления в соседних топливных компонентах. Модераторы должны располагаться вплотную к топливным элементам. Уровень модерации регулируется сигналом редстоуна, подаваемым на $(item)Порт реактора$()."
+    },
+    {
+      "anchor": "moderator_bonus",
+      "header": "Расположение модераторов",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "M": "nuclearcraft:graphite_block",
+          "C": "nuclearcraft:fission_reactor_solid_fuel_cell"
+        },
+        "pattern": [
+          [" 0 ","CMC", "   "]
+        ],
+        "symmetrical": true,
+        "visualize": false
+      },
+      "text": "Дополнительный бонус к эффективности можно получить, разместив несколько топливных элементов вокруг одного блока модератора. От такой конфигурации зависят как прирост эффективности, так и тепловой бонус."
+    },
+    {
+      "anchor": "heatsink",
+      "type": "blocks/2",
+      "block1": "nuclearcraft:lapis_heat_sink,nuclearcraft:aluminum_heat_sink,nuclearcraft:arsenic_heat_sink,nuclearcraft:boron_heat_sink,nuclearcraft:carobbiite_heat_sink,nuclearcraft:copper_heat_sink,nuclearcraft:cryotheum_heat_sink,nuclearcraft:diamond_heat_sink,nuclearcraft:emerald_heat_sink,nuclearcraft:end_stone_heat_sink,nuclearcraft:enderium_heat_sink,nuclearcraft:fluorite_heat_sink,nuclearcraft:glowstone_heat_sink,nuclearcraft:gold_heat_sink,nuclearcraft:iron_heat_sink,nuclearcraft:lead_heat_sink,nuclearcraft:liquid_helium_heat_sink,nuclearcraft:liquid_nitrogen_heat_sink,nuclearcraft:lithium_heat_sink,nuclearcraft:magnesium_heat_sink,nuclearcraft:manganese_heat_sink,nuclearcraft:nether_brick_heat_sink,nuclearcraft:netherite_heat_sink,nuclearcraft:obsidian_heat_sink,nuclearcraft:prismarine_heat_sink,nuclearcraft:purpur_heat_sink,nuclearcraft:quartz_heat_sink,nuclearcraft:redstone_heat_sink,nuclearcraft:silver_heat_sink,nuclearcraft:slime_heat_sink,nuclearcraft:tin_heat_sink,nuclearcraft:villiaumite_heat_sink,nuclearcraft:water_heat_sink",
+      "header": "Теплоотводы",
+      "text": "$(thing)Теплоотводы$() применяются при проектировании реактора для балансировки $(thing)сетевого теплового потока$(). Для полностью стабильного реактора инженер должен стремиться к значению 0 HU/t. У каждого теплоотвода - свои правила размещения, и читать их рекомендуется $(o)до$() запуска, а не после."
+    },
+    {
+      "type": "text",
+      "text": "Теплоотводы отбирают тепло у реактора. Когда топливный элемент активен, он выделяет тепло, равное базовому тепловыделению, умноженному на $(thing)тепловой множитель$(). Сам множитель определяется числом линий модераторов: одна линия - 100% тепловой эффективности, две - 200%, и так далее."
+    },
+    {
+      "anchor": "heat_sink_validation",
+      "header": "Проверка теплоотводов",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "P": "nuclearcraft:prismarine_heat_sink",
+          "W": "nuclearcraft:water_heat_sink",
+          "C": "nuclearcraft:fission_reactor_solid_fuel_cell",
+          "M": "nuclearcraft:graphite_block"
+        },
+        "pattern": [
+          ["C0 ","M  ", "WP "]
+        ],
+        "visualize": false,
+        "symmetrical": true
+      },
+      "text": "Если правила размещения требуют соседства с непроизводящим блоком - например, с другим теплоотводом, - то и тот соседний теплоотвод обязан удовлетворять собственным правилам. В конечном счёте цепочка должна замыкаться на топливный элемент."
+    },
+    {
+      "anchor": "irradiator",
+      "header": "Облучатели",
+      "type": "blocks/2",
+      "block1": "nuclearcraft:fission_reactor_irradiation_chamber",
+      "block2": "nuclearcraft:irradiator",
+      "text": "Установленные в конце $(l:fission/general#moderator)линии модераторов$(), $(thing)Облучатели$() используют поток нейтронов для преобразования предметов в облучательной камере. Скорость обработки зависит от количества линий модераторов в реакторе."
+    },
+    {
+      "anchor": "irradiator_line",
+      "header": "Линия облучения",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "M": "nuclearcraft:graphite_block",
+          "C": "nuclearcraft:fission_reactor_solid_fuel_cell",
+          "I": "nuclearcraft:fission_reactor_irradiation_chamber"
+        },
+        "pattern": [
+          [" 0 ","IMC", "   "]
+        ],
+        "symmetrical": true,
+        "visualize": false
+      },
+      "text": "К одной облучательной камере можно подвести до 6 линий облучения. Каждая дополнительная линия пропорционально ускоряет обработку."
+    },
+    {
+      "anchor": "pile_driver",
+      "header": "Камера облучения с забивным копром",
+      "type": "blocks/1",
+      "block": "nuclearcraft:fission_reactor_pile-driver_irradiation_chamber",
+      "text": "Улучшенная $(thing)облучательная камера$(), работающая в $(thing)5 раз$() быстрее обычной. Ставится прямо вместо стандартной камеры в конце любой линии облучения: правила размещения те же, число линий то же - а пропускная способность в пять раз выше. (План по выпуску изотопов сам себя не выполнит.)"
+    },
+    {
+      "anchor": "simple_reactor",
+      "header": "Простой реактор",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "W": "nuclearcraft:fission_reactor_casing",
+          "G": "nuclearcraft:fission_reactor_glass",
+          "M": "nuclearcraft:graphite_block",
+          "C": "nuclearcraft:fission_reactor_solid_fuel_cell",
+          "I": "nuclearcraft:fission_reactor_irradiation_chamber",
+          "N": "nuclearcraft:fission_reactor_controller[facing=west]",
+          "P": "nuclearcraft:fission_reactor_port[facing=east]",
+          "H": "nuclearcraft:water_heat_sink",
+          "S": "nuclearcraft:prismarine_heat_sink",
+          "K": "nuclearcraft:glowstone_heat_sink",
+          "E": "nuclearcraft:enderium_heat_sink",
+          "R": "nuclearcraft:irradiator"
+        },
+        "pattern": [
+          [
+            "WWWWW",
+            "WGGGW",
+            "WGGGW",
+            "WGGGW",
+            "WWWWW"],
+          [
+            "WGGGW",
+            "GE EG",
+            "G I G",
+            "GE EG",
+            "WGGGW"
+          ],
+          [
+            "WGGGW",
+            "GSKSG",
+            "GKMKG",
+            "GSKSG",
+            "WGGGW"
+          ],
+          [
+            "WGNGW",
+            "GHMHG",
+            "RMCMG",
+            "GHMHG",
+            "WGPGW"
+          ],
+          [
+            "WWWWW",
+            "WWWWW",
+            "WWWWW",
+            "WWWWW",
+            "WWWWW"
+          ],
+          ["     ","     ","  0  ","     ","     "]
+        ],
+        "symmetrical": true
+      },
+      "text": "Простой стартовый проект реактора: 1 топливный элемент и 1 линия облучения. Хорошая точка входа в отрасль. Оптимальное топливо - HEU-235."
+    },
+    {
+      "anchor": "planner",
+      "type": "text",
+      "header": "Соображения при проектировании",
+      "text": "При проектировании реактора настоятельно рекомендуется использовать $(l:https://github.com/ThizThizzyDizzy/nc-reactor-generator/releases)планировщик реакторов$(). Он подскажет по правилам размещения, тепловому балансу и прогнозируемой производительности - иначе говоря, поможет избежать сценария SL-1 в миниатюре."
+    }
+  ]
+
+}

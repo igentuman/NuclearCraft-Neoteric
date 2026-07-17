@@ -1,0 +1,15 @@
+{
+  "name": "QNP",
+  "icon": "nuclearcraft:qnp",
+  "category": "nuclearcraft:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "qnp",
+      "type": "items/1",
+      "header": "QNP",
+      "item": "nuclearcraft:qnp",
+      "text": "The $(item)QNP$() is an advanced multitool. It can mine any block and has several modes: 3x3, 3x3x3, 5x5, vein, and single block. Requires energy."
+    }
+  ]
+}

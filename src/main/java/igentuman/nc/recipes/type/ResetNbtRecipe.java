@@ -68,11 +68,12 @@ public class ResetNbtRecipe extends CustomRecipe {
 
             if(inv.getItem(i).getItem() instanceof ProcessorBlockItem) {
                 targetStack = inv.getItem(i);
+
                 continue;
             }
         }
-
         ItemStack result = targetStack.copy();
+        result.setCount(1);
         result.setTag(new CompoundTag());
         return result;
     }

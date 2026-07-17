@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 216,
-      "tag": "forge:silicon_carbide"
+      "amount": 120,
+      "tag": "forge:molten_silicon_carbide"
     }
   ],
   "powerModifier": 1.0,

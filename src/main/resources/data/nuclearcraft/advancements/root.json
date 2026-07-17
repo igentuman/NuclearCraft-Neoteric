@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:uranium_ingot"
+    },
+    "title": {
+      "translate": "advancement.nc.root"
+    },
+    "description": {
+      "translate": "advancement.nc.root.desc"
+    },
+    "background": "nuclearcraft:textures/block/material/block/uranium238_block.png",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get_uranium_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/uranium"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get_uranium_ore"
+    ]
+  ]
+}

@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:curium_246_ox"
+      "amount": 90,
+      "tag": "forge:curium/246_ox"
     }
   ],
   "output": [

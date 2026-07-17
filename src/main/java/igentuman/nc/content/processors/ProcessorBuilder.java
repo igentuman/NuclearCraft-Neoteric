@@ -23,7 +23,9 @@ import java.util.function.Supplier;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 
 public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen & MenuAccess<M>>{
+
     public ProcessorPrefab processor;
+
     private ProcessorBuilder() { }
 
     public static ProcessorBuilder make(String name)
@@ -116,6 +118,11 @@ public class ProcessorBuilder <M extends NCProcessorContainer, U extends Screen 
 
     public ProcessorBuilder<?, ?> power(int i) {
         processor.power = i;
+        return this;
+    }
+
+    public ProcessorBuilder<?, ?> particle(int in, int out) {
+        processor.particles(in, out);
         return this;
     }
 }

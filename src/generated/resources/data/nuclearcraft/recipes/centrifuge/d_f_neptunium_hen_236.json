@@ -2,33 +2,33 @@
   "type": "nuclearcraft:centrifuge",
   "inputFluids": [
     {
-      "amount": 1296,
+      "amount": 810,
       "fluid": "nuclearcraft:depleted_fuel_neptunium_hen_236"
     }
   ],
   "outputFluids": [
     {
-      "amount": 576,
+      "amount": 360,
       "tag": "forge:uranium/238"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:plutonium/238"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:plutonium/241"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:plutonium/242"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:molybdenum"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:caesium_137"
     }
   ],

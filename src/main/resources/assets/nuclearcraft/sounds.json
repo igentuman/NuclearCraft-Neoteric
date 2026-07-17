@@ -1,15 +1,57 @@
 {
+  "tile.laser_shoot": {
+    "sounds": [
+      "nuclearcraft:block/laser_shoot"
+    ],
+    "subtitle": "sound_event.nuclearcraft.laser.shoot"
+  },
+  "tile.blackhole_spawn": {
+    "sounds": [
+      "nuclearcraft:block/blackhole_spawn"
+    ],
+    "subtitle": "sound_event.nuclearcraft.blackhole.spawn"
+  },
+  "tile.blackhole_idle": {
+    "sounds": [
+      "nuclearcraft:block/blackhole_idle"
+    ],
+    "subtitle": "sound_event.nuclearcraft.blackhole.idle"
+  },
   "tile.fusion_ready": {
     "sounds": [
       "nuclearcraft:block/fusion_ready"
     ],
     "subtitle": "sound_event.nuclearcraft.fusion.ready"
   },
+  "tile.turbine": {
+    "sounds": [
+      "nuclearcraft:block/turbine"
+    ],
+    "subtitle": "sound_event.nuclearcraft.turbine"
+  },
   "tile.fission_reactor": {
     "sounds": [
       "nuclearcraft:block/fission_reactor"
     ],
     "subtitle": "sound_event.nuclearcraft.fission_reactor"
+  },
+  "tile.msr_running": {
+    "sounds": [
+      "nuclearcraft:block/msr_running"
+    ],
+    "subtitle": "sound_event.nuclearcraft.msr_running"
+  },
+  "q36.beam_shot": {
+    "sounds": [
+      "nuclearcraft:q36/beam_shot"
+    ],
+    "subtitle": "sound_event.nuclearcraft.q36.beam_shot"
+  },
+  "q36.pulse_shot": {
+    "sounds": [
+      "nuclearcraft:q36/pulse"
+    ],
+    "subtitle": "sound_event.nuclearcraft.q36.pulse_shot"
   },
   "tile.fusion_charging": {
     "sounds": [
@@ -28,6 +70,42 @@
       "nuclearcraft:block/fusion_switch"
     ],
     "subtitle": "sound_event.nuclearcraft.fusion.switch"
+  },
+  "boss_angry": {
+    "sounds": [
+      "nuclearcraft:entity/boss_angry"
+    ],
+    "subtitle": "sound_event.nuclearcraft.boss_angry"
+  },
+  "boss_hit": {
+    "sounds": [
+      "nuclearcraft:entity/boss_hit"
+    ],
+    "subtitle": "sound_event.nuclearcraft.boss_hit"
+  },
+  "boss_idle": {
+    "sounds": [
+      "nuclearcraft:entity/boss_idle"
+    ],
+    "subtitle": "sound_event.nuclearcraft.boss_idle"
+  },
+  "boss_action": {
+    "sounds": [
+      "nuclearcraft:entity/boss_action"
+    ],
+    "subtitle": "sound_event.nuclearcraft.boss_action"
+  },
+  "feral_ghoul_death": {
+    "sounds": [
+      "nuclearcraft:entity/feral_ghoul_death"
+    ],
+    "subtitle": "sound_event.nuclearcraft.feral_ghoul.death"
+  },
+  "feral_ghoul_charge": {
+    "sounds": [
+      "nuclearcraft:entity/feral_ghoul_charge"
+    ],
+    "subtitle": "sound_event.nuclearcraft.feral_ghoul.idle"
   },
   "charge_energy": {
     "sounds": [
@@ -65,6 +143,12 @@
     ],
     "subtitle": "sound_event.nuclearcraft.item.geiger_5"
   },
+  "geiger_6": {
+    "sounds": [
+      "nuclearcraft:item/geiger_6"
+    ],
+    "subtitle": "sound_event.nuclearcraft.item.geiger_6"
+  },
   "music.wanderer": {
     "category": "record",
     "subtitle": "music.wanderer",
@@ -84,5 +168,65 @@
     "category": "record",
     "subtitle": "music.hyperspace",
     "sounds": [ { "name": "nuclearcraft:music/hyperspace", "stream": true } ]
+  },
+  "bomb.first_distance": {
+    "sounds": [
+      "nuclearcraft:bomb/first_distance"
+    ],
+    "subtitle": "sound_event.nuclearcraft.bomb.blast"
+  },
+  "bomb.second_distance": {
+    "sounds": [
+      "nuclearcraft:bomb/second_distance"
+    ],
+    "subtitle": "sound_event.nuclearcraft.bomb.blast"
+  },
+  "bomb.third_distance": {
+    "sounds": [
+      "nuclearcraft:bomb/third_distance"
+    ],
+    "subtitle": "sound_event.nuclearcraft.bomb.blast"
+  },
+  "bomb.fourth_distance": {
+    "sounds": [
+      "nuclearcraft:bomb/fourth_distance"
+    ],
+    "subtitle": "sound_event.nuclearcraft.bomb.blast"
+  },
+  "entity.anomaly.gravitational": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/gravitational", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.gravitational"
+  },
+  "entity.anomaly.electric": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/electric", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.electric"
+  },
+  "entity.anomaly.radioactive": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/radioactive", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.radioactive"
+  },
+  "entity.anomaly.burning": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/burning", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.burning"
+  },
+  "entity.anomaly.psycho": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/psycho", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.psycho"
+  },
+  "entity.anomaly.teleporting": {
+    "sounds": [
+      { "name": "nuclearcraft:entity/anomaly/teleporting", "stream": true }
+    ],
+    "subtitle": "sound_event.nuclearcraft.anomaly.teleporting"
   }
 }

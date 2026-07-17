@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 30,
+      "tag": "forge:thorium/230_za"
+    },
+    {
+      "amount": 270,
+      "tag": "forge:thorium/232_za"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 90,
+      "tag": "forge:fuel_thorium_tbu_za"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -2,33 +2,33 @@
   "type": "nuclearcraft:centrifuge",
   "inputFluids": [
     {
-      "amount": 1296,
+      "amount": 810,
       "fluid": "nuclearcraft:depleted_fuel_curium_lecm_247"
     }
   ],
   "outputFluids": [
     {
-      "amount": 720,
+      "amount": 450,
       "tag": "forge:curium/246"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:berkelium/247"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:californium/249"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:berkelium/248"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:molybdenum"
     },
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:europium_155"
     }
   ],

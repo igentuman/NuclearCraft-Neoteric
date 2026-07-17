@@ -19,7 +19,6 @@ build
 
 # other
 eclipse
-run
 
 # Files from Forge MDK
 forge*changelog.txt
@@ -29,3 +28,6 @@ forge*changelog.txt
 .vscode
 gradle.properties
 .gitignore
+
+/run/
+/server/

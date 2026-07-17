@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:extreme"
+      "amount": 240,
+      "tag": "forge:molten_extreme"
     }
   ],
   "powerModifier": 1.0,

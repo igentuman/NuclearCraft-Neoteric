@@ -5,6 +5,7 @@ import igentuman.nc.container.elements.NCSlotItemHandler;
 import igentuman.nc.content.processors.ProcessorPrefab;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.processors.config.ProcessorSlots;
+import igentuman.nc.handler.config.CommonConfig;
 import igentuman.nc.setup.registration.NCItems;
 import igentuman.nc.setup.registration.NCProcessors;
 import igentuman.nc.handler.sided.SlotModePair;
@@ -31,9 +32,11 @@ import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCItems.NC_ITEMS;
+import static igentuman.nc.setup.registration.NCItems.NC_PARTS;
+import static igentuman.nc.util.TextUtils.__;
 
 public class NCProcessorContainer<T extends AbstractContainerMenu> extends AbstractContainerMenu {
-    protected NCProcessorBE<?> blockEntity;
+    protected NCProcessorBE blockEntity;
     protected Player playerEntity;
     protected IItemHandler playerInventory;
 
@@ -53,7 +56,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
 
     public NCProcessorContainer(int windowId, BlockPos pos, Inventory playerInventory, Player player, String name) {
         this(NCProcessors.PROCESSORS_CONTAINERS.get(name).get(), windowId);
-        blockEntity = (NCProcessorBE<?>) player.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (NCProcessorBE) player.getCommandSenderWorld().getBlockEntity(pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
         this.name = name;
@@ -99,7 +102,7 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         if(getProcessor().supportSpeedUpgrade) {
             int idx = i;
             addSlot(new NCSlotItemHandler(blockEntity.upgradesHandler, idx, ux, 77)
-                    .allowed(NC_ITEMS.get("upgrade_speed").get()));
+                    .allowed(NC_ITEMS.get("upgrade_speed").get(), NC_ITEMS.get("upgrade_stack").get(), NC_ITEMS.get("upgrade_quantum").get()));
             ux -= 18;
         }
 
@@ -112,82 +115,59 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
         return processor.getSlotsConfig().getInputItems();
     }
 
+    public int allProcessorSlots() {
+        int i = processor.getSlotsConfig().getInputItems() + processor.getSlotsConfig().getOutputItems();
+        if(processor.supportEnergyUpgrade) {
+            i++;
+        }
+        if(processor.supportSpeedUpgrade) {
+            i++;
+        }
+        if(processor.supportsCatalyst) {
+            i++;
+        }
+        return i;
+    }
+
     @Override
     public @NotNull ItemStack quickMoveStack(@NotNull Player pPlayer, int index) {
-        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        int maxSlotId = 36+inputSlots()+processor.getSlotsConfig().getOutputItems()+processor.getUpgradesSlots()-1;
-        if (slot != null && slot.hasItem()) {
-            ItemStack stack = slot.getItem();
-            itemstack = stack.copy();
-            if (index < inputSlots()) {
-                if (!this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), 37, true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else {
-                if (index < inputSlots()+processor.getSlotsConfig().getOutputItems()
-                && index > inputSlots()-1) {
-                    boolean result =  this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), maxSlotId, false);
-                    if (!result) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 28) {
-                    boolean result = handleUpgradesQuickMove(stack);
-                    if(blockEntity.isInputAllowed(stack)) {
-                        result = this.moveItemStackTo(stack, 0, inputSlots(), false);
-                    }
-                    if (!result) {
-                        result = this.moveItemStackTo(stack, 28, maxSlotId, false);
-                    }
-                    if (!result) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < maxSlotId) {
-                    boolean result = handleUpgradesQuickMove(stack);
-                    if(blockEntity.isInputAllowed(stack)) {
-                        result = this.moveItemStackTo(stack, 0, inputSlots(), false);
-                    }
-                    if (!result) {
-                        result = this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), 28, false);
-                    }
-
-                    if (!result) {
-                        return ItemStack.EMPTY;
-                    }
-                }
-            }
-
-            if (stack.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-
-            if (stack.getCount() == itemstack.getCount()) {
+        int maxSlotId = 35+allProcessorSlots();
+        if (slot == null || !slot.hasItem()) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack stack = slot.getItem();
+        ItemStack itemstack = stack.copy();
+        if(slot instanceof NCSlotItemHandler) {
+            if (!this.moveItemStackTo(stack, allProcessorSlots(), maxSlotId, false)) {
                 return ItemStack.EMPTY;
             }
-
-            slot.onTake(pPlayer, stack);
+        } else {
+            if (!this.moveItemStackTo(stack, 0, inputSlots(), false)) {
+                if (!this.moveItemStackTo(stack, inputSlots()+outputSlots(), allProcessorSlots(), false)) {
+                    return ItemStack.EMPTY;
+                }
+            }
         }
+
+        if (stack.isEmpty()) {
+            slot.set(ItemStack.EMPTY);
+        } else {
+            slot.setChanged();
+        }
+
+        if (stack.getCount() == itemstack.getCount()) {
+            return ItemStack.EMPTY;
+        }
+
+        slot.onTake(pPlayer, stack);
 
         return itemstack;
     }
 
-    //TODO this is cursed. Improve this
-    private boolean handleUpgradesQuickMove(ItemStack stack) {
-        if(stack.getItem().equals(NC_ITEMS.get("upgrade_speed").get()) && processor.supportSpeedUpgrade) {
-            return this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems(), inputSlots()+processor.getSlotsConfig().getOutputItems()+1, true);
-        }
-        if(stack.getItem().equals(NC_ITEMS.get("upgrade_energy").get()) && processor.supportEnergyUpgrade) {
-            int id = inputSlots()+processor.getSlotsConfig().getOutputItems()+1;
-            if(processor.supportSpeedUpgrade) {
-                id++;
-            }
-            return this.moveItemStackTo(stack, inputSlots()+processor.getSlotsConfig().getOutputItems()+1, id, true);
-        }
-        return false;
+    private int outputSlots() {
+        return processor.getSlotsConfig().getOutputItems();
     }
-
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
@@ -223,11 +203,11 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public IEnergyStorage getEnergy() {
-        return (IEnergyStorage) blockEntity.getEnergy().orElse(null);
+        return blockEntity.energyStorage();
     }
 
     public double getProgress() {
@@ -264,5 +244,17 @@ public class NCProcessorContainer<T extends AbstractContainerMenu> extends Abstr
 
     public BlockEntity getBlockEntity() {
         return blockEntity;
+    }
+
+    public int getParallelProcessing() {
+        return blockEntity.parallelRecipes();
+    }
+
+    public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier() {
+        return CommonConfig.GTCEUCompatibilityConfig.GTCEUTier.values()[blockEntity.getTier()];
+    }
+
+    public Player getPlayer() {
+        return playerEntity;
     }
 }

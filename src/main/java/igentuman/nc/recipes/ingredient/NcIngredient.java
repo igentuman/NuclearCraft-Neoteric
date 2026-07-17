@@ -27,7 +27,11 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+import static igentuman.nc.util.NcUtils.rlFromString;
+
 public class NcIngredient extends Ingredient {
+
    private static final java.util.concurrent.atomic.AtomicInteger INVALIDATION_COUNTER = new java.util.concurrent.atomic.AtomicInteger();
    public static void invalidateAll() {
       INVALIDATION_COUNTER.incrementAndGet();
@@ -53,7 +57,15 @@ public class NcIngredient extends Ingredient {
 
    }
 
-   public String getName() {
+    public static NcIngredient of(String name) {
+         if(name.contains("#")) {
+            TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(name.replace("#","")));
+            return of(tag);
+         }
+         return of(ForgeRegistries.ITEMS.getValue(rlFromString(name)));
+    }
+
+    public String getName() {
       if(name == null) {
          name = values[0].getName();
       }
@@ -88,7 +100,7 @@ public class NcIngredient extends Ingredient {
             return pStack.isEmpty();
          } else {
             for(ItemStack itemstack : this.itemStacks) {
-               if (itemstack.is(pStack.getItem())) {
+               if (itemstack.is(pStack.getItem()) && count <= pStack.getCount()) {
                   return true;
                }
             }

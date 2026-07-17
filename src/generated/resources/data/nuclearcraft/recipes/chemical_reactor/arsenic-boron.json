@@ -6,13 +6,13 @@
       "tag": "forge:arsenic"
     },
     {
-      "amount": 72,
+      "amount": 45,
       "tag": "forge:boron"
     }
   ],
   "outputFluids": [
     {
-      "amount": 288,
+      "amount": 180,
       "tag": "forge:boron_arsenide"
     }
   ],

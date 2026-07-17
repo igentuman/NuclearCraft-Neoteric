@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "input": [
+    {
+      "count": 3,
+      "tag": "forge:ingots/osmium"
+    },
+    {
+      "tag": "forge:ingots/iridium"
+    }
+  ],
+  "output": [
+    {
+      "count": 4,
+      "item": "nuclearcraft:osmiridium_ingot"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 4.0
+}

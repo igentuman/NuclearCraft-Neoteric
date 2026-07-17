@@ -1,20 +1,12 @@
 package igentuman.nc.handler.config;
 
-import igentuman.nc.content.Electromagnets;
-import igentuman.nc.content.RFAmplifier;
-import igentuman.nc.content.energy.BatteryBlocks;
-import igentuman.nc.content.energy.RTGs;
-import igentuman.nc.content.energy.SolarPanels;
-import igentuman.nc.content.storage.BarrelBlocks;
-import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
-import static igentuman.nc.world.dimension.Dimensions.WASTELAIND_ID;
+import static igentuman.nc.world.dimension.Dimensions.WASTELAND_ID;
 
 public class WorldConfig {
     public static <T> List<T> toList(Collection<T> vals)
@@ -23,6 +15,8 @@ public class WorldConfig {
     }
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final DimensionConfig DIMENSION_CONFIG = new DimensionConfig(BUILDER);
+    public static final VillageConfig VILLAGE_CONFIG = new VillageConfig(BUILDER);
+    public static final BiomeConfig BIOME_CONFIG = new BiomeConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
     private static boolean loaded = false;
     private static List<Runnable> loadActions = new ArrayList<>();
@@ -44,18 +38,42 @@ public class WorldConfig {
             loadActions.add(action);
     }
 
+    public static class VillageConfig {
+        public final ForgeConfigSpec.ConfigValue<Boolean> generateScientistHouse;
+        public final ForgeConfigSpec.ConfigValue<Boolean> addWandererTrades;
+
+        public VillageConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("Villages");
+            generateScientistHouse = builder
+                    .comment("Generate Scientist House in Villages")
+                    .define("scientist_house", true);
+            addWandererTrades = builder
+                    .comment("Add Wandering Trader trades")
+                    .define("wandering_trader_trades", true);
+            builder.pop();
+        }
+    }
+
     public static class DimensionConfig {
-        public ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
-        public ForgeConfigSpec.ConfigValue<Integer> wastelandID;
+        public final ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
 
         public DimensionConfig(ForgeConfigSpec.Builder builder) {
             builder.push("Dimension");
             registerWasteland = builder
                     .comment("Register Wasteland Dimension")
                     .define("wasteland", true);
-            wastelandID = builder
-                    .comment("Dimension ID for Wasteland")
-                    .define("wastelandID", WASTELAIND_ID);
+            builder.pop();
+        }
+    }
+
+    public static class BiomeConfig {
+        public final ForgeConfigSpec.ConfigValue<Boolean> registerWasteland;
+
+        public BiomeConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("Biome");
+            registerWasteland = builder
+                    .comment("Generate Wasteland Biome in Overworld")
+                    .define("wasteland", true);
             builder.pop();
         }
     }

@@ -6,7 +6,10 @@ import igentuman.nc.content.energy.RTGs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
+import static igentuman.nc.NuclearCraft.currentTick;
+
 public class RTGBE extends NCEnergy {
+
     public RTGBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, getName(pBlockState));
     }
@@ -20,26 +23,31 @@ public class RTGBE extends NCEnergy {
         return getBlockState().getBlock().asItem().toString();
     }
 
-    protected int radiationTimer = 40;
     @Override
     public void tickServer() {
-        if(NuclearCraft.instance.isNcBeStopped) return;
+        if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
         super.tickServer();
-        energyStorage.setEnergy(getEnergyMaxStorage());
+        energyStorage.addEnergy(getEnergyTransferPerTick());
         sendOutPower();
-        radiationTimer--;
-        if(radiationTimer <= 0) {
-            radiationTimer = 40;
-            RadiationManager.get(getLevel()).addRadiation(getLevel(), (double) RTGs.all().get(getName()).config().getRadiation() /500000000, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+        if(currentTick % 40 == 0) {
+            RadiationManager.get(getLevel()).addRadiation(getLevel(), (double) RTGs.all().get(getName()).config().getRadiation() / 500000000, worldPosition);
         }
+    }
+
+    public long getInputEnergyTier() {
+        return RTGs.all().get(getName()).getEnergyTier().ordinal();
+    }
+
+    public long getOutputEnergyTier() {
+        return RTGs.all().get(getName()).getEnergyTier().ordinal();
     }
 
     @Override
     protected int getEnergyMaxStorage() {
-        return RTGs.all().get(getName()).config().getGeneration();
+        return RTGs.all().get(getName()).config().getActualGeneration()*32;
     }
     @Override
     protected int getEnergyTransferPerTick() {
-        return Math.min(RTGs.all().get(getName()).config().getGeneration(), energyStorage.getEnergyStored());
+        return RTGs.all().get(getName()).config().getActualGeneration();
     }
 }

@@ -8,11 +8,11 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:uranium/238"
     },
     {
-      "amount": 16,
+      "amount": 10,
       "tag": "forge:uranium/235"
     }
   ],

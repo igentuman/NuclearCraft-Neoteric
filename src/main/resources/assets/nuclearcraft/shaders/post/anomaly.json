@@ -1,0 +1,42 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "anomaly",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "auxtargets": [
+        {
+          "name": "DepthSampler",
+          "id": "minecraft:main:depth"
+        }
+      ],
+      "uniforms": [
+        { "name": "FxPass", "values": [ 1.0 ] },
+        { "name": "BlurPos", "values": [ 0.5, 0.5 ] },
+        { "name": "BlurDir", "values": [ 0.2, 0.0 ] },
+        { "name": "Radius", "values": [ 200.0, 1.0 ] },
+        { "name": "BlackHoleDepth", "values": [ 1.0 ] },
+        { "name": "Time", "values": [ 0.0 ] },
+        { "name": "Intensity", "values": [ 1.0 ] },
+        { "name": "AnomColor", "values": [ 1.0, 1.0, 1.0 ] }
+      ]
+    },
+    {
+      "name": "anomaly",
+      "intarget": "swap",
+      "outtarget": "minecraft:main",
+      "auxtargets": [
+        {
+          "name": "DepthSampler",
+          "id": "minecraft:main:depth"
+        }
+      ],
+      "uniforms": [
+        { "name": "FxPass", "values": [ 0.0 ] }
+      ]
+    }
+  ]
+}

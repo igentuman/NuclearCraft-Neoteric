@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:turbine_controller"
+    },
+    "title": {
+      "translate": "advancement.nc.turbine_controller"
+    },
+    "description": {
+      "translate": "advancement.nc.turbine_controller.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:fission_reactor_controller",
+  "criteria": {
+    "turbine_controller": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:turbine_controller"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "turbine_controller"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

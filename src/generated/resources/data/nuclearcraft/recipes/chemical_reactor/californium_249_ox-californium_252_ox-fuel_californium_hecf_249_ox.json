@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "forge:californium/249_ox"
+    },
+    {
+      "amount": 180,
+      "tag": "forge:californium/252_ox"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 90,
+      "tag": "forge:fuel_californium_hecf_249_ox"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

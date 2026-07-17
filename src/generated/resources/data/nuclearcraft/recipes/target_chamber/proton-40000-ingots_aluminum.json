@@ -1,0 +1,47 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.08,
+  "energyReleased": -22500,
+  "input": [
+    {
+      "tag": "forge:ingots/aluminum"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 12500000,
+      "focus": 1.0,
+      "meanEnergy": 40000,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 50000,
+  "output": [
+    {
+      "item": "nuclearcraft:sodium_22"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

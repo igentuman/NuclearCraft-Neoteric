@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.04,
+  "energyReleased": 7710,
+  "input": [
+    {
+      "tag": "forge:ingots/copper"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 25000000,
+      "focus": 1.0,
+      "meanEnergy": 4500,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 5900,
+  "output": [
+    {
+      "tag": "forge:ingots/zinc"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "photon"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Rad-X",
+  "icon": "nuclearcraft:rad_x",
+  "category": "nuclearcraft:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "radx",
+      "type": "items/1",
+      "header": "Rad-X",
+      "item": "nuclearcraft:rad_x",
+      "text": "$(item)Rad-X$() обеспечивает заданный уровень радиационной защиты на ограниченное время. Эффект складывается, однако чем выше итоговый уровень защиты - тем быстрее он сходит на нет."
+    }
+  ]
+}

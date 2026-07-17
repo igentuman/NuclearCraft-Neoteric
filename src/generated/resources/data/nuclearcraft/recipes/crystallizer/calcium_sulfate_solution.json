@@ -2,7 +2,7 @@
   "type": "nuclearcraft:crystallizer",
   "inputFluids": [
     {
-      "amount": 144,
+      "amount": 250,
       "tag": "forge:calcium_sulfate_solution"
     }
   ],

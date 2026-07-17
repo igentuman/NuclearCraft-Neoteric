@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.02,
+  "energyReleased": 16000,
+  "input": [
+    {
+      "item": "nuclearcraft:boron_11"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 50000000,
+      "focus": 1.0,
+      "meanEnergy": 15500,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 26000,
+  "output": [
+    {
+      "tag": "forge:dusts/graphite"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "photon"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

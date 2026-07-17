@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:lithium_6_za"
+      "amount": 90,
+      "tag": "forge:lithium/6_za"
     }
   ],
   "output": [

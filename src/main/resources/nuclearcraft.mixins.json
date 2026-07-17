@@ -4,12 +4,19 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "nuclearcraft.refmap.json",
   "mixins": [
-    "ForgeHooksMixin",
+    "KubeJSRecipesEventJSMixin",
+    "LightningRodBlockMixin",
     "MekRadiationManager",
-    "TagLoaderMixin",
-    "KubeJSRecipesEventJSMixin"
+    "ParticleStackKubeJSMixin",
+    "TemplatePoolAccess",
+    "OverworldBiomeBuilderInvoker",
+    "OverworldBiomeBuilderMixin"
+  ],
+  "server": [
+
   ],
   "client": [
+    "LevelRendererCloudsMixin"
   ],
   "minVersion": "0.8"
 }

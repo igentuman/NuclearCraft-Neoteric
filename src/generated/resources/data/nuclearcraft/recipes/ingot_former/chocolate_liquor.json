@@ -2,8 +2,8 @@
   "type": "nuclearcraft:ingot_former",
   "inputFluids": [
     {
-      "amount": 144,
-      "fluid": "nuclearcraft:chocolate_liquor"
+      "amount": 90,
+      "tag": "forge:chocolate_liquor"
     }
   ],
   "output": [

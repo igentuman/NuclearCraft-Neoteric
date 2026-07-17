@@ -1,14 +1,37 @@
 package igentuman.nc.content.fuel;
 
-public class NCFuel {
-    public String group;
+import com.google.gson.JsonObject;
 
+public class NCFuel {
+
+    public String group;
     public String name;
     private FuelDef def;
     private FuelDef oxide;
     private FuelDef nitride;
     private FuelDef zirconium;
     private FuelDef triso;
+
+    /**
+     * Load a fuel from a JSON object.
+     * @param data
+     * @return
+     */
+    public static NCFuel of(JsonObject data) {
+        FuelDef def = new FuelDef(
+                data.get("group").getAsString(),
+                data.get("name").getAsString(),
+                data.get("forge_energy").getAsInt(),
+                data.get("heat").getAsDouble(),
+                data.get("criticality").getAsInt(),
+                data.get("depletion").getAsInt(),
+                data.get("efficiency").getAsInt());
+        def.isotopes(
+                data.get("isotopes").getAsJsonArray().get(0).getAsInt(),
+                data.get("isotopes").getAsJsonArray().get(1).getAsInt()
+                );
+        return NCFuel.of(def);
+    }
 
     public void setDef(FuelDef def) {
         this.def = def;
@@ -24,8 +47,8 @@ public class NCFuel {
         if(zirconium == null) {
             zirconium = new FuelDef(group, name,
                     (int) (def.forge_energy*1.25),
-                    Math.ceil((float)oxide.heat*1.1), (float)oxide.criticality/1.25,
-                    (float)oxide.depletion*1.05, (float)oxide.efficiency/1.01)
+                    Math.ceil(oxide.heat*1.1f), oxide.criticality/1.25f,
+                    oxide.depletion*1.05f, oxide.efficiency/1.01f)
                     .isotopes(def.isotopes);
         }
         return zirconium;
@@ -36,8 +59,8 @@ public class NCFuel {
         if(oxide == null) {
             oxide = new FuelDef(group, name,
                     (int) (def.forge_energy*1.4),
-                    (float)def.heat*1.25, (float)def.criticality*1.1,
-                    (float)def.depletion/1.1, (float)def.efficiency/1.05)
+                    def.heat*1.25f, def.criticality*1.1f,
+                    def.depletion/1.1f, def.efficiency/1.05f)
                     .isotopes(def.isotopes);
         }
         return oxide;
@@ -60,7 +83,7 @@ public class NCFuel {
             triso = new FuelDef(group, name,
                     0,
                     Math.ceil((float)oxide.heat*1.5), (float)oxide.criticality/1.5,
-                    (float)oxide.depletion/1.25, (float)oxide.efficiency*1.5);
+                    (float)oxide.depletion*12.5, (float)oxide.efficiency*1.5);
         }
         return triso;
     }
@@ -73,6 +96,25 @@ public class NCFuel {
     public static NCFuel of(FuelDef fuelDef) {
         NCFuel f = new NCFuel();
         f.setDef(fuelDef);
+        f.name = fuelDef.name;
+        f.group = fuelDef.group;
         return f;
+    }
+
+    public FuelDef subType(String subType) {
+        this.name = def.name;
+        this.group = def.group;
+        getOxide();
+        getNitride();
+        getTriso();
+        getZirconiumAlloy();
+        switch (subType) {
+            case "": return getDefault();
+            case "_ox": return getOxide();
+            case "_ni": return getNitride();
+            case "_tr": return getTriso();
+            case "_za": return getZirconiumAlloy();
+        }
+        return getDefault();
     }
 }

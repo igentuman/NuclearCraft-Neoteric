@@ -9,10 +9,10 @@
   "outputFluids": [
     {
       "amount": 10,
-      "tag": "minecraft:water"
+      "tag": "forge:exhaust_steam"
     }
   ],
-  "powerModifier": 1.0,
+  "powerModifier": 0.75,
   "radiation": 1.0,
-  "timeModifier": 1.5
+  "timeModifier": 1.0
 }

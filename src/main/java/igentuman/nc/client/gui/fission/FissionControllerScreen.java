@@ -1,7 +1,6 @@
 package igentuman.nc.client.gui.fission;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.bar.ProgressBar;
 import igentuman.nc.client.gui.element.bar.VerticalBar;
@@ -13,25 +12,26 @@ import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.button.Checkbox;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.gui.element.fluid.FluidTankRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY;
-import static igentuman.nc.util.TextUtils.applyFormat;
+import static igentuman.nc.compat.gregtech.GTUtils.isOnlyGTCEUCapEnabled;
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.*;
 
 public class FissionControllerScreen extends AbstractContainerScreen<FissionControllerContainer> implements IProgressScreen, IVerticalBarScreen {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/fission/controller.png");
+    protected final ResourceLocation GUI = rl("textures/gui/fission/controller.png");
     protected int relX;
     protected int relY;
     private int xCenter;
@@ -51,6 +51,8 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     private VerticalBar coolantBar;
     private VerticalBar hotCoolantBar;
     private Button.ReactorMode modeBtn;
+    private Button.MultiblockAnalyze analyzeBtn;
+    private Button.Link linkBtn;
 
     public Component casingTootip = Component.empty();
     public Component interiorTootip = Component.empty();
@@ -80,7 +82,6 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
 
     protected void init() {
         super.init();
-        Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
         widgets.clear();
         checkboxCasing = new Checkbox(imageWidth-19, 80, this,  isCasingValid());
@@ -92,9 +93,18 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         coolantTank = new FluidTankRenderer(getFluidTank(0), SHOW_AMOUNT_AND_CAPACITY,6, 73, 18, 17);
         steamTank = new FluidTankRenderer(getFluidTank(1), SHOW_AMOUNT_AND_CAPACITY,6, 73, 27, 17);
         widgets.add(heatBar);
+        widgets.add(new Button.ReportIssue(163, 6, this, menu.getPosition()));
         widgets.add(new ProgressBar(74, 35, this,  7));
-        modeBtn = new Button.ReactorMode(150, 54, this, menu.getPosition());
-        widgets.add(modeBtn);
+        modeBtn = new Button.ReactorMode(150, 60, this, menu.getPosition());
+        analyzeBtn = new Button.MultiblockAnalyze(150, 38, this, menu.getPosition());
+        linkBtn = new Button.Link(150, 14, this, menu.getPosition(), "https://ftb.fandom.com/wiki/NuclearCraft:_Neoteric#Fission_Reactor_+_Irradiator",
+                List.of(__("tooltip.nc.wiki"))
+        );
+        if(FISSION_CONFIG.BOILING_ENABLED.get()) {
+            widgets.add(modeBtn);
+        }
+        widgets.add(analyzeBtn);
+        widgets.add(linkBtn);
     }
 
     protected FluidTank getFluidTank(int i) {
@@ -110,21 +120,25 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         xCenter = getGuiLeft()-imageWidth/2;
-        this.renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
-        itemRenderer.renderAndDecorateItem(container().getInputStack(), relX+82, relY+20);
+        this.renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(graphics, mouseX, mouseY);
+        graphics.renderItem(container().getInputStack(), relX+82, relY+20);
     }
 
-    private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
-        modeBtn.setMode(getMenu().getMode());
-        modeBtn.setTimer(getMenu().getModeTimer());
-        for(NCGuiElement widget: widgets) {
-            widget.draw(matrix, mouseX, mouseY, partialTicks);
+    private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        if (modeBtn == null || linkBtn == null) {
+            init();
         }
-        checkboxCasing.setChecked(isCasingValid()).draw(matrix, mouseX, mouseY, partialTicks);
+        modeBtn.setMode(getMenu().isBoilingMode());
+        modeBtn.setTimer(getMenu().getModeTimer());
+        analyzeBtn.setEnabled(container().canAnalyze());
+        for(NCGuiElement widget: widgets) {
+            widget.draw(graphics, mouseX, mouseY, partialTicks);
+        }
+        checkboxCasing.setChecked(isCasingValid()).draw(graphics, mouseX, mouseY, partialTicks);
         if(isCasingValid()) {
             checkboxCasing.setTooltipKey("multiblock.casing.complete");
         } else {
@@ -132,7 +146,7 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         }
         checkboxCasing.addTooltip(casingTootip);
 
-        checkboxInterior.setChecked(isInteriorValid()).draw(matrix, mouseX, mouseY, partialTicks);
+        checkboxInterior.setChecked(isInteriorValid()).draw(graphics, mouseX, mouseY, partialTicks);
         if(isInteriorValid()) {
             checkboxInterior.setTooltipKey("multiblock.interior.complete");
         } else {
@@ -140,45 +154,50 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
         }
         checkboxInterior.addTooltip(interiorTootip);
         if(isInteriorValid()) {
-            checkboxInterior.addTooltip(Component.translatable("reactor.heat_sinks_count", container().getHeatSinksCount()));
-            checkboxInterior.addTooltip(Component.translatable("reactor.moderators_count", container().getModeratorsCount()));
-            checkboxInterior.addTooltip(Component.translatable("reactor.moderation_level", container().getModerationLevel()));
-            checkboxInterior.addTooltip(Component.translatable("reactor.irradiators_connections", container().getIrradiatorsConnections()));
+            checkboxInterior.addTooltip(__("reactor.heat_sinks_count", container().getHeatSinksCount()));
+            checkboxInterior.addTooltip(__("reactor.moderators_count", container().getModeratorsCount()));
+            checkboxInterior.addTooltip(__("reactor.moderation_level", container().getModerationLevel()));
+            checkboxInterior.addTooltip(__("reactor.reactivity", container().getReactivity()));
+            checkboxInterior.addTooltip(__("reactor.irradiators_connections", container().getIrradiatorsConnections()));
         }
-        if(!getMenu().getMode()) {
-            energyBar.draw(matrix, mouseX, mouseY, partialTicks);
+        if(!getMenu().isBoilingMode()) {
+            energyBar.draw(graphics, mouseX, mouseY, partialTicks);
         } else {
-            coolantBar.draw(matrix, mouseX, mouseY, partialTicks);
-            hotCoolantBar.draw(matrix, mouseX, mouseY, partialTicks);
-            coolantTank.draw(matrix, mouseX, mouseY, partialTicks);
-            steamTank.draw(matrix, mouseX, mouseY, partialTicks);
+            coolantBar.draw(graphics, mouseX, mouseY, partialTicks);
+            hotCoolantBar.draw(graphics, mouseX, mouseY, partialTicks);
+            coolantTank.draw(graphics, mouseX, mouseY, partialTicks);
+            steamTank.draw(graphics, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
-    protected void renderLabels(@NotNull PoseStack matrixStack, int mouseX, int mouseY) {
-        drawCenteredString(matrixStack, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         if(isCasingValid()) {
-            casingTootip = applyFormat(Component.translatable("reactor.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
+            casingTootip = applyFormat(__("tooltip.nc.structure.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
         } else {
-            casingTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+            casingTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
         }
 
         if(isCasingValid()) {
             if (isInteriorValid()) {
-                interiorTootip = applyFormat(Component.translatable("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
+                interiorTootip = applyFormat(__("reactor.fuel_cells", getFuelCellsCount()), ChatFormatting.GOLD);
 
                 if(container().hasRecipe() && !container().getEfficiency().equals("NaN")) {
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.efficiency", container().getEfficiency()), 35, 82, 0x8AFF8A);
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.net_heat", container().getNetHeat()), 35, 72, 0x8AFF8A);
-                    drawString(matrixStack, font, Component.translatable("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 35, 62, 0x8AFF8A);
+                    int color = container().getRawEfficiency() > 0 ? 0x8AFF8A : 0xCCCCCC;
+                    graphics.pose().pushPose();
+                    graphics.pose().scale(0.5f, 0.5f, 0.5f);
+                    graphics.drawString(font, __("fission_reactor.efficiency", container().getEfficiency()), 35*2, 82*2, color);
+                    graphics.drawString(font, __("fission_reactor.net_heat", container().getNetHeat()), 35*2, 72*2, color);
+                    graphics.drawString(font, __("fission_reactor.heat_multiplier", container().getHeatMultiplier()), 35*2, 62*2, color);
+                    graphics.pose().popPose();
                 }
             } else {
-                interiorTootip = applyFormat(Component.translatable(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
+                interiorTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
             }
         }
 
-        renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
+        renderTooltips(graphics, mouseX-relX, mouseY-relY);
     }
 
     private int getFuelCellsCount() {
@@ -206,48 +225,55 @@ public class FissionControllerScreen extends AbstractContainerScreen<FissionCont
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
-        renderWidgets(matrixStack, partialTicks, mouseX, mouseY);
+        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 
-    private void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY) {
-        heatBar.clearTooltips();
-        heatBar.addTooltip(Component.translatable("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
-        heatBar.addTooltip(Component.translatable("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
-        heatBar.addTooltip(Component.translatable("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
+    private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
+        if(heatBar.isMouseOver(pMouseX, pMouseY)) {
+            heatBar.clearTooltips();
+            heatBar.addTooltip(__("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
+            heatBar.addTooltip(__("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
+            heatBar.addTooltip(__("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
+            if(container().isBoilingMode()) {
+                heatBar.addTooltip(__("reactor.boiling_penalty", container().getBoilingPenalty()).withStyle(ChatFormatting.YELLOW));
+            }
+        }
+
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
-               renderTooltip(pPoseStack, widget.getTooltips(),
+               graphics.renderTooltip(font, widget.getTooltips(),
                        Optional.empty(), pMouseX, pMouseY);
            }
         }
         if(checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
-            renderTooltip(pPoseStack, checkboxCasing.getTooltips(),
+            graphics.renderTooltip(font, checkboxCasing.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
         if(checkboxInterior.isMouseOver(pMouseX, pMouseY)) {
-            renderTooltip(pPoseStack, checkboxInterior.getTooltips(),
+            graphics.renderTooltip(font, checkboxInterior.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
-        if(!container().getMode()) {
+        if(!container().isBoilingMode()) {
             energyBar.clearTooltips();
-            energyBar.addTooltip(Component.translatable("reactor.forge_energy_per_tick", container().energyPerTick()));
-            if(energyBar.isMouseOver(pMouseX, pMouseY)) {
-                renderTooltip(pPoseStack, energyBar.getTooltips(),
+            energyBar.addTooltip(__(energyGenLine(), container().energyPerTick()));
+            if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
+                graphics.renderTooltip(font, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }
         } else {
-            if(coolantTank.isMouseOver(pMouseX, pMouseY)) {
-                renderTooltip(pPoseStack, coolantTank.getTooltips(),
+            if(coolantTank.isMouseOver(pMouseX, pMouseY+10)) {
+                graphics.renderTooltip(font, coolantTank.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }
-            if(steamTank.isMouseOver(pMouseX, pMouseY)) {
+            if(steamTank.isMouseOver(pMouseX, pMouseY+10)) {
                 List<Component> tooltips = steamTank.getTooltips();
-                tooltips.add(Component.translatable("reactor.steam_per_tick", container().getSteamPerTick()));
-                renderTooltip(pPoseStack, tooltips,
+                tooltips.add(__("reactor.steam_per_tick", container().getSteamPerTick()));
+                tooltips.add(__("reactor.max_boiling_rate", container().getMaxBoilingRate()));
+                graphics.renderTooltip(font, tooltips,
                         Optional.empty(), pMouseX, pMouseY);
             }
         }

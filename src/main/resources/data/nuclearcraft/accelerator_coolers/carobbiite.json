@@ -1,0 +1,5 @@
+[{
+  "type": "carobbiite",
+  "heat": 140,
+  "placement_rule": ["end_stone_cooler", "gold_cooler"]
+}]

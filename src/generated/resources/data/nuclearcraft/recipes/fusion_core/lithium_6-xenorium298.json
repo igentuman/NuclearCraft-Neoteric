@@ -1,0 +1,27 @@
+{
+  "type": "nuclearcraft:fusion_core",
+  "inputFluids": [
+    {
+      "amount": 360,
+      "tag": "forge:lithium/6"
+    },
+    {
+      "amount": 360,
+      "tag": "forge:xenorium298"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 3000,
+      "tag": "forge:helium"
+    },
+    {
+      "amount": 3000,
+      "tag": "forge:helium"
+    }
+  ],
+  "powerModifier": 510400.0,
+  "radiation": 1.5,
+  "temperature": 14536.0,
+  "timeModifier": 65.0
+}

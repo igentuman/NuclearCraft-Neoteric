@@ -1,8 +1,5 @@
 package igentuman.nc.util;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -11,20 +8,20 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.tags.IReverseTag;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
-import static igentuman.nc.setup.registration.NCBlocks.ITEMS;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
+import static igentuman.nc.setup.registration.Registries.BLOCK_REGISTRY;
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+import static igentuman.nc.util.NcUtils.rlFromString;
 
 public class TagUtil {
 
@@ -66,12 +63,12 @@ public class TagUtil {
         return FluidStack.loadFluidStackFromNBT(tag);
     }
 
-    public static List<Block> getBlocksByTagKey(String key)
+    public static HashSet<Block> getBlocksByTagKey(String key)
     {
-        List<Block> tmp = new ArrayList<>();
-        TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
-        for(Holder<Block> holder : Registry.BLOCK.getTagOrEmpty(tag)) {
-            tmp.add(holder.get());
+        HashSet<Block> tmp = new HashSet<>();
+        TagKey<Block> tag = TagKey.create(BLOCK_REGISTRY, rlFromString(key));
+        for(Block holder : ForgeRegistries.BLOCKS.tags().getTag(tag).stream().toList()) {
+            tmp.add(holder);
         }
         return tmp;
     }
@@ -85,17 +82,18 @@ public class TagUtil {
                 }
             }
         }
-        return getBlocksByTagKey(key).get(0);
+        return getBlocksByTagKey(key).stream()
+                .filter(block -> block != Blocks.AIR)
+                .findFirst()
+                .orElse(Blocks.AIR);
     }
 
     public static List<Item> getItemsByTagKey(String key)
     {
         List<Item> tmp = new ArrayList<>();
-        TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
-        for(HolderSet.Named<Item> holder : Registry.ITEM.getTag(tag).stream().toList()) {
-            for(Holder<Item> item : holder) {
-                tmp.add(item.get());
-            }
+        TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(key));
+        for(Item holder : ForgeRegistries.ITEMS.tags().getTag(tag).stream().toList()) {
+            tmp.add(holder);
         }
         return tmp;
     }

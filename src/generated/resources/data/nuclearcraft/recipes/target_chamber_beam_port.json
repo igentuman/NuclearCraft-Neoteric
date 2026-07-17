@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_target_chamber",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:particle_beam"
+    },
+    "F": {
+      "item": "nuclearcraft:steel_frame"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "T": {
+      "tag": "forge:ingots/tungsten"
+    }
+  },
+  "pattern": [
+    "STS",
+    "BFB",
+    "STS"
+  ],
+  "result": {
+    "count": 4,
+    "item": "nuclearcraft:target_chamber_beam_port"
+  },
+  "show_notification": true
+}

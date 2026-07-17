@@ -1,51 +1,59 @@
 package igentuman.nc.content.processors;
 
+import igentuman.api.nc.IProcessorRegistry;
+import igentuman.nc.client.gui.processor.CreativeParticleSourceScreen;
 import igentuman.nc.client.gui.processor.LeacherScreen;
 import igentuman.nc.block.entity.processor.*;
+import igentuman.nc.container.CreativeParticleSourceContainer;
 import igentuman.nc.container.LeacherContainer;
-import igentuman.nc.container.NCProcessorContainer;
+import igentuman.nc.util.annotation.NCProcessorsRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.ModFileScanData;
+import org.objectweb.asm.Type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.LOGGER;
 
 @SuppressWarnings("ALL")
 public class Processors {
 
-    private static HashMap<String, ProcessorPrefab> all = new HashMap<>();
-    private static HashMap<String, ProcessorPrefab> registered = new HashMap<>();
-    public static String GAS_SCRUBBER = "gas_scrubber";
-    public static String PUMP = "pump";
-    public static String ANALYZER = "analyzer";
-    public static String LEACHER = "leacher";
-    public static String NUCLEAR_FURNACE = "nuclear_furnace";
-    public static String MANUFACTORY = "manufactory";
-    public static String ALLOY_SMELTER = "alloy_smelter";
-    public static String ASSEMBLER = "assembler";
-    public static String CENTRIFUGE = "centrifuge";
-    public static String CHEMICAL_REACTOR = "chemical_reactor";
-    public static String CRYSTALLIZER = "crystallizer";
-    public static String FUEL_REPROCESSOR = "fuel_reprocessor";
-    public static String DECAY_HASTENER = "decay_hastener";
-    public static String ELECTROLYZER = "electrolyzer";
-    public static String EXTRACTOR = "extractor";
-    public static String FLUID_ENRICHER = "fluid_enricher";
-    public static String FLUID_INFUSER = "fluid_infuser";
-    public static String INGOT_FORMER = "ingot_former";
-    public static String IRRADIATOR = "irradiator";
-    public static String ISOTOPE_SEPARATOR = "isotope_separator";
-    public static String MELTER = "melter";
-    public static String PRESSURIZER = "pressurizer";
-    public static String ROCK_CRUSHER = "rock_crusher";
-    public static String STEAM_TURBINE = "steam_turbine";
-    public static String SUPERCOOLER = "supercooler";
-    public static String QUANTUM_TRANSFORMER = "quantum_transformer";
+    private final static HashMap<String, ProcessorPrefab> all = new HashMap<>();
+    private final static HashMap<String, ProcessorPrefab> registered = new HashMap<>();
+    public final static String GAS_SCRUBBER = "gas_scrubber";
+    public final static String PUMP = "pump";
+    public final static String ANALYZER = "analyzer";
+    public final static String LEACHER = "leacher";
+    public final static String NUCLEAR_FURNACE = "nuclear_furnace";
+    public final static String MANUFACTORY = "manufactory";
+    public final static String ALLOY_SMELTER = "alloy_smelter";
+    public final static String ASSEMBLER = "assembler";
+    public final static String CENTRIFUGE = "centrifuge";
+    public final static String CHEMICAL_REACTOR = "chemical_reactor";
+    public final static String CRYSTALLIZER = "crystallizer";
+    public final static String FUEL_REPROCESSOR = "fuel_reprocessor";
+    public final static String DECAY_HASTENER = "decay_hastener";
+    public final static String ELECTROLYZER = "electrolyzer";
+    public final static String EXTRACTOR = "extractor";
+    public final static String FLUID_ENRICHER = "fluid_enricher";
+    public final static String FLUID_INFUSER = "fluid_infuser";
+    public final static String INGOT_FORMER = "ingot_former";
+    public final static String IRRADIATOR = "irradiator";
+    public final static String ISOTOPE_SEPARATOR = "isotope_separator";
+    public final static String MELTER = "melter";
+    public final static String PRESSURIZER = "pressurizer";
+    public final static String ROCK_CRUSHER = "rock_crusher";
+    public final static String STEAM_TURBINE = "steam_turbine";
+    public final static String SUPERCOOLER = "supercooler";
+    public final static String QUANTUM_TRANSFORMER = "quantum_transformer";
+    public final static String SUBATOMIC_LIQUIFIER = "subatomic_liquifier";
+    public final static String CREATIVE_PARTICLE_SOURCE = "creative_particle_source";
 
     @OnlyIn(Dist.CLIENT)
     public static void setScreen(String name, MenuScreens.ScreenConstructor constructor) {
@@ -54,6 +62,15 @@ public class Processors {
 
     public static HashMap<String, ProcessorPrefab> all() {
         if(all.isEmpty()) {
+            all.put(CREATIVE_PARTICLE_SOURCE,
+                    ProcessorBuilder
+                            .make(CREATIVE_PARTICLE_SOURCE, 0, 0, 0, 0)
+                            .particle(1, 0)
+                            .blockEntity(CreativeParticleSourceBE::new)
+                            .container(CreativeParticleSourceContainer.class)
+                            .build()
+            );
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ()-> Processors.setScreen(CREATIVE_PARTICLE_SOURCE, CreativeParticleSourceScreen::new));
             all.put(GAS_SCRUBBER,
                     ProcessorBuilder
                             .make(GAS_SCRUBBER, 1, 0, 1, 0)
@@ -256,21 +273,45 @@ public class Processors {
                             .progressBar(11)
                             .build()
             );
-/*            all.put(QUANTUM_TRANSFORMER,
+            all.put(SUBATOMIC_LIQUIFIER,
                     ProcessorBuilder
-                            .make(QUANTUM_TRANSFORMER, 1, 0, 1, 0)
-                            .blockEntity(QuantumTransformerBE::new)
+                            .make(SUBATOMIC_LIQUIFIER, 1, 1, 1, 0)
+                            .blockEntity(SubatomicLiquifierBE::new)
+                            .recipe(SubatomicLiquifierBE.Recipe::new)
                             .build()
-            );*/
+            );
+
+            scanForProcessorRegistries();
         }
         return all;
+    }
+
+    private static void scanForProcessorRegistries() {
+        Type annotationType = Type.getType(NCProcessorsRegistry.class);
+
+        for (ModFileScanData scanData : ModList.get().getAllScanData()) {
+            for (ModFileScanData.AnnotationData annotationData : scanData.getAnnotations()) {
+                if (annotationType.equals(annotationData.annotationType())) {
+                    try {
+                        Class<?> clazz = Class.forName(annotationData.memberName());
+                        Object instance = clazz.getDeclaredConstructor().newInstance();
+                        if (instance instanceof IProcessorRegistry registry) {
+                            registry.registerProcessors(all);
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error("Failed to load processor registry: " + annotationData.memberName(), e);
+                    }
+                }
+            }
+        }
     }
 
     public static HashMap<String, ProcessorPrefab> registered() {
         if(registered.isEmpty()) {
             for(String name: all().keySet()) {
-                if (all().get(name).isRegistered())
+                if (all().get(name).config().isRegistered()) {
                     registered.put(name,all().get(name));
+                }
             }
         }
         return registered;

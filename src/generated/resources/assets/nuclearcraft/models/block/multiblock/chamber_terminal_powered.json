@@ -1,0 +1,6 @@
+{
+  "parent": "nuclearcraft:block/multiblock/chamber_terminal",
+  "textures": {
+    "north": "nuclearcraft:block/kugelblitz/controller/chamber_terminal_powered"
+  }
+}

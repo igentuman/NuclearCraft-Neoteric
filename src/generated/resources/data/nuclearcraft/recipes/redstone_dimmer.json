@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_dimmer",
+  "key": {
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "L": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "M": {
+      "item": "nuclearcraft:chassis"
+    },
+    "P": {
+      "item": "minecraft:repeater"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "CMC",
+    "LPL"
+  ],
+  "result": {
+    "item": "nuclearcraft:redstone_dimmer"
+  },
+  "show_notification": true
+}

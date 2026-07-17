@@ -33,6 +33,46 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
 
         itemsToItems(
                 List.of(
+                        ingredient(NC_PARTS.get("silicon_n_doped").get()),
+                        ingredient(REDSTONE, 4),
+                        ingotIngredient(Materials.gold),
+                        ingotIngredient(Materials.silver)
+                ),
+                List.of(ingredient(NC_PARTS.get("basic_processor").get(), 1))
+        );
+
+        itemsToItems(
+                List.of(
+                        ingredient(NC_PARTS.get("basic_processor").get(), 2),
+                        ingredient(NC_PARTS.get("basic_electric_circuit").get(), 1),
+                        ingredient(IRON_BARS, 8),
+                        ingredient(NC_PARTS.get("coil_bscco").get(), 4)
+                ),
+                List.of(ingredient(Q36.get(), 1))
+        );
+
+        itemsToItems(
+                List.of(
+                        dustIngredient(Materials.hafnium),
+                        ingredient(NC_PARTS.get("basic_processor").get(), 1),
+                        ingredient(REDSTONE, 4),
+                        ingredient(NC_PARTS.get("silicon_p_doped").get())
+                ),
+                List.of(ingredient(NC_PARTS.get("advanced_processor").get(), 1))
+        );
+
+        itemsToItems(
+                List.of(
+                        dustIngredient(Materials.hafnium),
+                        ingredient(NC_PARTS.get("coil_bscco").get(), 4),
+                        ingredient(NC_PARTS.get("advanced_processor").get(), 1),
+                        ingotIngredient(Materials.platinum)
+                ),
+                List.of(ingredient(NC_PARTS.get("elite_processor").get(), 1))
+        );
+
+        itemsToItems(
+                List.of(
                         dustIngredient(Materials.rhodochrosite),
                         dustIngredient(Materials.calcium_sulfate),
                         dustIngredient(Materials.magnesium),
@@ -43,10 +83,17 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
 
         itemsToItems(
                 List.of(
+                        ingredient(NC_ITEMS.get("upgrade_speed").get(), 2),
+                        plateIngredient(Materials.cobalt),
+                        dustIngredient(Materials.uranium)
+                ),
+                List.of(ingredient(NC_ITEMS.get("upgrade_stack").get(), 1))
+        );
+
+        itemsToItems(
+                List.of(
                         plateIngredient(Materials.tough_alloy, 5),
-                        ingredient(NETHERITE_AXE),
-                        ingredient(NETHERITE_PICKAXE),
-                        ingredient(NETHERITE_SHOVEL)
+                        ingotIngredient("iron", 2)
                 ),
                 List.of(ingredient(SPAXELHOE_TOUGH.get()))
         );
@@ -96,7 +143,7 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
         itemsToItems(
                 List.of(
                         ingredient(NC_ITEMS.get("compact_water_collector").get(),4),
-                        ingredient(HEART_OF_THE_SEA),
+                        ingredient(CONDUIT),
                         plateIngredient(Materials.platinum, 4),
                         ingredient(NC_PARTS.get("motor").get())
                 ),

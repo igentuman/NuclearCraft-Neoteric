@@ -6,6 +6,7 @@ import igentuman.nc.recipes.ingredient.ItemStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,13 +17,11 @@ import java.util.List;
 import static igentuman.nc.compat.GlobalVars.CATALYSTS;
 import static igentuman.nc.compat.GlobalVars.RECIPE_CLASSES;
 
-public class AssemblerBE extends NCProcessorBE<AssemblerBE.Recipe> {
+public class AssemblerBE extends NCProcessorBE {
+
     public AssemblerBE(BlockPos pPos, BlockState pBlockState) {
         super(pPos, pBlockState, Processors.ASSEMBLER);
-    }
-    @Override
-    public String getName() {
-        return Processors.ASSEMBLER;
+        particle1 = ParticleTypes.ENCHANTED_HIT;
     }
 
     @NothingNullByDefault

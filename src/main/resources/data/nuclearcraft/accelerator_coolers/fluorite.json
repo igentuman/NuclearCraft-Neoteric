@@ -1,0 +1,5 @@
+[{
+  "type": "fluorite",
+  "heat": 155,
+  "placement_rule": ["gold_cooler>3"]
+}]

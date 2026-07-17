@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:light"
+    },
+    "title": {
+      "translate": "advancement.nc.light_shielding"
+    },
+    "description": {
+      "translate": "advancement.nc.light_shielding.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:root",
+  "criteria": {
+    "light_shielding": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:light"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "light_shielding"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

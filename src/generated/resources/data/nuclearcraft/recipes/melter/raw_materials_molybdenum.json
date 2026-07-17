@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 216,
-      "tag": "forge:molybdenum"
+      "amount": 120,
+      "tag": "forge:molten_molybdenum"
     }
   ],
   "powerModifier": 1.0,

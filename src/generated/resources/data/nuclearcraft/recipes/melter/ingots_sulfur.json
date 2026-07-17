@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:sulfur"
+      "amount": 90,
+      "tag": "forge:molten_sulfur"
     }
   ],
   "powerModifier": 1.0,

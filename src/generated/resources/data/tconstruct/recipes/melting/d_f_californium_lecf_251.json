@@ -1,0 +1,18 @@
+{
+  "type": "tconstruct:melting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "ingredient": {
+    "item": "nuclearcraft:depleted_fuel_californium_lecf_251"
+  },
+  "result": {
+    "amount": 90,
+    "fluid": "nuclearcraft:depleted_fuel_californium_lecf_251"
+  },
+  "temperature": 700,
+  "time": 40
+}

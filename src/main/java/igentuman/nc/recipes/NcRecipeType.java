@@ -1,8 +1,10 @@
 package igentuman.nc.recipes;
 
-import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.entity.processor.NuclearFurnaceBE;
-import igentuman.nc.block.entity.turbine.TurbineControllerBE;
+import igentuman.nc.block.fission.entity.MSRControllerBE;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
+import igentuman.nc.block.heat_exchanger.entity.HeatExchangerControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
@@ -14,35 +16,44 @@ import igentuman.nc.registry.RecipeTypeRegistryObject;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.*;
-
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 
+@SuppressWarnings("unchecked")
 public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>,
         INcRecipeTypeProvider<RECIPE> {
 
     public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(MODID);
     public static boolean initialized = false;
     public static final HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> ALL_RECIPES = initializeRecipes();
+
     private static HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> initializeRecipes() {
         HashMap<String, RecipeTypeRegistryObject<? extends NcRecipe>> recipes = new HashMap<>();
         recipes.put(FissionControllerBE.NAME, register(FissionControllerBE.NAME));
+        recipes.put(MSRControllerBE.NAME, register(MSRControllerBE.NAME));
         recipes.put("nc_ore_veins", register("nc_ore_veins"));
         recipes.put("fusion_core", register("fusion_core"));
         recipes.put("fusion_coolant", register("fusion_coolant"));
+        recipes.put("accelerator_coolant", register("accelerator_coolant"));
         recipes.put("fission_boiling", register("fission_boiling"));
+        recipes.put("kugelblitz_chamber", register("kugelblitz_chamber"));
+        recipes.put("target_chamber", register("target_chamber"));
+        recipes.put("decay_chamber", register("decay_chamber"));
+        recipes.put("collision_chamber", register("collision_chamber"));
+        recipes.put("nuclear_blast", register("nuclear_blast"));
         recipes.put(TurbineControllerBE.NAME, register(TurbineControllerBE.NAME));
+        recipes.put(HeatExchangerControllerBE.NAME, register(HeatExchangerControllerBE.NAME));
 
-        for(String processorName: Processors.registered().keySet()) {
-            if(Processors.registered().get(processorName).hasRecipes()) {
+        for(String processorName: Processors.all().keySet()) {
+            if(Processors.all().get(processorName).hasRecipes()) {
                 recipes.put(processorName, register(processorName));
             }
         }
@@ -67,6 +78,13 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
         }
     }
 
+    public static void init() {
+    }
+
+    public static List<? extends NcRecipe> getAllRecipesFor(String name, Level level) {
+        return ALL_RECIPES.get(name).getRecipeType().getRecipes(level);
+    }
+
     @Override
     public String toString() {
         return registryName.toString();
@@ -86,6 +104,9 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
     @NotNull
     @Override
     public List<RECIPE> getRecipes(@Nullable Level world) {
+        if(Processors.all().containsKey(registryName.getPath()) && !Processors.all().get(registryName.getPath()).config().isRegistered()) {
+            return Collections.emptyList();
+        }
         if (world == null) {
             world = DistExecutor.unsafeRunForDist(() -> NcClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
             if (world == null) {
@@ -114,14 +135,19 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
             if(recipe.isIncomplete()) {
                 continue;
             }
-            ItemStackIngredient output = IngredientCreatorAccess.item().from(recipe.getResultItem());
+            ItemStack result = recipe.getResultItem(RegistryAccess.EMPTY);
+            Ingredient input = recipe.getIngredients().get(0);
+            if (result.isEmpty() || input.isEmpty()) {
+                continue;
+            }
+            ItemStackIngredient output = IngredientCreatorAccess.item().from(result);
             recipes.add((RECIPE) new NuclearFurnaceBE.Recipe(
                     rl(getNFRecipeId(recipe)),
-                    new ItemStackIngredient[]{IngredientCreatorAccess.item().from(recipe.getIngredients().get(0))},
+                    new ItemStackIngredient[]{IngredientCreatorAccess.item().from(input)},
                     new ItemStackIngredient[]{output},
                     new FluidStackIngredient[0],
                     new FluidStackIngredient[0],
-                    recipe.getCookingTime()/1000D, 1, 1, 1));
+                    recipe.getCookingTime()/2000D, 1, 1, 1));
         }
         return recipes;
     }

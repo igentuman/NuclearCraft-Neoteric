@@ -10,9 +10,9 @@ import java.util.function.Supplier;
 
 public class NCProcessorPacket {
 
-    private BlockPos pos;
-    private int id;
-    private byte val;
+    private final BlockPos pos;
+    private final int id;
+    private final byte val;
 
     public NCProcessorPacket(BlockPos pos, int id, byte val)
     {

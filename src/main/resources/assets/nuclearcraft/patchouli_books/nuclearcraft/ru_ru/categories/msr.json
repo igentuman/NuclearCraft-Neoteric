@@ -1,0 +1,7 @@
+{
+  "name": "Жидкосолевой реактор",
+  "description": "$(l)Жидкое топливо, никаких теплоотводов. Качай соль, заряжай шарики, лови обратную связь.",
+  "icon": "nuclearcraft:msr_controller",
+  "parent": "nuclearcraft:multiblocks",
+  "sortnum": 1
+}

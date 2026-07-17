@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "nuclearcraft:block/accelerator/accelerator_ion_source_port/top",
+    "east": "nuclearcraft:block/accelerator/accelerator_ion_source_port/side",
+    "north": "nuclearcraft:block/accelerator/accelerator_ion_source_port/accelerator_ion_source_port",
+    "particle": "nuclearcraft:block/accelerator/accelerator_ion_source_port/side",
+    "south": "nuclearcraft:block/accelerator/accelerator_ion_source_port/back",
+    "up": "nuclearcraft:block/accelerator/accelerator_ion_source_port/bottom",
+    "west": "nuclearcraft:block/accelerator/accelerator_ion_source_port/side"
+  }
+}

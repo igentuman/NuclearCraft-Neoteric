@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "forge:ferroboron"
+    },
+    {
+      "amount": 90,
+      "tag": "forge:lithium"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 180,
+      "tag": "forge:tough_alloy"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

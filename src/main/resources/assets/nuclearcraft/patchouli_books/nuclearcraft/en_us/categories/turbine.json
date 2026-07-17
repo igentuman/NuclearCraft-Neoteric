@@ -1,0 +1,7 @@
+{
+  "name": "Turbine",
+  "description": "$(l)Spinning turbines turn steam into honest electricity.",
+  "icon": "nuclearcraft:turbine_controller",
+  "parent": "nuclearcraft:multiblocks",
+  "sortnum": 0
+}

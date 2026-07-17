@@ -3,13 +3,13 @@
   "coolingRate": 2000.0,
   "inputFluids": [
     {
-      "amount": 500,
+      "amount": 1000,
       "tag": "minecraft:water"
     }
   ],
   "outputFluids": [
     {
-      "amount": 500,
+      "amount": 1000,
       "tag": "forge:steam"
     }
   ]

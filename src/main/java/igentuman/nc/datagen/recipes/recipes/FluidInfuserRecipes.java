@@ -1,22 +1,21 @@
 package igentuman.nc.datagen.recipes.recipes;
 
-import com.google.common.collect.Lists;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
-import igentuman.nc.setup.registration.Fuel;
+import igentuman.nc.setup.registration.FissionFuel;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.setup.registration.FissionFuel.NC_FUEL;
+import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.NCItems.ALL_NC_ITEMS;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static net.minecraft.world.item.Items.ICE;
 
 
@@ -31,21 +30,25 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
             String type = gas.substring(0, 2).replace("zi", "za");
             for (String name : Materials.isotopes()) {
                 String key = name + "_"+type;
+                if(!NC_ISOTOPES.containsKey(key)) {
+                    continue;
+                }
                 add(
                         fluidIngredient(gas, 100),
-                        ingredient(Fuel.NC_ISOTOPES.get(name).get()),
-                        ingredient(Fuel.NC_ISOTOPES.get(key).get())
+                        ingredient(NC_ISOTOPES.get(name).get()),
+                        ingredient(NC_ISOTOPES.get(key).get())
                 );
             }
 
             for (String name : FuelManager.all().keySet()) {
+                if(name.matches("xenorium.*|quantite.*")) continue;
                 for (String subType : FuelManager.all().get(name).keySet()) {
                     List<String> key = List.of("fuel", name, subType, "");
                     List<String> keyResult = List.of("fuel", name, subType, type);
                     add(
                             fluidIngredient(gas, 1000),
-                            ingredient(Fuel.NC_FUEL.get(key).get()),
-                            ingredient(Fuel.NC_FUEL.get(keyResult).get())
+                            ingredient(NC_FUEL.get(key).get()),
+                            ingredient(NC_FUEL.get(keyResult).get())
                     );
                 }
             }
@@ -65,13 +68,13 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
 
         add(
                 fluidIngredient("oxygen", 1000),
-                ingotIngredient(Materials.manganese),
+                ingotIngredient(Materials.manganese_oxide),
                 ingotStack(Materials.manganese_dioxide)
         );
 
         add(
                 fluidIngredient("oxygen", 1000),
-                dustIngredient(Materials.manganese),
+                dustIngredient(Materials.manganese_oxide),
                 dustIngredient(Materials.manganese_dioxide)
         );
 
@@ -100,6 +103,30 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
         );
 
         add(
+                fluidIngredient("cryotheum", 1000),
+                blockStack("empty_active_heat_sink"),
+                blockStack("active_cryotheum_heat_sink")
+        );
+
+        add(
+                fluidIngredient("liquid_helium", 1000),
+                blockStack("empty_active_heat_sink"),
+                blockStack("active_liquid_helium_heat_sink")
+        );
+
+        add(
+                fluidIngredient("liquid_nitrogen", 1000),
+                blockStack("empty_active_heat_sink"),
+                blockStack("active_liquid_nitrogen_heat_sink")
+        );
+
+        add(
+                fluidIngredient("minecraft:water", 1000),
+                blockStack("empty_active_heat_sink"),
+                blockStack("active_water_heat_sink")
+        );
+
+        add(
                 fluidIngredient("radaway", 250),
                 ingredient(ALL_NC_ITEMS.get("bioplastic").get(), 2),
                 ingredient(ALL_NC_ITEMS.get("radaway").get())
@@ -109,6 +136,37 @@ public class FluidInfuserRecipes extends AbstractRecipeProvider {
                 fluidIngredient("radaway_slow", 250),
                 ingredient(ALL_NC_ITEMS.get("bioplastic").get(), 2),
                 ingredient(ALL_NC_ITEMS.get("radaway_slow").get())
+        );
+
+        // Accelerator cooler recipes
+        add(
+                fluidIngredient("minecraft:water", 1000),
+                ingredient(ACCELERATOR_BLOCKS.get("empty_cooler").get()),
+                ingredient(ACCELERATOR_BLOCKS.get("water_cooler").get())
+        );
+
+        add(
+                fluidIngredient("liquid_helium", 1000),
+                ingredient(ACCELERATOR_BLOCKS.get("empty_cooler").get()),
+                ingredient(ACCELERATOR_BLOCKS.get("liquid_helium_cooler").get())
+        );
+
+        add(
+                fluidIngredient("liquid_nitrogen", 1000),
+                ingredient(ACCELERATOR_BLOCKS.get("empty_cooler").get()),
+                ingredient(ACCELERATOR_BLOCKS.get("liquid_nitrogen_cooler").get())
+        );
+
+        add(
+                fluidIngredient("cryotheum", 1000),
+                ingredient(ACCELERATOR_BLOCKS.get("empty_cooler").get()),
+                ingredient(ACCELERATOR_BLOCKS.get("cryotheum_cooler").get())
+        );
+
+        add(
+                fluidIngredient("enderium", 576), // 4 ingots worth (144 * 4 = 576)
+                ingredient(ACCELERATOR_BLOCKS.get("empty_cooler").get()),
+                ingredient(ACCELERATOR_BLOCKS.get("enderium_cooler").get())
         );
 
     }

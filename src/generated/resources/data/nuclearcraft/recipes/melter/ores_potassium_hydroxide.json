@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
-      "tag": "forge:potassium_hydroxide"
+      "amount": 240,
+      "tag": "forge:molten_potassium_hydroxide"
     }
   ],
   "powerModifier": 1.0,

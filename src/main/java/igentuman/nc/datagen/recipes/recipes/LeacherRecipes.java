@@ -5,14 +5,12 @@ import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraftforge.fluids.FluidStack;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static igentuman.nc.setup.registration.NCBlocks.MUSHROOM_ITEM;
-import static igentuman.nc.util.DataGenUtil.forgeOre;
+import static igentuman.nc.setup.registration.Tags.forgeOre;
+
 
 public class LeacherRecipes extends AbstractRecipeProvider {
 

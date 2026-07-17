@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "item": "nuclearcraft:isotope_separator"
+    },
+    "title": {
+      "translate": "advancement.nc.isotope_separator"
+    },
+    "description": {
+      "translate": "advancement.nc.isotope_separator.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "nuclearcraft:manufactory",
+  "criteria": {
+    "isotope_separator": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["nuclearcraft:isotope_separator"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "isotope_separator"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

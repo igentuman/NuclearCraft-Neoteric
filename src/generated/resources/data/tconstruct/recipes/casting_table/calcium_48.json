@@ -1,0 +1,27 @@
+{
+  "type": "tconstruct:casting_table",
+  "cast": {
+    "tag": "tconstruct:casts/multi_use/ingot"
+  },
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:fluid_tag_empty",
+        "tag": "forge:calcium_48"
+      }
+    }
+  ],
+  "cooling_time": 40,
+  "fluid": {
+    "amount": 90,
+    "tag": "forge:calcium_48"
+  },
+  "result": {
+    "item": "nuclearcraft:calcium_48"
+  }
+}

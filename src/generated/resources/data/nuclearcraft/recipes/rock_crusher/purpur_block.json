@@ -2,13 +2,17 @@
   "type": "nuclearcraft:rock_crusher",
   "input": [
     {
-      "count": 2,
+      "count": 12,
       "item": "minecraft:purpur_block"
     }
   ],
   "output": [
     {
+      "count": 4,
       "tag": "forge:dusts/purpur"
+    },
+    {
+      "tag": "forge:dusts/iridium"
     }
   ],
   "powerModifier": 1.0,

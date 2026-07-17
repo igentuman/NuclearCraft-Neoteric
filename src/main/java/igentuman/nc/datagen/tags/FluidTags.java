@@ -1,34 +1,46 @@
 package igentuman.nc.datagen.tags;
 
 import igentuman.nc.setup.registration.NCFluids;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.FluidTagsProvider;
+import net.minecraft.tags.TagBuilder;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags.Fluids;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.setup.registration.NCFluids.LIQUIDS_TAG;
+import static igentuman.nc.NuclearCraft.*;
+import static igentuman.nc.setup.registration.NCFluids.NC_GASES;
+import static igentuman.nc.setup.registration.NCFluids.NC_MATERIALS;
+import static igentuman.nc.setup.registration.Tags.LIQUIDS_TAG;
 
 public class FluidTags extends FluidTagsProvider
 {
-	public FluidTags(DataGenerator gen, ExistingFileHelper existingFileHelper)
+	public FluidTags(DataGenerator gen, GatherDataEvent event)
 	{
-		super(gen, MODID, existingFileHelper);
+		super(gen.getPackOutput(), event.getLookupProvider(), MODID, event.getExistingFileHelper());
 	}
 
 	@Override
-	protected void addTags()
+	protected void addTags(HolderLookup.Provider provider)
 	{
-		for(String name: NCFluids.NC_MATERIALS.keySet()) {
-			tag(LIQUIDS_TAG.get(name)).add(NCFluids.NC_MATERIALS.get(name).getStill());
-			tag(LIQUIDS_TAG.get(name)).add(NCFluids.NC_MATERIALS.get(name).getFlowing());
-		}
-		for(String name: NCFluids.NC_GASES.keySet()) {
-			tag(LIQUIDS_TAG.get(name)).add(NCFluids.NC_GASES.get(name).getStill());
-			tag(LIQUIDS_TAG.get(name)).add(NCFluids.NC_GASES.get(name).getFlowing());
+		for(String name: NC_MATERIALS.keySet()) {
+			tag(LIQUIDS_TAG.get(name)).add(NC_MATERIALS.get(name).getStill());
+			tag(TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(),  rl(name))).add(NC_MATERIALS.get(name).getStill());
 
-			tag(Fluids.GASEOUS).add(NCFluids.NC_GASES.get(name).getStill());
-			tag(Fluids.GASEOUS).add(NCFluids.NC_GASES.get(name).getFlowing());
+			if (LIQUIDS_TAG.containsKey("molten_" + name)) {
+				tag(LIQUIDS_TAG.get("molten_" + name)).add(NC_MATERIALS.get(name).getStill());
+				tag(TagKey.create(ForgeRegistries.FLUIDS.getRegistryKey(), rl("molten_" + name))).add(NC_MATERIALS.get(name).getStill());
+			}
+		}
+		tag(LIQUIDS_TAG.get("molten_aluminium")).add(NC_MATERIALS.get("aluminum").getStill());
+		tag(LIQUIDS_TAG.get("aluminium")).add(NC_MATERIALS.get("aluminum").getStill());
+
+		for(String name: NC_GASES.keySet()) {
+			tag(LIQUIDS_TAG.get(name)).add(NC_GASES.get(name).getStill());
+			tag(Fluids.GASEOUS).add(NC_GASES.get(name).getStill());
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package igentuman.nc.handler;
 
-import igentuman.nc.util.CustomEnergyStorage;
+import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
@@ -12,9 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY;
 
 public class ItemEnergyHandler implements ICapabilityProvider {
+
     private final int storage;
     private final int output;
     private final int input;
+    public ItemStack stack;
 
     protected final LazyOptional<ItemEnergy>  energy = LazyOptional.of(this::createEnergy);
 
@@ -38,13 +40,13 @@ public class ItemEnergyHandler implements ICapabilityProvider {
         return getCapability(ENERGY, null).orElse(null).getEnergyStored();
     }
 
-    public ItemStack stack;
     public ItemEnergyHandler(ItemStack stack, int storage, int output, int input) {
         this.stack = stack;
         this.storage = storage;
         this.output = output;
         this.input = input;
     }
+
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if(cap ==  ENERGY) {

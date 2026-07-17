@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 216,
-      "tag": "forge:bronze"
+      "amount": 120,
+      "tag": "forge:molten_bronze"
     }
   ],
   "powerModifier": 1.0,

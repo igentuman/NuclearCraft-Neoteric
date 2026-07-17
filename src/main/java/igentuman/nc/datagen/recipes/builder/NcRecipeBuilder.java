@@ -2,18 +2,18 @@ package igentuman.nc.datagen.recipes.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
 
@@ -21,18 +21,27 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     private List<NcIngredient> outputItems = List.of();
     private List<FluidStackIngredient> inputFluids = List.of();
     private List<FluidStackIngredient> outputFluids = List.of();
+    private List<ParticleStack> inputParticles = List.of();
+    private List<ParticleStack> outputParticles = List.of();
     private static NcRecipeBuilder instance;
     private double timeModifier = 1D;
     private double radiation = 1D;
     private double powerModifier = 1D;
+    private long maxEnergy = 0L;
+    private long minEnergy = 0L;
+    private long energyReleased = 0L;
+    private boolean hasEnergyReleased = false;
+    private boolean hasMinEnergy = false;
 
     public double coolingRate = 0;
     public double heatRequired = 0;
+    public double heat = 0;
 
     public String ID;
     private double rarityModifier = 1D;
     private double temperature = 0D;
     private List<String> outputItemsText = List.of();
+    private double crossSection = 0;
 
     protected NcRecipeBuilder(String id) {
         super(ncSerializer(id));
@@ -87,6 +96,9 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
     public ResourceLocation getRecipeId()
     {
         StringBuilder name = new StringBuilder();
+        for (ParticleStack in: inputParticles) {
+            name.append(in.getParticle().getName()).append("-").append(in.getMeanEnergy()).append("-");
+        }
         for (NcIngredient in: inputItems) {
             name.append(in.getName()).append("-");
         }
@@ -100,7 +112,7 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         }
         name.replace(name.length()-1, name.length(), "");
 
-        return new ResourceLocation(MODID, ID+"/"+recipeIdReplacements(name.toString()));
+        return rl(ID+"/"+recipeIdReplacements(name.toString()));
     }
 
     protected String recipeIdReplacements(String val) {
@@ -128,10 +140,43 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
         return this;
     }
 
+    public NcRecipeBuilder heat(double heat) {
+        this.heat = heat;
+        return this;
+    }
+
     private boolean useInputForId = false;
 
     public NcRecipeBuilder useInputForId(boolean b) {
         useInputForId = b;
+        return this;
+    }
+
+    public NcRecipeBuilder particles(List<ParticleStack> inputParticles, List<ParticleStack> outputParticles) {
+        this.inputParticles = inputParticles;
+        this.outputParticles = outputParticles;
+        return this;
+    }
+
+    public NcRecipeBuilder maxEnergy(long maxEnergy) {
+        this.maxEnergy = maxEnergy;
+        return this;
+    }
+
+    public NcRecipeBuilder crossSection(double crossSection) {
+        this.crossSection = crossSection;
+        return this;
+    }
+
+    public NcRecipeBuilder minEnergy(long minEnergy) {
+        this.minEnergy = minEnergy;
+        this.hasMinEnergy = true;
+        return this;
+    }
+
+    public NcRecipeBuilder energyReleased(long energyReleased) {
+        this.energyReleased = energyReleased;
+        this.hasEnergyReleased = true;
         return this;
     }
 
@@ -178,6 +223,13 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
             if(!inputFluids.isEmpty()) {
                 json.add("inputFluids", inputJson);
             }
+            if(!inputParticles.isEmpty()) {
+                inputJson = new JsonArray();
+                for(ParticleStack in: inputParticles) {
+                    inputJson.add(in.serialize());
+                }
+                json.add("inputParticles", inputJson);
+            }
 
             outJson = new JsonArray();
             if(!outputFluids.isEmpty()) {
@@ -186,26 +238,53 @@ public class NcRecipeBuilder extends RecipeBuilder<NcRecipeBuilder> {
                 }
                 json.add("outputFluids", outJson);
             }
+
+            if(!outputParticles.isEmpty()) {
+                inputJson = new JsonArray();
+                for(ParticleStack in: outputParticles) {
+                    inputJson.add(in.serialize());
+                }
+                json.add("outputParticles", inputJson);
+            }
             if(heatRequired > 0) {
                 json.addProperty("heatRequired", heatRequired);
             }
             if(coolingRate > 0) {
                 json.addProperty("coolingRate", coolingRate);
             }
+            if(heat != 0) {
+                json.addProperty("heat", heat);
+            }
             if(timeModifier > 0) {
                 json.addProperty("timeModifier", timeModifier);
             }
-            if(radiation > 0) {
+            if(radiation != 0) {
                 json.addProperty("radiation", radiation);
             }
             if(powerModifier > 0) {
                 json.addProperty("powerModifier", powerModifier);
             }
-            if(rarityModifier != 1D && rarityModifier != 0) {
-                json.addProperty("rarityModifier", rarityModifier);
+            if(ID.equals("nuclear_blast")) {
+                json.addProperty("chance", rarityModifier);
+            } else {
+                if(rarityModifier != 1D && rarityModifier != 0) {
+                    json.addProperty("rarityModifier", rarityModifier);
+                }
             }
             if(temperature != 0D) {
                 json.addProperty("temperature", temperature);
+            }
+            if(!inputParticles.isEmpty()) {
+                maxEnergy = maxEnergy > 0 ? maxEnergy : inputParticles.get(0).getMeanEnergy()*2;
+                crossSection = crossSection > 0 ? crossSection : 5;
+                json.addProperty("maxEnergy", maxEnergy);
+                json.addProperty("crossSection", crossSection);
+                if(hasMinEnergy) {
+                    json.addProperty("minEnergy", minEnergy);
+                }
+                if(hasEnergyReleased) {
+                    json.addProperty("energyReleased", energyReleased);
+                }
             }
         }
     }

@@ -3,103 +3,109 @@ package igentuman.nc.content.materials;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static igentuman.nc.handler.config.MaterialsConfig.MATERIAL_PRODUCTS;
+import java.util.Set;
 
 public class Materials extends MaterialsManager {
-
-    public final static  String uranium = "uranium";
-    public final static  String thorium = "thorium";
-    public final static  String boron = "boron";
-    public final static  String silver = "silver";
-    public final static  String lead = "lead";
-    public final static  String lead_platinum = "lead_platinum";
-    public final static  String thallium = "thallium";
-    public final static  String tin = "tin";
-    public final static  String zinc = "zinc";
-    public final static  String magnesium = "magnesium";
-    public final static  String lithium = "lithium";
-    public final static  String cobalt = "cobalt";
-    public final static  String platinum = "platinum";
-    public final static  String tough_alloy = "tough_alloy";
-    public final static  String copper = "copper";
-    public final static  String iron = "iron";
-    public final static  String purpur = "purpur";
-    public final static  String gold = "gold";
-    public final static  String ferroboron = "ferroboron";
-    public final static  String enderium = "enderium";
-    public final static  String lapis = "lapis";
-    public final static  String hard_carbon = "hard_carbon";
-    public final static  String tin_silver = "tin_silver";
-    public final static  String steel = "steel";
-    public final static  String thermoconducting = "thermoconducting";
-    public final static  String zircaloy = "zircaloy";
-    public final static  String zirconium = "zirconium";
-    public final static  String palladium = "palladium";
-    public final static  String zirconium_molybdenum = "zirconium_molybdenum";
-    public final static  String extreme = "extreme";
-    public final static  String manganese = "manganese";
-    public final static  String magnesium_diboride = "magnesium_diboride";
-    public final static  String manganese_oxide = "manganese_oxide";
-    public final static  String manganese_dioxide = "manganese_dioxide";
-    public final static  String sic_sic_cmc = "sic_sic_cmc";
-    public final static  String lithium_manganese_dioxide = "lithium_manganese_dioxide";
-    public final static  String silicon_carbide = "silicon_carbide";
-    public final static  String shibuichi = "shibuichi";
-    public final static  String beryllium = "beryllium";
-    public final static  String netherite = "netherite";
-    public final static  String bronze = "bronze";
-    public final static  String corium = "corium";
-    public final static  String electrum = "electrum";
-    public final static  String aluminum = "aluminum";
-    public final static  String graphite = "graphite";
-    public final static  String pyrolitic_carbon = "pyrolitic_carbon";
-    public final static  String hsla_steel = "hsla_steel";
-    public final static  String bismuth = "bismuth";
-    public final static  String gadolinium = "gadolinium";
-    public final static  String caesium_137 = "caesium_137";
-    public final static  String europium_155 = "europium_155";
-    public final static  String molybdenum = "molybdenum";
-    public final static  String polonium = "polonium";
-    public final static  String promethium_147 = "promethium_147";
-    public final static  String protactinium_233 = "protactinium_233";
-    public final static  String radium = "radium";
-    public final static  String ruthenium_106 = "ruthenium_106";
-    public final static  String strontium_90 = "strontium_90";
-    public final static  String tbp = "tbp";
-    public final static  String arsenic = "arsenic";
-    public final static  String boron_nitride = "boron_nitride";
-    public final static  String boron_arsenide = "boron_arsenide";
-    public final static  String carobbiite = "carobbiite";
-    public final static  String coal = "coal";
-    public final static  String charcoal = "charcoal";
-    public final static  String diamond = "diamond";
-    public final static  String emerald = "emerald";
-    public final static  String end_stone = "end_stone";
-    public final static  String fluorite = "fluorite";
-    public final static  String obsidian = "obsidian";
-    public final static  String quartz = "quartz";
-    public final static  String barium = "barium";
-    public final static  String rhodochrosite = "rhodochrosite";
-    public final static  String sulfur = "sulfur";
-    public final static  String villiaumite = "villiaumite";
-    public final static  String alugentum = "alugentum";
-    public final static  String borax = "borax";
+    
+    public final static String kumanderite = "kumanderite";
+    public final static String uranium = "uranium";
+    public final static String thorium = "thorium";
+    public final static String boron = "boron";
+    public final static String silver = "silver";
+    public final static String lead = "lead";
+    public final static String lead_platinum = "lead_platinum";
+    public final static String thallium = "thallium";
+    public final static String tin = "tin";
+    public final static String zinc = "zinc";
+    public final static String magnesium = "magnesium";
+    public final static String lithium = "lithium";
+    public final static String cobalt = "cobalt";
+    public final static String platinum = "platinum";
+    public final static String tough_alloy = "tough_alloy";
+    public final static String copper = "copper";
+    public final static String iron = "iron";
+    public final static String purpur = "purpur";
+    public final static String gold = "gold";
+    public final static String ferroboron = "ferroboron";
+    public final static String enderium = "enderium";
+    public final static String lapis = "lapis";
+    public final static String hard_carbon = "hard_carbon";
+    public final static String tin_silver = "tin_silver";
+    public final static String steel = "steel";
+    public final static String thermoconducting = "thermoconducting";
+    public final static String zircaloy = "zircaloy";
+    public final static String zirconium = "zirconium";
+    public final static String palladium = "palladium";
+    public final static String zirconium_molybdenum = "zirconium_molybdenum";
+    public final static String extreme = "extreme";
+    public final static String manganese = "manganese";
+    public final static String magnesium_diboride = "magnesium_diboride";
+    public final static String manganese_oxide = "manganese_oxide";
+    public final static String manganese_dioxide = "manganese_dioxide";
+    public final static String sic_sic_cmc = "sic_sic_cmc";
+    public final static String lithium_manganese_dioxide = "lithium_manganese_dioxide";
+    public final static String silicon_carbide = "silicon_carbide";
+    public final static String shibuichi = "shibuichi";
+    public final static String beryllium = "beryllium";
+    public final static String netherite = "netherite";
+    public final static String bronze = "bronze";
+    public final static String corium = "corium";
+    public final static String electrum = "electrum";
+    public final static String aluminum = "aluminum";
+    public final static String graphite = "graphite";
+    public final static String pyrolitic_carbon = "pyrolitic_carbon";
+    public final static String hsla_steel = "hsla_steel";
+    public final static String bismuth = "bismuth";
+    public final static String gadolinium = "gadolinium";
+    public final static String caesium_137 = "caesium_137";
+    public final static String europium_155 = "europium_155";
+    public final static String molybdenum = "molybdenum";
+    public final static String polonium = "polonium";
+    public final static String promethium_147 = "promethium_147";
+    public final static String protactinium_231 = "protactinium_231";
+    public final static String protactinium_233 = "protactinium_233";
+    public final static String radium = "radium";
+    public final static String ruthenium_106 = "ruthenium_106";
+    public final static String strontium_90 = "strontium_90";
+    public final static String tbp = "tbp";
+    public final static String arsenic = "arsenic";
+    public final static String boron_nitride = "boron_nitride";
+    public final static String boron_arsenide = "boron_arsenide";
+    public final static String carobbiite = "carobbiite";
+    public final static String coal = "coal";
+    public final static String charcoal = "charcoal";
+    public final static String diamond = "diamond";
+    public final static String emerald = "emerald";
+    public final static String end_stone = "end_stone";
+    public final static String fluorite = "fluorite";
+    public final static String obsidian = "obsidian";
+    public final static String quartz = "quartz";
+    public final static String barium = "barium";
+    public final static String rhodochrosite = "rhodochrosite";
+    public final static String sulfur = "sulfur";
+    public final static String villiaumite = "villiaumite";
+    public final static String alugentum = "alugentum";
+    public final static String borax = "borax";
+    public final static String neutronium = "neutronium";
+    public final static String baratol = "baratol";
+    public final static String barium_nitrate = "barium_nitrate";
+    public final static String tnt = "tnt";
 
     public final static String yellowcake = "yellowcake";
-    public final static  String neodymium = "neodymium";
-    public final static  String c_mn_blend = "c_mn_blend";
-    public final static  String calcium_sulfate = "calcium_sulfate";
-    public final static  String crystal_binder = "crystal_binder";
-    public final static  String dimensional_blend = "dimensional_blend";
-    public final static  String energetic_blend = "energetic_blend";
-    public final static  String irradiated_borax = "irradiated_borax";
-    public final static  String potassium_fluoride = "potassium_fluoride";
-    public final static  String potassium_hydroxide = "potassium_hydroxide";
-    public final static  String sodium_fluoride = "sodium_fluoride";
-    public final static  String sodium_hydroxide = "sodium_hydroxide";
-    public final static  String carbon_manganese = "carbon_manganese";
+    public final static String neodymium = "neodymium";
+    public final static String c_mn_blend = "c_mn_blend";
+    public final static String calcium_sulfate = "calcium_sulfate";
+    public final static String crystal_binder = "crystal_binder";
+    public final static String dimensional_blend = "dimensional_blend";
+    public final static String energetic_blend = "energetic_blend";
+    public final static String irradiated_borax = "irradiated_borax";
+    public final static String potassium_fluoride = "potassium_fluoride";
+    public final static String potassium_hydroxide = "potassium_hydroxide";
+    public final static String sodium_fluoride = "sodium_fluoride";
+    public final static String sodium_hydroxide = "sodium_hydroxide";
+    public final static String carbon_manganese = "carbon_manganese";
     public final static String silicon = "silicon";
+    public final static String xenorium298 = "xenorium/298";
     public final static String americium241 = "americium/241";
     public final static String americium242 = "americium/242";
     public final static String americium243 = "americium/243";
@@ -126,11 +132,14 @@ public class Materials extends MaterialsManager {
     public final static String thorium230 = "thorium/230";
     public final static String thorium232 = "thorium/232";
     public final static String uranium233 = "uranium/233";
+    public final static String uranium234 = "uranium/234";
     public final static String uranium235 = "uranium/235";
     public final static String uranium238 = "uranium/238";
+    public final static String copernicium291 = "copernicium/291";
     public final static String supercold_ice = "supercold_ice";
 
-    public static HashMap<String, Double> isotopes = new HashMap<>();
+    public static final HashMap<String, Double> isotopes = new HashMap<>();
+    public static List<String> waste = new ArrayList<>();
     public final static String potassium_iodide = "potassium_iodide";
     public final static String iodine = "iodine";
     public final static String calcium = "calcium";
@@ -140,12 +149,14 @@ public class Materials extends MaterialsManager {
     public final static String hafnium = "hafnium";
     public final static String niobium = "niobium";
     public final static String osmium = "osmium";
+    public final static String iridium = "iridium";
     public final static String samarium = "samarium";
     public final static String terbium = "terbium";
     public final static String ytterbium = "ytterbium";
     public final static String yttrium = "yttrium";
     public final static String potassium = "potassium";
     public final static String sodium = "sodium";
+    public final static String irradiated_sodium = "irradiated_sodium";
     public final static String strontium = "strontium";
     public final static String titanium = "titanium";
     public final static String tungsten = "tungsten";
@@ -156,7 +167,18 @@ public class Materials extends MaterialsManager {
     public final static String stainless_steel = "stainless_steel";
     public final static String super_alloy = "super_alloy";
     public final static String tungsten_carbide = "tungsten_carbide";
+    public final static String subliquid_matter = "subliquid_matter";
+    public final static String quantite = "quantite";
+    public final static String beryllium_7 = "beryllium_7";
+    public final static String calcium_48 = "calcium_48";
+    public final static String cobalt_60 = "cobalt_60";
+    public final static String iridium_192 = "iridium_192";
+    public final static String magnesium_24 = "magnesium_24";
+    public final static String magnesium_26 = "magnesium_26";
+    public final static String sodium_22 = "sodium_22";
+    public final static String quantite_energy = "quantite_energy";
     public static String bscco = "bscco";
+    public static List<String> slurries;
 
     public static HashMap<String, NCMaterial> all()
     {
@@ -175,6 +197,7 @@ public class Materials extends MaterialsManager {
             all.put(cobalt, NCMaterial.ore(cobalt).color(0xFF5A6691));
             all.put(platinum, NCMaterial.ore(platinum).ores(false, true, false, false).color(0xFF6C939B));
 
+            all.put(kumanderite, NCMaterial.get(kumanderite).define("block"));
             all.put("uranium238", NCMaterial.get("uranium238").define("block"));
             all.put("plutonium238", NCMaterial.get("plutonium238").define("block"));
             all.put("americium241", NCMaterial.get("americium241").define("block"));
@@ -187,6 +210,7 @@ public class Materials extends MaterialsManager {
             all.put(chromium, NCMaterial.get(chromium).define("dust", "ingot"));
             all.put(erbium, NCMaterial.get(erbium).define("dust"));
             all.put(hafnium, NCMaterial.get(hafnium).define("dust", "ingot"));
+            all.put(iridium, NCMaterial.get(iridium).define("dust", "ingot"));
             all.put(niobium, NCMaterial.get(niobium).define("dust", "ingot"));
             all.put(osmium, NCMaterial.get(osmium).define("dust", "ingot"));
             all.put(potassium, NCMaterial.get(potassium).define("dust", "ingot"));
@@ -208,6 +232,7 @@ public class Materials extends MaterialsManager {
             all.put(tungsten_carbide, NCMaterial.get(tungsten_carbide).define("ingot"));
 
             all.put(supercold_ice, NCMaterial.get(supercold_ice).define("block"));
+            all.put(neutronium, NCMaterial.get(neutronium).define("ingot").color(0xFF181322));
             all.put(tough_alloy, NCMaterial.get(tough_alloy).define("ingot", "plate", "dust", "fluid").color(0xFF181322));
             all.put(palladium, NCMaterial.get(palladium).define("ingot", "plate", "dust", "fluid").color(0xFF181322));
             all.put(copper, NCMaterial.get(copper).define("dust", "plate", "fluid").color(0xFFA86F32));
@@ -237,7 +262,7 @@ public class Materials extends MaterialsManager {
             all.put(shibuichi, NCMaterial.alloy(shibuichi).define("ingot", "dust", "fluid").color(0xFFB9B3AE));
             all.put(beryllium, NCMaterial.alloy(beryllium).color(0xFFD7DFC6));
             all.put(bronze, NCMaterial.alloy(bronze).color(0xFFC78C47));
-            all.put(corium, NCMaterial.alloy(corium).define("fluid").fluid(true, 3000).color(0xFF7C7C6F));
+            all.put(corium, NCMaterial.alloy(corium).define("fluid").fluid(true, 3000).color(0xFF7C7C6F).with("block"));
             all.put(electrum, NCMaterial.alloy(electrum).color(0xFFA0A15D));
             all.put(aluminum, NCMaterial.alloy(aluminum).color(0xFFABEBCB));
             all.put(graphite, NCMaterial.get(graphite).define("ingot", "dust", "block", "plate").color(0xFF292929));
@@ -265,6 +290,7 @@ public class Materials extends MaterialsManager {
             all.put(thallium, NCMaterial.dust(thallium));
             all.put(gadolinium, NCMaterial.dust(gadolinium));
             all.put(polonium, NCMaterial.dust(polonium).fluid(true, 800).color(0xFF15755B));
+            all.put(protactinium_231, NCMaterial.dust(protactinium_231));
             all.put(protactinium_233, NCMaterial.dust(protactinium_233));
             all.put(radium, NCMaterial.dust(radium));
             all.put(tbp, NCMaterial.dust(tbp));
@@ -292,6 +318,10 @@ public class Materials extends MaterialsManager {
             all.put(sodium_fluoride, NCMaterial.dust(sodium_fluoride));
             all.put(yellowcake, NCMaterial.dust(yellowcake));
 
+            all.put(barium_nitrate, NCMaterial.dust(barium_nitrate).fluid(true, 600).color(0xFFE6E6CC));
+            all.put(baratol, NCMaterial.alloy(baratol).define("ingot","dust","fluid").fluid(true, 800).color(0xFFB8B0A0));
+            all.put(tnt, NCMaterial.get(tnt).define("fluid").fluid(true, 600).color(0xFFCC2A1F));
+
         }
         return all;
     }
@@ -299,38 +329,97 @@ public class Materials extends MaterialsManager {
     public static List<String> isotopes()
     {
         if(!isotopes.isEmpty()) return new ArrayList<>(isotopes.keySet());
-        isotopes.put(americium241, 0.002);
-        isotopes.put(americium242, 0.007);
-        isotopes.put(americium243, 0.00013);
-        isotopes.put(berkelium247, 0.00075);
+        isotopes.put(americium241, 0.02);
+        isotopes.put(copernicium291, 0.32);
+        isotopes.put(americium242, 0.07);
+        isotopes.put(americium243, 0.0013);
+        isotopes.put(berkelium247, 0.0075);
         isotopes.put(berkelium248, 0.003);
         isotopes.put(boron10, 0.001);
-        isotopes.put(boron11, 0.0007);
+        isotopes.put(boron11, 0.007);
         isotopes.put(californium249, 0.002);
         isotopes.put(californium250, 0.076);
-        isotopes.put(californium251, 0.001);
+        isotopes.put(californium251, 0.005);
         isotopes.put(californium252, 0.38);
         isotopes.put(curium243, 0.034);
-        isotopes.put(curium245, 0.00012);
-        isotopes.put(curium246, 0.00021);
+        isotopes.put(curium245, 0.0012);
+        isotopes.put(curium246, 0.0021);
         isotopes.put(curium247, 0.0004);
-        isotopes.put(lithium6, 0.0002);
-        isotopes.put(lithium7, 0.0002);
-        isotopes.put(neptunium236, 0.00006);
+        isotopes.put(lithium6, 0.002);
+        isotopes.put(lithium7, 0.002);
+        isotopes.put(neptunium236, 0.006);
         isotopes.put(neptunium237, 0.00047);
         isotopes.put(plutonium238, 0.011);
-        isotopes.put(plutonium239, 0.0005);
+        isotopes.put(plutonium239, 0.05);
         isotopes.put(plutonium241, 0.071);
-        isotopes.put(plutonium242, 0.00002);
-        isotopes.put(thorium230, 0.0001);
-        isotopes.put(thorium232, 0.0002);
-        isotopes.put(uranium233, 0.0003);
-        isotopes.put(uranium235, 0.002);
-        isotopes.put(uranium238, 0.000002);
+        isotopes.put(plutonium242, 0.002);
+        isotopes.put(thorium230, 0.0009);
+        isotopes.put(thorium232, 0.002);
+        isotopes.put(uranium233, 0.003);
+        isotopes.put(uranium234, 0.013);
+        isotopes.put(uranium235, 0.02);
+        isotopes.put(uranium238, 0.0002);
+        isotopes.put(xenorium298, 1.2);
+        isotopes.put(quantite, 0.3);
+        isotopes.put(beryllium_7, 0.1);
+        isotopes.put(calcium_48, 0.1);
+        isotopes.put(cobalt_60, 0.1);
+        isotopes.put(iridium_192, 0.1);
+        isotopes.put(magnesium_24, 0.1);
+        isotopes.put(magnesium_26, 0.1);
+        isotopes.put(sodium_22, 0.1);
         return isotopes();
     }
 
+    public static List<String> waste()
+    {
+        if(!waste.isEmpty()) return waste;
+        waste = List.of(
+                "americium",
+                "berkelium",
+                "bismuth",
+                "californium",
+                "curium",
+                "gold",
+                "hafnium",
+                "iridium",
+                "lead",
+                "mercury",
+                "neptunium",
+                "osmium",
+                "platinum",
+                "plutonium",
+                "polonium",
+                "protactinium",
+                "radium",
+                "thorium",
+                "tungsten",
+                "uranium",
+                "heavy",
+                "light"
+        );
+        return waste;
+    }
+
     public static List<String> slurries() {
-        return MATERIAL_PRODUCTS.SLURRIES.get();
+        if(slurries == null) slurries = List.of(
+                "uranium", "iron", "gold", "aluminum", "thorium", "boron", "silver",
+                "lead", "tin", "copper", "zinc", "cobalt", "platinum", "lithium", "magnesium", "nickel"
+        );
+        return slurries;
+    }
+
+    public static Set<String> registeredOf(String type) {
+        return switch (type) {
+            case "ore" -> Ores.registered().keySet();
+            case "dust" -> Dusts.get().registered().keySet();
+            case "ingot" -> Ingots.get().registered().keySet();
+            case "nugget" -> Nuggets.get().registered().keySet();
+            case "plate" -> Plates.get().registered().keySet();
+            case "chunk" -> Chunks.get().registered().keySet();
+            case "gem" -> Gems.get().registered().keySet();
+            case "block" -> Blocks.get().registered().keySet();
+            default -> Set.of();
+        };
     }
 }

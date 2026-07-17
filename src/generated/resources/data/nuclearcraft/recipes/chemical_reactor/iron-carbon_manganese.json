@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 1350,
+      "tag": "forge:iron"
+    },
+    {
+      "amount": 90,
+      "tag": "forge:carbon_manganese"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 1440,
+      "tag": "forge:hsla_steel"
+    }
+  ],
+  "powerModifier": 1.5,
+  "radiation": 1.0,
+  "timeModifier": 1.5
+}

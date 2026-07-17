@@ -4,6 +4,9 @@
     "B": {
       "item": "minecraft:nautilus_shell"
     },
+    "G": {
+      "tag": "forge:plates/thermoconducting"
+    },
     "I": {
       "item": "minecraft:water_bucket"
     },
@@ -13,7 +16,7 @@
   },
   "pattern": [
     "PIP",
-    "B B",
+    "GBG",
     "PIP"
   ],
   "result": {

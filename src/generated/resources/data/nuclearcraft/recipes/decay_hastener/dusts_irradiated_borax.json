@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:decay_hastener",
+  "input": [
+    {
+      "tag": "forge:dusts/irradiated_borax"
+    }
+  ],
+  "output": [
+    {
+      "tag": "forge:dusts/borax"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 2.0
+}

@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 1.0,
+  "energyReleased": -19500,
+  "input": [
+    {
+      "tag": "forge:ingots/lead"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 1000000,
+      "focus": 1.0,
+      "meanEnergy": 26000,
+      "particle": "alpha"
+    }
+  ],
+  "maxEnergy": 32000,
+  "output": [
+    {
+      "tag": "forge:dusts/polonium"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

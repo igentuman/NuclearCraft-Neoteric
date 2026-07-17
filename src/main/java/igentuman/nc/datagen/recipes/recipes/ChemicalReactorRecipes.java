@@ -1,15 +1,24 @@
 package igentuman.nc.datagen.recipes.recipes;
 
+import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
+import igentuman.nc.setup.registration.FissionFuel;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_INGOT;
+import static igentuman.nc.datagen.recipes.NCRecipes.MOLTEN_NUGGET;
 import static net.minecraft.world.level.material.Fluids.WATER;
 
 public class ChemicalReactorRecipes extends AbstractRecipeProvider {
@@ -21,10 +30,10 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient(Materials.arsenic, 333),
-                        fluidIngredient(Materials.boron, 72)
+                        fluidIngredient(Materials.boron, MOLTEN_INGOT/2)
                 ),
                 List.of(
-                        fluidIngredient(Materials.boron_arsenide, 288)
+                        fluidIngredient(Materials.boron_arsenide, MOLTEN_INGOT*2)
                 ), 0.5D, 1.2D
         );
 
@@ -81,7 +90,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                    fluidIngredient("boron", 144),
+                    fluidIngredient("boron", MOLTEN_INGOT),
                     fluidIngredient("hydrogen", 666)
                         ),
                 List.of(
@@ -106,7 +115,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
                     fluidIngredient("ammonia", 500)
                         ),
                 List.of(
-                        fluidIngredient("boron_nitride_solution", 72),
+                        fluidIngredient("boron_nitride_solution", MOLTEN_INGOT/2),
                         fluidIngredient("minecraft:water", 1000)
                 ), 0.5D, 0.5D
         );
@@ -143,7 +152,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                        fluidIngredient("lithium", 288),
+                        fluidIngredient("lithium", MOLTEN_INGOT*2),
                         fluidIngredient("fluorite_water", 250)
                 ),
                 List.of(
@@ -153,7 +162,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                        fluidIngredient("beryllium", 288),
+                        fluidIngredient("beryllium", MOLTEN_INGOT*2),
                         fluidIngredient("fluorite_water", 250)
                 ),
                 List.of(
@@ -163,7 +172,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                        fluidIngredient("sulfur", 72),
+                        fluidIngredient("sulfur", MOLTEN_INGOT/2),
                         fluidIngredient("liquid_oxygen", 500)
                 ),
                 List.of(
@@ -204,33 +213,33 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                        fluidIngredient("sodium_fluoride_solution", 72),
+                        fluidIngredient("sodium_fluoride_solution", MOLTEN_INGOT/2),
                         fluidIngredient("minecraft:water", 500)
                 ),
                 List.of(
-                        fluidIngredient("sodium_hydroxide_solution", 72),
+                        fluidIngredient("sodium_hydroxide_solution", MOLTEN_INGOT/2),
                         fluidIngredient("hydrofluoric_acid", 500)
                 ), 1D, 0.5D
         );
 
         add(
                 List.of(
-                        fluidIngredient("potassium_fluoride_solution", 72),
+                        fluidIngredient("potassium_fluoride_solution", MOLTEN_INGOT/2),
                         fluidIngredient("minecraft:water", 500)
                 ),
                 List.of(
-                        fluidIngredient("potassium_hydroxide_solution", 72),
+                        fluidIngredient("potassium_hydroxide_solution", MOLTEN_INGOT/2),
                         fluidIngredient("hydrofluoric_acid", 500)
                 ), 1D, 0.5D
         );
 
         add(
                 List.of(
-                        fluidIngredient("sodium_fluoride_solution", 144),
+                        fluidIngredient("sodium_fluoride_solution", MOLTEN_INGOT),
                         fluidIngredient("boric_acid", 2000)
                 ),
                 List.of(
-                        fluidIngredient("borax_solution", 72),
+                        fluidIngredient("borax_solution", MOLTEN_INGOT/2),
                         fluidIngredient("hydrofluoric_acid", 1500)
                 ), 1D, 0.5D
         );
@@ -269,18 +278,18 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                        fluidIngredient("manganese_dioxide", 72),
-                        fluidIngredient("carbon", 144)
+                        fluidIngredient("manganese_dioxide", MOLTEN_INGOT/2),
+                        fluidIngredient("carbon", MOLTEN_INGOT)
                 ),
                 List.of(
-                        fluidIngredient("manganese", 72),
+                        fluidIngredient("manganese", MOLTEN_INGOT/2),
                         fluidIngredient("carbon_monoxide", 750)
                 ), 0.5D, 0.5D
         );
 
         add(
                 List.of(
-                        fluidIngredient("sugar", 72),
+                        fluidIngredient("sugar", MOLTEN_INGOT/2),
                         fluidIngredient("minecraft:water", 500)
                 ),
                 List.of(
@@ -324,7 +333,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("fluoromethane", 250),
-                        fluidIngredient("sodium_hydroxide_solution", 72)
+                        fluidIngredient("sodium_hydroxide_solution", MOLTEN_INGOT/2)
                 ),
                 List.of(
                         fluidIngredient("ethene", 250),
@@ -335,7 +344,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("fluoromethane", 250),
-                        fluidIngredient("potassium_hydroxide_solution", 72)
+                        fluidIngredient("potassium_hydroxide_solution", MOLTEN_INGOT/2)
                 ),
                 List.of(
                         fluidIngredient("ethene", 250),
@@ -366,7 +375,7 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                        fluidIngredient("boron_arsenide", 288),
+                        fluidIngredient("boron_arsenide", MOLTEN_INGOT*2),
                         fluidIngredient("minecraft:water", 100)
                 ),
                 List.of(
@@ -386,54 +395,329 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                        fluidIngredient("gelatin", 72),
+                        fluidIngredient("gelatin", MOLTEN_INGOT/2),
                         fluidIngredient("minecraft:water", 250)
                 ),
                 List.of(
-                        fluidIngredient("hydrated_gelatin", 288)
+                        fluidIngredient("hydrated_gelatin", MOLTEN_INGOT*2)
                 ), 0.5D, 0.5D
         );
 
         add(
                 List.of(
-                        fluidIngredient("hydrated_gelatin", 144),
-                        fluidIngredient("sugar", 72)
+                        fluidIngredient("hydrated_gelatin", MOLTEN_INGOT),
+                        fluidIngredient("sugar", MOLTEN_INGOT/2)
                 ),
                 List.of(
-                        fluidIngredient("marshmallow", 144)
+                        fluidIngredient("marshmallow", MOLTEN_INGOT)
                 ), 1D, 0.5D
         );
 
         add(
                 List.of(
-                        fluidIngredient("chocolate_liquor", 72),
-                        fluidIngredient("cocoa_butter", 72)
+                        fluidIngredient("chocolate_liquor", MOLTEN_INGOT/2),
+                        fluidIngredient("cocoa_butter", MOLTEN_INGOT/2)
                 ),
                 List.of(
-                        fluidIngredient("unsweetened_chocolate", 144)
+                        fluidIngredient("unsweetened_chocolate", MOLTEN_INGOT)
                 ), 0.5D, 0.5D
         );
 
         add(
                 List.of(
-                        fluidIngredient("unsweetened_chocolate", 144),
-                        fluidIngredient("sugar", 72)
+                        fluidIngredient("unsweetened_chocolate", MOLTEN_INGOT),
+                        fluidIngredient("sugar", MOLTEN_INGOT/2)
                 ),
                 List.of(
-                        fluidIngredient("dark_chocolate", 144)
+                        fluidIngredient("dark_chocolate", MOLTEN_INGOT)
                 ), 0.5D, 0.5D
         );
 
         add(
                 List.of(
-                        fluidIngredient("dark_chocolate", 144),
+                        fluidIngredient("dark_chocolate", MOLTEN_INGOT),
                         fluidIngredient("pasteurized_milk", 250)
                 ),
                 List.of(
-                        fluidIngredient("milk_chocolate", 288)
+                        fluidIngredient("milk_chocolate", MOLTEN_INGOT*2)
                 ), 0.5D, 0.5D
         );
 
+        // Alloy smelter recipe analogs - molten metal reactions
+        add(
+                List.of(
+                        fluidIngredient(Materials.iron, MOLTEN_INGOT),
+                        fluidIngredient(Materials.chromium, MOLTEN_INGOT*4)
+                ),
+                List.of(
+                        fluidIngredient(Materials.nichrome, MOLTEN_INGOT*5)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.osmium, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.iridium, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.osmiridium, MOLTEN_INGOT*4)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.carbon_manganese, MOLTEN_INGOT),
+                        fluidIngredient(Materials.titanium, MOLTEN_INGOT*11)
+                ),
+                List.of(
+                        fluidIngredient(Materials.sic_sic_cmc, MOLTEN_INGOT*12)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.niobium, MOLTEN_INGOT),
+                        fluidIngredient(Materials.titanium, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.niobium_titanium, MOLTEN_INGOT)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.niobium, MOLTEN_INGOT*2),
+                        fluidIngredient(Materials.tin, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.niobium_tin, MOLTEN_INGOT*3)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.gold, MOLTEN_INGOT),
+                        fluidIngredient(Materials.silver, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.electrum, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.steel, MOLTEN_INGOT),
+                        fluidIngredient(Materials.chromium, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.stainless_steel, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.extreme, MOLTEN_INGOT),
+                        fluidIngredient(Materials.boron_arsenide, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.thermoconducting, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.coal, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.iron, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.steel, MOLTEN_INGOT)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.copper, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.tin, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.bronze, MOLTEN_INGOT*4)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.boron, MOLTEN_INGOT),
+                        fluidIngredient(Materials.steel, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.ferroboron, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.graphite, MOLTEN_INGOT),
+                        fluidIngredient(Materials.diamond, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.hard_carbon, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.ferroboron, MOLTEN_INGOT),
+                        fluidIngredient(Materials.lithium, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.tough_alloy, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.magnesium, MOLTEN_INGOT),
+                        fluidIngredient(Materials.boron, MOLTEN_INGOT*2)
+                ),
+                List.of(
+                        fluidIngredient(Materials.magnesium_diboride, MOLTEN_INGOT*3)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.lithium, MOLTEN_INGOT),
+                        fluidIngredient(Materials.manganese_dioxide, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.lithium_manganese_dioxide, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.copper, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.silver, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.shibuichi, MOLTEN_INGOT*4)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.tin, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.silver, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.tin_silver, MOLTEN_INGOT*4)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.lead, MOLTEN_INGOT*3),
+                        fluidIngredient(Materials.platinum, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.lead_platinum, MOLTEN_INGOT*4)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.tough_alloy, MOLTEN_INGOT),
+                        fluidIngredient(Materials.hard_carbon, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.extreme, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.silicon, MOLTEN_INGOT),
+                        fluidIngredient(Materials.graphite, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.silicon_carbide, MOLTEN_INGOT*2)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.manganese, MOLTEN_INGOT),
+                        fluidIngredient(Materials.graphite, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.carbon_manganese, MOLTEN_INGOT*2)
+                ), 1.5D, 1.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.zirconium, MOLTEN_INGOT*7),
+                        fluidIngredient(Materials.tin, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.zircaloy, MOLTEN_INGOT*8)
+                ), 0.5D, 0.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.iron, MOLTEN_INGOT*15),
+                        fluidIngredient(Materials.carbon_manganese, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.hsla_steel, MOLTEN_INGOT*16)
+                ), 1.5D, 1.5D
+        );
+
+        add(
+                List.of(
+                        fluidIngredient(Materials.molybdenum, MOLTEN_INGOT*15),
+                        fluidIngredient(Materials.zirconium, MOLTEN_INGOT)
+                ),
+                List.of(
+                        fluidIngredient(Materials.zirconium_molybdenum, MOLTEN_INGOT*16)
+                ), 1.5D, 1.5D
+        );
+
+        for (String name: FuelManager.all().keySet()) {
+            for(String subType: FuelManager.all().get(name).keySet()) {
+                if(name.contains("mixed")) {
+                    continue;
+                }
+                fuelMixRecipe(name, subType,
+                        FuelManager.all().get(name).get(subType).getDefault().isotopes[0] + "",
+                        FuelManager.all().get(name).get(subType).getDefault().isotopes[1] + ""
+                );
+
+                fuelMixRecipe(name, subType + "_ox",
+                        FuelManager.all().get(name).get(subType).getOxide().isotopes[0] + "_ox",
+                        FuelManager.all().get(name).get(subType).getOxide().isotopes[1] + "_ox");
+
+                fuelMixRecipe(name, subType + "_ni",
+                        FuelManager.all().get(name).get(subType).getNitride().isotopes[0] + "_ni",
+                        FuelManager.all().get(name).get(subType).getNitride().isotopes[1] + "_ni");
+
+                fuelMixRecipe(name, subType + "_za",
+                        FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[0] + "_za",
+                        FuelManager.all().get(name).get(subType).getZirconiumAlloy().isotopes[1] + "_za");
+            }
+        }
+
+    }
+
+    private static void fuelMixRecipe(String name, String type, String isotope1, String isotope2) {
+        int isotope1Amount = MOLTEN_INGOT/3;
+        int isotope2Amount = MOLTEN_INGOT*3;
+        if(type.startsWith("he")) {
+            isotope1Amount = MOLTEN_INGOT;
+            isotope2Amount = MOLTEN_INGOT*2;
+        }
+        fluidsAndFluids(List.of(fluidIngredient(name+"/"+isotope1, isotope1Amount), fluidIngredient(name+"/"+isotope2, isotope2Amount)), List.of(fluidIngredient("fuel_"+name+"_"+type.replace("-","_"), MOLTEN_INGOT)), true);
     }
 
     protected static void add(List<FluidStackIngredient> input, List<FluidStackIngredient> output, double...modifiers) {

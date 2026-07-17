@@ -27,11 +27,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.util.TextUtils.applyFormat;
-import static igentuman.nc.util.TextUtils.scaledFormat;
+import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.formatEUEnergy;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.*;
 
 public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractContainerScreen<T> implements IProgressScreen {
-    protected final ResourceLocation GUI = new ResourceLocation(MODID, "textures/gui/processor.png");
+    protected final ResourceLocation GUI = rl("textures/gui/processor.png");
     protected int relX;
     protected int relY;
 
@@ -116,7 +119,7 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
         addWidget(sideConfigBtn);
         redstoneConfigBtn = new Button.RedstoneConfig(48, 74, this, menu.getPosition());
         addWidget(redstoneConfigBtn);
-        showRecipesBtn = new Button.ShowRecipes(67, 74, this, menu.getPosition());
+        showRecipesBtn = new Button.ShowRecipes(67, 74, this);
         addWidget(showRecipesBtn);
         addSlots();
     }
@@ -180,9 +183,17 @@ public class NCProcessorScreen<T extends NCProcessorContainer> extends AbstractC
             if(widget.isMouseOver(pMouseX, pMouseY)) {
                 if(widget instanceof EnergyBar) {
                     widget.clearTooltips();
-                    widget.addTooltip(applyFormat(Component.translatable("speed.multiplier", menu.speedMultiplier()), ChatFormatting.RED));
-                    widget.addTooltip(applyFormat(Component.translatable("energy.multiplier", menu.energyMultiplier()), ChatFormatting.GOLD));
-                    widget.addTooltip(applyFormat(Component.translatable("energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
+                    if(menu.getParallelProcessing() > 1) {
+                        widget.addTooltip(applyFormat(__("speed.parallel_processing", menu.getParallelProcessing()), ChatFormatting.RED));
+                    }
+                    widget.addTooltip(applyFormat(__("speed.multiplier", menu.speedMultiplier()), ChatFormatting.RED));
+                    widget.addTooltip(applyFormat(__("energy.multiplier", menu.energyMultiplier()), ChatFormatting.GOLD));
+                    if(isGtLoaded() && isGTEUCapEnabled()) {
+                        widget.addTooltip(applyFormat(__("tooltip.eu.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
+                        widget.addTooltip(applyFormat(__("tooltip.eu.tier", menu.getTier()), ChatFormatting.YELLOW));
+                    } else {
+                        widget.addTooltip(applyFormat(__("tooltip.nc.energy.per_tick", scaledFormat(menu.energyPerTick())), ChatFormatting.YELLOW));
+                    }
                 }
                 renderTooltip(pPoseStack, widget.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);

@@ -1,6 +1,8 @@
 package igentuman.nc.datagen.blockstates;
 
-import igentuman.nc.multiblock.fission.FissionBlocks;
+import igentuman.nc.block.pipe.PipeBlock;
+import igentuman.nc.block.pipe.PipeConnection;
+import igentuman.nc.block.pipe.PipeConnectorBlock;
 import igentuman.nc.multiblock.turbine.TurbineRegistration;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.content.storage.BarrelBlocks;
@@ -12,6 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -21,10 +25,16 @@ import java.util.function.Function;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.block.BatteryBlockLoader.BATTERY_LOADER;
-import static igentuman.nc.multiblock.fission.FissionReactor.FISSION_BLOCKS;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_BLOCKS;
-import static igentuman.nc.multiblock.fusion.FusionReactor.FUSION_CORE_PROXY;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
+import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.COOLERS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.PARTICLE_CHAMBER_BLOCKS;
+import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_DETECTORS;
+import static igentuman.nc.multiblock.fission.FissionReactorRegistration.*;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_BLOCKS;
+import static igentuman.nc.multiblock.fusion.FusionReactorRegistration.FUSION_CORE_PROXY;
+import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.KUGELBLITZ_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
+import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
@@ -37,7 +47,7 @@ public class NCBlockStates extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        portal();
+        wasteland();
         ores();
         blocks();
         processors();
@@ -46,10 +56,166 @@ public class NCBlockStates extends BlockStateProvider {
         rtgs();
         materialFluidBlocks();
         heatSinks();
+        coolers();
         fissionReactor();
+        msrReactor();
         turbine();
+        heatExchanger();
         storageBlocks();
         fusionReactor();
+        kugelblitz();
+        accelerator();
+        targetChamber();
+        pipes();
+        pipeConnector();
+    }
+
+    private void pipes() {
+        ResourceLocation coreTex = modLoc("block/pipe_core");
+
+        BlockModelBuilder core = models().getBuilder("block/pipe/core")
+                .texture("pipe", coreTex)
+                .texture("particle", coreTex)
+                .element().from(4, 4, 4).to(12, 12, 12)
+                .allFaces((d, f) -> f.texture("#pipe")).end();
+
+        BlockModelBuilder arm = models().getBuilder("block/pipe/arm")
+                .texture("particle", "#pipe")
+                .element().from(4, 4, 0).to(12, 12, 4)
+                .allFaces((d, f) -> f.texture("#pipe")).end();
+
+        BlockModelBuilder armX = models().getBuilder("block/pipe/arm_x").parent(arm)
+                .texture("pipe", modLoc("block/pipe_x"));
+        BlockModelBuilder armY = models().getBuilder("block/pipe/arm_y").parent(arm)
+                .texture("pipe", modLoc("block/pipe_y"));
+        BlockModelBuilder armZ = models().getBuilder("block/pipe/arm_z").parent(arm)
+                .texture("pipe", modLoc("block/pipe_z"));
+
+        models().getBuilder("block/pipe/inventory")
+                //.parent(models().getBuilder("minecraft:block/cube_all"))
+                .texture("core", coreTex)
+                .texture("arm", modLoc("block/pipe_z"))
+                .texture("particle", coreTex)
+                .element().from(4, 4, 4).to(12, 12, 12).allFaces((d, f) -> f.texture("#core")).end()
+                .element().from(4, 4, 0).to(12, 12, 4).allFaces((d, f) -> f.texture("#arm")).end()
+                .element().from(4, 4, 12).to(12, 12, 16).allFaces((d, f) -> f.texture("#arm")).end();
+
+        MultiPartBlockStateBuilder b = getMultipartBuilder(PIPE_BLOCK.get());
+        b.part().modelFile(core).addModel().end();
+        pipeArm(b, armY, PipeBlock.UP, 270, 0);
+        pipeArm(b, armY, PipeBlock.DOWN, 90, 0);
+        pipeArm(b, armZ, PipeBlock.NORTH, 0, 0);
+        pipeArm(b, armZ, PipeBlock.SOUTH, 0, 180);
+        pipeArm(b, armX, PipeBlock.EAST, 0, 90);
+        pipeArm(b, armX, PipeBlock.WEST, 0, 270);
+    }
+
+    private void pipeArm(MultiPartBlockStateBuilder b, ModelFile arm, BooleanProperty prop, int rotX, int rotY) {
+        b.part().modelFile(arm).rotationX(rotX).rotationY(rotY).uvLock(false)
+                .addModel().condition(prop, true).end();
+    }
+
+    private void pipeConnector() {
+        BlockModelBuilder core = models().getBuilder("block/pipe/core");
+        BlockModelBuilder armX = models().getBuilder("block/pipe/arm_x");
+        BlockModelBuilder armY = models().getBuilder("block/pipe/arm_y");
+        BlockModelBuilder armZ = models().getBuilder("block/pipe/arm_z");
+
+        BlockModelBuilder collar = models().getBuilder("block/pipe/connector/collar")
+                .texture("particle", "#pipe")
+                .element().from(3, 3, 0).to(13, 13, 2)
+                .allFaces((d, f) -> f.texture("#pipe")).end();
+
+        BlockModelBuilder collarX = models().getBuilder("block/pipe/connector/collar_x").parent(collar)
+                .texture("pipe", modLoc("block/pipe_x"));
+        BlockModelBuilder collarY = models().getBuilder("block/pipe/connector/collar_y").parent(collar)
+                .texture("pipe", modLoc("block/pipe_y"));
+        BlockModelBuilder collarZ = models().getBuilder("block/pipe/connector/collar_z").parent(collar)
+                .texture("pipe", modLoc("block/pipe_z"));
+
+        models().getBuilder("block/pipe/connector/inventory")
+                //.parent(models().getBuilder("minecraft:block/cube_all"))
+                .texture("core", modLoc("block/pipe_core"))
+                .texture("arm", modLoc("block/pipe_z"))
+                .texture("particle", modLoc("block/pipe_core"))
+                .element().from(4, 4, 4).to(12, 12, 12).allFaces((d, f) -> f.texture("#core")).end()
+                .element().from(4, 4, 0).to(12, 12, 4).allFaces((d, f) -> f.texture("#arm")).end()
+                .element().from(3, 3, 0).to(13, 13, 2).allFaces((d, f) -> f.texture("#arm")).end()
+                .element().from(4, 4, 12).to(12, 12, 16).allFaces((d, f) -> f.texture("#arm")).end();
+
+        MultiPartBlockStateBuilder b = getMultipartBuilder(PIPE_CONNECTOR_BLOCK.get());
+        b.part().modelFile(core).addModel().end();
+        connectorArm(b, armY, PipeConnectorBlock.UP, 270, 0);
+        connectorArm(b, armY, PipeConnectorBlock.DOWN, 90, 0);
+        connectorArm(b, armZ, PipeConnectorBlock.NORTH, 0, 0);
+        connectorArm(b, armZ, PipeConnectorBlock.SOUTH, 0, 180);
+        connectorArm(b, armX, PipeConnectorBlock.EAST, 0, 90);
+        connectorArm(b, armX, PipeConnectorBlock.WEST, 0, 270);
+        connectorCollar(b, collarY, PipeConnectorBlock.UP, 270, 0);
+        connectorCollar(b, collarY, PipeConnectorBlock.DOWN, 90, 0);
+        connectorCollar(b, collarZ, PipeConnectorBlock.NORTH, 0, 0);
+        connectorCollar(b, collarZ, PipeConnectorBlock.SOUTH, 0, 180);
+        connectorCollar(b, collarX, PipeConnectorBlock.EAST, 0, 90);
+        connectorCollar(b, collarX, PipeConnectorBlock.WEST, 0, 270);
+    }
+
+    private void connectorArm(MultiPartBlockStateBuilder b, ModelFile arm, EnumProperty<PipeConnection> prop, int rotX, int rotY) {
+        b.part().modelFile(arm).rotationX(rotX).rotationY(rotY).uvLock(false)
+                .addModel().condition(prop, PipeConnection.PIPE, PipeConnection.MACHINE).end();
+    }
+
+    private void connectorCollar(MultiPartBlockStateBuilder b, ModelFile collar, EnumProperty<PipeConnection> prop, int rotX, int rotY) {
+        b.part().modelFile(collar).rotationX(rotX).rotationY(rotY).uvLock(false)
+                .addModel().condition(prop, PipeConnection.MACHINE).end();
+    }
+
+    private void accelerator() {
+        /*horizontalBlock(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(),
+                st -> multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_beam_port").get(), "accelerator/accelerator_beam_port")
+        );*/
+        horizontalBlock(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get(),
+                st -> multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_ion_source_port").get(), "accelerator/accelerator_ion_source_port")
+        );
+        horizontalBlock(ACCELERATOR_BLOCKS.get("accelerator_port").get(),
+                st -> multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_port").get(), "accelerator/accelerator_port")
+        );
+       horizontalBlock(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(),
+                st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(), "accelerator/controller"))
+        );
+       horizontalBlock(ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get(),
+                st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get(), "accelerator/controller"))
+        );
+        horizontalBlock(ACCELERATOR_BLOCKS.get("beam_diverter_controller").get(),
+                st -> controllerModel(st, sidedModel(ACCELERATOR_BLOCKS.get("beam_diverter_controller").get(), "accelerator/controller"))
+        );
+        simpleBlock(ACCELERATOR_BLOCKS.get("electromagnet_yoke").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("electromagnet_yoke").get(), "accelerator/electromagnet_yoke"));
+        simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing").get(), "accelerator/accelerator_casing"));
+        simpleBlock(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("accelerator_casing_glass").get(), "accelerator/accelerator_casing_glass"));
+        simpleBlock(ACCELERATOR_BLOCKS.get("particle_beam").get(), multiBlockModel(ACCELERATOR_BLOCKS.get("particle_beam").get(), "accelerator/particle_beam"));
+    }
+
+    private void targetChamber() {
+        /*horizontalBlock(TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(),
+                st -> multiBlockModel(TARGET_CHAMBER_BLOCKS.get("target_chamber_beam_port").get(), "particle_chamber/beam_port")
+        );*/
+        horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_port").get(),
+                st -> multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_port").get(), "particle_chamber/port")
+        );
+       horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get(),
+                st -> controllerModel(st, sidedModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get(), "particle_chamber/target_chamber_controller"))
+        );
+       horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get(),
+                st -> controllerModel(st, sidedModel(PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get(), "particle_chamber/collision_chamber_controller"))
+        );
+        horizontalBlock(PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get(),
+                st -> controllerModel(st, sidedModel(PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get(), "particle_chamber/decay_chamber_controller"))
+        );
+        for(String name: TARGET_CHAMBER_DETECTORS.keySet()) {
+            simpleBlock(PARTICLE_CHAMBER_BLOCKS.get(name).get(), multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get(name).get(), "particle_chamber/"+name));
+        }
+        simpleBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_camera").get(), multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_camera").get(), "particle_chamber/camera"));
+        simpleBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get(), multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing").get(), "particle_chamber/casing"));
+        simpleBlock(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(), multiBlockModel(PARTICLE_CHAMBER_BLOCKS.get("target_chamber_casing_glass").get(), "particle_chamber/glass"));
     }
 
     private void turbine() {
@@ -63,12 +229,37 @@ public class NCBlockStates extends BlockStateProvider {
         simpleBlock(TURBINE_BLOCKS.get("turbine_glass").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_glass").get(), "turbine/glass"));
 
         for (String name: TurbineRegistration.blades().keySet()) {
-            faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
+            //faceBlock(TURBINE_BLOCKS.get("turbine_" + name).get(), $ -> models().getExistingFile(rl("block/multiblock/turbine_"+name)));
         }
 
         for(String type: TurbineRegistration.coils.keySet()) {
             simpleBlock(TURBINE_BLOCKS.get("turbine_" + type + "_coil").get(), multiBlockModel(TURBINE_BLOCKS.get("turbine_" + type + "_coil").get(), "turbine/" + type + "_coil"));
         }
+    }
+
+    private void heatExchanger() {
+        horizontalBlock(HX_BLOCKS.get("heat_exchanger_controller").get(),
+                st -> controllerModel(st, sidedModel(HX_BLOCKS.get("heat_exchanger_controller").get(), "heat_exchanger/controller"))
+        );
+        horizontalBlock(HX_BLOCKS.get("heat_exchanger_hot_coolant_port").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger_hot_coolant_port").get(), "heat_exchanger/port"));
+        horizontalBlock(HX_BLOCKS.get("heat_exchanger_cold_coolant_port").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger_cold_coolant_port").get(), "heat_exchanger/port"));
+        simpleBlock(HX_BLOCKS.get("heat_exchanger_casing").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger_casing").get(), "heat_exchanger/casing"));
+        simpleBlock(HX_BLOCKS.get("heat_exchanger_radiator").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger_radiator").get(), "heat_exchanger/radiator"));
+        simpleBlock(HX_BLOCKS.get("heat_exchanger").get(), multiBlockModel(HX_BLOCKS.get("heat_exchanger").get(), "multiblock/heat_exchanger"));
+    }
+
+    private void kugelblitz() {
+        horizontalBlock(KUGELBLITZ_BLOCKS.get("chamber_terminal").get(),
+                st -> controllerModel(st, sidedModel(KUGELBLITZ_BLOCKS.get("chamber_terminal").get(), "kugelblitz/controller"))
+        );
+        horizontalBlock(KUGELBLITZ_BLOCKS.get("chamber_port").get(),
+                st -> multiBlockModel(KUGELBLITZ_BLOCKS.get("chamber_port").get(), "kugelblitz/port")
+        );
+        simpleBlock(KUGELBLITZ_BLOCKS.get("neutronium_frame").get(), multiBlockModel(KUGELBLITZ_BLOCKS.get("neutronium_frame").get(), "kugelblitz/neutronium_frame"));
+        simpleBlock(KUGELBLITZ_BLOCKS.get("event_horizon_stabilizer").get(), multiBlockModel(KUGELBLITZ_BLOCKS.get("event_horizon_stabilizer").get(), "kugelblitz/event_horizon_stabilizer"));
+        simpleBlock(KUGELBLITZ_BLOCKS.get("photon_concentrator").get(), multiBlockModel(KUGELBLITZ_BLOCKS.get("photon_concentrator").get(), "kugelblitz/photon_concentrator"));
+        simpleBlock(KUGELBLITZ_BLOCKS.get("quantum_flux_regulator").get(), multiBlockModel(KUGELBLITZ_BLOCKS.get("quantum_flux_regulator").get(), "kugelblitz/quantum_flux_regulator"));
+        simpleBlock(KUGELBLITZ_BLOCKS.get("quantum_transformer").get(), multiBlockModel(KUGELBLITZ_BLOCKS.get("quantum_transformer").get(), "kugelblitz/quantum_transformer"));
     }
 
     public static int[] getRotationByDirection(Direction dir) {
@@ -102,9 +293,9 @@ public class NCBlockStates extends BlockStateProvider {
         return result;
     }
     public void faceBlock(Block block, Function<BlockState, ModelFile> modelFunc) {
-
         getVariantBuilder(block)
-                .forAllStates(state -> ConfiguredModel.builder()
+                .forAllStatesExcept(
+                        state -> ConfiguredModel.builder()
                         .modelFile(modelFunc.apply(state))
                         .rotationX(getRotationByDirection(state.getValue(BlockStateProperties.FACING))[0])
                         .rotationY(getRotationByDirection(state.getValue(BlockStateProperties.FACING))[1])
@@ -125,14 +316,20 @@ public class NCBlockStates extends BlockStateProvider {
         }
     }
 
+    private void coolers() {
+        for (String name: COOLERS.keySet()) {
+            simpleBlock(ACCELERATOR_BLOCKS.get(name+"_cooler").get(), multiBlockModel(ACCELERATOR_BLOCKS.get(name+"_cooler").get(), "accelerator/cooler/"+name));
+        }
+    }
+
     private void heatSinks() {
-        for (String name: FissionBlocks.heatsinks.keySet()) {
+        for (String name: heatsinks.keySet()) {
             simpleBlock(FISSION_BLOCKS.get(name+"_heat_sink").get(), multiBlockModel(FISSION_BLOCKS.get(name+"_heat_sink").get(), "heat_sink/"+name));
         }
     }
 
     private void fissionReactor() {
-        for (String name: FissionBlocks.reactor) {
+        for (String name: reactor) {
             if(name.matches(".*port.*")) {
                 horizontalBlock(FISSION_BLOCKS.get("fission_reactor_" + name).get(), multiBlockModel(FISSION_BLOCKS.get("fission_reactor_" + name).get(), "fission/" + name));
             } else if(name.matches(".*controller.*")) {
@@ -149,6 +346,27 @@ public class NCBlockStates extends BlockStateProvider {
         }
     }
 
+    private void msrReactor() {
+        // MSR Controller
+        horizontalBlock(FISSION_BLOCKS.get("msr_controller").get(),
+                st -> controllerModel(st, sidedModel(FISSION_BLOCKS.get("msr_controller").get(), "fission/msr_controller"))
+        );
+        horizontalBlock(FISSION_BLOCKS.get("msr_port").get(), msrPortModel(FISSION_BLOCKS.get("msr_port").get()));
+        simpleBlock(FISSION_BLOCKS.get("msr_fuel_cell").get(), multiBlockModel(FISSION_BLOCKS.get("msr_fuel_cell").get(), "fission/msr_fuel_cell"));
+    }
+
+    public ModelFile msrPortModel(Block block) {
+        ResourceLocation name = key(block);
+        return models().cube(
+                "block/multiblock/" + name.getPath(),
+                rl("block/fission/port/top"),
+                rl("block/fission/port/bottom"),
+                rl("block/fission/port/fission_reactor_port"),
+                rl("block/fission/port/back"),
+                rl("block/fission/port/side"),
+                rl("block/fission/port/side")
+        );
+    }
 
     private void fusionReactor() {
         //simpleBlock(FUSION_BLOCKS.get("fusion_core").get(), models().getExistingFile(rl("block/dummy")));
@@ -215,6 +433,9 @@ public class NCBlockStates extends BlockStateProvider {
 
     private void processors() {
         for(String name: PROCESSORS.keySet()) {
+            if (name.equals("leacher")) {
+                continue;
+            }
             horizontalBlock(
                     PROCESSORS.get(name).get(),
                     st -> processorModel(st, sidedModel(PROCESSORS.get(name).get(),
@@ -242,6 +463,20 @@ public class NCBlockStates extends BlockStateProvider {
             type = "fission";
         } else if(st.getBlock() == TURBINE_BLOCKS.get("turbine_controller").get()) {
             type = "turbine";
+        } else if(st.getBlock() == KUGELBLITZ_BLOCKS.get("chamber_terminal").get()) {
+            type = "kugelblitz";
+        } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()) {
+            type = "accelerator";
+        } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get()) {
+            type = "accelerator";
+        } else if(st.getBlock() == ACCELERATOR_BLOCKS.get("beam_diverter_controller").get()) {
+            type = "accelerator";
+        } else if(st.getBlock() == PARTICLE_CHAMBER_BLOCKS.get("target_chamber_controller").get() || st.getBlock() == PARTICLE_CHAMBER_BLOCKS.get("collision_chamber_controller").get()  || st.getBlock() == PARTICLE_CHAMBER_BLOCKS.get("decay_chamber_controller").get()) {
+            type = "particle_chamber";
+        } else if(st.getBlock() == FISSION_BLOCKS.get("msr_controller").get()) {
+            type = "fission";
+        } else if(st.getBlock() == HX_BLOCKS.get("heat_exchanger_controller").get()) {
+            type = "heat_exchanger";
         }
         BlockModelBuilder result = models()
                 .getBuilder("block/multiblock/"+key(st.getBlock()).getPath()+powered)
@@ -274,13 +509,19 @@ public class NCBlockStates extends BlockStateProvider {
 
 
     private void materialFluidBlocks() {
+        /* currently NC_MATERIAL_BLOCKS used for solid blocks only
         for(String name: NC_MATERIAL_BLOCKS.keySet()) {
-            simpleBlock(NC_MATERIAL_BLOCKS.get(name).get(), model(NC_MATERIAL_BLOCKS.get(name).get(), "material/fluid"));
-        }
+            if(Materials.fluids().containsKey(name)) {
+                simpleBlock(NC_MATERIAL_BLOCKS.get(name).get(), model(NC_MATERIAL_BLOCKS.get(name).get(), "material/fluid"));
+            }
+        }*/
     }
     private void blocks() {
         for(String name: NC_BLOCKS.keySet()) {
             simpleBlock(NC_BLOCKS.get(name).get(), model(NC_BLOCKS.get(name).get(), "material/block"));
+        }
+        for(String name: NC_MATERIAL_BLOCKS.keySet()) {
+            simpleBlock(NC_MATERIAL_BLOCKS.get(name).get(), model(NC_MATERIAL_BLOCKS.get(name).get(), "material/block"));
         }
         for(String name: NC_ELECTROMAGNETS.keySet()) {
             if(name.contains("slope")) {
@@ -313,11 +554,12 @@ public class NCBlockStates extends BlockStateProvider {
         }
     }
 
-    private void portal() {
+    private void wasteland() {
         Block block = PORTAL_BLOCK.get();
         ResourceLocation side = modLoc("block/portal");
         ResourceLocation top = modLoc("block/portal");
         simpleBlock(block, models().cube(PORTAL_BLOCK.getId().getPath(), side, top, side, side, side, side));
+        simpleBlock(WASTELAND_EARTH.get());
     }
 
     private ResourceLocation key(Block block) {
@@ -341,6 +583,9 @@ public class NCBlockStates extends BlockStateProvider {
             case "fusion":
                 blockPath = "block/fusion/";
                 break;
+            case "kugelblitz":
+                blockPath = "block/kugelblitz/";
+                break;
             case "electromagnet":
                 blockPath = "block/electromagnet/";
                 break;
@@ -350,9 +595,9 @@ public class NCBlockStates extends BlockStateProvider {
         }
         BlockModelBuilder model = models().cubeAll(
                 blockPath+key(block).getPath(),
-                        new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
-        if(name.getPath().matches(".*glass|.*cell.*")) {
-            model.renderType(new ResourceLocation("translucent"));
+                        ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()));
+        if(name.getPath().matches(".*glass|.*cell.*|.*photon.*|.*event_horizon_stabilizer.*|.*quantum_transformer.*")) {
+            model.renderType(ResourceLocation.tryBuild("minecraft","cutout"));
         }
         return model;
     }
@@ -364,9 +609,9 @@ public class NCBlockStates extends BlockStateProvider {
         }
         BlockModelBuilder m = models().cubeAll(
                 "block/multiblock/"+key(block).getPath(),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath));
-        if(subPath.matches(".*glass|.*cell.*")) {
-            m.renderType(new ResourceLocation("translucent"));
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath));
+        if(subPath.matches(".*glass|.*cell.*|.*photon.*|.*event_horizon_stabilizer.*|.*quantum_transformer.*")) {
+            m.renderType(ResourceLocation.tryBuild("minecraft","cutout"));
         }
         return m;
     }
@@ -391,12 +636,12 @@ public class NCBlockStates extends BlockStateProvider {
         }
         return models().cube(
                 blockPath+key(block).getPath(),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/top"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/bottom"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/back"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side")
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/top"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/bottom"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/" + name.getPath()),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/back"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side")
         ).texture("particle", ModelProvider.BLOCK_FOLDER + "/"+subPath+"/side");
     }
 
@@ -405,12 +650,12 @@ public class NCBlockStates extends BlockStateProvider {
 
         BlockModelBuilder model =  models().cube(
                 key(block).getPath(),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
-                new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side")
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side"),
+                ResourceLocation.tryBuild(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"side")
         );
 
         model.texture("particle", ModelProvider.BLOCK_FOLDER + "/energy/"+subPath+"top");

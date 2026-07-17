@@ -30,5 +30,6 @@
     "recipes": [
       "nuclearcraft:hev_pants"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

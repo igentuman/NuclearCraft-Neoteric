@@ -14,7 +14,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class InputEvents {
 
-    public static boolean DESCRIPTIONS_SHOW = true;
+    public static boolean DESCRIPTIONS_SHOW = false;
     public static boolean SHIFT_PRESSED = false;
 
     public static void register(FMLClientSetupEvent event) {
@@ -30,8 +30,11 @@ public class InputEvents {
         }
 
         if (event.getKey() == KEY_LSHIFT || event.getKey() == KEY_RSHIFT) {
-            if(event.getAction() == RELEASE) {
+            if(event.getAction() == PRESS) {
                 SHIFT_PRESSED = true;
+            } else
+            if(event.getAction() == RELEASE) {
+                SHIFT_PRESSED = false;
             }
         }
     }

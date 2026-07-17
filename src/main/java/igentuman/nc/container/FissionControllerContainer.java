@@ -1,8 +1,8 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block.entity.fission.FissionControllerBE;
+import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.container.elements.NCSlotItemHandler;
-import igentuman.nc.multiblock.fission.FissionReactor;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,8 +11,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
@@ -20,28 +18,25 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.util.TextUtils.numberFormat;
-import static igentuman.nc.util.TextUtils.roundFormat;
+import static igentuman.nc.handler.config.FissionConfig.FISSION_CONFIG;
+import static igentuman.nc.util.TextUtils.*;
 
 public class FissionControllerContainer extends AbstractContainerMenu {
-    protected FissionControllerBE<?> blockEntity;
-    protected Player playerEntity;
 
-    protected String name = "fission_reactor_controller";
+    protected final FissionControllerBE blockEntity;
+    protected final Player playerEntity;
+    protected final String name = "fission_reactor_controller";
     private int slotIndex = 0;
-
-    protected IItemHandler playerInventory;
+    protected final IItemHandler playerInventory;
 
     public FissionControllerContainer(int pContainerId, BlockPos pos, Inventory playerInventory) {
-        super(FissionReactor.FISSION_CONTROLLER_CONTAINER.get(), pContainerId);
+        super(FissionReactorRegistration.FISSION_CONTROLLER_CONTAINER.get(), pContainerId);
         this.playerEntity = playerInventory.player;
         this.playerInventory =  new InvWrapper(playerInventory);
-        blockEntity = (FissionControllerBE<?>) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
+        blockEntity = (FissionControllerBE) playerEntity.getCommandSenderWorld().getBlockEntity(pos);
         layoutPlayerInventorySlots();
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Input(h, 0, 56, 35));
-        });
-        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             addSlot(new NCSlotItemHandler.Output(h, 1, 116, 35));
         });
     }
@@ -53,21 +48,12 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         if (slot != null && slot.hasItem()) {
             ItemStack stack = slot.getItem();
             itemstack = stack.copy();
-            if (index == 0) {
-                if (!this.moveItemStackTo(stack, 1, 37, true)) {
+            if(slot instanceof NCSlotItemHandler.Output || slot instanceof NCSlotItemHandler.Input) {
+                if (!this.moveItemStackTo(stack, 0, 36, true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onQuickCraft(stack, itemstack);
             } else {
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0) {
-                    if (!this.moveItemStackTo(stack, 0, 1, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 28) {
-                    if (!this.moveItemStackTo(stack, 28, 37, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 37 && !this.moveItemStackTo(stack, 1, 28, false)) {
+                if (!this.moveItemStackTo(stack, slots.size()-2, slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             }
@@ -93,12 +79,12 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         return stillValid(
                 ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()),
                 playerEntity,
-                FissionReactor.FISSION_BLOCKS.get(name).get()
+                FissionReactorRegistration.FISSION_BLOCKS.get(name).get()
         );
     }
 
     public Component getTitle() {
-        return Component.translatable("block."+MODID+"."+name);
+        return __("block."+MODID+"."+name);
     }
 
     public boolean isCasingValid() {
@@ -135,17 +121,16 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public int getEnergy() {
-        return blockEntity.energyStorage.getEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getEnergyStored());
     }
 
     public double getHeat() {
-        return blockEntity.heat;
+        return Math.floor(blockEntity.heat);
     }
 
     public double getProgress() {
         return blockEntity.getDepletionProgress();
     }
-
 
     private void addSlotRange(IItemHandler handler, int x, int y, int amount, int dx) {
         for (int i = 0 ; i < amount ; i++) {
@@ -187,7 +172,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public int getMaxEnergy() {
-        return blockEntity.energyStorage.getMaxEnergyStored();
+        return energy2Display(blockEntity.energyStorage.getMaxEnergyStored());
     }
 
     public double getMaxHeat() {
@@ -198,12 +183,16 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         return roundFormat(blockEntity.efficiency);
     }
 
+    public double getRawEfficiency() {
+        return blockEntity.efficiency;
+    }
+
     public String getNetHeat() {
-        return roundFormat(blockEntity.getNetHeat());
+        return roundFormat(blockEntity.heatPerTick-blockEntity.heatSinkCooling-blockEntity.activeCooling);
     }
 
     public int getCooling() {
-        return (int) blockEntity.heatSinkCooling;
+        return (int) (blockEntity.heatSinkCooling + blockEntity.activeCooling);
     }
 
     public String getHeating() {
@@ -219,7 +208,7 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public int energyPerTick() {
-        return blockEntity.energyPerTick;
+        return energy2Display(blockEntity.energyPerTick);
     }
 
     public String getHeatMultiplier() {
@@ -235,14 +224,17 @@ public class FissionControllerContainer extends AbstractContainerMenu {
     }
 
     public int getIrradiatorsConnections() {
-        return blockEntity.irradiationConnections;
+        return blockEntity.irradiationLines;
     }
 
     public BlockPos getPosition() {
         return blockEntity.getBlockPos();
     }
 
-    public boolean getMode() {
+    public boolean isBoilingMode() {
+        if(!FISSION_CONFIG.BOILING_ENABLED.get()) {
+            return false;
+        }
         return blockEntity.isSteamMode;
     }
 
@@ -257,5 +249,25 @@ public class FissionControllerContainer extends AbstractContainerMenu {
 
     public int getSteamPerTick() {
         return blockEntity.steamPerTick;
+    }
+
+    public String getModerationLevel() {
+        return numberFormat(blockEntity.getModerationLevel() * 100);
+    }
+
+    public int getReactivity() {
+        return blockEntity.reactivityLevel;
+    }
+
+    public int getMaxBoilingRate() {
+        return blockEntity.maxSteamOutput;
+    }
+
+    public int getBoilingPenalty() {
+        return (int) blockEntity.boilingPenalty;
+    }
+
+    public boolean canAnalyze() {
+        return blockEntity.analyzeDelay < 1;
     }
 }

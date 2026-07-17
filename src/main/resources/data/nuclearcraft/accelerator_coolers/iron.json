@@ -1,0 +1,5 @@
+[{
+  "type": "iron",
+  "heat": 55,
+  "placement_rule": ["#nuclearcraft:electromagnets"]
+}]

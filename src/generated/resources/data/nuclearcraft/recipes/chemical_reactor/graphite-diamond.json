@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "inputFluids": [
+    {
+      "amount": 90,
+      "tag": "forge:graphite"
+    },
+    {
+      "amount": 90,
+      "tag": "forge:diamond"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 180,
+      "tag": "forge:hard_carbon"
+    }
+  ],
+  "powerModifier": 0.5,
+  "radiation": 1.0,
+  "timeModifier": 0.5
+}

@@ -30,5 +30,6 @@
     "recipes": [
       "nuclearcraft:fission_reactor_irradiation_chamber"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

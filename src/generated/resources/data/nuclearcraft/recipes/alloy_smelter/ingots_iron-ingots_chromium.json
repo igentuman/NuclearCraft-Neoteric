@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:alloy_smelter",
+  "input": [
+    {
+      "tag": "forge:ingots/iron"
+    },
+    {
+      "count": 4,
+      "tag": "forge:ingots/chromium"
+    }
+  ],
+  "output": [
+    {
+      "count": 5,
+      "item": "nuclearcraft:nichrome_ingot"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 2.5
+}

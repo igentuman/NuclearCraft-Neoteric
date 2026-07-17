@@ -19,16 +19,20 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.compat.gregtech.GTUtils.*;
 import static igentuman.nc.handler.config.CommonConfig.ENERGY_GENERATION;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class DecayGeneratorBlock extends Block implements EntityBlock {
     public DecayGeneratorBlock() {
-        this(Properties.of(Material.METAL)
+        this(Properties.of()
                 .sound(SoundType.METAL)
                 .strength(5.0f)
                 .noOcclusion()
@@ -70,10 +74,11 @@ public class DecayGeneratorBlock extends Block implements EntityBlock {
         };
     }
 
-
     public void appendHoverText(ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> list, TooltipFlag pFlag)
     {
-        list.add(TextUtils.applyFormat(Component.translatable("decay_generator.fe_generation"), ChatFormatting.GOLD));
+        if(isGtLoaded() && isGTEUCapEnabled()) {
+            list.add(__("tooltip.nc.energy_eu_tier", formatEUTier(ENERGY_GENERATION.DECAY_GENERATOR.get())).withStyle(ChatFormatting.GOLD));
+        }
+        list.add(TextUtils.applyFormat(__("decay_generator.fe_generation"), ChatFormatting.GOLD));
     }
-
 }

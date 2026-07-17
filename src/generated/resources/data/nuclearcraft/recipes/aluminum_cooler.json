@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:empty_cooler"
+    },
+    "I": {
+      "tag": "forge:dusts/aluminum"
+    }
+  },
+  "pattern": [
+    " I ",
+    "IBI",
+    " I "
+  ],
+  "result": {
+    "item": "nuclearcraft:aluminum_cooler"
+  },
+  "show_notification": true
+}

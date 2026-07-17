@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.016,
+  "energyReleased": -15500,
+  "input": [
+    {
+      "item": "nuclearcraft:uranium_235"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 62500000,
+      "focus": 1.0,
+      "meanEnergy": 30000,
+      "particle": "alpha"
+    }
+  ],
+  "maxEnergy": 35000,
+  "output": [
+    {
+      "item": "nuclearcraft:neptunium_236"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "triton"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -2,10 +2,8 @@ package igentuman.nc.handler.sided.capability;
 
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiPredicate;
@@ -50,7 +48,7 @@ public class FluidHandlerWrapper implements IFluidHandler {
     public int fill(FluidStack resource, FluidAction action) {
         for(SlotModePair pair: handler.sideMap.get(direction.ordinal())) {
             if(insert.test(pair.getSlot(), resource)) {
-                FluidTank tank = handler.tanks.get(pair.getSlot());
+                NcFluidTank tank = handler.tanks.get(pair.getSlot());
                 if(tank.isFluidValid(pair.getSlot(), resource)) {
                     return tank.fill(resource.copy(), action);
                 }
@@ -62,8 +60,8 @@ public class FluidHandlerWrapper implements IFluidHandler {
     @Override
     public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
         for(SlotModePair pair: handler.sideMap.get(direction.ordinal())) {
-            if(extract.test(pair.getSlot()) && resource.isFluidEqual(handler.tanks.get(pair.getSlot()).getFluid())) {
-                FluidTank tank = handler.tanks.get(pair.getSlot());
+            if(extract.test(pair.getSlot()) && (resource.isEmpty() || resource.isFluidEqual(handler.tanks.get(pair.getSlot()).getFluid()))) {
+                NcFluidTank tank = handler.tanks.get(pair.getSlot());
                 return tank.drain(resource, action);
             }
         }
@@ -74,7 +72,7 @@ public class FluidHandlerWrapper implements IFluidHandler {
     public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
         for(SlotModePair pair: handler.sideMap.get(direction.ordinal())) {
             if (extract.test(pair.getSlot())) {
-                FluidTank tank = handler.tanks.get(pair.getSlot());
+                NcFluidTank tank = handler.tanks.get(pair.getSlot());
                 return tank.drain(maxDrain, action);
             }
         }

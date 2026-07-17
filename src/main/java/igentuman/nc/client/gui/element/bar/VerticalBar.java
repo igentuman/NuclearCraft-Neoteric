@@ -1,14 +1,17 @@
 package igentuman.nc.client.gui.element.bar;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.function.Supplier;
 
+import static igentuman.nc.block.entity.NuclearCraftBE.isGTEUCapEnabled;
+import static igentuman.nc.util.ModUtil.isGtLoaded;
+import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.scaledFormat;
 
 public class VerticalBar extends NCGuiElement {
@@ -20,6 +23,7 @@ public class VerticalBar extends NCGuiElement {
     IVerticalBarScreen screen;
 
     public VerticalBar(int x, int y, IVerticalBarScreen screen, long max)  {
+        super(x, y, 8, 88, Component.empty());
         this.x = x;
         this.y = y;
         xOffset = 96;
@@ -32,17 +36,17 @@ public class VerticalBar extends NCGuiElement {
 
     public List<Component> getTooltips() {
         if(hintKey.isEmpty()) return tooltips;
-        tooltips.add(Component.translatable(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
+        tooltips.add(__(hintKey, scaledFormat(barValue), scaledFormat(maxValue)));
         return tooltips;
     }
 
     @Override
-    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
-        super.draw(transform, mX, mY, pTicks);
+    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+        super.draw(graphics, mX, mY, pTicks);
         int internal = height-2;
         int stored = (int)Math.min(internal, internal*(barValue/maxValue));
-        blit(transform, X(), Y(), backgroundXoffset, 0,  width, height);
-        blit(transform, X()+1, Y()+1+internal-stored, xOffset, internal-stored,  width-2, stored);
+        graphics.blit(TEXTURE, X(), Y(), backgroundXoffset, 0,  width, height);
+        graphics.blit(TEXTURE, X()+1, Y()+1+internal-stored, xOffset, internal-stored,  width-2, stored);
 
     }
 
@@ -51,13 +55,13 @@ public class VerticalBar extends NCGuiElement {
     }
 
     public static class Heat extends VerticalBar{
-        public Heat(int x, int y, IVerticalBarScreen screen, int maxHeat) {
+        public Heat(int x, int y, IVerticalBarScreen screen, long maxHeat) {
             super(x, y, screen, maxHeat);
             xOffset = 102;
             hintKey = "heat.bar.amount";
         }
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
             barValue = screen.getHeat();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -79,7 +83,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
             if(heat != null) {
                 barValue = heat.get();
             } else {
@@ -93,11 +97,15 @@ public class VerticalBar extends NCGuiElement {
         public Energy(int x, int y, IVerticalBarScreen screen,  int maxEnergy) {
             super(x, y, screen, maxEnergy);
             xOffset = 96;
-            hintKey = "energy.bar.amount";
+            if(isGtLoaded() && isGTEUCapEnabled()) {
+                hintKey = "tooltip.eu.bar.amount";
+            } else {
+                hintKey = "energy.bar.amount";
+            }
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
             barValue = screen.getEnergy();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -110,11 +118,15 @@ public class VerticalBar extends NCGuiElement {
             height = 97;
             backgroundXoffset = 146;
 
-            hintKey = "energy.bar.amount";
+            if(isGtLoaded() && isGTEUCapEnabled()) {
+                hintKey = "tooltip.eu.bar.amount";
+            } else {
+                hintKey = "energy.bar.amount";
+            }
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
             barValue = screen.getEnergy();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -127,7 +139,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
             barValue = screen.getCoolant();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -143,7 +155,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
             barValue = screen.getCoolant();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -157,7 +169,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
             barValue = screen.getHotCoolant();
             super.draw(transform, mX, mY, pTicks);
         }

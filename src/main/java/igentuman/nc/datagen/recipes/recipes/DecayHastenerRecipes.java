@@ -6,44 +6,47 @@ import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
 
+import static igentuman.nc.content.materials.Materials.*;
+
 public class DecayHastenerRecipes extends AbstractRecipeProvider {
 
     public static void generate(Consumer<FinishedRecipe> consumer) {
         DecayHastenerRecipes.consumer = consumer;
         ID = Processors.DECAY_HASTENER;
 
-        itemToItem(dustIngredient(Materials.strontium_90), dustIngredient(Materials.strontium), 2);
-        itemToItem(dustIngredient(Materials.thorium, 4), isotopeStack(Materials.thorium232));
-        itemToItem(dustIngredient(Materials.radium), dustIngredient(Materials.lead));
-        itemToItem(dustIngredient(Materials.polonium), dustIngredient(Materials.lead));
-        itemToItem(dustIngredient(Materials.protactinium_233), isotopeStack(Materials.uranium233));
-        itemToItem(dustIngredient(Materials.bismuth), dustIngredient(Materials.thallium));
-        itemToItem(dustIngredient(Materials.tbp), isotopeStack(Materials.thorium230));
-        itemToItem(dustIngredient(Materials.ruthenium_106), dustIngredient(Materials.palladium));
-        itemToItem(dustIngredient(Materials.caesium_137), dustIngredient(Materials.barium));
-        itemToItem(dustIngredient(Materials.promethium_147), dustIngredient(Materials.neodymium));
-        itemToItem(dustIngredient(Materials.europium_155), dustIngredient(Materials.gadolinium));
-        itemToItem(isotopeIngredient(Materials.uranium233), dustIngredient(Materials.bismuth));
-        itemToItem(isotopeIngredient(Materials.uranium235), dustIngredient(Materials.lead));
-        itemToItem(isotopeIngredient(Materials.uranium238), dustIngredient(Materials.radium));
-        itemToItem(isotopeIngredient(Materials.neptunium236), dustIngredient(Materials.thorium));
-        itemToItem(isotopeIngredient(Materials.neptunium237), isotopeStack(Materials.uranium233));
-        itemToItem(isotopeIngredient(Materials.plutonium238), dustIngredient(Materials.lead));
-        itemToItem(isotopeIngredient(Materials.plutonium239), isotopeStack(Materials.uranium233));
-        itemToItem(isotopeIngredient(Materials.plutonium241), isotopeStack(Materials.neptunium237));
-        itemToItem(isotopeIngredient(Materials.plutonium242), isotopeStack(Materials.uranium238));
-        itemToItem(isotopeIngredient(Materials.americium241), isotopeStack(Materials.neptunium237));
-        itemToItem(isotopeIngredient(Materials.americium242), dustIngredient(Materials.lead));
-        itemToItem(isotopeIngredient(Materials.americium243), isotopeStack(Materials.plutonium238));
-        itemToItem(isotopeIngredient(Materials.curium243), isotopeStack(Materials.plutonium239));
-        itemToItem(isotopeIngredient(Materials.curium245), isotopeStack(Materials.plutonium241));
-        itemToItem(isotopeIngredient(Materials.curium246), isotopeStack(Materials.plutonium242));
-        itemToItem(isotopeIngredient(Materials.curium247), isotopeStack(Materials.americium243));
-        itemToItem(isotopeIngredient(Materials.berkelium247), isotopeStack(Materials.americium243));
-        itemToItem(isotopeIngredient(Materials.berkelium248), dustIngredient(Materials.thorium));
-        itemToItem(isotopeIngredient(Materials.californium249), isotopeStack(Materials.curium245));
-        itemToItem(isotopeIngredient(Materials.californium250), isotopeStack(Materials.curium246));
-        itemToItem(isotopeIngredient(Materials.californium251), isotopeStack(Materials.curium247));
-        itemToItem(isotopeIngredient(Materials.californium252), dustIngredient(Materials.thorium));
+        itemToItem(dustIngredient(irradiated_borax), dustIngredient(borax), 2);
+        itemToItem(dustIngredient(strontium_90), dustIngredient(strontium), 2);
+        itemToItem(dustIngredient(radium), dustIngredient(lead));
+        itemToItem(dustIngredient(polonium), dustIngredient(lead));
+        itemToItem(dustIngredient(protactinium_233), isotopeStack(uranium233));
+        itemToItem(dustIngredient(bismuth), dustIngredient(thallium));
+        itemToItem(dustIngredient(tbp), isotopeStack(thorium230));
+        itemToItem(dustIngredient(ruthenium_106), dustIngredient(palladium));
+        itemToItem(dustIngredient(caesium_137), dustIngredient(barium));
+        itemToItem(dustIngredient(promethium_147), dustIngredient(neodymium));
+        itemToItem(dustIngredient(europium_155), dustIngredient(gadolinium));
+        itemToItem(isotopeIngredient(uranium233), dustIngredient(bismuth));
+        itemToItem(isotopeIngredient(uranium235), dustIngredient(lead));
+        itemToItem(isotopeIngredient(uranium238), dustIngredient(radium));
+        itemToItem(isotopeIngredient(neptunium236), dustIngredient(thorium));
+        itemToItem(isotopeIngredient(neptunium237), isotopeStack(uranium233));
+        itemToItem(isotopeIngredient(plutonium238), dustIngredient(lead));
+        itemToItem(isotopeIngredient(plutonium239), isotopeStack(uranium233));
+        itemToItem(isotopeIngredient(plutonium241), isotopeStack(neptunium237));
+        itemToItem(isotopeIngredient(plutonium242), isotopeStack(uranium238));
+        itemToItem(isotopeIngredient(americium241), isotopeStack(neptunium237));
+        itemToItem(isotopeIngredient(americium242), dustIngredient(lead));
+        itemToItem(isotopeIngredient(americium243), isotopeStack(plutonium238));
+        itemToItem(isotopeIngredient(curium243), isotopeStack(plutonium239));
+        itemToItem(isotopeIngredient(curium245), isotopeStack(plutonium241));
+        itemToItem(isotopeIngredient(curium246), isotopeStack(americium242));
+        itemToItem(isotopeIngredient(curium247), isotopeStack(americium243));
+        itemToItem(isotopeIngredient(berkelium247), isotopeStack(americium243));
+        itemToItem(isotopeIngredient(berkelium248), dustIngredient(thorium));
+        itemToItem(isotopeIngredient(californium249), isotopeStack(curium245));
+        itemToItem(isotopeIngredient(californium250), isotopeStack(curium246));
+        itemToItem(isotopeIngredient(californium251), isotopeStack(curium247));
+        itemToItem(isotopeIngredient(californium252), dustIngredient(thorium));
+        itemToItem(isotopeIngredient(xenorium298), isotopeIngredient(quantite));
     }
 }

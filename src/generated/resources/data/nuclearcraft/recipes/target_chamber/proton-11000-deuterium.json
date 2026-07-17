@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.16,
+  "energyReleased": -2230,
+  "inputFluids": [
+    {
+      "amount": 1000,
+      "tag": "forge:deuterium"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 6250000,
+      "focus": 1.0,
+      "meanEnergy": 11000,
+      "particle": "proton"
+    }
+  ],
+  "maxEnergy": 20500,
+  "outputParticles": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

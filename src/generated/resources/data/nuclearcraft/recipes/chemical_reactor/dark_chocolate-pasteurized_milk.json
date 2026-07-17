@@ -2,7 +2,7 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:dark_chocolate"
     },
     {
@@ -12,7 +12,7 @@
   ],
   "outputFluids": [
     {
-      "amount": 288,
+      "amount": 180,
       "tag": "forge:milk_chocolate"
     }
   ],

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "B": {
+      "tag": "forge:dusts/boron"
+    },
+    "P": {
+      "item": "nuclearcraft:bioplastic"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PBP",
+    "PPP"
+  ],
+  "result": {
+    "item": "nuclearcraft:scintillator_plastic"
+  },
+  "show_notification": true
+}

@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:platinum"
+      "amount": 90,
+      "tag": "forge:molten_platinum"
     }
   ],
   "powerModifier": 1.0,

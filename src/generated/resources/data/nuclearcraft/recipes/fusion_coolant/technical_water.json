@@ -3,13 +3,13 @@
   "coolingRate": 2500.0,
   "inputFluids": [
     {
-      "amount": 500,
+      "amount": 1000,
       "tag": "forge:technical_water"
     }
   ],
   "outputFluids": [
     {
-      "amount": 500,
+      "amount": 1000,
       "tag": "forge:high_pressure_steam"
     }
   ]

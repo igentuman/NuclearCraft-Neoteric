@@ -14,14 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static igentuman.nc.util.NcUtils.rlFromString;
+
 @Mixin(TagLoader.class)
 public class TagLoaderMixin {
-    @Inject(method = "load", at = @At("TAIL"), cancellable = true, remap = false)
+    @Inject(method = "load", at = @At("TAIL"), cancellable = true)
     private void load(CallbackInfoReturnable<Map<ResourceLocation, List<TagLoader.EntryWithSource>>> callback) {
         Map<ResourceLocation, List<TagLoader.EntryWithSource>> map = callback.getReturnValue();
 
-        map = fixMissingFor(new ResourceLocation("mineable/pickaxe"), map);
-        map = fixMissingFor(new ResourceLocation("needs_iron_tool"), map);
+        map = fixMissingFor(rlFromString("mineable/pickaxe"), map);
+        map = fixMissingFor(rlFromString("needs_iron_tool"), map);
 
         callback.setReturnValue(map);
     }

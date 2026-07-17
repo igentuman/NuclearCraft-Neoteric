@@ -1,0 +1,39 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.625,
+  "energyReleased": 16900,
+  "input": [
+    {
+      "item": "nuclearcraft:lithium_6"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 1600000,
+      "focus": 1.0,
+      "meanEnergy": 30000,
+      "particle": "helion"
+    }
+  ],
+  "maxEnergy": 150000,
+  "output": [
+    []
+  ],
+  "outputParticles": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "proton"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

@@ -9,23 +9,21 @@ import igentuman.nc.util.annotation.NothingNullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
-
 import static igentuman.nc.util.TagUtil.getItemsByTagKey;
 
-public class NuclearFurnaceBE extends NCProcessorBE<NuclearFurnaceBE.Recipe> {
-    public NuclearFurnaceBE(BlockPos pPos, BlockState pBlockState) {
-        super(pPos, pBlockState, Processors.NUCLEAR_FURNACE);
-        contentHandler.itemHandler.setValidItemsForSlot(getFuelItems(), 1);
-    }
+public class NuclearFurnaceBE extends NCProcessorBE {
 
     @NBTField
     public int burnTime = 0;
     private List<Item> ingots;
+
+    public NuclearFurnaceBE(BlockPos pPos, BlockState pBlockState) {
+        super(pPos, pBlockState, Processors.NUCLEAR_FURNACE);
+        contentHandler.itemHandler.setValidItemsForSlot(getFuelItems(), 1);
+    }
 
     private List<Item> getFuelItems() {
         if (ingots == null) {
@@ -40,24 +38,18 @@ public class NuclearFurnaceBE extends NCProcessorBE<NuclearFurnaceBE.Recipe> {
 
             boolean hasFuel = getFuelItems().contains(contentHandler.itemHandler.getStackInSlot(1).getItem());
             if (hasFuel) {
-                burnTime = 400;
+                burnTime = 500;
                 if(getFuelItems().contains(contentHandler.itemHandler.getStackInSlot(1).getItem())) {
                     contentHandler.itemHandler.extractItem(1, 1, false);
                 }
             }
         }
-
     }
 
     @Override
     public boolean canProcessRecipe() {
         consumeFuel();
         return burnTime > 0;
-    }
-
-    @Override
-    public String getName() {
-        return Processors.NUCLEAR_FURNACE;
     }
 
     @NothingNullByDefault

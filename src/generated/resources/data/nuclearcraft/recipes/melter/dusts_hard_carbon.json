@@ -7,8 +7,8 @@
   ],
   "outputFluids": [
     {
-      "amount": 144,
-      "tag": "forge:hard_carbon"
+      "amount": 90,
+      "tag": "forge:molten_hard_carbon"
     }
   ],
   "powerModifier": 1.0,

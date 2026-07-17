@@ -1,5 +1,7 @@
 package igentuman.nc.item;
 import igentuman.nc.content.fuel.FuelDef;
+import igentuman.nc.content.fuel.FuelManager;
+import igentuman.nc.radiation.ItemRadiation;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -12,33 +14,35 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static igentuman.nc.handler.event.client.InputEvents.DESCRIPTIONS_SHOW;
+import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
 public class ItemFuel extends Item {
 
     public FuelDef def;
     public double heat = 0;
     public int forge_energy = 0;
-
     public double heat_boiling = 0;
-
     public int criticality = 0;
-
     public int depletion = 0;
-
     public int efficiency = 0;
+    public final String group;
+    public final String name;
+    public final String subType;
 
-    public ItemFuel(Properties pProperties, FuelDef def) {
-        this(pProperties);
-        setDefinition(def);
-    }
+    private boolean initialized = false;
 
-    public ItemFuel(Properties pProperties) {
+    public ItemFuel(Properties pProperties, String group, String name, String subType) {
         super(pProperties);
+        this.group = group;
+        this.name = name;
+        this.subType = subType;
     }
 
-    public ItemFuel setDefinition(FuelDef definition)
+    public ItemFuel initDefinition()
     {
-        def = definition;
+        if(initialized) return this;
+        def = FuelManager.all().get(group).get(name).subType(subType);
         heat = def.getHeatFEMode();
         heat_boiling = def.getHeatBoilingMode();
         criticality = def.criticality;
@@ -51,16 +55,34 @@ public class ItemFuel extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
     {
-        if(!DESCRIPTIONS_SHOW) {
-            list.add(TextUtils.applyFormat(Component.translatable("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+        initDefinition();
+        if(subType.equals("_tr")) {
+            list.add(TextUtils.applyFormat(__("fuel.criticality.descr", criticality), ChatFormatting.RED));
         } else {
-            list.add(TextUtils.applyFormat(Component.translatable("fuel.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
-            //list.add(TextUtils.applyFormat(Component.translatable("fuel.heat_boiling.descr", TextUtils.numberFormat(heat_boiling)), ChatFormatting.YELLOW));
-            list.add(TextUtils.applyFormat(Component.translatable("fuel.forge_energy.descr", forge_energy), ChatFormatting.BLUE));
-            //list.add(TextUtils.applyFormat(Component.translatable("fuel.criticality.descr", criticality), ChatFormatting.RED));
-            list.add(TextUtils.applyFormat(Component.translatable("fuel.depletion.descr", depletion), ChatFormatting.GREEN));
-            //list.add(TextUtils.applyFormat(Component.translatable("fuel.efficiency.descr", efficiency), ChatFormatting.DARK_PURPLE));
-            list.add(TextUtils.applyFormat(Component.translatable("fuel.description"), ChatFormatting.AQUA));
+            list.add(TextUtils.applyFormat(__("fuel.forge_energy.descr", forge_energy), ChatFormatting.BLUE));
         }
+        list.add(TextUtils.applyFormat(__("fuel.heat.descr", TextUtils.numberFormat(heat)), ChatFormatting.GOLD));
+        list.add(TextUtils.applyFormat(__("fuel.depletion.descr", depletion()), ChatFormatting.GREEN));
+        list.add(TextUtils.applyFormat(__("fuel.irradiation.descr", TextUtils.numberFormat(irradiation())), ChatFormatting.LIGHT_PURPLE));
+
+        if(!DESCRIPTIONS_SHOW) {
+            list.add(TextUtils.applyFormat(__("tooltip.toggle_description_keys"), ChatFormatting.GRAY));
+        } else {
+            if(subType.equals("_tr")) {
+                list.add(TextUtils.applyFormat(__("tr_fuel.description"), ChatFormatting.AQUA));
+            } else {
+                list.add(TextUtils.applyFormat(__("fuel.description"), ChatFormatting.AQUA));
+            }
+        }
+    }
+
+    public int depletion() {
+        return (int) (depletion*def.depletionMult());
+    }
+
+    public double irradiation() {
+        initDefinition();
+        return Math.log((ItemRadiation.byItem(this) + 0.01) * 10000)
+                * (Math.pow(heat / 100 + 200 / (double) depletion + 0.5, 1.5) * 2);
     }
 }

@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "crossSection": 0.32,
+  "energyReleased": -12100,
+  "input": [
+    {
+      "item": "nuclearcraft:uranium_235"
+    }
+  ],
+  "inputParticles": [
+    {
+      "amount": 3125000,
+      "focus": 1.0,
+      "meanEnergy": 13500,
+      "particle": "photon"
+    }
+  ],
+  "maxEnergy": 18000,
+  "output": [
+    {
+      "item": "nuclearcraft:uranium_233"
+    }
+  ],
+  "outputParticles": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "meanEnergy": 1,
+      "particle": "neutron"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

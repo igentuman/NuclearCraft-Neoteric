@@ -1,14 +1,15 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "G": {
-      "tag": "forge:plates/steel"
+      "item": "minecraft:redstone"
     },
     "P": {
-      "item": "nuclearcraft:plate_basic"
+      "item": "nuclearcraft:coil_copper"
     },
     "U": {
-      "item": "nuclearcraft:coil_copper"
+      "item": "minecraft:iron_block"
     }
   },
   "pattern": [
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "nuclearcraft:decay_generator"
-  }
+  },
+  "show_notification": true
 }

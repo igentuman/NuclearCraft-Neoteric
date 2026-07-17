@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "input": [
+    {
+      "tag": "forge:dusts/barium_nitrate"
+    }
+  ],
+  "inputFluids": [
+    {
+      "amount": 200,
+      "tag": "forge:tnt"
+    }
+  ],
+  "outputFluids": [
+    {
+      "amount": 200,
+      "tag": "forge:baratol"
+    }
+  ],
+  "powerModifier": 1.0,
+  "radiation": 1.0,
+  "timeModifier": 1.0
+}

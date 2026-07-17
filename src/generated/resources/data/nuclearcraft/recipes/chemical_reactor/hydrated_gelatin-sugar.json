@@ -2,17 +2,17 @@
   "type": "nuclearcraft:chemical_reactor",
   "inputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:hydrated_gelatin"
     },
     {
-      "amount": 72,
+      "amount": 45,
       "tag": "forge:sugar"
     }
   ],
   "outputFluids": [
     {
-      "amount": 144,
+      "amount": 90,
       "tag": "forge:marshmallow"
     }
   ],

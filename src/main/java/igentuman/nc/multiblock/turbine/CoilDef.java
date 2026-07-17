@@ -1,19 +1,16 @@
 package igentuman.nc.multiblock.turbine;
 
-import igentuman.nc.block.entity.turbine.TurbineBearingBE;
-import igentuman.nc.block.entity.turbine.TurbineCoilBE;
+import igentuman.nc.block.turbine.entity.TurbineCoilBE;
+import igentuman.nc.util.TagUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,8 +22,11 @@ import java.util.stream.Stream;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.handler.config.TurbineConfig.TURBINE_CONFIG;
+import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
+import static igentuman.nc.util.NcUtils.rlFromString;
 
 public class CoilDef {
+
     public double efficiency = 0;
     public String name = "";
     public String[] rules;
@@ -87,20 +87,12 @@ public class CoilDef {
     public List<String> getItemsByTagKey(String key)
     {
         List<String> tmp = new ArrayList<>();
-        TagKey<Item> tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(key));
+        String namespace;
+        String location;
+        TagKey<Item> tag = TagKey.create(ITEM_REGISTRY, rlFromString(key));
         Ingredient ing = Ingredient.fromValues(Stream.of(new Ingredient.TagValue(tag)));
         for (ItemStack item: ing.getItems()) {
             tmp.add(item.getItem().toString());
-        }
-        return tmp;
-    }
-
-    public static List<Block> getBlocksByTagKey(String key)
-    {
-        List<Block> tmp = new ArrayList<>();
-        TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(key));
-        for(Holder<Block> holder : Registry.BLOCK.getTagOrEmpty(tag)) {
-            tmp.add(holder.get());
         }
         return tmp;
     }
@@ -253,12 +245,12 @@ public class CoilDef {
                     List<Block> tmp = new ArrayList<>();
                     for(String bStr: blockLines().get(condition)) {
                         if(bStr.contains("#")) {
-                            tmp.addAll(getBlocksByTagKey(bStr));
+                            tmp.addAll(TagUtil.getBlocksByTagKey(bStr));
                         } else {
                             if (!bStr.contains(":")) {
                                 bStr = MODID + ":" + bStr;
                             }
-                            tmp.add(Registry.BLOCK.get(new ResourceLocation(bStr)));
+                            tmp.add(ForgeRegistries.BLOCKS.getValue(rlFromString(bStr)));
                         }
                     }
                     blocks.put(condition, tmp);

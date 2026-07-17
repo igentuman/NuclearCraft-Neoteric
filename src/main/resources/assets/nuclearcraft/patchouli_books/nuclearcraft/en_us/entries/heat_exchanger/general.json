@@ -1,0 +1,108 @@
+{
+  "name": "General Info",
+  "icon": "nuclearcraft:heat_exchanger_controller",
+  "category": "nuclearcraft:heat_exchanger",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "text",
+      "text": "The $(thing)Heat Exchanger$() runs two coolant loops around a shared $(thing)heat buffer$(). The $(thing)hot loop$() cools a hot coolant and banks the released heat; the $(thing)cold loop$() spends that heat to condense spent steam back into water. Waste heat from one job pays for the other."
+    },
+    {
+      "anchor": "casing",
+      "type": "blocks/1",
+      "header": "Heat Exchanger Casing",
+      "block": "nuclearcraft:heat_exchanger_casing",
+      "text": "The structure is a cuboid shell, $(thing)3x3x3$() up to $(thing)11x11x11$(). Non-cube shapes are allowed (e.g. 5x6x10). All edges and corners are $(thing)Heat Exchanger Casing$() - no glass variant."
+    },
+    {
+      "anchor": "controller",
+      "type": "blocks/1",
+      "header": "Heat Exchanger Controller",
+      "block": "nuclearcraft:heat_exchanger_controller",
+      "text": "Place exactly one $(thing)Controller$() in the shell to form the multiblock. It owns the heat buffer and reports stored heat, the four tanks, energy, and interior count. It only runs while it gets a $(thing)redstone signal$()."
+    },
+    {
+      "anchor": "hot_port",
+      "type": "blocks/1",
+      "header": "Hot Coolant Port",
+      "block": "nuclearcraft:heat_exchanger_hot_coolant_port",
+      "text": "The $(thing)hot loop$() runs through these. Pipe a hot coolant in (Hot Helium, Hot FLiBe Molten Salt) and collect it cooled. Each operation $(o)adds heat$() to the buffer. A full buffer stalls the hot loop."
+    },
+    {
+      "anchor": "cold_port",
+      "type": "blocks/1",
+      "header": "Cold Coolant Port",
+      "block": "nuclearcraft:heat_exchanger_cold_coolant_port",
+      "text": "The $(thing)cold loop$() runs through these. Pipe spent steam in (Exhaust Steam, Low-Quality Steam) and collect condensed water. Each operation $(o)draws heat$() from the buffer. An empty buffer stalls the cold loop. Hot and cold fluids keep to their own ports."
+    },
+    {
+      "anchor": "radiator",
+      "type": "blocks/1",
+      "header": "Radiator",
+      "block": "nuclearcraft:heat_exchanger_radiator",
+      "text": "$(thing)Radiators$() sit in the shell and passively vent heat from the buffer - every tick the structure is formed, no redstone or energy needed. Use them to shed heat the cold loop can't keep up with, so the hot loop never jams. (They keep shedding heat even on the night shift.)"
+    },
+    {
+      "anchor": "interior",
+      "type": "blocks/1",
+      "header": "Interior",
+      "block": "nuclearcraft:heat_exchanger",
+      "text": "Fill the interior with $(thing)Heat Exchanger$() blocks. Each one raises throughput and grows the heat buffer - but also raises the standby energy drawn per tick. An empty interior forms but does nothing."
+    },
+    {
+      "anchor": "build",
+      "header": "Heat Exchanger",
+      "type": "patchouli:multiblock",
+      "multiblock": {
+        "mapping": {
+          "W": "nuclearcraft:heat_exchanger_casing",
+          "H": "nuclearcraft:heat_exchanger",
+          "C": "nuclearcraft:heat_exchanger_controller[facing=north]",
+          "P": "nuclearcraft:heat_exchanger_hot_coolant_port[facing=north]",
+          "D": "nuclearcraft:heat_exchanger_cold_coolant_port[facing=north]",
+          "R": "nuclearcraft:heat_exchanger_radiator"
+        },
+        "pattern": [
+          [
+            "WWWWW",
+            "WWWWW",
+            "WWWWW",
+            "WWWWW",
+            "WWWWW"
+          ],
+          [
+            "WWPWW",
+            "WHHHW",
+            "WHHHW",
+            "WHHHW",
+            "WWWWW"
+          ],
+          [
+            "WDCRW",
+            "WHHHW",
+            "WH0HW",
+            "WHHHW",
+            "WWWWW"
+          ],
+          [
+            "WWWWW",
+            "WHHHW",
+            "WHHHW",
+            "WHHHW",
+            "WWWWW"
+          ],
+          [
+            "WWWWW",
+            "WWWWW",
+            "WWWWW",
+            "WWWWW",
+            "WWWWW"
+          ]
+        ],
+        "symmetrical": false
+      },
+      "text": "A 5x5x5 build: casing shell with a Hot Coolant Port, Cold Coolant Port, Controller and Radiator on one wall, interior packed with Heat Exchanger blocks. Feed hot coolant to the hot port, spent steam to the cold port, supply FE, and apply redstone."
+    }
+  ]
+}

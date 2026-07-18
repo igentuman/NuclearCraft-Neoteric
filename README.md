@@ -1,6 +1,6 @@
 # NuclearCraft-Neoteric
 
-Re-creation of the classic NuclearCraft mod for modern Minecraft (Forge 1.19.2, Java 17).
+Re-creation of the classic NuclearCraft mod for modern Minecraft (Forge 1.20.1, Java 17).
 NuclearCraft-Neoteric brings a full nuclear-tech progression chain to the game: ore processing,
 fission reactors with configurable fuels and heat sinks, molten salt reactors, fusion cores,
 particle accelerators, target chambers, kugelblitz (black-hole) reactors, steam turbines,
@@ -14,7 +14,7 @@ how you build.
 ## Overview
 
 - **Mod id:** `nuclearcraft`
-- **Minecraft:** 1.19.2 (Forge)
+- **Minecraft:** 1.20.1 (Forge)
 - **Energy:** Forge Energy (FE/RF); Mekanism and GregTech CE: Unofficial interop where present
 - **Integrations:** JEI, EMI, KubeJS, ComputerCraft, OpenComputers v2, AE2, Refined Storage, Mekanism, GregTech CE:U, TIS-3D, Patchouli, Ponder
 - **In-game guide:** Patchouli Operator's Handbook

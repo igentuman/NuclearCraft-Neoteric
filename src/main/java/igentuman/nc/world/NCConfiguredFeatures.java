@@ -1,10 +1,17 @@
 package igentuman.nc.world;
 
 import igentuman.nc.content.materials.Ores;
+import igentuman.nc.setup.registration.NCBlocks;
 import net.minecraft.core.Registry;
+import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashMap;
@@ -12,6 +19,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Registries.CONFIGURED;
+import static igentuman.nc.world.structure.WastelandBossLairFeature.WASTELAND_BOSS_LAIR_FEATURE;
 import static igentuman.nc.world.structure.WastelandDecoFeature.WASTELAND_DECO_FEATURE;
 import static igentuman.nc.world.structure.WastelandStructureFeature.WASTELAND_RUINS_FEATURE;
 
@@ -20,6 +28,9 @@ public class NCConfiguredFeatures {
     public static final HashMap<String, ResourceKey<ConfiguredFeature<?, ?>>> CONFIGURED_FEATURES = initFeatures();
     public static final RegistryObject<ConfiguredFeature<?, ?>> CONFIGURED_WASTELAND_RUINS = CONFIGURED.register("wasteland_ruins", () -> new ConfiguredFeature<>(WASTELAND_RUINS_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
     public static final RegistryObject<ConfiguredFeature<?, ?>> CONFIGURED_WASTELAND_DECO = CONFIGURED.register("wasteland_deco", () -> new ConfiguredFeature<>(WASTELAND_DECO_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
+    public static final RegistryObject<ConfiguredFeature<?, ?>> CONFIGURED_WASTELAND_BOSS_LAIR = CONFIGURED.register("wasteland_boss_lair", () -> new ConfiguredFeature<>(WASTELAND_BOSS_LAIR_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
+    public static final RegistryObject<ConfiguredFeature<?, ?>> CONFIGURED_GLOWING_MUSHROOM_WASTELAND = CONFIGURED.register("glowing_mushroom_wasteland_feature", () -> new ConfiguredFeature<>(Feature.RANDOM_PATCH, new RandomPatchConfiguration(4, 7, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(NCBlocks.MUSHROOM_BLOCK.get()))))));
+    public static final RegistryObject<ConfiguredFeature<?, ?>> CONFIGURED_WASTELAND_SURFACE = CONFIGURED.register("wasteland_surface", () -> new ConfiguredFeature<>(Feature.RANDOM_PATCH, new RandomPatchConfiguration(14, 7, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.DEAD_BUSH))))));
 
     private static HashMap<String, ResourceKey<ConfiguredFeature<?,?>>> initFeatures() {
         HashMap<String, ResourceKey<ConfiguredFeature<?,?>>> features = new HashMap<>();

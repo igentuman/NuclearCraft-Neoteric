@@ -9,7 +9,6 @@
     "MekRadiationManager",
     "ParticleStackKubeJSMixin",
     "TemplatePoolAccess",
-    "OverworldBiomeBuilderInvoker",
     "OverworldBiomeBuilderMixin"
   ],
   "server": [

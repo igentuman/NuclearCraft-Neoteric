@@ -23,7 +23,7 @@
           }
         },
         {
-          "biome": "minecraft:desert",
+          "biome": "nuclearcraft:wasteland",
           "parameters": {
             "continentalness": 0.0,
             "depth": 0.0,

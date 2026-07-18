@@ -22,7 +22,6 @@ public class NCBiomeTags extends ForgeRegistryTagsProvider<Biome> {
         tag(WASTELAND).addOptional(WASTELAND_BIOME.location());
         tag(Tags.Biomes.IS_WASTELAND).addOptional(WASTELAND_BIOME.location());
         tag(IS_OVERWORLD).addOptional(WASTELAND_BIOME.location());
-        tag(IS_OVERWORLD).addOptional(WASTELAND.location());
     }
 
     @Override

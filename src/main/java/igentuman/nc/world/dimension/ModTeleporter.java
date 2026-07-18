@@ -1,9 +1,9 @@
 package igentuman.nc.world.dimension;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
@@ -39,28 +39,16 @@ public class ModTeleporter implements ITeleporter {
         BlockPos surfacePos = findSurface(destinationWorld, destinationPos);
         
         entity.setPos(surfacePos.getX() + 0.5, surfacePos.getY(), surfacePos.getZ() + 0.5);
-        
-        entity = repositionEntity.apply(true);
+        entity = repositionEntity.apply(false);
         return entity;
     }
     
-    /**
-     * Finds a suitable surface position by moving down from the starting position
-     * until a solid block is found.
-     */
     private BlockPos findSurface(ServerLevel world, BlockPos startPos) {
-        BlockPos pos = startPos;
-        
-        while (pos.getY() > 0) {
-            boolean currentIsAir = world.isEmptyBlock(pos);
-            boolean belowIsSolid = !world.isEmptyBlock(pos.below());
-            
-            if (currentIsAir && belowIsSolid) {
-                return pos;
-            }
-            pos = pos.below();
+        world.getChunk(startPos.getX() >> 4, startPos.getZ() >> 4);
+        int surfaceY = world.getHeight(Heightmap.Types.WORLD_SURFACE, startPos.getX(), startPos.getZ());
+        if (surfaceY <= world.getMinBuildHeight()) {
+            return new BlockPos(startPos.getX(), 70, startPos.getZ());
         }
-        
-        return new BlockPos(startPos.getX(), 70, startPos.getZ());
+        return new BlockPos(startPos.getX(), surfaceY, startPos.getZ());
     }
 }

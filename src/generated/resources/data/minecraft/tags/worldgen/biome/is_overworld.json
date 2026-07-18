@@ -1,12 +1,3 @@
 {
-  "values": [
-    {
-      "id": "nuclearcraft:wasteland",
-      "required": false
-    },
-    {
-      "id": "nuclearcraft:wasteland",
-      "required": false
-    }
-  ]
+  "values": []
 }

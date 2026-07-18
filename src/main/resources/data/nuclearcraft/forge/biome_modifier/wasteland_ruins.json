@@ -1,8 +1,6 @@
 {
   "type": "forge:add_features",
   "biomes": "#nuclearcraft:wasteland",
-  "features": [
-    "nuclearcraft:wasteland_ruins"
-  ],
+  "features": [],
   "step": "surface_structures"
 }

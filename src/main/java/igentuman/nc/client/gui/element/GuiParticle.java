@@ -6,7 +6,7 @@ import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.util.Units;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,20 +30,20 @@ public class GuiParticle extends NCGuiElement {
 		this.height = 16;
 	}
 
-	public void drawParticleStack(@NotNull GuiGraphics graphics, ParticleStack particleStack)
+	public void drawParticleStack(@NotNull PoseStack graphics, ParticleStack particleStack)
 	{
 		if(particleStack == null || particleStack.getParticle() == null) {
 			return;
 		}
 
 		RenderSystem.setShaderTexture(0,particleStack.getParticle().getTexture());
-		graphics.pose().pushPose();
-		graphics.pose().translate(RELATIVE_X, RELATIVE_Y, 0);
-		graphics.blit(particleStack.getParticle().getTexture(), x, y, 0, 0, 16, 16, 16, 16);
-		graphics.pose().popPose();
+		graphics.pushPose();
+		graphics.translate(RELATIVE_X, RELATIVE_Y, 0);
+		blit(graphics, x, y, 0.0f, 0.0f, 16, 16, 16, 16);
+		graphics.popPose();
 	}
 
-	public void renderTooltip(GuiGraphics graphics, ParticleStack particleStack, int pMouseX, int pMouseY) {
+	public void renderTooltip(PoseStack graphics, ParticleStack particleStack, int pMouseX, int pMouseY) {
 		if(particleStack == null || particleStack.getParticle() == null) {
 			return;
 		}
@@ -53,7 +53,9 @@ public class GuiParticle extends NCGuiElement {
 		text.add(__("tooltip.nuclearcraft.particlestack.mean_energy", Units.getParticleEnergy(particleStack.getMeanEnergy())).withStyle(ChatFormatting.GRAY));
 		DecimalFormat df = new DecimalFormat("#.####");
 		text.add(__("tooltip.nuclearcraft.particlestack.focus",df.format(particleStack.getFocus())).withStyle(ChatFormatting.GRAY));
-		graphics.renderTooltip(Minecraft.getInstance().font, text, Optional.empty(), pMouseX, pMouseY);
+		if (Minecraft.getInstance().screen != null) {
+            Minecraft.getInstance().screen.renderTooltip(graphics, text, Optional.<net.minecraft.world.inventory.tooltip.TooltipComponent>empty(), pMouseX, pMouseY);
+        }
 	}
 
 	@Override

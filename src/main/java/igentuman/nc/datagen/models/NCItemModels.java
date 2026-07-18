@@ -33,7 +33,7 @@ import static igentuman.nc.setup.registration.NCItems.*;
 public class NCItemModels extends ItemModelProvider {
 
     public NCItemModels(DataGenerator generator, GatherDataEvent event) {
-        super(generator.getPackOutput(), MODID, event.getExistingFileHelper());
+        super(generator, MODID, event.getExistingFileHelper());
     }
 
     @Override

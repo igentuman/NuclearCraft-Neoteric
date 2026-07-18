@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_target_chamber",
   "key": {
     "C": {
@@ -20,6 +19,5 @@
   ],
   "result": {
     "item": "nuclearcraft:target_chamber_camera"
-  },
-  "show_notification": true
+  }
 }

@@ -25,7 +25,7 @@ import static igentuman.nc.util.TextUtils.convertToName;
 public class NCLanguageProvider extends LanguageProvider {
 
     public NCLanguageProvider(DataGenerator gen, String locale) {
-        super(gen.getPackOutput(), MODID, locale);
+        super(gen, MODID, locale);
     }
 
     @Override

@@ -2,6 +2,7 @@ package igentuman.nc.item;
 
 import igentuman.nc.container.StorageContainerItemContainer;
 import igentuman.nc.content.storage.ContainerBlocks;
+import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.handler.storage.ContainerInventoryStore;
 import igentuman.nc.handler.storage.StoredInventory;
 import igentuman.nc.util.capability.CapabilityUtils;
@@ -21,6 +22,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -40,7 +42,7 @@ public class ContainerBlockItem extends BlockItem
 {
 	public ContainerBlockItem(Block pBlock, Properties props)
 	{
-		this(pBlock, props, CreativeTabs.NC_BLOCKS);
+		this(pBlock, props, CreativeTabs.NC_BLOCKS_TAB);
 	}
 
 	public ContainerBlockItem(Block pBlock, Properties props, CreativeModeTab group)

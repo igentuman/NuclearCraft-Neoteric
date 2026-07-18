@@ -14,7 +14,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -87,10 +87,10 @@ public class KugelblitzCategoryWrapper<T extends ChamberTerminalBE.Recipe> imple
     }
 
     @Override
-    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX,
+    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX,
                      double mouseY) {
         if(arrow.containsKey(recipe.getTimeModifier())) {
-            arrow.get(recipe.getTimeModifier()).draw(graphics, 29, 8);
+            arrow.get(recipe.getTimeModifier()).draw(poseStack, 29, 8);
         }
     }
 

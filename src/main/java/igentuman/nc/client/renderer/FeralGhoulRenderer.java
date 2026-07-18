@@ -21,10 +21,9 @@ public class FeralGhoulRenderer extends HumanoidMobRenderer<EntityFeralGhoul, Mo
 
     public FeralGhoulRenderer(EntityRendererProvider.Context context) {
         super(context, new ModelFeralGhoul(context.bakeLayer(ModelFeralGhoul.LAYER_LOCATION)), 0.5F);
-        this.addLayer(new HumanoidArmorLayer<>(this, 
-                new ModelFeralGhoul(context.bakeLayer(ModelFeralGhoul.LAYER_LOCATION)), 
+        this.addLayer(new HumanoidArmorLayer<>(this,
                 new ModelFeralGhoul(context.bakeLayer(ModelFeralGhoul.LAYER_LOCATION)),
-                context.getModelManager()
+                new ModelFeralGhoul(context.bakeLayer(ModelFeralGhoul.LAYER_LOCATION))
         ));
     }
 

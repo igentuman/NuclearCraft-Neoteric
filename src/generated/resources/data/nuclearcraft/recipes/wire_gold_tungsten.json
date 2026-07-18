@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
     "G": {
@@ -16,6 +15,5 @@
   "result": {
     "count": 4,
     "item": "nuclearcraft:wire_gold_tungsten"
-  },
-  "show_notification": true
+  }
 }

@@ -30,6 +30,5 @@
     "recipes": [
       "nuclearcraft:hev_helmet"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

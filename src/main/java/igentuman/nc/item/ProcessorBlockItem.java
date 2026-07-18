@@ -1,5 +1,6 @@
 package igentuman.nc.item;
 
+import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -21,7 +22,7 @@ public class ProcessorBlockItem extends BlockItem
 {
 	public ProcessorBlockItem(Block pBlock, Properties props)
 	{
-		this(pBlock, props, CreativeTabs.NC_BLOCKS);
+		this(pBlock, props, CreativeTabs.NC_BLOCKS_TAB);
 	}
 
 	public ProcessorBlockItem(Block pBlock, Properties props, CreativeModeTab group)

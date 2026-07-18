@@ -29,7 +29,7 @@ public class Q36ClientInput {
     private static boolean clientReady(Player p) {
         ItemStack stack = p.getMainHandItem();
         long end = stack.getOrCreateTag().getLong(Q36Item.TAG_COOLDOWN_END);
-        return p.level().getGameTime() >= end;
+        return p.level.getGameTime() >= end;
     }
 
     @SubscribeEvent
@@ -63,7 +63,7 @@ public class Q36ClientInput {
     @SubscribeEvent
     public static void onAttackEntity(AttackEntityEvent event) {
         Player p = event.getEntity();
-        if (!p.level().isClientSide) return;
+        if (!p.level.isClientSide) return;
         if (!(p.getMainHandItem().getItem() instanceof Q36Item)) return;
         event.setCanceled(true);
     }

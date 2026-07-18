@@ -13,7 +13,7 @@ public class AnomalyAmbientSound extends AbstractTickableSoundInstance {
     private final WeakReference<AnomalyEntity> ref;
 
     public AnomalyAmbientSound(AnomalyEntity entity, SoundEvent sound, float volume) {
-        super(sound, SoundSource.HOSTILE, entity.level().getRandom());
+        super(sound, SoundSource.HOSTILE, entity.level.getRandom());
         this.ref = new WeakReference<>(entity);
         this.looping = true;
         this.delay = 0;

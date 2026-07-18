@@ -12,7 +12,7 @@ import static net.minecraft.world.level.block.Blocks.IRON_BARS;
 
 public class TurbineDummyBladeBlock extends DirectionalBlock {
     public TurbineDummyBladeBlock(Properties pProperties) {
-        super(Properties.copy(IRON_BARS).noCollission().forceSolidOff());
+        super(Properties.copy(IRON_BARS).noCollission());
         this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(FACING, Direction.NORTH)

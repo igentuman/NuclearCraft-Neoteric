@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "F": {
       "item": "nuclearcraft:uranium_238"
@@ -16,6 +15,5 @@
   ],
   "result": {
     "item": "nuclearcraft:pu_239_core"
-  },
-  "show_notification": true
+  }
 }

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
     "P": {
@@ -17,6 +16,5 @@
   ],
   "result": {
     "item": "nuclearcraft:scintillator_pwo"
-  },
-  "show_notification": true
+  }
 }

@@ -15,18 +15,20 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.RegistryObject;
 import igentuman.nc.block.entity.energy.DecayGeneratorBE;
 
 import java.util.HashMap;
 
+import static igentuman.nc.setup.registration.CreativeTabs.NC_BLOCKS_TAB;
 import static igentuman.nc.setup.registration.Registries.*;
 
 public class NCEnergyBlocks {
     public static HashMap<String, RegistryObject<Block>> ENERGY_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> BLOCK_ITEMS = new HashMap<>();
-    public static final Item.Properties ENERGY_ITEM_PROPERTIES = new Item.Properties();
-    public static final BlockBehaviour.Properties ENERGY_BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
+    public static final Item.Properties ENERGY_ITEM_PROPERTIES = new Item.Properties().tab(NC_BLOCKS_TAB);
+    public static final BlockBehaviour.Properties ENERGY_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
     public static HashMap<String, RegistryObject<BlockEntityType<? extends NCEnergy>>> ENERGY_BE = new HashMap<>();
 
     public static void init() {

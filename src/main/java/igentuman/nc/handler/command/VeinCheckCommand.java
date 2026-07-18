@@ -31,7 +31,7 @@ public class VeinCheckCommand {
             pl.sendSystemMessage(__("commands.nuclearcraft.no_permission"));
             return 1;
         }
-        Level level = pl.level();
+        Level level = pl.level;
         int qty = 0;
         OreVeinRecipe vein = WorldVeinsManager.get(level).getWorldVeinData((ServerLevel) level).getVeinForChunk(pl.chunkPosition().x, pl.chunkPosition().z);
         String name = "none";

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "C": {
       "item": "nuclearcraft:compression_charge"
@@ -16,6 +15,5 @@
   ],
   "result": {
     "item": "nuclearcraft:pu_239_bomb"
-  },
-  "show_notification": true
+  }
 }

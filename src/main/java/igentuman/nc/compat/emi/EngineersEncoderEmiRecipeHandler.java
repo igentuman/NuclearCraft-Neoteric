@@ -9,7 +9,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.container.EngineersEncoderContainer;
 import igentuman.nc.network.toServer.PacketEncoderFillGrid;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -49,7 +49,7 @@ public class EngineersEncoderEmiRecipeHandler implements StandardRecipeHandler<E
 
     @Override
     public void render(EmiRecipe recipe, EmiCraftContext<EngineersEncoderContainer> context,
-                       List<Widget> widgets, GuiGraphics graphics) {
+                       List<Widget> widgets, PoseStack graphics) {
         // Ghost template: no items are required, so skip the missing-ingredient overlay.
     }
 

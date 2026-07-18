@@ -2,7 +2,6 @@ package igentuman.nc.compat.mekanism;
 
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
-import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -33,7 +32,7 @@ public class MekInteractions {
                     if (!player.isShiftKeyDown()) {
                         player.displayClientMessage(MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
                                 dataType, dataType.getColor().getColoredName()), true);
-                    } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, be)) {
+                    } else if (false) {
                         return false;
                     } else {
                         DataType old = dataType;

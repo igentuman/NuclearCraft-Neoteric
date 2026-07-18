@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -41,7 +42,7 @@ import static igentuman.nc.util.TextUtils.__;
 public class ChargingStationBlock extends Block implements EntityBlock {
 
     public ChargingStationBlock() {
-        super(Properties.of()
+        super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.5f)
                 .noOcclusion()

@@ -1,6 +1,7 @@
 package igentuman.nc.setup.registration;
 
 import com.google.common.collect.ImmutableList;
+import static igentuman.nc.setup.registration.CreativeTabs.NC_FLUIDS;
 import igentuman.nc.content.materials.Materials;
 import igentuman.nc.item.NCBucketItem;
 import igentuman.nc.fluid.AcidDefinition;
@@ -527,7 +528,8 @@ public class NCFluids {
             return new NCBucketItem(
                     still, new Item.Properties()
                     .stacksTo(1)
-                    .craftRemainder(Items.BUCKET))
+                    .craftRemainder(Items.BUCKET)
+                    .tab(NC_FLUIDS))
             {
                 @Override
                 public int getBurnTime(ItemStack itemStack, RecipeType<?> type)

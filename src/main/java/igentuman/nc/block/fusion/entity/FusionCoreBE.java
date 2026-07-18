@@ -28,6 +28,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -824,7 +825,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
             BlockPos pos = getRandomPosAtRing();
             getLevel().explode((Entity) null,
                     pos.getX(), pos.getY(), pos.getZ(),
-                    (float) explosionRadius, Level.ExplosionInteraction.TNT);
+                    (float) explosionRadius, Explosion.BlockInteraction.BREAK);
         }
     }
 

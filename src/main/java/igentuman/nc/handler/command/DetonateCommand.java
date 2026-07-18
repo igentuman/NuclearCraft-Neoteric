@@ -31,7 +31,7 @@ public class DetonateCommand {
             player.sendSystemMessage(__("commands.nuclearcraft.no_permission"));
             return 0;
         }
-        if (!(player.level() instanceof ServerLevel serverLevel)) {
+        if (!(player.level instanceof ServerLevel serverLevel)) {
             return 0;
         }
 

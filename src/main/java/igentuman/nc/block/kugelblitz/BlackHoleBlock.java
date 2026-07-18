@@ -28,7 +28,8 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -108,7 +109,7 @@ public class BlackHoleBlock extends Block implements EntityBlock {
 
     /** @deprecated */
     @Deprecated
-    public List<ItemStack> getDrops(BlockState pState, LootParams.Builder pParams) {
+    public List<ItemStack> getDrops(BlockState pState, LootContext.Builder pParams) {
         return List.of();
     }
 
@@ -126,7 +127,7 @@ public class BlackHoleBlock extends Block implements EntityBlock {
 
     @Override
     public void fallOn(Level pLevel, BlockState pState, BlockPos pPos, Entity pEntity, float pFallDistance) {
-        pEntity.causeFallDamage(pFallDistance, 100.0F, pEntity.damageSources().fall());
+        pEntity.causeFallDamage(pFallDistance, 100.0F, DamageSource.FALL);
     }
 
     @Override

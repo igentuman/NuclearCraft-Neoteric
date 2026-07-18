@@ -14,13 +14,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ThreadedLevelLightEngine;
 import net.minecraft.world.entity.Entity;
@@ -108,7 +108,7 @@ public class PrimedFissionBombEntity extends Entity {
     }
 
     public void preForceEpicenter() {
-        if (!(level() instanceof ServerLevel server)) return;
+        if (!(level instanceof ServerLevel server)) return;
         BlockPos epicenter = blockPosition();
         int cx = epicenter.getX() >> 4;
         int cz = epicenter.getZ() >> 4;
@@ -128,7 +128,7 @@ public class PrimedFissionBombEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide) return;
+        if (level.isClientSide) return;
         if (task == null && phase == Phase.PRELOAD) {
             startSimulation();
         }
@@ -147,7 +147,7 @@ public class PrimedFissionBombEntity extends Entity {
         if (phase == Phase.FIREBALL || phase == Phase.MUSHROOM) {
             drainOps(CommonConfig.BOMB_CONFIG.OPS_PER_TICK.get());
         }
-        if (level() instanceof ServerLevel sv) {
+        if (level instanceof ServerLevel sv) {
             drainPendingResend(sv, CommonConfig.BOMB_CONFIG.CHUNK_RESENDS_PER_TICK.get());
         }
         if (phase == Phase.DONE && cleanupDone && pendingResend.isEmpty() && relightPending.get() <= 0) {
@@ -169,7 +169,7 @@ public class PrimedFissionBombEntity extends Entity {
             LevelChunk chunk = server.getChunkSource().getChunkNow(cx, cz);
             if (chunk != null) {
                 ClientboundLevelChunkWithLightPacket pkt = new ClientboundLevelChunkWithLightPacket(
-                        chunk, server.getChunkSource().getLightEngine(), null, null);
+                        chunk, server.getChunkSource().getLightEngine(), null, null, true);
                 for (ServerPlayer p : server.getChunkSource().chunkMap.getPlayers(cpos, false)) {
                     p.connection.send(pkt);
                 }
@@ -232,7 +232,7 @@ public class PrimedFissionBombEntity extends Entity {
             }
             case CLEANUP -> {
                 drainOps(Integer.MAX_VALUE);
-                if (level() instanceof ServerLevel server) {
+                if (level instanceof ServerLevel server) {
                     long t0 = System.nanoTime();
                     flushFastDirtyChunks(server);
                     flushChunkResends(server, Integer.MAX_VALUE);
@@ -251,7 +251,7 @@ public class PrimedFissionBombEntity extends Entity {
     }
 
     private void startSimulation() {
-        if (!(level() instanceof ServerLevel server)) return;
+        if (!(level instanceof ServerLevel server)) return;
         detonationStartNanos = System.nanoTime();
         phaseStartNanos = detonationStartNanos;
         long snapshotStart = detonationStartNanos;
@@ -278,7 +278,7 @@ public class PrimedFissionBombEntity extends Entity {
     }
 
     private void drainOps(int max) {
-        if (task == null || !(level() instanceof ServerLevel server)) return;
+        if (task == null || !(level instanceof ServerLevel server)) return;
         long t0 = System.nanoTime();
         int applied = 0;
         BlastOp op;
@@ -429,7 +429,6 @@ public class PrimedFissionBombEntity extends Entity {
                             Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                             Heightmap.Types.OCEAN_FLOOR,
                             Heightmap.Types.WORLD_SURFACE));
-            le.setLightEnabled(chunk.getPos(), true);
             chunk.setLightCorrect(false);
             relightPending.incrementAndGet();
             le.lightChunk(chunk, false).thenAccept(c -> {
@@ -555,8 +554,8 @@ public class PrimedFissionBombEntity extends Entity {
                 }
             }
         } else {
-            Registry<Biome> biomeReg = server.registryAccess().registryOrThrow(Registries.BIOME);
-            sections[idx] = new LevelChunkSection(biomeReg);
+            Registry<Biome> biomeReg = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
+            sections[idx] = new LevelChunkSection(chunk.getSectionYFromSectionIndex(idx) << 4, biomeReg);
         }
 
         int yMax = yMin + 16;
@@ -585,7 +584,7 @@ public class PrimedFissionBombEntity extends Entity {
             LevelChunk chunk = server.getChunkSource().getChunkNow(cx, cz);
             if (chunk != null) {
                 ClientboundLevelChunkWithLightPacket pkt = new ClientboundLevelChunkWithLightPacket(
-                        chunk, server.getChunkSource().getLightEngine(), null, null);
+                        chunk, server.getChunkSource().getLightEngine(), null, null, true);
                 for (ServerPlayer p : server.getChunkSource().chunkMap.getPlayers(cpos, false)) {
                     p.connection.send(pkt);
                 }
@@ -596,7 +595,7 @@ public class PrimedFissionBombEntity extends Entity {
     }
 
     private void releaseForcedChunks() {
-        if (!(level() instanceof ServerLevel server)) return;
+        if (!(level instanceof ServerLevel server)) return;
         for (long key : forcedChunks) {
             int cx = ChunkPos.getX(key);
             int cz = ChunkPos.getZ(key);
@@ -613,7 +612,7 @@ public class PrimedFissionBombEntity extends Entity {
     }
 
     private void applyEntityDamage() {
-        if (!(level() instanceof ServerLevel server)) return;
+        if (!(level instanceof ServerLevel server)) return;
         BlockPos ep = blockPosition();
         double ex = ep.getX() + 0.5;
         double ey = ep.getY() + 0.5;
@@ -637,7 +636,7 @@ public class PrimedFissionBombEntity extends Entity {
             float atten = (float) Math.pow(0.85, walls);
             float dmg = (float) (5000.0 * (1.0 - t)) * atten;
             if (dmg <= 0f) continue;
-            le.hurt(server.damageSources().explosion(this, null), dmg);
+            le.hurt(DamageSource.GENERIC, dmg);
             if (le.isAlive()) {
                 le.setSecondsOnFire(30);
             }
@@ -678,7 +677,7 @@ public class PrimedFissionBombEntity extends Entity {
     }
 
     private void broadcastDetonationStart() {
-        if (!(level() instanceof ServerLevel server)) return;
+        if (!(level instanceof ServerLevel server)) return;
         PacketBombDetonationStart pkt = new PacketBombDetonationStart(getId(), blockPosition(), yield);
         NuclearCraft.packetHandler().sendToDimension(pkt, server.dimension());
     }

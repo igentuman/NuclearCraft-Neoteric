@@ -8,8 +8,7 @@ import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.container.MultiblockControllerContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -71,14 +70,14 @@ public class MultiblockAnalyzeReportScreen<T extends MultiblockControllerContain
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(graphics);
         int i = this.leftPos;
         int j = this.topPos;
         this.renderBg(graphics, partialTicks, mouseX, mouseY);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new Background(this, graphics, mouseX, mouseY));
         RenderSystem.disableDepthTest();
-        for(Renderable widget : this.renderables) {
+        for(Widget widget : this.renderables) {
             widget.render(graphics, mouseX, mouseY, partialTicks);
         }
         PoseStack posestack = RenderSystem.getModelViewStack();
@@ -95,18 +94,18 @@ public class MultiblockAnalyzeReportScreen<T extends MultiblockControllerContain
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
-    private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font,  __("multiblock.analyze.report"), imageWidth/2, titleLabelY, 0xffffff);
+    protected void renderLabels(PoseStack graphics, int mouseX, int mouseY) {
+        drawCenteredString(graphics, font,  __("multiblock.analyze.report"), imageWidth/2, titleLabelY, 0xffffff);
         int y = 40;
-        graphics.pose().pushPose();
-        graphics.pose().scale(0.5f, 0.5f, 0.5f);
+        graphics.pushPose();
+        graphics.scale(0.5f, 0.5f, 0.5f);
         Map<String, String> reportItems = container().getReportItems();
         List<String> tooltips = reportItems.keySet().stream()
                 .sorted(Comparator.comparingInt(key -> {
@@ -122,15 +121,15 @@ public class MultiblockAnalyzeReportScreen<T extends MultiblockControllerContain
                 }))
                 .toList();
         for(String record: tooltips) {
-            graphics.drawWordWrap(font, __(record, reportItems.get(record)), 20, y, 250, ChatFormatting.DARK_GRAY.getColor());
+            drawString(graphics, font, __(record, reportItems.get(record)), 20, y, ChatFormatting.DARK_GRAY.getColor());
             y += 12;
         }
-        graphics.drawWordWrap(font, __("report.nc.validation_duration", container().validationDuration()), 20, y, 250, ChatFormatting.DARK_GRAY.getColor());
+        drawString(graphics, font, __("report.nc.validation_duration", container().validationDuration()), 20, y, ChatFormatting.DARK_GRAY.getColor());
         y += 12;
-        graphics.drawWordWrap(font, __("report.nc.validation_count", container().validationCount()), 20, y, 250, ChatFormatting.DARK_GRAY.getColor());
-        graphics.drawWordWrap(font, __("report.nc.multiblock_ticks_count", container().ticksCount()), 20, y+12, 250, ChatFormatting.DARK_GRAY.getColor());
-        graphics.pose().scale(1f, 1f, 1f);
-        graphics.pose().popPose();
+        drawString(graphics, font, __("report.nc.validation_count", container().validationCount()), 20, y, ChatFormatting.DARK_GRAY.getColor());
+        drawString(graphics, font, __("report.nc.multiblock_ticks_count", container().ticksCount()), 20, y+12, ChatFormatting.DARK_GRAY.getColor());
+        graphics.scale(1f, 1f, 1f);
+        graphics.popPose();
     }
 
     private MultiblockControllerContainer container() {
@@ -138,10 +137,10 @@ public class MultiblockAnalyzeReportScreen<T extends MultiblockControllerContain
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        blit(graphics, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 }

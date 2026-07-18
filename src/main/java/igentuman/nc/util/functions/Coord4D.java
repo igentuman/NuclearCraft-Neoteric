@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -28,7 +27,7 @@ public class Coord4D {
     private final int hashCode;
 
     public Coord4D(Entity entity) {
-        this(entity.blockPosition(), entity.level());
+        this(entity.blockPosition(), entity.level);
     }
 
     public Coord4D(double x, double y, double z, ResourceKey<Level> dimension) {
@@ -53,11 +52,11 @@ public class Coord4D {
 
     public static Coord4D read(CompoundTag tag) {
         return new Coord4D(tag.getInt(NBTConstants.X), tag.getInt(NBTConstants.Y), tag.getInt(NBTConstants.Z),
-              ResourceKey.create(Registries.DIMENSION, rlFromString(tag.getString(NBTConstants.DIMENSION))));
+              ResourceKey.create(Registry.DIMENSION_REGISTRY, rlFromString(tag.getString(NBTConstants.DIMENSION))));
     }
 
     public static Coord4D read(FriendlyByteBuf dataStream) {
-        return new Coord4D(dataStream.readBlockPos(), ResourceKey.create(Registries.DIMENSION, dataStream.readResourceLocation()));
+        return new Coord4D(dataStream.readBlockPos(), ResourceKey.create(Registry.DIMENSION_REGISTRY, dataStream.readResourceLocation()));
     }
 
     /**

@@ -3,8 +3,8 @@ package igentuman.nc.advancements;
 import com.google.gson.JsonObject;
 import igentuman.nc.NuclearCraft;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +19,7 @@ public class RadiationContaminationTrigger extends SimpleCriterionTrigger<Radiat
     }
 
     @Override
-    protected Instance createInstance(JsonObject json, ContextAwarePredicate predicate, DeserializationContext ctx) {
+    protected Instance createInstance(JsonObject json, EntityPredicate.Composite predicate, DeserializationContext ctx) {
         MinMaxBounds.Doubles rads = MinMaxBounds.Doubles.fromJson(json.get("rads"));
         return new Instance(predicate, rads);
     }
@@ -31,7 +31,7 @@ public class RadiationContaminationTrigger extends SimpleCriterionTrigger<Radiat
     public static class Instance extends AbstractCriterionTriggerInstance {
         private final MinMaxBounds.Doubles rads;
 
-        public Instance(ContextAwarePredicate predicate, MinMaxBounds.Doubles rads) {
+        public Instance(EntityPredicate.Composite predicate, MinMaxBounds.Doubles rads) {
             super(ID, predicate);
             this.rads = rads;
         }

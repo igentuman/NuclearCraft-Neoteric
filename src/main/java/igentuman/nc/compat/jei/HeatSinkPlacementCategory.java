@@ -10,8 +10,8 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -63,27 +63,28 @@ public class HeatSinkPlacementCategory implements IRecipeCategory<HeatSinkPlacem
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, HeatSinkPlacementRecipe recipe, IFocusGroup focuses) {
         // Input slot for the heat sink
-        builder.addInputSlot(8, 8)
+        // 1.19.2 JEI: use addSlot(role, x, y) instead of addInputSlot(x, y)
+        builder.addSlot(RecipeIngredientRole.INPUT, 8, 8)
                 .addIngredient(VanillaTypes.ITEM_STACK, recipe.getHeatSinkItem());
 
         // Output slots for required blocks in groups
         List<HeatSinkPlacementRecipe.PlacementConditionGroup> groups = recipe.getConditionGroups();
         int currentY = 40;
         int maxSlotsPerRow = 9;
-        
+
         for (int groupIndex = 0; groupIndex < groups.size(); groupIndex++) {
             HeatSinkPlacementRecipe.PlacementConditionGroup group = groups.get(groupIndex);
             List<ItemStack> requiredBlocks = group.getRequiredBlocks();
-            
+
             // Add slots for this group's blocks
             for (int i = 0; i < requiredBlocks.size(); i++) {
                 int slotX = 8 + (i % maxSlotsPerRow) * 18;
                 int slotY = currentY + (i / maxSlotsPerRow) * 18;
-                
-                builder.addOutputSlot(slotX, slotY)
+
+                builder.addSlot(RecipeIngredientRole.OUTPUT, slotX, slotY)
                         .addIngredient(VanillaTypes.ITEM_STACK, requiredBlocks.get(i));
             }
-            
+
             // Move to next group position
             int rowsUsed = (requiredBlocks.size() + maxSlotsPerRow - 1) / maxSlotsPerRow;
             currentY += rowsUsed * 18 + 20; // 20 pixels for condition text
@@ -91,33 +92,33 @@ public class HeatSinkPlacementCategory implements IRecipeCategory<HeatSinkPlacem
     }
 
     @Override
-    public void draw(HeatSinkPlacementRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(HeatSinkPlacementRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
         Font font = Minecraft.getInstance().font;
 
         // Draw heat value using translation
         String heatText = __("heat_sink.heat.descr", String.valueOf((int)recipe.getHeatSinkDef().getHeat())).getString();
-        graphics.drawString(font, heatText, 30, 8, Color.ORANGE.getRGB());
-        
+        font.draw(poseStack, heatText, 30f, 8f, Color.ORANGE.getRGB());
+
         // Draw condition groups
         List<HeatSinkPlacementRecipe.PlacementConditionGroup> groups = recipe.getConditionGroups();
         int currentY = 30;
         int maxSlotsPerRow = 8;
 
-        graphics.pose().pushPose();
-        graphics.pose().scale(0.8F, 0.8F, 1F);
-        
+        poseStack.pushPose();
+        poseStack.scale(0.8F, 0.8F, 1F);
+
         for (int groupIndex = 0; groupIndex < groups.size(); groupIndex++) {
             HeatSinkPlacementRecipe.PlacementConditionGroup group = groups.get(groupIndex);
-            
+
             // Draw condition text
             String conditionText = group.getConditionText();
-            graphics.drawString(font, conditionText, 10, (int)((currentY + 2) / 0.8F), Color.DARK_GRAY.getRGB(), false);
-            
+            font.draw(poseStack, conditionText, 10f, (float)((currentY + 2) / 0.8F), Color.DARK_GRAY.getRGB());
+
             // Calculate space needed for this group
             int rowsUsed = (group.getRequiredBlocks().size() + maxSlotsPerRow - 1) / maxSlotsPerRow;
             currentY += rowsUsed * 18 + 20; // 25 pixels for condition text and spacing
         }
-        
-        graphics.pose().popPose();
+
+        poseStack.popPose();
     }
 }

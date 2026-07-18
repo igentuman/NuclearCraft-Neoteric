@@ -1,10 +1,8 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.setup.registration.NCBlocks;
-import igentuman.nc.setup.registration.NCItems;
-import net.minecraft.data.loot.EntityLootSubProvider;
+import net.minecraft.data.loot.EntityLoot;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -14,20 +12,14 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
-import java.util.stream.Stream;
-
 import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL;
 import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL_BOSS;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 
-public class NCEntityLootTables extends EntityLootSubProvider {
-
-    public NCEntityLootTables() {
-        super(FeatureFlags.REGISTRY.allFlags());
-    }
+public class NCEntityLootTables extends EntityLoot {
 
     @Override
-    public void generate() {
+    protected void addTables() {
         // Wasteland Boss loot table
         this.add(FERAL_GHOUL_BOSS.get(), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
@@ -67,8 +59,8 @@ public class NCEntityLootTables extends EntityLootSubProvider {
     }
 
     @Override
-    protected Stream<EntityType<?>> getKnownEntityTypes() {
-        return Stream.of(
+    protected Iterable<EntityType<?>> getKnownEntities() {
+        return java.util.List.of(
                 FERAL_GHOUL_BOSS.get(),
                 FERAL_GHOUL.get());
     }

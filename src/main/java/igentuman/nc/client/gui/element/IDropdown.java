@@ -1,9 +1,9 @@
 package igentuman.nc.client.gui.element;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 public interface IDropdown {
     boolean isOpen();
     void close();
-    void drawOverlay(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks);
+    void drawOverlay(PoseStack graphics, int mouseX, int mouseY, float partialTicks);
 }

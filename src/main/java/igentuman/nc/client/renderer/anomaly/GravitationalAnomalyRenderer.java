@@ -1,7 +1,7 @@
 package igentuman.nc.client.renderer.anomaly;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import igentuman.nc.entity.anomaly.GravitationalAnomalyEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -73,8 +73,8 @@ public class GravitationalAnomalyRenderer extends AnomalyRenderer<GravitationalA
             }
             float radius = BELT_RADIUS[b] * mass;
             poseStack.pushPose();
-            poseStack.mulPose(Axis.ZP.rotationDegrees(BELT_TILT[b]));
-            poseStack.mulPose(Axis.YP.rotationDegrees((age * BELT_SPEED[b] + b * 37.0F) % 360.0F));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(BELT_TILT[b]));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees((age * BELT_SPEED[b] + b * 37.0F) % 360.0F));
             Random rnd = new Random(210);
             for (int i = 0; i < count; i++) {
                 float scale = (float)Math.min(0.7f, Math.max(0.3, orbiterScale + rnd.nextFloat()-0.5f));
@@ -85,7 +85,7 @@ public class GravitationalAnomalyRenderer extends AnomalyRenderer<GravitationalA
                 poseStack.pushPose();
                 poseStack.translate(ox, oy, oz);
                 poseStack.scale(scale, scale, scale);
-                poseStack.mulPose(Axis.XP.rotationDegrees(age * 4.0F % 360.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(age * 4.0F % 360.0F));
                 poseStack.translate(-0.5D, -0.5D, -0.5D);
                 Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
                         debris, poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);

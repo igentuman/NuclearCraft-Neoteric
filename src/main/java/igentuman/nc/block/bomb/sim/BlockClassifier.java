@@ -170,7 +170,7 @@ public final class BlockClassifier {
                 }
                 return new BlastOp.SetBlock(pos, Blocks.COAL_BLOCK.defaultBlockState());
             }
-            if (state.is(BlockTags.LEAVES) || state.is(BlockTags.SWORD_EFFICIENT) || state.is(BlockTags.SNOW)) {
+            if (state.is(BlockTags.LEAVES) || state.is(BlockTags.SNOW)) {
                 return new BlastOp.SetBlock(pos, Blocks.AIR.defaultBlockState());
             }
             if (state.is(BlockTags.WOOL) || state.is(BlockTags.WOOL_CARPETS)) {
@@ -227,7 +227,7 @@ public final class BlockClassifier {
             }
             return null;
         }
-        if (state.is(BlockTags.LEAVES) || state.is(VINE) || state.is(BlockTags.SNOW) || state.is(BAMBOO_BLOCK)) {
+        if (state.is(BlockTags.LEAVES) || state.is(VINE) || state.is(BlockTags.SNOW)) {
             return new BlastOp.SetBlock(pos, Blocks.AIR.defaultBlockState());
         }
         if (state.is(BlockTags.LOGS) || state.is(BlockTags.PLANKS) || state.is(BlockTags.WOOL)) {

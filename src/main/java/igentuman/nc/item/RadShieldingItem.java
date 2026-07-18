@@ -1,9 +1,11 @@
 package igentuman.nc.item;
 
+import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -29,7 +31,7 @@ public class RadShieldingItem extends Item
 
 	public RadShieldingItem(Properties props, int shieldLevel)
 	{
-		this(props, CreativeTabs.NC_ITEMS, shieldLevel);
+		this(props, CreativeTabs.NC_ITEMS_TAB, shieldLevel);
 	}
 
 	public RadShieldingItem(Properties props, CreativeModeTab group, int radShieldingLevel)

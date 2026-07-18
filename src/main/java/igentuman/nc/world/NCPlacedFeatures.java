@@ -1,19 +1,10 @@
 package igentuman.nc.world;
 
 import igentuman.nc.content.materials.Ores;
-import igentuman.nc.world.ore.NCOre;
 import igentuman.nc.world.ore.OreGenerator;
-import igentuman.nc.world.placement.HeightmapChunkPlacement;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
-import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashMap;
@@ -21,7 +12,6 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.Registries.PLACED_FEATURES;
-import static igentuman.nc.world.NCConfiguredFeatures.CONFIGURED_FEATURES;
 import static igentuman.nc.world.NCConfiguredFeatures.CONFIGURED_WASTELAND_DECO;
 import static igentuman.nc.world.NCConfiguredFeatures.CONFIGURED_WASTELAND_RUINS;
 
@@ -51,88 +41,15 @@ public class NCPlacedFeatures {
         return map;
     }
 
-    public static void bootstrap(BootstapContext<PlacedFeature> context) {
-        HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
+    public static final HashMap<String, RegistryObject<PlacedFeature>> ORE_PLACED_FEATURES = new HashMap<>();
 
-        for(String name: Ores.all().keySet()) {
-            NCOre ore = Ores.all().get(name);
-            if(ore.dimensions.contains("minecraft:overworld")) {
-                register(context, PLACED_FEATURES_KEYS.get(name), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name)),
-                        OreGenerator.orePlacement(new OrePlacementModifier(name),
-                                HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
-                register(context, PLACED_FEATURES_KEYS.get(name+"_wasteland"), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name+"_wasteland")),
-                        OreGenerator.orePlacement(new OrePlacementModifier(name),
-                                HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
-            }
-            if(ore.dimensions.contains("minecraft:nether")) {
-                register(context, PLACED_FEATURES_KEYS.get(name), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name)),
-                        OreGenerator.orePlacement(new OrePlacementModifier(name),
-                                HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
-            }
-
-            if(ore.dimensions.contains("minecraft:the_end")) {
-                register(context, PLACED_FEATURES_KEYS.get(name), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name)),
-                        OreGenerator.orePlacement(new OrePlacementModifier(name),
-                                HeightRangePlacement.uniform(VerticalAnchor.absolute(ore.config().height[0]), VerticalAnchor.absolute(ore.config().height[1]))));
-            }
+    public static void init() {
+        for (String name : Ores.all().keySet()) {
+            ORE_PLACED_FEATURES.put(name, PLACED_FEATURES.register(name + "_placed", () -> OreGenerator.createOregenForMaterial(name)));
         }
-        for(String name: List.of("uranium", "thorium")) {
-            NCOre ore = Ores.all().get(name);
-            register(context, PLACED_FEATURES_KEYS.get(name+"_additional_wasteland"), configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get(name+"_additional_wasteland")),
-                    OreGenerator.orePlacement(new OrePlacementModifier(name),
-                            HeightRangePlacement.uniform(VerticalAnchor.absolute(1), VerticalAnchor.absolute(ore.config().height[1]))));
-        }
-
-        register(context, PLACED_FEATURES_KEYS.get("glowing_mushroom"),
-                configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("glowing_mushroom")),
-                List.of(
-                        RarityFilter.onAverageOnceEvery(2), InSquarePlacement.spread(), PlacementUtils.FULL_RANGE, BiomeFilter.biome()
-                ));
-
-        register(context, PLACED_FEATURES_KEYS.get("glowing_mushroom_wasteland"),
-                configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("glowing_mushroom_wasteland")),
-                List.of(
-                        RarityFilter.onAverageOnceEvery(2), InSquarePlacement.spread(), PlacementUtils.FULL_RANGE
-                ));
-
-        register(context, PLACED_FEATURES_KEYS.get("wasteland_ruins"),
-                configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_ruins")),
-                List.of(
-                        RarityFilter.onAverageOnceEvery(250), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
-                ));
-
-        register(context, PLACED_FEATURES_KEYS.get("wasteland_deco"),
-                configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_deco")),
-                List.of(
-                        RarityFilter.onAverageOnceEvery(30), HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
-                ));
-
-        register(context, PLACED_FEATURES_KEYS.get("wasteland_portal"),
-                configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_portal")),
-                List.of(
-                        RarityFilter.onAverageOnceEvery(400),  HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
-                ));
-                
-        register(context, PLACED_FEATURES_KEYS.get("wasteland_boss_lair"),
-                configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_boss_lair")),
-                List.of(
-                        RarityFilter.onAverageOnceEvery(800),  HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
-                ));
-
-        register(context, PLACED_FEATURES_KEYS.get("wasteland_surface"),
-                configuredFeatures.getOrThrow(CONFIGURED_FEATURES.get("wasteland_surface")),
-                List.of(
-                        HeightmapChunkPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
-                ));
     }
-
 
     private static ResourceKey<PlacedFeature> registerKey(String name) {
-        return ResourceKey.create(Registries.PLACED_FEATURE, rl(name));
-    }
-
-    private static void register(BootstapContext<PlacedFeature> context, ResourceKey<PlacedFeature> key, Holder<ConfiguredFeature<?, ?>> configuration,
-                                 List<PlacementModifier> modifiers) {
-        context.register(key, new PlacedFeature(configuration, List.copyOf(modifiers)));
+        return ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, rl(name));
     }
 }

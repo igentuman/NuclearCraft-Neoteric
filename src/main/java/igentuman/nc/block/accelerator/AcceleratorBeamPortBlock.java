@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,7 +36,7 @@ public class AcceleratorBeamPortBlock extends HorizontalDirectionalBlock impleme
     public static final String NAME = "accelerator_beam_port";
 
     public AcceleratorBeamPortBlock() {
-        this(Properties.of()
+        this(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(8f, 3600000f)
                 .requiresCorrectToolForDrops());

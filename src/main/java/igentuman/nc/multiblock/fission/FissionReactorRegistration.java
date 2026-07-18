@@ -1,6 +1,7 @@
 package igentuman.nc.multiblock.fission;
 
 import com.google.gson.JsonArray;
+import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
 import igentuman.nc.block.fission.entity.FissionPortBE;
 import igentuman.nc.block.fission.entity.MSRControllerBE;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -37,7 +39,7 @@ import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 public class FissionReactorRegistration {
 
     public static final Pattern TRANSPARENT_BLOCKS = Pattern.compile(".*glass|.*cell.*|photon.*|.*stabilizer.*");
-    public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties();
+    public static final Item.Properties FISSION_ITEM_PROPS = new Item.Properties().tab(CreativeTabs.FISSION_REACTOR_TAB);
     public static final HashMap<String, RegistryObject<Block>> FISSION_BLOCKS = new HashMap<>();
     public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FISSION_BE = new HashMap<>();
     public static final HashMap<String, RegistryObject<Item>> FISSION_BLOCK_ITEMS = new HashMap<>();
@@ -59,7 +61,7 @@ public class FissionReactorRegistration {
             () -> IForgeMenuType.create((windowId, inv, data) -> new MSRPortContainer(windowId, data.readBlockPos(), inv))
             );
 
-    public static final BlockBehaviour.Properties REACTOR_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
+    public static final BlockBehaviour.Properties REACTOR_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
 
     public static final TagKey<Block> MODERATORS_BLOCKS = blockTag("moderators");
     public static final TagKey<Block> HEAT_SINK_BLOCKS = blockTag("heat_sinks");
@@ -104,13 +106,13 @@ public class FissionReactorRegistration {
             } else {
                 BlockBehaviour.Properties props;
                 if(TRANSPARENT_BLOCKS.matcher(key).matches()) {
-                    props = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
+                    props = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
                 } else {
                     props = REACTOR_BLOCKS_PROPERTIES;
                 }
                 if(key.matches(".*glass|.*casing.*")) {
                     if(key.contains("glass")) {
-                        FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionCasingBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion())));
+                        FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionCasingBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion())));
                     } else {
                         FISSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FissionCasingBlock(props)));
                     }

@@ -10,7 +10,7 @@ import igentuman.nc.container.NCProcessorContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -46,6 +46,10 @@ public class NCGuiElement extends AbstractWidget {
 
     public NCGuiElement(int pX, int pY, int pWidth, int pHeight, Component pMessage) {
         super(pX, pY, pWidth, pHeight, pMessage);
+    }
+
+    public NCGuiElement() {
+        super(0, 0, 0, 0, net.minecraft.network.chat.Component.empty());
     }
 
     public int X()
@@ -94,7 +98,7 @@ public class NCGuiElement extends AbstractWidget {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(PoseStack graphics, int pMouseX, int pMouseY, float pPartialTick) {
         if (this.visible) {
             this.isHovered = pMouseX >= this.x && pMouseY >= this.y && pMouseX < this.x + this.width && pMouseY < this.y + this.height;
             this.renderButton(graphics, pMouseX, pMouseY, pPartialTick);
@@ -102,8 +106,7 @@ public class NCGuiElement extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int i, int i1, float v) {
-
+    public void updateNarration(NarrationElementOutput pNarrationElementOutput) {
     }
 
     protected void onFocusedChanged(boolean pFocused) {
@@ -113,7 +116,7 @@ public class NCGuiElement extends AbstractWidget {
         return this.active && this.visible && pMouseX >= (double)this.x && pMouseY >= (double)this.y && pMouseX < (double)(this.x + this.width) && pMouseY < (double)(this.y + this.height);
     }
 
-    public void renderToolTip(GuiGraphics graphics, int pMouseX, int pMouseY) {
+    public void renderToolTip(PoseStack graphics, int pMouseX, int pMouseY) {
 
     }
 
@@ -139,7 +142,7 @@ public class NCGuiElement extends AbstractWidget {
         }
     }
 
-    public void renderButton(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderButton(PoseStack graphics, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -149,11 +152,11 @@ public class NCGuiElement extends AbstractWidget {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        graphics.blit(TEXTURE, this.x, this.y, 0, 46 + i * 20, this.width / 2, this.height);
-        graphics.blit(TEXTURE, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+        blit(graphics, this.x, this.y, 0, 46 + i * 20, this.width / 2, this.height);
+        blit(graphics, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
         this.renderBg(graphics, minecraft, pMouseX, pMouseY);
         int j = getFGColor();
-        graphics.drawCenteredString(font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+        drawCenteredString(graphics, font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 
     public static final int UNSET_FG_COLOR = -1;
@@ -169,7 +172,7 @@ public class NCGuiElement extends AbstractWidget {
         this.packedFGColor = UNSET_FG_COLOR;
     }
 
-    protected void renderBg(GuiGraphics graphics, Minecraft pMinecraft, int pMouseX, int pMouseY) {
+    protected void renderBg(PoseStack graphics, Minecraft pMinecraft, int pMouseX, int pMouseY) {
     }
 
     public int getWidth() {
@@ -216,12 +219,11 @@ public class NCGuiElement extends AbstractWidget {
         }
     }
 
-    @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 
     }
 
-    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+    public void draw(PoseStack graphics, int mX, int mY, float pTicks) {
         RenderSystem.setShaderTexture(0, TEXTURE);
     }
 

@@ -30,6 +30,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -116,7 +117,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     public void handleOverVoltage() {
         if(GTCEU_CONFIG.OVERCHARGE_EXPLOSIONS.get()) {
-            level.explode(null, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, 2F, true, Level.ExplosionInteraction.TNT);
+            level.explode(null, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, 2F, true, Explosion.BlockInteraction.BREAK);
         }
     }
 
@@ -606,7 +607,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     public boolean isInputAllowed(ItemStack stack) {
         for(ItemStack allowed: getAllowedInputItems()) {
-            if(ItemStack.isSameItem(allowed, stack)) {
+            if(ItemStack.isSame(allowed, stack)) {
                 return true;
             }
         }

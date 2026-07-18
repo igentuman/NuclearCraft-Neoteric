@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
     "B": {
@@ -21,6 +20,5 @@
   "result": {
     "count": 4,
     "item": "nuclearcraft:empty_detector"
-  },
-  "show_notification": true
+  }
 }

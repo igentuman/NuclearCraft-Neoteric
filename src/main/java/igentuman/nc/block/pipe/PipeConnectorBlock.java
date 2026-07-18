@@ -27,6 +27,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -80,7 +81,7 @@ public class PipeConnectorBlock extends Block implements EntityBlock {
     private final VoxelShape[] shapeCache = new VoxelShape[64];
 
     public PipeConnectorBlock() {
-        super(Properties.of()
+        super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(1.5f)
                 .noOcclusion()

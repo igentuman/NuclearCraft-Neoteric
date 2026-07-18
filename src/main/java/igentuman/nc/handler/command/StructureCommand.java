@@ -64,7 +64,7 @@ public class StructureCommand  {
         if (hitResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hitResult;
             BlockPos blockPos = blockHitResult.getBlockPos().offset(-2, 1, -2);
-            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level(), blockPos, "linear_accelerator");
+            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level, blockPos, "linear_accelerator");
             player.sendSystemMessage(Component.literal("Placing Linear Accelerator!"));
         } else {
             player.sendSystemMessage(Component.literal("No block targeted!"));
@@ -77,7 +77,7 @@ public class StructureCommand  {
         if (hitResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hitResult;
             BlockPos blockPos = blockHitResult.getBlockPos().offset(-2, 1, -2);
-            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level(), blockPos, "target_chamber");
+            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level, blockPos, "target_chamber");
             player.sendSystemMessage(Component.literal("Placing Linear Accelerator!"));
         } else {
             player.sendSystemMessage(Component.literal("No block targeted!"));
@@ -90,7 +90,7 @@ public class StructureCommand  {
         if (hitResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hitResult;
             BlockPos blockPos = blockHitResult.getBlockPos().offset(-3, 6, -3);
-            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level(), blockPos, "kugelblitz_chamber");
+            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level, blockPos, "kugelblitz_chamber");
             player.sendSystemMessage(Component.literal("Placing chamber!"));
         } else {
             player.sendSystemMessage(Component.literal("No block targeted!"));
@@ -103,7 +103,7 @@ public class StructureCommand  {
         if (hitResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hitResult;
             BlockPos blockPos = blockHitResult.getBlockPos().offset(-3, 1, -3);
-            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level(), blockPos, "turbine");
+            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level, blockPos, "turbine");
             player.sendSystemMessage(Component.literal("Placing turbine!"));
         } else {
             player.sendSystemMessage(Component.literal("No block targeted!"));
@@ -119,7 +119,7 @@ public class StructureCommand  {
         if (hitResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hitResult;
             BlockPos blockPos = blockHitResult.getBlockPos().offset(-3, 1, -3);
-            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level(), blockPos, "fission_reactor");
+            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level, blockPos, "fission_reactor");
             player.sendSystemMessage(Component.literal("Placing fission reactor!"));
         } else {
             player.sendSystemMessage(Component.literal("No block targeted!"));
@@ -134,7 +134,7 @@ public class StructureCommand  {
         if (hitResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hitResult;
             BlockPos blockPos = blockHitResult.getBlockPos().offset(-5, 3, -5);;
-            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level(), blockPos, "fusion_reactor");
+            WorldGeneration.StructurePlacer.placeStructure((ServerLevel) player.level, blockPos, "fusion_reactor");
             player.sendSystemMessage(Component.literal("Placing fusion reactor!"));
         } else {
             player.sendSystemMessage(Component.literal("No block targeted!"));

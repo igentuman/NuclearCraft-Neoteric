@@ -1,7 +1,7 @@
 package igentuman.nc.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import igentuman.nc.entity.EntityBlockProjectile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -36,8 +36,8 @@ public class WastelandProjectileRenderer extends EntityRenderer<EntityBlockProje
         float rotationSpeed = 6.0F;
         float rotationVertical = (entity.tickCount + partialTick) * rotationSpeed % 360;
         float rotationHorizontal = (entity.tickCount + partialTick) * (rotationSpeed*2) % 360;
-        poseStack.mulPose(Axis.YP.rotationDegrees(rotationVertical));
-        poseStack.mulPose(Axis.ZN.rotationDegrees(rotationHorizontal));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(rotationVertical));
+        poseStack.mulPose(Vector3f.ZN.rotationDegrees(rotationHorizontal));
 
         poseStack.translate(-0.5D, -0.25D, -0.5D);
 

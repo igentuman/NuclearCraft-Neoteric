@@ -48,7 +48,7 @@ public class TeleportingAnomalyEntity extends AnomalyEntity {
 
     @Override
     protected void applyEffects() {
-        ServerLevel serverLevel = (ServerLevel) level();
+        ServerLevel serverLevel = (ServerLevel) level;
         if (!hasAnchor) {
             setAnchor(getX(), getZ());
         }

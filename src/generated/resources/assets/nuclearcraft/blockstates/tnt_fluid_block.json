@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft_fluids:block/fluid/tnt"
+      "model": "nuclearcraft:block/fluid/tnt"
     }
   }
 }

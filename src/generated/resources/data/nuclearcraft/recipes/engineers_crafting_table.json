@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft",
   "key": {
     "C": {
@@ -26,6 +25,5 @@
   ],
   "result": {
     "item": "nuclearcraft:engineers_crafting_table"
-  },
-  "show_notification": true
+  }
 }

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_kugelblitz",
   "key": {
     "B": {
@@ -26,6 +25,5 @@
   ],
   "result": {
     "item": "nuclearcraft:expl"
-  },
-  "show_notification": true
+  }
 }

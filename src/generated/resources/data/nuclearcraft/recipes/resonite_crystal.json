@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft",
   "key": {
     "S": {
@@ -14,6 +13,5 @@
   ],
   "result": {
     "item": "nuclearcraft:resonite_crystal"
-  },
-  "show_notification": true
+  }
 }

@@ -19,7 +19,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.TransientCraftingContainer;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -58,7 +58,7 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
     private final Player player;
     private final Level level;
     private final ContainerLevelAccess access;
-    private final TransientCraftingContainer craftSlots = new TransientCraftingContainer(this, 3, 3);
+    private final CraftingContainer craftSlots = new CraftingContainer(this, 3, 3);
     private final ResultContainer resultSlots = new ResultContainer();
     /** UUIDs this viewer is currently subscribed to via the sync dispatcher (server-side only). */
     private final Set<UUID> subscribed = new HashSet<>();
@@ -66,7 +66,7 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
     public EngineersCrafterContainer(int windowId, BlockPos pos, Inventory inv) {
         super(ENGINEERS_CRAFTING_TABLE_CONTAINER.get(), windowId);
         this.player = inv.player;
-        this.level = player.level();
+        this.level = player.level;
         this.blockEntity = (EngineersCrafterBE) level.getBlockEntity(pos);
         this.access = ContainerLevelAccess.create(level, pos);
 
@@ -103,7 +103,7 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
     private void updateResult() {
         Optional<CraftingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftSlots, level);
         ItemStack result = recipe
-                .map(r -> r.assemble(craftSlots, level.registryAccess()))
+                .map(r -> r.assemble(craftSlots))
                 .orElse(ItemStack.EMPTY);
         resultSlots.setItem(0, result);
         if (player instanceof ServerPlayer sp) {
@@ -137,7 +137,7 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
             }
 
             if (stack.isEmpty()) {
-                slot.setByPlayer(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
                 slot.setChanged();
             }

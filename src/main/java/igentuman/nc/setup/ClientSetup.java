@@ -39,7 +39,6 @@ import igentuman.nc.client.renderer.entity.PrimedFissionBombRenderer;
 import igentuman.nc.client.renderer.Q36PulseProjectileRenderer;
 import igentuman.nc.client.renderer.WastelandProjectileRenderer;
 import igentuman.nc.client.sound.SoundHandler;
-import igentuman.nc.compat.ponder.PonderUtil;
 import igentuman.nc.content.energy.BatteryBlocks;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.event.client.*;
@@ -166,7 +165,7 @@ public class ClientSetup {
             setPropertyOverride(GEIGER_COUNTER.get(), rl("radiation"), (stack, world, entity, seed) -> {
                 if (entity instanceof Player) {
                     if(!((Player) entity).getInventory().contains(new ItemStack(GEIGER_COUNTER.get()))) return 0;
-                    ClientRadiationData.setCurrentChunk(entity.chunkPosition().x, entity.chunkPosition().z, entity.level());
+                    ClientRadiationData.setCurrentChunk(entity.chunkPosition().x, entity.chunkPosition().z, entity.level);
                     return ClientRadiationData.radiationStage();
                 }
                 return 0;
@@ -178,7 +177,7 @@ public class ClientSetup {
             setPropertyOverride(CRAFTING_PATTERN.get(), rl("encoded"), (stack, world, entity, seed) ->
                     igentuman.nc.handler.crafter.CraftingPattern.isEncoded(stack) ? 1.0F : 0.0F);
         });
-        PonderUtil.initPlugin();
+        // PonderUtil.initPlugin(); // removed: ponder compat not available in 1.19.2
     }
 
 
@@ -203,15 +202,15 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
-        event.registerSpriteSet(NcParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
-        event.registerSpriteSet(NcParticleTypes.FUSION_BEAM.get(), FusionBeamParticle.Factory::new);
-        event.registerSpriteSet(NcParticleTypes.FIRE_VERTICAL.get(), FireVerticalParticle.Factory::new);
-        event.registerSpriteSet(NcParticleTypes.FIRE_VERTICAL1.get(), FireVerticalParticle.Factory::new);
-        event.registerSpriteSet(NcParticleTypes.SMOKE.get(), FireVerticalParticle.Factory::new);
-        event.registerSpriteSet(NcParticleTypes.FLASH.get(), BombFlashParticle.Factory::new);
-        event.registerSpriteSet(NcParticleTypes.EXPLOSION.get(), ExplosionParticle.Factory::new);
-        event.registerSpriteSet(NcParticleTypes.EXPLOSION_SEED.get(), ExplosionSeedParticle.Factory::new);
-        event.registerSpriteSet(NcParticleTypes.VANILLA_FLASH.get(), VanillaFlashParticle.Factory::new);
+        event.register(NcParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
+        event.register(NcParticleTypes.FUSION_BEAM.get(), FusionBeamParticle.Factory::new);
+        event.register(NcParticleTypes.FIRE_VERTICAL.get(), FireVerticalParticle.Factory::new);
+        event.register(NcParticleTypes.FIRE_VERTICAL1.get(), FireVerticalParticle.Factory::new);
+        event.register(NcParticleTypes.SMOKE.get(), FireVerticalParticle.Factory::new);
+        event.register(NcParticleTypes.FLASH.get(), BombFlashParticle.Factory::new);
+        event.register(NcParticleTypes.EXPLOSION.get(), ExplosionParticle.Factory::new);
+        event.register(NcParticleTypes.EXPLOSION_SEED.get(), ExplosionSeedParticle.Factory::new);
+        event.register(NcParticleTypes.VANILLA_FLASH.get(), VanillaFlashParticle.Factory::new);
     }
 
     public static void setup() {

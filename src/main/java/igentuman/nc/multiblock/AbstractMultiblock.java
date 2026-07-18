@@ -990,7 +990,7 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     private boolean inAABB(BlockPos pos) {
         if(structureBounds == null) return false;
-        return structureBounds.contains(pos.getCenter());
+        return structureBounds.contains(Vec3.atCenterOf(pos));
     }
 
     public void wipeCache() {

@@ -47,7 +47,7 @@ public class ThrowSpamGoal extends Goal {
         super.start();
         boss.setAggressive(true);
         animationTimeout = 40; // 2 second wind-up
-        boss.level().broadcastEntityEvent(boss, (byte) 9); // Custom event for throw spam
+        boss.level.broadcastEntityEvent(boss, (byte) 9); // Custom event for throw spam
         executed = false;
     }
 

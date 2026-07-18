@@ -15,7 +15,7 @@ import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.container.MSRControllerContainer;
 import igentuman.nc.network.toServer.PacketSliderChanged;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -37,7 +37,7 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
     private static final ResourceLocation GUI = rl("textures/gui/fission/msr_controller.png");
     protected int relX;
     protected int relY;
-    
+
     private List<NCGuiElement> widgets = new ArrayList<>();
     private VerticalBar heatBar;
     private NCTextField inputRateField;
@@ -71,7 +71,7 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         super.init();
         updateRelativeCords();
         widgets.clear();
-        
+
         heatBar = new VerticalBar.Heat(8, 16, this, (int) menu.getMaxHeat());
 
         checkboxCasing = new Checkbox(imageWidth - 19, 80, this, isCasingValid());
@@ -126,8 +126,8 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font, menu.getTitle(), imageWidth / 2, titleLabelY, 0xffffff);
+    protected void renderLabels(PoseStack graphics, int mouseX, int mouseY) {
+        drawCenteredString(graphics, font, menu.getTitle(), imageWidth / 2, titleLabelY, 0xffffff);
 
         if (isCasingValid()) {
             casingTootip = applyFormat(__("tooltip.nc.structure.size", container().getHeight(), container().getWidth(), container().getDepth()), ChatFormatting.GOLD);
@@ -144,38 +144,38 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         }
 
         // Render stats
-        graphics.pose().pushPose();
-        graphics.pose().scale(0.7f, 0.7f, 0.7f);
+        graphics.pushPose();
+        graphics.scale(0.7f, 0.7f, 0.7f);
         int y = 30;
         MutableComponent status = menu.isCritical() ? __("msr.critical") : __("msr.subcritical");
         if(menu.getFuelCellsCount() == 0) {
             status = __("msr.non_functional");
         }
-        graphics.drawString(font, __("msr.reactivity", numberFormat(menu.getReactivity())), 10, y, 0x00ff00);
-        graphics.drawString(font, __("msr.status", status), 10, y + 12, menu.isCritical() ? 0x00ff00 : ChatFormatting.WHITE.getColor());
-        graphics.drawString(font, __("msr.temperature", scaledFormat(menu.getTemperature())), 10, y + 22, menu.getTemperature() < MAX_TEMPERATURE ? 0x00ff00 : 0xff0000);
-        graphics.drawString(font, __("msr.depletion", numberFormat(menu.getDepletion())), 10, y + 32, 0x00ff00);
+        drawString(graphics, font, __("msr.reactivity", numberFormat(menu.getReactivity())), 10, y, 0x00ff00);
+        drawString(graphics, font, __("msr.status", status), 10, y + 12, menu.isCritical() ? 0x00ff00 : ChatFormatting.WHITE.getColor());
+        drawString(graphics, font, __("msr.temperature", scaledFormat(menu.getTemperature())), 10, y + 22, menu.getTemperature() < MAX_TEMPERATURE ? 0x00ff00 : 0xff0000);
+        drawString(graphics, font, __("msr.depletion", numberFormat(menu.getDepletion())), 10, y + 32, 0x00ff00);
         if(menu.getOverheatTimer() > 0) {
-            graphics.drawString(font, __("msr.overheat", roundFormat((600-menu.getOverheatTimer())/20)), 10, y + 42, 0xff0000);
+            drawString(graphics, font, __("msr.overheat", roundFormat((600-menu.getOverheatTimer())/20)), 10, y + 42, 0xff0000);
         }
-        graphics.pose().popPose();
+        graphics.popPose();
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack graphics, float partialTick, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
         renderBackground(graphics);
-        graphics.blit(GUI, relX, relY, 0, 0, imageWidth, imageHeight);
+        blit(graphics, relX, relY, 0, 0, imageWidth, imageHeight);
 
         for (NCGuiElement widget : widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTick);
         }
-        graphics.pose().pushPose();
-        graphics.pose().scale(0.5f, 0.5f, 0.5f);
+        graphics.pushPose();
+        graphics.scale(0.5f, 0.5f, 0.5f);
         voidPebbles.draw(graphics, mouseX*2, mouseY*2, partialTick);
-        graphics.pose().scale(2f, 2f, 2f);
-        graphics.pose().popPose();
+        graphics.scale(2f, 2f, 2f);
+        graphics.popPose();
         checkboxCasing.setChecked(isCasingValid()).draw(graphics, mouseX, mouseY, partialTick);
         if (isCasingValid()) {
             checkboxCasing.setTooltipKey("multiblock.casing.complete");
@@ -194,11 +194,11 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
 
 
         renderBarTooltips(graphics, mouseX - relX, mouseY - relY);
-        graphics.pose().pushPose();
+        graphics.pushPose();
         RenderSystem.enableBlend();
-        graphics.pose().translate(0, 0, 200);
+        graphics.translate(0, 0, 200);
         Random rnd = new Random(200);
-        graphics.pose().scale(0.5f, 0.5f, 0.5f);
+        graphics.scale(0.5f, 0.5f, 0.5f);
         double cx = 17.0, cy = 17.0, r = 17.0;
         int placed = 0;
         while (placed < getPebblesQty()) {
@@ -206,13 +206,13 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
             int y = rnd.nextInt(33);
             double dx = x - cx, dy = y - cy;
             if (dx * dx + dy * dy > r * r) continue;
-            graphics.blit(GUI, (relX+129+x)*2, (relY+24+y)*2, 250, 0, 5, 5);
+            blit(graphics, (relX+129+x)*2, (relY+24+y)*2, 250, 0, 5, 5);
             placed++;
         }
-        graphics.pose().scale(2f, 2f, 2f);
-        graphics.blit(GUI, relX+127, relY+19, 178, 0, 52, 50);
+        graphics.scale(2f, 2f, 2f);
+        blit(graphics, relX+127, relY+19, 178, 0, 52, 50);
 
-        graphics.pose().popPose();
+        graphics.popPose();
 
     }
 
@@ -220,24 +220,24 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         return menu.getPebblesQty();
     }
 
-    private void renderBarTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
+    private void renderBarTooltips(PoseStack graphics, int pMouseX, int pMouseY) {
         if(heatBar.isMouseOver(pMouseX, pMouseY)) {
             heatBar.clearTooltips();
             heatBar.addTooltip(__("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
         }
         for (NCGuiElement widget : widgets) {
             if (widget.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, widget.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
+                renderTooltip(graphics, widget.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
             }
         }
         if (voidPebbles.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(font, voidPebbles.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
+            renderTooltip(graphics, voidPebbles.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
         }
         if (checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(font, checkboxCasing.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
+            renderTooltip(graphics, checkboxCasing.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
         }
         if (checkboxInterior.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(font, checkboxInterior.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
+            renderTooltip(graphics, checkboxInterior.getTooltips(), Optional.empty(), pMouseX + relX, pMouseY + relY);
         }
     }
 
@@ -273,9 +273,9 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         }
         return super.charTyped(c, modifiers);
     }
-    
+
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);

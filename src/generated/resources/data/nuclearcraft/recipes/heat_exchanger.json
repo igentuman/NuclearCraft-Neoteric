@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_fission",
   "key": {
     "L": {
@@ -20,6 +19,5 @@
   ],
   "result": {
     "item": "nuclearcraft:heat_exchanger"
-  },
-  "show_notification": true
+  }
 }

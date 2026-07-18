@@ -9,6 +9,7 @@ import igentuman.nc.util.annotation.NBTField;
 import mekanism.api.math.FloatingLong;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
@@ -244,9 +245,9 @@ public class EXPLBE extends NuclearCraftBE {
             if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix) {
                 return i;
             }
-            if (isBfrLoaded() && be instanceof igentuman.bfr.common.tile.fusion.TileEntityLaserFocusMatrix) {
-                return i;
-            }
+            //if (isBfrLoaded() && be instanceof igentuman.bfr.common.tile.fusion.TileEntityLaserFocusMatrix) {
+            //    return i;
+            //}
         }
         return KUGELBLITZ_CONFIG.LASER_DISTANCE.get();
     }
@@ -267,9 +268,9 @@ public class EXPLBE extends NuclearCraftBE {
         if (isMekanismGeneratorsLoaded() && be instanceof mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
             matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy*5));
         }
-        if (isBfrLoaded() && be instanceof igentuman.bfr.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
-            matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy*5));
-        }
+        //if (isBfrLoaded() && be instanceof igentuman.bfr.common.tile.fusion.TileEntityLaserFocusMatrix matrixBe) {
+        //    matrixBe.receiveLaserEnergy(FloatingLong.create(aggregatedEnergy*5));
+        //}
     }
 
     private void killEntitiesInBeam() {
@@ -282,7 +283,7 @@ public class EXPLBE extends NuclearCraftBE {
                 new net.minecraft.world.phys.AABB(pos), 
                 entity -> entity != null && entity.isAlive())
                 .forEach(entity -> {
-                    entity.hurt(level.damageSources().magic(), 1000.0f);
+                    entity.hurt(DamageSource.MAGIC, 1000.0f);
                 });
         }
     }

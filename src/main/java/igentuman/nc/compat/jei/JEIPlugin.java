@@ -538,8 +538,9 @@ public  class JEIPlugin implements IModPlugin {
 
         registry.addRecipeCatalyst(new ItemStack(igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_ITEM.get()), mezz.jei.api.constants.RecipeTypes.CRAFTING);
 
-        registry.addRecipeCatalyst(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get(), ACCELERATOR_COOLANT);
-        registry.addRecipeCatalyst(ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get(), ACCELERATOR_COOLANT);
+        // 1.19.2 JEI: addRecipeCatalyst only accepts ItemStack, not Block directly
+        registry.addRecipeCatalyst(new ItemStack(ACCELERATOR_BLOCKS.get("linear_accelerator_controller").get()), ACCELERATOR_COOLANT);
+        registry.addRecipeCatalyst(new ItemStack(ACCELERATOR_BLOCKS.get("ring_accelerator_controller").get()), ACCELERATOR_COOLANT);
         if(CATALYSTS.containsKey("nc_ore_veins")) {
             registry.addRecipeCatalyst(CATALYSTS.get("nc_ore_veins").get(0), ORE_VEINS);
         }

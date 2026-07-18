@@ -1,5 +1,6 @@
 package igentuman.nc.compat.jei;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.compat.jei.util.TickTimer;
 import mezz.jei.api.constants.VanillaTypes;

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_fission",
   "key": {
     "L": {
@@ -23,6 +22,5 @@
   ],
   "result": {
     "item": "nuclearcraft:msr_port"
-  },
-  "show_notification": true
+  }
 }

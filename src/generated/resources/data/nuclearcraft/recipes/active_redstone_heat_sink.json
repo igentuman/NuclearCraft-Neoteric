@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_fission",
   "key": {
     "B": {
@@ -17,6 +16,5 @@
   ],
   "result": {
     "item": "nuclearcraft:active_redstone_heat_sink"
-  },
-  "show_notification": true
+  }
 }

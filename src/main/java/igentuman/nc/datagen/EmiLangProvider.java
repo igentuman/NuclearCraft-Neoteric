@@ -12,7 +12,7 @@ import static igentuman.nc.util.TextUtils.convertToName;
 public class EmiLangProvider extends LanguageProvider {
 
     public EmiLangProvider(DataGenerator gen, String locale) {
-        super(gen.getPackOutput(), "emi", locale);
+        super(gen, "emi", locale);
     }
 
     @Override

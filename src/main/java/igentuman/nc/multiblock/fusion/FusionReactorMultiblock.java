@@ -10,6 +10,7 @@ import igentuman.nc.multiblock.ValidationResult;
 import igentuman.nc.util.BlockPosInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
@@ -212,7 +213,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
         if(!validationResult.isValid && controllerBE().plasmaTemperature > 100000) {
             controllerBE().plasmaTemperature = 0;
             getLevel().explode(null, errorBlockPos.getX(), errorBlockPos.getY(), errorBlockPos.getZ(),
-                    2f, true, Level.ExplosionInteraction.TNT);
+                    2f, true, Explosion.BlockInteraction.BREAK);
         }
     }
 

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft",
   "key": {
     "B": {
@@ -20,6 +19,5 @@
   ],
   "result": {
     "item": "nuclearcraft:charging_station"
-  },
-  "show_notification": true
+  }
 }

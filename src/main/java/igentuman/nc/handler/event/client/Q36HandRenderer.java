@@ -1,7 +1,7 @@
 package igentuman.nc.handler.event.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import igentuman.nc.item.Q36Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,6 +40,6 @@ public class Q36HandRenderer {
 
         PoseStack pose = ev.getPoseStack();
         pose.translate(0.0F, 0.0F, maxPushBack * kick);
-        pose.mulPose(Axis.XP.rotationDegrees(-maxTiltDeg * kick));
+        pose.mulPose(Vector3f.XP.rotationDegrees(-maxTiltDeg * kick));
     }
 }

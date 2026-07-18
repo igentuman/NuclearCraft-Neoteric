@@ -12,12 +12,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 
+import static igentuman.nc.setup.registration.CreativeTabs.NC_ITEMS_TAB;
 import static igentuman.nc.setup.registration.NCBlocks.fromBlock;
 import static igentuman.nc.setup.registration.Registries.*;
 
 public class NCCrafter {
 
-    public static final RegistryObject<Item> CRAFTING_PATTERN = ITEMS.register("crafting_pattern", () -> new CraftingPatternItem(new Item.Properties()));
+    public static final RegistryObject<Item> CRAFTING_PATTERN = ITEMS.register("crafting_pattern", () -> new CraftingPatternItem(new Item.Properties().tab(NC_ITEMS_TAB)));
     public static final RegistryObject<Block> ENGINEERS_CRAFTING_TABLE_BLOCK = BLOCKS.register("engineers_crafting_table", EngineersCrafterBlock::new);
     public static final RegistryObject<Item> ENGINEERS_CRAFTING_TABLE_ITEM = fromBlock(ENGINEERS_CRAFTING_TABLE_BLOCK);
     public static final RegistryObject<BlockEntityType<EngineersCrafterBE>> ENGINEERS_CRAFTING_TABLE_BE = BLOCK_ENTITIES.register("engineers_crafting_table",

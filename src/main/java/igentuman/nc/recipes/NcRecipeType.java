@@ -13,7 +13,6 @@ import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.registry.RecipeTypeDeferredRegister;
 import igentuman.nc.registry.RecipeTypeRegistryObject;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -135,7 +134,7 @@ public class NcRecipeType<RECIPE extends NcRecipe> implements RecipeType<RECIPE>
             if(recipe.isIncomplete()) {
                 continue;
             }
-            ItemStack result = recipe.getResultItem(RegistryAccess.EMPTY);
+            ItemStack result = recipe.getResultItem();
             Ingredient input = recipe.getIngredients().get(0);
             if (result.isEmpty() || input.isEmpty()) {
                 continue;

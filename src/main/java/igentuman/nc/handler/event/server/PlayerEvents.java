@@ -5,7 +5,7 @@ import igentuman.nc.item.ContainerBlockItem;
 import igentuman.nc.item.HEVItem;
 import igentuman.nc.item.HazmatItem;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -40,7 +40,7 @@ public class PlayerEvents {
                 // Check if magnet mode is enabled
                 if (containerItem.isMagnetModeEnabled(inventoryStack)) {
                     // Ensure a UUID is assigned so the pickup writes into the store.
-                    if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                    if (player.level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
                         containerItem.prepareServer(inventoryStack, serverLevel);
                     }
                     // Get the container's inventory
@@ -88,15 +88,15 @@ public class PlayerEvents {
     @SubscribeEvent
     public static void onPlayerDamage(LivingHurtEvent event) {
         if (event.getEntity() instanceof Player player) {
-            if (event.getSource() != null && event.getSource().is(DamageTypes.MAGIC)) {
+            if (event.getSource() != null && event.getSource().isMagic()) {
                 if(isFullyEquipped(player)) {
                     event.setAmount(event.getAmount()/10F);
                 }
             }
-            if(event.getSource() != null && (event.getSource().is(DamageTypes.FALL) || event.getSource().is(DamageTypes.STALAGMITE) || event.getSource().is(DamageTypes.HOT_FLOOR))) {
+            if(event.getSource() != null && (event.getSource() == DamageSource.FALL || event.getSource() == DamageSource.STALAGMITE || event.getSource() == DamageSource.HOT_FLOOR)) {
                 player.getArmorSlots().forEach(stack -> {
                     if(stack.getItem().equals(HEV_BOOTS.get()) && isCharged(stack)) {
-                        consumeEnergy(stack, 1000 * (event.getSource().is(DamageTypes.STALAGMITE) || event.getSource().is(DamageTypes.HOT_FLOOR) ? 2 : 1));
+                        consumeEnergy(stack, 1000 * (event.getSource() == DamageSource.STALAGMITE || event.getSource() == DamageSource.HOT_FLOOR ? 2 : 1));
                         event.setCanceled(true);
                         return;
                     }

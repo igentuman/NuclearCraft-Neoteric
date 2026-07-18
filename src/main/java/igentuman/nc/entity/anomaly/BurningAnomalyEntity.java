@@ -4,9 +4,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,7 +51,7 @@ public class BurningAnomalyEntity extends AnomalyEntity {
                 living.setSecondsOnFire(5);
                 double dist = Math.sqrt(living.position().distanceToSqr(center));
                 float frac = (float) Mth.clamp(dist / Math.max(radius, 0.001D), 0.0D, 1.0D);
-                living.hurt(damageSources().inFire(), 6.0F - 4.0F * frac);
+                living.hurt(DamageSource.IN_FIRE, 6.0F - 4.0F * frac);
             }
             if (ANOMALY_CONFIG.BURN_BLOCK_IGNITE.get()) {
                 igniteSomeBlocks(radius);
@@ -65,7 +67,7 @@ public class BurningAnomalyEntity extends AnomalyEntity {
                     double ex = getX() + Math.cos(angle) * dist;
                     double ey = getY() + (random.nextDouble() * 4.0);
                     double ez = getZ() + Math.sin(angle) * dist;
-                    level().explode(this, ex, ey, ez, (float) power, Level.ExplosionInteraction.MOB);
+                    level.explode(this, ex, ey, ez, (float) power, Explosion.BlockInteraction.DESTROY);
                 }
             }
         }
@@ -84,11 +86,11 @@ public class BurningAnomalyEntity extends AnomalyEntity {
             int oy = random.nextInt(5) - 2;
             int oz = random.nextInt(r * 2 + 1) - r;
             BlockPos pos = blockPosition().offset(ox, oy, oz);
-            if (!level().isLoaded(pos)) {
+            if (!level.isLoaded(pos)) {
                 continue;
             }
-            if (level().getBlockState(pos).isAir() && level().getBlockState(pos.below()).isSolidRender(level(), pos.below())) {
-                level().setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
+            if (level.getBlockState(pos).isAir() && level.getBlockState(pos.below()).isSolidRender(level, pos.below())) {
+                level.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
             }
         }
     }
@@ -102,7 +104,7 @@ public class BurningAnomalyEntity extends AnomalyEntity {
             for (int dy = -3; dy <= 3; dy++) {
                 for (int dz = -3; dz <= 3; dz++) {
                     BlockPos pos = center.offset(dx, dy, dz);
-                    FluidState fluid = level().getFluidState(pos);
+                    FluidState fluid = level.getFluidState(pos);
                     if (fluid.isSource() && fluid.is(FluidTags.WATER)) {
                         if (++found >= required) {
                             return true;

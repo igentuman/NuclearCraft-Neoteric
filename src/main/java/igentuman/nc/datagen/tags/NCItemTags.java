@@ -5,7 +5,6 @@ import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.multiblock.fusion.FusionReactorRegistration;
 import igentuman.nc.setup.registration.FissionFuel;
 import igentuman.nc.setup.registration.NCItems;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +12,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.BlockTagsProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -30,11 +29,11 @@ import static igentuman.nc.setup.registration.Tags.*;
 public class NCItemTags extends ItemTagsProvider {
 
     public NCItemTags(DataGenerator generator, BlockTagsProvider blockTags, GatherDataEvent event) {
-        super(generator.getPackOutput(), event.getLookupProvider(), blockTags.contentsGetter(),  MODID, event.getExistingFileHelper());
+        super(generator, blockTags, MODID, event.getExistingFileHelper());
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags() {
         ores();
         blocks();
         ingots();

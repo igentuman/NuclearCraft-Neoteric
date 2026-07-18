@@ -30,7 +30,7 @@ public class BarrelBlockItem extends BlockItem
 {
 	public BarrelBlockItem(Block pBlock, Properties props)
 	{
-		this(pBlock, props, CreativeTabs.NC_BLOCKS);
+		this(pBlock, props, CreativeTabs.NC_BLOCKS_TAB);
 	}
 
 	public BarrelBlockItem(Block pBlock, Properties props, CreativeModeTab group)

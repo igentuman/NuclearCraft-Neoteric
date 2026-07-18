@@ -6,7 +6,7 @@ import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.container.StorageContainerContainer;
 import igentuman.nc.container.StorageContainerItemContainer;
 import igentuman.nc.util.annotation.NothingNullByDefault;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -51,7 +51,7 @@ public class StorageContainerItemScreen extends AbstractContainerScreen<StorageC
         widgets.add(widget);
     }
 
-    private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
 
         if(magnetBtn != null) {
             magnetBtn.setEnabled(getMenu().isMagnetModeEnabled());
@@ -80,10 +80,10 @@ public class StorageContainerItemScreen extends AbstractContainerScreen<StorageC
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
-    private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
+    private void renderTooltips(PoseStack graphics, int pMouseX, int pMouseY) {
         for(NCGuiElement widget: widgets) {
             if(widget.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, widget.getTooltips(),
+                renderTooltip(graphics, widget.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }
         }
@@ -98,22 +98,22 @@ public class StorageContainerItemScreen extends AbstractContainerScreen<StorageC
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
         renderTooltips(matrixStack, mouseX-relX, mouseY-relY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        blit(graphics, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 }

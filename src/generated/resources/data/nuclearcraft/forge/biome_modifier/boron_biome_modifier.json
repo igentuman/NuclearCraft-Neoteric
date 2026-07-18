@@ -1,6 +1,0 @@
-{
-  "type": "forge:add_features",
-  "biomes": "#forge:biomes",
-  "features": "nuclearcraft:boron_placed",
-  "step": "underground_ores"
-}

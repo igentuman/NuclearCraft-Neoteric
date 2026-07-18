@@ -26,6 +26,7 @@ public class Checkbox extends NCGuiElement {
     private boolean isChecked = false;
 
     public Checkbox(int xPos, int yPos, AbstractContainerScreen screen, boolean checked)  {
+        super(xPos, yPos, 12, 12, net.minecraft.network.chat.Component.empty());
         x = xPos;
         y = yPos;
         width = 12;

@@ -11,19 +11,21 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
+import static igentuman.nc.setup.registration.CreativeTabs.NC_BLOCKS_TAB;
 import static igentuman.nc.setup.registration.Registries.*;
 
 public class NCProcessors {
     public static HashMap<String, RegistryObject<Block>> PROCESSORS = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>> PROCESSOR_BLOCKS_ITEMS = new HashMap<>();
-    public static final Item.Properties PROCESSOR_ITEM_PROPERTIES = new Item.Properties();
-    public static final BlockBehaviour.Properties PROCESSOR_BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
+    public static final Item.Properties PROCESSOR_ITEM_PROPERTIES = new Item.Properties().tab(NC_BLOCKS_TAB);
+    public static final BlockBehaviour.Properties PROCESSOR_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
     public static HashMap<String, RegistryObject<MenuType<? extends NCProcessorContainer<?>>>> PROCESSORS_CONTAINERS = new HashMap<>();
     public static HashMap<String, RegistryObject<BlockEntityType<? extends NCProcessorBE>>> PROCESSORS_BE = new HashMap<>();
 
@@ -63,7 +65,7 @@ public class NCProcessors {
     private static void registerBlocks() {
         for(String name: Processors.all().keySet()) {
             if(name.equals("leacher")) {
-                PROCESSORS.put(name, BLOCKS.register(name, () -> new ProcessorBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops().noOcclusion())));
+                PROCESSORS.put(name, BLOCKS.register(name, () -> new ProcessorBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops().noOcclusion())));
             } else {
                 PROCESSORS.put(name, BLOCKS.register(name, () -> new ProcessorBlock(PROCESSOR_BLOCK_PROPERTIES)));
             }

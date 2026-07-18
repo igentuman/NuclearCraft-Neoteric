@@ -18,7 +18,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.RegistryObject;
-import org.joml.Vector3f;
+import com.mojang.math.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Iterator;

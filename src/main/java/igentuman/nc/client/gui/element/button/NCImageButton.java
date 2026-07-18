@@ -3,7 +3,7 @@ package igentuman.nc.client.gui.element.button;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -37,7 +37,7 @@ public class NCImageButton extends Button {
    }
 
    public NCImageButton(int pX, int pY, int pWidth, int pHeight, int pXTexStart, int pYTexStart, int pYDiffTex, ResourceLocation pResourceLocation, int pTextureWidth, int pTextureHeight, Button.OnPress pOnPress, Button.OnPress pOnTooltip, Component pMessage) {
-      super(pX, pY, pWidth, pHeight, pMessage, pOnPress, Button.DEFAULT_NARRATION);
+      super(pX, pY, pWidth, pHeight, pMessage, pOnPress);
       this.textureWidth = pTextureWidth;
       this.textureHeight = pTextureHeight;
       this.xTexStart = pXTexStart;
@@ -47,22 +47,22 @@ public class NCImageButton extends Button {
    }
 
    public void setPosition(int pX, int pY) {
-      this.setX(pX);
-      this.setY(pY);
+      this.x = pX;
+      this.y = pY;
    }
 
    @Override
-   public void renderWidget(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+   public void renderButton(PoseStack graphics, int pMouseX, int pMouseY, float pPartialTick) {
       RenderSystem.setShader(GameRenderer::getPositionTexShader);
       RenderSystem.setShaderTexture(0, this.resourceLocation);
       int i = this.yTexStart;
-      if (!this.isActive()) {
+      if (!this.active) {
          i += this.yDiffTex * 2;
       } else if (this.isHoveredOrFocused()) {
          i += this.yDiffTex;
       }
 
       RenderSystem.enableDepthTest();
-      graphics.blit(resourceLocation, this.getX(), this.getY(), (float)this.xTexStart, (float)i, this.width, this.height, this.textureWidth, this.textureHeight);
+      blit(graphics, this.x, this.y, (float)this.xTexStart, (float)i, this.width, this.height, this.textureWidth, this.textureHeight);
    }
 }

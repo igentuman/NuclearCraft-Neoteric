@@ -37,7 +37,7 @@ public class RadiationBurstGoal extends Goal {
     public void start() {
         boss.getNavigation().stop();
         attackAnimationTick = 30;
-        boss.level().broadcastEntityEvent(boss, (byte) 5);
+        boss.level.broadcastEntityEvent(boss, (byte) 5);
     }
 
     @Override

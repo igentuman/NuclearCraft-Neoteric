@@ -11,9 +11,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.client.renderer.NCRenderType.BLACKHOLE;
@@ -59,7 +59,7 @@ public class Q36EnergyFlashRenderer extends EntityRenderer<Q36EnergyFlash> {
                     scale = MAX_SCALE * (1.0F - t * t);
                 }
 
-                Quaternionf q = camera.rotation();
+                Quaternion q = camera.rotation();
                 Vector3f[] verts = {
                         new Vector3f(-1.0F, 1.0F, 0.0F),
                         new Vector3f(1.0F, 1.0F, 0.0F),
@@ -67,7 +67,7 @@ public class Q36EnergyFlashRenderer extends EntityRenderer<Q36EnergyFlash> {
                         new Vector3f(-1.0F, -1.0F, 0.0F)
                 };
                 for (Vector3f v : verts) {
-                    q.transform(v);
+                    v.transform(q);
                     v.mul(scale);
                     v.add((float) pos.x, (float) pos.y, (float) pos.z);
                 }

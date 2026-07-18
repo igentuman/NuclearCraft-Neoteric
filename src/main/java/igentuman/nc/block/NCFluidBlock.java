@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -113,7 +114,7 @@ public class NCFluidBlock extends LiquidBlock
 				&& entry.type().getId().getPath().equals("quantite_energy")) {
 			pLevel.explode(null,
 					pPos.getX() + 0.5, pPos.getY() + 0.5, pPos.getZ() + 0.5,
-					2.0F, Level.ExplosionInteraction.NONE);
+					2.0F, Explosion.BlockInteraction.NONE);
 			for(BlockPos p : BlockPos.betweenClosed(pPos.offset(-2, -2, -2), pPos.offset(2, 2, 2))) {
 				if(pLevel.random.nextFloat() < 0.4F
 						&& pLevel.getBlockState(p).isAir()

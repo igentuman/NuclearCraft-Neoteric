@@ -17,6 +17,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -38,7 +39,7 @@ import static igentuman.nc.util.TextUtils.convertToName;
 public class TurbineCoilBlock extends Block implements EntityBlock {
 
     public TurbineCoilBlock() {
-        this(Properties.of().sound(SoundType.METAL));
+        this(Properties.of(Material.METAL).sound(SoundType.METAL));
     }
 
     public TurbineCoilBlock(Properties pProperties) {

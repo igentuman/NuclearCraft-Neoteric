@@ -1,14 +1,14 @@
 package igentuman.nc.compat.jei.ingredient;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.content.particles.Particle;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.util.Units;
-import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -54,49 +54,45 @@ public class ParticleStackRenderer  implements IIngredientRenderer<ParticleStack
 
 
 	@Override
-	public void render(GuiGraphics guiGraphics, ParticleStack particleStack) {
-		this.render(guiGraphics,particleStack, 0, 0);
+	public void render(PoseStack poseStack, @Nullable ParticleStack particleStack) {
+		this.render(poseStack, particleStack, 0, 0);
 	}
 
-	@Override
-	public void render(GuiGraphics graphics, @Nullable ParticleStack particleStack, int posX, int posY)
+	public void render(PoseStack poseStack, @Nullable ParticleStack particleStack, int posX, int posY)
 	{
 		RenderSystem.enableBlend();
 		RenderSystem.enableDepthTest();
-		graphics.pose().pushPose();
-		graphics.pose().translate((float)posX, (float)posY, 0.0F);
-		drawParticle(graphics, 0, 0, particleStack);
+		poseStack.pushPose();
+		poseStack.translate((float)posX, (float)posY, 0.0F);
+		drawParticle(poseStack, 0, 0, particleStack);
 		if (overlay != null) {
-			graphics.pose().pushPose();
-			graphics.pose().translate(0, 0, 200);
-			overlay.draw(graphics, 0, 0);
-			graphics.pose().popPose();
+			poseStack.pushPose();
+			poseStack.translate(0, 0, 200);
+			overlay.draw(poseStack, 0, 0);
+			poseStack.popPose();
 		}
-		graphics.pose().popPose();
+		poseStack.popPose();
 		RenderSystem.disableBlend();
 		RenderSystem.disableDepthTest();
 	}
 
 	@Override
-	public List<Component> getTooltip(ParticleStack particleStack, TooltipFlag tooltipFlag) {
-		return List.of();
-	}
-
-	@Override
-	public void getTooltip(ITooltipBuilder tooltip, ParticleStack ingredient, TooltipFlag tooltipFlag) {
-		IIngredientRenderer.super.getTooltip(tooltip, ingredient, tooltipFlag);
-		tooltip.add(__(ingredient.getParticle().getUnlocalizedName()));
-		tooltip.add(Component.literal("nuclearcraft:particle/"+ingredient.getParticle().getName()).withStyle(ChatFormatting.DARK_GRAY));
-        tooltip.add(__("tooltip.nuclearcraft.particlestack.amount", Units.getSIFormat(ingredient.getAmount(),"pu")).withStyle(ChatFormatting.GRAY));
+	public List<Component> getTooltip(ParticleStack ingredient, TooltipFlag tooltipFlag) {
+		// 1.19.2 JEI: IIngredientRenderer only has getTooltip returning List<Component>; no ITooltipBuilder variant
+		List<Component> list = new java.util.ArrayList<>();
+		list.add(__(ingredient.getParticle().getUnlocalizedName()));
+		list.add(Component.literal("nuclearcraft:particle/"+ingredient.getParticle().getName()).withStyle(ChatFormatting.DARK_GRAY));
+		list.add(__("tooltip.nuclearcraft.particlestack.amount", Units.getSIFormat(ingredient.getAmount(),"pu")).withStyle(ChatFormatting.GRAY));
 		if(ingredient.getMeanEnergy() > 0) {
-			tooltip.add(__("tooltip.nuclearcraft.particlestack.mean_energy", Units.getParticleEnergy(ingredient.getMeanEnergy())).withStyle(ChatFormatting.GRAY));
+			list.add(__("tooltip.nuclearcraft.particlestack.mean_energy", Units.getParticleEnergy(ingredient.getMeanEnergy())).withStyle(ChatFormatting.GRAY));
 		}
 		if(ingredient.getFocus() > 0) {
-			tooltip.add(__("tooltip.nuclearcraft.particlestack.focus", Units.getSIFormat(ingredient.getFocus(), "")).withStyle(ChatFormatting.GRAY));
+			list.add(__("tooltip.nuclearcraft.particlestack.focus", Units.getSIFormat(ingredient.getFocus(), "")).withStyle(ChatFormatting.GRAY));
 		}
+		return list;
 	}
 
-	private void drawParticle(GuiGraphics graphics, final int xPosition, final int yPosition,
+	private void drawParticle(PoseStack poseStack, final int xPosition, final int yPosition,
 			@Nullable ParticleStack particleStack)
 	{
 		if (particleStack == null)
@@ -108,13 +104,13 @@ public class ParticleStackRenderer  implements IIngredientRenderer<ParticleStack
 		{
 			return;
 		}
-		
+
 		// Set up proper rendering state
 		RenderSystem.setShaderTexture(0, particleStack.getParticle().getTexture());
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		
+
 		// Draw the texture
-		graphics.blit(particleStack.getParticle().getTexture(), xPosition, yPosition, 0, 0, 16, 16, 16, 16);
+		GuiComponent.blit(poseStack, xPosition, yPosition, 0, 0, 16, 16, 16, 16);
 	}
 }

@@ -1,13 +1,13 @@
 package igentuman.nc.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.block.entity.ChargingStationBE;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import igentuman.nc.client.gui.element.fluid.FluidTankRenderer;
 import igentuman.nc.client.gui.element.slot.BigSlot;
 import igentuman.nc.container.ChargingStationContainer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -60,7 +60,7 @@ public class ChargingStationScreen extends AbstractContainerScreen<ChargingStati
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         renderTooltip(graphics, mouseX, mouseY);
@@ -68,20 +68,20 @@ public class ChargingStationScreen extends AbstractContainerScreen<ChargingStati
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         NCGuiElement.RELATIVE_X = leftPos;
         NCGuiElement.RELATIVE_Y = topPos;
-        graphics.blit(GUI, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        blit(graphics, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        graphics.fill(leftPos + FLUID_X - 1, topPos + FLUID_Y - 1,
+        fill(graphics, leftPos + FLUID_X - 1, topPos + FLUID_Y - 1,
                 leftPos + FLUID_X + FLUID_W + 1, topPos + FLUID_Y + FLUID_H + 1, 0xFF373737);
-        graphics.fill(leftPos + FLUID_X, topPos + FLUID_Y,
+        fill(graphics, leftPos + FLUID_X, topPos + FLUID_Y,
                 leftPos + FLUID_X + FLUID_W, topPos + FLUID_Y + FLUID_H, 0xFF000000);
 
-        graphics.fill(leftPos + ENERGY_X - 1, topPos + ENERGY_Y - 1,
+        fill(graphics, leftPos + ENERGY_X - 1, topPos + ENERGY_Y - 1,
                 leftPos + ENERGY_X + ENERGY_W + 1, topPos + ENERGY_Y + ENERGY_H + 1, 0xFF373737);
-        graphics.fill(leftPos + ENERGY_X, topPos + ENERGY_Y,
+        fill(graphics, leftPos + ENERGY_X, topPos + ENERGY_Y,
                 leftPos + ENERGY_X + ENERGY_W, topPos + ENERGY_Y + ENERGY_H, 0xFF000000);
 
         ChargingStationBE be = menu.blockEntity;
@@ -92,7 +92,7 @@ public class ChargingStationScreen extends AbstractContainerScreen<ChargingStati
             int energyMax = be.energy.getMaxEnergyStored();
             if (energyMax > 0 && energy > 0) {
                 int h = (int) ((long) energy * ENERGY_H / energyMax);
-                graphics.fill(leftPos + ENERGY_X, topPos + ENERGY_Y + (ENERGY_H - h),
+                fill(graphics, leftPos + ENERGY_X, topPos + ENERGY_Y + (ENERGY_H - h),
                         leftPos + ENERGY_X + ENERGY_W, topPos + ENERGY_Y + ENERGY_H, 0xFFE52727);
             }
         }
@@ -100,7 +100,7 @@ public class ChargingStationScreen extends AbstractContainerScreen<ChargingStati
         if (itemSlot != null) itemSlot.draw(graphics, mouseX, mouseY, partialTicks);
     }
 
-    private void renderBarTooltips(GuiGraphics graphics, int mouseX, int mouseY) {
+    private void renderBarTooltips(PoseStack graphics, int mouseX, int mouseY) {
         ChargingStationBE be = menu.blockEntity;
         if (be == null) return;
         if (inBox(mouseX, mouseY, leftPos + FLUID_X, topPos + FLUID_Y, FLUID_W, FLUID_H)) {
@@ -108,14 +108,14 @@ public class ChargingStationScreen extends AbstractContainerScreen<ChargingStati
             if (lines.isEmpty()) {
                 lines.add(__("tooltip.nc.charging_station.fluid_empty").withStyle(ChatFormatting.GRAY));
             }
-            graphics.renderComponentTooltip(font, lines, mouseX, mouseY);
+            renderComponentTooltip(graphics, lines, mouseX, mouseY);
         }
         if (inBox(mouseX, mouseY, leftPos + ENERGY_X, topPos + ENERGY_Y, ENERGY_W, ENERGY_H)) {
             List<Component> lines = new ArrayList<>();
             lines.add(__("tooltip.nc.charging_station.energy",
                     NF.format(be.energy.getEnergyStored()), NF.format(be.energy.getMaxEnergyStored()))
                     .withStyle(ChatFormatting.RED));
-            graphics.renderComponentTooltip(font, lines, mouseX, mouseY);
+            renderComponentTooltip(graphics, lines, mouseX, mouseY);
         }
     }
 
@@ -124,8 +124,8 @@ public class ChargingStationScreen extends AbstractContainerScreen<ChargingStati
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, titleLabelX, titleLabelY, 0x404040, false);
-        graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0x404040, false);
+    protected void renderLabels(@NotNull PoseStack graphics, int mouseX, int mouseY) {
+        drawString(graphics, font, title, titleLabelX, titleLabelY, 0x404040);
+        drawString(graphics, font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0x404040);
     }
 }

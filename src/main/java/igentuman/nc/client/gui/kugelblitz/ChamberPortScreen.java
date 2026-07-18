@@ -9,7 +9,7 @@ import igentuman.nc.client.gui.element.bar.VerticalBar;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.container.ChamberPortContainer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -71,14 +71,14 @@ public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContai
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         xCenter = getGuiLeft()-imageWidth/2;
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
-    private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         modeBtn.setMode(container().getComparatorMode());
         modeBtn.strength = container().getAnalogSignalStrength();
         for(NCGuiElement widget: widgets) {
@@ -88,8 +88,8 @@ public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContai
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
+    protected void renderLabels(PoseStack graphics, int mouseX, int mouseY) {
+        drawCenteredString(graphics, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         renderTooltips(graphics, mouseX-relX, mouseY-relY);
     }
 
@@ -103,18 +103,18 @@ public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContai
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        blit(graphics, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 
-    private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
+    private void renderTooltips(PoseStack graphics, int pMouseX, int pMouseY) {
 
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
-               graphics.renderTooltip(font, widget.getTooltips(),
+               renderTooltip(graphics, widget.getTooltips(),
                        Optional.empty(), pMouseX, pMouseY);
            }
         }
@@ -122,7 +122,7 @@ public class ChamberPortScreen extends AbstractContainerScreen<ChamberPortContai
         energyBar.clearTooltips();
         energyBar.addTooltip(__(energyGenLine(), container().energyPerTick()));
         if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
-            graphics.renderTooltip(font, energyBar.getTooltips(),
+            renderTooltip(graphics, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
     }

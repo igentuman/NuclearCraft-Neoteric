@@ -8,9 +8,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Quaternionf;
+import com.mojang.math.Vector3f;
 
 public class ChargingStationRenderer implements net.minecraft.client.renderer.blockentity.BlockEntityRenderer<ChargingStationBE> {
 
@@ -31,10 +31,10 @@ public class ChargingStationRenderer implements net.minecraft.client.renderer.bl
 
         pose.pushPose();
         pose.translate(0.5D, 0.5D + bob, 0.5D);
-        pose.mulPose(new Quaternionf().rotateY((float) Math.toRadians(angle)));
+        pose.mulPose(Vector3f.YP.rotationDegrees(angle));
         pose.scale(0.7F, 0.7F, 0.7F);
 
-        itemRenderer.render(stack, ItemDisplayContext.GROUND, false, pose, buffer,
+        itemRenderer.render(stack, ItemTransforms.TransformType.GROUND, false, pose, buffer,
                 light, OverlayTexture.NO_OVERLAY, model);
 
         pose.popPose();

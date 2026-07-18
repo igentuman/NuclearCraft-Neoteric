@@ -37,7 +37,7 @@ public class SlamAttackGoal extends Goal {
     public void start() {
         boss.getNavigation().stop();
         attackAnimationTick = 15;
-        boss.level().broadcastEntityEvent(boss, (byte) 4);
+        boss.level.broadcastEntityEvent(boss, (byte) 4);
     }
 
     @Override

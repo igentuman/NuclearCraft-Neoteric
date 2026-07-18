@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "B": {
       "tag": "forge:ingots/beryllium"
@@ -16,6 +15,5 @@
   ],
   "result": {
     "item": "nuclearcraft:neutron_initiator"
-  },
-  "show_notification": true
+  }
 }

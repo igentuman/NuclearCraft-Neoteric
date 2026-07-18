@@ -13,8 +13,8 @@ public class CuriosHelper {
 
     // Isolated so the CuriosApi reference only links when the mod is present (see onPlayerTick guard).
     public static void accumulateCurios(Map<MobEffect, Integer> strongest, Player player) {
-        CuriosApi.getCuriosInventory(player).ifPresent(handler -> {
-            IItemHandlerModifiable equipped = handler.getEquippedCurios();
+        // 1.19.2: CuriosApi uses getCuriosHelper().getEquippedCurios(entity) instead of getCuriosInventory(player)
+        CuriosApi.getCuriosHelper().getEquippedCurios(player).ifPresent(equipped -> {
             for (int i = 0; i < equipped.getSlots(); i++) {
                 accumulate(strongest, equipped.getStackInSlot(i));
             }

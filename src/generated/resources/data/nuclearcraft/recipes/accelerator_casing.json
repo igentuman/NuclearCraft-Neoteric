@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
     "S": {
@@ -18,6 +17,5 @@
   "result": {
     "count": 4,
     "item": "nuclearcraft:accelerator_casing"
-  },
-  "show_notification": true
+  }
 }

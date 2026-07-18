@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.item.ItemStack;
 
 public class CraftingPatternRenderer extends BlockEntityWithoutLevelRenderer {
@@ -28,13 +28,13 @@ public class CraftingPatternRenderer extends BlockEntityWithoutLevelRenderer {
     }
 
     @Override
-    public void renderByItem(ItemStack stack, ItemDisplayContext ctx, PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
+    public void renderByItem(ItemStack stack, ItemTransforms.TransformType ctx, PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
         ItemStack out = CraftingPattern.output(stack);
         if (out.isEmpty() || out.getItem() instanceof CraftingPatternItem) return;
         Minecraft mc = Minecraft.getInstance();
         pose.pushPose();
         pose.translate(0.5D, 0.5D, 0.5D);
-        mc.getItemRenderer().renderStatic(out, ctx, light, overlay, pose, buffer, mc.level, 0);
+        mc.getItemRenderer().renderStatic(out, ctx, light, overlay, pose, buffer, 0);
         pose.popPose();
     }
 }

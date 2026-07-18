@@ -38,8 +38,8 @@ public class HEVItem extends ArmorItem {
 
     private static final UUID ARMOR_BONUS_UUID = UUID.fromString("4d76dc73-b7c5-4e95-b8e4-9f5af13be05c");
 
-    public HEVItem(ArmorMaterials armorMaterials, ArmorItem.Type type, Properties hazmatProps) {
-        super(armorMaterials, type, hazmatProps);
+    public HEVItem(ArmorMaterials armorMaterials, EquipmentSlot slot, Properties hazmatProps) {
+        super(armorMaterials, slot, hazmatProps);
     }
 
     public static int getQECharge(ItemStack stack) {
@@ -97,7 +97,8 @@ public class HEVItem extends ArmorItem {
     }
 
     @Override
-    public void onInventoryTick(ItemStack stack, Level level, Player player, int slotIndex, int selectedIndex) {
+    public void inventoryTick(ItemStack stack, Level level, net.minecraft.world.entity.Entity entity, int slotIndex, boolean selectedSlot) {
+        if (!(entity instanceof Player player)) return;
         long gameTime = level.getGameTime();
         boolean isHelmet = stack.is(HEV_HELMET.get()) && player.getItemBySlot(EquipmentSlot.HEAD).equals(stack);
         boolean isChest = stack.is(HEV_CHEST.get()) && player.getItemBySlot(EquipmentSlot.CHEST).equals(stack);

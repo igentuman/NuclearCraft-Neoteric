@@ -20,7 +20,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -153,7 +152,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
-        this.level().broadcastEntityEvent(this, (byte) 8);
+        this.level.broadcastEntityEvent(this, (byte) 8);
         boolean attackResult = super.doHurtTarget(pEntity);
 
         if (attackResult && pEntity instanceof Player player) {
@@ -213,7 +212,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
             this.playSound(BOSS_ANGRY.get(), 1.5F, 0.6F);
             this.playSound(SoundEvents.ENDER_DRAGON_GROWL, 1.0F, 0.8F);
             // Broadcast entity event for potential client-side effects
-            this.level().broadcastEntityEvent(this, (byte) 10); // Custom enrage event
+            this.level.broadcastEntityEvent(this, (byte) 10); // Custom enrage event
         }
     }
 
@@ -227,9 +226,9 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
             this.playSound(GEIGER_SOUNDS.get(2).get(), 0.7F, 1F);
 
             AABB radiationBox = this.getBoundingBox().inflate(RADIATION_BURST_RANGE);
-            List<Player> nearbyPlayers = this.level().getEntitiesOfClass(Player.class, radiationBox);
+            List<Player> nearbyPlayers = this.level.getEntitiesOfClass(Player.class, radiationBox);
 
-            if (this.level() instanceof ServerLevel serverLevel) {
+            if (this.level instanceof ServerLevel serverLevel) {
                 double entityY = this.getY() + 0.5;
                 Vec3 center = this.position();
 
@@ -295,7 +294,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
      * Execute summon attack that spawns feral ghouls near the target
      */
     public void executeSummonAttack() {
-        if (summonCooldownRemaining <= 0 && !isExecutingAttack && !this.level().isClientSide()) {
+        if (summonCooldownRemaining <= 0 && !isExecutingAttack && !this.level.isClientSide()) {
             isExecutingAttack = true;
             this.playSound(BOSS_ANGRY.get(), 0.4F, 0.4F);
             this.playSound(SoundEvents.VEX_CHARGE, 1.0F, 0.7F);
@@ -303,7 +302,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
             LivingEntity target = this.getTarget();
             if (target != null && target.isAlive()) {
                 int existingGhouls = 0;
-                List<EntityFeralGhoul> nearbyGhouls = this.level().getEntitiesOfClass(
+                List<EntityFeralGhoul> nearbyGhouls = this.level.getEntitiesOfClass(
                         EntityFeralGhoul.class,
                         this.getBoundingBox().inflate(20.0),
                         ghoul -> !(ghoul instanceof EntityWastelandBoss)
@@ -325,14 +324,14 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                                 (int) (target.getZ() + zOffset)
                         );
 
-                        if (this.level().getBlockState(spawnPos).isAir() &&
-                                this.level().getBlockState(spawnPos.below()).isSolid()) {
+                        if (this.level.getBlockState(spawnPos).isAir() &&
+                                this.level.getBlockState(spawnPos.below()).getMaterial().isSolid()) {
 
-                            EntityFeralGhoul ghoul = new EntityFeralGhoul(this.level());
+                            EntityFeralGhoul ghoul = new EntityFeralGhoul(this.level);
                             ghoul.setPos(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
                             ghoul.setTarget(target);
 
-                            this.level().addParticle(
+                            this.level.addParticle(
                                     ParticleTypes.ANGRY_VILLAGER,
                                     spawnPos.getX() + 0.5,
                                     spawnPos.getY() + 1.5,
@@ -340,7 +339,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                                     0, 0.1, 0
                             );
 
-                            this.level().addFreshEntity(ghoul);
+                            this.level.addFreshEntity(ghoul);
                         }
                     }
                 }
@@ -377,7 +376,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
             double entityX = this.getX();
             double entityY = this.getY();
             double entityZ = this.getZ();
-            ServerLevel serverLevel = (ServerLevel) this.level();
+            ServerLevel serverLevel = (ServerLevel) this.level;
             RandomSource random = this.getRandom();
 
             for (int i = 0; i < 40; i++) {
@@ -410,7 +409,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
             }
 
             AABB affectedArea = this.getBoundingBox().inflate(SLAM_ATTACK_RANGE);
-            List<LivingEntity> nearbyEntities = this.level().getEntitiesOfClass(
+            List<LivingEntity> nearbyEntities = this.level.getEntitiesOfClass(
                     LivingEntity.class,
                     affectedArea,
                     entity -> entity != this
@@ -420,7 +419,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 double distance = entity.distanceTo(this);
                 float damageAmount = 10.0f * (1.0f - (float)(distance / SLAM_ATTACK_RANGE));
 
-                entity.hurt(this.damageSources().mobAttack(this), damageAmount);
+                entity.hurt(DamageSource.mobAttack(this), damageAmount);
 
                 Vec3 knockbackDirection = entity.position().subtract(this.position()).normalize();
                 double distanceMult = Math.log(SLAM_ATTACK_RANGE/distance)+0.6;
@@ -440,7 +439,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
      * Execute a ranged attack by throwing a wasteland block at the target
      */
     public void executeRangedAttack() {
-        if (rangedAttackCooldownRemaining <= 0 && !isExecutingAttack && !this.level().isClientSide()) {
+        if (rangedAttackCooldownRemaining <= 0 && !isExecutingAttack && !this.level.isClientSide()) {
             isExecutingAttack = true;
             this.playSound(BOSS_ACTION.get(), 1.4F, 0.9F);
             this.playSound(SoundEvents.WITHER_SHOOT, 1.0F, 0.2F);
@@ -462,7 +461,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 Vec3 rightVector = new Vec3(direction.z, 0, -direction.x).normalize().scale(0.750);
                 Vec3 leftVector = rightVector.scale(-0.750);
 
-                EntityBlockProjectile leftProjectile = new EntityBlockProjectile(this.level(), this);
+                EntityBlockProjectile leftProjectile = new EntityBlockProjectile(this.level, this);
                 leftProjectile.setPos(
                         this.getX() + leftVector.x * 1.0 + direction.x * 0.5,
                         this.getEyeY() - 0.3,
@@ -477,9 +476,9 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                         (float) inaccuracy
                 );
 
-                this.level().addFreshEntity(leftProjectile);
+                this.level.addFreshEntity(leftProjectile);
 
-                EntityBlockProjectile rightProjectile = new EntityBlockProjectile(this.level(), this);
+                EntityBlockProjectile rightProjectile = new EntityBlockProjectile(this.level, this);
                 rightProjectile.setPos(
                         this.getX() + rightVector.x * 1.0 + direction.x * 0.5,
                         this.getEyeY() - 0.3,
@@ -494,7 +493,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                         (float) inaccuracy
                 );
 
-                this.level().addFreshEntity(rightProjectile);
+                this.level.addFreshEntity(rightProjectile);
             }
 
             rangedAttackCooldownRemaining = RANGED_ATTACK_COOLDOWN;
@@ -507,7 +506,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
      * Only available when boss health is below 50% (enraged state)
      */
     public void executeThrowSpamAttack() {
-        if (throwSpamCooldownRemaining <= 0 && !isExecutingAttack && !this.level().isClientSide()) {
+        if (throwSpamCooldownRemaining <= 0 && !isExecutingAttack && !this.level.isClientSide()) {
             // Start the throw spam attack
             isExecutingAttack = true;
             throwSpamDurationRemaining = THROW_SPAM_DURATION;
@@ -526,7 +525,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
      * Throw a single projectile during spam attack
      */
     public void throwSpamProjectile() {
-        if (throwSpamDurationRemaining > 0 && throwSpamIntervalRemaining <= 0 && !this.level().isClientSide()) {
+        if (throwSpamDurationRemaining > 0 && throwSpamIntervalRemaining <= 0 && !this.level.isClientSide()) {
             LivingEntity target = this.getTarget();
             if (target != null && target.isAlive() && target.distanceTo(this) <= THROW_SPAM_RANGE) {
                 
@@ -551,7 +550,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 // Add vertical adjustment for arc
                 double verticalAdjustment = Math.log10(distance) * 0.08;
 
-                EntityBlockProjectile projectile = new EntityBlockProjectile(this.level(), this);
+                EntityBlockProjectile projectile = new EntityBlockProjectile(this.level, this);
                 
                 // Randomize spawn position slightly
                 double offsetX = (random.nextDouble() - 0.5) * 1.5;
@@ -571,7 +570,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                         (float) inaccuracy
                 );
 
-                this.level().addFreshEntity(projectile);
+                this.level.addFreshEntity(projectile);
                 
                 // Reset interval timer
                 throwSpamIntervalRemaining = THROW_SPAM_INTERVAL;
@@ -618,7 +617,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     @Override
     public void handleEntityEvent(byte pId) {
         if (pId == 4 || pId == 5 || pId == 6 || pId == 7 || pId == 8) {
-            if (this.level().isClientSide()) {
+            if (this.level.isClientSide()) {
                 if (Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(this) instanceof WastelandBossRenderer renderer) {
                     renderer.getModel().handleEntityEvent(pId);
                 }
@@ -630,7 +629,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
 
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypes.IN_FIRE) || source.is(DamageTypes.ON_FIRE) || source.is(DamageTypes.WITHER) || super.isInvulnerableTo(source);
+        return source.isFire() || source == DamageSource.WITHER || super.isInvulnerableTo(source);
     }
 
     @Override
@@ -638,7 +637,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         if (pSource.getDirectEntity() instanceof AbstractArrow) {
             pAmount = pAmount * 0.25F;
         }
-        if (pSource.is(DamageTypes.EXPLOSION)) {
+        if (pSource.isExplosion()) {
             pAmount = pAmount * 0.25F;
         }
         return super.hurt(pSource, pAmount);

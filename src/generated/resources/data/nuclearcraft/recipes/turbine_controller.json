@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_turbine",
   "key": {
     "B": {
@@ -20,6 +19,5 @@
   ],
   "result": {
     "item": "nuclearcraft:turbine_controller"
-  },
-  "show_notification": true
+  }
 }

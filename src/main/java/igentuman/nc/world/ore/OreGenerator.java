@@ -1,12 +1,10 @@
 package igentuman.nc.world.ore;
 
+import igentuman.nc.content.materials.Materials;
+import igentuman.nc.content.materials.NCMaterial;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.content.materials.Ores;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -17,10 +15,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static igentuman.nc.NuclearCraft.MODID;
-import static igentuman.nc.NuclearCraft.rl;
 
 public class OreGenerator {
 
@@ -64,12 +61,43 @@ public class OreGenerator {
         return new PlacedFeature(Holder.direct(oreConfigurationFeatureConfiguredFeature), List.of(of, spread, dimensionBiomeFilter, uniform));
     }
 
-    private static ResourceKey<PlacedFeature> registerKey(String name) {
-        return ResourceKey.create(Registries.PLACED_FEATURE, rl(name));
+    @NotNull
+    public static PlacedFeature createOregenForMaterial(String materialName) {
+        NCMaterial material = Materials.ores().get(materialName);
+        List<OreConfiguration.TargetBlockState> targets = new ArrayList<>();
+
+        if (material.normal_ore && NCBlocks.ORE_BLOCKS.containsKey(materialName)) {
+            targets.add(OreConfiguration.target(
+                new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
+                NCBlocks.ORE_BLOCKS.get(materialName).get().defaultBlockState()
+            ));
+        }
+        if (material.deepslate_ore && NCBlocks.ORE_BLOCKS.containsKey(materialName + "_deepslate")) {
+            targets.add(OreConfiguration.target(
+                new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
+                NCBlocks.ORE_BLOCKS.get(materialName + "_deepslate").get().defaultBlockState()
+            ));
+        }
+        if (material.nether_ore && NCBlocks.ORE_BLOCKS.containsKey(materialName + "_nether")) {
+            targets.add(OreConfiguration.target(
+                new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES),
+                NCBlocks.ORE_BLOCKS.get(materialName + "_nether").get().defaultBlockState()
+            ));
+        }
+
+        NCOre ore = Ores.all().get(materialName);
+        return new PlacedFeature(
+            Holder.hackyErase(Holder.direct(new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(targets, ore.config().veinSize)))),
+            List.of(
+                CountPlacement.of(ore.config().veinAmount),
+                InSquarePlacement.spread(),
+                new DimensionBiomeFilter(key -> ore.config().dimensions.contains(key.location().toString())),
+                HeightRangePlacement.uniform(
+                    VerticalAnchor.absolute(ore.config().height[0]),
+                    VerticalAnchor.absolute(ore.config().height[1])
+                )
+            )
+        );
     }
 
-    private static void register(BootstapContext<PlacedFeature> context, ResourceKey<PlacedFeature> key, Holder<ConfiguredFeature<?, ?>> configuration,
-                                 List<PlacementModifier> modifiers) {
-        context.register(key, new PlacedFeature(configuration, List.copyOf(modifiers)));
-    }
 }

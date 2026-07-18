@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
     "A": {
@@ -23,6 +22,5 @@
   ],
   "result": {
     "item": "nuclearcraft:ring_accelerator_controller"
-  },
-  "show_notification": true
+  }
 }

@@ -1,6 +1,7 @@
 package igentuman.nc.multiblock.accelerator;
 
 import com.google.gson.JsonArray;
+import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.block.accelerator.*;
 import igentuman.nc.block.accelerator.entity.*;
 import igentuman.nc.block.beam_diverter.BeamDiverterControllerBlock;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -30,9 +32,9 @@ import static igentuman.nc.setup.registration.Tags.blockTag;
 import static igentuman.nc.setup.registration.Tags.itemTag;
 
 public class AcceleratorRegistration {
-    public static final Item.Properties ACCELERATOR_ITEM_PROPERTIES = new Item.Properties();
-    public static final BlockBehaviour.Properties NO_OCCLUSION_BLOCK_PROPS = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
-    public static final Block.Properties ACCELERATOR_BLOCK_PROPERTIES =  BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();;
+    public static final Item.Properties ACCELERATOR_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.ACCELERATOR_TAB);
+    public static final BlockBehaviour.Properties NO_OCCLUSION_BLOCK_PROPS = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
+    public static final Block.Properties ACCELERATOR_BLOCK_PROPERTIES =  BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();;
     public static final HashMap<String, RegistryObject<Block>> ACCELERATOR_BLOCKS = new HashMap<>();
     public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> ACCELERATOR_BE = new HashMap<>();
     public static final HashMap<String, RegistryObject<Item>> ACCELERATOR_ITEMS = new HashMap<>();

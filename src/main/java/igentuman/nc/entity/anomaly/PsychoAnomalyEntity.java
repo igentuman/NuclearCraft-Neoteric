@@ -48,7 +48,7 @@ public class PsychoAnomalyEntity extends AnomalyEntity {
         double r2 = radius * radius;
         int amplifier = ANOMALY_CONFIG.PSYCHO_AMPLIFIER.get();
         int duration = interval + 40;
-        List<Player> players = level().getEntitiesOfClass(Player.class, effectBox(radius),
+        List<Player> players = level.getEntitiesOfClass(Player.class, effectBox(radius),
                 p -> p.isAlive() && !p.isCreative() && !p.isSpectator()
                         && p.position().distanceToSqr(position()) <= r2);
         for (Player player : players) {
@@ -87,7 +87,7 @@ public class PsychoAnomalyEntity extends AnomalyEntity {
         if (!hasPlayerInRadius(radius)) {
             return;
         }
-        if (level().getEntitiesOfClass(Vex.class, effectBox(radius)).size() >= max) {
+        if (level.getEntitiesOfClass(Vex.class, effectBox(radius)).size() >= max) {
             return;
         }
         spawnVex();
@@ -101,13 +101,13 @@ public class PsychoAnomalyEntity extends AnomalyEntity {
 
     private boolean hasPlayerInRadius(double radius) {
         double r2 = radius * radius;
-        return !level().getEntitiesOfClass(Player.class, effectBox(radius),
+        return !level.getEntitiesOfClass(Player.class, effectBox(radius),
                 p -> p.isAlive() && !p.isSpectator()
                         && p.position().distanceToSqr(position()) <= r2).isEmpty();
     }
 
     private void spawnVex() {
-        if (!(level() instanceof ServerLevel server)) {
+        if (!(level instanceof ServerLevel server)) {
             return;
         }
         Vex vex = EntityType.VEX.create(server);

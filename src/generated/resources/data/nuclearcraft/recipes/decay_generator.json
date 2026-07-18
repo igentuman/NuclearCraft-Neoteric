@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "G": {
       "item": "minecraft:redstone"
@@ -19,6 +18,5 @@
   ],
   "result": {
     "item": "nuclearcraft:decay_generator"
-  },
-  "show_notification": true
+  }
 }

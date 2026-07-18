@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "B": {
       "tag": "forge:ingots/baratol"
@@ -19,6 +18,5 @@
   ],
   "result": {
     "item": "nuclearcraft:compression_charge"
-  },
-  "show_notification": true
+  }
 }

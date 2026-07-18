@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.fusion;
 
+import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
 import igentuman.nc.block.fusion.FusionCasingBlock;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -30,7 +32,7 @@ import static igentuman.nc.setup.registration.Tags.itemTag;
 
 public class FusionReactorRegistration {
 
-    public static final Item.Properties FUSION_ITEM_PROPERTIES = new Item.Properties();
+    public static final Item.Properties FUSION_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.FUSION_REACTOR_TAB);
     public static final HashMap<String, RegistryObject<Block>> FUSION_BLOCKS = new HashMap<>();
     public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> FUSION_BE = new HashMap<>();
     public static final HashMap<String, RegistryObject<Item>> FUSION_ITEMS = new HashMap<>();
@@ -65,7 +67,7 @@ public class FusionReactorRegistration {
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 
         key = "fusion_reactor_casing_glass";
-        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionCasingBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion())));
+        FUSION_BLOCKS.put(key, BLOCKS.register(key, () -> new FusionCasingBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion())));
         FUSION_ITEMS.put(key, fromMultiblock(FUSION_BLOCKS.get(key)));
         ALL_NC_ITEMS.put(key, FUSION_ITEMS.get(key));
 

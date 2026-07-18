@@ -27,6 +27,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import net.minecraftforge.registries.ForgeRegistries;
+
 import static igentuman.nc.setup.registration.Registries.ITEM_REGISTRY;
 import static igentuman.nc.util.NcUtils.rlFromString;
 

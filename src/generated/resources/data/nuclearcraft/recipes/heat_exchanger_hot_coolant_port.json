@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_heat_exchanger",
   "key": {
     "B": {
@@ -21,6 +20,5 @@
   "result": {
     "count": 2,
     "item": "nuclearcraft:heat_exchanger_hot_coolant_port"
-  },
-  "show_notification": true
+  }
 }

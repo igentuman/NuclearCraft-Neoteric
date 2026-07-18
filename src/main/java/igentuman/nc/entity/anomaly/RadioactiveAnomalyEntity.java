@@ -46,7 +46,7 @@ public class RadioactiveAnomalyEntity extends AnomalyEntity {
             double falloff = Math.max(0.0D, 1.0D - dist / radius);
             if (!(living instanceof Player)) {
                 float damage = (float) (2.0D + 18.0D * falloff);
-                living.hurt(NCRadiationDamageSource.RADIATION(level()), damage);
+                living.hurt(NCRadiationDamageSource.RADIATION(level), damage);
                 continue;
             }
             long applied = (long) (dose * falloff);

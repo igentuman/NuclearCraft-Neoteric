@@ -1,9 +1,10 @@
 package igentuman.nc.item;
 
 import igentuman.nc.content.materials.Chunks;
-import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.ItemStack;
 
 public class NCChunkItem extends Item {
     public NCChunkItem(Properties pProperties) {
@@ -11,7 +12,9 @@ public class NCChunkItem extends Item {
     }
 
     @Override
-    public boolean isEnabled(@NotNull FeatureFlagSet pEnabledFeatures) {
-        return Chunks.get().registered().containsKey(this.toString().replace("_chunk", ""));
+    public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {
+        if (Chunks.get().registered().containsKey(this.toString().replace("_chunk", ""))) {
+            super.fillItemCategory(pCategory, pItems);
+        }
     }
 }

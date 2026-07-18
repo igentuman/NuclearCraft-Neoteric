@@ -14,7 +14,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -75,11 +75,11 @@ public class AcceleratorCoolantCategoryWrapper<T extends LinearAcceleratorContro
     }
 
     @Override
-    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
-        arrow.draw(graphics, 34, 6);
+    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
+        arrow.draw(poseStack, 34, 6);
 
-        slots[0].draw(graphics, 11, 5);
-        slots[1].draw(graphics, 74, 5);
+        slots[0].draw(poseStack, 11, 5);
+        slots[1].draw(poseStack, 74, 5);
     }
 
     @Override

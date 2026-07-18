@@ -42,7 +42,7 @@ import static net.minecraft.world.level.block.Blocks.IRON_BARS;
 public class TurbineBladeBlock extends DirectionalBlock implements EntityBlock {
     public static final BooleanProperty HIDDEN = BlockStateProperties.POWERED;
     public TurbineBladeBlock(Properties pProperties) {
-        super(Properties.copy(IRON_BARS).noCollission().forceSolidOff());
+        super(Properties.copy(IRON_BARS).noCollission());
     }
 
     @Override

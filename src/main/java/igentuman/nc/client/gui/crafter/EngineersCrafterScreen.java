@@ -14,10 +14,9 @@ import igentuman.nc.handler.crafter.CraftingPattern;
 import igentuman.nc.network.toServer.PacketCrafterExtract;
 import igentuman.nc.network.toServer.PacketCrafterInsert;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +31,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -110,21 +108,18 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
         grid.originX = leftPos;
         grid.originY = topPos;
 
-        modeButton = addRenderableWidget(Button.builder(modeLabel(), b -> {
+        modeButton = addRenderableWidget(new Button(leftPos - 18, topPos + 16, 18, 18, modeLabel(), b -> {
                     mode = (mode + 1) % 3;
                     modeButton.setMessage(modeLabel());
-                })
-                .bounds(leftPos - 18, topPos + 16, 18, 18)
-                .build());
+                }));
 
         NCImageButton encoderBtn = addRenderableWidget(new NCImageButton(leftPos + 77, topPos + 88 + contentShift, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, 256, 256,
                 b -> NuclearCraft.packetHandler().sendToServer(
                         new PacketGuiButtonPress(menu.getBlockPos(), EngineersCrafterBE.OPEN_ENCODER_BTN))));
-        encoderBtn.setTooltip(Tooltip.create(__("gui.nc.crafter.encoder")));
+        // tooltip not supported in 1.19.2
 
         searchBox = new EditBox(font, leftPos + 8, topPos + 16, 162, 14, Component.literal(""));
-        searchBox.setHint(Component.literal("Search..."));
-        searchBox.setMaxLength(50);
+searchBox.setMaxLength(50);
         searchBox.setResponder(text -> searchText = text.toLowerCase(java.util.Locale.ROOT));
         addRenderableWidget(searchBox);
         setFocused(searchBox);
@@ -203,13 +198,13 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         renderTooltip(graphics, mouseX, mouseY);
         if (grid != null) grid.renderTooltip(graphics, mouseX, mouseY);
         if (energyCheckbox != null && energyCheckbox.isMouseOver(mouseX - leftPos, mouseY - topPos)) {
-            graphics.renderTooltip(font, energyTooltip(), Optional.empty(), mouseX, mouseY);
+            renderTooltip(graphics, energyTooltip(), java.util.Optional.empty(), mouseX, mouseY);
         }
     }
 
@@ -254,7 +249,7 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         EngineersEncoderScreen.drawPanel(graphics, leftPos, topPos, imageWidth, imageHeight);
         NCGuiElement.RELATIVE_X = leftPos;
         NCGuiElement.RELATIVE_Y = topPos;
@@ -277,15 +272,15 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
             int barW = 162;
             int barH = 4;
             int filled = (int) (barW * menu.blockEntity.craftOpIndex / (float) total);
-            graphics.fill(barX, barY, barX + barW, barY + barH, 0xFF1A1A1A);
+            fill(graphics, barX, barY, barX + barW, barY + barH, 0xFF1A1A1A);
             if (filled > 0) {
-                graphics.fill(barX, barY, barX + filled, barY + barH, 0xFF22BB22);
+                fill(graphics, barX, barY, barX + filled, barY + barH, 0xFF22BB22);
             }
         }
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, titleLabelX, titleLabelY, 0x404040, false);
+    protected void renderLabels(@NotNull PoseStack graphics, int mouseX, int mouseY) {
+        drawString(graphics, font, title, titleLabelX, titleLabelY, 0x404040);
     }
 }

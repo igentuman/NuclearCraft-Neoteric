@@ -13,7 +13,7 @@ import igentuman.nc.client.gui.element.button.SliderHorizontal;
 import igentuman.nc.container.ChamberTerminalContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -121,13 +121,13 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
-    private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         analyzeBtn.setEnabled(container().canAnalyze());
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
@@ -157,17 +157,17 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack graphics, int mouseX, int mouseY) {
 
-        graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
+        drawCenteredString(graphics, font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
 
-        graphics.pose().pushPose();
-        graphics.pose().scale(0.5f, 0.5f, 0.5f);
-        graphics.drawString(font, __("label.kugelblitz.frequency", container().getFrequency()), 12, 164, 0x8AFF8A);
-        graphics.drawString(font, __("label.kugelblitz.transformation"), 12, 128, 0x8AFF8A);
+        graphics.pushPose();
+        graphics.scale(0.5f, 0.5f, 0.5f);
+        drawString(graphics, font, __("label.kugelblitz.frequency", container().getFrequency()), 12, 164, 0x8AFF8A);
+        drawString(graphics, font, __("label.kugelblitz.transformation"), 12, 128, 0x8AFF8A);
         int w = font.width(__("label.kugelblitz.energy_gen"));
-        graphics.drawCenteredString(font, __("label.kugelblitz.energy_gen"), 248-w/2, 128, 0x8AFF8A);
-        graphics.pose().popPose();
+        drawCenteredString(graphics, font, __("label.kugelblitz.energy_gen"), 248-w/2, 128, 0x8AFF8A);
+        graphics.popPose();
 
         if(!isCasingValid()) {
             casingTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
@@ -180,14 +180,14 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
                     if(container().getMass() < MIN_MASS*1.1 || container().getMass() > MAX_MASS*0.9) {
                         color = 0xFF0000;
                     }
-                    graphics.drawString(font, __("label.kugelblitz.blackhole_mass", formatMass(container().getMass())), 6, 16, color);
-                    graphics.drawString(font, __("label.kugelblitz.evaporation", formatMass(container().getEvaporation())), 6, 27, 0x8AFF8A);
-                    graphics.drawString(font, __("label.kugelblitz.feeding", formatMass(container().getFeeding())), 6, 38, 0x8AFF8A);
+                    drawString(graphics, font, __("label.kugelblitz.blackhole_mass", formatMass(container().getMass())), 6, 16, color);
+                    drawString(graphics, font, __("label.kugelblitz.evaporation", formatMass(container().getEvaporation())), 6, 27, 0x8AFF8A);
+                    drawString(graphics, font, __("label.kugelblitz.feeding", formatMass(container().getFeeding())), 6, 38, 0x8AFF8A);
                     color = 0x8AFF8A;
                     if(container().getStability() < 40) {
                         color = 0xFF0000;
                     }
-                    graphics.drawString(font, __("label.kugelblitz.stability", container().getStability()), 6, 48, color);
+                    drawString(graphics, font, __("label.kugelblitz.stability", container().getStability()), 6, 48, color);
                 }
                 checkboxCasing.addTooltip(__("tooltip.kugelblitz.flux_regulators", container().getFluxRegulators()));
                 checkboxCasing.addTooltip(__("tooltip.kugelblitz.transformers", container().getTransformers()));
@@ -210,32 +210,32 @@ public class ChamberTerminalScreen extends AbstractContainerScreen<ChamberTermin
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        blit(graphics, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 
-    private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
+    private void renderTooltips(PoseStack graphics, int pMouseX, int pMouseY) {
         for(NCGuiElement widget: widgets) {
            if(widget.isMouseOver(pMouseX, pMouseY)) {
-               graphics.renderTooltip(font, widget.getTooltips(),
+               renderTooltip(graphics, widget.getTooltips(),
                        Optional.empty(), pMouseX, pMouseY);
            }
         }
         if(checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(font, checkboxCasing.getTooltips(),
+            renderTooltip(graphics, checkboxCasing.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
         if(checkboxInterior.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(font, checkboxInterior.getTooltips(),
+            renderTooltip(graphics, checkboxInterior.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
         energyBar.clearTooltips();
         energyBar.addTooltip(__(energyGenLine(), container().energyPerTick()));
         if(energyBar.isMouseOver(pMouseX, pMouseY+10)) {
-            graphics.renderTooltip(font, energyBar.getTooltips(),
+            renderTooltip(graphics, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
     }

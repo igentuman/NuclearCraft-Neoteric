@@ -1,7 +1,6 @@
 package igentuman.nc.client.block.turbine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Transformation;
 import igentuman.nc.block.turbine.entity.TurbineRotorBE;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.util.annotation.NothingNullByDefault;
@@ -19,10 +18,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 
-import static com.mojang.math.Axis.*;
 import static igentuman.nc.block.turbine.TurbineBladeBlock.HIDDEN;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS;
 import static igentuman.nc.multiblock.turbine.TurbineRegistration.dummyBlade;
@@ -85,22 +83,22 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
         angle %= 360;
         pPoseStack.translate(0.5, 0.5, 0.5);
         Direction facing = blockstate.getValue(TurbineRotorBlock.FACING);
-        Quaternionf rotation = null;
-        Quaternionf rotation2 = null;
+        Quaternion rotation = null;
+        Quaternion rotation2 = null;
         switch (facing) {
             case NORTH:
             case SOUTH:
-                rotation = ZN.rotationDegrees(angle);
-                rotation2 = ZN.rotationDegrees(angle+90);
+                rotation = Vector3f.ZN.rotationDegrees(angle);
+                rotation2 = Vector3f.ZN.rotationDegrees(angle+90);
                 break;
             case EAST:
             case WEST:
-                rotation = XN.rotationDegrees(angle);
-                rotation2 = XN.rotationDegrees(angle+90);
+                rotation = Vector3f.XN.rotationDegrees(angle);
+                rotation2 = Vector3f.XN.rotationDegrees(angle+90);
                 break;
             default:
-                rotation = YN.rotationDegrees(angle);
-                rotation2 = YN.rotationDegrees(angle+90);
+                rotation = Vector3f.YN.rotationDegrees(angle);
+                rotation2 = Vector3f.YN.rotationDegrees(angle+90);
                 break;
         }
 
@@ -127,21 +125,18 @@ public class TurbineRotorRenderer implements BlockEntityRenderer<BlockEntity> {
 
     }
 
-    private void renderBlade(Direction facing, PoseStack pPoseStack, MultiBufferSource buffer, int combinedOverlay, BlockRenderDispatcher blockRenderer, Quaternionf rotation, BakedModel blade) {
+    private void renderBlade(Direction facing, PoseStack pPoseStack, MultiBufferSource buffer, int combinedOverlay, BlockRenderDispatcher blockRenderer, Quaternion rotation, BakedModel blade) {
 
         pPoseStack.translate(0.5, 0.5, 0.5);
-        Transformation tr = new Transformation(new Vector3f(0, 0, 0), rotation, new Vector3f(1f, (getAttachedBlades()+1)/2f*scaling, 1f), null);
         BlockState theBlade = bottomBlade;
+        pPoseStack.pushPose();
+        pPoseStack.mulPose(rotation);
         if(facing.getAxis() == Y) {
-            tr = new Transformation(
-                    new Vector3f(0, 0, 0),
-                    rotation,
-                    new Vector3f(1f, 1f, (getAttachedBlades()+1)/2f*scaling),
-                    null
-            );
+            pPoseStack.scale(1f, 1f, (getAttachedBlades()+1)/2f*scaling);
             theBlade = bladeNorth;
+        } else {
+            pPoseStack.scale(1f, (getAttachedBlades()+1)/2f*scaling, 1f);
         }
-        pPoseStack.pushTransformation(tr);
         pPoseStack.translate(-0.5, -0.5, -0.5);
         blockRenderer.getModelRenderer().renderModel(
                 pPoseStack.last(), buffer.getBuffer(RenderType.cutout()), theBlade, blade, 0.7f, 0.7f, 0.7f,

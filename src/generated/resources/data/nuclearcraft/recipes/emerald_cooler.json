@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
     "B": {
@@ -17,6 +16,5 @@
   ],
   "result": {
     "item": "nuclearcraft:emerald_cooler"
-  },
-  "show_notification": true
+  }
 }

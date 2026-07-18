@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import static com.mojang.math.Axis.*;
+import com.mojang.math.Vector3f;
 import static net.minecraft.world.level.block.DirectionalBlock.FACING;
 
 @NothingNullByDefault
@@ -44,11 +44,11 @@ public class EXPLRenderer implements BlockEntityRenderer<BlockEntity> {
 
         //rotating model according to direction
         switch (blockstate.getValue(FACING)) {
-            case NORTH -> pPoseStack.mulPose(ZN.rotationDegrees(90));
-            case SOUTH -> pPoseStack.mulPose(ZN.rotationDegrees(-90));
-            case EAST -> pPoseStack.mulPose(XN.rotationDegrees(90));
-            case WEST -> pPoseStack.mulPose(XN.rotationDegrees(-90));
-            case DOWN -> pPoseStack.mulPose(YP.rotationDegrees(180));
+            case NORTH -> pPoseStack.mulPose(Vector3f.ZN.rotationDegrees(90));
+            case SOUTH -> pPoseStack.mulPose(Vector3f.ZN.rotationDegrees(-90));
+            case EAST -> pPoseStack.mulPose(Vector3f.XN.rotationDegrees(90));
+            case WEST -> pPoseStack.mulPose(Vector3f.XN.rotationDegrees(-90));
+            case DOWN -> pPoseStack.mulPose(Vector3f.YP.rotationDegrees(180));
         }
 
         //scaling model height

@@ -27,6 +27,7 @@ public class BigSlot extends NCGuiElement {
     }
 
     public BigSlot(int xMin, int yMin, String pType)  {
+        super(xMin, yMin, 26, 26, net.minecraft.network.chat.Component.empty());
         x = xMin;
         y = yMin;
         width = 26;

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
     "B": {
@@ -24,6 +23,5 @@
   "result": {
     "count": 4,
     "item": "nuclearcraft:accelerator_beam_port"
-  },
-  "show_notification": true
+  }
 }

@@ -1,6 +1,7 @@
 package igentuman.nc.item;
 
 import igentuman.nc.content.energy.BatteryBlocks;
+import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.handler.ItemEnergyHandler;
 import igentuman.nc.util.capability.CapabilityUtils;
 import igentuman.nc.util.capability.CustomEnergyStorage;
@@ -30,7 +31,7 @@ public class BatteryBlockItem extends BlockItem
 {
 	public BatteryBlockItem(Block pBlock, Properties props)
 	{
-		this(pBlock, props, CreativeTabs.NC_BLOCKS);
+		this(pBlock, props, CreativeTabs.NC_BLOCKS_TAB);
 	}
 
 	public BatteryBlockItem(Block pBlock, Properties props, CreativeModeTab group)

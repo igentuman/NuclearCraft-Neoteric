@@ -32,7 +32,7 @@ public class Q36EnergyFlash extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide && tickCount >= LIFETIME_TICKS) {
+        if (!level.isClientSide && tickCount >= LIFETIME_TICKS) {
             discard();
         }
     }

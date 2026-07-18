@@ -2,6 +2,7 @@ package igentuman.nc.entity.anomaly;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
@@ -47,13 +48,13 @@ public class ElectricAnomalyEntity extends AnomalyEntity {
             return;
         }
         LivingEntity target = targets.get(random.nextInt(targets.size()));
-        LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level());
+        LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
         if (bolt != null) {
             bolt.moveTo(target.getX(), target.getY(), target.getZ());
             bolt.setVisualOnly(true);
-            level().addFreshEntity(bolt);
+            level.addFreshEntity(bolt);
         }
-        target.hurt(damageSources().lightningBolt(), (float) (double) ANOMALY_CONFIG.ELECTRIC_DAMAGE.get());
+        target.hurt(DamageSource.LIGHTNING_BOLT, (float) (double) ANOMALY_CONFIG.ELECTRIC_DAMAGE.get());
     }
 
     @Override
@@ -64,10 +65,10 @@ public class ElectricAnomalyEntity extends AnomalyEntity {
             for (int dy = -8; dy <= 8; dy++) {
                 for (int dz = -13; dz <= 13; dz++) {
                     BlockPos pos = center.offset(dx, dy, dz);
-                    if (!level().isLoaded(pos)) {
+                    if (!level.isLoaded(pos)) {
                         continue;
                     }
-                    BlockEntity be = level().getBlockEntity(pos);
+                    BlockEntity be = level.getBlockEntity(pos);
                     if (be == null) {
                         continue;
                     }

@@ -13,8 +13,8 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -71,17 +71,17 @@ public class FuelInfoCategory implements IRecipeCategory<FuelInfoRecipe> {
     }
 
     @Override
-    public void draw(FuelInfoRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(FuelInfoRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
         Font font = Minecraft.getInstance().font;
-        graphics.drawString(font, __("jei.nuclearcraft.fuel_info.title", recipe.getName().toUpperCase()), 2, 1, 0xFF404040, false);
+        font.draw(poseStack, __("jei.nuclearcraft.fuel_info.title", recipe.getName().toUpperCase()), 2f, 1f, 0xFF404040);
 
         int y = HEADER;
         int textX = 24;
         for (FuelInfoRecipe.Variant v : recipe.getVariants()) {
-            graphics.pose().pushPose();
+            poseStack.pushPose();
 
-            graphics.drawString(font, __(v.labelKey).getString(), textX, y+3, 0xFF202020, false);
-            graphics.pose().scale(0.7F, 0.7F, 1F);
+            font.draw(poseStack, __(v.labelKey).getString(), (float)textX, (float)(y+3), 0xFF202020);
+            poseStack.scale(0.7F, 0.7F, 1F);
             int sx = (int)(textX-12 / 0.7F);
             int sy = (int)((y + 10) / 0.7F);
             String stats;
@@ -99,8 +99,8 @@ public class FuelInfoCategory implements IRecipeCategory<FuelInfoRecipe> {
                         TextUtils.numberFormat(Math.log((ItemRadiation.byItem(v.item.getItem())+0.01)*10000)*(Math.pow(v.def.heat / 100 +  200 / (double)v.def.depletion + 0.5, 1.5)*2))
                 ).getString();
             }
-            graphics.drawString(font, stats, sx, sy + 10, Color.darkGray.getRGB(), false);
-            graphics.pose().popPose();
+            font.draw(poseStack, stats, (float)sx, (float)(sy + 10), Color.darkGray.getRGB());
+            poseStack.popPose();
             y += ROW_HEIGHT;
         }
     }

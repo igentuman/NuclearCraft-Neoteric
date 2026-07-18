@@ -15,8 +15,7 @@ import igentuman.nc.network.toServer.PacketGuiButtonPress;
 import igentuman.nc.util.builder.ReactorDesignParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button.Builder;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -118,7 +117,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         bId = id;
         height = 20;
         width = 80;
-        btn = new Builder(label, o).pos(X(), Y()).size(80, 20).build();
+        btn = new net.minecraft.client.gui.components.Button(X(), Y(), 80, 20, label, o);
     }
 
     public List<Component> getTooltips() {
@@ -126,7 +125,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
     }
 
     @Override
-    public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+    public void draw(PoseStack transform, int mX, int mY, float pTicks) {
         super.draw(transform, mX, mY, pTicks);
         btn.render(transform, mX, mY, pTicks);
     }
@@ -412,7 +411,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         public int timer = 2000;
         public MultiblockBuilderScreen screen;
 
-        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
             if(screen.blockMap.isEmpty()) return;
             super.draw(transform, mX, mY, pTicks);
         }
@@ -452,7 +451,7 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         public String link = "";
         public List<Component> tooltips = new ArrayList<>();
 
-        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
             super.draw(transform, mX, mY, pTicks);
         }
 
@@ -744,14 +743,14 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
 
         @Override
-        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
-            transform.blit(TEXTURE, X(), Y(), 0, 0, 18, 18);
-            transform.renderItem(icon, X() + 1, Y() + 1);
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+            blit(transform, X(), Y(), 0, 0, 18, 18);
+            Minecraft.getInstance().getItemRenderer().renderGuiItem(icon, X() + 1, Y() + 1);
             if (!enabled) {
-                transform.fill(X() + 1, Y() + 1, X() + 17, Y() + 17, 0xAA101010);
+                fill(transform, X() + 1, Y() + 1, X() + 17, Y() + 17, 0xAA101010);
             }
             if (mX >= X() && mX < X() + 18 && mY >= Y() && mY < Y() + 18) {
-                transform.fill(X() + 1, Y() + 1, X() + 17, Y() + 17, 0x60FFFFFF);
+                fill(transform, X() + 1, Y() + 1, X() + 17, Y() + 17, 0x60FFFFFF);
             }
         }
 
@@ -786,17 +785,17 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
         }
 
         @Override
-        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
-            transform.fill(X(), Y(), X() + width, Y() + height, 0xFF000000);
-            transform.fill(X() + 1, Y() + 1, X() + width - 1, Y() + height - 1, 0xFF8B8B8B);
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
+            fill(transform, X(), Y(), X() + width, Y() + height, 0xFF000000);
+            fill(transform, X() + 1, Y() + 1, X() + width - 1, Y() + height - 1, 0xFF8B8B8B);
             int cx = X() + width / 2;
             int cy = Y() + height / 2;
-            transform.fill(X() + 2, cy, X() + width - 2, cy + 1, 0xFF101010);
+            fill(transform, X() + 2, cy, X() + width - 2, cy + 1, 0xFF101010);
             if (sign > 0) {
-                transform.fill(cx, Y() + 2, cx + 1, Y() + height - 2, 0xFF101010);
+                fill(transform, cx, Y() + 2, cx + 1, Y() + height - 2, 0xFF101010);
             }
             if (mX >= X() && mX < X() + width && mY >= Y() && mY < Y() + height) {
-                transform.fill(X() + 1, Y() + 1, X() + width - 1, Y() + height - 1, 0x60FFFFFF);
+                fill(transform, X() + 1, Y() + 1, X() + width - 1, Y() + height - 1, 0x60FFFFFF);
             }
         }
 

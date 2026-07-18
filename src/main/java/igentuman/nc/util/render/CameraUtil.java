@@ -9,8 +9,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.Level;
 import com.mojang.blaze3d.systems.RenderSystem;
-import org.joml.Matrix4f;
-import org.joml.Vector4f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector4f;
 
 public class CameraUtil {
     public static Vec3 worldToScreenPos(BlockPos pos, float partialTicks) {
@@ -50,17 +50,17 @@ public class CameraUtil {
         Matrix4f modelViewMatrix = RenderSystem.getModelViewMatrix();
 
         Vector4f screenPos = new Vector4f((float) viewPos.x, (float) viewPos.y, (float) viewPos.z, 1.0F);
-        screenPos.mul(modelViewMatrix);
-        screenPos.mul(projMatrix);
+        screenPos.transform(modelViewMatrix);
+        screenPos.transform(projMatrix);
 
-        if (screenPos.w != 0.0F) {
-            float invW = 1.0F / screenPos.w;
-            screenPos.set(screenPos.x * invW, screenPos.y * invW, screenPos.z * invW, 1.0F);
+        if (screenPos.w() != 0.0F) {
+            float invW = 1.0F / screenPos.w();
+            screenPos.set(screenPos.x() * invW, screenPos.y() * invW, screenPos.z() * invW, 1.0F);
 
-            double screenX = (screenPos.x + 1.0) * 0.5 * mc.getWindow().getGuiScaledWidth();
-            double screenY = (1.0 - screenPos.y) * 0.5 * mc.getWindow().getGuiScaledHeight();
+            double screenX = (screenPos.x() + 1.0) * 0.5 * mc.getWindow().getGuiScaledWidth();
+            double screenY = (1.0 - screenPos.y()) * 0.5 * mc.getWindow().getGuiScaledHeight();
 
-            return new Vec3(screenX, screenY, screenPos.z);
+            return new Vec3(screenX, screenY, screenPos.z());
         }
 
         return null;

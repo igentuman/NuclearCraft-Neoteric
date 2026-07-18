@@ -1,9 +1,10 @@
 package igentuman.nc.item;
 
 import igentuman.nc.content.materials.Blocks;
-import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.ItemStack;
 
 public class NCBlockItem extends Item {
     public NCBlockItem(Properties pProperties) {
@@ -11,7 +12,9 @@ public class NCBlockItem extends Item {
     }
 
     @Override
-    public boolean isEnabled(@NotNull FeatureFlagSet pEnabledFeatures) {
-        return Blocks.get().registered().containsKey(this.toString().replace("_block", ""));
+    public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {
+        if (Blocks.get().registered().containsKey(this.toString().replace("_block", ""))) {
+            super.fillItemCategory(pCategory, pItems);
+        }
     }
 }

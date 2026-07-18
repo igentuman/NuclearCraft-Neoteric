@@ -3,7 +3,9 @@ package igentuman.nc.client.gui.crafter;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -58,7 +60,7 @@ public class ScrollableItemGrid extends NCGuiElement {
     private int gy() { return originY + y; }
 
     @Override
-    public void draw(GuiGraphics g, int mX, int mY, float pt) {
+    public void draw(PoseStack g, int mX, int mY, float pt) {
         // No inserted containers -> render no grid at all.
         if (cells.isEmpty()) return;
 
@@ -68,48 +70,49 @@ public class ScrollableItemGrid extends NCGuiElement {
             for (int c = 0; c < cols; c++) {
                 int cellX = gx() + c * 18;
                 int cellY = gy() + r * 18;
-                g.blit(TEXTURE, cellX, cellY, 0, 0, 18, 18);
+                RenderSystem.setShaderTexture(0, TEXTURE);
+                blit(g, cellX, cellY, 0, 0, 18, 18);
                 int idx = start + r * cols + c;
                 if (idx >= cells.size()) continue;
                 Cell cell = cells.get(idx);
                 int ix = cellX + 1;
                 int iy = cellY + 1;
                 if (cell.stored() == 0 && cell.craftable()) {
-                    g.fill(ix, iy, ix + 16, iy + 16, 0x4033AAFF);
+                    GuiComponent.fill(g, ix, iy, ix + 16, iy + 16, 0x4033AAFF);
                 }
-                g.renderItem(cell.stack(), ix, iy);
+                net.minecraft.client.Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(cell.stack(), ix, iy);
                 if (cell.stored() > 0) {
                     String txt = fmt(cell.stored());
                     float scale = 0.75f;
                     float tx = (ix + 16 - font.width(txt) * scale) / scale;
                     float ty = (iy + 16 - font.lineHeight * scale) / scale;
-                    g.pose().pushPose();
-                    g.pose().translate(0, 0, 200);
-                    g.pose().scale(scale, scale, 1f);
-                    g.drawString(font, txt, (int) tx, (int) ty, 0xFFFFFF, true);
-                    g.pose().popPose();
+                    g.pushPose();
+                    g.translate(0, 0, 200);
+                    g.scale(scale, scale, 1f);
+                    font.drawShadow(g, txt, tx, ty, 0xFFFFFF);
+                    g.popPose();
                 }
             }
         }
         int[] pos = hoveredCellPos(mX, mY);
         if (pos != null && hovered(mX, mY) != null) {
-            g.pose().pushPose();
-            g.pose().translate(0, 0, 300);
-            g.fill(pos[0] + 1, pos[1] + 1, pos[0] + 17, pos[1] + 17, 0x80FFFFFF);
-            g.pose().popPose();
+            g.pushPose();
+            g.translate(0, 0, 300);
+            GuiComponent.fill(g, pos[0] + 1, pos[1] + 1, pos[0] + 17, pos[1] + 17, 0x80FFFFFF);
+            g.popPose();
         }
         drawScrollbar(g);
     }
 
-    private void drawScrollbar(GuiGraphics g) {
+    private void drawScrollbar(PoseStack g) {
         int barX = gx() + cols * 18 + 2;
         int barY = gy();
         int barH = rows * 18;
-        g.fill(barX, barY, barX + SCROLLBAR_WIDTH - 2, barY + barH, 0xFF373737);
+        GuiComponent.fill(g, barX, barY, barX + SCROLLBAR_WIDTH - 2, barY + barH, 0xFF373737);
         int max = maxScroll();
         int thumbH = max == 0 ? barH : Math.max(12, barH - max * 6);
         int thumbY = barY + (max == 0 ? 0 : (barH - thumbH) * scrollRow / max);
-        g.fill(barX + 1, thumbY, barX + SCROLLBAR_WIDTH - 3, thumbY + thumbH, 0xFFC6C6C6);
+        GuiComponent.fill(g, barX + 1, thumbY, barX + SCROLLBAR_WIDTH - 3, thumbY + thumbH, 0xFFC6C6C6);
     }
 
     @Nullable
@@ -130,14 +133,16 @@ public class ScrollableItemGrid extends NCGuiElement {
         return cells.get(idx);
     }
 
-    public void renderTooltip(GuiGraphics g, int mX, int mY) {
+    public void renderTooltip(PoseStack g, int mX, int mY) {
         Cell cell = hovered(mX, mY);
         if (cell == null || cell.stack().isEmpty()) return;
         Minecraft mc = Minecraft.getInstance();
-        List<Component> tt = new ArrayList<>(Screen.getTooltipFromItem(mc, cell.stack()));
+        List<Component> tt = new ArrayList<>(cell.stack().getTooltipLines(mc.player, net.minecraft.world.item.TooltipFlag.Default.NORMAL));
         if (cell.stored() > 0) tt.add(__("gui.nc.crafter.stored", cell.stored()));
         if (cell.craftable()) tt.add(__("gui.nc.crafter.craftable_tt"));
-        g.renderComponentTooltip(mc.font, tt, mX, mY);
+        if (net.minecraft.client.Minecraft.getInstance().screen != null) {
+            net.minecraft.client.Minecraft.getInstance().screen.renderComponentTooltip(g, tt, mX, mY);
+        }
     }
 
     public boolean isInBounds(double mX, double mY) {

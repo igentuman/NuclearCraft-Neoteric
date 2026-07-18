@@ -1,7 +1,7 @@
 package igentuman.nc.compat.gregtech;
 
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
+import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.handler.config.CommonConfig.GTCEUCompatibilityConfig.GTCEUTier;
@@ -68,11 +68,11 @@ public class GTUtils {
     }
 
     public static int FE2EURatio() {
-        return FeCompat.ratio(true);
+        return PlatformEnergyCompat.ratio(true);
     }
 
     public static int EU2FERatio() {
-        return FeCompat.ratio(false);
+        return PlatformEnergyCompat.ratio(false);
     }
 
     public static void transferEU(NuclearCraftBE nuclearCraftBE, BlockEntity be, CustomEnergyStorage energyStorage, Direction direction) {

@@ -1,7 +1,7 @@
 package igentuman.nc.client.gui.element;
 
 import igentuman.nc.client.gui.element.button.NCImageButton;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 
@@ -19,12 +19,7 @@ public class TooltipArea extends NCGuiElement {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        this.renderButton(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
-    }
-
-    @Override
-    public void renderButton(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderButton(PoseStack graphics, int pMouseX, int pMouseY, float pPartialTick) {
          if (this.isHovered) {
             this.renderToolTip(graphics, pMouseX, pMouseY);
         }

@@ -4,6 +4,7 @@ import igentuman.nc.block.fusion.entity.FusionCoreBE;
 import igentuman.nc.block.fusion.entity.FusionCoreProxyBE;
 import igentuman.nc.container.FusionCoreContainer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;

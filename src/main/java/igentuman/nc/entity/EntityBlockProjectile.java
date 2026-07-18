@@ -42,10 +42,10 @@ public class EntityBlockProjectile extends ThrowableProjectile {
         super.tick();
 
         // Leave a trail of particles
-        if (level().isClientSide) {
+        if (level.isClientSide) {
             Vec3 motion = getDeltaMovement().normalize().scale(0.1);
             for (int i = 0; i < 2; i++) {
-                level().addParticle(
+                level.addParticle(
                     ParticleTypes.SMOKE,
                     getX() - motion.x + random.nextDouble() * 0.2 - 0.1,
                     getY() - motion.y + random.nextDouble() * 0.2 - 0.1,
@@ -67,8 +67,8 @@ public class EntityBlockProjectile extends ThrowableProjectile {
 
         if (this.tickCount < 3) return;
 
-        if (!this.level().isClientSide) {
-            this.level().broadcastEntityEvent(this, (byte)3);
+        if (!this.level.isClientSide) {
+            this.level.broadcastEntityEvent(this, (byte)3);
             this.playSound(SoundEvents.GENERIC_EXPLODE, 0.8F, 0.6F / (this.random.nextFloat() * 0.2F + 0.9F));
             this.discard();
         }
@@ -79,14 +79,14 @@ public class EntityBlockProjectile extends ThrowableProjectile {
         super.onHitEntity(result);
 
         Entity target = result.getEntity();
-        if (!level().isClientSide && target instanceof LivingEntity livingTarget) {
+        if (!level.isClientSide && target instanceof LivingEntity livingTarget) {
             // Apply damage
-            DamageSource damageSource = this.damageSources().mobProjectile(this,
+            DamageSource damageSource = DamageSource.thrown(this,
                 this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null);
             target.hurt(damageSource, PROJECTILE_DAMAGE);
 
             // Apply radiation if it's a player
-            if (livingTarget.equals(this.level().getNearestPlayer(this, 64))) {
+            if (livingTarget.equals(this.level.getNearestPlayer(this, 64))) {
                 livingTarget.getCapability(igentuman.nc.radiation.data.PlayerRadiationProvider.PLAYER_RADIATION)
                     .ifPresent(radiation -> {
                         long currentRadiation = radiation.getRadiation();
@@ -121,7 +121,7 @@ public class EntityBlockProjectile extends ThrowableProjectile {
                 double offsetY = (random.nextDouble() - 0.5) * 0.8;
                 double offsetZ = (random.nextDouble() - 0.5) * 0.8;
 
-                this.level().addParticle(
+                this.level.addParticle(
                     ParticleTypes.LARGE_SMOKE,
                     this.getX() + offsetX,
                     this.getY() + 0.2 + offsetY,

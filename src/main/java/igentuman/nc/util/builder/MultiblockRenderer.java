@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.client.model.data.ModelData;
-import org.joml.Quaternionf;
+import com.mojang.math.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -61,8 +61,8 @@ public class MultiblockRenderer {
         stack.translate(x + w/2.0f, y + h/2.0f, 100);
         RenderSystem.setShader(GameRenderer::getRendertypeTextShader);
         // Apply isometric-style rotation for better viewing angle
-        stack.mulPose(new Quaternionf().rotationX((float) Math.toRadians(30)));
-        stack.mulPose(new Quaternionf().rotationY((float) Math.toRadians(-135)));
+        stack.mulPose(Vector3f.XP.rotationDegrees(30));
+        stack.mulPose(Vector3f.YP.rotationDegrees(-135));
 
         // Scale to fit within bounds
 

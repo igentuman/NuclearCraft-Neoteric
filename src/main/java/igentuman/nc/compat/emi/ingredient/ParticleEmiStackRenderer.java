@@ -1,10 +1,10 @@
 package igentuman.nc.compat.emi.ingredient;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.emi.api.stack.EmiStack;
 import igentuman.nc.content.particles.Particle;
 import igentuman.nc.content.particles.ParticleStack;
-import net.minecraft.client.gui.GuiGraphics;
 
 /**
  * EMI renderer for ParticleStack
@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
  */
 public class ParticleEmiStackRenderer {
     
-    public static void render(EmiStack stack, GuiGraphics graphics, int x, int y, float delta, int flags) {
+    public static void render(EmiStack stack, PoseStack graphics, int x, int y, float delta, int flags) {
         if (!(stack instanceof ParticleEmiStack particleEmiStack)) {
             return;
         }
@@ -25,7 +25,7 @@ public class ParticleEmiStackRenderer {
         renderParticle(graphics, x, y, particleStack);
     }
     
-    private static void renderParticle(GuiGraphics graphics, int x, int y, ParticleStack particleStack) {
+    private static void renderParticle(PoseStack graphics, int x, int y, ParticleStack particleStack) {
         Particle particle = particleStack.getParticle();
         if (particle == null) {
             return;
@@ -35,10 +35,10 @@ public class ParticleEmiStackRenderer {
         RenderSystem.setShaderTexture(0, particle.getTexture());
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        
+
         // Draw the texture
-        graphics.blit(particle.getTexture(), x, y, 0, 0, 16, 16, 16, 16);
-        
+        net.minecraft.client.gui.GuiComponent.blit(graphics, x, y, 0, 0, 16, 16, 16, 16);
+
         RenderSystem.disableBlend();
     }
 }

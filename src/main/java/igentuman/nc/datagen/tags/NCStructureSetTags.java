@@ -1,7 +1,6 @@
 package igentuman.nc.datagen.tags;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
@@ -12,7 +11,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 public class NCStructureSetTags extends TagsProvider<StructureSet> {
 
     public NCStructureSetTags(DataGenerator generator, GatherDataEvent event) {
-        super(generator.getPackOutput(), Registries.STRUCTURE_SET, event.getLookupProvider(), MODID, event.getExistingFileHelper());
+        super(generator, BuiltinRegistries.STRUCTURE_SETS, MODID, event.getExistingFileHelper());
     }
 
 
@@ -26,10 +25,5 @@ public class NCStructureSetTags extends TagsProvider<StructureSet> {
     @Override
     public String getName() {
         return "NuclearCraft Structure Tags";
-    }
-
-    @Override
-    protected void addTags(HolderLookup.Provider provider) {
-        // TODO Auto-generated method stub
     }
 }

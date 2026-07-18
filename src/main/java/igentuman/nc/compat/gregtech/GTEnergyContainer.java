@@ -1,14 +1,20 @@
 package igentuman.nc.compat.gregtech;
 
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.utils.GTMath;
+import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.util.capability.CustomEnergyStorage;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class GTEnergyContainer implements IEnergyContainer {
+
+    private static int saturatedCast(long value) {
+        if (value > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        if (value < Integer.MIN_VALUE) return Integer.MIN_VALUE;
+        return (int) value;
+    }
+
 
     protected final CustomEnergyStorage feStorage;
     protected Direction side;
@@ -33,7 +39,7 @@ public class GTEnergyContainer implements IEnergyContainer {
         int receive = 0;
         if (feBuffer > 0) {
 
-            receive = feStorage.receiveEnergy(GTMath.saturatedCast(feBuffer), true);
+            receive = feStorage.receiveEnergy(saturatedCast(feBuffer), true);
 
             if (receive == 0)
                 return 0;
@@ -46,18 +52,18 @@ public class GTEnergyContainer implements IEnergyContainer {
 
                 // Buffer could not provide max value, save the remainder and continue processing
             } else {
-                receive = GTMath.saturatedCast(feBuffer);
+                receive = saturatedCast(feBuffer);
                 feBuffer = 0;
             }
         }
 
-        long maxPacket = FeCompat.toFeLong(voltage, FeCompat.ratio(false));
+        long maxPacket = PlatformEnergyCompat.toNativeLong(voltage, PlatformEnergyCompat.ratio(false));
         long maximalValue = maxPacket * amperage;
 
         // Try to consume our remainder buffer plus a fresh packet
         if (receive != 0) {
 
-            int consumable = feStorage.receiveEnergy(GTMath.saturatedCast(maximalValue + receive), true);
+            int consumable = feStorage.receiveEnergy(saturatedCast(maximalValue + receive), true);
 
             // Machine unable to consume any power
             if (consumable == 0)
@@ -83,15 +89,15 @@ public class GTEnergyContainer implements IEnergyContainer {
             }
 
             // Able to consume buffered amount plus some amount of power with a packet remainder
-            int ampsToConsume = GTMath.saturatedCast((newPower / maxPacket) + 1);
-            feBuffer = GTMath.saturatedCast((maxPacket * ampsToConsume) - consumable);
+            int ampsToConsume = saturatedCast((newPower / maxPacket) + 1);
+            feBuffer = saturatedCast((maxPacket * ampsToConsume) - consumable);
             feStorage.receiveEnergy(consumable, false);
             return ampsToConsume;
 
             // Else try to draw 1 full packet
         } else {
 
-            int consumable = feStorage.receiveEnergy(GTMath.saturatedCast(maximalValue), true);
+            int consumable = feStorage.receiveEnergy(saturatedCast(maximalValue), true);
 
             // Machine unable to consume any power
             if (consumable == 0)
@@ -109,8 +115,8 @@ public class GTEnergyContainer implements IEnergyContainer {
             }
 
             // Able to consume power with some amount of power remainder in the packet
-            int ampsToConsume = GTMath.saturatedCast((consumable / maxPacket) + 1);
-            feBuffer = GTMath.saturatedCast((maxPacket * ampsToConsume) - consumable);
+            int ampsToConsume = saturatedCast((consumable / maxPacket) + 1);
+            feBuffer = saturatedCast((maxPacket * ampsToConsume) - consumable);
             feStorage.receiveEnergy(consumable, false);
             return ampsToConsume;
         }
@@ -139,14 +145,16 @@ public class GTEnergyContainer implements IEnergyContainer {
     @Override
     public long addEnergy(long energyToAdd) {
         long wasEU = getEnergyStored();
-        feStorage.addEnergy(FeCompat.toFe(energyToAdd, FeCompat.ratio(false)));
+        // 1.19.2: toFe renamed to toNative (returns int)
+        feStorage.addEnergy(PlatformEnergyCompat.toNative(energyToAdd, PlatformEnergyCompat.ratio(false)));
         long newEU = getEnergyStored();
         return newEU - wasEU;
     }
 
     @Override
     public long removeEnergy(long energyToRemove) {
-        return feStorage.extractEnergy(FeCompat.toFe(energyToRemove, FeCompat.ratio(false)), false);
+        // 1.19.2: toFe renamed to toNative (returns int)
+        return feStorage.extractEnergy(PlatformEnergyCompat.toNative(energyToRemove, PlatformEnergyCompat.ratio(false)), false);
     }
 
     @Override
@@ -156,12 +164,12 @@ public class GTEnergyContainer implements IEnergyContainer {
 
     @Override
     public long getEnergyStored() {
-        return FeCompat.toEu(feStorage.getEnergyStored(), FeCompat.ratio(true));
+        return PlatformEnergyCompat.toEu(feStorage.getEnergyStored(), PlatformEnergyCompat.ratio(true));
     }
 
     @Override
     public long getEnergyCapacity() {
-        return FeCompat.toEu(feStorage.getMaxEnergyStored(), FeCompat.ratio(true));
+        return PlatformEnergyCompat.toEu(feStorage.getMaxEnergyStored(), PlatformEnergyCompat.ratio(true));
     }
 
     @Override

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_machines",
   "key": {
     "C": {
@@ -23,6 +22,5 @@
   ],
   "result": {
     "item": "nuclearcraft:analyzer"
-  },
-  "show_notification": true
+  }
 }

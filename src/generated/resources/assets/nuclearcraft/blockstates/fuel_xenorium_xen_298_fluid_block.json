@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft_fluids:block/fluid/fuel_xenorium_xen_298"
+      "model": "nuclearcraft:block/fluid/fuel_xenorium_xen_298"
     }
   }
 }

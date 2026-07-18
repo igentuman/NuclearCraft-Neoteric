@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
     "H": {
@@ -21,6 +20,5 @@
   "result": {
     "count": 8,
     "item": "nuclearcraft:empty_cooler"
-  },
-  "show_notification": true
+  }
 }

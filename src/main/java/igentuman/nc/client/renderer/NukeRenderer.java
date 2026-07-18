@@ -23,10 +23,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
@@ -78,7 +78,7 @@ public class NukeRenderer {
 
         Camera cam = ev.getCamera();
         Vec3 camPos = cam.getPosition();
-        Quaternionf camRot = new Quaternionf(cam.rotation());
+        Quaternion camRot = cam.rotation();
         float partial = ev.getPartialTick();
 
         PoseStack pose = ev.getPoseStack();
@@ -117,7 +117,7 @@ public class NukeRenderer {
         pose.popPose();
     }
 
-    private static void renderBombAdditive(ActiveBomb b, PoseStack pose, Quaternionf camRot, float partial, ShaderInstance shader) {
+    private static void renderBombAdditive(ActiveBomb b, PoseStack pose, Quaternion camRot, float partial, ShaderInstance shader) {
         float t = b.tickCounter + partial;
         BlockPos e = b.epicenter;
         double cx = e.getX() + 0.5;
@@ -166,7 +166,7 @@ public class NukeRenderer {
         }
     }
 
-    private static void renderBombSmoke(ActiveBomb b, PoseStack pose, Quaternionf camRot, float partial, ShaderInstance shader) {
+    private static void renderBombSmoke(ActiveBomb b, PoseStack pose, Quaternion camRot, float partial, ShaderInstance shader) {
         float t = b.tickCounter + partial;
         BlockPos e = b.epicenter;
         double cx = e.getX() + 0.5;
@@ -297,18 +297,18 @@ public class NukeRenderer {
                 (float) (cPos.y - camPos.y),
                 (float) (cPos.z - camPos.z),
                 1.0f);
-        p.mul(viewMatrix);
-        p.mul(projMatrix);
-        if (p.w != 0f) {
-            p.x /= p.w;
-            p.y /= p.w;
-            p.z /= p.w;
+        p.transform(viewMatrix);
+        p.transform(projMatrix);
+        if (p.w() != 0f) {
+            p.setX(p.x() / p.w());
+            p.setY(p.y() / p.w());
+            p.setZ(p.z() / p.w());
         }
-        if (p.z <= -1f || p.z >= 1f) return false;
+        if (p.z() <= -1f || p.z() >= 1f) return false;
 
-        float blurX = p.x * 0.5f + 0.5f;
-        float blurY = p.y * 0.5f + 0.5f;
-        float depth = (p.z + 1f) * 0.5f;
+        float blurX = p.x() * 0.5f + 0.5f;
+        float blurY = p.y() * 0.5f + 0.5f;
+        float depth = (p.z() + 1f) * 0.5f;
 
         // ring radius in screen UV: physical radius / distance, ramped over t
         float worldRing = Math.max(18f, b.yield * 32f) * SHOCKWAVE_MAX_RADIUS_MULT * t;
@@ -337,7 +337,7 @@ public class NukeRenderer {
     }
 
     private static void drawBillboard(double wx, double wy, double wz, float radius,
-                                      Quaternionf camRot, float[] sprite,
+                                      Quaternion camRot, float[] sprite,
                                       int phase, float progress, float yieldN, float alpha,
                                       ShaderInstance shader, PoseStack pose) {
         if (alpha <= 0f || radius <= 0f) return;
@@ -351,7 +351,7 @@ public class NukeRenderer {
                 new Vector3f(-1f, -1f, 0f)
         };
         for (Vector3f vv : v) {
-            camRot.transform(vv);
+            vv.transform(camRot);
             vv.mul(radius);
             vv.add((float) wx, (float) wy, (float) wz);
         }
@@ -359,15 +359,15 @@ public class NukeRenderer {
         Tesselator tess = Tesselator.getInstance();
         BufferBuilder bb = tess.getBuilder();
         bb.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
-        bb.vertex(m, v[0].x, v[0].y, v[0].z).color(255, 255, 255, 255).uv(sprite[0], sprite[3]).endVertex();
-        bb.vertex(m, v[1].x, v[1].y, v[1].z).color(255, 255, 255, 255).uv(sprite[2], sprite[3]).endVertex();
-        bb.vertex(m, v[2].x, v[2].y, v[2].z).color(255, 255, 255, 255).uv(sprite[2], sprite[1]).endVertex();
-        bb.vertex(m, v[3].x, v[3].y, v[3].z).color(255, 255, 255, 255).uv(sprite[0], sprite[1]).endVertex();
+        bb.vertex(m, v[0].x(), v[0].y(), v[0].z()).color(255, 255, 255, 255).uv(sprite[0], sprite[3]).endVertex();
+        bb.vertex(m, v[1].x(), v[1].y(), v[1].z()).color(255, 255, 255, 255).uv(sprite[2], sprite[3]).endVertex();
+        bb.vertex(m, v[2].x(), v[2].y(), v[2].z()).color(255, 255, 255, 255).uv(sprite[2], sprite[1]).endVertex();
+        bb.vertex(m, v[3].x(), v[3].y(), v[3].z()).color(255, 255, 255, 255).uv(sprite[0], sprite[1]).endVertex();
         BufferUploader.drawWithShader(bb.end());
     }
 
     private static void drawVerticalBillboard(double wx, double wy, double wz, float halfW, float halfH,
-                                              Quaternionf camRot, float[] sprite,
+                                              Quaternion camRot, float[] sprite,
                                               int phase, float progress, float yieldN, float alpha,
                                               ShaderInstance shader, PoseStack pose) {
         if (alpha <= 0f || halfW <= 0f || halfH <= 0f) return;
@@ -377,13 +377,14 @@ public class NukeRenderer {
         // Yaw-locked billboard: horizontal axis follows camera right projected to ground plane,
         // vertical axis stays world Y so the stem reads as a column from any angle.
         Vector3f camRight = new Vector3f(1f, 0f, 0f);
-        camRot.transform(camRight);
-        camRight.y = 0f;
-        if (camRight.lengthSquared() < 1e-6f) camRight.set(1f, 0f, 0f);
+        camRight.transform(camRot);
+        camRight.set(camRight.x(), 0f, camRight.z());
+        float lenSq = camRight.x() * camRight.x() + camRight.z() * camRight.z();
+        if (lenSq < 1e-6f) camRight.set(1f, 0f, 0f);
         camRight.normalize();
 
-        float rx = camRight.x * halfW;
-        float rz = camRight.z * halfW;
+        float rx = camRight.x() * halfW;
+        float rz = camRight.z() * halfW;
         Vector3f[] v = {
                 new Vector3f(-rx,  halfH, -rz),
                 new Vector3f( rx,  halfH,  rz),
@@ -396,10 +397,10 @@ public class NukeRenderer {
         Tesselator tess = Tesselator.getInstance();
         BufferBuilder bb = tess.getBuilder();
         bb.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
-        bb.vertex(m, v[0].x, v[0].y, v[0].z).color(255, 255, 255, 255).uv(sprite[0], sprite[3]).endVertex();
-        bb.vertex(m, v[1].x, v[1].y, v[1].z).color(255, 255, 255, 255).uv(sprite[2], sprite[3]).endVertex();
-        bb.vertex(m, v[2].x, v[2].y, v[2].z).color(255, 255, 255, 255).uv(sprite[2], sprite[1]).endVertex();
-        bb.vertex(m, v[3].x, v[3].y, v[3].z).color(255, 255, 255, 255).uv(sprite[0], sprite[1]).endVertex();
+        bb.vertex(m, v[0].x(), v[0].y(), v[0].z()).color(255, 255, 255, 255).uv(sprite[0], sprite[3]).endVertex();
+        bb.vertex(m, v[1].x(), v[1].y(), v[1].z()).color(255, 255, 255, 255).uv(sprite[2], sprite[3]).endVertex();
+        bb.vertex(m, v[2].x(), v[2].y(), v[2].z()).color(255, 255, 255, 255).uv(sprite[2], sprite[1]).endVertex();
+        bb.vertex(m, v[3].x(), v[3].y(), v[3].z()).color(255, 255, 255, 255).uv(sprite[0], sprite[1]).endVertex();
         BufferUploader.drawWithShader(bb.end());
     }
 

@@ -62,7 +62,7 @@ public class PipeConnectorContainer extends AbstractContainerMenu {
     public PipeConnectorContainer(int windowId, BlockPos pos, Inventory inv) {
         super(PIPE_CONNECTOR_CONTAINER.get(), windowId);
         this.player = inv.player;
-        this.blockEntity = (PipeConnectorBE) player.level().getBlockEntity(pos);
+        this.blockEntity = (PipeConnectorBE) player.level.getBlockEntity(pos);
         addDataSlot(modeSlot);
         addDataSlot(redstoneSlot);
         for (int i = 0; i < CAP_COUNT; i++) {

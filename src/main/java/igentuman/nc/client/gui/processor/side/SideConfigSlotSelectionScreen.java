@@ -13,8 +13,7 @@ import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.content.processors.config.ProcessorSlots;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -98,14 +97,14 @@ public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer<T>> ex
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(graphics);
         int i = this.leftPos;
         int j = this.topPos;
         this.renderBg(graphics, partialTicks, mouseX, mouseY);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.ContainerScreenEvent.Render.Background(this, graphics, mouseX, mouseY));
         RenderSystem.disableDepthTest();
-        for(Renderable widget : this.renderables) {
+        for(Widget widget : this.renderables) {
             widget.render(graphics, mouseX, mouseY, partialTicks);
         }
         PoseStack posestack = RenderSystem.getModelViewStack();
@@ -122,22 +121,22 @@ public class SideConfigSlotSelectionScreen<T extends NCProcessorContainer<T>> ex
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
-    private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font,  __("processor_side_config.title"), imageWidth/2, titleLabelY, 0xffffff);
+    protected void renderLabels(PoseStack graphics, int mouseX, int mouseY) {
+        drawCenteredString(graphics, font,  __("processor_side_config.title"), imageWidth/2, titleLabelY, 0xffffff);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        blit(graphics, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 

@@ -1,7 +1,7 @@
 package igentuman.nc.client.gui.element;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -68,16 +68,16 @@ public class NCTextField extends NCGuiElement {
     }
 
     public void setFieldFocused(boolean value) {
-        editBox.setFocused(value);
+        editBox.setFocus(value);
     }
 
     protected void syncPos() {
-        editBox.setX(X());
-        editBox.setY(Y());
+        editBox.x = X();
+        editBox.y = Y();
     }
 
     @Override
-    public void draw(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void draw(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         syncPos();
         editBox.render(graphics, mouseX, mouseY, partialTicks);
     }
@@ -86,7 +86,7 @@ public class NCTextField extends NCGuiElement {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         syncPos();
         boolean inside = mouseX >= X() && mouseX < X() + width && mouseY >= Y() && mouseY < Y() + height;
-        editBox.setFocused(inside);
+        editBox.setFocus(inside);
         if (inside) {
             editBox.mouseClicked(mouseX, mouseY, button);
             return true;

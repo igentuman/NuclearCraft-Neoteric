@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_kugelblitz",
   "key": {
     "C": {
@@ -23,6 +22,5 @@
   ],
   "result": {
     "item": "nuclearcraft:chamber_terminal"
-  },
-  "show_notification": true
+  }
 }

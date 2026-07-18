@@ -14,7 +14,7 @@ import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -105,14 +105,14 @@ public class RingAcceleratorControllerScreen extends AbstractContainerScreen<Rin
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         xCenter = getGuiLeft()-imageWidth/2;
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
-    private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         for(NCGuiElement widget: widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
         }
@@ -148,8 +148,8 @@ public class RingAcceleratorControllerScreen extends AbstractContainerScreen<Rin
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font,  menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
+    protected void renderLabels(@NotNull PoseStack graphics, int mouseX, int mouseY) {
+        drawCenteredString(graphics, font, menu.getTitle(), imageWidth/2, titleLabelY, 0xffffff);
         if(isCasingValid()) {
             casingTootip = applyFormat(__("tooltip.nc.accelerator.beam", getBeamLength()), ChatFormatting.GOLD);
         } else {
@@ -158,16 +158,16 @@ public class RingAcceleratorControllerScreen extends AbstractContainerScreen<Rin
 
         if(isCasingValid()) {
             if (isInteriorValid()) {
-                graphics.drawString(font, __("tooltip.nc.rf_amplifier.max_temp", TextUtils.scaledFormat(container().getMaxTemperature())), 37, 40, 0xffffff);
-                graphics.drawString(font, __("tooltip.nc.accelerator.temperature", container().getTemperature()), 37, 50, 0xffffff);
-                graphics.drawString(font, __("tooltip.nc.accelerator.voltage", container().getVoltage()), 37, 60, 0xffffff);
-                graphics.drawString(font, __("tooltip.nc.accelerator.strength", numberFormat(container().getStrength())), 37, 70, 0xffffff);
+                drawString(graphics, font, __("tooltip.nc.rf_amplifier.max_temp", TextUtils.scaledFormat(container().getMaxTemperature())), 37, 40, 0xffffff);
+                drawString(graphics, font, __("tooltip.nc.accelerator.temperature", container().getTemperature()), 37, 50, 0xffffff);
+                drawString(graphics, font, __("tooltip.nc.accelerator.voltage", container().getVoltage()), 37, 60, 0xffffff);
+                drawString(graphics, font, __("tooltip.nc.accelerator.strength", numberFormat(container().getStrength())), 37, 70, 0xffffff);
                 if (container().isAcceleratorTooHot()) {
-                    graphics.drawString(font, __("tooltip.nc.accelerator.too_hot"), 37, 80, ChatFormatting.RED.getColor());
+                    drawString(graphics, font, __("tooltip.nc.accelerator.too_hot"), 37, 80, ChatFormatting.RED.getColor());
                 } else if (container().isEnergyTooHigh()) {
-                    graphics.drawString(font, __("tooltip.nc.accelerator.energy_too_high"), 37, 80, ChatFormatting.RED.getColor());
+                    drawString(graphics, font, __("tooltip.nc.accelerator.energy_too_high"), 37, 80, ChatFormatting.RED.getColor());
                 } else if (container().isEnergyTooLow()) {
-                    graphics.drawString(font, __("tooltip.nc.accelerator.energy_too_low"), 37, 80, ChatFormatting.RED.getColor());
+                    drawString(graphics, font, __("tooltip.nc.accelerator.energy_too_low"), 37, 80, ChatFormatting.RED.getColor());
                 }
             } else {
                 interiorTootip = applyFormat(__(getValidationResultKey(), getValidationResultData()), ChatFormatting.RED);
@@ -202,10 +202,10 @@ public class RingAcceleratorControllerScreen extends AbstractContainerScreen<Rin
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        blit(graphics, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 
@@ -226,11 +226,11 @@ public class RingAcceleratorControllerScreen extends AbstractContainerScreen<Rin
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
-    private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
+    private void renderTooltips(PoseStack graphics, int pMouseX, int pMouseY) {
 
         for(NCGuiElement widget: widgets) {
             if(widget.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, widget.getTooltips(),
+                renderTooltip(graphics, widget.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }
         }
@@ -240,11 +240,11 @@ public class RingAcceleratorControllerScreen extends AbstractContainerScreen<Rin
             }
         }
         if(checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(font, checkboxCasing.getTooltips(),
+            renderTooltip(graphics, checkboxCasing.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
         if(checkboxInterior.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(font, checkboxInterior.getTooltips(),
+            renderTooltip(graphics, checkboxInterior.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
 
@@ -253,7 +253,7 @@ public class RingAcceleratorControllerScreen extends AbstractContainerScreen<Rin
             heatBar.addTooltip(__("reactor.cooling", container().getCooling()).withStyle(ChatFormatting.AQUA));
             heatBar.addTooltip(__("reactor.heating", container().getHeating()).withStyle(ChatFormatting.RED));
             heatBar.addTooltip(__("reactor.net_heat", container().getNetHeat()).withStyle(ChatFormatting.GOLD));
-            graphics.renderTooltip(font, heatBar.getTooltips(),
+            renderTooltip(graphics, heatBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
 
@@ -265,7 +265,7 @@ public class RingAcceleratorControllerScreen extends AbstractContainerScreen<Rin
             } else {
                 energyBar.addTooltip(applyFormat(__("tooltip.nc.energy.per_tick", scaledFormat(container().getEnergyRequired())).withStyle(ChatFormatting.AQUA)));
             }
-            graphics.renderTooltip(font, energyBar.getTooltips(),
+            renderTooltip(graphics, energyBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
     }

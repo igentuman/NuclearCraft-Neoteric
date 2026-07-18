@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -62,7 +63,7 @@ public class PipeBlock extends Block {
     private final VoxelShape[] shapeCache = new VoxelShape[64];
 
     public PipeBlock() {
-        super(Properties.of()
+        super(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(1.5f)
                 .noOcclusion()

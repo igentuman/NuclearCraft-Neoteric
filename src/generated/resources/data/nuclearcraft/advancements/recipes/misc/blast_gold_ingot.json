@@ -28,6 +28,5 @@
     "recipes": [
       "nuclearcraft:blast_gold_ingot"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

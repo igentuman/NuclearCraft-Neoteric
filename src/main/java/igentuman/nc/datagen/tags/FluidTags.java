@@ -1,13 +1,11 @@
 package igentuman.nc.datagen.tags;
 
 import igentuman.nc.setup.registration.NCFluids;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.FluidTagsProvider;
-import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.Tags.Fluids;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -20,11 +18,11 @@ public class FluidTags extends FluidTagsProvider
 {
 	public FluidTags(DataGenerator gen, GatherDataEvent event)
 	{
-		super(gen.getPackOutput(), event.getLookupProvider(), MODID, event.getExistingFileHelper());
+		super(gen, MODID, event.getExistingFileHelper());
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider provider)
+	protected void addTags()
 	{
 		for(String name: NC_MATERIALS.keySet()) {
 			tag(LIQUIDS_TAG.get(name)).add(NC_MATERIALS.get(name).getStill());
@@ -40,7 +38,7 @@ public class FluidTags extends FluidTagsProvider
 
 		for(String name: NC_GASES.keySet()) {
 			tag(LIQUIDS_TAG.get(name)).add(NC_GASES.get(name).getStill());
-			tag(Fluids.GASEOUS).add(NC_GASES.get(name).getStill());
+			tag(Tags.Fluids.GASEOUS).add(NC_GASES.get(name).getStill());
 		}
 	}
 }

@@ -19,7 +19,6 @@ import java.util.stream.Stream;
 
 import static igentuman.nc.handler.config.OreGenConfig.ORE_CONFIG;
 import static igentuman.nc.world.dimension.Dimensions.WASTELAND_DIM_TYPE;
-import static net.minecraft.core.registries.Registries.DIMENSION;
 
 public class OrePlacementModifier extends PlacementModifier {
 

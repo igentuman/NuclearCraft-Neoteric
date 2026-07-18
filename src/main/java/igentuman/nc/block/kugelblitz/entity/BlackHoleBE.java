@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -244,7 +245,7 @@ public class BlackHoleBE extends NuclearCraftBE {
     }
 
     public void meltdown() {
-        getLevel().explode(null,  getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), 10, Level.ExplosionInteraction.TNT);
+        getLevel().explode(null,  getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), 10, Explosion.BlockInteraction.BREAK);
         setRemoved();
         getLevel().setBlockAndUpdate(getBlockPos(), AIR.defaultBlockState());
     }

@@ -59,9 +59,9 @@ public class PortalBlock extends Block {
         if(!DIMENSION_CONFIG.registerWasteland.get()) {
             return;
         }
-        if (player.level() instanceof ServerLevel serverlevel) {
+        if (player.level instanceof ServerLevel serverlevel) {
             MinecraftServer minecraftserver = serverlevel.getServer();
-            ResourceKey<Level> resourcekey = player.level().dimension() == Dimensions.WASTELAND ?
+            ResourceKey<Level> resourcekey = player.level.dimension() == Dimensions.WASTELAND ?
                     Level.OVERWORLD : Dimensions.WASTELAND;
 
             ServerLevel portalDimension = minecraftserver.getLevel(resourcekey);

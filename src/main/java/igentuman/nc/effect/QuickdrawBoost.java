@@ -1,7 +1,8 @@
 package igentuman.nc.effect;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -23,14 +24,14 @@ public class QuickdrawBoost extends MobEffect {
     public void initializeClient(Consumer<IClientMobEffectExtensions> consumer) {
         consumer.accept(new IClientMobEffectExtensions() {
             @Override
-            public boolean renderInventoryIcon(MobEffectInstance instance, EffectRenderingInventoryScreen<?> screen, GuiGraphics guiGraphics, int x, int y, int blitOffset) {
-                guiGraphics.renderItem(new ItemStack(Items.BOW), x + 1, y + 1);
+            public boolean renderInventoryIcon(MobEffectInstance instance, EffectRenderingInventoryScreen<?> screen, PoseStack poseStack, int x, int y, int blitOffset) {
+                Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(new ItemStack(Items.BOW), x + 1, y + 1);
                 return true;
             }
 
             @Override
-            public boolean renderGuiIcon(MobEffectInstance instance, Gui gui, GuiGraphics guiGraphics, int x, int y, float z, float alpha) {
-                guiGraphics.renderItem(new ItemStack(Items.BOW), x + 1, y + 1);
+            public boolean renderGuiIcon(MobEffectInstance instance, Gui gui, PoseStack poseStack, int x, int y, float z, float alpha) {
+                Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(new ItemStack(Items.BOW), x + 1, y + 1);
                 return true;
             }
         });

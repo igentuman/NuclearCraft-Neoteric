@@ -152,8 +152,8 @@ public class EntityFeralGhoul extends Zombie {
         );
 
         // Check if the blocks ahead and above have collision boxes
-        return !this.level().getBlockState(forwardPos).isAir() ||
-               !this.level().getBlockState(forwardPos.above()).isAir();
+        return !this.level.getBlockState(forwardPos).isAir() ||
+               !this.level.getBlockState(forwardPos.above()).isAir();
     }
 
     @Override

@@ -2,7 +2,7 @@ package igentuman.nc.client.gui.crafter;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.network.toServer.PacketTerminalCraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -40,22 +40,14 @@ public class CraftConfirmScreen extends Screen {
         top = (height - PANEL_H) / 2;
 
         int stepY = top + 56;
-        addRenderableWidget(Button.builder(Component.literal("-"), b -> setQty(qty - step()))
-                .bounds(left + PANEL_W / 2 - 82, stepY, 18, 18)
-                .build());
-        addRenderableWidget(Button.builder(Component.literal("+"), b -> setQty(qty + step()))
-                .bounds(left + PANEL_W / 2 + 64, stepY, 18, 18)
-                .build());
+        addRenderableWidget(new Button(left + PANEL_W / 2 - 82, stepY, 18, 18, Component.literal("-"), b -> setQty(qty - step())));
+        addRenderableWidget(new Button(left + PANEL_W / 2 + 64, stepY, 18, 18, Component.literal("+"), b -> setQty(qty + step())));
 
         int btnW = 80;
         int gap = 6;
         int btnY = top + PANEL_H - 24;
-        addRenderableWidget(Button.builder(__("gui.nc.crafter.confirm"), b -> confirm())
-                .bounds(left + PANEL_W / 2 - btnW - gap / 2, btnY, btnW, 20)
-                .build());
-        addRenderableWidget(Button.builder(__("gui.nc.crafter.cancel"), b -> onClose())
-                .bounds(left + PANEL_W / 2 + gap / 2, btnY, btnW, 20)
-                .build());
+        addRenderableWidget(new Button(left + PANEL_W / 2 - btnW - gap / 2, btnY, btnW, 20, __("gui.nc.crafter.confirm"), b -> confirm()));
+        addRenderableWidget(new Button(left + PANEL_W / 2 + gap / 2, btnY, btnW, 20, __("gui.nc.crafter.cancel"), b -> onClose()));
     }
 
     private int step() {
@@ -77,18 +69,18 @@ public class CraftConfirmScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         renderBackground(graphics);
         EngineersEncoderScreen.drawPanel(graphics, left, top, PANEL_W, PANEL_H);
         centered(graphics, title, top + 8, 0x404040);
-        graphics.renderItem(target, left + PANEL_W / 2 - 8, top + 22);
+        net.minecraft.client.Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(target, left + PANEL_W / 2 - 8, top + 22);
         centered(graphics, target.getHoverName(), top + 42, 0x404040);
         centered(graphics, __("gui.nc.crafter.qty", qty), top + 61, 0x202020);
         super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
-    private void centered(@NotNull GuiGraphics graphics, Component text, int y, int color) {
-        graphics.drawString(font, text, left + PANEL_W / 2 - font.width(text) / 2, y, color, false);
+    private void centered(@NotNull PoseStack graphics, Component text, int y, int color) {
+        drawString(graphics, font, text, left + PANEL_W / 2 - font.width(text) / 2, y, color);
     }
 
     @Override

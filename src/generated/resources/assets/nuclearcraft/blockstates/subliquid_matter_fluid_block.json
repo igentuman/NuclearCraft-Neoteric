@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft_fluids:block/fluid/subliquid_matter"
+      "model": "nuclearcraft:block/fluid/subliquid_matter"
     }
   }
 }

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_kugelblitz",
   "key": {
     "E": {
@@ -23,6 +22,5 @@
   ],
   "result": {
     "item": "nuclearcraft:photon_concentrator"
-  },
-  "show_notification": true
+  }
 }

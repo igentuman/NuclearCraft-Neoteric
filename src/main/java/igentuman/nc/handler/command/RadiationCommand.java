@@ -84,7 +84,7 @@ public class RadiationCommand {
                 player.sendSystemMessage(Component.literal("Radiation enabled!"));
                 break;
             case "clear_all":
-                RadiationManager.get(player.level()).clear(player.level());
+                RadiationManager.get(player.level).clear(player.level);
                 player.sendSystemMessage(Component.literal("Radiation cleared!"));
                 break;
             default:
@@ -113,7 +113,7 @@ public class RadiationCommand {
             context.getSource().sendFailure(Component.literal("Invalid action for value argument: " + action));
             return 0;
         }
-        RadiationManager.get(player.level()).setChunkRadiation(player.blockPosition(), value);
+        RadiationManager.get(player.level).setChunkRadiation(player.blockPosition(), value);
         player.sendSystemMessage(Component.literal("Set your radiation to " + value));
         return 1;
     }

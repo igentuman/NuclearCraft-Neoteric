@@ -42,7 +42,7 @@ public class SummonGhoulsGoal extends Goal {
     @Override
     public void start() {
         boss.getNavigation().stop();
-        boss.level().broadcastEntityEvent(boss, (byte) 6);
+        boss.level.broadcastEntityEvent(boss, (byte) 6);
         summonAnimationTick = 40;
         summoned = false;
     }

@@ -38,7 +38,7 @@ public class PacketRecipeTransfer implements INcPacket {
             return;
         }
 
-        BlockEntity blockEntity = player.level().getBlockEntity(blockPos);
+        BlockEntity blockEntity = player.level.getBlockEntity(blockPos);
         if (!(blockEntity instanceof NCProcessorBE processorBE)) {
             return;
         }
@@ -49,7 +49,7 @@ public class PacketRecipeTransfer implements INcPacket {
         }
 
         // Find the recipe by ID
-        Recipe<?> recipe = player.level().getRecipeManager().byKey(recipeId).orElse(null);
+        Recipe<?> recipe = player.level.getRecipeManager().byKey(recipeId).orElse(null);
         if (!(recipe instanceof NcRecipe ncRecipe)) {
             return;
         }
@@ -145,7 +145,7 @@ public class PacketRecipeTransfer implements INcPacket {
         
         // Get vector from player's eye position to block center
         var playerEyePos = player.getEyePosition();
-        var blockCenter = blockPos.getCenter();
+        var blockCenter = net.minecraft.world.phys.Vec3.atCenterOf(blockPos);
         var toBlock = blockCenter.subtract(playerEyePos).normalize();
         
         // Calculate dot product to determine angle

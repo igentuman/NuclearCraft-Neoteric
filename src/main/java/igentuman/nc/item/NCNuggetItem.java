@@ -1,9 +1,10 @@
 package igentuman.nc.item;
 
 import igentuman.nc.content.materials.Nuggets;
-import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.ItemStack;
 
 public class NCNuggetItem extends Item {
     public NCNuggetItem(Properties pProperties) {
@@ -11,7 +12,9 @@ public class NCNuggetItem extends Item {
     }
 
     @Override
-    public boolean isEnabled(@NotNull FeatureFlagSet pEnabledFeatures) {
-        return Nuggets.get().registered().containsKey(this.toString().replace("_nugget", ""));
+    public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {
+        if (Nuggets.get().registered().containsKey(this.toString().replace("_nugget", ""))) {
+            super.fillItemCategory(pCategory, pItems);
+        }
     }
 }

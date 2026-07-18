@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public abstract class BaseLootTableProvider extends LootTableProvider {
 
@@ -48,6 +49,10 @@ public abstract class BaseLootTableProvider extends LootTableProvider {
     }
 
     protected abstract void addTables();
+
+    protected void add(Block block, Function<Block, LootTable.Builder> factory) {
+        lootTables.put(block, factory.apply(block));
+    }
 
     protected LootTable.Builder createStandardTable(String name, Block block, BlockEntityType<?> type) {
         LootPool.Builder builder = LootPool.lootPool()

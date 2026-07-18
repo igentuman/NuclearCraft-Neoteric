@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
     "T": {
@@ -17,6 +16,5 @@
   ],
   "result": {
     "item": "nuclearcraft:tungsten_filament"
-  },
-  "show_notification": true
+  }
 }

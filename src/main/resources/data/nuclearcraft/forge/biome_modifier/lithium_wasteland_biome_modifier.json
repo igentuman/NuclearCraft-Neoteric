@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#nuclearcraft:wasteland",
+  "features": ["nuclearcraft:lithium_placed"],
+  "step": "underground_ores"
+}

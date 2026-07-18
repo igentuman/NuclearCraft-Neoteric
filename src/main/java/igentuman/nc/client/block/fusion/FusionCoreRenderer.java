@@ -14,13 +14,12 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-
-import static com.mojang.math.Axis.YN;
+import com.mojang.math.Vector3f;
 
 @NothingNullByDefault
 public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
@@ -58,7 +57,7 @@ public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
         }
         angel %= 360;
         pPoseStack.translate(dx, 0, dz);
-        pPoseStack.mulPose(YN.rotationDegrees(angel));
+        pPoseStack.mulPose(Vector3f.YN.rotationDegrees(angel));
         pPoseStack.scale(1.4f, sy, 1.4f);
         pPoseStack.translate(-dx, 0.135f, -dz);
         blockRenderer.getModelRenderer().renderModel(pPoseStack.last(), buffer.getBuffer(RenderType.cutout()), blockstate, center, 1, 1, 1, LightTexture.FULL_SKY, combinedOverlay);
@@ -71,7 +70,7 @@ public class FusionCoreRenderer implements BlockEntityRenderer<BlockEntity> {
         pPoseStack.scale(3.80F, 3.80F, 3.80F);
         itemRenderer.render(
                 core,
-                ItemDisplayContext.FIXED,
+                ItemTransforms.TransformType.FIXED,
                 false, pPoseStack, buffer, LightTexture.FULL_SKY, combinedOverlay,
                 base);
         //blockRenderer.renderSingleBlock(blockstate, pPoseStack, buffer, packedLight, combinedOverlay, pBlockEntity.getModelData(), RenderType.cutout());

@@ -24,6 +24,10 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class NCLootTables extends BaseLootTableProvider {
 
+    public NCLootTables(net.minecraft.data.DataGenerator generator) {
+        super(generator);
+    }
+
     private void ores() {
         for(String ore: ORE_BLOCKS.keySet()) {
             if(NCItems.NC_CHUNKS.containsKey(ore.replaceAll("_deepslate|_end|_nether",""))) {
@@ -82,13 +86,12 @@ public class NCLootTables extends BaseLootTableProvider {
     }
 
     @Override
-    public void generate() {
+    public void addTables() {
         ores();
         blocks();
         machines();
     }
 
-    @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
         List<Block> all = new ArrayList<>();
         all.addAll(ORE_BLOCKS.values().stream().map(RegistryObject::get).toList());

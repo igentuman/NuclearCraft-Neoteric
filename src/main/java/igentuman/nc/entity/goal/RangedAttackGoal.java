@@ -44,7 +44,7 @@ public class RangedAttackGoal extends Goal {
         super.start();
         boss.setAggressive(true);
         animationTimeout = 70;
-        boss.level().broadcastEntityEvent(boss, (byte) 7);
+        boss.level.broadcastEntityEvent(boss, (byte) 7);
         executed = false;
     }
 

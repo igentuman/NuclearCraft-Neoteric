@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft_fluids:block/fluid/quantite"
+      "model": "nuclearcraft:block/fluid/quantite"
     }
   }
 }

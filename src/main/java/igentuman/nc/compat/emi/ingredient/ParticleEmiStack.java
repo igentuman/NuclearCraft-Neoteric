@@ -66,7 +66,7 @@ public class ParticleEmiStack extends EmiStack {
     }
     
     @Override
-    public void render(net.minecraft.client.gui.GuiGraphics graphics, int x, int y, float delta, int flags) {
+    public void render(com.mojang.blaze3d.vertex.PoseStack graphics, int x, int y, float delta, int flags) {
         ParticleEmiStackRenderer.render(this, graphics, x, y, delta, flags);
     }
     

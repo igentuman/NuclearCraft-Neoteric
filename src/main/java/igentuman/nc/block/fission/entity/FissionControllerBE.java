@@ -29,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -545,13 +546,13 @@ public class FissionControllerBE extends MultiblockControllerBE implements Irrad
             BlockPos explosionPos = getBlockPos().relative(getFacing(), 2);
             List<Long> fuelCells = new ArrayList<>(getMultiblock().fuelCells);
             if (FISSION_CONFIG.EXPLOSION_RADIUS.get() == 0) {
-                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, Level.ExplosionInteraction.NONE);
+                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), 2F, Explosion.BlockInteraction.NONE);
             } else {
-                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), Level.ExplosionInteraction.TNT);
+                getLevel().explode(null, explosionPos.getX(), explosionPos.getY(), explosionPos.getZ(), FISSION_CONFIG.EXPLOSION_RADIUS.get().floatValue(), Explosion.BlockInteraction.BREAK);
                 getLevel().setBlock(explosionPos, NCFluids.getBlock("corium"), 1);
                 for (long packedPos : fuelCells) {
                     BlockPos pos = BlockPos.of(packedPos);
-                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, Level.ExplosionInteraction.TNT);
+                    getLevel().explode(null, pos.getX(), pos.getY(), pos.getZ(), 2, Explosion.BlockInteraction.BREAK);
                     getLevel().setBlock(pos, NCFluids.getBlock("corium"), 1);
                 }
             }

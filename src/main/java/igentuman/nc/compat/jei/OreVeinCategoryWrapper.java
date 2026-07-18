@@ -1,5 +1,6 @@
 package igentuman.nc.compat.jei;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.recipes.type.OreVeinRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;

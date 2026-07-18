@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "B": {
       "item": "nuclearcraft:bioplastic"
@@ -17,6 +16,5 @@
   "result": {
     "count": 8,
     "item": "nuclearcraft:pipe"
-  },
-  "show_notification": true
+  }
 }

@@ -1,5 +1,6 @@
 package igentuman.nc.item;
 
+import igentuman.nc.setup.registration.CreativeTabs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,6 +11,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -42,7 +44,7 @@ public class MultitoolItem extends Item
 
 	public MultitoolItem(Properties props)
 	{
-		this(props, CreativeTabs.NC_ITEMS);
+		this(props, CreativeTabs.NC_ITEMS_TAB);
 	}
 
 	public MultitoolItem(Properties props, CreativeModeTab group)

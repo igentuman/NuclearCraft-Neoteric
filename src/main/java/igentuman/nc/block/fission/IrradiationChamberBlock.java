@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import static igentuman.nc.util.TextUtils.__;
 public class IrradiationChamberBlock extends MultiblockBlock {
 
     public IrradiationChamberBlock() {
-        this(Properties.of()
+        this(Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
                 .requiresCorrectToolForDrops());

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static igentuman.nc.setup.registration.CreativeTabs.NC_ITEMS_TAB;
 import static igentuman.nc.setup.registration.Registries.ITEMS;
 import static igentuman.nc.setup.registration.Tags.*;
 import static igentuman.nc.util.ModUtil.isKubeJsLoaded;
@@ -25,7 +26,7 @@ import static igentuman.nc.util.ModUtil.isKubeJsLoaded;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class FissionFuel {
 
-    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties();
+    public static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(NC_ITEMS_TAB);
     public static HashMap<List<String>, RegistryObject<Item>> NC_FUEL = new HashMap<>();
     public static HashMap<List<String>, RegistryObject<Item>> NC_DEPLETED_FUEL = new HashMap<>();
     public static HashMap<String, RegistryObject<Item>>  NC_ISOTOPES = new HashMap<>();

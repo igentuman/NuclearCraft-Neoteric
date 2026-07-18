@@ -9,7 +9,7 @@ import igentuman.nc.client.gui.element.ParticleSelector;
 import igentuman.nc.client.gui.element.ScaleDropdown;
 import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.network.toServer.PacketCreativeParticleSource;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -99,7 +99,7 @@ public class CreativeParticleSourceScreen<T extends NCProcessorContainer<Abstrac
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         super.render(graphics, mouseX, mouseY, partialTicks);
         for (NCGuiElement widget : widgets) {
             if (widget instanceof IDropdown dropdown && dropdown.isOpen()) {
@@ -109,10 +109,10 @@ public class CreativeParticleSourceScreen<T extends NCProcessorContainer<Abstrac
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack graphics, int mouseX, int mouseY) {
         super.renderLabels(graphics, mouseX, mouseY);
-        graphics.drawString(font, __("gui.nuclearcraft.creative_particle_source.focus"), 10, 45, 0x404040, false);
-        graphics.drawString(font, __("gui.nuclearcraft.creative_particle_source.energy"), 10, 65, 0x404040, false);
+        drawString(graphics, font, __("gui.nuclearcraft.creative_particle_source.focus"), 10, 45, 0x404040);
+        drawString(graphics, font, __("gui.nuclearcraft.creative_particle_source.energy"), 10, 65, 0x404040);
     }
 
     @Override

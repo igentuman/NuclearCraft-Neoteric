@@ -32,7 +32,7 @@ public class PacketCreativeParticleSource implements INcPacket {
         if (player == null) {
             return;
         }
-        if (player.level().getBlockEntity(tilePosition) instanceof CreativeParticleSourceBE be) {
+        if (player.level.getBlockEntity(tilePosition) instanceof CreativeParticleSourceBE be) {
             be.updateBeamSettings(particle, focus, energy, scale);
         }
     }

@@ -11,8 +11,8 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -65,11 +65,11 @@ public class NuclearBlastCategoryWrapper<T extends NuclearBlastRecipe> implement
     }
 
     @Override
-    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
         var font = Minecraft.getInstance().font;
-        guiGraphics.drawString(font, "==>", 48, 19, 0x404040, false);
+        font.draw(poseStack, "==>", 48f, 19f, 0x404040);
         String chanceText = String.format("%.0f%%", recipe.getChance() * 100);
         int width = font.width(chanceText);
-        guiGraphics.drawString(font, chanceText, 60 - width / 2, 5, 0x404040, false);
+        font.draw(poseStack, chanceText, (float)(60 - width / 2), 5f, 0x404040);
     }
 }

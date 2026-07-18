@@ -1,5 +1,6 @@
 package igentuman.nc.client.gui.element.bar;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.client.gui.element.NCGuiElement;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -16,6 +17,7 @@ public class EnergyBar extends NCGuiElement {
     private final IEnergyStorage energy;
 
     public EnergyBar(int xMin, int yMin, IEnergyStorage energy)  {
+        super(xMin, yMin, 16, 88, net.minecraft.network.chat.Component.empty());
         this.energy = energy;
         x = xMin;
         y = yMin;

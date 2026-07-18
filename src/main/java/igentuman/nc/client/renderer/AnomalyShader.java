@@ -11,8 +11,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.joml.Matrix4f;
-import org.joml.Vector4f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector4f;
 
 import static igentuman.nc.client.renderer.NCShaders.anomalyPostEffect;
 import static igentuman.nc.handler.config.CommonConfig.ANOMALY_CONFIG;
@@ -69,23 +69,23 @@ public class AnomalyShader {
         float posZ = (float) (pos.z - camPos.z());
 
         Vector4f p = new Vector4f(posX, posY, posZ, 1.0f);
-        p.mul(viewMatrix);
-        p.mul(projectionMatrix);
-        if (p.w != 0.0f) {
-            p.x /= p.w;
-            p.y /= p.w;
-            p.z /= p.w;
+        p.transform(viewMatrix);
+        p.transform(projectionMatrix);
+        if (p.w() != 0.0f) {
+            p.setX(p.x() / p.w());
+            p.setY(p.y() / p.w());
+            p.setZ(p.z() / p.w());
         }
-        float normalizedDepth = (p.z + 1.0f) * 0.5f;
+        float normalizedDepth = (p.z() + 1.0f) * 0.5f;
 
         float blurX = 0.5f;
         float blurY = 0.5f;
         boolean visible = false;
         float distanceFactor = 0.0f;
 
-        if (p.z > -1.0f && p.z < 1.0f) {
-            blurX = (p.x * 0.5f + 0.5f);
-            blurY = (p.y * 0.5f + 0.5f);
+        if (p.z() > -1.0f && p.z() < 1.0f) {
+            blurX = (p.x() * 0.5f + 0.5f);
+            blurY = (p.y() * 0.5f + 0.5f);
             float margin = 0.25f;
             if (blurX >= -margin && blurX <= 1.0f + margin && blurY >= -margin && blurY <= 1.0f + margin) {
                 visible = true;

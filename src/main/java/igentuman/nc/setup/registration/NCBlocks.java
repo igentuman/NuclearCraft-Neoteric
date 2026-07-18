@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -41,6 +42,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static igentuman.nc.setup.registration.CreativeTabs.NC_BLOCKS_TAB;
 import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.Registries.*;
@@ -48,20 +50,20 @@ import static igentuman.nc.setup.registration.Tags.*;
 
 public class NCBlocks {
 
-    public static final BlockBehaviour.Properties ORE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2f).requiresCorrectToolForDrops();
-    public static final Item.Properties BLOCK_ITEM_PROPERTIES = new Item.Properties();
-    public static final BlockBehaviour.Properties NC_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
-    public static final BlockBehaviour.Properties ORE_DEEPSLATE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(4f).requiresCorrectToolForDrops();
+    public static final BlockBehaviour.Properties ORE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(2f).requiresCorrectToolForDrops();
+    public static final Item.Properties BLOCK_ITEM_PROPERTIES = new Item.Properties().tab(NC_BLOCKS_TAB);
+    public static final BlockBehaviour.Properties NC_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(2f).requiresCorrectToolForDrops();
+    public static final BlockBehaviour.Properties ORE_DEEPSLATE_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(4f).requiresCorrectToolForDrops();
     public static HashMap<String, RegistryObject<Block>> ORE_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> NC_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> NC_RF_AMPLIFIERS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> NC_ELECTROMAGNETS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> MULTI_BLOCKS = new HashMap<>();
     public static HashMap<String, RegistryObject<Block>> NC_MATERIAL_BLOCKS = new HashMap<>();
-    public static final Item.Properties ORE_ITEM_PROPERTIES = new Item.Properties();
-    public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties();
+    public static final Item.Properties ORE_ITEM_PROPERTIES = new Item.Properties().tab(NC_BLOCKS_TAB);
+    public static final Item.Properties MULTIBLOCK_ITEM_PROPERTIES = new Item.Properties().tab(NC_BLOCKS_TAB);
     public static final RegistryObject<Block> PORTAL_BLOCK = BLOCKS.register("portal", PortalBlock::new);
-    public static final RegistryObject<Block> WASTELAND_EARTH = BLOCKS.register("wasteland_earth", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.GRAVEL).strength(1.5f).requiresCorrectToolForDrops().isValidSpawn((blockState, blockGetter, blockPos, entityType) -> {
+    public static final RegistryObject<Block> WASTELAND_EARTH = BLOCKS.register("wasteland_earth", () -> new Block(BlockBehaviour.Properties.of(Material.DIRT).sound(SoundType.GRAVEL).strength(1.5f).requiresCorrectToolForDrops().isValidSpawn((blockState, blockGetter, blockPos, entityType) -> {
         return entityType == FERAL_GHOUL.get();
     })));
     public static final RegistryObject<Block> REDSTONE_DIMMER_BLOCK = BLOCKS.register("redstone_dimmer", RedstoneDimmerBlock::new);
@@ -95,7 +97,7 @@ public class NCBlocks {
             () -> BlockEntityType.Builder.of(Pu239BombBE::new, PU_239_BOMB.get()).build(null));
 
     public static final RegistryObject<Block> MUSHROOM_BLOCK = BLOCKS.register("glowing_mushroom", () -> new GlowingMushroomBlock(
-            BlockBehaviour.Properties.of().sound(SoundType.GRASS).noCollission().instabreak().randomTicks().lightLevel($ -> 5)
+            BlockBehaviour.Properties.of(Material.PLANT).sound(SoundType.GRASS).noCollission().instabreak().randomTicks().lightLevel($ -> 5)
             ));
     public static final RegistryObject<MenuType<RedstoneDImmerContainer>> REDSTONE_DIMMER_CONTAINER = CONTAINERS.register("redstone_dimmer",
             () -> IForgeMenuType.create((windowId, inv, data) -> new RedstoneDImmerContainer(windowId, data.readBlockPos(), inv)));

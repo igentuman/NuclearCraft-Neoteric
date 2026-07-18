@@ -13,7 +13,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -92,11 +92,11 @@ public class CollisionChamberCategoryWrapper<T extends CollisionChamberControlle
     }
 
     @Override
-    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        drawLabels(recipe, guiGraphics);
+    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
+        drawLabels(recipe, poseStack);
     }
 
-    private void drawLabels(T recipe, GuiGraphics guiGraphics) {
+    private void drawLabels(T recipe, PoseStack poseStack) {
         if (recipe == null || recipe.inputParticles == null || recipe.inputParticles.length == 0) {
             return;
         }
@@ -113,8 +113,8 @@ public class CollisionChamberCategoryWrapper<T extends CollisionChamberControlle
             energyLabel = __("label.nuclearcraft.energy", Units.getSIFormat(minEnergy, "eV")).getString();
         }
         // Cross-section
-        guiGraphics.drawString(font, __("tooltip.nuclearcraft.particlestack.focus", Units.getSIFormat(inputParticle.getFocus(), "")), labelX, labelY, 0xFFFFFF);
-        guiGraphics.drawString(font, __("label.nuclearcraft.cross_section", numberFormat(recipe.crossSection*100)), labelX, labelY + 10, 0xFFFFFF);
-        guiGraphics.drawString(font, energyLabel, labelX, labelY + 20, 0xFFFFFF);
+        font.draw(poseStack, __("tooltip.nuclearcraft.particlestack.focus", Units.getSIFormat(inputParticle.getFocus(), "")), (float)labelX, (float)labelY, 0xFFFFFF);
+        font.draw(poseStack, __("label.nuclearcraft.cross_section", numberFormat(recipe.crossSection*100)), (float)labelX, (float)(labelY + 10), 0xFFFFFF);
+        font.draw(poseStack, energyLabel, (float)labelX, (float)(labelY + 20), 0xFFFFFF);
     }
 }

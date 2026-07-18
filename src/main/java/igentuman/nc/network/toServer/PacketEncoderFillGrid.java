@@ -36,7 +36,7 @@ public class PacketEncoderFillGrid implements INcPacket {
         if (!menu.getBlockPos().equals(pos)) return;
         if (!menu.stillValid(player)) return;
 
-        Recipe<?> recipe = player.level().getRecipeManager().byKey(recipeId).orElse(null);
+        Recipe<?> recipe = player.level.getRecipeManager().byKey(recipeId).orElse(null);
         if (!(recipe instanceof CraftingRecipe craftingRecipe)) return;
 
         menu.fillGhostGrid(craftingRecipe);

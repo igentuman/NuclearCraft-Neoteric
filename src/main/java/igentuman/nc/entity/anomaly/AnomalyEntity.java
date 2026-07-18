@@ -204,7 +204,7 @@ public abstract class AnomalyEntity extends Mob {
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide) {
+        if (level.isClientSide) {
             clientTick();
         } else {
             serverTick();
@@ -213,12 +213,12 @@ public abstract class AnomalyEntity extends Mob {
 
     protected void serverTick() {
         if (cellId != UNSET_CELL && onInterval(40)
-                && AnomalySavedData.get((ServerLevel) level()).isDestroyed(cellId)) {
+                && AnomalySavedData.get((ServerLevel) level).isDestroyed(cellId)) {
             discard();
             return;
         }
         setDeltaMovement(getDeltaMovement().x, 0.0D, getDeltaMovement().z);
-        int surface = level().getHeight(Heightmap.Types.WORLD_SURFACE, getBlockX(), getBlockZ());
+        int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, getBlockX(), getBlockZ());
         double targetY = surface + 2.0D;
         if (Math.abs(getY() - targetY) > 0.01D) {
             setPos(getX(), targetY, getZ());
@@ -254,7 +254,7 @@ public abstract class AnomalyEntity extends Mob {
 
     @Override
     public void remove(Entity.RemovalReason reason) {
-        if (level().isClientSide && ambientSound != null) {
+        if (level.isClientSide && ambientSound != null) {
             SoundHandler.stopSound(ambientSound);
             ambientSound = null;
         }
@@ -273,7 +273,7 @@ public abstract class AnomalyEntity extends Mob {
             double ox = Math.cos(a) * r;
             double oz = Math.sin(a) * r;
             double oy = (random.nextDouble() - 0.3D) * radius;
-            level().addParticle(getAnomalyType().ambientParticle(),
+            level.addParticle(getAnomalyType().ambientParticle(),
                     getX() + ox, getY() + oy, getZ() + oz,
                     -ox * 0.02D, 0.01D, -oz * 0.02D);
         }
@@ -296,11 +296,11 @@ public abstract class AnomalyEntity extends Mob {
 
     /** Default resolution: record the destroyed cell, play FX, and remove the entity. */
     protected void onCounterplayResolved() {
-        if (level().isClientSide) {
+        if (level.isClientSide) {
             return;
         }
         if (cellId != UNSET_CELL) {
-            AnomalySavedData.get((ServerLevel) level()).markDestroyed(cellId);
+            AnomalySavedData.get((ServerLevel) level).markDestroyed(cellId);
         }
         dropShards();
         playResolveFx();
@@ -324,16 +324,16 @@ public abstract class AnomalyEntity extends Mob {
         if (count <= 0) {
             return;
         }
-        ItemEntity item = new ItemEntity(level(), getX(), getY() + 0.5D, getZ(),
+        ItemEntity item = new ItemEntity(level, getX(), getY() + 0.5D, getZ(),
                 new ItemStack(NCItems.RESONITE_SHARD.get(), count));
         item.setInvulnerable(true);
         item.setDefaultPickUpDelay();
-        level().addFreshEntity(item);
+        level.addFreshEntity(item);
     }
 
     /** Called directly from the Q36 beam / pulse hit path (bypasses the {@code mobProjectile} ambiguity). */
     public void onQ36Hit(Entity source) {
-        if (!level().isClientSide && acceptsQ36Counterplay()) {
+        if (!level.isClientSide && acceptsQ36Counterplay()) {
             onCounterplayResolved();
         }
     }
@@ -343,7 +343,7 @@ public abstract class AnomalyEntity extends Mob {
     }
 
     protected void playResolveFx() {
-        level().broadcastEntityEvent(this, EVENT_RESOLVE);
+        level.broadcastEntityEvent(this, EVENT_RESOLVE);
     }
 
     @Override
@@ -353,7 +353,7 @@ public abstract class AnomalyEntity extends Mob {
                 double ox = (random.nextDouble() - 0.5D) * 3.0D;
                 double oy = (random.nextDouble() - 0.5D) * 3.0D;
                 double oz = (random.nextDouble() - 0.5D) * 3.0D;
-                level().addParticle(getAnomalyType().ambientParticle(),
+                level.addParticle(getAnomalyType().ambientParticle(),
                         getX() + ox, getY() + oy, getZ() + oz,
                         ox * 0.1D, oy * 0.1D, oz * 0.1D);
             }
@@ -382,7 +382,7 @@ public abstract class AnomalyEntity extends Mob {
     protected List<LivingEntity> livingInRadius(double radius) {
         double r2 = radius * radius;
         Vec3 center = position();
-        return level().getEntitiesOfClass(LivingEntity.class, effectBox(radius),
+        return level.getEntitiesOfClass(LivingEntity.class, effectBox(radius),
                 e -> e != this && !(e instanceof AnomalyEntity) && e.isAlive()
                         && e.position().distanceToSqr(center) <= r2);
     }

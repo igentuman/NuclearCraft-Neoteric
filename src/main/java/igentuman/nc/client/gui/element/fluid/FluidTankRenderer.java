@@ -8,7 +8,7 @@ import igentuman.nc.network.toServer.PacketFlushSlotContent;
 import igentuman.nc.network.toServer.PacketHandleFluidSlotClick;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -24,7 +24,7 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joml.Matrix4f;
+import com.mojang.math.Matrix4f;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -132,7 +132,7 @@ public class FluidTankRenderer extends NCGuiElement {
         this.y = y;
     }
     @Override
-    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+    public void draw(PoseStack graphics, int mX, int mY, float pTicks) {
         super.draw(graphics, mX, mY, pTicks);
         if(tank == null) {
             render(graphics, FluidStack.EMPTY);
@@ -141,19 +141,19 @@ public class FluidTankRenderer extends NCGuiElement {
         render(graphics, tank.getFluid());
     }
 
-    public void render(GuiGraphics graphics, FluidStack fluidStack) {
+    public void render(PoseStack graphics, FluidStack fluidStack) {
         RenderSystem.enableBlend();
-        graphics.pose().pushPose();
+        graphics.pushPose();
         {
-            graphics.pose().translate(X(), Y(), 0);
+            graphics.translate(X(), Y(), 0);
             drawFluid(graphics, width, height, fluidStack);
         }
-        graphics.pose().popPose();
+        graphics.popPose();
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.disableBlend();
     }
 
-    private void drawFluid(GuiGraphics graphics, final int width, final int height, FluidStack fluidStack) {
+    private void drawFluid(PoseStack graphics, final int width, final int height, FluidStack fluidStack) {
         Fluid fluid = fluidStack.getFluid();
         if (fluid.isSame(Fluids.EMPTY)) {
             return;
@@ -192,9 +192,9 @@ public class FluidTankRenderer extends NCGuiElement {
         return renderProperties.getTintColor(ingredient);
     }
 
-    private static void drawTiledSprite(GuiGraphics graphics, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
+    private static void drawTiledSprite(PoseStack graphics, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-        Matrix4f matrix = graphics.pose().last().pose();
+        Matrix4f matrix = graphics.last().pose();
         setGLColorFromInt(color);
 
         final int xTileCount = tiledWidth / TEXTURE_SIZE;

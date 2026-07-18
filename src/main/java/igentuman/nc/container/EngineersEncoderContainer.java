@@ -13,7 +13,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.TransientCraftingContainer;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -49,13 +49,13 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     private final Player player;
     private final Level level;
     private final ContainerLevelAccess access;
-    private final TransientCraftingContainer craftSlots = new TransientCraftingContainer(this, 3, 3);
+    private final CraftingContainer craftSlots = new CraftingContainer(this, 3, 3);
     private final ResultContainer resultSlots = new ResultContainer();
 
     public EngineersEncoderContainer(int windowId, BlockPos pos, Inventory inv) {
         super(ENGINEERS_ENCODER_CONTAINER.get(), windowId);
         this.player = inv.player;
-        this.level = player.level();
+        this.level = player.level;
         this.blockEntity = (EngineersCrafterBE) level.getBlockEntity(pos);
         this.access = ContainerLevelAccess.create(level, pos);
 
@@ -102,7 +102,7 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     private void updateResult() {
         Optional<CraftingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftSlots, level);
         ItemStack result = recipe
-                .map(r -> r.assemble(craftSlots, level.registryAccess()))
+                .map(r -> r.assemble(craftSlots))
                 .orElse(ItemStack.EMPTY);
         resultSlots.setItem(0, result);
     }
@@ -119,7 +119,7 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     private void encode() {
         Optional<CraftingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftSlots, level);
         if (recipe.isEmpty()) return;
-        ItemStack output = recipe.get().assemble(craftSlots, level.registryAccess());
+        ItemStack output = recipe.get().assemble(craftSlots);
         if (output.isEmpty()) return;
 
         if (!CraftingPattern.isBlank(blockEntity.encoderBlanks.getStackInSlot(0))) return;

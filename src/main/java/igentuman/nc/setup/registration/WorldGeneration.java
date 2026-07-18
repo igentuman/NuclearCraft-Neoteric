@@ -2,13 +2,16 @@ package igentuman.nc.setup.registration;
 
 import com.mojang.serialization.Codec;
 import igentuman.nc.world.BiomeFilterNether;
+import igentuman.nc.world.NCConfiguredFeatures;
+import igentuman.nc.world.NCPlacedFeatures;
 import igentuman.nc.world.OrePlacementModifier;
+import igentuman.nc.world.biome.WastelandBiome;
 import igentuman.nc.world.structure.WastelandBossLairFeature;
 import igentuman.nc.world.structure.WastelandDecoFeature;
 import igentuman.nc.world.structure.WastelandPortalFeature;
 import igentuman.nc.world.structure.WastelandStructureFeature;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -25,12 +28,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.setup.registration.Registries.BIOMES;
 import static igentuman.nc.setup.registration.Registries.PLACEMENT_MODIFIERS;
 
 public class WorldGeneration {
     public static final TagKey<Biome> WASTELAND = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), rl("wasteland"));
 
     public static final ResourceKey<Biome> WASTELAND_BIOME = makeKey("wasteland");
+    public static final RegistryObject<Biome> WASTELAND_BIOME_OBJECT = BIOMES.register("wasteland", WastelandBiome::create);
 
     public static final RegistryObject<PlacementModifierType<?>> NC_ORE_MODIFIER =
             PLACEMENT_MODIFIERS.register("nc_ore_modifier", () -> placement(OrePlacementModifier.CODEC));
@@ -39,7 +44,7 @@ public class WorldGeneration {
             PLACEMENT_MODIFIERS.register("nc_vegetation_modifier", () -> placement(BiomeFilterNether.CODEC));
 
     private static ResourceKey<Biome> makeKey(String name) {
-        return ResourceKey.create(Registries.BIOME, rl(name));
+        return ResourceKey.create(Registry.BIOME_REGISTRY, rl(name));
     }
 
     public static <P extends PlacementModifier> PlacementModifierType<P> placement(Codec<P> codec) {
@@ -51,6 +56,8 @@ public class WorldGeneration {
         WastelandDecoFeature.init();
         WastelandPortalFeature.init();
         WastelandBossLairFeature.init();
+        NCConfiguredFeatures.init();
+        NCPlacedFeatures.init();
     }
 
     public static class StructureLoader {

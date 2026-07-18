@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.joml.Matrix4f;
+import com.mojang.math.Matrix4f;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -92,26 +92,26 @@ public class DistortShader {
         float posZ = (float)(pos.getZ() + 0.5 - cameraPos.z());
 
         // Create position vector
-        org.joml.Vector4f pos1 = new org.joml.Vector4f(posX, posY, posZ, 1.0f);
-        pos1.mul(viewMatrix);
-        pos1.mul(projectionMatrix);
+        com.mojang.math.Vector4f pos1 = new com.mojang.math.Vector4f(posX, posY, posZ, 1.0f);
+        pos1.transform(viewMatrix);
+        pos1.transform(projectionMatrix);
 
         // Perspective division
-        if (pos1.w != 0.0f) {
-            pos1.x /= pos1.w;
-            pos1.y /= pos1.w;
-            pos1.z /= pos1.w;
+        if (pos1.w() != 0.0f) {
+            pos1.setX(pos1.x() / pos1.w());
+            pos1.setY(pos1.y() / pos1.w());
+            pos1.setZ(pos1.z() / pos1.w());
         }
 
         // Calculate the normalized depth value (0.0 to 1.0)
         // In OpenGL/Minecraft, depth is in range [-1, 1] after projection, normalize to [0, 1]
-        float normalizedDepth = (pos1.z + 1.0f) * 0.5f;
-        
+        float normalizedDepth = (pos1.z() + 1.0f) * 0.5f;
+
         // Check if in front of camera
-        if (pos1.z > -1.0f && pos1.z < 1.0f) {
+        if (pos1.z() > -1.0f && pos1.z() < 1.0f) {
             // Calculate screen coordinates
-            blurX = (pos1.x * 0.5f + 0.5f);
-            blurY = (pos1.y * 0.5f + 0.5f);
+            blurX = (pos1.x() * 0.5f + 0.5f);
+            blurY = (pos1.y() * 0.5f + 0.5f);
 
             // Check if on screen (with margin)
             float margin = 0.1f;

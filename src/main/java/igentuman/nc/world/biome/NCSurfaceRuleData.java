@@ -1,28 +1,14 @@
 package igentuman.nc.world.biome;
 
-import igentuman.nc.setup.registration.NCBlocks;
-import igentuman.nc.setup.registration.WorldGeneration;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.placement.CaveSurface;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.registration.NCBlocks.WASTELAND_EARTH;
-import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND_BIOME;
-import static igentuman.nc.world.biome.NCDensityFunction.WASTELAND_TERRAIN;
-import static net.minecraft.world.level.block.Blocks.STONE;
-import static net.minecraft.world.level.levelgen.NoiseGeneratorSettings.OVERWORLD;
 
 /**
  * Handles registration of surface rules for the Wasteland biome
@@ -37,64 +23,9 @@ public class NCSurfaceRuleData {
         return SurfaceRules.state(block.defaultBlockState());
     }
 
-    public static final ResourceKey<NoiseGeneratorSettings> CUSTOM_OVERWORLD_NOISE_GEN = ResourceKey.create(Registries.NOISE_SETTINGS, rl("custom_overworld"));
+    public static final ResourceKey<NoiseGeneratorSettings> CUSTOM_OVERWORLD_NOISE_GEN = ResourceKey.create(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY, rl("custom_overworld"));
 
-    public static void bootstrap(BootstapContext<NoiseGeneratorSettings> context) {
-        context.register(CUSTOM_OVERWORLD_NOISE_GEN, makeCustomOverworldNoiseSettings(context));
-    }
-    
-    /**
-     * Creates a custom NoiseGeneratorSettings that inherits from OVERWORLD but overrides specific properties
-     */
-    public static NoiseGeneratorSettings makeCustomOverworldNoiseSettings(BootstapContext<NoiseGeneratorSettings> context) {
-        // Get the OVERWORLD NoiseGeneratorSettings
-        HolderGetter<NoiseGeneratorSettings> noiseGenSettings = context.lookup(Registries.NOISE_SETTINGS);
-        NoiseGeneratorSettings overworldSettings = NoiseGeneratorSettings.overworld(context, false, false);
-        
-        // Create a custom NoiseSettings with different height values
-        NoiseSettings customNoiseSettings = NoiseSettings.create(
-                0,
-                256,
-                4,
-                1
-        );
-        
-        // Create a custom NoiseRouter with modified values
-        NoiseRouter overworldRouter = overworldSettings.noiseRouter();
-        NoiseRouter customRouter = new NoiseRouter(
-                overworldRouter.barrierNoise(),
-                overworldRouter.fluidLevelFloodednessNoise(),
-                overworldRouter.fluidLevelSpreadNoise(),
-                overworldRouter.lavaNoise(),
-                overworldRouter.temperature(),
-                overworldRouter.vegetation(),
-                overworldRouter.continents(),
-                overworldRouter.erosion(),
-                overworldRouter.depth(),
-                overworldRouter.ridges(),
-                overworldRouter.initialDensityWithoutJaggedness(),
-                overworldRouter.initialDensityWithoutJaggedness(),
-                overworldRouter.veinToggle(),
-                overworldRouter.veinRidged(),
-                overworldRouter.veinGap()
-        );
-        
-        // Create the custom NoiseGeneratorSettings
-        return new NoiseGeneratorSettings(
-                customNoiseSettings,
-                overworldSettings.defaultBlock(),
-                overworldSettings.defaultFluid(),
-                overworldSettings.noiseRouter(),
-                customOverworldSurface(),
-                overworldSettings.spawnTarget(),
-                35,
-                overworldSettings.disableMobGeneration(),
-                overworldSettings.aquifersEnabled(),
-                overworldSettings.oreVeinsEnabled(),
-                overworldSettings.useLegacyRandomSource()
-        );
-    }
-    
+
     /**
      * Creates a custom surface rule for the custom overworld that uses wasteland_earth as the top surface
      */

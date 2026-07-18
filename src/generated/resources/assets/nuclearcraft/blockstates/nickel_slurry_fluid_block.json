@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft_fluids:block/fluid/nickel_slurry"
+      "model": "nuclearcraft:block/fluid/nickel_slurry"
     }
   }
 }

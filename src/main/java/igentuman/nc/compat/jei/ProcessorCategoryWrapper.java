@@ -1,5 +1,6 @@
 package igentuman.nc.compat.jei;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.compat.jei.util.TickTimer;
 import igentuman.nc.content.processors.ProcessorPrefab;
 import igentuman.nc.content.processors.Processors;

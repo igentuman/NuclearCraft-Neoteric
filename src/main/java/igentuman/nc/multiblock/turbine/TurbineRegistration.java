@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.turbine;
 
+import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.block.turbine.*;
 import igentuman.nc.block.turbine.entity.*;
 import igentuman.nc.compat.create.CreateTurbine;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -26,9 +28,9 @@ import static igentuman.nc.util.ModUtil.isCreateLoaded;
 
 public class TurbineRegistration {
 
-    public static final Item.Properties TURBINE_ITEM_PROPS = new Item.Properties();
-    public static final BlockBehaviour.Properties TURBINE_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
-    public static final BlockBehaviour.Properties GLASS_BLOCK_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
+    public static final Item.Properties TURBINE_ITEM_PROPS = new Item.Properties().tab(CreativeTabs.TURBINE_TAB);
+    public static final BlockBehaviour.Properties TURBINE_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
+    public static final BlockBehaviour.Properties GLASS_BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
     public static final HashMap<String, RegistryObject<Block>> TURBINE_BLOCKS = new HashMap<>();
     public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> TURBINE_BE = new HashMap<>();
     public static final HashMap<String, RegistryObject<BlockItem>> TURBINE_BLOCK_ITEMS = new HashMap<>();

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft_fluids:block/fluid/copernicium_291_za"
+      "model": "nuclearcraft:block/fluid/copernicium_291_za"
     }
   }
 }

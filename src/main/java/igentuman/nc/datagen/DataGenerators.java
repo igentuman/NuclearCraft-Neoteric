@@ -7,14 +7,9 @@ import igentuman.nc.datagen.recipes.NCRecipes;
 import igentuman.nc.datagen.tags.*;
 import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.loot.LootTableProvider;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.Collections;
-import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
@@ -26,9 +21,8 @@ public class DataGenerators {
         DataGenerator generator = event.getGenerator();
         NcIngredient.ping();
         generator.addProvider(event.includeServer(), new NCRecipes(generator));
-        generator.addProvider(event.includeServer(), new LootTableProvider(generator.getPackOutput(), Collections.emptySet(),
-                List.of(new LootTableProvider.SubProviderEntry(NCLootTables::new, LootContextParamSets.BLOCK),
-                        new LootTableProvider.SubProviderEntry(NCEntityLootTables::new, LootContextParamSets.ENTITY))));
+        generator.addProvider(event.includeServer(), new NCLootTables(generator));
+        generator.addProvider(event.includeServer(), new NCEntityLootTableProvider(generator));
 
         NCBlockTags blockTags = new NCBlockTags(generator, event);
 
@@ -36,14 +30,13 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new NCItemTags(generator, blockTags, event));
         generator.addProvider(event.includeServer(), new FluidTags(generator, event));
         generator.addProvider(event.includeServer(), new NCStructureSetTags(generator, event));
-        generator.addProvider(event.includeClient(), new NCBlockStates(generator, event));
-        generator.addProvider(event.includeClient(), new NCFluidBlockStates(generator, event));
+        generator.addProvider(event.includeClient(), new NCBlockStates(generator, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new NCFluidBlockStates(generator, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new NCItemModels(generator, event));
         generator.addProvider(event.includeClient(), new NCLanguageProvider(generator, "en_us"));
         generator.addProvider(event.includeClient(), new EmiLangProvider(generator, "en_gb"));
         generator.addProvider(event.includeServer(), new NCBiomeTags(generator, event));
         generator.addProvider(event.includeServer(), new NCWorldGenProvider(generator, event));
-        generator.addProvider(event.includeServer(), new PoiTypeTags(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
+        generator.addProvider(event.includeServer(), new PoiTypeTags(generator, event.getExistingFileHelper()));
     }
 }
-

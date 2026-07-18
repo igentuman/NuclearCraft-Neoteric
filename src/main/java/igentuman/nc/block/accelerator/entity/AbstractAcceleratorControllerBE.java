@@ -23,6 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -517,7 +518,7 @@ public abstract class AbstractAcceleratorControllerBE extends MultiblockControll
             if (level.getRandom().nextInt(50) > 30) {
                 int idx = rand.nextInt(overheated.size());
                 BlockPos pos = overheated.remove(idx);
-                level.explode(null, pos.getX(), pos.getY(), pos.getZ(), 1.0f, Level.ExplosionInteraction.BLOCK);
+                level.explode(null, pos.getX(), pos.getY(), pos.getZ(), 1.0f, Explosion.BlockInteraction.BREAK);
             }
         }
     }

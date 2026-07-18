@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
     "F": {
@@ -18,6 +17,5 @@
   "result": {
     "count": 4,
     "item": "nuclearcraft:electromagnet_yoke"
-  },
-  "show_notification": true
+  }
 }

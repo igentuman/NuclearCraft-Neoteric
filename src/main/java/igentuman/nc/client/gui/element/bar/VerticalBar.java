@@ -3,7 +3,7 @@ package igentuman.nc.client.gui.element.bar;
 import igentuman.nc.client.gui.FusionCoreScreen;
 import igentuman.nc.client.gui.IVerticalBarScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -41,12 +41,12 @@ public class VerticalBar extends NCGuiElement {
     }
 
     @Override
-    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+    public void draw(PoseStack graphics, int mX, int mY, float pTicks) {
         super.draw(graphics, mX, mY, pTicks);
         int internal = height-2;
         int stored = (int)Math.min(internal, internal*(barValue/maxValue));
-        graphics.blit(TEXTURE, X(), Y(), backgroundXoffset, 0,  width, height);
-        graphics.blit(TEXTURE, X()+1, Y()+1+internal-stored, xOffset, internal-stored,  width-2, stored);
+        blit(graphics, X(), Y(), backgroundXoffset, 0,  width, height);
+        blit(graphics, X()+1, Y()+1+internal-stored, xOffset, internal-stored,  width-2, stored);
 
     }
 
@@ -61,7 +61,7 @@ public class VerticalBar extends NCGuiElement {
             hintKey = "heat.bar.amount";
         }
         @Override
-        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getHeat();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -83,7 +83,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
             if(heat != null) {
                 barValue = heat.get();
             } else {
@@ -105,7 +105,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getEnergy();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -126,7 +126,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getEnergy();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -139,7 +139,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getCoolant();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -155,7 +155,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getCoolant();
             super.draw(transform, mX, mY, pTicks);
         }
@@ -169,7 +169,7 @@ public class VerticalBar extends NCGuiElement {
         }
 
         @Override
-        public void draw(GuiGraphics transform, int mX, int mY, float pTicks) {
+        public void draw(PoseStack transform, int mX, int mY, float pTicks) {
             barValue = screen.getHotCoolant();
             super.draw(transform, mX, mY, pTicks);
         }

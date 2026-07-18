@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_msr",
   "key": {
     "D": {
@@ -26,6 +25,5 @@
   ],
   "result": {
     "item": "nuclearcraft:msr_controller"
-  },
-  "show_notification": true
+  }
 }

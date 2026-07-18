@@ -6,7 +6,7 @@ import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.util.Units;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
@@ -23,7 +23,7 @@ import static igentuman.nc.util.TextUtils.__;
 
 public class BeamParticleOverlay {
 
-    public static final IGuiOverlay BEAM_PARTICLE_INFO = (gui, graphics, partialTick, width, height) -> {
+    public static final IGuiOverlay BEAM_PARTICLE_INFO = (gui, poseStack, partialTick, width, height) -> {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) return;
         if (!isMultiTool(mc.player.getMainHandItem()) && !isMultiTool(mc.player.getOffhandItem())) return;
@@ -48,6 +48,12 @@ public class BeamParticleOverlay {
         text.add(__("tooltip.nuclearcraft.particlestack.mean_energy", Units.getParticleEnergy(stack.getMeanEnergy())).withStyle(ChatFormatting.GRAY));
         text.add(__("tooltip.nuclearcraft.particlestack.focus", df.format(stack.getFocus())).withStyle(ChatFormatting.GRAY));
 
-        graphics.renderTooltip(mc.font, text, Optional.empty(), width / 2 + 8, height / 2 + 8);
+        net.minecraft.client.gui.Font f = Minecraft.getInstance().font;
+        int tx = width / 2 + 8;
+        int ty = height / 2 + 8;
+        for (net.minecraft.network.chat.Component line : text) {
+            f.drawShadow(poseStack, line, tx, ty, 0xFFFFFF);
+            ty += f.lineHeight + 2;
+        }
     };
 }

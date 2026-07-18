@@ -14,7 +14,6 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -27,8 +26,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
@@ -89,10 +88,10 @@ public class MultiblockStructureCategory implements IRecipeCategory<MultiblockSt
     }
     
     @Override
-    public void draw(MultiblockStructureRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(MultiblockStructureRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
         // Draw structure name
         Font font = Minecraft.getInstance().font;
-        graphics.drawString(font, __(recipe.getName()), 5, 2, 0xFFFFFFFF);
+        font.draw(poseStack, __(recipe.getName()), 5f, 2f, 0xFFFFFFFF);
         long window = Minecraft.getInstance().getWindow().getWindow();
         boolean leftMouseDown = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT)
                 == GLFW.GLFW_PRESS;
@@ -120,10 +119,10 @@ public class MultiblockStructureCategory implements IRecipeCategory<MultiblockSt
             manualRotationAngle = angle;
         }
         // Render multiblock structure
-        graphics.pose().pushPose();
-        graphics.pose().translate(80, 75, 100);
+        poseStack.pushPose();
+        poseStack.translate(80, 75, 100);
         float scale = 70.0f;
-        graphics.pose().scale(scale, -scale, scale);
+        poseStack.scale(scale, -scale, scale);
 
         if (isMouseDragging && !leftMouseDown) {
             isMouseDragging = false;
@@ -143,19 +142,19 @@ public class MultiblockStructureCategory implements IRecipeCategory<MultiblockSt
             lastMouseY = mouseY;
         }
 
-        graphics.pose().mulPose(new Quaternionf().rotationY(angle));
+        poseStack.mulPose(Vector3f.YP.rotation(angle));
         float xTilt = manualTiltAmount * (float)Math.cos(angle);
         float zTilt = manualTiltAmount * (float)Math.sin(angle);
-        graphics.pose().mulPose(new Quaternionf().rotationX(xTilt));
-        graphics.pose().mulPose(new Quaternionf().rotationZ(zTilt));
+        poseStack.mulPose(Vector3f.XP.rotation(xTilt));
+        poseStack.mulPose(Vector3f.ZP.rotation(zTilt));
 
         if(sliceMode) {
             recipe.slice();
             sliceMode = false;
         }
-        renderer.render(recipe.getStructure(), graphics.pose(), recipe.currentLayer);
+        renderer.render(recipe.getStructure(), poseStack, recipe.currentLayer);
 
-        graphics.pose().popPose();
+        poseStack.popPose();
     }
     
     // Inner class to handle rendering of the multiblock structure

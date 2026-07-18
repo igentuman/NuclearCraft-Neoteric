@@ -3,7 +3,7 @@ package igentuman.nc.client.gui.element.bar;
 import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.gui.IProgressScreen;
 import igentuman.nc.client.gui.element.NCGuiElement;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -64,12 +64,12 @@ public class ProgressBar extends NCGuiElement {
     }
 
     @Override
-    public void draw(GuiGraphics graphics, int mX, int mY, float pTicks) {
+    public void draw(PoseStack graphics, int mX, int mY, float pTicks) {
         super.draw(graphics, mX, mY, pTicks);
         RenderSystem.setShaderTexture(0, ATLAS);
         int texOffset = bars.get(bar)[0];
         int teyOffset = bars.get(bar)[1];
-        graphics.blit(ATLAS, X(), Y(), texOffset, teyOffset,  width, height);
-        graphics.blit(ATLAS, X(), Y(), texOffset, teyOffset-height-1, (int) (container.getProgress()*width), height);
+        blit(graphics, X(), Y(), texOffset, teyOffset,  width, height);
+        blit(graphics, X(), Y(), texOffset, teyOffset-height-1, (int) (container.getProgress()*width), height);
     }
 }

@@ -10,8 +10,7 @@ import igentuman.nc.container.NCProcessorContainer;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -87,7 +86,7 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(graphics);
         int i = this.leftPos;
         int j = this.topPos;
@@ -95,48 +94,48 @@ public class SideConfigScreen<T extends NCProcessorContainer<T>> extends Abstrac
         net.minecraftforge.common.MinecraftForge.EVENT_BUS
                 .post(new net.minecraftforge.client.event.ContainerScreenEvent.Render.Background(this, graphics, mouseX, mouseY));
         RenderSystem.disableDepthTest();
-        for(Renderable widget : this.renderables) {
+        for(Widget widget : this.renderables) {
             widget.render(graphics, mouseX, mouseY, partialTicks);
         }
 
-        graphics.pose().pushPose();
-        graphics.pose().translate((double)i, (double)j, 0.0D);
+        graphics.pushPose();
+        graphics.translate((double)i, (double)j, 0.0D);
         RenderSystem.applyModelViewMatrix();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.hoveredSlot = null;
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.renderLabels(graphics, mouseX, mouseY);
         renderTooltips(graphics, mouseX-relX, mouseY-relY);
-        graphics.pose().popPose();
+        graphics.popPose();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.enableDepthTest();
        // this.renderTooltip(graphics, mouseX-relX, mouseY-relY);
     }
 
-    private void renderWidgets(GuiGraphics matrix, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(PoseStack matrix, float partialTicks, int mouseX, int mouseY) {
         for(NCGuiElement widget: widgets) {
             widget.draw(matrix, mouseX, mouseY, partialTicks);
         }
     }
 
-    private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
+    private void renderTooltips(PoseStack graphics, int pMouseX, int pMouseY) {
         for(NCGuiElement widget: widgets) {
             if(widget.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, widget.getTooltips(),Optional.empty(), pMouseX, pMouseY);
+                renderTooltip(graphics, widget.getTooltips(),Optional.empty(), pMouseX, pMouseY);
             }
         }
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font,  __("processor_slot_mode.title"), imageWidth/4, titleLabelY, 0xffffff);
+    protected void renderLabels(PoseStack graphics, int mouseX, int mouseY) {
+        drawCenteredString(graphics, font,  __("processor_slot_mode.title"), imageWidth/4, titleLabelY, 0xffffff);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        blit(graphics, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 

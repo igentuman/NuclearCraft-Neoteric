@@ -14,15 +14,15 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Properties;
+import net.minecraft.world.level.material.Material;
 
 import static igentuman.nc.multiblock.kugelblitz.KugelblitzRegistration.*;
 import static igentuman.nc.util.TextUtils.__;
 
 public class ChamberBlock extends MultiblockBlock {
 
-    public ChamberBlock(Properties pProperties) {
-        super(Properties.of().sound(SoundType.METAL).strength(8f, 3600000f));
+    public ChamberBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties pProperties) {
+        super(net.minecraft.world.level.block.state.BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(8f, 3600000f));
     }
 
     @Override

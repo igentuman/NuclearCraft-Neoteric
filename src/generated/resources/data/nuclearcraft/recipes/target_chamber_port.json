@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_target_chamber",
   "key": {
     "F": {
@@ -24,6 +23,5 @@
   "result": {
     "count": 4,
     "item": "nuclearcraft:target_chamber_port"
-  },
-  "show_notification": true
+  }
 }

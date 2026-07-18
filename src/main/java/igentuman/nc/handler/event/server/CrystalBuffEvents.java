@@ -41,7 +41,7 @@ public class CrystalBuffEvents {
             return;
         }
         Player player = event.player;
-        if (player.level().isClientSide || !ANOMALY_CONFIG.ENABLED.get()) {
+        if (player.level.isClientSide || !ANOMALY_CONFIG.ENABLED.get()) {
             return;
         }
         int interval = ANOMALY_CONFIG.BUFF_REFRESH_TICKS.get();

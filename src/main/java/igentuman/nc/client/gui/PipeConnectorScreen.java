@@ -5,10 +5,9 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.container.PipeConnectorContainer;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
 import igentuman.nc.pipe.PipeCapabilityType;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -46,11 +45,9 @@ public class PipeConnectorScreen extends AbstractContainerScreen<PipeConnectorCo
                     capabilityLabel(type), buttonIdFor(type),
                     () -> menu.isCapabilityEnabled(type)));
         }
-        modeButton = addRenderableWidget(Button.builder(modeLabel(), b ->
+        modeButton = addRenderableWidget(new Button(leftPos + 92, topPos + 58, 78, 20, modeLabel(), b ->
                         NuclearCraft.packetHandler().sendToServer(
-                                new PacketGuiButtonPress(menu.getBlockPos(), PipeConnectorContainer.BTN_MODE)))
-                .bounds(leftPos + 92, topPos + 58, 78, 20)
-                .build());
+                                new PacketGuiButtonPress(menu.getBlockPos(), PipeConnectorContainer.BTN_MODE))));
         addRenderableWidget(new RedstoneModeButton(leftPos + 152, topPos + 37));
     }
 
@@ -71,7 +68,7 @@ public class PipeConnectorScreen extends AbstractContainerScreen<PipeConnectorCo
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         // DataSlots refresh each tick; keep button labels in step with the synced connector state.
         modeButton.setMessage(modeLabel());
         renderBackground(graphics);
@@ -80,15 +77,15 @@ public class PipeConnectorScreen extends AbstractContainerScreen<PipeConnectorCo
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
-        graphics.blit(GUI, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        blit(graphics, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, titleLabelX, titleLabelY, 0x404040, false);
-        graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0x404040, false);
+    protected void renderLabels(@NotNull PoseStack graphics, int mouseX, int mouseY) {
+        drawString(graphics, font, title, titleLabelX, titleLabelY, 0x404040);
+        drawString(graphics, font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0x404040);
     }
 
     private class CapabilityCheckbox extends AbstractButton {
@@ -108,21 +105,21 @@ public class PipeConnectorScreen extends AbstractContainerScreen<PipeConnectorCo
         }
 
         @Override
-        protected void renderWidget(@NotNull GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(@NotNull PoseStack g, int mouseX, int mouseY, float partialTicks) {
             int boxSize = 11;
-            int bx = getX();
-            int by = getY() + (height - boxSize) / 2;
-            g.fill(bx, by, bx + boxSize, by + boxSize, 0xFFAAAAAA);
-            g.fill(bx + 1, by + 1, bx + boxSize - 1, by + boxSize - 1, 0xFF2B2B2B);
+            int bx = this.x;
+            int by = this.y + (height - boxSize) / 2;
+            fill(g, bx, by, bx + boxSize, by + boxSize, 0xFFAAAAAA);
+            fill(g, bx + 1, by + 1, bx + boxSize - 1, by + boxSize - 1, 0xFF2B2B2B);
             if (state.getAsBoolean()) {
-                g.fill(bx + 3, by + 3, bx + boxSize - 3, by + boxSize - 3, 0xFF55D355);
+                fill(g, bx + 3, by + 3, bx + boxSize - 3, by + boxSize - 3, 0xFF55D355);
             }
             int textColor = isHoveredOrFocused() ? 0xFFFFA0 : 0x000000;
-            g.drawString(font, getMessage(), bx + boxSize + 4, getY() + (height - 8) / 2 , textColor, false);
+            drawString(g, PipeConnectorScreen.this.font, getMessage(), bx + boxSize + 4, this.y + (height - 8) / 2, textColor);
         }
 
         @Override
-        protected void updateWidgetNarration(@NotNull NarrationElementOutput narration) {
+        public void updateNarration(@NotNull NarrationElementOutput narration) {
             defaultButtonNarrationText(narration);
         }
     }
@@ -140,18 +137,19 @@ public class PipeConnectorScreen extends AbstractContainerScreen<PipeConnectorCo
         }
 
         @Override
-        protected void renderWidget(@NotNull GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(@NotNull PoseStack g, int mouseX, int mouseY, float partialTicks) {
             int mode = menu.getConnectorRedstoneMode().ordinal();
             int v = 220 - mode * 36;
             if (isHoveredOrFocused()) {
                 v += 18;
             }
-            g.blit(WIDGETS, getX(), getY(), 184, v, 18, 18);
-            setTooltip(Tooltip.create(__("gui.nc.redstone_config.tooltip_" + mode)));
+            RenderSystem.setShaderTexture(0, WIDGETS);
+            blit(g, this.x, this.y, 184, v, 18, 18);
+            // tooltip not supported in 1.19.2
         }
 
         @Override
-        protected void updateWidgetNarration(@NotNull NarrationElementOutput narration) {
+        public void updateNarration(@NotNull NarrationElementOutput narration) {
             defaultButtonNarrationText(narration);
         }
     }

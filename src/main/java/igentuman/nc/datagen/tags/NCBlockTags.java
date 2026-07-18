@@ -9,12 +9,11 @@ import igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration;
 import igentuman.nc.setup.registration.NCBlocks;
 import igentuman.nc.setup.registration.NCEnergyBlocks;
 import igentuman.nc.setup.registration.NCProcessors;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.BlockTagsProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
@@ -38,11 +37,11 @@ import static igentuman.nc.setup.registration.Tags.ORE_TAGS;
 public class NCBlockTags extends BlockTagsProvider {
 
     public NCBlockTags(DataGenerator generator, GatherDataEvent event) {
-        super(generator.getPackOutput(), event.getLookupProvider(), MODID, event.getExistingFileHelper());
+        super(generator, MODID, event.getExistingFileHelper());
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags() {
         ores();
         blocks();
         machines();

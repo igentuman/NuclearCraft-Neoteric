@@ -13,7 +13,7 @@ import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.container.HeatExchangerControllerContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -100,13 +100,13 @@ public class HeatExchangerControllerScreen extends AbstractContainerScreen<HeatE
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
-    private void renderWidgets(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    private void renderWidgets(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         radiatorToggle.setEnabled(container().isRadiatorsEnabled());
         for (NCGuiElement widget : widgets) {
             widget.draw(graphics, mouseX, mouseY, partialTicks);
@@ -134,8 +134,8 @@ public class HeatExchangerControllerScreen extends AbstractContainerScreen<HeatE
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font, menu.getTitle(), imageWidth / 2, titleLabelY, 0xffffff);
+    protected void renderLabels(@NotNull PoseStack graphics, int mouseX, int mouseY) {
+        drawCenteredString(graphics, font, menu.getTitle(), imageWidth / 2, titleLabelY, 0xffffff);
         if (isCasingValid()) {
             casingTootip = applyFormat(__("tooltip.nc.structure.size", getMultiblockHeight(), getMultiblockWidth(), getMultiblockDepth()), ChatFormatting.GOLD);
         } else {
@@ -170,10 +170,10 @@ public class HeatExchangerControllerScreen extends AbstractContainerScreen<HeatE
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI);
         updateRelativeCords();
-        graphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        blit(graphics, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
     }
 
@@ -186,19 +186,19 @@ public class HeatExchangerControllerScreen extends AbstractContainerScreen<HeatE
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
-    private void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY) {
+    private void renderTooltips(PoseStack graphics, int pMouseX, int pMouseY) {
         for (NCGuiElement widget : widgets) {
             if (widget.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, widget.getTooltips(),
+                renderTooltip(graphics, widget.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }
         }
         if (checkboxCasing.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(font, checkboxCasing.getTooltips(),
+            renderTooltip(graphics, checkboxCasing.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
         if (checkboxInterior.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(font, checkboxInterior.getTooltips(),
+            renderTooltip(graphics, checkboxInterior.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
         if (container().getMaxEnergy() > 0) {
@@ -207,7 +207,7 @@ public class HeatExchangerControllerScreen extends AbstractContainerScreen<HeatE
                 energyBar.addTooltip(__(energyUseLine(), container().energyPerTick()));
             }
             if (energyBar.isMouseOver(pMouseX, pMouseY)) {
-                graphics.renderTooltip(font, energyBar.getTooltips(),
+                renderTooltip(graphics, energyBar.getTooltips(),
                         Optional.empty(), pMouseX, pMouseY);
             }
         }
@@ -219,7 +219,7 @@ public class HeatExchangerControllerScreen extends AbstractContainerScreen<HeatE
             heatBar.addTooltip(__("heat_exchanger.cold_cycle_rate", container().getColdCycleOps()));
         }
         if (heatBar.isMouseOver(pMouseX, pMouseY)) {
-            graphics.renderTooltip(font, heatBar.getTooltips(),
+            renderTooltip(graphics, heatBar.getTooltips(),
                     Optional.empty(), pMouseX, pMouseY);
         }
     }

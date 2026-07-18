@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_target_chamber",
   "key": {
     "C": {
@@ -17,6 +16,5 @@
   ],
   "result": {
     "item": "nuclearcraft:em_calorimeter"
-  },
-  "show_notification": true
+  }
 }

@@ -25,7 +25,7 @@ public class ChargingStationContainer extends AbstractContainerMenu {
     public ChargingStationContainer(int windowId, BlockPos pos, Inventory inv) {
         super(CHARGING_STATION_CONTAINER.get(), windowId);
         this.player = inv.player;
-        this.blockEntity = (ChargingStationBE) player.level().getBlockEntity(pos);
+        this.blockEntity = (ChargingStationBE) player.level.getBlockEntity(pos);
 
         addSlot(new SlotItemHandler(blockEntity.items, 0, 80, 35) {
             @Override

@@ -161,7 +161,7 @@ public class Q36Item extends Item {
     public static void serverFire(ServerPlayer player) {
         ItemStack stack = player.getMainHandItem();
         if (!(stack.getItem() instanceof Q36Item)) return;
-        Level level = player.level();
+        Level level = player.level;
         if (!isReady(stack, level)) return;
         FireMode mode = getMode(stack);
         if (!tryConsume(stack, mode.qcPerShot(), player)) {
@@ -222,7 +222,7 @@ public class Q36Item extends Item {
                 anomaly.onQ36Hit(player);
                 hitAnomaly = true;
             }
-            DamageSource src = level.damageSources().mobProjectile(player, player);
+            DamageSource src = DamageSource.thrown(player, player);
             target.hurt(src, mode.damage());
             if (target instanceof LivingEntity living) {
                 living.getCapability(PlayerRadiationProvider.PLAYER_RADIATION).ifPresent(rad ->
@@ -283,7 +283,7 @@ public class Q36Item extends Item {
     private static void damageEntitiesAt(ServerLevel level, Vec3 center, double radius, FireMode mode, ServerPlayer shooter, Entity skip) {
         AABB box = new AABB(center.x - radius, center.y - radius, center.z - radius,
                 center.x + radius, center.y + radius, center.z + radius);
-        DamageSource src = level.damageSources().mobProjectile(shooter, shooter);
+        DamageSource src = DamageSource.thrown(shooter, shooter);
         double r2 = radius * radius;
         float modeDamage = mode.damage();
         long modeRadiation = mode.radiation();

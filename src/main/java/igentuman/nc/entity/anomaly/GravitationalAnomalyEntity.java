@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -79,7 +81,7 @@ public class GravitationalAnomalyEntity extends AnomalyEntity {
         Vec3 center = position();
         double r2 = radius * radius;
 
-        for (Entity entity : level().getEntities(this, effectBox(radius), e -> !(e instanceof AnomalyEntity) && e.isAlive())) {
+        for (Entity entity : level.getEntities(this, effectBox(radius), e -> !(e instanceof AnomalyEntity) && e.isAlive())) {
             if (entity instanceof ItemEntity itemEntity) {
                 if (itemEntity.getItem().getItem() instanceof BlockItem) {
                     setAbsorbedBlocks(getAbsorbedBlocks() + 1);
@@ -104,7 +106,7 @@ public class GravitationalAnomalyEntity extends AnomalyEntity {
                     entity.hurtMarked = true;
                 }
                 if (dist <= 2.0D) {
-                    living.hurt(damageSources().magic(), 5.0F);
+                    living.hurt(DamageSource.MAGIC, 5.0F);
                 }
             }
             // Player movement is client-authoritative; flag so the server pushes a velocity packet.
@@ -127,20 +129,20 @@ public class GravitationalAnomalyEntity extends AnomalyEntity {
             int oy = random.nextInt(r * 2 + 1) - r;
             int oz = random.nextInt(r * 2 + 1) - r;
             BlockPos pos = blockPosition().offset(ox, oy, oz);
-            if (!level().isLoaded(pos)) {
+            if (!level.isLoaded(pos)) {
                 continue;
             }
-            BlockState state = level().getBlockState(pos);
+            BlockState state = level.getBlockState(pos);
             if (state.isAir() || state.is(Blocks.BEDROCK)) {
                 continue;
             }
-            if (state.getDestroySpeed(level(), pos) < 0.0F) {
+            if (state.getDestroySpeed(level, pos) < 0.0F) {
                 continue;
             }
-            if (level().getBlockEntity(pos) != null) {
+            if (level.getBlockEntity(pos) != null) {
                 continue;
             }
-            level().removeBlock(pos, false);
+            level.removeBlock(pos, false);
             setAbsorbedBlocks(getAbsorbedBlocks() + 1);
             return;
         }
@@ -153,13 +155,13 @@ public class GravitationalAnomalyEntity extends AnomalyEntity {
 
     @Override
     protected void onCounterplayResolved() {
-        if (level().isClientSide) {
+        if (level.isClientSide) {
             return;
         }
         if (ANOMALY_CONFIG.GRAV_EXPLOSION.get()) {
             double power = ANOMALY_CONFIG.GRAV_EXPLOSION_POWER.get();
             if (power > 0.0D) {
-                level().explode(this, getX(), getY(), getZ(), (float) power, Level.ExplosionInteraction.MOB);
+                level.explode(this, getX(), getY(), getZ(), (float) power, Explosion.BlockInteraction.DESTROY);
             }
         }
         super.onCounterplayResolved();

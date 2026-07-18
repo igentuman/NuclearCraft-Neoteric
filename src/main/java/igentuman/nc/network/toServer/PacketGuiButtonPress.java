@@ -79,7 +79,7 @@ public class PacketGuiButtonPress implements INcPacket {
     }
 
     private void toggleBlockEntity(ServerPlayer player, BlockPos tilePosition) {
-        BlockEntity be = player.level().getBlockEntity(tilePosition);
+        BlockEntity be = player.level.getBlockEntity(tilePosition);
         switch (buttonId) {
             case RedstoneConfig.BTN_ID:
                 if (!(be instanceof NCProcessorBE processor)) {

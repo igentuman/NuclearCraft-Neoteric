@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.kugelblitz;
 
+import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.block.kugelblitz.*;
 import igentuman.nc.block.kugelblitz.entity.*;
 import igentuman.nc.container.ChamberPortContainer;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 import java.util.regex.Pattern;
@@ -27,9 +29,9 @@ import static igentuman.nc.setup.registration.Tags.itemTag;
 public class KugelblitzRegistration {
 
     public static final Pattern TRANSPARENT_BLOCKS_PATTERN = Pattern.compile(".*(glass|photon|transformer|stabilizer).*");
-    public static final BlockBehaviour.Properties NO_OCCLUSION_BLOCK_PROPS = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
-    public static final Item.Properties KUGELBLITZ_ITEM_PROPERTIES = new Item.Properties();
-    public static final Block.Properties KUGELBLITZ_BLOCK_PROPERTIES =  BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();;
+    public static final BlockBehaviour.Properties NO_OCCLUSION_BLOCK_PROPS = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(3f).requiresCorrectToolForDrops().noOcclusion();
+    public static final Item.Properties KUGELBLITZ_ITEM_PROPERTIES = new Item.Properties().tab(CreativeTabs.KUGELBLITZ_TAB);
+    public static final Block.Properties KUGELBLITZ_BLOCK_PROPERTIES =  BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();;
     public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> KUGELBLITZ_BE = new HashMap<>();
 
     public static final HashMap<String, RegistryObject<Item>> KUGELBLITZ_ITEMS = new HashMap<>();
@@ -86,7 +88,7 @@ public class KugelblitzRegistration {
         registerSimpleBlock("quantum_flux_regulator");
         registerSimpleBlock("quantum_transformer");
 
-        KUGELBLITZ_BLOCKS.put("photon_concentrator", BLOCKS.register("photon_concentrator", () -> new PhotonConcentratorBlock(BlockBehaviour.Properties.of().sound(SoundType.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion())));
+        KUGELBLITZ_BLOCKS.put("photon_concentrator", BLOCKS.register("photon_concentrator", () -> new PhotonConcentratorBlock(BlockBehaviour.Properties.of(Material.GLASS).sound(SoundType.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion())));
         KUGELBLITZ_ITEMS.put("photon_concentrator", fromMultiblock(KUGELBLITZ_BLOCKS.get("photon_concentrator")));
         KUGELBLITZ_BE.put("photon_concentrator",
                 BLOCK_ENTITIES.register("photon_concentrator",
@@ -123,7 +125,7 @@ public class KugelblitzRegistration {
 
     private static void registerSimpleBlock(String key) {
         BlockBehaviour.Properties props = TRANSPARENT_BLOCKS_PATTERN.matcher(key).matches()
-                ? BlockBehaviour.Properties.of().sound(SoundType.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion()
+                ? BlockBehaviour.Properties.of(Material.GLASS).sound(SoundType.GLASS).strength(1f).requiresCorrectToolForDrops().noOcclusion()
                 : KUGELBLITZ_BLOCK_PROPERTIES;
         KUGELBLITZ_BLOCKS.put(key, BLOCKS.register(key, () -> new ChamberBlock(props)));
         KUGELBLITZ_ITEMS.put(key, fromMultiblock(KUGELBLITZ_BLOCKS.get(key)));

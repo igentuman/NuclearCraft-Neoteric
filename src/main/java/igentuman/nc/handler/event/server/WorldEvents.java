@@ -68,11 +68,11 @@ public class WorldEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockEvent.BreakEvent event) {
-        if(event.getPlayer().level().isClientSide()) return;
+        if(event.getPlayer().level.isClientSide()) return;
         BlockState state = event.getState();
         if(state == null) return;
         if(trackingBlocks.contains(state.getBlock())) {
-            MultiblockHandler.get(event.getPlayer().level().dimension()).trackBlockChange(event.getPos());
+            MultiblockHandler.get(event.getPlayer().level.dimension()).trackBlockChange(event.getPos());
         }
     }
 

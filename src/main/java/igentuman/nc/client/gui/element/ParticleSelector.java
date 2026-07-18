@@ -5,7 +5,8 @@ import igentuman.nc.content.particles.Particle;
 import igentuman.nc.content.particles.Particles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -116,7 +117,7 @@ public class ParticleSelector extends NCGuiElement implements IDropdown {
     public void close() {
         if (open) {
             open = false;
-            search.setFocused(false);
+            search.setFocus(false);
             setSearchValue(displayName(selectedName));
         }
     }
@@ -125,44 +126,44 @@ public class ParticleSelector extends NCGuiElement implements IDropdown {
         selectedName = entry.name();
         setSearchValue(entry.label().getString());
         open = false;
-        search.setFocused(false);
+        search.setFocus(false);
         if (onSelect != null) {
             onSelect.accept(selectedName);
         }
     }
 
     @Override
-    public void draw(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void draw(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         // field background
-        graphics.fill(X(), Y(), X() + width, Y() + height, 0xFF101010);
-        graphics.fill(X(), Y(), X() + width, Y() + 1, 0xFF5A5A5A);
-        graphics.fill(X(), Y() + height - 1, X() + width, Y() + height, 0xFF5A5A5A);
+        GuiComponent.fill(graphics, X(), Y(), X() + width, Y() + height, 0xFF101010);
+        GuiComponent.fill(graphics, X(), Y(), X() + width, Y() + 1, 0xFF5A5A5A);
+        GuiComponent.fill(graphics, X(), Y() + height - 1, X() + width, Y() + height, 0xFF5A5A5A);
         // selected particle icon
         Particle selected = Particles.getParticleFromName(selectedName);
         if (selected != null) {
             RenderSystem.setShaderTexture(0, selected.getTexture());
-            graphics.blit(selected.getTexture(), X() + 1, Y() + (height - 16) / 2, 0, 0, 16, 16, 16, 16);
+            blit(graphics, X() + 1, Y() + (height - 16) / 2, 0, 0, 16, 16, 16, 16);
         }
-        search.setX(X() + ICON_BOX);
-        search.setY(Y() + 1);
+        search.x = X() + ICON_BOX;
+        search.y = Y() + 1;
         search.render(graphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void drawOverlay(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawOverlay(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         if (!open) {
             return;
         }
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 300);
+        graphics.pushPose();
+        graphics.translate(0, 0, 300);
         int top = listTop();
         int rows = Math.min(VISIBLE_ROWS, Math.max(1, filtered.size()));
         int bottom = top + rows * ROW_HEIGHT;
-        graphics.fill(X(), top, X() + width, bottom, 0xF0101010);
-        graphics.fill(X() - 1, top - 1, X() + width + 1, top, 0xFF5A5A5A);
-        graphics.fill(X() - 1, bottom, X() + width + 1, bottom + 1, 0xFF5A5A5A);
-        graphics.fill(X() - 1, top, X(), bottom, 0xFF5A5A5A);
-        graphics.fill(X() + width, top, X() + width + 1, bottom, 0xFF5A5A5A);
+        GuiComponent.fill(graphics, X(), top, X() + width, bottom, 0xF0101010);
+        GuiComponent.fill(graphics, X() - 1, top - 1, X() + width + 1, top, 0xFF5A5A5A);
+        GuiComponent.fill(graphics, X() - 1, bottom, X() + width + 1, bottom + 1, 0xFF5A5A5A);
+        GuiComponent.fill(graphics, X() - 1, top, X(), bottom, 0xFF5A5A5A);
+        GuiComponent.fill(graphics, X() + width, top, X() + width + 1, bottom, 0xFF5A5A5A);
 
         Font font = Minecraft.getInstance().font;
         for (int i = 0; i < VISIBLE_ROWS; i++) {
@@ -174,11 +175,11 @@ public class ParticleSelector extends NCGuiElement implements IDropdown {
             int rowY = top + i * ROW_HEIGHT;
             boolean hovered = mouseX >= X() && mouseX < X() + width && mouseY >= rowY && mouseY < rowY + ROW_HEIGHT;
             if (hovered) {
-                graphics.fill(X(), rowY, X() + width, rowY + ROW_HEIGHT, 0x60FFFFFF);
+                GuiComponent.fill(graphics, X(), rowY, X() + width, rowY + ROW_HEIGHT, 0x60FFFFFF);
             }
             RenderSystem.setShaderTexture(0, e.particle().getTexture());
-            graphics.blit(e.particle().getTexture(), X() + 1, rowY, 0, 0, 16, 16, 16, 16);
-            graphics.drawString(font, e.label(), X() + ICON_BOX, rowY + (ROW_HEIGHT - 8) / 2, 0xFFFFFF);
+            blit(graphics, X() + 1, rowY, 0, 0, 16, 16, 16, 16);
+            font.draw(graphics, e.label(), X() + ICON_BOX, rowY + (ROW_HEIGHT - 8) / 2, 0xFFFFFF);
         }
 
         // scrollbar
@@ -187,9 +188,9 @@ public class ParticleSelector extends NCGuiElement implements IDropdown {
             int thumbHeight = Math.max(8, trackHeight * VISIBLE_ROWS / filtered.size());
             int travel = trackHeight - thumbHeight;
             int thumbY = top + (maxScroll() == 0 ? 0 : travel * scrollOffset / maxScroll());
-            graphics.fill(X() + width - 2, thumbY, X() + width, thumbY + thumbHeight, 0xFFB0B0B0);
+            GuiComponent.fill(graphics, X() + width - 2, thumbY, X() + width, thumbY + thumbHeight, 0xFFB0B0B0);
         }
-        graphics.pose().popPose();
+        graphics.popPose();
     }
 
     protected boolean inField(double mouseX, double mouseY) {
@@ -209,9 +210,9 @@ public class ParticleSelector extends NCGuiElement implements IDropdown {
                 setSearchValue("");
                 recompute();
             }
-            search.setFocused(true);
-            search.setX(X() + ICON_BOX);
-            search.setY(Y() + 1);
+            search.setFocus(true);
+            search.x = X() + ICON_BOX;
+            search.y = Y() + 1;
             search.mouseClicked(mouseX, mouseY, button);
             return true;
         }
@@ -263,6 +264,6 @@ public class ParticleSelector extends NCGuiElement implements IDropdown {
     }
 
     public void clearFieldFocus() {
-        search.setFocused(false);
+        search.setFocus(false);
     }
 }

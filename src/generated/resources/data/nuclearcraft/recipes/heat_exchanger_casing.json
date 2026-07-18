@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_heat_exchanger",
   "key": {
     "L": {
@@ -18,6 +17,5 @@
   "result": {
     "count": 4,
     "item": "nuclearcraft:heat_exchanger_casing"
-  },
-  "show_notification": true
+  }
 }

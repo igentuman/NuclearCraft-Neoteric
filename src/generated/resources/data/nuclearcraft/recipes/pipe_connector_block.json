@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "A": {
       "item": "nuclearcraft:servo"
@@ -20,6 +19,5 @@
   "result": {
     "count": 2,
     "item": "nuclearcraft:pipe_connector"
-  },
-  "show_notification": true
+  }
 }

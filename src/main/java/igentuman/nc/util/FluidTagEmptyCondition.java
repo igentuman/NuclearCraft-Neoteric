@@ -6,7 +6,7 @@
 package igentuman.nc.util;
 
 import com.google.gson.JsonObject;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
@@ -31,7 +31,7 @@ public class FluidTagEmptyCondition implements ICondition
 
     public FluidTagEmptyCondition(ResourceLocation tag)
     {
-        this.tag = TagKey.create(Registries.FLUID, tag);
+        this.tag = TagKey.create(Registry.FLUID_REGISTRY, tag);
     }
 
     @Override

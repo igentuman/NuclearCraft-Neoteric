@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
     "E": {
@@ -23,6 +22,5 @@
   ],
   "result": {
     "item": "nuclearcraft:accelerator_ion_source_port"
-  },
-  "show_notification": true
+  }
 }

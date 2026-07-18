@@ -10,8 +10,8 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -64,18 +64,18 @@ public class IsotopeInfoCategory implements IRecipeCategory<IsotopeInfoRecipe> {
     }
 
     @Override
-    public void draw(IsotopeInfoRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(IsotopeInfoRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
         Font font = Minecraft.getInstance().font;
-        graphics.drawString(font, __("jei.nuclearcraft.isotope_info.title", capitalize(recipe.getName())), 2, 1, 0xFF404040, false);
+        font.draw(poseStack, __("jei.nuclearcraft.isotope_info.title", capitalize(recipe.getName())), 2f, 1f, 0xFF404040);
 
         int x = 4;
         for (IsotopeInfoRecipe.Variant v : recipe.getVariants()) {
-            graphics.pose().pushPose();
-            graphics.pose().scale(0.7F, 0.7F, 1F);
+            poseStack.pushPose();
+            poseStack.scale(0.7F, 0.7F, 1F);
             int sx = (int) (x / 0.7F);
             int sy = (int) ((HEADER + SLOT_SIZE + 2) / 0.7F);
-            graphics.drawString(font, __(v.labelKey).getString(), sx, sy, 0xFF202020, false);
-            graphics.pose().popPose();
+            font.draw(poseStack, __(v.labelKey).getString(), (float)sx, (float)sy, 0xFF202020);
+            poseStack.popPose();
             x += SLOT_SIZE + 12;
         }
     }

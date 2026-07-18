@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.heat_exchanger;
 
+import igentuman.nc.setup.registration.CreativeTabs;
 import igentuman.nc.block.heat_exchanger.HeatExchangerCasingBlock;
 import igentuman.nc.block.heat_exchanger.HeatExchangerControllerBlock;
 import igentuman.nc.block.heat_exchanger.HeatExchangerPortBlock;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -30,8 +32,8 @@ import static igentuman.nc.setup.registration.Tags.blockTag;
 
 public class HeatExchangerRegistration {
 
-    public static final Item.Properties HX_ITEM_PROPS = new Item.Properties();
-    public static final BlockBehaviour.Properties HX_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
+    public static final Item.Properties HX_ITEM_PROPS = new Item.Properties().tab(CreativeTabs.HX_TAB);
+    public static final BlockBehaviour.Properties HX_BLOCKS_PROPERTIES = BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops();
     public static final HashMap<String, RegistryObject<Block>> HX_BLOCKS = new HashMap<>();
     public static final HashMap<String, RegistryObject<BlockEntityType<? extends BlockEntity>>> HX_BE = new HashMap<>();
     public static final HashMap<String, RegistryObject<BlockItem>> HX_BLOCK_ITEMS = new HashMap<>();

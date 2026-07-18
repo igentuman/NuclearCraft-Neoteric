@@ -251,10 +251,6 @@ public class FissionControllerContainer extends AbstractContainerMenu {
         return blockEntity.steamPerTick;
     }
 
-    public String getModerationLevel() {
-        return numberFormat(blockEntity.getModerationLevel() * 100);
-    }
-
     public int getReactivity() {
         return blockEntity.reactivityLevel;
     }

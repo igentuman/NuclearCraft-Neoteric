@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "nuclearcraft_dusts",
+  "ingredients": [
+    {
+      "tag": "forge:dusts/enderium"
+    },
+    {
+      "tag": "forge:dusts/emerald"
+    },
+    {
+      "tag": "forge:dusts/lapis"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "item": "nuclearcraft:dimensional_blend_dust"
+  }
+}

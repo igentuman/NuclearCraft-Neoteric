@@ -106,14 +106,14 @@ public class BatteryBlockBakedModel implements IDynamicBakedModel {
             default -> textureTop = spriteGetter.apply(batteryModelGeometry.topDefault);
         }
         quadCache.put(cacheKey,
-            List.of(
-                    ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), rotation, textureTop),
-                    ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), rotation, getSideTexture(sideConfig, Direction.DOWN)),
-                    ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), rotation, getSideTexture(sideConfig, Direction.EAST)),
-                    ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), rotation, getSideTexture(sideConfig, Direction.WEST)),
-                    ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), rotation, getSideTexture(sideConfig, Direction.NORTH)),
-                    ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), rotation, getSideTexture(sideConfig, Direction.SOUTH))
-        ));
+                List.of(
+                        ClientTools.createQuad(v(r, p, r), v(r, p, l), v(l, p, l), v(l, p, r), rotation, textureTop),
+                        ClientTools.createQuad(v(l, l, l), v(r, l, l), v(r, l, r), v(l, l, r), rotation, getSideTexture(sideConfig, Direction.DOWN)),
+                        ClientTools.createQuad(v(r, p, r), v(r, l, r), v(r, l, l), v(r, p, l), rotation, getSideTexture(sideConfig, Direction.EAST)),
+                        ClientTools.createQuad(v(l, p, l), v(l, l, l), v(l, l, r), v(l, p, r), rotation, getSideTexture(sideConfig, Direction.WEST)),
+                        ClientTools.createQuad(v(r, p, l), v(r, l, l), v(l, l, l), v(l, p, l), rotation, getSideTexture(sideConfig, Direction.NORTH)),
+                        ClientTools.createQuad(v(l, p, r), v(l, l, r), v(r, l, r), v(r, p, r), rotation, getSideTexture(sideConfig, Direction.SOUTH))
+                ));
 
         return quadCache.get(cacheKey);
     }

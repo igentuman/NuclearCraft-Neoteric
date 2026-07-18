@@ -139,7 +139,7 @@ public class RFAmplifier {
         }
 
         public int getHeatRate() {
-            return 100; //todo implement heat rate
+            return getHeat();
         }
     }
 }

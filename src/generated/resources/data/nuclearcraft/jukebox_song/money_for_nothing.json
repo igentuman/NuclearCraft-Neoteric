@@ -1,0 +1,8 @@
+{
+  "comparator_output": 15,
+  "description": {
+    "translate": "jukebox_song.nuclearcraft.money_for_nothing"
+  },
+  "length_in_seconds": 315.0,
+  "sound_event": "nuclearcraft:music.money_for_nothing"
+}

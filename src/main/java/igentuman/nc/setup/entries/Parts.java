@@ -5,6 +5,7 @@ import igentuman.nc.item.NCTiers;
 import igentuman.nc.item.PaxelItem;
 import igentuman.nc.registration.ArmorMaterialEntry;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.NCJukeboxSongs;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -48,6 +49,12 @@ public class Parts extends ModEntries {
         };
         for (String name : parts) {
             addItem(name).build();
+        }
+    }
+
+    public static void records() {
+        for (String name : NCJukeboxSongs.RECORDS.keySet()) {
+            addItem(name, () -> new Item(new Item.Properties().stacksTo(1).jukeboxPlayable(NCJukeboxSongs.key(name)))).build();
         }
     }
 

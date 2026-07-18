@@ -48,6 +48,7 @@ public class ModEntries {
         fluids();
         fissionFuel();
         parts();
+        records();
         blocks();
         tools();
         armor();

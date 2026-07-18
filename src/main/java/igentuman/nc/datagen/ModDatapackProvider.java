@@ -1,5 +1,6 @@
 package igentuman.nc.datagen;
 
+import igentuman.nc.setup.NCJukeboxSongs;
 import igentuman.nc.setup.level.*;
 import igentuman.nc.util.NCDamageSources;
 import net.minecraft.core.HolderLookup;
@@ -22,6 +23,7 @@ public class ModDatapackProvider extends DatapackBuiltinEntriesProvider {
 
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(Registries.DAMAGE_TYPE, NCDamageSources::bootstrap)
+            .add(Registries.JUKEBOX_SONG, NCJukeboxSongs::bootstrap)
             .add(Registries.CONFIGURED_FEATURE, ModConfiguredFeatures::bootstrap)
             .add(Registries.PLACED_FEATURE, ModPlacedFeatures::bootstrap)
             .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ModBiomeModifiers::bootstrap)

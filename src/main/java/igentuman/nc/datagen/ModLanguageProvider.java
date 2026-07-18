@@ -7,6 +7,7 @@ import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ToolSetEntry;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.NCJukeboxSongs;
 import net.minecraft.data.DataGenerator;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
@@ -23,6 +24,9 @@ public class ModLanguageProvider  extends LanguageProvider {
     protected void addTranslations() {
         labels();
         heatSinks();
+        for (String name : NCJukeboxSongs.RECORDS.keySet()) {
+            add("jukebox_song." + MODID + "." + name, convertToName(name));
+        }
         for (String name : ModEntries.ENTRIES.keySet()) {
             if(ModEntries.get(name).hasBlock()) {
                 add(ModEntries.get(name).block().get(), convertToName(name));
@@ -151,6 +155,11 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.cooldown_rate", "Cooling Rate: %s/t");
         add("screen.nuclearcraft.fission.energy", "Output");
         add("screen.nuclearcraft.fission.reactivity", "Reactivity");
+        add("screen.nuclearcraft.fission.fuel_cells", "Fuel Cells");
+        add("screen.nuclearcraft.fission.heat_sinks_count", "Heat Sinks");
+        add("screen.nuclearcraft.fission.moderators_count", "Moderators");
+        add("screen.nuclearcraft.fission.moderation_level", "Moderation");
+        add("screen.nuclearcraft.fission.irradiators_connections", "Irradiator Connections");
         add("screen.nuclearcraft.fission.fe_per_tick", "Output");
         add("screen.nuclearcraft.fission.steam_per_tick", "Steam");
         add("screen.nuclearcraft.fission.mode.energy", "Energy");
@@ -206,9 +215,12 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("tooltip.nuclearcraft.rf_amplifier.efficiency", "Efficiency: %s%%");
         add("tooltip.nuclearcraft.rf_amplifier.heat", "Heat: %s H/t");
         add("tooltip.nuclearcraft.rf_amplifier.max_temp", "Max Temp: %s kK");
+        add("tooltip.nuclearcraft.rf_amplifier.not_found", "No RF Amplifiers");
         add("tooltip.nuclearcraft.electromagnet.magnetic_field", "Magnetic Field: %s T");
         add("tooltip.nuclearcraft.electromagnet.efficiency", "Efficiency: %s%%");
         add("tooltip.nuclearcraft.electromagnet.heat", "Heat: %s H/t");
         add("tooltip.nuclearcraft.electromagnet.max_temp", "Max Temp: %s kK");
+        add("tooltip.nuclearcraft.electromagnet.power", "Power: %s FE/t");
+        add("tooltip.nuclearcraft.electromagnet.not_found", "No Electromagnets");
     }
 }

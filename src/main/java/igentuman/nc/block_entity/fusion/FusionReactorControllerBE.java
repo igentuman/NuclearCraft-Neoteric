@@ -11,6 +11,7 @@ import igentuman.nc.multiblock.fusion.FusionReactorCache;
 import igentuman.nc.recipe.fusion.FusionRecipe;
 import igentuman.nc.recipe.fusion.FusionRecipes;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.NCSounds;
 import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,11 +54,21 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
 
     @NBTField public double reactorHeat;
     @NBTField public long plasmaTemperature;
+    @NBTField public long maxPlasmaTemperature;
     @NBTField public long chargeAmount;
     @NBTField public double efficiency;
     @NBTField public double maxHeat;
     @NBTField public int inputRedstoneSignal;
     @NBTField public int rfAmplificationRatio;
+
+    @NBTField(syncToClient = true) public double magneticFieldStrength;
+    @NBTField(syncToClient = true) public int magnetsPower;
+    @NBTField(syncToClient = true) public int maxMagnetsTemp;
+    @NBTField(syncToClient = true) public int rfVoltage;
+    @NBTField(syncToClient = true) public int rfAmplifiersPower;
+    @NBTField(syncToClient = true) public int minRFAmplifiersTemp;
+    @NBTField(syncToClient = true) public int magnetCount;
+    @NBTField(syncToClient = true) public int amplifierCount;
 
     public FusionReactorControllerBE(BlockPos pos, BlockState state, String name) {
         super(ModEntries.get(name).blockEntity().get(), pos, state, name);
@@ -120,6 +131,29 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
     }
 
     @Override
+    public void clientTick() {
+        super.clientTick();
+        if (!formed) {
+            stopSound();
+            return;
+        }
+        if (functionalBlocksCharge > 0 && functionalBlocksCharge < 100) {
+            playSound(NCSounds.FUSION_CHARGING.get(), 0.7f);
+            return;
+        }
+        boolean ready = magnetsPower > 0 && rfAmplifiersPower > 0 && functionalBlocksCharge > 99;
+        if (ready) {
+            if (running && energyPerTick > 0) {
+                playSound(NCSounds.FUSION_RUNNING.get(), 0.5f);
+            } else {
+                playSound(NCSounds.FUSION_READY.get(), 0.7f);
+            }
+        } else {
+            stopSound();
+        }
+    }
+
+    @Override
     public void serverTick() {
         if (!(level instanceof ServerLevel serverLevel)) return;
         ensureFluidValidators(serverLevel);
@@ -130,6 +164,9 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
             wasChanged = true;
         }
         if (formed) {
+            if (mbInstance.cache instanceof FusionReactorCache fc) {
+                syncStats(fc);
+            }
             updateRedstoneInput(serverLevel);
             if (hasRedstoneSignal() && mbInstance.cache instanceof FusionReactorCache fc) {
                 reaction.tick(this, fc);
@@ -146,6 +183,17 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
             getLevel().sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
             wasChanged = false;
         }
+    }
+
+    private void syncStats(FusionReactorCache fc) {
+        magneticFieldStrength = fc.magneticFieldStrength;
+        magnetsPower = fc.magnetsPower;
+        maxMagnetsTemp = fc.maxMagnetsTemp;
+        rfVoltage = fc.rfAmplification;
+        rfAmplifiersPower = fc.rfAmplifiersPower;
+        minRFAmplifiersTemp = fc.minRFAmplifiersTemp;
+        magnetCount = fc.magnetCount;
+        amplifierCount = fc.amplifierCount;
     }
 
     /** Emits four beam particles tracing the plasma ring, one per edge of the square. */

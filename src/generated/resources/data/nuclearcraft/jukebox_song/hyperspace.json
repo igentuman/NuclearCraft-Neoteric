@@ -1,0 +1,8 @@
+{
+  "comparator_output": 15,
+  "description": {
+    "translate": "jukebox_song.nuclearcraft.hyperspace"
+  },
+  "length_in_seconds": 185.0,
+  "sound_event": "nuclearcraft:music.hyperspace"
+}

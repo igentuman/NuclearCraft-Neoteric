@@ -3,6 +3,7 @@ package igentuman.nc.datagen.tag;
 import igentuman.nc.multiblock.fission.FissionTags;
 import igentuman.nc.registration.*;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.NCJukeboxSongs;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -98,6 +99,10 @@ public class ModItemTagProvider extends ItemTagsProvider {
             fuel.fuelItems().values().forEach(item -> tag(fuelTag).add(item.get()));
             TagKey<Item> depletedFuelTag = materialTag("fission_fuel/depleted_" + fuel.group + "/" + fuel.name.replace("-", "_"));
             fuel.depletedItems().values().forEach(item -> tag(depletedFuelTag).add(item.get()));
+        }
+        TagKey<Item> musicDiscs = ItemTags.create(ResourceLocation.withDefaultNamespace("music_discs"));
+        for (String name : NCJukeboxSongs.RECORDS.keySet()) {
+            tag(musicDiscs).add(ModEntries.get(name).item().get());
         }
     }
 

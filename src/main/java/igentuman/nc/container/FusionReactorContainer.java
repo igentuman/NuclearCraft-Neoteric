@@ -74,4 +74,14 @@ public class FusionReactorContainer extends MultiblockControllerContainer {
             addSlot(new Slot(playerInventory, col, 27 + col * 18, 163));
         }
     }
+
+    public double plasmaTemperature() {
+        FusionReactorControllerBE be = fusion();
+        return be != null ? be.plasmaTemperature : 0;
+    }
+
+    public double maxPlasmaTemperature() {
+        FusionReactorControllerBE be = fusion();
+        return be != null ? be.maxPlasmaTemperature : 0;
+    }
 }

@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
@@ -67,6 +68,27 @@ public class FissionReactorScreen extends MultiblockControllerScreen {
                 modeButton.setTooltip(Tooltip.create(__("tooltip.nuclearcraft.switch_to_boiling")));
             }
         }
+    }
+
+    @Override
+    public List<Component> infoCheckboxTooltip() {
+        List<Component> tooltip = new ArrayList<>();
+        if (!menu.isFormed()) {
+            tooltip.add(__("screen.nuclearcraft.multiblock.not_assembled").withStyle(ChatFormatting.RED));
+            return tooltip;
+        }
+        tooltip.add(__("screen.nuclearcraft.multiblock.assembled").withStyle(ChatFormatting.GREEN));
+        tooltip.add(stat("screen.nuclearcraft.fission.fuel_cells", String.valueOf(synced("fuelCells"))));
+        tooltip.add(stat("screen.nuclearcraft.fission.heat_sinks_count", String.valueOf(synced("heatSinks"))));
+        tooltip.add(stat("screen.nuclearcraft.fission.moderators_count", String.valueOf(synced("moderators"))));
+        tooltip.add(stat("screen.nuclearcraft.fission.moderation_level", synced("moderationLevel") + "%"));
+        tooltip.add(stat("screen.nuclearcraft.fission.reactivity", synced("reactivity") + "%"));
+        tooltip.add(stat("screen.nuclearcraft.fission.irradiators_connections", String.valueOf(synced("irradiatorLines"))));
+        return tooltip;
+    }
+
+    private Component stat(String key, String value) {
+        return Component.translatable(key).append(": " + value).withStyle(ChatFormatting.GOLD);
     }
 
     private boolean isSteamMode() {

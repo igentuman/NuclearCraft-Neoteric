@@ -1,11 +1,14 @@
 package igentuman.nc.block_entity;
 
+import igentuman.nc.client.sound.TileSoundInstance;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.util.BoilingBuffer;
 import igentuman.nc.util.NBTField;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -15,6 +18,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +39,9 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     protected MultiblockHandler.MultiblockInstance mbInstance;
     @NBTField(syncToClient = true)
     public boolean formed = false;
+
+    /** Client-side looping tile sound; managed by {@link #playSound}/{@link #stopSound}. */
+    protected TileSoundInstance currentSound;
 
 
     public MultiblockControllerBE(BlockEntityType<?> type, BlockPos pos, BlockState state, String multiblockName) {
@@ -88,6 +95,32 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     public void clientTick() {
         super.clientTick();
 
+    }
+
+    /** Starts (or keeps) a looping tile sound at this controller. Restarts if the event changed or it stopped. */
+    protected void playSound(SoundEvent sound, float volume) {
+        if (level == null || !level.isClientSide) return;
+        SoundManager mgr = Minecraft.getInstance().getSoundManager();
+        if (currentSound != null && (!currentSound.getLocation().equals(sound.getLocation()) || !mgr.isActive(currentSound))) {
+            mgr.stop(currentSound);
+            currentSound = null;
+        }
+        if (currentSound == null) {
+            currentSound = new TileSoundInstance(sound, volume, worldPosition);
+            mgr.play(currentSound);
+        }
+    }
+
+    protected void stopSound() {
+        if (currentSound == null) return;
+        Minecraft.getInstance().getSoundManager().stop(currentSound);
+        currentSound = null;
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        if (level != null && level.isClientSide) stopSound();
     }
 
     private Direction facing() {

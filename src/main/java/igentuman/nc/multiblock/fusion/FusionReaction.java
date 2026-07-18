@@ -72,6 +72,7 @@ public class FusionReaction {
                     plasmaToEnergyExchange(be, fc, recipe, optimalTemp, cpe);
                     heatLossExchange(be, fc, cpe);
                     be.efficiency = calculateEfficiency(be, optimalTemp);
+                    be.maxPlasmaTemperature = (long) optimalTemp * 2;
                     be.running = be.energyPerTick > 0 && be.plasmaTemperature > 0 && be.efficiency > 0;
 
                     ticksProcessed += Math.max(0, be.efficiency * 4);

@@ -1,5 +1,9 @@
-// 1.21.1	2026-06-28T01:38:19.727996551	Registries
+// 1.21.1	2026-07-18T17:18:29.579437156	Registries
 fd7a52df299c66fcc476e4abd071c844e6c9afe7 data/nuclearcraft/damage_type/acid.json
+f41672cd49b8b9382805e1d3731e4b126f960152 data/nuclearcraft/jukebox_song/end_of_the_world.json
+56ab9c663bb33574f204e3298fa3cdf615ba4b03 data/nuclearcraft/jukebox_song/hyperspace.json
+fc184ab7a7ecc101b75442c2932121b511aa08d0 data/nuclearcraft/jukebox_song/money_for_nothing.json
+6eb0ac1b61665d176fe4094b445e6fbedbed27f3 data/nuclearcraft/jukebox_song/wanderer.json
 9ce3a9619a2e8c761550455f99b43a84af5d467c data/nuclearcraft/neoforge/biome_modifier/boron_ore.json
 b47e4a00bb9bbc199b5a8088c94e58c4d22b28ea data/nuclearcraft/neoforge/biome_modifier/cobalt_ore.json
 ad93b89f00ace6c06b801d2be74ab2bc4113de9d data/nuclearcraft/neoforge/biome_modifier/lead_ore.json

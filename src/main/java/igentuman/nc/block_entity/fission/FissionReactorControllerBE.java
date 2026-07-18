@@ -9,6 +9,7 @@ import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fission.ActiveCoolant;
 import igentuman.nc.multiblock.fission.FissionReaction;
 import igentuman.nc.multiblock.fission.FissionReactorCache;
+import igentuman.nc.setup.NCSounds;
 import igentuman.nc.util.BoilingBuffer;
 import igentuman.nc.util.HeatBuffer;
 import igentuman.nc.setup.ModEntries;
@@ -43,6 +44,11 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
     @NBTField(syncToClient = true) public int energyPerTick;
     @NBTField(syncToClient = true) public int reactivity;
     @NBTField(syncToClient = true) public int steamPerTick;
+    @NBTField(syncToClient = true) public int fuelCells;
+    @NBTField(syncToClient = true) public int heatSinks;
+    @NBTField(syncToClient = true) public int moderators;
+    @NBTField(syncToClient = true) public int moderationLevel;
+    @NBTField(syncToClient = true) public int irradiatorLines;
     @NBTField(syncToClient = true) public boolean steamMode;
     @NBTField(syncToClient = true) public int toggleTimer = TOGGLE_IDLE_TICKS;
 
@@ -96,6 +102,16 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
     }
 
     @Override
+    public void clientTick() {
+        super.clientTick();
+        if (formed && (energyPerTick > 0 || steamPerTick > 0)) {
+            playSound(NCSounds.FISSION_REACTOR.get(), 0.2f);
+        } else {
+            stopSound();
+        }
+    }
+
+    @Override
     public void serverTick() {
         if (!(level instanceof ServerLevel serverLevel)) return;
         ensureTankValidators();
@@ -106,6 +122,11 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
             wasChanged = true;
         }
         tickToggle();
+        if (formed && mbInstance != null && mbInstance.cache instanceof FissionReactorCache fc) {
+            updateStats(fc);
+        } else {
+            clearStats();
+        }
         if (formed && redstoneActivated && mbInstance.cache instanceof FissionReactorCache fc) {
             reaction.tick(this, fc);
         } else {
@@ -141,6 +162,34 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
             for (long key : instance.cache.getStructurePositions()) {
                 serverLevel.invalidateCapabilities(BlockPos.of(key));
             }
+        }
+    }
+
+    private void updateStats(FissionReactorCache fc) {
+        int newFuelCells = fc.fuelCellCount;
+        int newHeatSinks = fc.validHeatSinks.size();
+        int newModerators = fc.allModerators.size();
+        int newModerationLevel = (int) Math.round(moderationFactor * 100);
+        int newIrradiatorLines = fc.irradiationLines;
+        if (newFuelCells != fuelCells || newHeatSinks != heatSinks || newModerators != moderators
+                || newModerationLevel != moderationLevel || newIrradiatorLines != irradiatorLines) {
+            fuelCells = newFuelCells;
+            heatSinks = newHeatSinks;
+            moderators = newModerators;
+            moderationLevel = newModerationLevel;
+            irradiatorLines = newIrradiatorLines;
+            wasChanged = true;
+        }
+    }
+
+    private void clearStats() {
+        if (fuelCells != 0 || heatSinks != 0 || moderators != 0 || moderationLevel != 0 || irradiatorLines != 0) {
+            fuelCells = 0;
+            heatSinks = 0;
+            moderators = 0;
+            moderationLevel = 0;
+            irradiatorLines = 0;
+            wasChanged = true;
         }
     }
 

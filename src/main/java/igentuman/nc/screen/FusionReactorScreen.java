@@ -7,15 +7,20 @@ import igentuman.nc.screen.element.CoolantBar;
 import igentuman.nc.screen.element.FluidTankBar;
 import igentuman.nc.screen.element.FusionAmplifierSlider;
 import igentuman.nc.screen.element.TemperatureBar;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.scaledFormat;
 
-/** Fusion reactor controller screen with coolant/temperature/fuel/product bars, an amplifier slider and status readouts. */
+/** Fusion reactor core screen with coolant/temperature/fuel/product bars, an amplifier slider and status readouts. */
 public class FusionReactorScreen extends MultiblockControllerScreen {
 
     private static final ResourceLocation TEXTURE = rl("textures/gui/fusion_reactor.png");
@@ -61,7 +66,7 @@ public class FusionReactorScreen extends MultiblockControllerScreen {
                 () -> c.fluid(FusionReactorContainer.TANK_HOT_COOLANT),
                 () -> c.capacity(FusionReactorContainer.TANK_COOLANT)));
         addRenderableWidget(new TemperatureBar(leftPos + 28, top, w, BAR_HEIGHT,
-                c::reactorHeat, c::maxHeat));
+                c::plasmaTemperature, c::maxPlasmaTemperature));
 
         // Input fuel bars: same width, half height.
         addRenderableWidget(new FluidTankBar(leftPos + 38, top, w, BAR_HEIGHT,
@@ -86,6 +91,35 @@ public class FusionReactorScreen extends MultiblockControllerScreen {
         }
     }
 
+    @Override
+    public List<Component> infoCheckboxTooltip() {
+        List<Component> tooltip = new ArrayList<>();
+        if (!menu.isFormed() || !(be() instanceof FusionReactorControllerBE be)) {
+            tooltip.add(__("screen.nuclearcraft.multiblock.not_assembled").withStyle(ChatFormatting.RED));
+            return tooltip;
+        }
+        tooltip.add(__("screen.nuclearcraft.multiblock.assembled").withStyle(ChatFormatting.GREEN));
+
+        if (be.magnetsPower > 0) {
+            tooltip.add(__("tooltip.nuclearcraft.electromagnet.magnetic_field", scaledFormat(be.magneticFieldStrength)).withStyle(ChatFormatting.BLUE));
+            tooltip.add(__("tooltip.nuclearcraft.electromagnet.power", scaledFormat(be.magnetsPower)).withStyle(ChatFormatting.AQUA));
+            tooltip.add(__("tooltip.nuclearcraft.electromagnet.max_temp", scaledFormat(be.maxMagnetsTemp)).withStyle(ChatFormatting.GOLD));
+        } else {
+            tooltip.add(__("tooltip.nuclearcraft.electromagnet.not_found").withStyle(ChatFormatting.RED));
+        }
+
+        tooltip.add(Component.literal("----------------------"));
+
+        if (be.amplifierCount > 0) {
+            tooltip.add(__("tooltip.nuclearcraft.rf_amplifier.voltage", scaledFormat(be.rfVoltage)).withStyle(ChatFormatting.BLUE));
+            tooltip.add(__("tooltip.nuclearcraft.rf_amplifier.power", scaledFormat(be.rfAmplifiersPower)).withStyle(ChatFormatting.AQUA));
+            tooltip.add(__("tooltip.nuclearcraft.rf_amplifier.max_temp", scaledFormat(be.minRFAmplifiersTemp)).withStyle(ChatFormatting.GOLD));
+        } else {
+            tooltip.add(__("tooltip.nuclearcraft.rf_amplifier.not_found").withStyle(ChatFormatting.RED));
+        }
+        return tooltip;
+    }
+
     private FusionReactorContainer fusionMenu() {
         return (FusionReactorContainer) menu;
     }
@@ -94,24 +128,40 @@ public class FusionReactorScreen extends MultiblockControllerScreen {
         return menu.getBlockEntity() instanceof FusionReactorControllerBE be ? be : null;
     }
 
+    private static final float PANEL_SCALE = 0.75f;
+
+    private void drawScaled(GuiGraphics guiGraphics, Component text, int cx, int y) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().scale(PANEL_SCALE, PANEL_SCALE, 1f);
+        drawCenteredString(guiGraphics, this.font, text, Math.round(cx / PANEL_SCALE), Math.round(y / PANEL_SCALE), PANEL_TEXT);
+        guiGraphics.pose().popPose();
+    }
+
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        drawCenteredString(guiGraphics, this.font, __("screen.nuclearcraft.fusion_reactor"), imageWidth / 2 + 20, this.titleLabelY, PANEL_TEXT);
+        int cx = imageWidth / 2 + 20;
+        drawScaled(guiGraphics, __("screen.nuclearcraft.fusion_reactor"), cx, this.titleLabelY);
         guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY+8, 4210752, false);
 
-        FusionReactorControllerBE be = be();
-        if (be == null) return;
+        if (!(be() instanceof FusionReactorControllerBE be)) return;
 
-        int cx = imageWidth / 2 + 20;
-        drawCenteredString(guiGraphics, this.font, __("screen.nuclearcraft.fusion.rf_amplifiers", be.rfAmplificationRatio), cx, 20, PANEL_TEXT);
-        drawCenteredString(guiGraphics, this.font, __("screen.nuclearcraft.fusion.rf_adjustment", be.amplificationAdjustment), cx, 30, PANEL_TEXT);
+        drawScaled(guiGraphics, __("screen.nuclearcraft.fusion.rf_amplifiers", be.rfAmplificationRatio), cx, 20);
+        drawScaled(guiGraphics, __("screen.nuclearcraft.fusion.rf_adjustment", be.amplificationAdjustment), cx, 30);
         if (be.functionalBlocksCharge < 100) {
-            drawCenteredString(guiGraphics, this.font, __("screen.nuclearcraft.fusion.charging", be.functionalBlocksCharge), cx, 56, PANEL_TEXT);
+            drawScaled(guiGraphics, __("screen.nuclearcraft.fusion.charging", be.functionalBlocksCharge), cx, 56);
         }
         if (be.running) {
-            drawCenteredString(guiGraphics, this.font, __("screen.nuclearcraft.fusion.efficiency", (int) (be.efficiency * 100)), cx, 66, PANEL_TEXT);
-            drawCenteredString(guiGraphics, this.font, __("screen.nuclearcraft.fusion.output", be.energyPerTick), cx, 76, PANEL_TEXT);
+            drawScaled(guiGraphics, __("screen.nuclearcraft.fusion.efficiency", (int) (be.efficiency * 100)), cx, 66);
+            drawScaled(guiGraphics, __("screen.nuclearcraft.fusion.output", be.energyPerTick), cx, 76);
         }
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (amplifierSlider != null && amplifierSlider.isSliderDragging()) {
+            return amplifierSlider.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     @Override

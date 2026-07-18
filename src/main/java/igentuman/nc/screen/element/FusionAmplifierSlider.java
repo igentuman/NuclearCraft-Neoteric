@@ -27,6 +27,10 @@ public class FusionAmplifierSlider extends AbstractWidget {
         this.value = value;
     }
 
+    public boolean isSliderDragging() {
+        return dragging;
+    }
+
     private int displayValue() {
         return dragging ? dragValue : Math.min(100, Math.max(1, value.getAsInt()));
     }
@@ -69,20 +73,20 @@ public class FusionAmplifierSlider extends AbstractWidget {
     @Override
     public void onClick(double mouseX, double mouseY) {
         dragging = true;
-        dragValue = xToValue(mouseX);
+        dragValue = xToValue(mouseX-3);
         send(dragValue);
     }
 
     @Override
     protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
-        dragValue = xToValue(mouseX);
+        dragValue = xToValue(mouseX-3);
         send(dragValue);
     }
 
     @Override
     public void onRelease(double mouseX, double mouseY) {
         if (dragging) {
-            send(xToValue(mouseX));
+            send(xToValue(mouseX-3));
             dragging = false;
         }
     }

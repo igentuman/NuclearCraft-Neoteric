@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -57,6 +58,12 @@ public class AcceleratorIonSourcePortBE extends MultiblockPortBE {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(!isConnectedToController()) return super.getCapability(cap, side);
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            return controller().contentHandler().getFluidCapability(side);
+        }
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return controller().contentHandler().getItemCapability(side);
+        }
         return controller().getCapability(cap, side);
     }
 

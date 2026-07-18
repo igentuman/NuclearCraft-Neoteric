@@ -27,6 +27,7 @@ There is **no OpenComputers v1 support**.
 | Collision chamber | `nc_decay_chamber` | `CollisionChamberPeripheral` | `CollisionChamberDevice` |
 | Beam diverter | `nc_beam_diverter` | `BeamDiverterPeripheral` | `BeamDiverterDevice` |
 | Kugelblitz | `nc_kugelblitz` | `KugelblitzPeripheral` | `KugelblitzDevice` |
+| Engineer's Crafting Table | `nc_engineers_crafter` | `EngineersCrafterPeripheral` | `EngineersCrafterDevice` |
 
 > The linear and ring accelerators use **different** peripheral type strings (`nc_accelerator`
 > vs `ring_accelerator`). The decay and collision chambers share the `nc_decay_chamber` string.
@@ -202,6 +203,23 @@ Both the decay chamber and the collision chamber report the `nc_decay_chamber` t
 | `getFluxRegulators()`, `getTransformers()`, `getStabilizers()` | int |
 | `getTransformationEnergyRate()` / `setTransformationEnergyRate(0..100)` | int |
 
+### `nc_engineers_crafter` - `EngineersCrafterPeripheral`
+
+The Engineer's Crafting Table: a powered autocrafting terminal. It reads the pooled inventory of
+its inserted storage containers, exposes the encoded crafting patterns, and can queue a craft.
+
+| Method | Returns | Description |
+|---|---|---|
+| `getName()` | string | Block id (`engineers_crafter`) |
+| `getInventorySlots()` | int | Flat slot count across every inserted container item |
+| `getSlotData(id)` | map / nil | Pooled slot `id`: `{item="namespace:id", qty}`, or nil when empty/out of range |
+| `getPatterns()` | list | One entry per encoded pattern: `{id, output, outputQty, input=[{item, qty}]}` |
+| `doCrafting(id, qty)` | boolean | Plan and start a craft for pattern `id`; `true` when a job was queued |
+
+`doCrafting` mutates world state, so it runs on the server thread (`mainThread = true` on CC,
+`synchronize = true` on OC2). It returns `false` when `qty <= 0`, a job is already active, the
+pattern `id` is invalid, or the solver finds the craft infeasible with the pooled inventory.
+
 ## Beam ports
 
 `getBeamPortsInfo()` returns a list (Lua table, 1-indexed) describing every beam port on the
@@ -226,7 +244,7 @@ Mirror of the CC peripherals, exposed as `ObjectDevice` records with `@Callback`
 Device class names: `ProcessorDevice`, `FissionReactorDevice`, `MSRDevice`, `FusionReactorDevice`,
 `TurbineDevice`, `HeatExchangerDevice`, `LinearAcceleratorDevice`, `RingAcceleratorDevice`,
 `TargetChamberDevice`, `DecayChamberDevice`, `CollisionChamberDevice`, `BeamDiverterDevice`,
-`KugelblitzDevice`.
+`KugelblitzDevice`, `EngineersCrafterDevice`.
 
 The **`MSRDevice`** (`nc_msr_reactor`) is the one device that is **not** a 1:1 mirror of its CC
 peripheral - it adds everything the CC surface omits: `isFormed()`, `isCritical()`, `getImpurity()`,

@@ -61,9 +61,6 @@ public class ScrollableItemGrid extends NCGuiElement {
 
     @Override
     public void draw(PoseStack g, int mX, int mY, float pt) {
-        // No inserted containers -> render no grid at all.
-        if (cells.isEmpty()) return;
-
         Font font = Minecraft.getInstance().font;
         int start = scrollRow * cols;
         for (int r = 0; r < rows; r++) {

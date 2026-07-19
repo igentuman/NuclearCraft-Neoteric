@@ -1,0 +1,39 @@
+{
+  "name": "Engineer's Crafting Table",
+  "icon": "nuclearcraft:engineers_crafting_table",
+  "category": "nuclearcraft:machines",
+  "sortnum": 4,
+  "pages": [
+    {
+      "anchor": "intro",
+      "type": "blocks/1",
+      "header": "Engineer's Crafting Table",
+      "block": "nuclearcraft:engineers_crafting_table",
+      "text": "A powered autocrafting terminal. Feed it storage containers and a live power feed; it assembles to spec, one operation per tick. (Assembly to spec not guaranteed during scheduled brownouts.)"
+    },
+    {
+      "anchor": "containers",
+      "type": "text",
+      "header": "Stock",
+      "text": "The table has $(l)6$() container slots that accept $(thing)Storage Containers$(). Their combined contents become the crafting stock, aggregated across every inserted container.$(br)$(br)Refill or swap containers to keep the shelves stocked."
+    },
+    {
+      "anchor": "encoder",
+      "type": "text",
+      "header": "Pattern Encoder",
+      "text": "Open the $(thing)Pattern Encoder$() to record a recipe onto a $(thing)Blank Pattern$(). Each encoded pattern maps its inputs to an output.$(br)$(br)Up to $(l)36$() patterns can be loaded at once. The solver chains them to craft intermediate parts automatically."
+    },
+    {
+      "anchor": "power",
+      "type": "text",
+      "header": "Power",
+      "text": "Runs on FE. Buffer holds $(l)10,000 FE$(), accepts up to $(l)1,000 FE/t$().$(br)$(br)Idle draw is $(l)100 FE/t$(); each crafting operation costs $(l)200 FE$(). Starve it and the line halts until power returns."
+    },
+    {
+      "anchor": "computers",
+      "type": "text",
+      "header": "Automation",
+      "text": "The table exposes a peripheral to $(thing)ComputerCraft$() and $(thing)OpenComputers 2$(). Query stock and patterns, then queue crafts programmatically. See the Computers section for the method list."
+    }
+  ]
+}

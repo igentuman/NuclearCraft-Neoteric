@@ -3,6 +3,7 @@ package igentuman.nc.block.crafter.entity;
 import igentuman.nc.container.EngineersEncoderContainer;
 import igentuman.nc.handler.crafter.AggregatedInventory;
 import igentuman.nc.handler.crafter.AggregatedInventory.ItemKey;
+import igentuman.nc.handler.crafter.AggregatedItemHandler;
 import igentuman.nc.handler.crafter.AutoCraftSolver;
 import igentuman.nc.handler.crafter.AutoCraftSolver.PatternDef;
 import igentuman.nc.handler.crafter.AutoCraftSolver.Plan;
@@ -30,17 +31,25 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
+import igentuman.nc.compat.cc.EngineersCrafterPeripheral;
+import igentuman.nc.compat.oc2.EngineersCrafterDevice;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static igentuman.nc.compat.oc2.EngineersCrafterDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_BE;
+import static igentuman.nc.util.ModUtil.isCcLoaded;
+import static igentuman.nc.util.ModUtil.isOC2Loaded;
 import static igentuman.nc.util.TextUtils.__;
 
 public class EngineersCrafterBE extends BlockEntity {
@@ -124,6 +133,11 @@ public class EngineersCrafterBE extends BlockEntity {
     public final CrafterEnergy energy = new CrafterEnergy();
 
     private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> energy);
+
+    private final LazyOptional<IItemHandler> aggregatedItemCap =
+            LazyOptional.of(() -> new AggregatedItemHandler(containerSlots));
+
+    private LazyOptional<EngineersCrafterPeripheral> peripheralCap;
 
     private CraftingJob job;
     public int craftOpIndex = 0;
@@ -227,9 +241,94 @@ public class EngineersCrafterBE extends BlockEntity {
         return new AutoCraftSolver<>(defs).solve(ItemKey.of(target), qty, available);
     }
 
+    public String getName() {
+        return "engineers_crafter";
+    }
+
+    private static String itemKey(ItemStack stack) {
+        return ForgeRegistries.ITEMS.getKey(stack.getItem()).toString();
+    }
+
+    /** Number of flat slots across every inserted container item. */
+    public int getInventorySlots() {
+        return new AggregatedItemHandler(containerSlots).getSlots();
+    }
+
+    /** {@code {item="namespace:id", qty=n}} for the given aggregated slot, or null when empty/out of range. */
+    public Object getSlotData(int id) {
+        AggregatedItemHandler h = new AggregatedItemHandler(containerSlots);
+        if (id < 0 || id >= h.getSlots()) return null;
+        ItemStack s = h.getStackInSlot(id);
+        if (s.isEmpty()) return null;
+        Map<String, Object> m = new HashMap<>();
+        m.put("item", itemKey(s));
+        m.put("qty", s.getCount());
+        return m;
+    }
+
+    /** One entry per encoded pattern: {@code {id, output, outputQty, input=[{item, qty}]}}. */
+    public Object[] getPatternsInfo() {
+        List<Object> out = new ArrayList<>();
+        for (int i = 0; i < patterns.getSlots(); i++) {
+            CraftingPattern p = CraftingPattern.from(patterns.getStackInSlot(i));
+            if (p == null) continue;
+            Map<String, Object> m = new HashMap<>();
+            m.put("id", i);
+            Map<String, Integer> agg = new LinkedHashMap<>();
+            for (ItemStack in : p.inputs()) {
+                if (in.isEmpty()) continue;
+                agg.merge(itemKey(in), 1, Integer::sum);
+            }
+            List<Object> inputs = new ArrayList<>();
+            for (Map.Entry<String, Integer> e : agg.entrySet()) {
+                Map<String, Object> im = new HashMap<>();
+                im.put("item", e.getKey());
+                im.put("qty", e.getValue());
+                inputs.add(im);
+            }
+            m.put("input", inputs.toArray());
+            m.put("output", itemKey(p.output()));
+            m.put("outputQty", p.output().getCount());
+            out.add(m);
+        }
+        return out.toArray();
+    }
+
+    /** Plans and starts a craft for the pattern in slot {@code patternId}. True when a job was queued. */
+    public boolean startCraft(int patternId, int qty) {
+        if (level == null || level.isClientSide) return false;
+        if (qty <= 0 || hasActiveJob()) return false;
+        if (patternId < 0 || patternId >= patterns.getSlots()) return false;
+        CraftingPattern p = CraftingPattern.from(patterns.getStackInSlot(patternId));
+        if (p == null) return false;
+        ItemStack target = p.output().copy();
+        if (target.isEmpty()) return false;
+        AutoCraftSolver.Result<ItemKey> res = planCraft(target, qty);
+        if (!res.feasible()) return false;
+        return startJob(target, qty, res.plan());
+    }
+
+    public <T> LazyOptional<T> getPeripheral(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if (peripheralCap == null) {
+            peripheralCap = LazyOptional.of(() -> new EngineersCrafterPeripheral(this));
+        }
+        return peripheralCap.cast();
+    }
+
+    private <T> LazyOptional<T> getOCDevice(@NotNull Capability<T> cap, @Nullable Direction side) {
+        return LazyOptional.of(() -> EngineersCrafterDevice.createDevice(this)).cast();
+    }
+
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ENERGY) return energyCap.cast();
+        if (cap == ForgeCapabilities.ITEM_HANDLER) return aggregatedItemCap.cast();
+        if (isCcLoaded() && cap == dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL) {
+            return getPeripheral(cap, side);
+        }
+        if (isOC2Loaded() && cap == DEVICE_CAPABILITY) {
+            return getOCDevice(cap, side);
+        }
         return super.getCapability(cap, side);
     }
 
@@ -237,6 +336,8 @@ public class EngineersCrafterBE extends BlockEntity {
     public void invalidateCaps() {
         super.invalidateCaps();
         energyCap.invalidate();
+        aggregatedItemCap.invalidate();
+        if (peripheralCap != null) peripheralCap.invalidate();
     }
 
     @Override

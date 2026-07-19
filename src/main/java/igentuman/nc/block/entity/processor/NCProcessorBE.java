@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
 import static igentuman.nc.compat.oc2.ProcessorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
@@ -181,6 +182,13 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
                 recipeInfo().clear();
             }
         }
+        recipe = tryLoadRecipe();
+        if (recipe != null) {
+            recipeInfo().setRecipe(recipe);
+            recipeInfo().be = this;
+            recipeInfo().setParallelProcessing(parallelRecipes());
+            return;
+        }
         recipe = getRecipe();
         if (recipe != null) {
             recipeInfo().setRecipe(recipe);
@@ -196,6 +204,25 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         } else {
             recipeInfo().clear();
         }
+    }
+
+    protected NcRecipe tryLoadRecipe() {
+        if (recipeInfo().recipeId == null || recipeInfo().recipeId.isEmpty()) {
+            return null;
+        }
+        if (recipeInfo().ticksProcessed < recipeInfo().ticks && recipeInfo().ticks > 0) {
+            return getRecipeById(recipeInfo().recipeId);
+        }
+        return null;
+    }
+
+    protected NcRecipe getRecipeById(String recipeId) {
+        for(NcRecipe recipe: NcRecipeType.getAllRecipesFor(getName(), getLevel())) {
+            if (recipe.getId().toString().equals(recipeId)) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
     protected void addToCache(NcRecipe recipe) {
@@ -395,7 +422,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
-        if(redstoneMode == 1 && level.getGameTime() % 5 == 0 && !hasRedstoneSignal()) return;
+        if(redstoneMode == 1 && currentTick % 5 == 0 && !hasRedstoneSignal()) return;
         if(howMuchICanSkip() >= skippedTicks) {
             skippedTicks++;
             return;
@@ -403,16 +430,16 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         boolean updated = forceUpdate();
         boolean wasActive = isActive;
         //if no recipe - tick only 5 times per second
-        if(!hasRecipe() && level.getGameTime() % 5 == 0) {
+        if(!hasRecipe() && currentTick % 5 == 0) {
            return;
         }
         processRecipe();
-        if(lastTickTime == level.getGameTime()) {
+        if(lastTickTime == currentTick) {
             //prevent double tick in case of block boosters like torcherino
             //but we allow recipe progression boost
             return;
         }
-        lastTickTime = level.getGameTime();
+        lastTickTime = currentTick;
         handleRecipeOutput();
         updated = updated || contentHandler().tick();
         if(updated || wasUpdated) {
@@ -439,7 +466,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     }
 
     private boolean forceUpdate() {
-        if(lastTickTime == level.getGameTime()) return false;
+        if(lastTickTime == currentTick) return false;
         if(manualUpdateCounter > 0) {
             manualUpdateCounter--;
             return false;

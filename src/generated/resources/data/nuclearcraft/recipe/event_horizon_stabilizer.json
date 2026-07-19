@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_kugelblitz",
+  "key": {
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "N": {
+      "item": "nuclearcraft:neutronium_frame"
+    }
+  },
+  "pattern": [
+    "NGN",
+    "GEG",
+    "NGN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:event_horizon_stabilizer"
+  }
+}

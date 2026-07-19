@@ -1,0 +1,11 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": {
+    "count": 1,
+    "item": "nuclearcraft:tough_alloy_ingot"
+  },
+  "output": {
+    "count": 2,
+    "item": "nuclearcraft:bscco_dust"
+  }
+}

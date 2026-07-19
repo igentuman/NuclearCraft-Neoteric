@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_kugelblitz",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:basic_electric_circuit"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "N": {
+      "item": "nuclearcraft:neutronium_frame"
+    }
+  },
+  "pattern": [
+    "NCN",
+    "CEC",
+    "NCN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:quantum_transformer"
+  }
+}

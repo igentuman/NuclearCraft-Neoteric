@@ -598,6 +598,7 @@ public class VanillaRecipes {
                 .save(recipeOutput);
 
         fusionCraftingRecipes(recipeOutput);
+        kugelblitzCraftingRecipes(recipeOutput);
 
 /*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger").get())
                 .pattern("LPL")
@@ -721,7 +722,127 @@ public class VanillaRecipes {
                     .group(MODID + "_fusion")
                     .unlockedBy("item", has(ModEntries.get(tier + "_electromagnet").block()))
                     .save(out);
+
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModEntries.get(tier + "_electromagnet").block())
+                    .requires(ModEntries.get(tier + "_electromagnet_slope").block())
+                    .group(MODID + "_fusion")
+                    .unlockedBy("item", has(ModEntries.get(tier + "_electromagnet_slope").block()))
+                    .save(out, rl(tier + "_electromagnet_from_slope"));
         }
+
+        fusionMagnetRecipes(out);
+    }
+
+    private record MagnetTier(String name, Ingredient coil) {}
+
+    private static void fusionMagnetRecipes(RecipeOutput out) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("basic_rf_amplifier").block())
+                .pattern("CCC")
+                .pattern("SWS")
+                .pattern("CCC")
+                .define('C', plateTag("copper"))
+                .define('W', ModEntries.get("coil_copper").item())
+                .define('S', ingotTag("stainless_steel"))
+                .group(MODID + "_fusion")
+                .unlockedBy("item", has(ModEntries.get("coil_copper").item()))
+                .save(out, rl("basic_rf_amplifier"));
+
+        Item rfBase = ModEntries.get("basic_rf_amplifier").item().get();
+        for (MagnetTier t : new MagnetTier[]{
+                new MagnetTier("magnesium_diboride", Ingredient.of(ingotTag("magnesium_diboride"))),
+                new MagnetTier("niobium_tin", Ingredient.of(ingotTag("niobium_tin"))),
+                new MagnetTier("niobium_titanium", Ingredient.of(ingotTag("niobium_titanium"))),
+                new MagnetTier("bscco", Ingredient.of(ModEntries.get("coil_bscco").item())),
+        }) {
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(t.name() + "_rf_amplifier").block())
+                    .pattern("CCC")
+                    .pattern("SBS")
+                    .pattern("CCC")
+                    .define('C', t.coil())
+                    .define('S', ingotTag("stainless_steel"))
+                    .define('B', rfBase)
+                    .group(MODID + "_fusion")
+                    .unlockedBy("item", has(rfBase))
+                    .save(out, rl(t.name() + "_rf_amplifier"));
+        }
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("basic_electromagnet").block())
+                .pattern("CCC")
+                .pattern("SBS")
+                .pattern("CCC")
+                .define('C', ModEntries.get("coil_copper").item())
+                .define('S', ingotTag("stainless_steel"))
+                .define('B', ingotTag("tough_alloy"))
+                .group(MODID + "_fusion")
+                .unlockedBy("item", has(ModEntries.get("coil_copper").item()))
+                .save(out, rl("basic_electromagnet"));
+
+        Item emBase = ModEntries.get("basic_electromagnet").item().get();
+        for (MagnetTier t : new MagnetTier[]{
+                new MagnetTier("magnesium_diboride", Ingredient.of(ModEntries.get("coil_magnesium_diboride").item())),
+                new MagnetTier("niobium_tin", Ingredient.of(ingotTag("niobium_tin"))),
+                new MagnetTier("niobium_titanium", Ingredient.of(ingotTag("niobium_titanium"))),
+                new MagnetTier("bscco", Ingredient.of(ModEntries.get("coil_bscco").item())),
+        }) {
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(t.name() + "_electromagnet").block())
+                    .pattern("CCC")
+                    .pattern("SBS")
+                    .pattern("CCC")
+                    .define('C', t.coil())
+                    .define('S', ingotTag("stainless_steel"))
+                    .define('B', emBase)
+                    .group(MODID + "_fusion")
+                    .unlockedBy("item", has(emBase))
+                    .save(out, rl(t.name() + "_electromagnet"));
+        }
+    }
+
+    private static void kugelblitzCraftingRecipes(RecipeOutput out) {
+        Item neutronium = ingot("neutronium");
+        Item toughAlloy = ingot("tough_alloy");
+        if (neutronium == null || toughAlloy == null) return;
+        var circuit = ModEntries.get("basic_electric_circuit").item();
+        String g = MODID + "_kugelblitz";
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("neutronium_frame").block(), 2)
+                .pattern("NTN").pattern("T T").pattern("NTN")
+                .define('N', neutronium).define('T', toughAlloy)
+                .group(g).unlockedBy("item", has(neutronium)).save(out);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("quantum_transformer").block())
+                .pattern("NCN").pattern("CEC").pattern("NCN")
+                .define('N', ModEntries.get("neutronium_frame").block()).define('C', circuit).define('E', ENDER_EYE)
+                .group(g).unlockedBy("item", has(neutronium)).save(out);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("quantum_flux_regulator").block())
+                .pattern("NGN").pattern("GRG").pattern("NGN")
+                .define('N', ModEntries.get("neutronium_frame").block()).define('G', GLASS).define('R', REDSTONE_BLOCK)
+                .group(g).unlockedBy("item", has(neutronium)).save(out);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("event_horizon_stabilizer").block())
+                .pattern("NGN").pattern("GEG").pattern("NGN")
+                .define('N', ModEntries.get("neutronium_frame").block()).define('G', GLASS).define('E', ENDER_PEARL)
+                .group(g).unlockedBy("item", has(neutronium)).save(out);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("photon_concentrator").block())
+                .pattern("GQG").pattern("QCQ").pattern("GQG")
+                .define('G', GLASS).define('Q', QUARTZ).define('C', circuit)
+                .group(g).unlockedBy("item", has(toughAlloy)).save(out);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("chamber_port").block())
+                .pattern("NCN").pattern("N N").pattern("NCN")
+                .define('N', ModEntries.get("neutronium_frame").block()).define('C', circuit)
+                .group(g).unlockedBy("item", has(neutronium)).save(out);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("chamber_terminal").block())
+                .pattern("NCN").pattern("CSC").pattern("NCN")
+                .define('N', ModEntries.get("neutronium_frame").block()).define('C', circuit).define('S', NETHER_STAR)
+                .group(g).unlockedBy("item", has(neutronium)).save(out);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("expl").block())
+                .pattern("TCT").pattern("TDT").pattern("TCT")
+                .define('T', toughAlloy).define('C', circuit).define('D', DIAMOND)
+                .group(g).unlockedBy("item", has(toughAlloy)).save(out);
     }
 
     private static void fuelPellets() {

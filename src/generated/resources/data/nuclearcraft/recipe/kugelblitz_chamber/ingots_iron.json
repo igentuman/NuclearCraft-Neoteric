@@ -1,0 +1,10 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": {
+    "count": 1,
+    "tag": "c:ingots/iron"
+  },
+  "output": {
+    "tag": "c:ingots/iron"
+  }
+}

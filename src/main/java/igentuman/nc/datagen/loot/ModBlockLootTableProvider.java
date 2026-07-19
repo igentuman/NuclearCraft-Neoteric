@@ -28,8 +28,8 @@ public class ModBlockLootTableProvider  extends BlockLootSubProvider {
 
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.hasBlock()) {
-                if (entry.name().equals("fusion_reactor_core_proxy")) {
-                    add(entry.block().get(), LootTable.lootTable()); // auto-placed cage cell - never drops
+                if (entry.name().equals("fusion_reactor_core_proxy") || entry.name().equals("expl_proxy")) {
+                    add(entry.block().get(), LootTable.lootTable()); // auto-placed body cell - never drops
                 } else {
                     dropSelf(entry.block().get());
                 }

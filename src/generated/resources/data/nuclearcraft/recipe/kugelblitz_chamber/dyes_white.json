@@ -1,0 +1,10 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": {
+    "count": 1,
+    "tag": "c:dyes/white"
+  },
+  "output": {
+    "tag": "c:dyes/white"
+  }
+}

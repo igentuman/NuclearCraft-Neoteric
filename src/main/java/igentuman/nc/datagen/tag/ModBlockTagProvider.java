@@ -2,6 +2,7 @@ package igentuman.nc.datagen.tag;
 
 import igentuman.nc.multiblock.fission.FissionTags;
 import igentuman.nc.multiblock.fusion.FusionTags;
+import igentuman.nc.multiblock.kugelblitz.KugelblitzTags;
 import igentuman.nc.setup.entries.FusionReactor;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.MaterialEntry;
@@ -71,6 +72,14 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
         addFissionStructureTags();
         addFusionStructureTags();
+        addKugelblitzStructureTags();
+    }
+
+    private void addKugelblitzStructureTags() {
+        tag(KugelblitzTags.CASING).add(
+                b("chamber_terminal"), b("chamber_port"), b("neutronium_frame"),
+                b("quantum_transformer"), b("quantum_flux_regulator"),
+                b("event_horizon_stabilizer"), b("photon_concentrator"));
     }
 
     private void addFusionStructureTags() {

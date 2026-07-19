@@ -29,7 +29,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         }
         for (String name : ModEntries.ENTRIES.keySet()) {
             if(ModEntries.get(name).hasBlock()) {
-                add(ModEntries.get(name).block().get(), convertToName(name));
+                add(ModEntries.get(name).block().get(), name.equals("expl") ? "EXPL" : convertToName(name));
                 if(ModEntries.get(name).hasRecipes()) {
                     add("emi.category."+MODID+"."+name, convertToName(name));
 
@@ -142,6 +142,17 @@ public class ModLanguageProvider  extends LanguageProvider {
 
     private void labels() {
         add("itemGroup.nuclearcraft.fission_reactor", "NuclearCraft: Fission Reactor");
+        add("itemGroup.nuclearcraft.kugelblitz", "NuclearCraft: Kugelblitz Chamber");
+        add("screen.nuclearcraft.kugelblitz", "Kugelblitz Chamber");
+        add("screen.nuclearcraft.kugelblitz.rate", "Transformation vs Energy Generation: %s%%");
+        add("screen.nuclearcraft.kugelblitz.frequency", "Frequency: %s");
+        add("screen.nuclearcraft.kugelblitz.mass", "Mass: %s");
+        add("screen.nuclearcraft.kugelblitz.evaporation", "Evaporation: %s");
+        add("screen.nuclearcraft.kugelblitz.feeding", "Feeding: %s");
+        add("screen.nuclearcraft.kugelblitz.energy", "Output: %s FE/t");
+        add("screen.nuclearcraft.kugelblitz.stability", "Stability: %s");
+        add("screen.nuclearcraft.expl.charge", "Charge: %s");
+        add("gui.nuclearcraft.button.burst", "Burst");
         add("screen.nuclearcraft.redstone_config_0", "Redstone: Active always");
         add("screen.nuclearcraft.redstone_config_1", "Redstone: Active on signal");
         add("screen.nuclearcraft.show_recipes", "Show Recipes");

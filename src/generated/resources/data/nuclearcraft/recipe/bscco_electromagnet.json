@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fusion",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:basic_electromagnet"
+    },
+    "C": {
+      "item": "nuclearcraft:coil_bscco"
+    },
+    "S": {
+      "tag": "c:ingots/stainless_steel"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "SBS",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:bscco_electromagnet"
+  }
+}

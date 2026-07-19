@@ -13,8 +13,14 @@ import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.MaterialFluidType;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
+import igentuman.nc.block_entity.kugelblitz.BlackHoleBE;
+import igentuman.nc.block_entity.kugelblitz.EXPLBE;
 import igentuman.nc.client.particle.FusionBeamParticle;
 import igentuman.nc.client.render.fusion.FusionCoreRenderer;
+import igentuman.nc.client.render.kugelblitz.BlackholeRenderer;
+import igentuman.nc.client.render.kugelblitz.EXPLRenderer;
+import igentuman.nc.container.EXPLContainer;
+import igentuman.nc.screen.EXPLScreen;
 import igentuman.nc.screen.FissionReactorScreen;
 import igentuman.nc.screen.FusionReactorScreen;
 import igentuman.nc.screen.MultiblockControllerScreen;
@@ -90,6 +96,8 @@ public class Client {
                             event.register(menuType, FissionReactorScreen::new);
                         } else if (entry.name().equals("fusion_reactor_core")) {
                             event.register(menuType, FusionReactorScreen::new);
+                        } else if (entry.name().equals("chamber_terminal")) {
+                            event.register(menuType, igentuman.nc.screen.ChamberTerminalScreen::new);
                         } else {
                             event.register(menuType, MultiblockControllerScreen::new);
                         }
@@ -97,6 +105,11 @@ public class Client {
                         event.register(
                                 (MenuType<MultiblockPortContainer>) (MenuType<?>) entry.menu().get(),
                                 MultiblockPortScreen::new
+                        );
+                    } else if (entry.name().equals("expl")) {
+                        event.register(
+                                (MenuType<EXPLContainer>) (MenuType<?>) entry.menu().get(),
+                                EXPLScreen::new
                         );
                     } else {
                         event.register(
@@ -119,6 +132,14 @@ public class Client {
                 (BlockEntityType<FusionReactorControllerBE>) (BlockEntityType<?>)
                         ModEntries.get("fusion_reactor_core").blockEntity().get(),
                 FusionCoreRenderer::new);
+        event.registerBlockEntityRenderer(
+                (BlockEntityType<EXPLBE>) (BlockEntityType<?>)
+                        ModEntries.get("expl").blockEntity().get(),
+                EXPLRenderer::new);
+        event.registerBlockEntityRenderer(
+                (BlockEntityType<BlackHoleBE>) (BlockEntityType<?>)
+                        ModEntries.get("black_hole").blockEntity().get(),
+                BlackholeRenderer::new);
     }
 
     /**

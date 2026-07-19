@@ -1,0 +1,11 @@
+{
+  "values": [
+    "nuclearcraft:chamber_terminal",
+    "nuclearcraft:chamber_port",
+    "nuclearcraft:neutronium_frame",
+    "nuclearcraft:quantum_transformer",
+    "nuclearcraft:quantum_flux_regulator",
+    "nuclearcraft:event_horizon_stabilizer",
+    "nuclearcraft:photon_concentrator"
+  ]
+}

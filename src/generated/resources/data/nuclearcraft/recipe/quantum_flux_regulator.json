@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_kugelblitz",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "N": {
+      "item": "nuclearcraft:neutronium_frame"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    }
+  },
+  "pattern": [
+    "NGN",
+    "GRG",
+    "NGN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:quantum_flux_regulator"
+  }
+}

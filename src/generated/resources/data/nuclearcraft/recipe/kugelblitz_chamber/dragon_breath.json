@@ -1,0 +1,10 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": {
+    "count": 1,
+    "item": "minecraft:dragon_breath"
+  },
+  "output": {
+    "item": "minecraft:dragon_breath"
+  }
+}

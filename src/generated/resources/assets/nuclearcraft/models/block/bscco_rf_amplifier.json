@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "nuclearcraft:block/electromagnet/bscco_electromagnet"
+    "all": "nuclearcraft:block/rf_amplifier/bscco_rf_amplifier"
   }
 }

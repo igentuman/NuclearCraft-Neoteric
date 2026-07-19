@@ -1,0 +1,10 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": {
+    "count": 1,
+    "item": "minecraft:ender_eye"
+  },
+  "output": {
+    "item": "minecraft:ender_eye"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_fusion",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:basic_rf_amplifier"
+    },
+    "C": {
+      "tag": "c:ingots/magnesium_diboride"
+    },
+    "S": {
+      "tag": "c:ingots/stainless_steel"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "SBS",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:magnesium_diboride_rf_amplifier"
+  }
+}

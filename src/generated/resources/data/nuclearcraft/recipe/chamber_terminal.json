@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_kugelblitz",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:basic_electric_circuit"
+    },
+    "N": {
+      "item": "nuclearcraft:neutronium_frame"
+    },
+    "S": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "pattern": [
+    "NCN",
+    "CSC",
+    "NCN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:chamber_terminal"
+  }
+}

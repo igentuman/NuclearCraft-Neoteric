@@ -1,0 +1,10 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": {
+    "count": 1,
+    "item": "minecraft:nether_star"
+  },
+  "output": {
+    "item": "minecraft:nether_star"
+  }
+}

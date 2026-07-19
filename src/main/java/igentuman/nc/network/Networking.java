@@ -36,6 +36,16 @@ public class Networking {
                 PacketFusionAmplificationAdjust.STREAM_CODEC,
                 PacketFusionAmplificationAdjust::handle
         );
+        registrar.playToServer(
+                PacketKugelblitzSliderAdjust.TYPE,
+                PacketKugelblitzSliderAdjust.STREAM_CODEC,
+                PacketKugelblitzSliderAdjust::handle
+        );
+        registrar.playToServer(
+                PacketExplBurst.TYPE,
+                PacketExplBurst.STREAM_CODEC,
+                PacketExplBurst::handle
+        );
         if (ModUtil.isAe2Loaded()) {
             registrar.playToServer(
                     PacketAE2PatternTransfer.TYPE,

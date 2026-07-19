@@ -21,10 +21,15 @@ public class Multiblocks {
     public static final ModConfigSpec.DoubleValue FISSION_FUEL_HEAT_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue FISSION_DEPLETION_MULTIPLIER;
 
+    public static final ModConfigSpec.DoubleValue KUGELBLITZ_GENERATION_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue KUGELBLITZ_EVAPORATION_MULTIPLIER;
+    public static final ModConfigSpec.IntValue KUGELBLITZ_LASER_DISTANCE;
+    public static final ModConfigSpec.LongValue KUGELBLITZ_EXPL_CHARGE;
+    public static final ModConfigSpec.DoubleValue KUGELBLITZ_EXPLOSION_RADIUS;
+    public static final ModConfigSpec.ConfigValue<Boolean> KUGELBLITZ_BLACKHOLE_SHADER;
+
     public static final ModConfigSpec SPEC;
 
-    // Plain mirrors of the config values, refreshed on (re)load so runtime hot paths read a field
-    // instead of ModConfigSpec.get() (which throws before config load). Defaults match the spec.
     public static int fissionMinSize = 3;
     public static int fissionMaxSize = 26;
     public static double fissionExplosionRadius = 4.0;
@@ -39,6 +44,13 @@ public class Multiblocks {
     public static int fissionActiveCoolantPerTick = 10;
     public static double fissionFuelHeatMultiplier = 1.0;
     public static double fissionDepletionMultiplier = 1.0;
+
+    public static double kugelblitzGenerationMultiplier = 1.0;
+    public static double kugelblitzEvaporationMultiplier = 1.0;
+    public static int kugelblitzLaserDistance = 32;
+    public static long kugelblitzExplCharge = 10_240_000_000L;
+    public static double kugelblitzExplosionRadius = 10.0;
+    public static boolean kugelblitzBlackholeShader = true;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -81,6 +93,21 @@ public class Multiblocks {
                 .defineInRange("depletion_multiplier", 1.0, 0.01, 1000.0);
         builder.pop();
 
+        builder.push("kugelblitz_chamber");
+        KUGELBLITZ_GENERATION_MULTIPLIER = builder.comment("Multiplier for kugelblitz chamber FE generation.")
+                .defineInRange("fe_generation_multiplier", 1.0, 0.001, 1000.0);
+        KUGELBLITZ_EVAPORATION_MULTIPLIER = builder.comment("Adjust rate of blackhole evaporation.")
+                .defineInRange("blackhole_evaporation_rate", 1.0, 0.001, 1000.0);
+        KUGELBLITZ_LASER_DISTANCE = builder.comment("Laser burst distance.")
+                .defineInRange("laser_distance", 32, 8, 64);
+        KUGELBLITZ_EXPL_CHARGE = builder.comment("EXPL FE requirement per pulse.")
+                .defineInRange("expl_fe", 10_240_000_000L, 2_048_000_000L, 20_480_000_000L);
+        KUGELBLITZ_EXPLOSION_RADIUS = builder.comment("Explosion radius on meltdown. 0 disables the explosion.")
+                .defineInRange("explosion_radius", 10.0, 0.0, 20.0);
+        KUGELBLITZ_BLACKHOLE_SHADER = builder.comment("Enable blackhole distortion shader.")
+                .define("blackhole_shader", true);
+        builder.pop();
+
         SPEC = builder.build();
     }
 
@@ -100,5 +127,11 @@ public class Multiblocks {
         fissionActiveCoolantPerTick = FISSION_ACTIVE_COOLANT_PER_TICK.get();
         fissionFuelHeatMultiplier = FISSION_FUEL_HEAT_MULTIPLIER.get();
         fissionDepletionMultiplier = FISSION_DEPLETION_MULTIPLIER.get();
+        kugelblitzGenerationMultiplier = KUGELBLITZ_GENERATION_MULTIPLIER.get();
+        kugelblitzEvaporationMultiplier = KUGELBLITZ_EVAPORATION_MULTIPLIER.get();
+        kugelblitzLaserDistance = KUGELBLITZ_LASER_DISTANCE.get();
+        kugelblitzExplCharge = KUGELBLITZ_EXPL_CHARGE.get();
+        kugelblitzExplosionRadius = KUGELBLITZ_EXPLOSION_RADIUS.get();
+        kugelblitzBlackholeShader = KUGELBLITZ_BLACKHOLE_SHADER.get();
     }
 }

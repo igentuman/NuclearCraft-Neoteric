@@ -1,0 +1,10 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": {
+    "count": 1,
+    "tag": "c:gems/emerald"
+  },
+  "output": {
+    "tag": "c:gems/emerald"
+  }
+}

@@ -69,7 +69,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
             if (entry.hasBlock()) {
                 String path = BuiltInRegistries.BLOCK.getKey(entry.block().get()).getPath();
                 if (blockStateExists(path)) continue;
-                if (isFusionBlock(path)) {
+                if (path.equals("expl")) {
+                    explBlock(entry.block());
+                } else if (path.equals("expl_proxy")) {
+                    ModelFile proxy = models().getExistingFile(rl("block/fusion/core_proxy"));
+                    simpleBlock(entry.block().get(), proxy);
+                    itemModels().getBuilder("item/" + path).parent(proxy);
+                } else if (isFusionBlock(path)) {
                     fusionBlock(entry.block(), path);
                 } else if (entry.block().get() instanceof UniversalProcessorBlock) {
                     processorBlock(entry.block());
@@ -269,8 +275,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         } else if (path.endsWith("_electromagnet")) {
             texture = rl("block/electromagnet/" + path);
         } else if (path.endsWith("_rf_amplifier")) {
-            String tier = path.substring(0, path.length() - "_rf_amplifier".length());
-            texture = rl("block/electromagnet/" + tier + "_electromagnet");
+            texture = rl("block/rf_amplifier/" + path);
         } else {
             texture = rl("block/fusion/fusion_reactor_casing");
         }
@@ -284,6 +289,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
             return; // custom item model shipped in main resources - don't overwrite it
         }
         itemModels().getBuilder("item/" + path).parent(model);
+    }
+
+    private void explBlock(DeferredBlock<Block> deferredBlock) {
+        Block block = deferredBlock.get();
+        ModelFile model = models().getExistingFile(rl("block/expl"));
+        simpleBlock(block, model);
+        // custom block/item models shipped in main resources - don't overwrite them
     }
 
     private void heatSinkBlock(DeferredBlock<HeatSinkBlock> deferredBlock) {

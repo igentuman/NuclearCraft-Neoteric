@@ -1,0 +1,36 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "nuke",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "auxtargets": [
+        {
+          "name": "DepthSampler",
+          "id": "minecraft:main:depth"
+        }
+      ],
+      "uniforms": [
+        {
+          "name": "BlurPos",
+          "values": [ 0.5, 0.5 ]
+        },
+        {
+          "name": "BlurDir",
+          "values": [ 0.0, 0.0 ]
+        },
+        {
+          "name": "Radius",
+          "values": [ 0.1, 0.05 ]
+        },
+        {
+          "name": "BlackHoleDepth",
+          "values": [ 1.0 ]
+        }
+      ]
+    }
+  ]
+}

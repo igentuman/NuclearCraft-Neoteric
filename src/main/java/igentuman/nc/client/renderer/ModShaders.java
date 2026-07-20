@@ -26,14 +26,25 @@ import java.util.function.Supplier;
 public class ModShaders {
 
     public static final ShaderTracker BILLBOARD = new ShaderTracker();
+    public static final ShaderTracker NUKE_CORE = new ShaderTracker();
+    public static final ShaderTracker NUKE_SMOKE = new ShaderTracker();
 
     public static PostChain distortPostEffect;
+    public static PostChain nukePostEffect;
 
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
         event.registerShader(
                 new ShaderInstance(event.getResourceProvider(), NuclearCraft.rl("rendertype_billboard"), DefaultVertexFormat.POSITION_TEX_COLOR),
                 BILLBOARD::setInstance
+        );
+        event.registerShader(
+                new ShaderInstance(event.getResourceProvider(), NuclearCraft.rl("rendertype_nuke"), DefaultVertexFormat.POSITION_TEX_COLOR),
+                NUKE_CORE::setInstance
+        );
+        event.registerShader(
+                new ShaderInstance(event.getResourceProvider(), NuclearCraft.rl("rendertype_nuke_smoke"), DefaultVertexFormat.POSITION_TEX_COLOR),
+                NUKE_SMOKE::setInstance
         );
 
         Minecraft mc = Minecraft.getInstance();
@@ -44,6 +55,14 @@ public class ModShaders {
                 NuclearCraft.rl("shaders/post/distort.json")
         );
         distortPostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
+
+        nukePostEffect = new PostChain(
+                mc.getTextureManager(),
+                mc.getResourceManager(),
+                mc.getMainRenderTarget(),
+                NuclearCraft.rl("shaders/post/nuke.json")
+        );
+        nukePostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
     }
 
     /**

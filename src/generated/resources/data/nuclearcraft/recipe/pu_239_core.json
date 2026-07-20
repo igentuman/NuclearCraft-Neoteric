@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "nuclearcraft:uranium_238"
+    },
+    "N": {
+      "item": "nuclearcraft:pu_239_pit"
+    }
+  },
+  "pattern": [
+    "FFF",
+    "FNF",
+    "FFF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:pu_239_core"
+  }
+}

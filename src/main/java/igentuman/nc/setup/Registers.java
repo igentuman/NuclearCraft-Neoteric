@@ -1,8 +1,11 @@
 package igentuman.nc.setup;
 
+import com.mojang.serialization.Codec;
 import igentuman.nc.setup.level.ConfigurableOrePlacement;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
@@ -41,6 +44,13 @@ public class Registers {
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(Registries.SOUND_EVENT, MODID);
     public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, MODID);
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, MODID);
+    public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, MODID);
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> CONTAINER_MAGNET =
+            DATA_COMPONENTS.register("container_magnet", () -> DataComponentType.<Boolean>builder()
+                    .persistent(Codec.BOOL)
+                    .networkSynchronized(ByteBufCodecs.BOOL)
+                    .build());
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static final DeferredHolder<PlacementModifierType<?>, PlacementModifierType<?>> CONFIGURABLE_ORE_PLACEMENT =
@@ -64,5 +74,6 @@ public class Registers {
         SOUND_EVENTS.register(modEventBus);
         MOB_EFFECTS.register(modEventBus);
         ATTACHMENT_TYPES.register(modEventBus);
+        DATA_COMPONENTS.register(modEventBus);
     }
 }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:compression_charge"
+    },
+    "N": {
+      "item": "nuclearcraft:pu_239_core"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CNC",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:pu_239_bomb"
+  }
+}

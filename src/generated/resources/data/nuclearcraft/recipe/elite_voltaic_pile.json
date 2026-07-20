@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:plates/cobalt"
+    },
+    "M": {
+      "tag": "c:plates/magnesium"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_elite"
+    },
+    "V": {
+      "item": "nuclearcraft:du_voltaic_pile"
+    }
+  },
+  "pattern": [
+    "PMP",
+    "VVV",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:elite_voltaic_pile"
+  }
+}

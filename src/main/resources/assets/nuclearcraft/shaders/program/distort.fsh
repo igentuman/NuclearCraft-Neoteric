@@ -43,7 +43,7 @@ void main() {
 
     // --- Look tuning (tweak freely for your own effect) ---
     vec3 glowColor = vec3(0.5, 0.0, 0.7);
-    float glowIntensity = 0.1;
+    float glowIntensity = 0.0;
     float maxDarkness = 0.4;
     float darkCoreSize = 0.2;
     float darknessFalloff = 0.75;

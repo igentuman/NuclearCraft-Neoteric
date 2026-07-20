@@ -1,0 +1,10 @@
+{
+  "type": "nuclearcraft:nuclear_blast",
+  "chance": 0.75,
+  "input": {
+    "tag": "c:ores/platinum"
+  },
+  "output": {
+    "item": "nuclearcraft:kumanderite_block"
+  }
+}

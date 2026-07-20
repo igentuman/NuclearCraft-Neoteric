@@ -19,6 +19,7 @@ import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCSounds;
 import igentuman.nc.setup.NcParticles;
 import igentuman.nc.setup.Registers;
+import igentuman.nc.setup.entries.Storage;
 import igentuman.nc.util.MultiblocksProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -39,6 +40,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -63,6 +65,7 @@ public class NuclearCraft {
 
     public NuclearCraft(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::registerTicketControllers);
         Registers.init(modEventBus);
         NcParticles.init();
         NCSounds.init();
@@ -91,6 +94,7 @@ public class NuclearCraft {
         modContainer.registerConfig(ModConfig.Type.COMMON, Materials.SPEC, MODID + "/materials.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, Entries.SPEC, MODID + "/entries.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, Multiblocks.SPEC, MODID + "/multiblocks.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, igentuman.nc.config.Bomb.SPEC, MODID + "/bomb.toml");
     }
 
 
@@ -135,6 +139,8 @@ public class NuclearCraft {
             }
         }
 
+        Storage.registerCapabilities(event);
+
         // Multiblock ports proxy capabilities from their controller. The port's own ModEntry
         // has no cap definitions, so register caps here unconditionally for every port BE type.
         for (MultiblockEntry mb : MultiblockRegistry.ENTRIES.values()) {
@@ -161,6 +167,10 @@ public class NuclearCraft {
 
     private void commonSetup(FMLCommonSetupEvent event) {
 
+    }
+
+    private void registerTicketControllers(RegisterTicketControllersEvent event) {
+        event.register(igentuman.nc.setup.entries.Bomb.TICKET_CONTROLLER);
     }
 
     private void onConfigLoad(ModConfigEvent.Loading event) {

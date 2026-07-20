@@ -1,5 +1,6 @@
 package igentuman.nc.setup;
 
+import igentuman.nc.recipe.bomb.NcBlastRecipes;
 import igentuman.nc.registration.FluidDefinition;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.HeatSinkEntry;
@@ -21,6 +22,7 @@ import static igentuman.nc.registration.ModEntryBuilder.add;
 import static igentuman.nc.registration.ModEntryBuilder.addMetalOreMaterial;
 import static igentuman.nc.setup.entries.Accelerator.accelerator;
 import static igentuman.nc.setup.entries.Blocks.blocks;
+import static igentuman.nc.setup.entries.Bomb.bomb;
 import static igentuman.nc.setup.entries.FissionFuel.fissionFuel;
 import static igentuman.nc.setup.entries.FissionReactor.fissionReactor;
 import static igentuman.nc.setup.entries.Fluids.fluids;
@@ -31,6 +33,7 @@ import static igentuman.nc.setup.entries.Materials.materials;
 import static igentuman.nc.setup.entries.ParticleChamber.particleChamber;
 import static igentuman.nc.setup.entries.Parts.*;
 import static igentuman.nc.setup.entries.Processors.processors;
+import static igentuman.nc.setup.entries.Storage.storage;
 
 /** Central registry of all mod content entries with the init entry-point and declaration helpers. */
 public class ModEntries {
@@ -54,12 +57,15 @@ public class ModEntries {
         armor();
         processors();
         FissionRecipes.init();
+        NcBlastRecipes.init();
         fissionReactor();
         accelerator();
         FusionRecipes.init();
         fusionReactor();
         particleChamber();
         kugelblitz();
+        storage();
+        bomb();
     }
 
     public static void deco(String name, BlockBehaviour.Properties props) {

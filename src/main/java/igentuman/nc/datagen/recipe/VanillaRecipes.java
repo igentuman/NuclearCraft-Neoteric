@@ -91,7 +91,9 @@ public class VanillaRecipes {
         parts();
         fissionBlocks();
         fuelPellets();
-        
+        storageBlocks();
+        bomb();
+
 /*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, RESONITE_CRYSTAL.get())
                 .pattern("SSS")
                 .pattern("SSS")
@@ -100,6 +102,98 @@ public class VanillaRecipes {
                 .group(MODID)
                 .unlockedBy("item", has(RESONITE_SHARD.get()))
                 .save(recipeOutput);*/
+    }
+
+    private static ItemLike item(String name) {
+        return ModEntries.get(name).item();
+    }
+
+    private static void tierBarrel(String result, String prev, String metal, String plate) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item(result))
+                .pattern("GPG").pattern("GBG").pattern("GPG")
+                .define('G', plateTag(metal)).define('P', item(plate)).define('B', item(prev))
+                .unlockedBy("item", has(item(prev)))
+                .save(recipeOutput, rl(result));
+    }
+
+    private static void tierContainer(String result, String prev, String metal, String plate) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item(result))
+                .pattern("DPD").pattern("PCP").pattern("DPD")
+                .define('D', plateTag(metal)).define('P', item(plate)).define('C', item(prev))
+                .unlockedBy("item", has(item(prev)))
+                .save(recipeOutput, rl(result));
+    }
+
+    private static void storageBlocks() {
+        // Barrels
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("basic_barrel"))
+                .pattern("GPG").pattern("G G").pattern("GPG")
+                .define('G', plateTag("steel")).define('P', item("plate_basic"))
+                .unlockedBy("item", has(item("plate_basic")))
+                .save(recipeOutput, rl("basic_barrel"));
+        tierBarrel("advanced_barrel", "basic_barrel", "tough_alloy", "plate_advanced");
+        tierBarrel("du_barrel", "advanced_barrel", "hsla_steel", "plate_du");
+        tierBarrel("elite_barrel", "du_barrel", "platinum", "plate_elite");
+
+        // Containers
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("basic_storage_container"))
+                .pattern(" P ").pattern("PCP").pattern(" P ")
+                .define('C', CHEST).define('P', item("plate_basic"))
+                .unlockedBy("item", has(CHEST))
+                .save(recipeOutput, rl("basic_storage_container"));
+        tierContainer("advanced_storage_container", "basic_storage_container", "bronze", "plate_advanced");
+        tierContainer("du_storage_container", "advanced_storage_container", "platinum", "plate_du");
+        tierContainer("elite_storage_container", "du_storage_container", "hsla_steel", "plate_elite");
+
+        // Voltaic piles
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("basic_voltaic_pile"))
+                .pattern("PSP").pattern("SMS").pattern("PSP")
+                .define('P', item("plate_basic")).define('S', item("coil_copper")).define('M', blockTag("magnesium"))
+                .unlockedBy("item", has(item("coil_copper")))
+                .save(recipeOutput, rl("basic_voltaic_pile"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("advanced_voltaic_pile"))
+                .pattern("PMP").pattern("VVV").pattern("PCP")
+                .define('P', item("plate_advanced")).define('M', ingotTag("magnesium"))
+                .define('V', item("basic_voltaic_pile")).define('C', ingotTag("zinc"))
+                .unlockedBy("item", has(item("basic_voltaic_pile")))
+                .save(recipeOutput, rl("advanced_voltaic_pile"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("du_voltaic_pile"))
+                .pattern("PMP").pattern("VVV").pattern("PCP")
+                .define('P', item("plate_du")).define('M', ingotTag("magnesium"))
+                .define('V', item("advanced_voltaic_pile")).define('C', ingotTag("silver"))
+                .unlockedBy("item", has(item("advanced_voltaic_pile")))
+                .save(recipeOutput, rl("du_voltaic_pile"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("elite_voltaic_pile"))
+                .pattern("PMP").pattern("VVV").pattern("PCP")
+                .define('P', item("plate_elite")).define('M', plateTag("magnesium"))
+                .define('V', item("du_voltaic_pile")).define('C', plateTag("cobalt"))
+                .unlockedBy("item", has(item("du_voltaic_pile")))
+                .save(recipeOutput, rl("elite_voltaic_pile"));
+
+        // Lithium-ion cell + batteries
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("lithium_ion_cell"))
+                .pattern("CCC").pattern("FLF").pattern("DDD")
+                .define('C', plateTag("hard_carbon")).define('D', plateTag("lithium_manganese_dioxide"))
+                .define('F', plateTag("ferroboron")).define('L', plateTag("lithium"))
+                .unlockedBy("item", has(item("plate_basic")))
+                .save(recipeOutput, rl("lithium_ion_cell"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("basic_lithium_ion_battery"))
+                .pattern("PCP").pattern("CSC").pattern("PCP")
+                .define('P', item("plate_basic")).define('C', item("lithium_ion_cell")).define('S', item("coil_copper"))
+                .unlockedBy("item", has(item("lithium_ion_cell")))
+                .save(recipeOutput, rl("basic_lithium_ion_battery"));
+        tierLithiumBattery("advanced_lithium_ion_battery", "basic_lithium_ion_battery", "plate_advanced", ingotTag("lithium_manganese_dioxide"));
+        tierLithiumBattery("du_lithium_ion_battery", "advanced_lithium_ion_battery", "plate_du", ingotTag("lithium_manganese_dioxide"));
+        tierLithiumBattery("elite_lithium_ion_battery", "du_lithium_ion_battery", "plate_elite", plateTag("lithium_manganese_dioxide"));
+    }
+
+    private static void tierLithiumBattery(String result, String prev, String plate, TagKey<Item> dopant) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item(result))
+                .pattern("PDP").pattern("LLL").pattern("PSP")
+                .define('P', item(plate)).define('D', dopant)
+                .define('L', item(prev)).define('S', item("coil_magnesium_diboride"))
+                .unlockedBy("item", has(item(prev)))
+                .save(recipeOutput, rl(result));
     }
 
     private static void parts() {
@@ -270,6 +364,27 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ingot("tough_alloy")))
                 .save(recipeOutput, rl("steel_frame"));
 
+    }
+
+    private static void bomb() {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, part("pu_239_pit"))
+                .pattern("FFF").pattern("FNF").pattern("FFF")
+                .define('F', isotope("plutonium/239"))
+                .define('N', part("neutron_initiator"))
+                .unlockedBy("item", has(part("neutron_initiator")))
+                .save(recipeOutput, rl("pu_239_pit"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, part("pu_239_core"))
+                .pattern("FFF").pattern("FNF").pattern("FFF")
+                .define('F', isotope("uranium/238"))
+                .define('N', part("pu_239_pit"))
+                .unlockedBy("item", has(part("pu_239_pit")))
+                .save(recipeOutput, rl("pu_239_core"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("pu_239_bomb"))
+                .pattern("CCC").pattern("CNC").pattern("CCC")
+                .define('C', part("compression_charge"))
+                .define('N', part("pu_239_core"))
+                .unlockedBy("item", has(part("pu_239_core")))
+                .save(recipeOutput, rl("pu_239_bomb"));
     }
 
 /*    private static void msrBlocks() {

@@ -143,6 +143,7 @@ public class ModLanguageProvider  extends LanguageProvider {
     private void labels() {
         add("itemGroup.nuclearcraft.fission_reactor", "NuclearCraft: Fission Reactor");
         add("itemGroup.nuclearcraft.kugelblitz", "NuclearCraft: Kugelblitz Chamber");
+        add("block.nuclearcraft.pu_239_bomb.desc", "Warning: arms on redstone signal and detonates after a short fuse. Not safe for dispenser placement.");
         add("screen.nuclearcraft.kugelblitz", "Kugelblitz Chamber");
         add("screen.nuclearcraft.kugelblitz.rate", "Transformation vs Energy Generation: %s%%");
         add("screen.nuclearcraft.kugelblitz.frequency", "Frequency: %s");
@@ -183,6 +184,8 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("message.nuclearcraft.redstone_mode.items", "Fuel amount");
         add("message.nuclearcraft.redstone_mode.switch", "Activation switch");
         add("message.nuclearcraft.redstone_mode.moderator", "Moderation control");
+        add("gui.nuclearcraft.nuclear_blast", "Nuclear Blast");
+        add("gui.nuclearcraft.nuclear_blast.chance", "Chance: %s");
         add("gui.nuclearcraft.fission_fuel", "Fission Reactor: Fuel");
         add("gui.nuclearcraft.fission_boiling", "Fission Reactor: Boiling");
         add("gui.nuclearcraft.fission_boiling.heat", "Heat: %s H");
@@ -191,6 +194,20 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.boiling.hot_coolant", "Hot Coolant");
         add("screen.nuclearcraft.boiling.rate", "Boiling Rate");
         add("screen.nuclearcraft.cooling", "Cooling");
+
+        add("message.nc.multitool.connected_to_tnt", "Linked to TNT at (%1$s, %2$s, %3$s)");
+        add("message.nc.multitool.connected_to_bomb", "Linked to bomb at (%1$s, %2$s, %3$s)");
+        add("message.nc.multitool.not_your_project", "Not your bomb — placement ownership required.");
+        add("message.nc.multitool.armed_confirm", "Armed. Press again within 60 ticks to detonate.");
+        add("message.nc.multitool.tnt_detonated", "Triggered TNT at (%1$s, %2$s, %3$s)");
+        add("message.nc.multitool.bomb_detonated", "Triggered bomb at (%1$s, %2$s, %3$s)");
+        add("tooltip.nc.multitool.desc", "Remote detonator: link a bomb or TNT, then use to fire");
+        add("tooltip.nc.multitool.shift.desc", "Sneak to bypass block interactions while linking");
+        add("tooltip.nc.multitool.connected_to_bomb", "Linked to bomb: (%1$s, %2$s, %3$s)");
+        add("tooltip.nc.multitool.connected_to_tnt", "Linked to TNT: (%1$s, %2$s, %3$s)");
+        add("commands.nuclearcraft.no_permission", "Missing required permission for this command.");
+        add("commands.nuclearcraft.detonate.none", "No linked multitools to detonate.");
+        add("commands.nuclearcraft.detonate.summary", "Detonated %1$s linked target(s).");
         add("screen.nuclearcraft.fission_reactor", "Fission Reactor");
         add("tooltip.nuclearcraft.wait", "Wait: %ss");
         add("tooltip.nuclearcraft.switch_to_boiling", "Switch to Boiling Mode");
@@ -233,5 +250,16 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("tooltip.nuclearcraft.electromagnet.max_temp", "Max Temp: %s kK");
         add("tooltip.nuclearcraft.electromagnet.power", "Power: %s FE/t");
         add("tooltip.nuclearcraft.electromagnet.not_found", "No Electromagnets");
+
+        add("message.nuclearcraft.switch_side.mode", "Side mode: %s");
+        add("tooltip.nuclearcraft.use_wrench", "Use a wrench to configure sides");
+        add("tooltip.nuclearcraft.content_saved", "Contents are kept when broken");
+        add("tooltip.nuclearcraft.magnet.on", "Auto-pickup: ON");
+        add("tooltip.nuclearcraft.magnet.off", "Auto-pickup: OFF");
+        add("tooltip.nuclearcraft.liquid_capacity", "Capacity: %s");
+        add("tooltip.nuclearcraft.liquid_stored", "%s: %s / %s");
+        add("tooltip.nuclearcraft.liquid_empty", "Empty (capacity %s)");
+        add("tooltip.nuclearcraft.energy_capacity", "Capacity: %s");
+        add("tooltip.nuclearcraft.energy_stored", "Energy: %s / %s");
     }
 }

@@ -4,6 +4,7 @@ import igentuman.nc.multiblock.fission.FissionTags;
 import igentuman.nc.registration.*;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCJukeboxSongs;
+import igentuman.nc.util.WrenchUtil;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -104,6 +105,8 @@ public class ModItemTagProvider extends ItemTagsProvider {
         for (String name : NCJukeboxSongs.RECORDS.keySet()) {
             tag(musicDiscs).add(ModEntries.get(name).item().get());
         }
+
+        tag(WrenchUtil.WRENCH).add(ModEntries.get("multitool").item().get());
     }
 
     private static TagKey<Item> materialTag(String path) {

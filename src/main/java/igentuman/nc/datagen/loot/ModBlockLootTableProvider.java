@@ -30,6 +30,8 @@ public class ModBlockLootTableProvider  extends BlockLootSubProvider {
             if (entry.hasBlock()) {
                 if (entry.name().equals("fusion_reactor_core_proxy") || entry.name().equals("expl_proxy")) {
                     add(entry.block().get(), LootTable.lootTable()); // auto-placed body cell - never drops
+                } else if (entry.block().get() instanceof igentuman.nc.block.storage.AbstractStorageBlock) {
+                    add(entry.block().get(), LootTable.lootTable());
                 } else {
                     dropSelf(entry.block().get());
                 }

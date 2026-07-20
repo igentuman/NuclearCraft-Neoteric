@@ -1,6 +1,5 @@
 package igentuman.nc.block_entity;
 
-import igentuman.nc.client.sound.TileSoundInstance;
 import igentuman.nc.handler.SidedContentHandler;
 import igentuman.nc.handler.energy.CustomEnergyStorage;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
@@ -16,8 +15,6 @@ import igentuman.nc.util.NBTSerializable;
 import igentuman.nc.util.caps.EnergyCapDefinition;
 import igentuman.nc.util.caps.FluidCapDefinition;
 import igentuman.nc.util.caps.ItemCapDefinition;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -94,24 +91,16 @@ public class GlobalBlockEntity extends BlockEntity {
 
     protected boolean wasChanged = false;
 
-    protected TileSoundInstance currentSound;
+    protected Object currentSound;
 
     protected void playSound(SoundEvent sound, float volume) {
         if (level == null || !level.isClientSide) return;
-        SoundManager mgr = Minecraft.getInstance().getSoundManager();
-        if (currentSound != null && (!currentSound.getLocation().equals(sound.getLocation()) || !mgr.isActive(currentSound))) {
-            mgr.stop(currentSound);
-            currentSound = null;
-        }
-        if (currentSound == null) {
-            currentSound = new TileSoundInstance(sound, volume, worldPosition);
-            mgr.play(currentSound);
-        }
+        currentSound = igentuman.nc.client.sound.BlockEntitySounds.play(currentSound, sound, volume, worldPosition);
     }
 
     protected void stopSound() {
         if (currentSound == null) return;
-        Minecraft.getInstance().getSoundManager().stop(currentSound);
+        igentuman.nc.client.sound.BlockEntitySounds.stop(currentSound);
         currentSound = null;
     }
 

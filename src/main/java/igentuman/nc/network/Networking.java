@@ -63,5 +63,10 @@ public class Networking {
                 PacketMultiblockBroken.STREAM_CODEC,
                 PacketMultiblockBroken::handle
         );
+        registrar.playToClient(
+                PacketBombDetonationStart.TYPE,
+                PacketBombDetonationStart.STREAM_CODEC,
+                PacketBombDetonationStart::handle
+        );
     }
 }

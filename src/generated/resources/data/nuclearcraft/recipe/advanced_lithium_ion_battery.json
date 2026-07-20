@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "tag": "c:ingots/lithium_manganese_dioxide"
+    },
+    "L": {
+      "item": "nuclearcraft:basic_lithium_ion_battery"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    },
+    "S": {
+      "item": "nuclearcraft:coil_magnesium_diboride"
+    }
+  },
+  "pattern": [
+    "PDP",
+    "LLL",
+    "PSP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:advanced_lithium_ion_battery"
+  }
+}

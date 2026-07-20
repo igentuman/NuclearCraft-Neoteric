@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.client.render.bomb.PrimedFissionBombRenderer;
 import igentuman.nc.client.renderer.DelayedRenderHandler;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.container.MultiblockControllerContainer;
@@ -8,6 +9,7 @@ import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.MultiblockPartBlock;
+import igentuman.nc.entity.PrimedFissionBombEntity;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.MaterialFluidType;
@@ -20,15 +22,13 @@ import igentuman.nc.client.render.fusion.FusionCoreRenderer;
 import igentuman.nc.client.render.kugelblitz.BlackholeRenderer;
 import igentuman.nc.client.render.kugelblitz.EXPLRenderer;
 import igentuman.nc.container.EXPLContainer;
-import igentuman.nc.screen.EXPLScreen;
-import igentuman.nc.screen.FissionReactorScreen;
-import igentuman.nc.screen.FusionReactorScreen;
-import igentuman.nc.screen.MultiblockControllerScreen;
-import igentuman.nc.screen.MultiblockPortScreen;
-import igentuman.nc.screen.UniversalProcessorScreen;
+import igentuman.nc.screen.*;
+import igentuman.nc.setup.entries.Bomb;
+import igentuman.nc.setup.entries.Storage;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -38,6 +38,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
@@ -65,11 +66,6 @@ public class Client {
         });
     }
 
-    /**
-     * Modded fluids default to the solid render layer, so tint alpha has no effect.
-     * Lighter fluids (gases, acids - density below water) must render translucent for
-     * their alpha to show; dense molten metals stay opaque on the solid layer.
-     */
     private static void registerFluidRenderLayers() {
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.materialEntry() instanceof MaterialEntry mat && mat.hasFluid()) {
@@ -118,11 +114,29 @@ public class Client {
                         );
                     }
                 });
+        event.register(Storage.STORAGE_MENU.get(),
+                igentuman.nc.screen.StorageContainerScreen::new);
+        event.register(Storage.STORAGE_ITEM_MENU.get(),
+                StorageContainerItemScreen::new);
+    }
+
+    @SubscribeEvent
+    static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
+        event.register(igentuman.nc.client.model.BatteryModelLoader.ID, new igentuman.nc.client.model.BatteryModelLoader());
     }
 
     @SubscribeEvent
     static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(NcParticles.FUSION_BEAM.get(), FusionBeamParticle.Provider::new);
+        event.registerSpriteSet(NcParticles.FIRE_VERTICAL1.get(), igentuman.nc.client.particle.FireVerticalParticle.Factory::new);
+        event.registerSpriteSet(NcParticles.SMOKE.get(), igentuman.nc.client.particle.FireVerticalParticle.Factory::new);
+        event.registerSpriteSet(NcParticles.EXPLOSION.get(), igentuman.nc.client.particle.ExplosionParticle.Factory::new);
+        event.registerSpriteSet(NcParticles.EXPLOSION_SEED.get(), igentuman.nc.client.particle.ExplosionSeedParticle.Factory::new);
+    }
+
+    @SubscribeEvent
+    static void registerGuiLayers(net.neoforged.neoforge.client.event.RegisterGuiLayersEvent event) {
+        event.registerAboveAll(NuclearCraft.rl("bomb_flash"), igentuman.nc.client.bomb.BombFlashOverlay.BOMB_FLASH);
     }
 
     @SuppressWarnings("unchecked")
@@ -140,6 +154,11 @@ public class Client {
                 (BlockEntityType<BlackHoleBE>) (BlockEntityType<?>)
                         ModEntries.get("black_hole").blockEntity().get(),
                 BlackholeRenderer::new);
+        // Empty renderer stub for the primed bomb entity; all visuals are client FX (Phase 7).
+        event.registerEntityRenderer(
+                (EntityType<? extends PrimedFissionBombEntity>) (EntityType<?>)
+                        Bomb.PRIMED_FISSION_BOMB.get(),
+                PrimedFissionBombRenderer::new);
     }
 
     /**

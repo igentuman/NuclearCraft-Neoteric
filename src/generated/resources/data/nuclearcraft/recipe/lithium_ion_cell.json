@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:plates/hard_carbon"
+    },
+    "D": {
+      "tag": "c:plates/lithium_manganese_dioxide"
+    },
+    "F": {
+      "tag": "c:plates/ferroboron"
+    },
+    "L": {
+      "tag": "c:plates/lithium"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "FLF",
+    "DDD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:lithium_ion_cell"
+  }
+}

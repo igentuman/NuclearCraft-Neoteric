@@ -1,0 +1,9 @@
+{
+  "type": "nuclearcraft:nuclear_blast",
+  "input": {
+    "tag": "minecraft:coal_ores"
+  },
+  "output": {
+    "item": "minecraft:deepslate_diamond_ore"
+  }
+}

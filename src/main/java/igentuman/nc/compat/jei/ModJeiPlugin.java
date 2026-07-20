@@ -56,6 +56,7 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new MultiblockExampleCategory(guiHelper));
         registration.addRecipeCategories(new FissionFuelRecipeCategory(guiHelper));
         registration.addRecipeCategories(new BoilingRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new NuclearBlastRecipeCategory(guiHelper));
     }
 
     @Override
@@ -120,6 +121,9 @@ public class ModJeiPlugin implements IModPlugin {
                         .stream().map(RecipeHolder::value).toList());
         registration.addRecipes(BoilingRecipeCategory.TYPE,
                 recipeManager.getAllRecipesFor(FissionRecipes.BOILING_TYPE.get())
+                        .stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(NuclearBlastRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(igentuman.nc.recipe.bomb.NcBlastRecipes.TYPE.get())
                         .stream().map(RecipeHolder::value).toList());
     }
 

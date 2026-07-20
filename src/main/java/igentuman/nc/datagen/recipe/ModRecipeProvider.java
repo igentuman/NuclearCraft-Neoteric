@@ -88,6 +88,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         irradiator(recipeOutput);
         fusion(recipeOutput);
         igentuman.nc.datagen.recipe.processors.KugelblitzChamberRecipes.generate(recipeOutput);
+        NuclearBlastRecipes.nuclearBlast(recipeOutput);
     }
 
     // --- record helpers ---

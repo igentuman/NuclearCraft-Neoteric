@@ -1,0 +1,9 @@
+{
+  "loader": "nuclearcraft:battery_model",
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "nuclearcraft:block/energy/lithium_ion_battery/basic/top",
+    "down": "nuclearcraft:block/energy/lithium_ion_battery/basic/side",
+    "up": "nuclearcraft:block/energy/lithium_ion_battery/basic/top"
+  }
+}

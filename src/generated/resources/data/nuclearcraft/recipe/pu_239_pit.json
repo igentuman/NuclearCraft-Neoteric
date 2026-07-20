@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "nuclearcraft:plutonium_239"
+    },
+    "N": {
+      "item": "nuclearcraft:neutron_initiator"
+    }
+  },
+  "pattern": [
+    "FFF",
+    "FNF",
+    "FFF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:pu_239_pit"
+  }
+}

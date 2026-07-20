@@ -42,6 +42,7 @@ public class Parts extends ModEntries {
                 "silicon_n_doped",
                 "silicon_p_doped",
                 "silicon_wafer",
+                "lithium_ion_cell",
                 "neutron_initiator",
                 "compression_charge",
                 "pu_239_pit",

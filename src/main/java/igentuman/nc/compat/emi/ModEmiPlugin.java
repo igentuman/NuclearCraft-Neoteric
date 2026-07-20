@@ -13,6 +13,8 @@ import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.recipe.fission.BoilingRecipe;
 import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import igentuman.nc.recipe.fission.FissionRecipes;
+import igentuman.nc.recipe.bomb.NcBlastRecipes;
+import igentuman.nc.recipe.bomb.NuclearBlastRecipe;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.MultiblockStructure;
@@ -98,6 +100,21 @@ public class ModEmiPlugin implements EmiPlugin {
         }
 
         registerFissionRecipes(registry, recipeManager);
+        registerNuclearBlastRecipes(registry, recipeManager);
+    }
+
+    private void registerNuclearBlastRecipes(EmiRegistry registry, RecipeManager recipeManager) {
+        ModEntry bomb = ModEntries.get("pu_239_bomb");
+        if (bomb == null || bomb.block() == null) return;
+        EmiStack icon = EmiStack.of(new ItemStack(bomb.block().get()));
+        EmiRecipeCategory category = new EmiRecipeCategory(NuclearCraft.rl("nuclear_blast"), icon);
+        List<NuclearBlastRecipe> recipes = recipeManager.getAllRecipesFor(NcBlastRecipes.TYPE.get())
+                .stream().map(RecipeHolder::value).toList();
+        if (recipes.isEmpty()) return;
+        registry.addCategory(category);
+        for (int i = 0; i < recipes.size(); i++) {
+            registry.addRecipe(new NuclearBlastEmiRecipe(category, NuclearCraft.rl("/nuclear_blast/" + i), recipes.get(i)));
+        }
     }
 
     private void registerFissionRecipes(EmiRegistry registry, RecipeManager recipeManager) {

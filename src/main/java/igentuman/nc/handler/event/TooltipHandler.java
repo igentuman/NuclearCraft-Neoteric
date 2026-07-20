@@ -24,6 +24,16 @@ public class TooltipHandler {
         if(event.equals(processedEvent)) return;
         processedEvent = event;
         addModeratorTooltip(event, event.getItemStack());
+        addDecayGeneratorTooltip(event, event.getItemStack());
+    }
+
+    private static void addDecayGeneratorTooltip(ItemTooltipEvent event, ItemStack itemStack) {
+        for(Block block: TagUtil.getBlocksByTagKey(igentuman.nc.content.energy.EnergyGenDefs.DECAY_GENERATOR_BLOCKS.location().toString())) {
+            if(itemStack.is(block.asItem())) {
+                event.getToolTip().add(__("tooltip.nuclearcraft.decay_generator_allowed").withStyle(ChatFormatting.GREEN));
+                return;
+            }
+        }
     }
 
     private static void addModeratorTooltip(ItemTooltipEvent event, ItemStack itemStack) {

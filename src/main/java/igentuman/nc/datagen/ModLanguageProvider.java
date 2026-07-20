@@ -23,13 +23,14 @@ public class ModLanguageProvider  extends LanguageProvider {
     @Override
     protected void addTranslations() {
         labels();
+        energy();
         heatSinks();
         for (String name : NCJukeboxSongs.RECORDS.keySet()) {
             add("jukebox_song." + MODID + "." + name, convertToName(name));
         }
         for (String name : ModEntries.ENTRIES.keySet()) {
             if(ModEntries.get(name).hasBlock()) {
-                add(ModEntries.get(name).block().get(), name.equals("expl") ? "EXPL" : convertToName(name));
+                add(ModEntries.get(name).block().get(), blockDisplayName(name));
                 if(ModEntries.get(name).hasRecipes()) {
                     add("emi.category."+MODID+"."+name, convertToName(name));
 
@@ -119,6 +120,27 @@ public class ModLanguageProvider  extends LanguageProvider {
             sb.append(' ').append(variant.substring(1).toUpperCase());
         }
         return sb.toString();
+    }
+
+    private static String blockDisplayName(String name) {
+        if (name.equals("expl")) return "EXPL";
+        if (name.endsWith("_rtg")) {
+            return convertToName(name.substring(0, name.length() - "_rtg".length())) + " RTG";
+        }
+        return convertToName(name);
+    }
+
+    private void energy() {
+        add("block.nuclearcraft.uranium_rtg.desc", "Radioisotope thermoelectric generator. Produces a steady 112 FE/t and emits radiation.");
+        add("block.nuclearcraft.americium_rtg.desc", "Radioisotope thermoelectric generator. Produces a steady 448 FE/t and emits radiation.");
+        add("block.nuclearcraft.plutonium_rtg.desc", "Radioisotope thermoelectric generator. Produces a steady 1792 FE/t and emits radiation.");
+        add("block.nuclearcraft.californium_rtg.desc", "Radioisotope thermoelectric generator. Produces a steady 4096 FE/t and emits radiation.");
+        add("block.nuclearcraft.solar_panel_basic.desc", "Generates 28 FE/t while exposed to daytime sky.");
+        add("block.nuclearcraft.solar_panel_advanced.desc", "Generates 112 FE/t while exposed to daytime sky.");
+        add("block.nuclearcraft.solar_panel_du.desc", "Generates 448 FE/t while exposed to daytime sky.");
+        add("block.nuclearcraft.solar_panel_elite.desc", "Generates 1792 FE/t while exposed to daytime sky.");
+        add("block.nuclearcraft.decay_generator.desc", "Generates energy from adjacent radioactive blocks. Emits radiation and decays those blocks to lead over time.");
+        add("tooltip.nuclearcraft.decay_generator_allowed", "Can be used with Decay Generator");
     }
 
     private void heatSinks() {

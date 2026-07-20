@@ -24,6 +24,7 @@ import static igentuman.nc.setup.entries.Accelerator.accelerator;
 import static igentuman.nc.setup.entries.Blocks.blocks;
 import static igentuman.nc.setup.entries.Bomb.bomb;
 import static igentuman.nc.setup.entries.FissionFuel.fissionFuel;
+import static igentuman.nc.setup.entries.Energy.energy;
 import static igentuman.nc.setup.entries.FissionReactor.fissionReactor;
 import static igentuman.nc.setup.entries.Fluids.fluids;
 import static igentuman.nc.setup.entries.FusionReactor.fusionReactor;
@@ -56,8 +57,6 @@ public class ModEntries {
         tools();
         armor();
         processors();
-        FissionRecipes.init();
-        NcBlastRecipes.init();
         fissionReactor();
         accelerator();
         FusionRecipes.init();
@@ -65,7 +64,10 @@ public class ModEntries {
         particleChamber();
         kugelblitz();
         storage();
+        energy();
         bomb();
+        FissionRecipes.init();
+        NcBlastRecipes.init();
     }
 
     public static void deco(String name, BlockBehaviour.Properties props) {

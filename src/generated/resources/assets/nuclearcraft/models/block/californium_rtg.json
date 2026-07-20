@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "nuclearcraft:block/energy/rtg/californium/side",
+    "side": "nuclearcraft:block/energy/rtg/californium/side",
+    "top": "nuclearcraft:block/energy/rtg/californium/top"
+  }
+}

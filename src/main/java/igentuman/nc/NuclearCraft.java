@@ -19,6 +19,7 @@ import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCSounds;
 import igentuman.nc.setup.NcParticles;
 import igentuman.nc.setup.Registers;
+import igentuman.nc.setup.entries.Energy;
 import igentuman.nc.setup.entries.Storage;
 import igentuman.nc.util.MultiblocksProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -140,6 +141,7 @@ public class NuclearCraft {
         }
 
         Storage.registerCapabilities(event);
+        Energy.registerCapabilities(event);
 
         // Multiblock ports proxy capabilities from their controller. The port's own ModEntry
         // has no cap definitions, so register caps here unconditionally for every port BE type.

@@ -70,6 +70,10 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             }
         }
 
+        tag(igentuman.nc.content.energy.EnergyGenDefs.DECAY_GENERATOR_BLOCKS).add(
+                storage("uranium"), storage("uranium238"), storage("plutonium238"),
+                storage("americium241"), storage("californium250"));
+
         addFissionStructureTags();
         addFusionStructureTags();
         addKugelblitzStructureTags();

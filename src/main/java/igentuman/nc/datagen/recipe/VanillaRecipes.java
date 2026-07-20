@@ -92,6 +92,7 @@ public class VanillaRecipes {
         fissionBlocks();
         fuelPellets();
         storageBlocks();
+        energyBlocks();
         bomb();
 
 /*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, RESONITE_CRYSTAL.get())
@@ -642,6 +643,60 @@ public class VanillaRecipes {
                 .save(recipeOutput);
 
     }*/
+
+    private static void energyBlocks() {
+        rtg("uranium_rtg", "plate_basic", "uranium238");
+        rtg("americium_rtg", "plate_advanced", "americium241");
+        rtg("plutonium_rtg", "plate_advanced", "plutonium238");
+        rtg("californium_rtg", "plate_advanced", "californium250");
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("solar_panel_basic"))
+                .pattern("LQL").pattern("PLP").pattern("CSC")
+                .define('L', Tags.Items.GEMS_LAPIS)
+                .define('Q', GLASS_PANE)
+                .define('P', HEAVY_WEIGHTED_PRESSURE_PLATE)
+                .define('S', DAYLIGHT_DETECTOR)
+                .define('C', item("coil_copper"))
+                .group(MODID + "_solar_panels")
+                .unlockedBy("item", has(item("coil_copper")))
+                .save(recipeOutput);
+
+        solarPanel("solar_panel_advanced", "solar_panel_basic", "plate_advanced", "quartz", "coil_copper");
+        solarPanel("solar_panel_du", "solar_panel_advanced", "plate_du", "energetic_blend", "coil_magnesium_diboride");
+        solarPanel("solar_panel_elite", "solar_panel_du", "plate_elite", "energetic_blend", "coil_magnesium_diboride");
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("decay_generator"))
+                .pattern("PGP").pattern("GUG").pattern("PGP")
+                .define('P', item("coil_copper"))
+                .define('G', REDSTONE)
+                .define('U', IRON_BLOCK)
+                .group(MODID + "_energy")
+                .unlockedBy("item", has(item("coil_copper")))
+                .save(recipeOutput);
+    }
+
+    private static void rtg(String result, String plate, String fuelMaterial) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item(result))
+                .pattern("PGP").pattern("GUG").pattern("PGP")
+                .define('P', item(plate))
+                .define('G', plateTag("graphite"))
+                .define('U', blockTag(fuelMaterial))
+                .group(MODID + "_rtg")
+                .unlockedBy("item", has(item(plate)))
+                .save(recipeOutput);
+    }
+
+    private static void solarPanel(String result, String prev, String plate, String dust, String coil) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item(result))
+                .pattern("PGP").pattern("SSS").pattern("PCP")
+                .define('P', item(plate))
+                .define('S', item(prev))
+                .define('G', dustTag(dust))
+                .define('C', item(coil))
+                .group(MODID + "_solar_panels")
+                .unlockedBy("item", has(item(prev)))
+                .save(recipeOutput);
+    }
 
     private static void fissionBlocks() {
 

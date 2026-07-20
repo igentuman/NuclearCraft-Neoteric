@@ -1,6 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.block.UniversalProcessorBlock;
+import igentuman.nc.block.energy.EnergyBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -77,6 +78,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     itemModels().getBuilder("item/" + path).parent(proxy);
                 } else if (isFusionBlock(path)) {
                     fusionBlock(entry.block(), path);
+                } else if (entry.block().get() instanceof EnergyBlock) {
+                    energyBlock(entry.block(), path);
                 } else if (entry.block().get() instanceof UniversalProcessorBlock) {
                     processorBlock(entry.block());
                 } else if (entry.block().get().defaultBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
@@ -296,6 +299,26 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile model = models().getExistingFile(rl("block/expl"));
         simpleBlock(block, model);
         // custom block/item models shipped in main resources - don't overwrite them
+    }
+
+    private void energyBlock(DeferredBlock<Block> deferredBlock, String path) {
+        Block block = deferredBlock.get();
+        ModelFile model;
+        if (path.equals("decay_generator")) {
+            model = models().cubeAll(path, rl("block/energy/decay_generator"));
+        } else if (path.endsWith("_rtg")) {
+            String metal = path.substring(0, path.length() - "_rtg".length());
+            ResourceLocation side = rl("block/energy/rtg/" + metal + "/side");
+            ResourceLocation top = rl("block/energy/rtg/" + metal + "/top");
+            model = models().cubeBottomTop(path, side, side, top);
+        } else {
+            String tier = path.substring("solar_panel_".length());
+            ResourceLocation side = rl("block/energy/solar_panel/" + tier + "_side");
+            ResourceLocation top = rl("block/energy/solar_panel/" + tier + "_top");
+            model = models().cubeBottomTop(path, side, side, top);
+        }
+        simpleBlock(block, model);
+        itemModels().getBuilder("item/" + path).parent(model);
     }
 
     private void heatSinkBlock(DeferredBlock<HeatSinkBlock> deferredBlock) {

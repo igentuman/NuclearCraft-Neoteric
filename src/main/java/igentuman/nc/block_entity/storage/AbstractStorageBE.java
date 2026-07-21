@@ -2,9 +2,11 @@ package igentuman.nc.block_entity.storage;
 
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.setup.ModEntries;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -17,7 +19,7 @@ public abstract class AbstractStorageBE extends GlobalBlockEntity {
 
     public static final ModelProperty<SideMode[]> SIDE_CONFIG = new ModelProperty<>();
 
-    protected final SideMode[] sideConfig = new SideMode[6];
+    public final SideMode[] sideConfig = new SideMode[6];
 
     protected AbstractStorageBE(BlockEntityType<?> type, BlockPos pos, BlockState state, String name) {
         super(type, pos, state, name);
@@ -81,6 +83,10 @@ public abstract class AbstractStorageBE extends GlobalBlockEntity {
             }
             if (level != null && level.isClientSide) {
                 requestModelDataUpdate();
+                Minecraft.getInstance().levelRenderer.setSectionDirty(
+                        SectionPos.blockToSectionCoord(worldPosition.getX()),
+                        SectionPos.blockToSectionCoord(worldPosition.getY()),
+                        SectionPos.blockToSectionCoord(worldPosition.getZ()));
             }
         }
     }

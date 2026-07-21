@@ -96,6 +96,8 @@ public class Client {
                             event.register(menuType, igentuman.nc.screen.ChamberTerminalScreen::new);
                         } else if (entry.name().equals("turbine_controller")) {
                             event.register(menuType, TurbineControllerScreen::new);
+                        } else if (entry.name().equals("heat_exchanger_controller")) {
+                            event.register(menuType, HeatExchangerControllerScreen::new);
                         } else {
                             event.register(menuType, MultiblockControllerScreen::new);
                         }

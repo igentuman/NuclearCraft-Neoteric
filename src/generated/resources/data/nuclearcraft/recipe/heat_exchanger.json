@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_heat_exchanger",
+  "key": {
+    "L": {
+      "tag": "c:plates/thermoconducting"
+    },
+    "M": {
+      "item": "nuclearcraft:chassis"
+    },
+    "P": {
+      "tag": "c:plates/copper"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "PMP",
+    "LPL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:heat_exchanger"
+  }
+}

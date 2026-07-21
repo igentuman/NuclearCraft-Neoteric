@@ -100,7 +100,24 @@ public class ModEmiPlugin implements EmiPlugin {
         }
 
         registerFissionRecipes(registry, recipeManager);
+        registerHeatExchangerRecipes(registry, recipeManager);
         registerNuclearBlastRecipes(registry, recipeManager);
+    }
+
+    private void registerHeatExchangerRecipes(EmiRegistry registry, RecipeManager recipeManager) {
+        ModEntry controller = ModEntries.get("heat_exchanger_controller");
+        if (controller == null || !controller.hasItem()) return;
+        EmiStack workstation = EmiStack.of(new ItemStack(controller.item().get()));
+
+        EmiRecipeCategory category = new EmiRecipeCategory(NuclearCraft.rl("heat_exchanger"), workstation);
+        registry.addCategory(category);
+        registry.addWorkstation(category, workstation);
+        List<igentuman.nc.recipe.heat_exchanger.HeatExchangerRecipe> recipes =
+                recipeManager.getAllRecipesFor(igentuman.nc.recipe.heat_exchanger.HeatExchangerRecipes.HX_TYPE.get())
+                        .stream().map(RecipeHolder::value).toList();
+        for (int i = 0; i < recipes.size(); i++) {
+            registry.addRecipe(new HeatExchangerEmiRecipe(category, NuclearCraft.rl("/heat_exchanger/" + i), recipes.get(i)));
+        }
     }
 
     private void registerNuclearBlastRecipes(EmiRegistry registry, RecipeManager recipeManager) {

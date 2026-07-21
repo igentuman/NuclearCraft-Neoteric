@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:heat_exchanger",
+  "heat": 1800,
+  "input_fluid": {
+    "amount": 10,
+    "fluid": "nuclearcraft:flibe_hot_molten_salt"
+  },
+  "output_fluid": {
+    "amount": 10,
+    "fluid": "nuclearcraft:flibe_molten_salt"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:heat_exchanger",
+  "heat": 100,
+  "input_fluid": {
+    "amount": 10,
+    "fluid": "nuclearcraft:low_quality_steam"
+  },
+  "output_fluid": {
+    "amount": 10,
+    "fluid": "nuclearcraft:technical_water"
+  }
+}

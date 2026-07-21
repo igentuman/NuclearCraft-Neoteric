@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "nuclearcraft:block/heat_exchanger/port/heat_exchanger_hot_coolant_port"
+  }
+}

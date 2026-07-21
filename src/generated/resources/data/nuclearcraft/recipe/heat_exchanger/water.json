@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:heat_exchanger",
+  "heat": -200,
+  "input_fluid": {
+    "amount": 10,
+    "fluid": "minecraft:water"
+  },
+  "output_fluid": {
+    "amount": 10,
+    "fluid": "nuclearcraft:steam"
+  }
+}

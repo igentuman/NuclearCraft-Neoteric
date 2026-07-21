@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "nuclearcraft:block/heat_exchanger/controller/bottom",
+    "front": "nuclearcraft:block/heat_exchanger/controller/front",
+    "side": "nuclearcraft:block/heat_exchanger/controller/side",
+    "top": "nuclearcraft:block/heat_exchanger/controller/top"
+  }
+}

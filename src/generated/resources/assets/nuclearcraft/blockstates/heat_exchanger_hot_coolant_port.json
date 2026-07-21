@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/heat_exchanger_hot_coolant_port"
+    }
+  }
+}

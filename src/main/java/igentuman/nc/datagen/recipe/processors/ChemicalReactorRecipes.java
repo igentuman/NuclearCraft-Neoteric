@@ -48,6 +48,7 @@ public class ChemicalReactorRecipes {
         chem(out, "heavy_water",           fluidOf("deuterium"), 500, fluidOf("liquid_oxygen"), 250, new F[]{fl("heavy_water", 500)}, 100, 25);
         chem(out, "lithium_fluoride",      fluidOf("lithium"), MOLTEN_INGOT * 2, fluidOf("fluorite_water"), 250, new F[]{fl("lithium_fluoride", 360)}, 100, 25);
         chem(out, "beryllium_fluoride",    fluidOf("beryllium"), MOLTEN_INGOT * 2, fluidOf("fluorite_water"), 250, new F[]{fl("beryllium_fluoride", 360)}, 100, 25);
+        chem(out, "flibe_molten_salt",     fluidOf("lithium_fluoride"), MOLTEN_INGOT * 4, fluidOf("beryllium_fluoride"), MOLTEN_INGOT * 2, new F[]{fl("flibe_molten_salt", MOLTEN_INGOT * 6)}, 100, 60);
         chem(out, "sulfur_dioxide",        fluidOf("sulfur"), MOLTEN_INGOT / 2, fluidOf("liquid_oxygen"), 500, new F[]{fl("sulfur_dioxide", 500)}, 100, 25);
         chem(out, "sulfur_trioxide",       fluidOf("sulfur_dioxide"), 500, fluidOf("liquid_oxygen"), 250, new F[]{fl("sulfur_trioxide", 500)}, 100, 25);
         chem(out, "sulfuric_acid",         fluidOf("sulfur_trioxide"), 250, Fluids.WATER, 250, new F[]{fl("sulfuric_acid", 250)}, 100, 25);

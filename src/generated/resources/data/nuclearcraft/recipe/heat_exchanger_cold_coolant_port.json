@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_heat_exchanger",
+  "key": {
+    "B": {
+      "item": "minecraft:cauldron"
+    },
+    "S": {
+      "tag": "c:ingots/hsla_steel"
+    },
+    "T": {
+      "tag": "c:ingots/zinc"
+    }
+  },
+  "pattern": [
+    "TST",
+    "SBS",
+    "TST"
+  ],
+  "result": {
+    "count": 2,
+    "id": "nuclearcraft:heat_exchanger_cold_coolant_port"
+  }
+}

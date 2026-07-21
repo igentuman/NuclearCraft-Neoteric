@@ -46,6 +46,8 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
+import static igentuman.nc.config.Common.DEBUG_LOGGING;
+
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 /** Mod entrypoint: bootstraps registries, entries, worldgen, capabilities, network payloads and creative tabs. */
 @Mod(NuclearCraft.MODID)
@@ -298,5 +300,11 @@ public class NuclearCraft {
 
     public static ResourceLocation rlFromString(String name) {
         return ResourceLocation.tryParse(name);
+    }
+
+    public static void debugLog(String message) {
+        if (DEBUG_LOGGING.get()) {
+            NuclearCraft.LOGGER.debug(message);
+        }
     }
 }

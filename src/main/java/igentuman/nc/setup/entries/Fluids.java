@@ -53,5 +53,11 @@ public class Fluids extends ModEntries {
         coolant("subliquid_matter", 0x50C90076);
 
         liquid("technical_water", 0x902F43F4, 310);
+
+        liquid("fluorite_water", 0x508AB492, 300);
+        liquid("lithium_fluoride", 0x50B37AC4, 300);
+        liquid("beryllium_fluoride", 0x50B37AC4, 300);
+        liquid("flibe_molten_salt", 0x90FFD0A3, 400);
+        liquid("flibe_hot_molten_salt", 0xFFB5B5B5, 800);
     }
 }

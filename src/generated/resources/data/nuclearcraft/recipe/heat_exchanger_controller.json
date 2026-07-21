@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_heat_exchanger",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "item": "nuclearcraft:heat_exchanger_casing"
+    },
+    "G": {
+      "item": "nuclearcraft:basic_electric_circuit"
+    }
+  },
+  "pattern": [
+    "GCG",
+    "CBC",
+    "GCG"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:heat_exchanger_controller"
+  }
+}

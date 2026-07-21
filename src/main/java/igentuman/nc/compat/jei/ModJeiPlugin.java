@@ -56,6 +56,7 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new MultiblockExampleCategory(guiHelper));
         registration.addRecipeCategories(new FissionFuelRecipeCategory(guiHelper));
         registration.addRecipeCategories(new BoilingRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new HeatExchangerRecipeCategory(guiHelper));
         registration.addRecipeCategories(new NuclearBlastRecipeCategory(guiHelper));
     }
 
@@ -71,6 +72,10 @@ public class ModJeiPlugin implements IModPlugin {
             ItemStack stack = new ItemStack(controller.item().get());
             registration.addRecipeCatalyst(stack, FissionFuelRecipeCategory.TYPE);
             registration.addRecipeCatalyst(stack, BoilingRecipeCategory.TYPE);
+        }
+        ModEntry hxController = ModEntries.get("heat_exchanger_controller");
+        if (hxController != null && hxController.hasItem()) {
+            registration.addRecipeCatalyst(new ItemStack(hxController.item().get()), HeatExchangerRecipeCategory.TYPE);
         }
     }
 
@@ -121,6 +126,9 @@ public class ModJeiPlugin implements IModPlugin {
                         .stream().map(RecipeHolder::value).toList());
         registration.addRecipes(BoilingRecipeCategory.TYPE,
                 recipeManager.getAllRecipesFor(FissionRecipes.BOILING_TYPE.get())
+                        .stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(HeatExchangerRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(igentuman.nc.recipe.heat_exchanger.HeatExchangerRecipes.HX_TYPE.get())
                         .stream().map(RecipeHolder::value).toList());
         registration.addRecipes(NuclearBlastRecipeCategory.TYPE,
                 recipeManager.getAllRecipesFor(igentuman.nc.recipe.bomb.NcBlastRecipes.TYPE.get())

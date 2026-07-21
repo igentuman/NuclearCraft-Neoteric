@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-20T20:16:49.833033258	Loot Tables
+// 1.21.1	2026-07-21T12:33:37.236697826	Loot Tables
 a04ceb1e40d590051f8ba1b14dbd606dda79b8b8 data/nuclearcraft/loot_table/blocks/active_cryotheum_heat_sink.json
 5c6ee279cf9632c3dd659bcf92277bc2e35f1df0 data/nuclearcraft/loot_table/blocks/active_enderium_heat_sink.json
 960cbf3bce7ade8bd0acd3f15bad425219aabc0d data/nuclearcraft/loot_table/blocks/active_liquid_helium_heat_sink.json
@@ -88,6 +88,12 @@ e460f4415001db184928c94ee42d5fdd0811d080 data/nuclearcraft/loot_table/blocks/glo
 9b122b4738107b166e57773aaa8a372cda74a1f4 data/nuclearcraft/loot_table/blocks/glowstone_heat_sink.json
 fd601d02b2f1d11a76ac9364fa18933f388427e9 data/nuclearcraft/loot_table/blocks/gold_heat_sink.json
 60b2366335573794b9f0dcdbb267db660c5e3ccc data/nuclearcraft/loot_table/blocks/graphite_block.json
+d621bae8eccd542b1f895d0ac65b1ce356dd671f data/nuclearcraft/loot_table/blocks/heat_exchanger.json
+142e247be490d7477ecdacb27ea416ff7c14693e data/nuclearcraft/loot_table/blocks/heat_exchanger_casing.json
+208b7e7dc704c887266767122b5dfd61a1c00c7d data/nuclearcraft/loot_table/blocks/heat_exchanger_cold_coolant_port.json
+5355e45729a206af1ce86da0a37111422c32b291 data/nuclearcraft/loot_table/blocks/heat_exchanger_controller.json
+e3c15df592bc6c82608bae9aabb7a391ff3fb5e5 data/nuclearcraft/loot_table/blocks/heat_exchanger_hot_coolant_port.json
+b9d2388fe5e1ddf8bb71588dfa85b225d1ce8de0 data/nuclearcraft/loot_table/blocks/heat_exchanger_radiator.json
 cc9bd66b3fa97c6666e591cbf58727587eb492c1 data/nuclearcraft/loot_table/blocks/ingot_former.json
 77e787b2ccc330d5e32fd8b671e77c5a85dd271a data/nuclearcraft/loot_table/blocks/iron_heat_sink.json
 9377ee81673056f8aad123b5afd77cc233cacbe2 data/nuclearcraft/loot_table/blocks/irradiator.json

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_heat_exchanger",
+  "key": {
+    "L": {
+      "item": "nuclearcraft:chassis"
+    },
+    "S": {
+      "tag": "c:plates/hsla_steel"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SLS",
+    "SSS"
+  ],
+  "result": {
+    "count": 4,
+    "id": "nuclearcraft:heat_exchanger_casing"
+  }
+}

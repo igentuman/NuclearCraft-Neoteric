@@ -96,6 +96,7 @@ public class VanillaRecipes {
         storageBlocks();
         energyBlocks();
         turbineBlocks();
+        hxBlocks();
         bomb();
 
 /*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, RESONITE_CRYSTAL.get())
@@ -541,62 +542,73 @@ public class VanillaRecipes {
 
     }
 
-/*    private static void heatExchangerBlocks() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger_casing").get(), 4)
+    private static void hxBlocks() {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_casing").item(), 4)
                 .pattern("SSS")
                 .pattern("SLS")
                 .pattern("SSS")
-                .define('S', plateTag(Materials.hsla_steel))
+                .define('S', plateTag("hsla_steel"))
                 .define('L', ModEntries.get("chassis").item())
                 .group(MODID+"_heat_exchanger")
                 .unlockedBy("item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger_controller").get(), 1)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_controller").item(), 1)
                 .pattern("GCG")
                 .pattern("CBC")
                 .pattern("GCG")
-                .define('C', HX_BLOCKS.get("heat_exchanger_casing").get())
-                .define('G', NC_PARTS.get("basic_electric_circuit").get())
+                .define('C', ModEntries.get("heat_exchanger_casing").item())
+                .define('G', ModEntries.get("basic_electric_circuit").item())
                 .define('B', BUCKET)
                 .group(MODID+"_heat_exchanger")
-                .unlockedBy("item", has(HX_BLOCKS.get("heat_exchanger_casing").get()))
+                .unlockedBy("item", has(ModEntries.get("heat_exchanger_casing").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger_radiator").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger").item(), 1)
+                .pattern("LPL")
+                .pattern("PMP")
+                .pattern("LPL")
+                .define('L', plateTag("thermoconducting"))
+                .define('P', plateTag("copper"))
+                .define('M', ModEntries.get("chassis").item())
+                .group(MODID+"_heat_exchanger")
+                .unlockedBy("item", has(ModEntries.get("chassis").item()))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_radiator").item(), 2)
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("TTT")
-                .define('T', ingotTag(Materials.copper))
-                .define('A', plateTag(Materials.aluminum))
+                .define('T', ingotTag("copper"))
+                .define('A', plateTag("aluminum"))
                 .group(MODID+"_heat_exchanger")
-                .unlockedBy("item", has(HX_BLOCKS.get("heat_exchanger_casing").get()))
+                .unlockedBy("item", has(ModEntries.get("heat_exchanger_casing").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger_hot_coolant_port").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_hot_coolant_port").item(), 2)
                 .pattern("TST")
                 .pattern("SBS")
                 .pattern("TST")
-                .define('S', ingotTag(Materials.hsla_steel))
-                .define('T', ingotTag(Materials.gold))
+                .define('S', ingotTag("hsla_steel"))
+                .define('T', ingotTag("gold"))
                 .define('B', CAULDRON)
                 .group(MODID+"_heat_exchanger")
-                .unlockedBy("item", has(HX_BLOCKS.get("heat_exchanger_casing").get()))
+                .unlockedBy("item", has(ModEntries.get("heat_exchanger_casing").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger_cold_coolant_port").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_cold_coolant_port").item(), 2)
                 .pattern("TST")
                 .pattern("SBS")
                 .pattern("TST")
-                .define('S', ingotTag(Materials.hsla_steel))
-                .define('T', ingotTag(Materials.zinc))
+                .define('S', ingotTag("hsla_steel"))
+                .define('T', ingotTag("zinc"))
                 .define('B', CAULDRON)
                 .group(MODID+"_heat_exchanger")
-                .unlockedBy("item", has(HX_BLOCKS.get("heat_exchanger_casing").get()))
+                .unlockedBy("item", has(ModEntries.get("heat_exchanger_casing").item()))
                 .save(recipeOutput);
     }
 
-    private static void solarPanels() {
+/*    private static void solarPanels() {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("solar_panel/basic").get())
                 .pattern("LQL")
                 .pattern("PLP")

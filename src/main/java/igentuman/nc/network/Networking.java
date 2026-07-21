@@ -32,6 +32,11 @@ public class Networking {
                 PacketFissionToggleMode::handle
         );
         registrar.playToServer(
+                PacketHeatExchangerToggleRadiators.TYPE,
+                PacketHeatExchangerToggleRadiators.STREAM_CODEC,
+                PacketHeatExchangerToggleRadiators::handle
+        );
+        registrar.playToServer(
                 PacketFusionAmplificationAdjust.TYPE,
                 PacketFusionAmplificationAdjust.STREAM_CODEC,
                 PacketFusionAmplificationAdjust::handle

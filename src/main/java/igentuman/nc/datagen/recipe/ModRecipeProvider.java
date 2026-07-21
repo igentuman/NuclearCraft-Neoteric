@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
+import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -35,6 +36,7 @@ import static igentuman.nc.datagen.recipe.processors.FluidEnricherRecipes.fluidE
 import static igentuman.nc.datagen.recipe.processors.FluidInfuserRecipes.fluidInfuser;
 import static igentuman.nc.datagen.recipe.processors.FuelReprocessorRecipes.fuelReprocessor;
 import static igentuman.nc.datagen.recipe.processors.GasScrubberRecipes.gasScrubber;
+import static igentuman.nc.datagen.recipe.processors.HeatExchangerRecipes.heatExchanger;
 import static igentuman.nc.datagen.recipe.processors.IngotFormerRecipes.ingotFormer;
 import static igentuman.nc.datagen.recipe.processors.IrradiatorRecipes.irradiator;
 import static igentuman.nc.datagen.recipe.processors.IsotopeSeparatorRecipes.isotopeSeparator;
@@ -61,7 +63,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     }
 
     @Override
-    public void buildRecipes(RecipeOutput recipeOutput) {
+    public void buildRecipes(@NonNull RecipeOutput recipeOutput) {
         craftingRecipes(recipeOutput);
         manufactory(recipeOutput);
         alloySmelter(recipeOutput);
@@ -90,6 +92,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         irradiator(recipeOutput);
         fusion(recipeOutput);
         turbine(recipeOutput);
+        heatExchanger(recipeOutput);
         KugelblitzChamberRecipes.generate(recipeOutput);
         NuclearBlastRecipes.nuclearBlast(recipeOutput);
     }

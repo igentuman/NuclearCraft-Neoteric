@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 60,
+  "fluid_inputs": [
+    {
+      "amount": 360,
+      "fluid": "nuclearcraft:lithium_fluoride"
+    },
+    {
+      "amount": 180,
+      "fluid": "nuclearcraft:beryllium_fluoride"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 540,
+      "fluid": "nuclearcraft:flibe_molten_salt"
+    }
+  ],
+  "process_time": 100
+}

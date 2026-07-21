@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "nuclearcraft:heat_exchanger_controller"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "nuclearcraft:blocks/heat_exchanger_controller"
+}

@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:fluorite_water"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:fluorite_dust"
+    }
+  ],
+  "process_time": 200
+}

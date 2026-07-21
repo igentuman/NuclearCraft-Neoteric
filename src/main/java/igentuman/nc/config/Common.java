@@ -9,6 +9,7 @@ public class Common {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> MOD_TAG_PRIORITY;
+    public static final ModConfigSpec.ConfigValue<Boolean> DEBUG_LOGGING;
 
     public static final ModConfigSpec SPEC;
 
@@ -18,6 +19,13 @@ public class Common {
                 .comment("Mod id priority for resolving tag-based recipe outputs.",
                         "Earlier entries win; namespaces not listed rank last (tiebreak = tag order).")
                 .defineList("mod_tag_priority", List.of("minecraft"), o -> o instanceof String);
+        BUILDER.pop();
+
+        BUILDER.push("misc");
+        DEBUG_LOGGING = BUILDER
+                .comment("Debug logging output.",
+                        "Enable in case of issues for investigation, otherwise might reduce performance.")
+                .define("debug_logging", false);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

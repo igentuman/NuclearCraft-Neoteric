@@ -33,6 +33,15 @@ public class Multiblocks {
     public static final ModConfigSpec.IntValue TURBINE_BLADE_FLOW;
     public static final ModConfigSpec.DoubleValue TURBINE_ENERGY_GEN;
 
+    public static final ModConfigSpec.IntValue HX_MIN_SIZE;
+    public static final ModConfigSpec.IntValue HX_MAX_SIZE;
+    public static final ModConfigSpec.IntValue HX_ENERGY_PER_BLOCK;
+    public static final ModConfigSpec.DoubleValue HX_THROUGHPUT_PER_BLOCK;
+    public static final ModConfigSpec.IntValue HX_ENERGY_CAPACITY;
+    public static final ModConfigSpec.IntValue HX_FLUID_CAPACITY_PER_BLOCK;
+    public static final ModConfigSpec.IntValue HX_RADIATOR_COOLING;
+    public static final ModConfigSpec.IntValue HX_HEAT_CAPACITY_PER_BLOCK;
+
     public static final ModConfigSpec SPEC;
 
     public static int fissionMinSize = 3;
@@ -61,6 +70,15 @@ public class Multiblocks {
     public static int turbineMaxSize = 17;
     public static int turbineBladeFlow = 2000;
     public static double turbineEnergyGen = 10.0;
+
+    public static int hxMinSize = 5;
+    public static int hxMaxSize = 15;
+    public static int hxEnergyPerBlock = 200;
+    public static double hxThroughputPerBlock = 50000.0;
+    public static int hxEnergyCapacity = 1_000_000;
+    public static int hxFluidCapacityPerBlock = 100_000;
+    public static int hxRadiatorCooling = 1_000_000;
+    public static int hxHeatCapacityPerBlock = 10_000_000;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -129,6 +147,25 @@ public class Multiblocks {
                 .defineInRange("energy_gen", 10.0, 1.0, 1_000_000.0);
         builder.pop();
 
+        builder.push("heat_exchanger");
+        HX_MIN_SIZE = builder.comment("Minimum heat exchanger edge length.")
+                .defineInRange("min_size", 5, 3, 25);
+        HX_MAX_SIZE = builder.comment("Maximum heat exchanger edge length.")
+                .defineInRange("max_size", 15, 5, 25);
+        HX_ENERGY_PER_BLOCK = builder.comment("Standby FE/t consumed per interior heat exchanger block while powered by redstone.")
+                .defineInRange("energy_per_block", 200, 0, 1_000_000);
+        HX_THROUGHPUT_PER_BLOCK = builder.comment("Recipe operation units per server tick, per interior heat exchanger block.")
+                .defineInRange("throughput_per_block", 50000.0, 0.01, 100000.0);
+        HX_ENERGY_CAPACITY = builder.comment("Internal energy buffer (FE).")
+                .defineInRange("energy_capacity", 1_000_000, 0, Integer.MAX_VALUE);
+        HX_FLUID_CAPACITY_PER_BLOCK = builder.comment("Fluid tank capacity (mB) per interior heat exchanger block, for each tank.")
+                .defineInRange("fluid_capacity_per_block", 100_000, 1000, 1_000_000);
+        HX_RADIATOR_COOLING = builder.comment("Heat removed from the buffer per tick (H/t) per radiator block. Passive: applies whenever formed.")
+                .defineInRange("radiator_cooling", 1_000_000, 0, Integer.MAX_VALUE);
+        HX_HEAT_CAPACITY_PER_BLOCK = builder.comment("Heat buffer capacity per interior heat exchanger block.")
+                .defineInRange("heat_capacity_per_block", 10_000_000, 1, Integer.MAX_VALUE);
+        builder.pop();
+
         SPEC = builder.build();
     }
 
@@ -158,5 +195,13 @@ public class Multiblocks {
         turbineMaxSize = TURBINE_MAX_SIZE.get();
         turbineBladeFlow = TURBINE_BLADE_FLOW.get();
         turbineEnergyGen = TURBINE_ENERGY_GEN.get();
+        hxMinSize = HX_MIN_SIZE.get();
+        hxMaxSize = HX_MAX_SIZE.get();
+        hxEnergyPerBlock = HX_ENERGY_PER_BLOCK.get();
+        hxThroughputPerBlock = HX_THROUGHPUT_PER_BLOCK.get();
+        hxEnergyCapacity = HX_ENERGY_CAPACITY.get();
+        hxFluidCapacityPerBlock = HX_FLUID_CAPACITY_PER_BLOCK.get();
+        hxRadiatorCooling = HX_RADIATOR_COOLING.get();
+        hxHeatCapacityPerBlock = HX_HEAT_CAPACITY_PER_BLOCK.get();
     }
 }

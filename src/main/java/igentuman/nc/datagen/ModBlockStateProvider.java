@@ -81,6 +81,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     fusionBlock(entry.block(), path);
                 } else if (isTurbineBlock(path)) {
                     turbineBlock(entry.block(), path);
+                } else if (isHeatExchangerBlock(path)) {
+                    heatExchangerBlock(entry.block(), path);
                 } else if (entry.block().get() instanceof EnergyBlock) {
                     energyBlock(entry.block(), path);
                 } else if (entry.block().get() instanceof UniversalProcessorBlock) {
@@ -360,6 +362,57 @@ public class ModBlockStateProvider extends BlockStateProvider {
         }
         simpleBlock(block, model);
         itemModels().getBuilder("item/" + path).parent(model);
+    }
+
+    private boolean isHeatExchangerBlock(String path) {
+        return path.equals("heat_exchanger") || path.startsWith("heat_exchanger_");
+    }
+
+    private void heatExchangerBlock(DeferredBlock<Block> deferredBlock, String path) {
+        Block block = deferredBlock.get();
+        switch (path) {
+            case "heat_exchanger_controller" -> {
+                ModelFile model = models().orientableWithBottom("heat_exchanger_controller",
+                        rl("block/heat_exchanger/controller/side"),
+                        rl("block/heat_exchanger/controller/front"),
+                        rl("block/heat_exchanger/controller/bottom"),
+                        rl("block/heat_exchanger/controller/top"));
+                horizontalBlock(block, model);
+                itemModels().getBuilder("item/heat_exchanger_controller").parent(model);
+                return;
+            }
+            case "heat_exchanger_hot_coolant_port" -> {
+                ModelFile model = models().cubeAll("heat_exchanger_hot_coolant_port",
+                        rl("block/heat_exchanger/port/heat_exchanger_hot_coolant_port"));
+                simpleBlock(block, model);
+                itemModels().getBuilder("item/heat_exchanger_hot_coolant_port").parent(model);
+                return;
+            }
+            case "heat_exchanger_cold_coolant_port" -> {
+                ModelFile model = models().cubeAll("heat_exchanger_cold_coolant_port",
+                        rl("block/heat_exchanger/port/heat_exchanger_cold_coolant_port"));
+                simpleBlock(block, model);
+                itemModels().getBuilder("item/heat_exchanger_cold_coolant_port").parent(model);
+                return;
+            }
+            case "heat_exchanger_radiator" -> {
+                ModelFile model = models().cubeAll("heat_exchanger_radiator", rl("block/heat_exchanger/radiator"));
+                simpleBlock(block, model);
+                itemModels().getBuilder("item/heat_exchanger_radiator").parent(model);
+                return;
+            }
+            case "heat_exchanger_casing" -> {
+                ModelFile model = models().cubeAll("heat_exchanger_casing", rl("block/heat_exchanger/casing"));
+                simpleBlock(block, model);
+                itemModels().getBuilder("item/heat_exchanger_casing").parent(model);
+                return;
+            }
+            default -> {
+                ModelFile model = models().cubeAll("heat_exchanger", rl("block/heat_exchanger/casing_ctm"));
+                simpleBlock(block, model);
+                itemModels().getBuilder("item/heat_exchanger").parent(model);
+            }
+        }
     }
 
     private void explBlock(DeferredBlock<Block> deferredBlock) {

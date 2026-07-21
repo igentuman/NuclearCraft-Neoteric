@@ -14,17 +14,30 @@ import java.util.Map;
 /** Evaluates a heat sink's neighbor placement rules against a formed fission structure to determine validity. */
 public final class HeatSinkValidator {
 
+    //i don't need this for now
+    private static boolean debugLogging = false;
+
     private HeatSinkValidator() {}
 
     private static final Direction[] HORIZONTAL = {
             Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST
     };
 
+    public static void debugLog(String message, Object... args) {
+        if (!debugLogging) return;
+        for (Object arg : args) {
+            int i = message.indexOf("{}");
+            if (i < 0) break;
+            message = message.substring(0, i) + arg + message.substring(i + 2);
+        }
+        NuclearCraft.debugLog(message);
+    }
+
     public static boolean isValid(HeatSinkDef def, Level level, BlockPos pos, FissionReactorCache fc) {
         Map<String[], List<Block>> conditions = def.getValidator().blocks();
-        NuclearCraft.LOGGER.debug("[HeatSink] validate start name={} pos={} conditions={}", def.name, pos, conditions.size());
+        debugLog("[HeatSink] validate start name={} pos={} conditions={}", def.name, pos, conditions.size());
         if (conditions.isEmpty()) {
-            NuclearCraft.LOGGER.debug("[HeatSink] validate OK name={} pos={} (no conditions)", def.name, pos);
+            debugLog("[HeatSink] validate OK name={} pos={} (no conditions)", def.name, pos);
             return true;
         }
         for (Map.Entry<String[], List<Block>> e : conditions.entrySet()) {
@@ -39,14 +52,14 @@ public final class HeatSinkValidator {
                 case "^" -> inCorner(count, blocks, level, pos, fc);
                 default -> isAtLeast(count, blocks, level, pos, fc);
             };
-            NuclearCraft.LOGGER.debug("[HeatSink] cond name={} pos={} func='{}' count={} rule='{}' blocks={} -> {}",
+            debugLog("[HeatSink] cond name={} pos={} func='{}' count={} rule='{}' blocks={} -> {}",
                     def.name, pos, func, count, rule, blocks, ok);
             if (!ok) {
-                NuclearCraft.LOGGER.debug("[HeatSink] validate FAIL name={} pos={} rule='{}'", def.name, pos, rule);
+                debugLog("[HeatSink] validate FAIL name={} pos={} rule='{}'", def.name, pos, rule);
                 return false;
             }
         }
-        NuclearCraft.LOGGER.debug("[HeatSink] validate OK name={} pos={}", def.name, pos);
+        debugLog("[HeatSink] validate OK name={} pos={}", def.name, pos);
         return true;
     }
 
@@ -62,19 +75,19 @@ public final class HeatSinkValidator {
         BlockState bs = fc.getBlockState(level, pos);
         Block b = bs.getBlock();
         if (!blocks.contains(b)) {
-            NuclearCraft.LOGGER.debug("[HeatSink] qualify pos={} block={} -> false (not in list)", pos, b);
+            debugLog("[HeatSink] qualify pos={} block={} -> false (not in list)", pos, b);
             return false;
         }
         long key = pos.asLong();
         if (b instanceof HeatSinkBlock && !fc.validHeatSinks.contains(key)) {
-            NuclearCraft.LOGGER.debug("[HeatSink] qualify pos={} block={} -> false (heat sink not valid this pass)", pos, b);
+            debugLog("[HeatSink] qualify pos={} block={} -> false (heat sink not valid this pass)", pos, b);
             return false;
         }
         if (bs.is(FissionTags.MODERATORS) && !fc.activeModerators.contains(key)) {
-            NuclearCraft.LOGGER.debug("[HeatSink] qualify pos={} block={} -> false (moderator inactive)", pos, b);
+            debugLog("[HeatSink] qualify pos={} block={} -> false (moderator inactive)", pos, b);
             return false;
         }
-        NuclearCraft.LOGGER.debug("[HeatSink] qualify pos={} block={} -> true", pos, b);
+        debugLog("[HeatSink] qualify pos={} block={} -> true", pos, b);
         return true;
     }
 

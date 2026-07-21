@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:fluorite_water"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:fluorite_dust"
+    }
+  ],
+  "process_time": 200
+}

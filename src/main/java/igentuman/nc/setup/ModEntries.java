@@ -9,6 +9,7 @@ import igentuman.nc.multiblock.turbine.BladeDef;
 import igentuman.nc.multiblock.turbine.TurbineCoilDef;
 import igentuman.nc.recipe.fission.FissionRecipes;
 import igentuman.nc.recipe.fusion.FusionRecipes;
+import igentuman.nc.recipe.heat_exchanger.HeatExchangerRecipes;
 import igentuman.nc.recipe.turbine.TurbineRecipes;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.registration.ModEntryBuilder;
@@ -38,6 +39,7 @@ import static igentuman.nc.setup.entries.ParticleChamber.particleChamber;
 import static igentuman.nc.setup.entries.Parts.*;
 import static igentuman.nc.setup.entries.Processors.processors;
 import static igentuman.nc.setup.entries.Storage.storage;
+import static igentuman.nc.setup.entries.HeatExchanger.heatExchanger;
 import static igentuman.nc.setup.entries.Turbine.turbine;
 
 /** Central registry of all mod content entries with the init entry-point and declaration helpers. */
@@ -72,6 +74,8 @@ public class ModEntries {
         kugelblitz();
         TurbineRecipes.init();
         turbine();
+        HeatExchangerRecipes.init();
+        heatExchanger();
         storage();
         energy();
         bomb();

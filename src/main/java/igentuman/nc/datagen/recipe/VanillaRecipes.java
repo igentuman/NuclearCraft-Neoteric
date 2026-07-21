@@ -5,8 +5,10 @@ import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.entries.Processors;
+import igentuman.nc.setup.entries.Turbine;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.*;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -93,6 +95,7 @@ public class VanillaRecipes {
         fuelPellets();
         storageBlocks();
         energyBlocks();
+        turbineBlocks();
         bomb();
 
 /*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, RESONITE_CRYSTAL.get())
@@ -426,118 +429,119 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").get()))
                 .save(recipeOutput);
     }
+*/
 
     private static void turbineBlocks() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_casing").get(), 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_casing").item(), 4)
                 .pattern("SSS")
                 .pattern("SLS")
                 .pattern("SSS")
-                .define('S', plateTag(Materials.hsla_steel))
+                .define('S', plateTag("hsla_steel"))
                 .define('L', ModEntries.get("chassis").item())
                 .group(MODID+"_turbine")
                 .unlockedBy("item", has(ModEntries.get("coil_copper").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_bearing").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_bearing").item(), 2)
                 .pattern("GGG")
                 .pattern("GSG")
                 .pattern("GGG")
-                .define('S', ingotTag(Materials.hsla_steel))
+                .define('S', ingotTag("hsla_steel"))
                 .define('G', ingotTag("gold"))
                 .group(MODID+"_turbine")
-                .unlockedBy("item", has(ingotTag(Materials.hsla_steel)))
+                .unlockedBy("item", has(ingotTag("hsla_steel")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_controller").get(), 1)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_controller").item(), 1)
                 .pattern("GCG")
                 .pattern("CBC")
                 .pattern("GCG")
-                .define('C', TURBINE_BLOCKS.get("turbine_casing").get())
-                .define('G', NC_PARTS.get("basic_electric_circuit").get())
+                .define('C', ModEntries.get("turbine_casing").item())
+                .define('G', ModEntries.get("basic_electric_circuit").item())
                 .define('B', BUCKET)
                 .group(MODID+"_turbine")
-                .unlockedBy("item", has(ingotTag(Materials.hsla_steel)))
+                .unlockedBy("item", has(ingotTag("hsla_steel")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_rotor_shaft").get(), 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_rotor_shaft").item(), 4)
                 .pattern("STS")
                 .pattern("STS")
                 .pattern("STS")
-                .define('S', ingotTag(Materials.hsla_steel))
-                .define('T', ingotTag(Materials.zinc))
+                .define('S', ingotTag("hsla_steel"))
+                .define('T', ingotTag("zinc"))
                 .group(MODID+"_turbine")
-                .unlockedBy("item", has(ingotTag(Materials.hsla_steel)))
+                .unlockedBy("item", has(ingotTag("hsla_steel")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_port").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_port").item(), 2)
                 .pattern("TST")
                 .pattern("SBS")
                 .pattern("TST")
-                .define('S', ingotTag(Materials.hsla_steel))
-                .define('T', ingotTag(Materials.zinc))
+                .define('S', ingotTag("hsla_steel"))
+                .define('T', ingotTag("zinc"))
                 .define('B', CAULDRON)
                 .group(MODID+"_turbine")
-                .unlockedBy("item", has(ingotTag(Materials.hsla_steel)))
+                .unlockedBy("item", has(ingotTag("hsla_steel")))
                 .save(recipeOutput);
 
-        for(String type: coils.keySet()) {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_"+type+"_coil").get(), 1)
+        for(String type: Turbine.COILS) {
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_"+type+"_coil").item(), 1)
                     .pattern("SBS")
                     .pattern("SBS")
                     .pattern("SBS")
-                    .define('S', ingotTag(Materials.stainless_steel))
+                    .define('S', ingotTag("stainless_steel"))
                     .define('B', ingotTag(type))
                     .group(MODID+"_turbine")
-                    .unlockedBy("item", has(ingotTag(Materials.stainless_steel)))
+                    .unlockedBy("item", has(ingotTag("stainless_steel")))
                     .save(recipeOutput);
         }
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_extreme_rotor_blade").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_extreme_rotor_blade").item(), 2)
                 .pattern(" P ")
                 .pattern(" P ")
                 .pattern(" P ")
-                .define('P', plateTag(Materials.extreme))
+                .define('P', plateTag("extreme"))
                 .group(MODID+"_turbine")
-                .unlockedBy("item", has(plateTag(Materials.extreme)))
+                .unlockedBy("item", has(plateTag("extreme")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_steel_rotor_blade").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_steel_rotor_blade").item(), 2)
                 .pattern(" P ")
                 .pattern(" P ")
                 .pattern(" P ")
-                .define('P', plateTag(Materials.steel))
+                .define('P', plateTag("steel"))
                 .group(MODID+"_turbine")
-                .unlockedBy("item", has(plateTag(Materials.steel)))
+                .unlockedBy("item", has(plateTag("steel")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_basic_rotor_blade").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_basic_rotor_blade").item(), 2)
                 .pattern(" P ")
                 .pattern(" P ")
                 .pattern(" P ")
-                .define('P', plateTag(Materials.iron))
+                .define('P', plateTag("iron"))
                 .group(MODID+"_turbine")
-                .unlockedBy("item", has(plateTag(Materials.iron)))
+                .unlockedBy("item", has(plateTag("iron")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_sic_sic_cmc_rotor_blade").get(), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_sic_sic_cmc_rotor_blade").item(), 2)
                 .pattern(" P ")
                 .pattern(" P ")
                 .pattern(" P ")
-                .define('P', plateTag(Materials.sic_sic_cmc))
+                .define('P', plateTag("sic_sic_cmc"))
                 .group(MODID+"_turbine")
-                .unlockedBy("item", has(plateTag(Materials.sic_sic_cmc)))
+                .unlockedBy("item", has(plateTag("sic_sic_cmc")))
                 .save(recipeOutput);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, TURBINE_BLOCKS.get("turbine_glass").get(), 1)
-                .requires(TURBINE_BLOCKS.get("turbine_casing").get())
-                .requires(Tags.Items.GLASS)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModEntries.get("turbine_glass").item(), 1)
+                .requires(ModEntries.get("turbine_casing").item())
+                .requires(Tags.Items.GLASS_BLOCKS)
                 .group(MODID+"_turbine")
-                .unlockedBy("item", has(TURBINE_BLOCKS.get("turbine_casing").get()))
+                .unlockedBy("item", has(ModEntries.get("turbine_casing").item()))
                 .save(recipeOutput);
 
     }
 
-    private static void heatExchangerBlocks() {
+/*    private static void heatExchangerBlocks() {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger_casing").get(), 4)
                 .pattern("SSS")
                 .pattern("SLS")
@@ -1430,5 +1434,9 @@ public class VanillaRecipes {
 
     protected static Criterion<InventoryChangeTrigger.TriggerInstance> has(ItemLike item) {
         return InventoryChangeTrigger.TriggerInstance.hasItems(item);
+    }
+
+    protected static Criterion<InventoryChangeTrigger.TriggerInstance> has(TagKey<Item> tag) {
+        return InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(tag).build());
     }
 }

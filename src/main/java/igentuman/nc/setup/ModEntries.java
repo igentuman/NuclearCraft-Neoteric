@@ -5,8 +5,11 @@ import igentuman.nc.registration.FluidDefinition;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.IsotopeEntry;
+import igentuman.nc.multiblock.turbine.BladeDef;
+import igentuman.nc.multiblock.turbine.TurbineCoilDef;
 import igentuman.nc.recipe.fission.FissionRecipes;
 import igentuman.nc.recipe.fusion.FusionRecipes;
+import igentuman.nc.recipe.turbine.TurbineRecipes;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.registration.ModEntryBuilder;
 import net.minecraft.world.level.block.Block;
@@ -35,6 +38,7 @@ import static igentuman.nc.setup.entries.ParticleChamber.particleChamber;
 import static igentuman.nc.setup.entries.Parts.*;
 import static igentuman.nc.setup.entries.Processors.processors;
 import static igentuman.nc.setup.entries.Storage.storage;
+import static igentuman.nc.setup.entries.Turbine.turbine;
 
 /** Central registry of all mod content entries with the init entry-point and declaration helpers. */
 public class ModEntries {
@@ -43,6 +47,9 @@ public class ModEntries {
     public static final LinkedHashMap<String, FissionFuelEntry> FISSION_FUEL = new LinkedHashMap<>();
     public static final LinkedHashMap<String, HeatSinkEntry> HEAT_SINKS = new LinkedHashMap<>();
     public static List<String> HS_SCHEDULE = new ArrayList<>();
+    public static final LinkedHashMap<String, TurbineCoilDef> TURBINE_COILS = new LinkedHashMap<>();
+    public static List<String> COIL_SCHEDULE = new ArrayList<>();
+    public static final LinkedHashMap<String, BladeDef> TURBINE_BLADES = new LinkedHashMap<>();
     public static BlockBehaviour.Properties COMMON_BLOCK_PROPS = BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f).requiresCorrectToolForDrops();
     public static final int DEFAULT_COLOR = 0xFFFFFFFF;
 
@@ -63,6 +70,8 @@ public class ModEntries {
         fusionReactor();
         particleChamber();
         kugelblitz();
+        TurbineRecipes.init();
+        turbine();
         storage();
         energy();
         bomb();

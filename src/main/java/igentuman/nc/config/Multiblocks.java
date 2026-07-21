@@ -28,6 +28,11 @@ public class Multiblocks {
     public static final ModConfigSpec.DoubleValue KUGELBLITZ_EXPLOSION_RADIUS;
     public static final ModConfigSpec.ConfigValue<Boolean> KUGELBLITZ_BLACKHOLE_SHADER;
 
+    public static final ModConfigSpec.IntValue TURBINE_MIN_SIZE;
+    public static final ModConfigSpec.IntValue TURBINE_MAX_SIZE;
+    public static final ModConfigSpec.IntValue TURBINE_BLADE_FLOW;
+    public static final ModConfigSpec.DoubleValue TURBINE_ENERGY_GEN;
+
     public static final ModConfigSpec SPEC;
 
     public static int fissionMinSize = 3;
@@ -51,6 +56,11 @@ public class Multiblocks {
     public static long kugelblitzExplCharge = 10_240_000_000L;
     public static double kugelblitzExplosionRadius = 10.0;
     public static boolean kugelblitzBlackholeShader = true;
+
+    public static int turbineMinSize = 5;
+    public static int turbineMaxSize = 17;
+    public static int turbineBladeFlow = 2000;
+    public static double turbineEnergyGen = 10.0;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -108,6 +118,17 @@ public class Multiblocks {
                 .define("blackhole_shader", true);
         builder.pop();
 
+        builder.push("turbine");
+        TURBINE_MIN_SIZE = builder.comment("Minimum turbine edge length.")
+                .defineInRange("min_size", 5, 5, 25);
+        TURBINE_MAX_SIZE = builder.comment("Maximum turbine edge length.")
+                .defineInRange("max_size", 17, 5, 25);
+        TURBINE_BLADE_FLOW = builder.comment("Steam flow per blade in mB/t.")
+                .defineInRange("blade_flow", 2000, 100, 1_000_000);
+        TURBINE_ENERGY_GEN = builder.comment("Energy generation multiplier.")
+                .defineInRange("energy_gen", 10.0, 1.0, 1_000_000.0);
+        builder.pop();
+
         SPEC = builder.build();
     }
 
@@ -133,5 +154,9 @@ public class Multiblocks {
         kugelblitzExplCharge = KUGELBLITZ_EXPL_CHARGE.get();
         kugelblitzExplosionRadius = KUGELBLITZ_EXPLOSION_RADIUS.get();
         kugelblitzBlackholeShader = KUGELBLITZ_BLACKHOLE_SHADER.get();
+        turbineMinSize = TURBINE_MIN_SIZE.get();
+        turbineMaxSize = TURBINE_MAX_SIZE.get();
+        turbineBladeFlow = TURBINE_BLADE_FLOW.get();
+        turbineEnergyGen = TURBINE_ENERGY_GEN.get();
     }
 }

@@ -223,6 +223,15 @@ public class GuiFluidRenderer {
         }
     }
 
+    public static void renderTankBevel(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+        int shadow = 0xFF373737;
+        int highlight = 0xFFFFFFFF;
+        guiGraphics.fill(x - 1, y - 1, x + width + 1, y, shadow);
+        guiGraphics.fill(x - 1, y - 1, x, y + height + 1, shadow);
+        guiGraphics.fill(x - 1, y + height, x + width + 1, y + height + 1, highlight);
+        guiGraphics.fill(x + width, y - 1, x + width + 1, y + height + 1, highlight);
+    }
+
     private static void drawTiledSprite(GuiGraphics guiGraphics, int xOffset, int yOffset,
                                         int width, int height, TextureAtlasSprite sprite,
                                         float red, float green, float blue, float alpha) {

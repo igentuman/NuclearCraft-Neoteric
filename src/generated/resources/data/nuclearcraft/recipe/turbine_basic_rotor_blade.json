@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_turbine",
+  "key": {
+    "P": {
+      "tag": "c:plates/iron"
+    }
+  },
+  "pattern": [
+    " P ",
+    " P ",
+    " P "
+  ],
+  "result": {
+    "count": 2,
+    "id": "nuclearcraft:turbine_basic_rotor_blade"
+  }
+}

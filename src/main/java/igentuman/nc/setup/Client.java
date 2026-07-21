@@ -94,6 +94,8 @@ public class Client {
                             event.register(menuType, FusionReactorScreen::new);
                         } else if (entry.name().equals("chamber_terminal")) {
                             event.register(menuType, igentuman.nc.screen.ChamberTerminalScreen::new);
+                        } else if (entry.name().equals("turbine_controller")) {
+                            event.register(menuType, TurbineControllerScreen::new);
                         } else {
                             event.register(menuType, MultiblockControllerScreen::new);
                         }
@@ -154,6 +156,10 @@ public class Client {
                 (BlockEntityType<BlackHoleBE>) (BlockEntityType<?>)
                         ModEntries.get("black_hole").blockEntity().get(),
                 BlackholeRenderer::new);
+        event.registerBlockEntityRenderer(
+                (BlockEntityType<igentuman.nc.block_entity.turbine.TurbineRotorBE>) (BlockEntityType<?>)
+                        ModEntries.get("turbine_rotor_shaft").blockEntity().get(),
+                igentuman.nc.client.render.turbine.TurbineRotorRenderer::new);
         // Empty renderer stub for the primed bomb entity; all visuals are client FX (Phase 7).
         event.registerEntityRenderer(
                 (EntityType<? extends PrimedFissionBombEntity>) (EntityType<?>)

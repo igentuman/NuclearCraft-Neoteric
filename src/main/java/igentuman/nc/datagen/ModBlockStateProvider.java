@@ -15,6 +15,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 import igentuman.nc.block.fission.HeatSinkBlock;
+import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.MaterialFluidType;
@@ -78,6 +79,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     itemModels().getBuilder("item/" + path).parent(proxy);
                 } else if (isFusionBlock(path)) {
                     fusionBlock(entry.block(), path);
+                } else if (isTurbineBlock(path)) {
+                    turbineBlock(entry.block(), path);
                 } else if (entry.block().get() instanceof EnergyBlock) {
                     energyBlock(entry.block(), path);
                 } else if (entry.block().get() instanceof UniversalProcessorBlock) {
@@ -166,6 +169,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private String applySpecialRules(String path) {
         if (path.contains("fission_reactor_")) {
             path = path.replace("fission_reactor_", "fission/");
+            if (path.contains("port")) {
+                path += "/front";
+            }
+        }
+        if (path.contains("turbine_")) {
+            path = path.replace("turbine_", "turbine/");
             if (path.contains("port")) {
                 path += "/front";
             }
@@ -291,6 +300,65 @@ public class ModBlockStateProvider extends BlockStateProvider {
         if (path.equals("fusion_reactor_core")) {
             return; // custom item model shipped in main resources - don't overwrite it
         }
+        itemModels().getBuilder("item/" + path).parent(model);
+    }
+
+
+
+    private boolean isTurbineBlock(String path) {
+        return path.startsWith("turbine_") || path.equals("dummy_turbine_blade");
+    }
+
+    private void turbineBlock(DeferredBlock<Block> deferredBlock, String path) {
+        Block block = deferredBlock.get();
+
+        switch (path) {
+            case "turbine_controller" -> {
+                ModelFile model = models().orientableWithBottom("turbine_controller",
+                        rl("block/turbine/controller/side"),
+                        rl("block/turbine/controller/turbine_controller"),
+                        rl("block/turbine/controller/bottom"),
+                        rl("block/turbine/controller/top"));
+                horizontalBlock(block, model);
+                itemModels().getBuilder("item/turbine_controller").parent(model);
+                return;
+            }
+            case "turbine_port" -> {
+                ModelFile model = models().cubeAll("turbine_port", rl("block/turbine/port/front"));
+                simpleBlock(block, model);
+                itemModels().getBuilder("item/turbine_port").parent(model);
+                return;
+            }
+            case "turbine_rotor_shaft" -> {
+                ModelFile model = models().getExistingFile(rl("block/turbine/turbine_rotor_shaft"));
+                getVariantBuilder(block).forAllStates(state -> {
+                    Direction dir = state.getValue(BlockStateProperties.FACING);
+                    int x = switch (dir) {
+                        case UP -> 270;
+                        case DOWN -> 90;
+                        default -> 0;
+                    };
+                    int y = switch (dir) {
+                        case EAST -> 270;
+                        case SOUTH -> 180;
+                        case WEST -> 90;
+                        default -> 0;
+                    };
+                    return ConfiguredModel.builder().modelFile(model).rotationX(x).rotationY(y).build();
+                });
+                itemModels().getBuilder("item/turbine_rotor_shaft").parent(model);
+                return;
+            }
+            default -> { }
+        }
+
+        boolean glass = path.equals("turbine_glass");
+        ResourceLocation texture = rl("block/turbine/" + path.substring("turbine_".length()));
+        ModelFile model = models().cubeAll(path, texture);
+        if (glass) {
+            ((BlockModelBuilder) model).renderType(ResourceLocation.tryBuild("minecraft", "cutout"));
+        }
+        simpleBlock(block, model);
         itemModels().getBuilder("item/" + path).parent(model);
     }
 

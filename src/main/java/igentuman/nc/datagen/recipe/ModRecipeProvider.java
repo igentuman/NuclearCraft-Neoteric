@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.recipe;
 
+import igentuman.nc.datagen.recipe.processors.KugelblitzChamberRecipes;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
@@ -44,6 +45,7 @@ import static igentuman.nc.datagen.recipe.processors.PumpRecipes.pump;
 import static igentuman.nc.datagen.recipe.processors.RockCrusherRecipes.rockCrusher;
 import static igentuman.nc.datagen.recipe.processors.SteamTurbineRecipes.steamTurbine;
 import static igentuman.nc.datagen.recipe.processors.SubatomicLiquifierRecipes.subatomicLiquifier;
+import static igentuman.nc.datagen.recipe.processors.TurbineRecipes.turbine;
 import static igentuman.nc.datagen.recipe.processors.SupercoolerRecipes.supercooler;
 
 /** Root recipe provider that dispatches to every processor generator and exposes shared recipe helpers. */
@@ -87,7 +89,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         fissionBoiling(recipeOutput);
         irradiator(recipeOutput);
         fusion(recipeOutput);
-        igentuman.nc.datagen.recipe.processors.KugelblitzChamberRecipes.generate(recipeOutput);
+        turbine(recipeOutput);
+        KugelblitzChamberRecipes.generate(recipeOutput);
         NuclearBlastRecipes.nuclearBlast(recipeOutput);
     }
 

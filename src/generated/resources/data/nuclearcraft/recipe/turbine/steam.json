@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:turbine",
+  "input_fluid": {
+    "amount": 10,
+    "fluid": "nuclearcraft:steam"
+  },
+  "output_fluid": {
+    "amount": 10,
+    "fluid": "nuclearcraft:exhaust_steam"
+  },
+  "power_modifier": 0.75
+}

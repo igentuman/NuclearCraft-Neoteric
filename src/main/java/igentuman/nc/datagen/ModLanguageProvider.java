@@ -149,6 +149,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         }
         add("tooltip.nuclearcraft.heat_sink.heat", "Cooling: %s H/t");
         add("tooltip.nuclearcraft.heat_sink.active", "Needs coolant fluid supply into reactor to work.");
+        add("tooltip.nuclearcraft.turbine_coil.efficiency", "Efficiency: %s%%");
         add("tooltip.nuclearcraft.shift", "Hold Shift for placement rule");
         add("heat_sink.placement.rule", "Must be placed %s");
         add("heat_sink.atleast", "next to at least %s %s");
@@ -198,6 +199,15 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.fission.steam_per_tick", "Steam");
         add("screen.nuclearcraft.fission.mode.energy", "Energy");
         add("screen.nuclearcraft.fission.mode.steam", "Steam");
+        add("screen.nuclearcraft.turbine", "Steam Turbine");
+        add("screen.nuclearcraft.turbine.output", "Output");
+        add("screen.nuclearcraft.turbine.real_flow", "Flow");
+        add("screen.nuclearcraft.turbine.max_flow", "Max Flow");
+        add("screen.nuclearcraft.turbine.ratio", "Ratio");
+        add("screen.nuclearcraft.turbine.efficiency", "Efficiency");
+        add("screen.nuclearcraft.turbine.active_coils", "Active Coils");
+        add("screen.nuclearcraft.turbine.blades", "Blades");
+        add("screen.nuclearcraft.turbine.max_output", "Max Output");
         add("message.nuclearcraft.redstone_mode", "Redstone mode: %s");
         add("message.nuclearcraft.redstone_mode.none", "Off");
         add("message.nuclearcraft.redstone_mode.energy", "Energy level");

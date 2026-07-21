@@ -1,0 +1,50 @@
+{
+  "variants": {
+    "facing=down,powered=false": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft",
+      "x": 90
+    },
+    "facing=down,powered=true": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft",
+      "x": 90
+    },
+    "facing=east,powered=false": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft",
+      "y": 270
+    },
+    "facing=east,powered=true": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft",
+      "y": 270
+    },
+    "facing=north,powered=false": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft"
+    },
+    "facing=north,powered=true": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft"
+    },
+    "facing=south,powered=false": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft",
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft",
+      "y": 180
+    },
+    "facing=up,powered=false": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft",
+      "x": 270
+    },
+    "facing=up,powered=true": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft",
+      "x": 270
+    },
+    "facing=west,powered=false": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft",
+      "y": 90
+    },
+    "facing=west,powered=true": {
+      "model": "nuclearcraft:block/turbine/turbine_rotor_shaft",
+      "y": 90
+    }
+  }
+}

@@ -331,7 +331,11 @@ public class ModEntryBuilder {
     }
 
     public static ModEntry addMultiblockBlock(String name, BlockBehaviour.Properties props) {
-        DeferredBlock<Block> block = BLOCKS.register(name, () -> new MultiblockBlock(props));
+        return addMultiblockBlock(name, () -> new MultiblockBlock(props));
+    }
+
+    public static ModEntry addMultiblockBlock(String name, Supplier<? extends Block> blockSupplier) {
+        DeferredBlock<Block> block = BLOCKS.register(name, blockSupplier);
         DeferredItem<Item> item = ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
         ModEntry entry = new ModEntry(name, block, item, null, null, false, null, null, null, null, null, null, null, 0, null, null, Set.of(), Set.of());
         ENTRIES.put(name, entry);

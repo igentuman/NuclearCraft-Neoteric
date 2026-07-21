@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "nuclearcraft:block/turbine/controller/bottom",
+    "front": "nuclearcraft:block/turbine/controller/turbine_controller",
+    "side": "nuclearcraft:block/turbine/controller/side",
+    "top": "nuclearcraft:block/turbine/controller/top"
+  }
+}

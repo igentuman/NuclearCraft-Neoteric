@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "nuclearcraft:block/turbine/dummy_turbine_blade",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "nuclearcraft:block/turbine/dummy_turbine_blade",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/turbine/dummy_turbine_blade"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/turbine/dummy_turbine_blade",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "nuclearcraft:block/turbine/dummy_turbine_blade",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/turbine/dummy_turbine_blade",
+      "y": 90
+    }
+  }
+}

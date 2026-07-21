@@ -97,6 +97,7 @@ public class VanillaRecipes {
         energyBlocks();
         turbineBlocks();
         hxBlocks();
+        msrBlocks();
         bomb();
 
 /*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, RESONITE_CRYSTAL.get())
@@ -392,45 +393,43 @@ public class VanillaRecipes {
                 .save(recipeOutput, rl("pu_239_bomb"));
     }
 
-/*    private static void msrBlocks() {
-        // MSR Controller
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("msr_controller").get())
+    private static void msrBlocks() {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("msr_controller").block())
                 .pattern("LPL")
                 .pattern("TDT")
                 .pattern("LZL")
                 .define('Z', CAULDRON)
                 .define('P', ModEntries.get("plate_advanced").item())
-                .define('D', NCProcessors.PROCESSORS.get(Processors.DECAY_HASTENER).get())
-                .define('T', NCProcessors.PROCESSORS.get(Processors.CHEMICAL_REACTOR).get())
-                .define('L', ModEntries.get("fission_reactor_casing").get())
+                .define('D', ModEntries.get(Processors.DECAY_HASTENER).block())
+                .define('T', ModEntries.get(Processors.CHEMICAL_REACTOR).block())
+                .define('L', ModEntries.get("fission_reactor_casing").block())
                 .group(MODID+"_msr")
                 .unlockedBy("item", has(ModEntries.get("plate_advanced").item()))
-                .save(consumer, rl("msr_controller"));
+                .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("msr_fuel_cell").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("msr_fuel_cell").block())
                 .pattern("TGT")
                 .pattern("GBG")
                 .pattern("TGT")
-                .define('G', Tags.Items.GLASS)
+                .define('G', Tags.Items.GLASS_BLOCKS)
                 .define('B', BUCKET)
                 .define('T', ingotTag("tough_alloy"))
-                .group(MODID+"_fission")
-                .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").get()))
+                .group(MODID+"_msr")
+                .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("msr_port").get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("msr_port").block())
                 .pattern("LPL")
                 .pattern("MTM")
                 .pattern("LPL")
                 .define('M', ModEntries.get("servo").item())
                 .define('P', BUCKET)
-                .define('T', ModEntries.get("fission_reactor_casing").get())
+                .define('T', ModEntries.get("fission_reactor_casing").block())
                 .define('L', plateTag("tough_alloy"))
-                .group(MODID+"_fission")
-                .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").get()))
+                .group(MODID+"_msr")
+                .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").block()))
                 .save(recipeOutput);
     }
-*/
 
     private static void turbineBlocks() {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_casing").item(), 4)

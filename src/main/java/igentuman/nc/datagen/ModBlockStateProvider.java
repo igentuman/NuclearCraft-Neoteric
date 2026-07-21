@@ -83,6 +83,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     turbineBlock(entry.block(), path);
                 } else if (isHeatExchangerBlock(path)) {
                     heatExchangerBlock(entry.block(), path);
+                } else if (isMsrBlock(path)) {
+                    msrBlock(entry.block(), path);
                 } else if (entry.block().get() instanceof EnergyBlock) {
                     energyBlock(entry.block(), path);
                 } else if (entry.block().get() instanceof UniversalProcessorBlock) {
@@ -411,6 +413,36 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 ModelFile model = models().cubeAll("heat_exchanger", rl("block/heat_exchanger/casing_ctm"));
                 simpleBlock(block, model);
                 itemModels().getBuilder("item/heat_exchanger").parent(model);
+            }
+        }
+    }
+
+    private boolean isMsrBlock(String path) {
+        return path.equals("msr_controller") || path.equals("msr_fuel_cell") || path.equals("msr_port");
+    }
+
+    private void msrBlock(DeferredBlock<Block> deferredBlock, String path) {
+        Block block = deferredBlock.get();
+        switch (path) {
+            case "msr_controller" -> {
+                ModelFile model = models().orientableWithBottom("msr_controller",
+                        rl("block/fission/msr_controller/side"),
+                        rl("block/fission/controller/msr_controller"),
+                        rl("block/fission/msr_controller/bottom"),
+                        rl("block/fission/msr_controller/top"));
+                horizontalBlock(block, model);
+                itemModels().getBuilder("item/msr_controller").parent(model);
+            }
+            case "msr_fuel_cell" -> {
+                ModelFile model = models().cubeAll("msr_fuel_cell", rl("block/fission/msr_fuel_cell"));
+                ((BlockModelBuilder) model).renderType(ResourceLocation.tryBuild("minecraft", "cutout"));
+                simpleBlock(block, model);
+                itemModels().getBuilder("item/msr_fuel_cell").parent(model);
+            }
+            case "msr_port" -> {
+                ModelFile model = models().cubeAll("msr_port", rl("block/fission/port/front"));
+                simpleBlock(block, model);
+                itemModels().getBuilder("item/msr_port").parent(model);
             }
         }
     }

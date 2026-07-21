@@ -47,6 +47,16 @@ public class Networking {
                 PacketKugelblitzSliderAdjust::handle
         );
         registrar.playToServer(
+                PacketMsrRateAdjust.TYPE,
+                PacketMsrRateAdjust.STREAM_CODEC,
+                PacketMsrRateAdjust::handle
+        );
+        registrar.playToServer(
+                PacketMsrVoidFuel.TYPE,
+                PacketMsrVoidFuel.STREAM_CODEC,
+                PacketMsrVoidFuel::handle
+        );
+        registrar.playToServer(
                 PacketExplBurst.TYPE,
                 PacketExplBurst.STREAM_CODEC,
                 PacketExplBurst::handle

@@ -98,6 +98,8 @@ public class Client {
                             event.register(menuType, TurbineControllerScreen::new);
                         } else if (entry.name().equals("heat_exchanger_controller")) {
                             event.register(menuType, HeatExchangerControllerScreen::new);
+                        } else if (entry.name().equals("msr_controller")) {
+                            event.register(menuType, MsrControllerScreen::new);
                         } else {
                             event.register(menuType, MultiblockControllerScreen::new);
                         }

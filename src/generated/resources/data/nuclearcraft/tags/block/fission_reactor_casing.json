@@ -4,6 +4,8 @@
     "nuclearcraft:fission_reactor_casing",
     "nuclearcraft:fission_reactor_glass",
     "nuclearcraft:fission_reactor_port",
-    "nuclearcraft:irradiator"
+    "nuclearcraft:irradiator",
+    "nuclearcraft:msr_controller",
+    "nuclearcraft:msr_port"
   ]
 }

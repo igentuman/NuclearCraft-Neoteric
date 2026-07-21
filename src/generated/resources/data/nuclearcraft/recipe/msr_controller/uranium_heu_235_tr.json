@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:msr_controller",
+  "energy_per_tick": 0,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:fuel_uranium_heu_235_tr"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:depleted_fuel_uranium_heu_235_tr"
+    }
+  ],
+  "process_time": 200
+}

@@ -42,6 +42,11 @@ public class Multiblocks {
     public static final ModConfigSpec.IntValue HX_RADIATOR_COOLING;
     public static final ModConfigSpec.IntValue HX_HEAT_CAPACITY_PER_BLOCK;
 
+    public static final ModConfigSpec.IntValue MSR_MIN_SIZE;
+    public static final ModConfigSpec.IntValue MSR_MAX_SIZE;
+    public static final ModConfigSpec.IntValue MSR_PEBBLES_PER_FUEL_CELL;
+    public static final ModConfigSpec.IntValue MSR_VOLUME_PER_FUEL_CELL;
+
     public static final ModConfigSpec SPEC;
 
     public static int fissionMinSize = 3;
@@ -79,6 +84,11 @@ public class Multiblocks {
     public static int hxFluidCapacityPerBlock = 100_000;
     public static int hxRadiatorCooling = 1_000_000;
     public static int hxHeatCapacityPerBlock = 10_000_000;
+
+    public static int msrMinSize = 5;
+    public static int msrMaxSize = 11;
+    public static int msrPebblesPerFuelCell = 10;
+    public static int msrVolumePerFuelCell = 10000;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -166,6 +176,17 @@ public class Multiblocks {
                 .defineInRange("heat_capacity_per_block", 10_000_000, 1, Integer.MAX_VALUE);
         builder.pop();
 
+        builder.push("msr_reactor");
+        MSR_MIN_SIZE = builder.comment("Minimum MSR edge length (cuboid casing).")
+                .defineInRange("min_size", 5, 3, 24);
+        MSR_MAX_SIZE = builder.comment("Maximum MSR edge length (cuboid casing).")
+                .defineInRange("max_size", 11, 5, 32);
+        MSR_PEBBLES_PER_FUEL_CELL = builder.comment("TRISO pebbles held per fuel cell block.")
+                .defineInRange("pebbles_per_fuel_cell", 10, 2, 100);
+        MSR_VOLUME_PER_FUEL_CELL = builder.comment("Molten salt volume (mB) per fuel cell block.")
+                .defineInRange("volume_per_fuel_cell", 10000, 1, 1000000);
+        builder.pop();
+
         SPEC = builder.build();
     }
 
@@ -203,5 +224,9 @@ public class Multiblocks {
         hxFluidCapacityPerBlock = HX_FLUID_CAPACITY_PER_BLOCK.get();
         hxRadiatorCooling = HX_RADIATOR_COOLING.get();
         hxHeatCapacityPerBlock = HX_HEAT_CAPACITY_PER_BLOCK.get();
+        msrMinSize = MSR_MIN_SIZE.get();
+        msrMaxSize = MSR_MAX_SIZE.get();
+        msrPebblesPerFuelCell = MSR_PEBBLES_PER_FUEL_CELL.get();
+        msrVolumePerFuelCell = MSR_VOLUME_PER_FUEL_CELL.get();
     }
 }

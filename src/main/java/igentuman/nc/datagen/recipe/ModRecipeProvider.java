@@ -41,6 +41,7 @@ import static igentuman.nc.datagen.recipe.processors.IngotFormerRecipes.ingotFor
 import static igentuman.nc.datagen.recipe.processors.IrradiatorRecipes.irradiator;
 import static igentuman.nc.datagen.recipe.processors.IsotopeSeparatorRecipes.isotopeSeparator;
 import static igentuman.nc.datagen.recipe.processors.ManufactoryRecipes.manufactory;
+import static igentuman.nc.datagen.recipe.processors.MSRRecipes.msr;
 import static igentuman.nc.datagen.recipe.processors.MelterRecipes.melter;
 import static igentuman.nc.datagen.recipe.processors.PressurizerRecipes.pressurizer;
 import static igentuman.nc.datagen.recipe.processors.PumpRecipes.pump;
@@ -93,6 +94,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         fusion(recipeOutput);
         turbine(recipeOutput);
         heatExchanger(recipeOutput);
+        msr(recipeOutput);
         KugelblitzChamberRecipes.generate(recipeOutput);
         NuclearBlastRecipes.nuclearBlast(recipeOutput);
     }

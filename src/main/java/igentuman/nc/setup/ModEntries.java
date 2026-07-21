@@ -34,6 +34,7 @@ import static igentuman.nc.setup.entries.Fluids.fluids;
 import static igentuman.nc.setup.entries.FusionReactor.fusionReactor;
 import static igentuman.nc.setup.entries.Isotopes.isotopes;
 import static igentuman.nc.setup.entries.Kugelblitz.kugelblitz;
+import static igentuman.nc.setup.entries.MSR.msr;
 import static igentuman.nc.setup.entries.Materials.materials;
 import static igentuman.nc.setup.entries.ParticleChamber.particleChamber;
 import static igentuman.nc.setup.entries.Parts.*;
@@ -79,6 +80,7 @@ public class ModEntries {
         storage();
         energy();
         bomb();
+        msr();
         FissionRecipes.init();
         NcBlastRecipes.init();
     }

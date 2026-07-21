@@ -17,9 +17,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import static igentuman.nc.client.model.ClientQuadTools.createQuad;
@@ -31,7 +31,7 @@ public class BatteryBakedModel implements IDynamicBakedModel {
     private final ItemOverrides overrides;
     private final ItemTransforms transforms;
     private final BatteryModelLoader.BatteryGeometry geometry;
-    private final Map<String, List<BakedQuad>> quadCache = new HashMap<>();
+    private final Map<String, List<BakedQuad>> quadCache = new ConcurrentHashMap<>();
     private List<BakedQuad> defaultQuads;
 
     public BatteryBakedModel(Function<Material, TextureAtlasSprite> spriteGetter, ItemOverrides overrides,

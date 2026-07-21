@@ -103,7 +103,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         tag(FissionTags.CASING).add(
                 b("fission_reactor_controller"), b("fission_reactor_casing"),
                 b("fission_reactor_glass"), b("fission_reactor_port"),
-                b("irradiator"));
+                b("irradiator"),
+                b("msr_controller"), b("msr_port"));
 
         tag(FissionTags.MODERATORS).add(storage("graphite"), storage("beryllium"));
 

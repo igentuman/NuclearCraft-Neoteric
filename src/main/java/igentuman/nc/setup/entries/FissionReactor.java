@@ -42,7 +42,10 @@ public class FissionReactor extends ModEntries {
             "fission_reactor_port",
             "fission_reactor_solid_fuel_cell",
             "fission_reactor_irradiation_chamber",
-            "fission_reactor_pile-driver_irradiation_chamber"
+            "fission_reactor_pile-driver_irradiation_chamber",
+            "msr_controller",
+            "msr_fuel_cell",
+            "msr_port"
     );
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> FISSION_REACTOR = CREATIVE_MODE_TABS.register("fission_reactor", () -> CreativeModeTab.builder()

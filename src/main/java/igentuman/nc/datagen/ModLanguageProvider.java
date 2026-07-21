@@ -25,6 +25,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         labels();
         energy();
         heatSinks();
+        msr();
         for (String name : NCJukeboxSongs.RECORDS.keySet()) {
             add("jukebox_song." + MODID + "." + name, convertToName(name));
         }
@@ -124,6 +125,9 @@ public class ModLanguageProvider  extends LanguageProvider {
 
     private static String blockDisplayName(String name) {
         if (name.equals("expl")) return "EXPL";
+        if (name.startsWith("msr_")) {
+            return "MSR " + convertToName(name.substring("msr_".length()));
+        }
         if (name.endsWith("_rtg")) {
             return convertToName(name.substring(0, name.length() - "_rtg".length())) + " RTG";
         }
@@ -161,6 +165,26 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("heat_sink.in_corner", "in the corner of %s %s blocks");
         add("heat_sink.or", "or");
         add("heat_sink.and", "and");
+    }
+
+    private void msr() {
+        add("multiblock.nuclearcraft.molten_salt_reactor", "Molten Salt Reactor");
+        add("sound_event.nuclearcraft.msr_running", "Molten Salt Reactor humming along");
+        add("msr.status", "Status: %s");
+        add("msr.critical", "CRITICAL");
+        add("msr.subcritical", "SUBCRITICAL");
+        add("msr.non_functional", "Non-functional");
+        add("msr.reactivity", "Reactivity: %s");
+        add("msr.temperature", "Temperature: %sK");
+        add("msr.depletion", "Depletion: %s%%");
+        add("msr.overheat", "Overheat: %ss");
+        add("msr.input_rate.tooltip", "Molten salt input rate (buckets/tick). Cold FLiBe drawn into the reactor each tick.");
+        add("msr.output_rate.tooltip", "Hot molten salt output rate (buckets/tick). Pumped out each tick — the reactor's only cooling. Run it too low and the core overheats.");
+        add("reactor.fuel_cells", "Fuel Cells: %s");
+        add("reactor.heating", "Heat Gen: %s H/t");
+        add("gui.nc.msr.void_pebbles.tooltip", "Void fuel pebbles");
+        add("tooltip.nc.msr_controller.descr", "Runs the Molten Salt Reactor: pumps FLiBe carrier salt past TRISO fuel pebbles, holds the chain reaction, and ships the heat out as hot salt. (No heat sinks, no moderators - just don't let the cooling stop.)");
+        add("tooltip.nc.msr_port.descr", "Loads fuel pebbles and pipes molten salt in and out. Cold salt in, hot salt out - and that hot-salt flow is the core's only cooling.");
     }
 
     private void labels() {

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_msr",
+  "key": {
+    "L": {
+      "tag": "c:plates/tough_alloy"
+    },
+    "M": {
+      "item": "nuclearcraft:servo"
+    },
+    "P": {
+      "item": "minecraft:bucket"
+    },
+    "T": {
+      "item": "nuclearcraft:fission_reactor_casing"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "MTM",
+    "LPL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:msr_port"
+  }
+}

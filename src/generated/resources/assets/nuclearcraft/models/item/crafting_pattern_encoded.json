@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:builtin/entity",
+  "textures": {
+    "particle": "nuclearcraft:item/crafting_pattern"
+  }
+}

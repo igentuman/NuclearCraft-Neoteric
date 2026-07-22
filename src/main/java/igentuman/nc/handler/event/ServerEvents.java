@@ -1,13 +1,16 @@
 package igentuman.nc.handler.event;
 
 import igentuman.nc.handler.command.DetonateCommand;
+import igentuman.nc.handler.storage.ContainerSyncDispatcher;
 import igentuman.nc.item.ContainerBlockItem;
 import igentuman.nc.item.MultitoolItem;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -27,6 +30,13 @@ public class ServerEvents {
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
         DetonateCommand.register(event.getDispatcher());
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            ContainerSyncDispatcher.unsubscribeAll(serverPlayer);
+        }
     }
 
     @SubscribeEvent

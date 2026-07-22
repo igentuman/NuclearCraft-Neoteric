@@ -1,7 +1,7 @@
 package igentuman.nc.block_entity.storage;
 
 import igentuman.nc.content.storage.StorageDefs;
-import igentuman.nc.handler.energy.CustomEnergyStorage;
+import igentuman.nc.handler.energy.LargeEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -14,12 +14,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class BatteryBE extends AbstractStorageBE {
 
-    public final CustomEnergyStorage energyStorage;
+    public final LargeEnergyStorage energyStorage;
 
     public BatteryBE(BlockEntityType<?> type, BlockPos pos, BlockState state, String name) {
         super(type, pos, state, name);
         int capacity = StorageDefs.batteryStorage(name);
-        this.energyStorage = CustomEnergyStorage.create(capacity, capacity, capacity, this::setChanged);
+        this.energyStorage = LargeEnergyStorage.create(capacity, capacity, capacity, this::setChanged);
     }
 
     @Nullable

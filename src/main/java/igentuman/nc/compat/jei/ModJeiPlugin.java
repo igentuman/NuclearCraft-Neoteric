@@ -8,12 +8,14 @@ import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.recipe.fission.FissionRecipes;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.UniversalProcessorScreen;
+import igentuman.nc.setup.entries.Crafter;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.MultiblockStructure;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
@@ -77,10 +79,13 @@ public class ModJeiPlugin implements IModPlugin {
         if (hxController != null && hxController.hasItem()) {
             registration.addRecipeCatalyst(new ItemStack(hxController.item().get()), HeatExchangerRecipeCategory.TYPE);
         }
+        registration.addRecipeCatalyst(new ItemStack(Crafter.ENGINEERS_CRAFTING_TABLE_ITEM.get()), RecipeTypes.CRAFTING);
     }
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        registration.addRecipeTransferHandler(new EngineersCrafterRecipeTransferHandler(registration.getTransferHelper()), RecipeTypes.CRAFTING);
+        registration.addRecipeTransferHandler(new EngineersEncoderRecipeTransferHandler(), RecipeTypes.CRAFTING);
         if (!ModList.get().isLoaded("ae2")) return;
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (!entry.hasRecipes() || !entry.isEnabled()) continue;

@@ -1,7 +1,7 @@
 package igentuman.nc.multiblock.fusion;
 
 import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
-import igentuman.nc.handler.energy.CustomEnergyStorage;
+import igentuman.nc.handler.energy.LargeEnergyStorage;
 import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.recipe.fusion.FusionCoolantRecipe;
 import igentuman.nc.recipe.fusion.FusionRecipe;
@@ -320,7 +320,7 @@ public class FusionReaction {
         return null;
     }
 
-    private void addEnergy(CustomEnergyStorage es, int amount) {
+    private void addEnergy(LargeEnergyStorage es, int amount) {
         if (es == null || amount <= 0) return;
         int add = Math.min(amount, es.getMaxEnergyStored() - es.getEnergyStored());
         if (add > 0) es.setEnergyStored(es.getEnergyStored() + add);

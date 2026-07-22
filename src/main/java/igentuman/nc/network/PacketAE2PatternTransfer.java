@@ -25,9 +25,9 @@ public class PacketAE2PatternTransfer implements CustomPacketPayload {
     public static final Type<PacketAE2PatternTransfer> TYPE = new Type<>(NuclearCraft.rl("ae2_pattern_transfer"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketAE2PatternTransfer> STREAM_CODEC = StreamCodec.composite(
-        ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()), PacketAE2PatternTransfer::inputItems,
+        ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()), PacketAE2PatternTransfer::inputItems,
         FluidStack.STREAM_CODEC.apply(ByteBufCodecs.list()), PacketAE2PatternTransfer::inputFluids,
-        ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()), PacketAE2PatternTransfer::outputItems,
+        ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()), PacketAE2PatternTransfer::outputItems,
         FluidStack.STREAM_CODEC.apply(ByteBufCodecs.list()), PacketAE2PatternTransfer::outputFluids,
         PacketAE2PatternTransfer::new
     );

@@ -1,7 +1,7 @@
 package igentuman.nc.block_entity;
 
 import igentuman.nc.handler.SidedContentHandler;
-import igentuman.nc.handler.energy.CustomEnergyStorage;
+import igentuman.nc.handler.energy.LargeEnergyStorage;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.ItemCapabilityHandler;
 import igentuman.nc.util.BoilingBuffer;
@@ -59,7 +59,7 @@ public class GlobalBlockEntity extends BlockEntity {
 
     /** Energy storage capability - null if no energy cap is defined in the ModEntry. */
     @Nullable
-    public final CustomEnergyStorage energyStorage;
+    public final LargeEnergyStorage energyStorage;
 
     private final List<Field> booleanFields;
     private final List<Field> intFields;
@@ -218,7 +218,7 @@ public class GlobalBlockEntity extends BlockEntity {
             final int cap = energyCapDef.getCapacity();
             final int maxIn = energyCapDef.getInputRate();
             final int maxOut = energyCapDef.getOutputRate();
-            this.energyStorage = CustomEnergyStorage.create(cap, maxIn, maxOut, this::setChanged);
+            this.energyStorage = LargeEnergyStorage.create(cap, maxIn, maxOut, this::setChanged);
         } else {
             this.energyStorage = null;
         }

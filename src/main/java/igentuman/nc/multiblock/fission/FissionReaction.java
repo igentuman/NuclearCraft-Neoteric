@@ -2,13 +2,12 @@ package igentuman.nc.multiblock.fission;
 
 import igentuman.nc.block_entity.fission.FissionReactorControllerBE;
 import igentuman.nc.config.Multiblocks;
-import igentuman.nc.handler.energy.CustomEnergyStorage;
+import igentuman.nc.handler.energy.LargeEnergyStorage;
 import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.recipe.fission.BoilingRecipe;
 import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import igentuman.nc.recipe.fission.FissionRecipes;
-import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.BoilingBuffer;
 import igentuman.nc.util.HeatBuffer;
 import igentuman.nr.api.RadiationProfile;
@@ -35,8 +34,6 @@ import java.util.Objects;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-
-import static igentuman.nc.block.MultiblockControllerBlock.FACING;
 
 /** Runs the fission reactor's per-tick reaction: heat, energy/steam generation, cooling, fuel burn, and meltdown. */
 public class FissionReaction {
@@ -287,7 +284,7 @@ public class FissionReaction {
         return true;
     }
 
-    private void addEnergy(CustomEnergyStorage es, int amount) {
+    private void addEnergy(LargeEnergyStorage es, int amount) {
         if (es == null || amount <= 0) return;
         int cur = es.getEnergyStored();
         int add = Math.min(amount, es.getMaxEnergyStored() - cur);

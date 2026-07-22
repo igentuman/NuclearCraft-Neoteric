@@ -61,6 +61,41 @@ public class Networking {
                 PacketExplBurst.STREAM_CODEC,
                 PacketExplBurst::handle
         );
+        registrar.playToServer(
+                PacketCrafterExtract.TYPE,
+                PacketCrafterExtract.STREAM_CODEC,
+                PacketCrafterExtract::handle
+        );
+        registrar.playToServer(
+                PacketCrafterInsert.TYPE,
+                PacketCrafterInsert.STREAM_CODEC,
+                PacketCrafterInsert::handle
+        );
+        registrar.playToServer(
+                PacketCrafterFillGrid.TYPE,
+                PacketCrafterFillGrid.STREAM_CODEC,
+                PacketCrafterFillGrid::handle
+        );
+        registrar.playToServer(
+                PacketEncoderFillGrid.TYPE,
+                PacketEncoderFillGrid.STREAM_CODEC,
+                PacketEncoderFillGrid::handle
+        );
+        registrar.playToServer(
+                PacketCancelCraft.TYPE,
+                PacketCancelCraft.STREAM_CODEC,
+                PacketCancelCraft::handle
+        );
+        registrar.playToServer(
+                PacketTerminalCraft.TYPE,
+                PacketTerminalCraft.STREAM_CODEC,
+                PacketTerminalCraft::handle
+        );
+        registrar.playToServer(
+                PacketCrafterOpenEncoder.TYPE,
+                PacketCrafterOpenEncoder.STREAM_CODEC,
+                PacketCrafterOpenEncoder::handle
+        );
         if (ModUtil.isAe2Loaded()) {
             registrar.playToServer(
                     PacketAE2PatternTransfer.TYPE,
@@ -82,6 +117,16 @@ public class Networking {
                 PacketBombDetonationStart.TYPE,
                 PacketBombDetonationStart.STREAM_CODEC,
                 PacketBombDetonationStart::handle
+        );
+        registrar.playToClient(
+                PacketSyncContainerInventory.TYPE,
+                PacketSyncContainerInventory.STREAM_CODEC,
+                PacketSyncContainerInventory::handle
+        );
+        registrar.playToClient(
+                PacketCraftDenied.TYPE,
+                PacketCraftDenied.STREAM_CODEC,
+                PacketCraftDenied::handle
         );
     }
 }

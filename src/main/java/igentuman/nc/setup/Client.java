@@ -63,6 +63,11 @@ public class Client {
             DelayedRenderHandler.register();
             DistortShader.register();
             registerFluidRenderLayers();
+            net.minecraft.client.renderer.item.ItemProperties.register(
+                    igentuman.nc.setup.entries.Crafter.CRAFTING_PATTERN.get(),
+                    NuclearCraft.rl("encoded"),
+                    (stack, lvl, entity, seed) ->
+                            igentuman.nc.handler.crafter.CraftingPattern.isEncoded(stack) ? 1f : 0f);
         });
     }
 
@@ -124,6 +129,10 @@ public class Client {
                 igentuman.nc.screen.StorageContainerScreen::new);
         event.register(Storage.STORAGE_ITEM_MENU.get(),
                 StorageContainerItemScreen::new);
+        event.register(igentuman.nc.setup.entries.Crafter.ENGINEERS_CRAFTING_TABLE_MENU.get(),
+                EngineersCrafterScreen::new);
+        event.register(igentuman.nc.setup.entries.Crafter.ENGINEERS_ENCODER_MENU.get(),
+                EngineersEncoderScreen::new);
     }
 
     @SubscribeEvent
@@ -176,6 +185,12 @@ public class Client {
      */
     @SubscribeEvent
     static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(new net.neoforged.neoforge.client.extensions.common.IClientItemExtensions() {
+            @Override
+            public net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return igentuman.nc.client.item.CraftingPatternRenderer.get();
+            }
+        }, igentuman.nc.setup.entries.Crafter.CRAFTING_PATTERN.get());
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.materialEntry() instanceof MaterialEntry mat && mat.hasFluid()) {
                 registerFluidExtension(event, mat.materialFluid().fluidType().get());

@@ -5,6 +5,7 @@ import dev.emi.emi.api.EmiInitRegistry;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.EmiStack;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.multiblock.MultiblockEntry;
@@ -16,6 +17,7 @@ import igentuman.nc.recipe.fission.FissionRecipes;
 import igentuman.nc.recipe.bomb.NcBlastRecipes;
 import igentuman.nc.recipe.bomb.NuclearBlastRecipe;
 import igentuman.nc.registration.ModEntry;
+import igentuman.nc.setup.entries.Crafter;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.MultiblockStructure;
 import net.minecraft.client.Minecraft;
@@ -60,6 +62,10 @@ public class ModEmiPlugin implements EmiPlugin {
                 registry.addWorkstation(category, EmiStack.of(new ItemStack(entry.item().get())));
             }
         }
+
+        registry.addRecipeHandler(Crafter.ENGINEERS_CRAFTING_TABLE_MENU.get(), new EngineersCrafterEmiRecipeHandler());
+        registry.addRecipeHandler(Crafter.ENGINEERS_ENCODER_MENU.get(), new EngineersEncoderEmiRecipeHandler());
+        registry.addWorkstation(VanillaEmiRecipeCategories.CRAFTING, EmiStack.of(new ItemStack(Crafter.ENGINEERS_CRAFTING_TABLE_ITEM.get())));
 
         RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
 

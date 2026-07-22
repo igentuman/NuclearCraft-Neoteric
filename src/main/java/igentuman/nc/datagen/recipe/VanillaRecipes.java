@@ -4,6 +4,7 @@ import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.entries.Crafter;
 import igentuman.nc.setup.entries.Processors;
 import igentuman.nc.setup.entries.Turbine;
 import net.minecraft.advancements.Criterion;
@@ -98,6 +99,7 @@ public class VanillaRecipes {
         turbineBlocks();
         hxBlocks();
         msrBlocks();
+        crafterBlocks();
         bomb();
 
 /*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, RESONITE_CRYSTAL.get())
@@ -370,6 +372,29 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ingot("tough_alloy")))
                 .save(recipeOutput, rl("steel_frame"));
 
+    }
+
+    private static void crafterBlocks() {
+        // Engineer's Crafting Table
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Crafter.ENGINEERS_CRAFTING_TABLE_BLOCK.get(), 1)
+                .pattern("SCS")
+                .pattern("PHP")
+                .pattern("STS")
+                .define('S', item("plate_basic"))
+                .define('H', CHEST)
+                .define('P', item("basic_electric_circuit"))
+                .define('C', CRAFTING_TABLE)
+                .define('T', item("basic_voltaic_pile"))
+                .group(MODID)
+                .unlockedBy("item", has(item("plate_basic")))
+                .save(recipeOutput, rl("engineers_crafting_table"));
+
+        // Crafting Pattern
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Crafter.CRAFTING_PATTERN.get())
+                .requires(PAPER)
+                .requires(Ingredient.of(dustTag("coal")))
+                .unlockedBy("item", has(dustTag("coal")))
+                .save(recipeOutput, rl("crafting_pattern"));
     }
 
     private static void bomb() {

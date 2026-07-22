@@ -1,7 +1,7 @@
 package igentuman.nc.block_entity.energy;
 
 import igentuman.nc.block_entity.GlobalBlockEntity;
-import igentuman.nc.handler.energy.CustomEnergyStorage;
+import igentuman.nc.handler.energy.LargeEnergyStorage;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.api.isotope.Isotope;
@@ -25,14 +25,14 @@ import java.util.UUID;
 
 public abstract class AbstractEnergyBE extends GlobalBlockEntity {
 
-    public final CustomEnergyStorage energyStorage;
+    public final LargeEnergyStorage energyStorage;
 
     @Nullable
     private UUID radSourceId;
 
     protected AbstractEnergyBE(BlockEntityType<?> type, BlockPos pos, BlockState state, String name, int capacity) {
         super(type, pos, state, name);
-        this.energyStorage = CustomEnergyStorage.create(capacity, 0, capacity, this::setChanged);
+        this.energyStorage = LargeEnergyStorage.create(capacity, 0, capacity, this::setChanged);
     }
 
     @Nullable

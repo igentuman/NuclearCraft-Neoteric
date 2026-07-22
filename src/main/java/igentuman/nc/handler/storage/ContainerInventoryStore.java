@@ -43,6 +43,7 @@ public class ContainerInventoryStore extends SavedData {
 
     public void markChanged(UUID uuid) {
         setDirty();
+        ContainerSyncDispatcher.notifyChange(uuid);
     }
 
     public static ContainerInventoryStore load(CompoundTag tag, HolderLookup.Provider provider) {

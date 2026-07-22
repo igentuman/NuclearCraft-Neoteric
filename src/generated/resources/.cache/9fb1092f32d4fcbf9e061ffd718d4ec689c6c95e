@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-21T16:49:57.658220994	Recipes
+// 1.21.1	2026-07-22T22:38:18.445397175	Recipes
 3a5d0bc884d149cb53d9e26d4e76313e10390835 data/nuclearcraft/advancement/recipes/misc/active_enderium_heat_sink.json
 faa2d50526ec46faac58dff31e239dc6c50ae19e data/nuclearcraft/advancement/recipes/misc/active_redstone_heat_sink.json
 d2cef252c10f5984fee3d89c3296cb18ae702044 data/nuclearcraft/advancement/recipes/misc/actuator.json
@@ -181,6 +181,7 @@ e2491cfe12032933da632ff5a8f0dabbe680189c data/nuclearcraft/advancement/recipes/m
 4f205a32972b5ab0031c03f01d72f0389406bacb data/nuclearcraft/advancement/recipes/misc/copernicium_291_ox_sml.json
 92d2d14e8a8e70371d8cfc3e5fdccefcae658164 data/nuclearcraft/advancement/recipes/misc/copernicium_291_za_sml.json
 83cb30b77f17a45dbe9d61fb37589dea3e7eeb69 data/nuclearcraft/advancement/recipes/misc/copper_heat_sink.json
+4e2ca39244cb5a1902d4bc58db535bce4dbc3f15 data/nuclearcraft/advancement/recipes/misc/crafting_pattern.json
 1542480be3b24772f6f3db6bf48afc1d73b29141 data/nuclearcraft/advancement/recipes/misc/crystallizer.json
 7ea28b2dff34311e151dee462d1ed405c735b68e data/nuclearcraft/advancement/recipes/misc/curium_243_ni_sml.json
 0a4ccb1d9746bcf9d482152a1b3cfa88c169849e data/nuclearcraft/advancement/recipes/misc/curium_243_ox_sml.json
@@ -296,6 +297,7 @@ b99769def4653abd782f2b14ed61611022b90b5b data/nuclearcraft/advancement/recipes/m
 dce75a04999dc8680612a436826cdc4dcbc4631f data/nuclearcraft/advancement/recipes/misc/empty_heat_sink.json
 918b2e92c2b2f08b9a92d39185416cb2df9c36cb data/nuclearcraft/advancement/recipes/misc/end_stone_heat_sink.json
 3e328f65b17f5c207d309310cf8f598fa64e05e9 data/nuclearcraft/advancement/recipes/misc/enderium_heat_sink.json
+a0cfed4be984662c6272a0430ec5f8d64d38af20 data/nuclearcraft/advancement/recipes/misc/engineers_crafting_table.json
 85cb07a93e648722b79fe39fa1e61b4f70275eab data/nuclearcraft/advancement/recipes/misc/event_horizon_stabilizer.json
 31e155c83b1f8e1af02ec965d25ecef0b0b1dd7d data/nuclearcraft/advancement/recipes/misc/expl.json
 3ca6f117b046ad1ac09c78b770fee8a5cd2ff0a8 data/nuclearcraft/advancement/recipes/misc/extractor.json
@@ -1198,6 +1200,7 @@ b23b1cbe8a0ea229d78abf26b8c44e13c901af06 data/nuclearcraft/recipe/coil_magnesium
 d1d021aeff95c5cb4a6fe6177573f62cb254e695 data/nuclearcraft/recipe/copernicium_291_ox_sml.json
 4c4b490a4f9799ff7182ff3ddae58b33eb537efa data/nuclearcraft/recipe/copernicium_291_za_sml.json
 976271e3d10ffab26d5d8a7ccf32b8ee496d4db5 data/nuclearcraft/recipe/copper_heat_sink.json
+5490e7848539bd3b5f3eca25ac4956b2e78c91e0 data/nuclearcraft/recipe/crafting_pattern.json
 7ff9c6ac355af8f4910344dec7a5c618df11b324 data/nuclearcraft/recipe/crystallizer.json
 dd5f688b5b8b98249c227728609debdd80b3c325 data/nuclearcraft/recipe/crystallizer/fluorite.json
 691f1e34cf1032fe60cf5f66fc49b1db029476b5 data/nuclearcraft/recipe/crystallizer/lapis.json
@@ -1355,6 +1358,7 @@ d237c2846dac8fdd96c04761ac55db54c3a1b9d3 data/nuclearcraft/recipe/elite_lithium_
 7ab52b3ea5f317593707aded4c1ffcffc7794817 data/nuclearcraft/recipe/empty_heat_sink.json
 7ad97e08b7369ea5f1c58296de28fd5ace17058d data/nuclearcraft/recipe/end_stone_heat_sink.json
 636e004bc87273947f174b5fec2a227c7a65b0ac data/nuclearcraft/recipe/enderium_heat_sink.json
+c7cbb635518cd1a847a2b66f7f8f4bd83f759dbf data/nuclearcraft/recipe/engineers_crafting_table.json
 4731dde2188aa1387e42548bd68a9d99c11a426e data/nuclearcraft/recipe/event_horizon_stabilizer.json
 730635a10fef4c38fd293ba0b6352776e5548043 data/nuclearcraft/recipe/expl.json
 e3111185711f654239680a52cdc2dc4d4a11eca1 data/nuclearcraft/recipe/extractor.json

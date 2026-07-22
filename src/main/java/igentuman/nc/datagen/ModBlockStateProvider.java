@@ -27,6 +27,7 @@ import java.util.function.Function;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
+import static net.minecraft.server.packs.PackType.CLIENT_RESOURCES;
 
 /** Generates blockstates and block/item models for blocks, processors, heat sinks, and materials. */
 public class ModBlockStateProvider extends BlockStateProvider {
@@ -40,7 +41,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private boolean modelExists(String path) {
         return existingFileHelper.exists(
                 ResourceLocation.fromNamespaceAndPath(MODID, path),
-                net.minecraft.server.packs.PackType.CLIENT_RESOURCES,
+                CLIENT_RESOURCES,
                 ".json", "models"
         );
     }
@@ -48,7 +49,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private boolean blockStateExists(String path) {
         return existingFileHelper.exists(
                 ResourceLocation.fromNamespaceAndPath(MODID, path),
-                net.minecraft.server.packs.PackType.CLIENT_RESOURCES,
+                CLIENT_RESOURCES,
                 ".json", "blockstates"
         );
     }
@@ -56,7 +57,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private boolean textureExists(String path) {
         return existingFileHelper.exists(
                 ResourceLocation.fromNamespaceAndPath(MODID, path),
-                net.minecraft.server.packs.PackType.CLIENT_RESOURCES,
+                CLIENT_RESOURCES,
                 ".png", "textures"
         );
     }
@@ -71,7 +72,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
             if (entry.hasBlock()) {
                 String path = BuiltInRegistries.BLOCK.getKey(entry.block().get()).getPath();
                 if (blockStateExists(path)) continue;
-                if (path.equals("expl")) {
+                if (path.equals("engineers_crafting_table")) {
+                    engineersCrafterBlock(entry.block(), path);
+                } else if (path.equals("expl")) {
                     explBlock(entry.block());
                 } else if (path.equals("expl_proxy")) {
                     ModelFile proxy = models().getExistingFile(rl("block/fusion/core_proxy"));
@@ -445,6 +448,15 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 itemModels().getBuilder("item/msr_port").parent(model);
             }
         }
+    }
+
+    private void engineersCrafterBlock(DeferredBlock<Block> deferredBlock, String path) {
+        Block block = deferredBlock.get();
+        ResourceLocation side = rl("block/" + path + "/side");
+        ResourceLocation top = rl("block/" + path + "/top");
+        ModelFile model = models().cubeColumn(path, side, top);
+        simpleBlock(block, model);
+        itemModels().getBuilder("item/" + path).parent(model);
     }
 
     private void explBlock(DeferredBlock<Block> deferredBlock) {

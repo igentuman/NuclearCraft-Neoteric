@@ -40,6 +40,7 @@ import static igentuman.nc.setup.entries.ParticleChamber.particleChamber;
 import static igentuman.nc.setup.entries.Parts.*;
 import static igentuman.nc.setup.entries.Processors.processors;
 import static igentuman.nc.setup.entries.Storage.storage;
+import static igentuman.nc.setup.entries.Crafter.crafter;
 import static igentuman.nc.setup.entries.HeatExchanger.heatExchanger;
 import static igentuman.nc.setup.entries.Turbine.turbine;
 
@@ -78,6 +79,7 @@ public class ModEntries {
         HeatExchangerRecipes.init();
         heatExchanger();
         storage();
+        crafter();
         energy();
         bomb();
         msr();

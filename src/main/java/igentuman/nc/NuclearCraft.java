@@ -19,6 +19,7 @@ import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCSounds;
 import igentuman.nc.setup.NcParticles;
 import igentuman.nc.setup.Registers;
+import igentuman.nc.setup.entries.Crafter;
 import igentuman.nc.setup.entries.Energy;
 import igentuman.nc.setup.entries.Storage;
 import igentuman.nc.util.MultiblocksProvider;
@@ -143,6 +144,7 @@ public class NuclearCraft {
         }
 
         Storage.registerCapabilities(event);
+        Crafter.registerCapabilities(event);
         Energy.registerCapabilities(event);
 
         // Multiblock ports proxy capabilities from their controller. The port's own ModEntry

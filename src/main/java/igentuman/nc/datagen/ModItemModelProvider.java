@@ -19,6 +19,7 @@ import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 /** Generates item models for standalone items, tools, armor, materials, isotopes, and fuels. */
 public class ModItemModelProvider  extends ItemModelProvider {
@@ -32,6 +33,10 @@ public class ModItemModelProvider  extends ItemModelProvider {
             // Block item models come from ModBlockStateProvider, which knows the special-ruled
             // model path (e.g. fission/controller); only standalone items are built here.
             if (entry.hasItem() && !entry.hasBlock()) {
+                if (entry.name().equals("crafting_pattern")) {
+                    craftingPattern();
+                    continue;
+                }
                 simpleItem(entry.item(), entry.name());
             }
             if (entry.toolSetEntry() instanceof ToolSetEntry toolSet) {
@@ -125,5 +130,21 @@ public class ModItemModelProvider  extends ItemModelProvider {
         getBuilder(item.toString())
                 .parent(new ModelFile.UncheckedModelFile(parent))
                 .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + name));
+    }
+
+    private void craftingPattern() {
+        // The encoded model uses the BEWLR (builtin/entity) to render the output icon.
+        getBuilder("crafting_pattern_encoded")
+                .parent(new ModelFile.UncheckedModelFile("builtin/entity"))
+                .texture("particle", modLoc("item/crafting_pattern"));
+
+        // The base model is the blank pattern, with an override for the encoded property.
+        getBuilder("crafting_pattern")
+                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                .texture("layer0", modLoc("item/crafting_pattern"))
+                .override()
+                .predicate(rl("encoded"), 1)
+                .model(new ModelFile.UncheckedModelFile(modLoc("item/crafting_pattern_encoded")))
+                .end();
     }
 }

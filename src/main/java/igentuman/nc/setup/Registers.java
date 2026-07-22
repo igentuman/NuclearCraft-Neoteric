@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import com.mojang.serialization.Codec;
+import igentuman.nc.handler.crafter.CraftingPatternData;
 import igentuman.nc.setup.level.ConfigurableOrePlacement;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleType;
@@ -50,6 +51,12 @@ public class Registers {
             DATA_COMPONENTS.register("container_magnet", () -> DataComponentType.<Boolean>builder()
                     .persistent(Codec.BOOL)
                     .networkSynchronized(ByteBufCodecs.BOOL)
+                    .build());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CraftingPatternData>> CRAFTING_PATTERN =
+            DATA_COMPONENTS.register("crafting_pattern", () -> DataComponentType.<CraftingPatternData>builder()
+                    .persistent(CraftingPatternData.CODEC)
+                    .networkSynchronized(CraftingPatternData.STREAM_CODEC)
                     .build());
 
     @SuppressWarnings({"unchecked", "rawtypes"})

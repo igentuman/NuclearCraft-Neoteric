@@ -95,6 +95,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
     public int functionalBlocksCharge = 0;
     @NBTField
     public long plasmaTemperature = 0;
+    @NBTField
     public long chargeAmount = 0;
     @NBTField
     public int rfEfficiency = 0;
@@ -375,7 +376,7 @@ public class FusionCoreBE extends MultiblockControllerBE {
         simulateReaction();
         sendOutPower();
         handleMeltdown();
-        if(recipe == null && plasmaTemperature > 0) {
+        if(!hasRecipe() && plasmaTemperature > 0) {
             changePlasmaTemperature(-(long) (plasmaTemperature / 10D));
             changed = true;
         }
@@ -734,7 +735,8 @@ public class FusionCoreBE extends MultiblockControllerBE {
         energyPerTick = (int) (energyPerTick* getControlPartsEfficiency());
     }
 
-    protected long prevAmplification = 0;
+    @NBTField
+    public long prevAmplification = 0;
 
     protected void amplifyPlasma() {
         double sizeFactor = Math.log(Math.pow(size+1, 5))/10D;

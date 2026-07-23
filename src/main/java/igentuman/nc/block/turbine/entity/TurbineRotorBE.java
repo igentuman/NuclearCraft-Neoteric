@@ -104,6 +104,7 @@ public class TurbineRotorBE extends TurbineBE {
     }
 
     public float getRotationSpeed() {
+        if(level == null) return 0;
         TurbineControllerBE controller = getController();
         rotation = 0;
         if(controller instanceof TurbineControllerBE) {
@@ -116,6 +117,7 @@ public class TurbineRotorBE extends TurbineBE {
     }
 
     public int getAttachedBlades() {
+        if(level == null) return 8;
         int blades = 0;
         Direction rotorFacing = getBlockState().getValue(TurbineRotorBlock.FACING);
         Direction facing = Direction.NORTH;
@@ -134,6 +136,7 @@ public class TurbineRotorBE extends TurbineBE {
     }
 
     public boolean isFormed() {
+        if(level == null) return true;
         if(getController() == null) {
             return false;
         }
@@ -144,6 +147,7 @@ public class TurbineRotorBE extends TurbineBE {
     }
 
     public float getScaling() {
+        if(level == null) return 1f;
         if(level.getDayTime() % 20 != 0 && scaling != -1) {
             return scaling;
         }

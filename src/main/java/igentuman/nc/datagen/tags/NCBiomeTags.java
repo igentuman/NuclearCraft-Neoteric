@@ -20,7 +20,7 @@ public class NCBiomeTags extends TagsProvider<Biome> {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        tag(WASTELAND).addOptional(WASTELAND_BIOME.location());
+        //tag(WASTELAND).addOptional(WASTELAND_BIOME.location());
         tag(Tags.Biomes.IS_WASTELAND).addOptional(WASTELAND_BIOME.location());
         tag(IS_OVERWORLD).addOptional(WASTELAND_BIOME.location());
         tag(IS_OVERWORLD).addOptional(WASTELAND.location());

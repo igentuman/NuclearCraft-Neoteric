@@ -47,10 +47,9 @@ public class HeightmapChunkPlacement extends PlacementModifier {
                     final BlockPos pos = new BlockPos(x, height, z);
                     final BlockState testBs = pContext.getBlockState(pos);
                     if(!pContext.getLevel().getBiome(pos).is(WASTELAND) ||  testBs.is(WATER)) continue;
-                    if(!(testBs.is(SAND) || testBs.is(DIRT) || testBs.is(TERRACOTTA))) {
-                        height--;
-                    }
-                    positions.add(new BlockPos(x, height, z));
+                    // Only replace dirt/grass surfaces; leave stone, sand, gravel, terracotta untouched.
+                    if(!testBs.is(DIRT)) continue;
+                    positions.add(pos);
                 }
             }
         }

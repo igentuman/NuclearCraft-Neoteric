@@ -3,11 +3,11 @@
   "inputFluids": [
     {
       "amount": 250,
-      "tag": "forge:deuterium"
+      "tag": "forge:tritium"
     },
     {
       "amount": 250,
-      "tag": "forge:tritium"
+      "tag": "forge:deuterium"
     }
   ],
   "outputFluids": [

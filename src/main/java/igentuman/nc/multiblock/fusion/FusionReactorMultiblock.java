@@ -139,7 +139,7 @@ public class FusionReactorMultiblock extends AbstractMultiblock {
         controllerBE().size = length;
         if(hasChanges) {
             controllerBE().currentRfAmplification = rfAmplification;
-            controllerBE.setChanged();
+            controllerBE.markDirty();
         }
         return hasChanges;
     }

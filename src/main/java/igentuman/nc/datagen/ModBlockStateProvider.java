@@ -2,6 +2,9 @@ package igentuman.nc.datagen;
 
 import igentuman.nc.block.UniversalProcessorBlock;
 import igentuman.nc.block.energy.EnergyBlock;
+import igentuman.nc.block.pipe.PipeBlock;
+import igentuman.nc.block.pipe.PipeConnection;
+import igentuman.nc.block.pipe.PipeConnectorBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -10,6 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -80,6 +85,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     ModelFile proxy = models().getExistingFile(rl("block/fusion/core_proxy"));
                     simpleBlock(entry.block().get(), proxy);
                     itemModels().getBuilder("item/" + path).parent(proxy);
+                } else if (path.equals("pipe")) {
+                    pipes(entry.block());
+                } else if (path.equals("pipe_connector")) {
+                    pipeConnector(entry.block());
                 } else if (isFusionBlock(path)) {
                     fusionBlock(entry.block(), path);
                 } else if (isTurbineBlock(path)) {
@@ -127,6 +136,101 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 }
             }
         }
+    }
+
+    private void pipes(DeferredBlock<Block> deferredBlock) {
+        ResourceLocation coreTex = modLoc("block/pipe_core");
+
+        BlockModelBuilder core = models().getBuilder("block/pipe/core")
+                .texture("pipe", coreTex)
+                .texture("particle", coreTex)
+                .element().from(4, 4, 4).to(12, 12, 12)
+                .allFaces((d, f) -> f.texture("#pipe")).end();
+
+        BlockModelBuilder arm = models().getBuilder("block/pipe/arm")
+                .texture("particle", "#pipe")
+                .element().from(4, 4, 0).to(12, 12, 4)
+                .allFaces((d, f) -> f.texture("#pipe")).end();
+
+        BlockModelBuilder armX = models().getBuilder("block/pipe/arm_x").parent(arm).texture("pipe", modLoc("block/pipe_x"));
+        BlockModelBuilder armY = models().getBuilder("block/pipe/arm_y").parent(arm).texture("pipe", modLoc("block/pipe_y"));
+        BlockModelBuilder armZ = models().getBuilder("block/pipe/arm_z").parent(arm).texture("pipe", modLoc("block/pipe_z"));
+
+        BlockModelBuilder inventory = models().getBuilder("block/pipe/inventory")
+                .texture("core", coreTex)
+                .texture("arm", modLoc("block/pipe_z"))
+                .texture("particle", coreTex)
+                .element().from(4, 4, 4).to(12, 12, 12).allFaces((d, f) -> f.texture("#core")).end()
+                .element().from(4, 4, 0).to(12, 12, 4).allFaces((d, f) -> f.texture("#arm")).end()
+                .element().from(4, 4, 12).to(12, 12, 16).allFaces((d, f) -> f.texture("#arm")).end();
+
+        MultiPartBlockStateBuilder b = getMultipartBuilder(deferredBlock.get());
+        b.part().modelFile(core).addModel().end();
+        pipeArm(b, armY, PipeBlock.UP, 270, 0);
+        pipeArm(b, armY, PipeBlock.DOWN, 90, 0);
+        pipeArm(b, armZ, PipeBlock.NORTH, 0, 0);
+        pipeArm(b, armZ, PipeBlock.SOUTH, 0, 180);
+        pipeArm(b, armX, PipeBlock.EAST, 0, 90);
+        pipeArm(b, armX, PipeBlock.WEST, 0, 270);
+
+        itemModels().getBuilder("item/pipe").parent(inventory);
+    }
+
+    private void pipeArm(MultiPartBlockStateBuilder b, ModelFile arm, BooleanProperty prop, int rotX, int rotY) {
+        b.part().modelFile(arm).rotationX(rotX).rotationY(rotY).uvLock(false)
+                .addModel().condition(prop, true).end();
+    }
+
+    private void pipeConnector(DeferredBlock<Block> deferredBlock) {
+        BlockModelBuilder core = models().getBuilder("block/pipe/core");
+        BlockModelBuilder armX = models().getBuilder("block/pipe/arm_x");
+        BlockModelBuilder armY = models().getBuilder("block/pipe/arm_y");
+        BlockModelBuilder armZ = models().getBuilder("block/pipe/arm_z");
+
+        BlockModelBuilder collar = models().getBuilder("block/pipe/connector/collar")
+                .texture("particle", "#pipe")
+                .element().from(3, 3, 0).to(13, 13, 2)
+                .allFaces((d, f) -> f.texture("#pipe")).end();
+
+        BlockModelBuilder collarX = models().getBuilder("block/pipe/connector/collar_x").parent(collar).texture("pipe", modLoc("block/pipe_x"));
+        BlockModelBuilder collarY = models().getBuilder("block/pipe/connector/collar_y").parent(collar).texture("pipe", modLoc("block/pipe_y"));
+        BlockModelBuilder collarZ = models().getBuilder("block/pipe/connector/collar_z").parent(collar).texture("pipe", modLoc("block/pipe_z"));
+
+        BlockModelBuilder inventory = models().getBuilder("block/pipe/connector/inventory")
+                .texture("core", modLoc("block/pipe_core"))
+                .texture("arm", modLoc("block/pipe_z"))
+                .texture("particle", modLoc("block/pipe_core"))
+                .element().from(4, 4, 4).to(12, 12, 12).allFaces((d, f) -> f.texture("#core")).end()
+                .element().from(4, 4, 0).to(12, 12, 4).allFaces((d, f) -> f.texture("#arm")).end()
+                .element().from(3, 3, 0).to(13, 13, 2).allFaces((d, f) -> f.texture("#arm")).end()
+                .element().from(4, 4, 12).to(12, 12, 16).allFaces((d, f) -> f.texture("#arm")).end();
+
+        MultiPartBlockStateBuilder b = getMultipartBuilder(deferredBlock.get());
+        b.part().modelFile(core).addModel().end();
+        connectorArm(b, armY, PipeConnectorBlock.UP, 270, 0);
+        connectorArm(b, armY, PipeConnectorBlock.DOWN, 90, 0);
+        connectorArm(b, armZ, PipeConnectorBlock.NORTH, 0, 0);
+        connectorArm(b, armZ, PipeConnectorBlock.SOUTH, 0, 180);
+        connectorArm(b, armX, PipeConnectorBlock.EAST, 0, 90);
+        connectorArm(b, armX, PipeConnectorBlock.WEST, 0, 270);
+        connectorCollar(b, collarY, PipeConnectorBlock.UP, 270, 0);
+        connectorCollar(b, collarY, PipeConnectorBlock.DOWN, 90, 0);
+        connectorCollar(b, collarZ, PipeConnectorBlock.NORTH, 0, 0);
+        connectorCollar(b, collarZ, PipeConnectorBlock.SOUTH, 0, 180);
+        connectorCollar(b, collarX, PipeConnectorBlock.EAST, 0, 90);
+        connectorCollar(b, collarX, PipeConnectorBlock.WEST, 0, 270);
+
+        itemModels().getBuilder("item/pipe_connector").parent(inventory);
+    }
+
+    private void connectorArm(MultiPartBlockStateBuilder b, ModelFile arm, EnumProperty<PipeConnection> prop, int rotX, int rotY) {
+        b.part().modelFile(arm).rotationX(rotX).rotationY(rotY).uvLock(false)
+                .addModel().condition(prop, PipeConnection.PIPE, PipeConnection.MACHINE).end();
+    }
+
+    private void connectorCollar(MultiPartBlockStateBuilder b, ModelFile collar, EnumProperty<PipeConnection> prop, int rotX, int rotY) {
+        b.part().modelFile(collar).rotationX(rotX).rotationY(rotY).uvLock(false)
+                .addModel().condition(prop, PipeConnection.MACHINE).end();
     }
 
     private void stateBlock(Block block, Function<BlockState, ModelFile> modelFunc) {

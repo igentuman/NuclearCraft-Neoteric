@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-22T20:18:03.664613314	Loot Tables
+// 1.21.1	2026-07-23T02:10:38.203588296	Loot Tables
 a04ceb1e40d590051f8ba1b14dbd606dda79b8b8 data/nuclearcraft/loot_table/blocks/active_cryotheum_heat_sink.json
 5c6ee279cf9632c3dd659bcf92277bc2e35f1df0 data/nuclearcraft/loot_table/blocks/active_enderium_heat_sink.json
 960cbf3bce7ade8bd0acd3f15bad425219aabc0d data/nuclearcraft/loot_table/blocks/active_liquid_helium_heat_sink.json
@@ -133,6 +133,8 @@ ce1ddd1f4394b5c51b33498f9076da160a1403f0 data/nuclearcraft/loot_table/blocks/nio
 0d04271db303116501a1ab8b778e3449025a98ed data/nuclearcraft/loot_table/blocks/nuclear_furnace.json
 31c982869dab161a64cf4233baf98c63794152b2 data/nuclearcraft/loot_table/blocks/obsidian_heat_sink.json
 6320d2daff12bde24e11c48befa08efd164b6002 data/nuclearcraft/loot_table/blocks/photon_concentrator.json
+b54d6ff20bad2b5e48c072de87bfd4b316cb1ae7 data/nuclearcraft/loot_table/blocks/pipe.json
+b03311e90b4fdabdf56e4b110203fcdf399a073f data/nuclearcraft/loot_table/blocks/pipe_connector.json
 e95553b91ee96a32ddec154cf2834662a7ea6955 data/nuclearcraft/loot_table/blocks/platinum_block.json
 743af6e075c73604a66c1479087b7ebc35dde841 data/nuclearcraft/loot_table/blocks/platinum_heat_sink.json
 0ce951700683bfcd44058bfc8b76c021a8e25486 data/nuclearcraft/loot_table/blocks/platinum_ore.json

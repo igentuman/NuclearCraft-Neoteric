@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "nuclearcraft:servo"
+    },
+    "B": {
+      "item": "nuclearcraft:bioplastic"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "BSB",
+    "SAS",
+    "BSB"
+  ],
+  "result": {
+    "count": 2,
+    "id": "nuclearcraft:pipe_connector"
+  }
+}

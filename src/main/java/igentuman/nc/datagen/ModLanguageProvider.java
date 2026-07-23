@@ -26,6 +26,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         energy();
         heatSinks();
         msr();
+        pipes();
         for (String name : NCJukeboxSongs.RECORDS.keySet()) {
             add("jukebox_song." + MODID + "." + name, convertToName(name));
         }
@@ -185,6 +186,20 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("gui.nc.msr.void_pebbles.tooltip", "Void fuel pebbles");
         add("tooltip.nc.msr_controller.descr", "Runs the Molten Salt Reactor: pumps FLiBe carrier salt past TRISO fuel pebbles, holds the chain reaction, and ships the heat out as hot salt. (No heat sinks, no moderators - just don't let the cooling stop.)");
         add("tooltip.nc.msr_port.descr", "Loads fuel pebbles and pipes molten salt in and out. Cold salt in, hot salt out - and that hot-salt flow is the core's only cooling.");
+    }
+
+    private void pipes() {
+        add("block.nuclearcraft.pipe.desc", "Passive network conduit. Connects only to other pipes and connectors.");
+        add("block.nuclearcraft.pipe_connector.desc", "Network I/O node. Interfaces the pipe network with adjacent machines. Right-click to configure; sneak-right-click to cycle mode.");
+        add("gui.nuclearcraft.pipe.capability.item", "Items");
+        add("gui.nuclearcraft.pipe.capability.fluid", "Fluids");
+        add("gui.nuclearcraft.pipe.capability.energy", "Energy");
+        add("gui.nuclearcraft.pipe.mode.disabled", "Mode: Disabled");
+        add("gui.nuclearcraft.pipe.mode.pull", "Mode: Pull");
+        add("gui.nuclearcraft.pipe.mode.push", "Mode: Push");
+        add("gui.nuclearcraft.pipe.mode.default", "Mode: Default");
+        add("gui.nuclearcraft.pipe.redstone.always", "Redstone: Always");
+        add("gui.nuclearcraft.pipe.redstone.on_signal", "Redstone: On Signal");
     }
 
     private void labels() {

@@ -6,6 +6,7 @@ import igentuman.nc.block.MultiblockPartBlock;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.config.*;
 import igentuman.nc.compat.cc.CCCompatHandler;
+import igentuman.nc.handler.event.PipeEvents;
 import igentuman.nc.handler.event.ServerEvents;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
@@ -21,6 +22,7 @@ import igentuman.nc.setup.NcParticles;
 import igentuman.nc.setup.Registers;
 import igentuman.nc.setup.entries.Crafter;
 import igentuman.nc.setup.entries.Energy;
+import igentuman.nc.setup.entries.Pipes;
 import igentuman.nc.setup.entries.Storage;
 import igentuman.nc.util.MultiblocksProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -75,6 +77,7 @@ public class NuclearCraft {
         NCSounds.init();
         ModEntries.init();
         NeoForge.EVENT_BUS.register(new ServerEvents());
+        NeoForge.EVENT_BUS.register(new PipeEvents());
         WorldGen.init(
                 ModEntries.ENTRIES.values().stream()
                         .map(ModEntry::materialEntry)
@@ -146,6 +149,7 @@ public class NuclearCraft {
         Storage.registerCapabilities(event);
         Crafter.registerCapabilities(event);
         Energy.registerCapabilities(event);
+        Pipes.registerCapabilities(event);
 
         // Multiblock ports proxy capabilities from their controller. The port's own ModEntry
         // has no cap definitions, so register caps here unconditionally for every port BE type.

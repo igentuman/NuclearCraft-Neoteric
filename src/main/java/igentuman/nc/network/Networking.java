@@ -27,6 +27,11 @@ public class Networking {
                 PacketProcessorButtonPress::handle
         );
         registrar.playToServer(
+                PacketPipeConnectorButton.TYPE,
+                PacketPipeConnectorButton.STREAM_CODEC,
+                PacketPipeConnectorButton::handle
+        );
+        registrar.playToServer(
                 PacketFissionToggleMode.TYPE,
                 PacketFissionToggleMode.STREAM_CODEC,
                 PacketFissionToggleMode::handle

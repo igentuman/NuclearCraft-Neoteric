@@ -38,6 +38,7 @@ import static igentuman.nc.setup.entries.MSR.msr;
 import static igentuman.nc.setup.entries.Materials.materials;
 import static igentuman.nc.setup.entries.ParticleChamber.particleChamber;
 import static igentuman.nc.setup.entries.Parts.*;
+import static igentuman.nc.setup.entries.Pipes.pipes;
 import static igentuman.nc.setup.entries.Processors.processors;
 import static igentuman.nc.setup.entries.Storage.storage;
 import static igentuman.nc.setup.entries.Crafter.crafter;
@@ -81,6 +82,7 @@ public class ModEntries {
         storage();
         crafter();
         energy();
+        pipes();
         bomb();
         msr();
         FissionRecipes.init();

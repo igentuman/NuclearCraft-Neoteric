@@ -6,6 +6,7 @@ import igentuman.nc.client.renderer.DelayedRenderHandler;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.container.MultiblockPortContainer;
+import igentuman.nc.container.PipeConnectorContainer;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.MultiblockPartBlock;
@@ -117,6 +118,11 @@ public class Client {
                         event.register(
                                 (MenuType<EXPLContainer>) (MenuType<?>) entry.menu().get(),
                                 EXPLScreen::new
+                        );
+                    } else if (entry.name().equals("pipe_connector")) {
+                        event.register(
+                                (MenuType<PipeConnectorContainer>) (MenuType<?>) entry.menu().get(),
+                                PipeConnectorScreen::new
                         );
                     } else {
                         event.register(

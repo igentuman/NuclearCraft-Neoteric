@@ -101,6 +101,7 @@ public class VanillaRecipes {
         msrBlocks();
         crafterBlocks();
         bomb();
+        pipes();
 
 /*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, RESONITE_CRYSTAL.get())
                 .pattern("SSS")
@@ -114,6 +115,27 @@ public class VanillaRecipes {
 
     private static ItemLike item(String name) {
         return ModEntries.get(name).item();
+    }
+
+    private static void pipes() {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("pipe"), 8)
+                .pattern("BSB")
+                .pattern("S S")
+                .pattern("BSB")
+                .define('B', item("bioplastic"))
+                .define('S', plateTag("steel"))
+                .unlockedBy("item", has(item("bioplastic")))
+                .save(recipeOutput, rl("pipe_block"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("pipe_connector"), 2)
+                .pattern("BSB")
+                .pattern("SAS")
+                .pattern("BSB")
+                .define('A', item("servo"))
+                .define('B', item("bioplastic"))
+                .define('S', plateTag("steel"))
+                .unlockedBy("item", has(item("bioplastic")))
+                .save(recipeOutput, rl("pipe_connector_block"));
     }
 
     private static void tierBarrel(String result, String prev, String metal, String plate) {

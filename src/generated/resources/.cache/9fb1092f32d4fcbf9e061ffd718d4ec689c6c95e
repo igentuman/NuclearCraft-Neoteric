@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-22T22:38:18.445397175	Recipes
+// 1.21.1	2026-07-23T02:10:38.204351841	Recipes
 3a5d0bc884d149cb53d9e26d4e76313e10390835 data/nuclearcraft/advancement/recipes/misc/active_enderium_heat_sink.json
 faa2d50526ec46faac58dff31e239dc6c50ae19e data/nuclearcraft/advancement/recipes/misc/active_redstone_heat_sink.json
 d2cef252c10f5984fee3d89c3296cb18ae702044 data/nuclearcraft/advancement/recipes/misc/actuator.json
@@ -574,6 +574,8 @@ a72238b1050ce08b6d6fc2250320dc8dee4c021f data/nuclearcraft/advancement/recipes/m
 252d57abeccdd453c761066faa40bfa2ef3cd04b data/nuclearcraft/advancement/recipes/misc/nuclear_furnace.json
 988fa20d6dae2d6644eb501c1c2d6251930f88e0 data/nuclearcraft/advancement/recipes/misc/obsidian_heat_sink.json
 82469579d8800ddf488bb06bc02263bd342ff232 data/nuclearcraft/advancement/recipes/misc/photon_concentrator.json
+cc1cdabf984a1533a8e9d07c08a7b8ad4257e7a6 data/nuclearcraft/advancement/recipes/misc/pipe_block.json
+2292df8c970fd0366a406fa507e6dba714a1d415 data/nuclearcraft/advancement/recipes/misc/pipe_connector_block.json
 2b9a01716baf0d1855ea0e84ac099b2070adff0d data/nuclearcraft/advancement/recipes/misc/plate_advanced.json
 3ce56b89412b6ab0de101875b4d8e1189500569f data/nuclearcraft/advancement/recipes/misc/plate_basic.json
 913670a724a8f7fb39943ff3630f31df8ce0c904 data/nuclearcraft/advancement/recipes/misc/plate_basic2.json
@@ -3066,6 +3068,8 @@ f723a8d97c249875324037696588c088facf34a1 data/nuclearcraft/recipe/nuclear_blast/
 a5335c1d85a9227de3443bb17131a2a4170a736a data/nuclearcraft/recipe/nuclear_furnace.json
 88cd9dadd19ee7c3df90dafb0eaa1ea0cce6ec08 data/nuclearcraft/recipe/obsidian_heat_sink.json
 1da4cfeca9bd384c3556b7eeaec155ba51387c81 data/nuclearcraft/recipe/photon_concentrator.json
+38cb1ca70faeb396ee077ed52ed01b5345c05148 data/nuclearcraft/recipe/pipe_block.json
+b96450fbdba81b88ad2fd38842f1ec2068f91b90 data/nuclearcraft/recipe/pipe_connector_block.json
 77bc8bfedea77ab0700f1135dc2b860414128301 data/nuclearcraft/recipe/plate_advanced.json
 5c3655082fba8ee74ea65c39bc2a3e8928997cfa data/nuclearcraft/recipe/plate_basic.json
 ebd7861aee3e9fcb30f7a875ccd8f4406f5e2aa2 data/nuclearcraft/recipe/plate_basic2.json

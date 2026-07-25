@@ -1,9 +1,9 @@
 package igentuman.nc.container;
 
 import igentuman.nc.block_entity.pipe.PipeConnectorBE;
-import igentuman.nc.pipe.ConnectorMode;
-import igentuman.nc.pipe.PipeCapabilityType;
-import igentuman.nc.pipe.RedstoneMode;
+import igentuman.nc.api.pipe.ConnectorMode;
+import igentuman.nc.api.pipe.PipeCapabilityType;
+import igentuman.nc.api.pipe.RedstoneMode;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;

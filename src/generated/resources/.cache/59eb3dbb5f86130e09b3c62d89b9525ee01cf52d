@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-23T02:10:38.203588296	Loot Tables
+// 1.21.1	2026-07-25T12:50:14.66696797	Loot Tables
 a04ceb1e40d590051f8ba1b14dbd606dda79b8b8 data/nuclearcraft/loot_table/blocks/active_cryotheum_heat_sink.json
 5c6ee279cf9632c3dd659bcf92277bc2e35f1df0 data/nuclearcraft/loot_table/blocks/active_enderium_heat_sink.json
 960cbf3bce7ade8bd0acd3f15bad425219aabc0d data/nuclearcraft/loot_table/blocks/active_liquid_helium_heat_sink.json
@@ -190,6 +190,7 @@ f1b5d66cbdd27b66a0441481f2f8dcbe24ad13f4 data/nuclearcraft/loot_table/blocks/tur
 bb3ab2d4bf89c740b0b9b48978b279880175f936 data/nuclearcraft/loot_table/blocks/uranium_rtg.json
 0fee79e2dc2a37a00f812cddec84e92e01b61f90 data/nuclearcraft/loot_table/blocks/villiaumite_heat_sink.json
 1cc22b283300594bad8cf7ca8cad55b72f60e106 data/nuclearcraft/loot_table/blocks/wasteland_earth.json
+a31126e25ef3bf3c281a0acf0ed00078f0f327db data/nuclearcraft/loot_table/blocks/wasteland_portal.json
 739357184c06b950a9dfba64935ee052ec7b2ed4 data/nuclearcraft/loot_table/blocks/water_heat_sink.json
 5019cf81bd44612f4b5820f7082f9e7ebe6a75d4 data/nuclearcraft/loot_table/blocks/zinc_block.json
 3fc5f35acd9bf34b4619e158bdbf1c1f1e7854b7 data/nuclearcraft/loot_table/blocks/zinc_ore.json

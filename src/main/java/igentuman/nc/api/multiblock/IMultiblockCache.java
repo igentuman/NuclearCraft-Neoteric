@@ -1,8 +1,6 @@
 package igentuman.nc.api.multiblock;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,10 +21,4 @@ public interface IMultiblockCache {
     void invalidate(BlockPos pos);
 
     void clear();
-
-    /** Persist cache state (notably structure positions) for world-save. */
-    void saveNbt(CompoundTag tag, HolderLookup.Provider registries);
-
-    /** Restore cache state previously written by {@link #saveNbt}. */
-    void loadNbt(CompoundTag tag, HolderLookup.Provider registries);
 }

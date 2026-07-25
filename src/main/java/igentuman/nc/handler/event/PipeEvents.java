@@ -1,6 +1,6 @@
 package igentuman.nc.handler.event;
 
-import igentuman.nc.pipe.PipeNetworkManager;
+import igentuman.nc.api.pipe.PipeNetworkManager;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;

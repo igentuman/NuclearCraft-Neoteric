@@ -1,7 +1,7 @@
 package igentuman.nc.block.pipe;
 
 import com.google.common.collect.ImmutableMap;
-import igentuman.nc.pipe.PipeNetworkManager;
+import igentuman.nc.api.pipe.PipeNetworkManager;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

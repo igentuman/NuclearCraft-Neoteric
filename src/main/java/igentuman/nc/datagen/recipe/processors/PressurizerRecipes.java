@@ -39,6 +39,8 @@ public class PressurizerRecipes {
         rec(out, id, "obsidian", new I[]{i(dust("obsidian"), 4)}, NF, new I[]{van(Items.OBSIDIAN, 1)}, NF);
         rec(out, id, "silicon_boule", new I[]{i(ingot("silicon_carbide"), 3)}, NF, new I[]{prt("silicon_boule", 1)}, NF);
 
+        rec(out, id, "wasteland_earth_to_portal", new I[]{i(part("wasteland_earth"), 32)}, NF, new I[]{i(part("wasteland_portal"), 1)}, NF, TIME * 2);
+
         rec(out, id, "americium241",  new I[]{i(isotope("americium/241"),  9)}, NF, new I[]{i(blockItem("americium241"),  1)}, NF);
         rec(out, id, "uranium238",    new I[]{i(isotope("uranium/238"),    9)}, NF, new I[]{i(blockItem("uranium238"),    1)}, NF);
         rec(out, id, "californium250", new I[]{i(isotope("californium/250"), 9)}, NF, new I[]{i(blockItem("californium250"), 1)}, NF);

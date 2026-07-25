@@ -24,6 +24,7 @@ import igentuman.nc.setup.entries.Crafter;
 import igentuman.nc.setup.entries.Energy;
 import igentuman.nc.setup.entries.Pipes;
 import igentuman.nc.setup.entries.Storage;
+import igentuman.nc.setup.level.ModFeatures;
 import igentuman.nc.util.MultiblocksProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -73,6 +74,7 @@ public class NuclearCraft {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerTicketControllers);
         Registers.init(modEventBus);
+        ModFeatures.init();
         NcParticles.init();
         NCSounds.init();
         ModEntries.init();

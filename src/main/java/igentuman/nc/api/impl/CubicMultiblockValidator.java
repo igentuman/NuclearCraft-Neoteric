@@ -144,6 +144,7 @@ public class CubicMultiblockValidator implements IMultiblockValidator {
                     BlockPos pos = worldPos(controllerPos, facing, x - cx, y - cy, z - cz);
                     BlockState state = cache.getBlockState(level, pos);
                     boolean isController = (x == cx && y == cy && z == cz);
+                    if (!isController && controllerPredicate.test(state, null)) return false;
                     BlockPredicate predicate = isController ? controllerPredicate : shellPredicate;
                     if (!predicate.test(state, null)) return false;
                     cache.getStructurePositions().add(pos.asLong());
@@ -162,6 +163,7 @@ public class CubicMultiblockValidator implements IMultiblockValidator {
                 for (int x = 1; x < wMax; x++) {
                     BlockPos pos = worldPos(controllerPos, facing, x - cx, y - cy, z - cz);
                     BlockState state = cache.getBlockState(level, pos);
+                    if (controllerPredicate.test(state, null)) return false;
                     if (!interiorPredicate.test(state, null)) return false;
                     cache.getStructurePositions().add(pos.asLong());
                     cache.getBlockEntity(level, pos);

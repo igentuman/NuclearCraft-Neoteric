@@ -49,6 +49,9 @@ public class DeterminedMultiblockValidator implements IMultiblockValidator {
                     cache.getStructurePositions().clear();
                     return false;
                 }
+            } else if (controllerPredicate.test(actual, null)) {
+                cache.getStructurePositions().clear();
+                return false;
             } else if (expected.isAir()) {
                 if (!actual.isAir()) {
                     cache.getStructurePositions().clear();

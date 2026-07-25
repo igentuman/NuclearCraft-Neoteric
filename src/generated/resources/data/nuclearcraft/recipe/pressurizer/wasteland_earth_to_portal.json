@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 32,
+      "item": "nuclearcraft:wasteland_earth"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:wasteland_portal"
+    }
+  ],
+  "process_time": 400
+}

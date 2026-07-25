@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-23T02:10:38.204351841	Recipes
+// 1.21.1	2026-07-25T12:50:14.66949119	Recipes
 3a5d0bc884d149cb53d9e26d4e76313e10390835 data/nuclearcraft/advancement/recipes/misc/active_enderium_heat_sink.json
 faa2d50526ec46faac58dff31e239dc6c50ae19e data/nuclearcraft/advancement/recipes/misc/active_redstone_heat_sink.json
 d2cef252c10f5984fee3d89c3296cb18ae702044 data/nuclearcraft/advancement/recipes/misc/actuator.json
@@ -3144,6 +3144,7 @@ c063d873f7cb3704d971e57bb7c1fb3af6220317 data/nuclearcraft/recipe/pressurizer/to
 6f3998b189d3dddcd9217a4a1dbff003dfae4227 data/nuclearcraft/recipe/pressurizer/uranium.json
 30f717068c4a15bf0581f438eccde33a082cb6fa data/nuclearcraft/recipe/pressurizer/uranium238.json
 1ee975a94eadc6d7b773470ed9c58c433d2e8910 data/nuclearcraft/recipe/pressurizer/villiaumite.json
+36bae40cbaa5da7fbaae993cc757569da0f56ad5 data/nuclearcraft/recipe/pressurizer/wasteland_earth_to_portal.json
 eb158d26b0e95fa985565265cd5532b933f2b8a1 data/nuclearcraft/recipe/pressurizer/zinc.json
 b74249f48709eb238e45fbebfb9f0ba19ea78864 data/nuclearcraft/recipe/pressurizer/zirconium.json
 415acedf4be46172613f00f53584150e1d088ff1 data/nuclearcraft/recipe/prismarine_heat_sink.json

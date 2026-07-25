@@ -11,6 +11,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
@@ -42,5 +43,14 @@ public class ModConfiguredFeatures {
                 ? cfg.veinSize().get() : mat.worldgenQty;
             register(context, registerKey(mat.name + "_ore"), Feature.ORE, new OreConfiguration(targets, veinSize));
         }
+
+        registerNone(context, "wasteland_ruins", ModFeatures.WASTELAND_RUINS.get());
+        registerNone(context, "wasteland_deco", ModFeatures.WASTELAND_DECO.get());
+        registerNone(context, "wasteland_portal", ModFeatures.WASTELAND_PORTAL.get());
+        registerNone(context, "wasteland_boss_lair", ModFeatures.WASTELAND_BOSS_LAIR.get());
+    }
+
+    private static void registerNone(BootstrapContext<ConfiguredFeature<?, ?>> context, String name, Feature<NoneFeatureConfiguration> feature) {
+        context.register(registerKey(name), new ConfiguredFeature<>(feature, NoneFeatureConfiguration.INSTANCE));
     }
 }

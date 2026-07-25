@@ -38,5 +38,18 @@ public class ModBiomeModifiers {
                 GenerationStep.Decoration.UNDERGROUND_ORES
             ));
         }
+
+        addToWasteland(context, biomes, placedFeatures, "wasteland_ruins");
+        addToWasteland(context, biomes, placedFeatures, "wasteland_deco");
+        addToWasteland(context, biomes, placedFeatures, "wasteland_portal");
+        addToWasteland(context, biomes, placedFeatures, "wasteland_boss_lair");
+    }
+
+    private static void addToWasteland(BootstrapContext<BiomeModifier> context, HolderGetter<Biome> biomes, HolderGetter<PlacedFeature> placedFeatures, String name) {
+        context.register(registerKey(name), new BiomeModifiers.AddFeaturesBiomeModifier(
+                biomes.getOrThrow(ModBiomes.WASTELAND_TAG),
+                HolderSet.direct(placedFeatures.getOrThrow(ResourceKey.create(Registries.PLACED_FEATURE, rl(name)))),
+                GenerationStep.Decoration.SURFACE_STRUCTURES
+        ));
     }
 }

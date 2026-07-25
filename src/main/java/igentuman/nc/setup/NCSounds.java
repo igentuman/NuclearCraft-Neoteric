@@ -32,6 +32,7 @@ public final class NCSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> RECORD_END_OF_THE_WORLD = addSoundEvent("music.end_of_the_world");
     public static final DeferredHolder<SoundEvent, SoundEvent> RECORD_MONEY_FOR_NOTHING = addSoundEvent("music.money_for_nothing");
     public static final DeferredHolder<SoundEvent, SoundEvent> RECORD_HYPERSPACE = addSoundEvent("music.hyperspace");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MUSIC_WASTELAND = addSoundEvent("music.wasteland");
     public static final DeferredHolder<SoundEvent, SoundEvent> BOMB_BLAST_FIRST = addSoundEvent("bomb.first_distance");
     public static final DeferredHolder<SoundEvent, SoundEvent> BOMB_BLAST_SECOND = addSoundEvent("bomb.second_distance");
     public static final DeferredHolder<SoundEvent, SoundEvent> BOMB_BLAST_THIRD = addSoundEvent("bomb.third_distance");

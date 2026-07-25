@@ -2,9 +2,9 @@ package igentuman.nc.block.pipe;
 
 import com.google.common.collect.ImmutableMap;
 import igentuman.nc.block_entity.pipe.PipeConnectorBE;
-import igentuman.nc.pipe.ConnectorMode;
-import igentuman.nc.pipe.PipeNetworkManager;
-import igentuman.nc.pipe.RedstoneMode;
+import igentuman.nc.api.pipe.ConnectorMode;
+import igentuman.nc.api.pipe.PipeNetworkManager;
+import igentuman.nc.api.pipe.RedstoneMode;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;

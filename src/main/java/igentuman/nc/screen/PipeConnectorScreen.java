@@ -2,7 +2,7 @@ package igentuman.nc.screen;
 
 import igentuman.nc.container.PipeConnectorContainer;
 import igentuman.nc.network.PacketPipeConnectorButton;
-import igentuman.nc.pipe.PipeCapabilityType;
+import igentuman.nc.api.pipe.PipeCapabilityType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;

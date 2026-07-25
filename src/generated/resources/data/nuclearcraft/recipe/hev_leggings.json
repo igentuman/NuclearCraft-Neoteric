@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:lithium_ion_cell"
+    },
+    "H": {
+      "item": "nuclearcraft:tough_leggings"
+    },
+    "T": {
+      "item": "nuclearcraft:plate_extreme"
+    }
+  },
+  "pattern": [
+    "THT",
+    "T T",
+    "B B"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:hev_leggings"
+  }
+}

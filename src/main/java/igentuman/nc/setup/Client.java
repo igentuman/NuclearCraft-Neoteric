@@ -2,6 +2,19 @@ package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.render.bomb.PrimedFissionBombRenderer;
+import igentuman.nc.client.render.q36.Q36EnergyFlashRenderer;
+import igentuman.nc.client.render.q36.Q36PulseProjectileRenderer;
+import igentuman.nc.client.renderer.AnomalyShader;
+import igentuman.nc.client.model.ModelFeralGhoul;
+import igentuman.nc.client.renderer.FeralGhoulRenderer;
+import igentuman.nc.client.renderer.anomaly.AnomalyRenderer;
+import igentuman.nc.client.renderer.anomaly.GravitationalAnomalyRenderer;
+import igentuman.nc.entity.EntityFeralGhoul;
+import igentuman.nc.entity.anomaly.AnomalyEntity;
+import igentuman.nc.entity.anomaly.GravitationalAnomalyEntity;
+import igentuman.nc.setup.entries.Anomalies;
+import igentuman.nc.setup.entries.Ghouls;
+import igentuman.nc.setup.entries.Q36;
 import igentuman.nc.client.renderer.DelayedRenderHandler;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.container.MultiblockControllerContainer;
@@ -63,6 +76,7 @@ public class Client {
             // Register the game-bus render handlers (level-stage events).
             DelayedRenderHandler.register();
             DistortShader.register();
+            AnomalyShader.register();
             registerFluidRenderLayers();
             net.minecraft.client.renderer.item.ItemProperties.register(
                     igentuman.nc.setup.entries.Crafter.CRAFTING_PATTERN.get(),
@@ -124,6 +138,16 @@ public class Client {
                                 (MenuType<PipeConnectorContainer>) (MenuType<?>) entry.menu().get(),
                                 PipeConnectorScreen::new
                         );
+                    } else if (entry.name().equals("charging_station")) {
+                        event.register(
+                                (MenuType<UniversalProcessorContainer>) (MenuType<?>) entry.menu().get(),
+                                igentuman.nc.screen.ChargingStationScreen::new
+                        );
+                    } else if (entry.name().equals("leacher")) {
+                        event.register(
+                                (MenuType<UniversalProcessorContainer>) (MenuType<?>) entry.menu().get(),
+                                LeacherScreen::new
+                        );
                     } else {
                         event.register(
                                 (MenuType<UniversalProcessorContainer>) (MenuType<?>) entry.menu().get(),
@@ -160,6 +184,11 @@ public class Client {
         event.registerAboveAll(NuclearCraft.rl("bomb_flash"), igentuman.nc.client.bomb.BombFlashOverlay.BOMB_FLASH);
     }
 
+    @SubscribeEvent
+    static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(ModelFeralGhoul.LAYER_LOCATION, ModelFeralGhoul::createBodyLayer);
+    }
+
     @SuppressWarnings("unchecked")
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -181,9 +210,45 @@ public class Client {
                 igentuman.nc.client.render.turbine.TurbineRotorRenderer::new);
         // Empty renderer stub for the primed bomb entity; all visuals are client FX (Phase 7).
         event.registerEntityRenderer(
+                (EntityType<? extends EntityFeralGhoul>) (EntityType<?>)
+                        Ghouls.FERAL_GHOUL.get(),
+                FeralGhoulRenderer::new);
+        event.registerEntityRenderer(
                 (EntityType<? extends PrimedFissionBombEntity>) (EntityType<?>)
                         Bomb.PRIMED_FISSION_BOMB.get(),
                 PrimedFissionBombRenderer::new);
+        event.registerEntityRenderer(
+                (EntityType<? extends igentuman.nc.entity.Q36PulseProjectile>) (EntityType<?>)
+                        Q36.Q36_PULSE_PROJECTILE.get(),
+                Q36PulseProjectileRenderer::new);
+        event.registerEntityRenderer(
+                (EntityType<? extends igentuman.nc.entity.Q36EnergyFlash>) (EntityType<?>)
+                        Q36.Q36_ENERGY_FLASH.get(),
+                Q36EnergyFlashRenderer::new);
+        event.registerEntityRenderer(
+                (EntityType<? extends GravitationalAnomalyEntity>) (EntityType<?>)
+                        Anomalies.GRAVITATIONAL_ANOMALY.get(),
+                GravitationalAnomalyRenderer::new);
+        event.registerEntityRenderer(
+                (EntityType<? extends AnomalyEntity>) (EntityType<?>)
+                        Anomalies.ELECTRIC_ANOMALY.get(),
+                AnomalyRenderer::new);
+        event.registerEntityRenderer(
+                (EntityType<? extends AnomalyEntity>) (EntityType<?>)
+                        Anomalies.RADIOACTIVE_ANOMALY.get(),
+                AnomalyRenderer::new);
+        event.registerEntityRenderer(
+                (EntityType<? extends AnomalyEntity>) (EntityType<?>)
+                        Anomalies.BURNING_ANOMALY.get(),
+                AnomalyRenderer::new);
+        event.registerEntityRenderer(
+                (EntityType<? extends AnomalyEntity>) (EntityType<?>)
+                        Anomalies.PSYCHO_ANOMALY.get(),
+                AnomalyRenderer::new);
+        event.registerEntityRenderer(
+                (EntityType<? extends AnomalyEntity>) (EntityType<?>)
+                        Anomalies.TELEPORTING_ANOMALY.get(),
+                AnomalyRenderer::new);
     }
 
     /**

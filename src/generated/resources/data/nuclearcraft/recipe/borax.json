@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:nc_ore_veins",
+  "id": "nuclearcraft:borax",
+  "ores": [
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/boron"
+      },
+      "weight": 90
+    },
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/sodium"
+      },
+      "weight": 10
+    }
+  ]
+}

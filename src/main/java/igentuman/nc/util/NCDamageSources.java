@@ -24,6 +24,16 @@ public class NCDamageSources {
             .exhaustion(0.1F)
             .register();
 
+    public static final ResourceKey<DamageType> Q36 = builder("q36")
+            .scaling(DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER)
+            .register();
+
+    public static final ResourceKey<DamageType> RADIATION = builder("radiation")
+            .scaling(DamageScaling.NEVER)
+            .exhaustion(0.0F)
+            .effects(DamageEffects.HURT)
+            .register();
+
     public static Builder builder(String name) {
         return new Builder(name);
     }

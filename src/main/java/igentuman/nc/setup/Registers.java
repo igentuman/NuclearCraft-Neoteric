@@ -55,6 +55,30 @@ public class Registers {
                     .networkSynchronized(ByteBufCodecs.BOOL)
                     .build());
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> QNP_ENERGY =
+            DATA_COMPONENTS.register("qnp_energy", () -> DataComponentType.<Integer>builder()
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.INT)
+                    .build());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> QNP_MODE =
+            DATA_COMPONENTS.register("qnp_mode", () -> DataComponentType.<Integer>builder()
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.INT)
+                    .build());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> HEV_ENERGY =
+            DATA_COMPONENTS.register("hev_energy", () -> DataComponentType.<Integer>builder()
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.INT)
+                    .build());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> HEV_QE_CHARGE =
+            DATA_COMPONENTS.register("hev_qe_charge", () -> DataComponentType.<Integer>builder()
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.INT)
+                    .build());
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CraftingPatternData>> CRAFTING_PATTERN =
             DATA_COMPONENTS.register("crafting_pattern", () -> DataComponentType.<CraftingPatternData>builder()
                     .persistent(CraftingPatternData.CODEC)

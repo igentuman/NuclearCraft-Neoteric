@@ -203,6 +203,35 @@ public class ModLanguageProvider  extends LanguageProvider {
     }
 
     private void labels() {
+        add("nc.label.leacher_wrong_position", "Wrong Position");
+        add("nc.label.leacher_no_source", "No Source");
+        add("nc.label.leacher_no_acid", "No Acid");
+        add("nc.label.leacher_pumps_error", "Pumps Error");
+        add("leacher.tooltip.valid_pump", "Valid Pump");
+        add("leacher.tooltip.invalid_pump", "Invalid Pump");
+        add("tooltip.nc.chunk_position", "Chunk Position: %s");
+        add("tooltip.nc.use_in_leacher", "Use in Leacher at this position");
+        add("nc.ore_vein.none", "No Vein");
+        add("nc.ore_vein.uraninite", "Uraninite Vein");
+        add("nc.ore_vein.bornite", "Bornite Vein");
+        add("nc.ore_vein.platinum", "Platinum Vein");
+        add("nc.ore_vein.cobaltite", "Cobaltite Vein");
+        add("nc.ore_vein.spodumene", "Spodumene Vein");
+        add("nc.ore_vein.magnesite", "Magnesite Vein");
+        add("nc.ore_vein.sphalerite", "Sphalerite Vein");
+        add("nc.ore_vein.cassiterite", "Cassiterite Vein");
+        add("nc.ore_vein.borax", "Borax Vein");
+        add("tooltip.nc.charging_station", "Charges energy items from stored power and fills fluid items with Quantite Energy gas.");
+        add("tooltip.nc.q36_mode", "Mode: %s");
+        add("tooltip.nc.q36_mode.pulse", "Pulse");
+        add("tooltip.nc.q36_mode.beam", "Beam");
+        add("tooltip.nc.q36_charge", "Charge: %s / %s QE");
+        add("tooltip.nc.q36_cooldown", "Recharging: %s ticks");
+        add("tooltip.nc.q36_hint", "Right-click to switch mode. Left-click to fire.");
+        add("entity.nuclearcraft.q36_pulse_projectile", "Quantite Pulse");
+        add("entity.nuclearcraft.q36_energy_flash", "Energy Flash");
+        add("sound_event.nuclearcraft.q36.beam_shot", "Q-36 Quantite Disruptor fires");
+        add("sound_event.nuclearcraft.q36.pulse_shot", "Q-36 Quantite Pulse discharge");
         add("itemGroup.nuclearcraft.fission_reactor", "NuclearCraft: Fission Reactor");
         add("itemGroup.nuclearcraft.kugelblitz", "NuclearCraft: Kugelblitz Chamber");
         add("block.nuclearcraft.pu_239_bomb.desc", "Warning: arms on redstone signal and detonates after a short fuse. Not safe for dispenser placement.");
@@ -366,5 +395,34 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("tooltip.nuclearcraft.liquid_empty", "Empty (capacity %s)");
         add("tooltip.nuclearcraft.energy_capacity", "Capacity: %s");
         add("tooltip.nuclearcraft.energy_stored", "Energy: %s / %s");
+
+        add("tooltip.nuclearcraft.hev.desc", "Grants extra protection and passive effects while charged");
+        add("tooltip.nuclearcraft.hev.qe_charge", "QE Charge: %s / %s");
+
+        add("tooltip.nc.qnp_mode", "Mode: %s");
+        add("tooltip.nc.shift_rbm_to_change", "Sneak+Use to change");
+        add("tooltip.mode.1", "One Block");
+        add("tooltip.mode.3x3", "3x3");
+        add("tooltip.mode.3x3x3", "3x3x3");
+        add("tooltip.mode.5x5", "5x5");
+        add("tooltip.mode.5x5x5", "5x5x5");
+        add("tooltip.mode.7x7", "7x7");
+        add("tooltip.mode.vein", "Vein");
+
+        add("tooltip.nc.resonite_crystal.raw", "Unanalyzed");
+        add("tooltip.nc.resonite_crystal.rarity", "Rarity: %s");
+        add("tooltip.nc.resonite_crystal.effect", "Effect: %s");
+        add("tooltip.nc.resonite_crystal.fe", "FE/t: %s");
+        add("tooltip.nc.resonite_rarity.common", "Common");
+        add("tooltip.nc.resonite_rarity.rare", "Rare");
+        add("tooltip.nc.resonite_rarity.epic", "Epic");
+        add("tooltip.nc.resonite_rarity.legendary", "Legendary");
+
+        add("entity.nuclearcraft.gravitational_anomaly", "Gravitational Anomaly");
+        add("entity.nuclearcraft.electric_anomaly", "Electric Anomaly");
+        add("entity.nuclearcraft.radioactive_anomaly", "Radioactive Anomaly");
+        add("entity.nuclearcraft.burning_anomaly", "Burning Anomaly");
+        add("entity.nuclearcraft.psycho_anomaly", "Psycho Anomaly");
+        add("entity.nuclearcraft.teleporting_anomaly", "Teleporting Anomaly");
     }
 }

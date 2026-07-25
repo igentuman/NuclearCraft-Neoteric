@@ -3,6 +3,10 @@ package igentuman.nc;
 import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.MultiblockPartBlock;
+import igentuman.nc.entity.EntityFeralGhoul;
+import igentuman.nc.entity.anomaly.AnomalyEntity;
+import igentuman.nc.setup.entries.Anomalies;
+import igentuman.nc.setup.entries.Ghouls;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.config.*;
 import igentuman.nc.compat.cc.CCCompatHandler;
@@ -16,6 +20,7 @@ import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
+import igentuman.nc.item.HEVItem;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCSounds;
 import igentuman.nc.setup.NcParticles;
@@ -44,31 +49,21 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 import static igentuman.nc.config.Common.DEBUG_LOGGING;
 
-// The value here should match an entry in the META-INF/neoforge.mods.toml file
-/** Mod entrypoint: bootstraps registries, entries, worldgen, capabilities, network payloads and creative tabs. */
 @Mod(NuclearCraft.MODID)
 public class NuclearCraft {
     public static final String MODID = "nuclearcraft";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static int TICK_COUNTER = 0;
-
-    // Creates a creative tab with the id "nc:example_tab" for the example item, that is placed after the combat tab
-/*    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.nc")) //The language key for the title of your CreativeModeTab
-            .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
-            .displayItems((parameters, output) -> {
-                output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-                output.accept(EXAMPLE_MACHINE_BLOCK_ITEM.get());
-            }).build());*/
 
     public NuclearCraft(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
@@ -86,6 +81,7 @@ public class NuclearCraft {
                         .filter(mat -> mat != null && mat.hasWorldgenConfig())
                         .toList()
         );
+        modEventBus.addListener(this::registerEntityAttributes);
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(Networking::registerPayloads);
@@ -104,6 +100,7 @@ public class NuclearCraft {
         modContainer.registerConfig(ModConfig.Type.COMMON, Entries.SPEC, MODID + "/entries.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, Multiblocks.SPEC, MODID + "/multiblocks.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, igentuman.nc.config.Bomb.SPEC, MODID + "/bomb.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, igentuman.nc.config.Q36.SPEC, MODID + "/q36.toml");
     }
 
 
@@ -153,6 +150,48 @@ public class NuclearCraft {
         Energy.registerCapabilities(event);
         Pipes.registerCapabilities(event);
 
+        int qnpCap = Common.QNP_ENERGY_STORAGE.get();
+        event.registerItem(Capabilities.EnergyStorage.ITEM,
+                (stack, ctx) -> new net.neoforged.neoforge.energy.ComponentEnergyStorage(
+                        stack, Registers.QNP_ENERGY.get(), qnpCap, qnpCap, qnpCap / 4),
+                ModEntries.get("qnp").item().get());
+
+        int hevCap = Common.HEV_ENERGY_STORAGE.get();
+        var hevArmor = ModEntries.get("hev_armor").armorSetEntry();
+        var hevPieces = java.util.List.of(hevArmor.helmet(), hevArmor.chestplate(), hevArmor.leggings(), hevArmor.boots());
+        for (var piece : hevPieces) {
+            event.registerItem(Capabilities.EnergyStorage.ITEM,
+                    (stack, ctx) -> new net.neoforged.neoforge.energy.ComponentEnergyStorage(
+                            stack, Registers.HEV_ENERGY.get(), hevCap, 5000, hevCap / 4),
+                    piece.get());
+        }
+        net.minecraft.world.level.material.Fluid quantiteFluid = ModEntries.fluidOf("quantite_energy");
+        if (quantiteFluid != null) {
+            for (var piece : hevPieces) {
+                event.registerItem(Capabilities.FluidHandler.ITEM,
+                        (stack, ctx) -> new IFluidHandlerItem() {
+                            @Override public net.minecraft.world.item.ItemStack getContainer() { return stack; }
+                            @Override public int getTanks() { return 1; }
+                            @Override public FluidStack getFluidInTank(int tank) {
+                                int qe = HEVItem.getQeCharge(stack);
+                                return qe > 0 ? new FluidStack(quantiteFluid, qe) : FluidStack.EMPTY;
+                            }
+                            @Override public int getTankCapacity(int tank) { return HEVItem.MAX_QE_CHARGE; }
+                            @Override public boolean isFluidValid(int tank, FluidStack fs) { return fs.getFluid() == quantiteFluid; }
+                            @Override public int fill(FluidStack resource, IFluidHandler.FluidAction action) {
+                                if (resource.getFluid() != quantiteFluid) return 0;
+                                int currentQe = HEVItem.getQeCharge(stack);
+                                int toFill = Math.min(resource.getAmount(), HEVItem.MAX_QE_CHARGE - currentQe);
+                                if (action.execute() && toFill > 0) HEVItem.setQeCharge(stack, currentQe + toFill);
+                                return toFill;
+                            }
+                            @Override public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) { return FluidStack.EMPTY; }
+                            @Override public FluidStack drain(int maxDrain, IFluidHandler.FluidAction action) { return FluidStack.EMPTY; }
+                        },
+                        piece.get());
+            }
+        }
+
         // Multiblock ports proxy capabilities from their controller. The port's own ModEntry
         // has no cap definitions, so register caps here unconditionally for every port BE type.
         for (MultiblockEntry mb : MultiblockRegistry.ENTRIES.values()) {
@@ -175,6 +214,16 @@ public class NuclearCraft {
                 );
             }
         }
+    }
+
+    private void registerEntityAttributes(EntityAttributeCreationEvent event) {
+        event.put(Anomalies.GRAVITATIONAL_ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        event.put(Anomalies.ELECTRIC_ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        event.put(Anomalies.RADIOACTIVE_ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        event.put(Anomalies.BURNING_ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        event.put(Anomalies.PSYCHO_ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        event.put(Anomalies.TELEPORTING_ANOMALY.get(), AnomalyEntity.createAttributes().build());
+        event.put(Ghouls.FERAL_GHOUL.get(), EntityFeralGhoul.createAttributes().build());
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -271,6 +320,18 @@ public class NuclearCraft {
                 continue;
             }
             if(entry.hasItem()) {
+                if (entry.item().get() instanceof igentuman.nc.item.QNPItem) {
+                    if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+                        event.accept(entry.item());
+                    }
+                    continue;
+                }
+                if (entry.item().get() instanceof igentuman.nc.item.Q36Item) {
+                    if (event.getTabKey() == CreativeModeTabs.COMBAT) {
+                        event.accept(entry.item());
+                    }
+                    continue;
+                }
                 if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
                     event.accept(entry.item());
                 }

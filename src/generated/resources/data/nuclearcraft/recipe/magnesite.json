@@ -1,0 +1,13 @@
+{
+  "type": "nuclearcraft:nc_ore_veins",
+  "id": "nuclearcraft:magnesite",
+  "ores": [
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/magnesium"
+      },
+      "weight": 95
+    }
+  ]
+}

@@ -102,7 +102,16 @@ public class VanillaRecipes {
         crafterBlocks();
         bomb();
         pipes();
-
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("charging_station"), 1)
+                .pattern("SBS")
+                .pattern("S S")
+                .pattern("STS")
+                .define('B', item("basic_barrel"))
+                .define('T', item("advanced_voltaic_pile"))
+                .define('S', IRON_BARS)
+                .group(MODID)
+                .unlockedBy("item", has(item("advanced_voltaic_pile")))
+                .save(recipeOutput, rl("charging_station"));
 /*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, RESONITE_CRYSTAL.get())
                 .pattern("SSS")
                 .pattern("SSS")
@@ -111,6 +120,37 @@ public class VanillaRecipes {
                 .group(MODID)
                 .unlockedBy("item", has(RESONITE_SHARD.get()))
                 .save(recipeOutput);*/
+    }
+
+    private static void hevArmor() {
+        var tough = ModEntries.get("tough_armor").armorSetEntry();
+        var hev = ModEntries.get("hev_armor").armorSetEntry();
+        ItemLike plate = item("plate_extreme");
+        ItemLike cell = item("lithium_ion_cell");
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, hev.helmet().get())
+                .pattern(" T ").pattern("THT").pattern(" B ")
+                .define('T', plate).define('H', tough.helmet().get()).define('B', cell)
+                .unlockedBy("item", has(plate))
+                .save(recipeOutput, rl("hev_helmet"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, hev.chestplate().get())
+                .pattern("THT").pattern("TBT").pattern("TTT")
+                .define('T', plate).define('H', tough.chestplate().get()).define('B', cell)
+                .unlockedBy("item", has(plate))
+                .save(recipeOutput, rl("hev_chestplate"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, hev.leggings().get())
+                .pattern("THT").pattern("T T").pattern("B B")
+                .define('T', plate).define('H', tough.leggings().get()).define('B', cell)
+                .unlockedBy("item", has(plate))
+                .save(recipeOutput, rl("hev_leggings"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, hev.boots().get())
+                .pattern("THT").pattern("B B")
+                .define('T', plate).define('H', tough.boots().get()).define('B', cell)
+                .unlockedBy("item", has(plate))
+                .save(recipeOutput, rl("hev_boots"));
     }
 
     private static ItemLike item(String name) {
@@ -236,6 +276,8 @@ public class VanillaRecipes {
                 .define('I', ingotTag("iron"))
                 .unlockedBy("item", has(ModEntries.get("thorium").materialEntry().plate()))
                 .save(recipeOutput, rl("spaxelhoe_thorium"));
+
+        hevArmor();
 
         /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ALL_NC_ITEMS.get("upgrade_speed").get())
                 .pattern("LRL")

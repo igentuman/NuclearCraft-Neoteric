@@ -4,5 +4,6 @@ package igentuman.nc.block_entity.catalyst;
 public enum CatalystType {
     ENERGY,
     SPEED,
-    EFFICIENCY
+    EFFICIENCY,
+    ORE_SOURCE
 }

@@ -133,5 +133,15 @@ public class Networking {
                 PacketCraftDenied.STREAM_CODEC,
                 PacketCraftDenied::handle
         );
+        registrar.playToServer(
+                PacketQ36Fire.TYPE,
+                PacketQ36Fire.STREAM_CODEC,
+                PacketQ36Fire::handle
+        );
+        registrar.playToClient(
+                PacketQ36BeamFx.TYPE,
+                PacketQ36BeamFx.STREAM_CODEC,
+                PacketQ36BeamFx::handle
+        );
     }
 }

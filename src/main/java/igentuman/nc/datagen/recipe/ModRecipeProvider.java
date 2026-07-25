@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.datagen.recipe.VanillaRecipes.craftingRecipes;
 import static igentuman.nc.datagen.recipe.processors.AlloySmelterRecipes.alloySmelter;
+import static igentuman.nc.datagen.recipe.processors.AnalyzerRecipes.analyzer;
 import static igentuman.nc.datagen.recipe.processors.AssemblerRecipes.assembler;
 import static igentuman.nc.datagen.recipe.processors.CentrifugeRecipes.centrifuge;
 import static igentuman.nc.datagen.recipe.processors.ChemicalReactorRecipes.chemicalReactor;
@@ -40,6 +41,7 @@ import static igentuman.nc.datagen.recipe.processors.HeatExchangerRecipes.heatEx
 import static igentuman.nc.datagen.recipe.processors.IngotFormerRecipes.ingotFormer;
 import static igentuman.nc.datagen.recipe.processors.IrradiatorRecipes.irradiator;
 import static igentuman.nc.datagen.recipe.processors.IsotopeSeparatorRecipes.isotopeSeparator;
+import static igentuman.nc.datagen.recipe.processors.LeacherRecipes.leacher;
 import static igentuman.nc.datagen.recipe.processors.ManufactoryRecipes.manufactory;
 import static igentuman.nc.datagen.recipe.processors.MSRRecipes.msr;
 import static igentuman.nc.datagen.recipe.processors.MelterRecipes.melter;
@@ -48,6 +50,7 @@ import static igentuman.nc.datagen.recipe.processors.PumpRecipes.pump;
 import static igentuman.nc.datagen.recipe.processors.RockCrusherRecipes.rockCrusher;
 import static igentuman.nc.datagen.recipe.processors.SteamTurbineRecipes.steamTurbine;
 import static igentuman.nc.datagen.recipe.processors.SubatomicLiquifierRecipes.subatomicLiquifier;
+import static igentuman.nc.datagen.recipe.processors.OreVeinRecipes.oreVeins;
 import static igentuman.nc.datagen.recipe.processors.TurbineRecipes.turbine;
 import static igentuman.nc.datagen.recipe.processors.SupercoolerRecipes.supercooler;
 
@@ -97,6 +100,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         msr(recipeOutput);
         KugelblitzChamberRecipes.generate(recipeOutput);
         NuclearBlastRecipes.nuclearBlast(recipeOutput);
+        leacher(recipeOutput);
+        analyzer(recipeOutput);
+        oreVeins(recipeOutput);
     }
 
     // --- record helpers ---

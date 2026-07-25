@@ -1,10 +1,17 @@
 package igentuman.nc.setup.entries;
 
+import igentuman.nc.block_entity.AnalyzerBE;
 import igentuman.nc.block_entity.IrradiatorBE;
+import igentuman.nc.block_entity.LeacherBE;
+import igentuman.nc.block_entity.PumpBE;
+import igentuman.nc.block_entity.catalyst.CatalystType;
+import igentuman.nc.recipe.OreVeinRecipeSerializer;
 import igentuman.nc.registration.ModEntryBuilder;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.SlotsLayout;
 
+import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.registration.ModEntryBuilder.add;
 import static igentuman.nc.registration.ModEntryBuilder.addProcessor;
 
 /** Declares all single-block machine processors with their item/fluid slots and progress bars. */
@@ -34,11 +41,14 @@ public class Processors extends ModEntries {
     public static final String SUPERCOOLER = "supercooler";
     public static final String SUBATOMIC_LIQUIFIER = "subatomic_liquifier";
     public static final String IRRADIATOR = "irradiator";
+    public static final String LEACHER = "leacher";
+    public static final String ANALYZER = "analyzer";
 
     public static void processors() {
+        oreVeinRecipes();
         irradiator();
         proc(GAS_SCRUBBER, 1, 0, 1, 0, 0);
-        proc(PUMP, 0, 1, 1, 0, 0);
+        pump();
         proc(NUCLEAR_FURNACE, 0, 2, 0, 1, 0);
         proc(MANUFACTORY, 0, 1, 0, 1, 13);
         proc(ALLOY_SMELTER, 0, 2, 0, 1, 0);
@@ -60,6 +70,47 @@ public class Processors extends ModEntries {
         proc(STEAM_TURBINE, 1, 0, 1, 0, 4);
         proc(SUPERCOOLER, 1, 0, 1, 0, 11);
         proc(SUBATOMIC_LIQUIFIER, 1, 1, 1, 0, 0);
+        leacher();
+        analyzer();
+    }
+
+    private static void oreVeinRecipes() {
+        add("nc_ore_veins")
+                .withRecipes(
+                        () -> net.minecraft.world.item.crafting.RecipeType.<igentuman.nc.recipe.OreVeinRecipe>simple(rl("nc_ore_veins")),
+                        () -> new OreVeinRecipeSerializer()
+                )
+                .build();
+    }
+
+    private static void pump() {
+        ModEntryBuilder b = addProcessor(PUMP)
+                .blockEntity(PumpBE::new);
+        b.itemCap(0, 1);
+        b.fluidCap(1, 1, 0);
+        b.withLayout(SlotsLayout.forProcessor(1, 0, 1, 1))
+                .progressBar(0)
+                .build();
+    }
+
+    private static void leacher() {
+        ModEntryBuilder b = addProcessor(LEACHER)
+                .blockEntity(LeacherBE::new);
+        b.itemCap(1, 0);
+        b.fluidCap(1, 1, 0);
+        b.catalysts(CatalystType.ORE_SOURCE);
+        b.withLayout(SlotsLayout.forProcessor(1, 1, 0, 1))
+                .progressBar(0)
+                .build();
+    }
+
+    private static void analyzer() {
+        ModEntryBuilder b = addProcessor(ANALYZER)
+                .blockEntity(AnalyzerBE::new);
+        b.itemCap(1, 1);
+        b.withLayout(SlotsLayout.ONE_TO_ONE)
+                .progressBar(0)
+                .build();
     }
 
     private static void irradiator() {

@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:nc_ore_veins",
+  "id": "nuclearcraft:bornite",
+  "ores": [
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/copper"
+      },
+      "weight": 70
+    },
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/iron"
+      },
+      "weight": 30
+    }
+  ]
+}

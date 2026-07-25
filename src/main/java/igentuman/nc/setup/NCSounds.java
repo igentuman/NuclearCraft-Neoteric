@@ -1,5 +1,6 @@
 package igentuman.nc.setup;
 
+import igentuman.nc.entity.anomaly.AnomalyType;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -45,5 +46,16 @@ public final class NCSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> ANOMALY_TELEPORTING = addSoundEvent("entity.anomaly.teleporting");
 
     public static void init() {
+    }
+
+    public static SoundEvent getAnomalySound(AnomalyType type) {
+        return switch (type) {
+            case GRAVITATIONAL -> ANOMALY_GRAVITATIONAL.get();
+            case ELECTRIC -> ANOMALY_ELECTRIC.get();
+            case RADIOACTIVE -> ANOMALY_RADIOACTIVE.get();
+            case BURNING -> ANOMALY_BURNING.get();
+            case PSYCHO -> ANOMALY_PSYCHO.get();
+            case TELEPORTING -> ANOMALY_TELEPORTING.get();
+        };
     }
 }

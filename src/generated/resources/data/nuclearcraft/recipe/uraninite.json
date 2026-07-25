@@ -1,0 +1,35 @@
+{
+  "type": "nuclearcraft:nc_ore_veins",
+  "id": "nuclearcraft:uraninite",
+  "ores": [
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/uranium"
+      },
+      "weight": 70
+    },
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/thorium"
+      },
+      "weight": 20
+    },
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/lead"
+      },
+      "weight": 7
+    },
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/silver"
+      },
+      "weight": 3
+    }
+  ],
+  "rarity": 2.0
+}

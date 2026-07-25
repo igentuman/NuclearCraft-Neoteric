@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:nc_ore_veins",
+  "id": "nuclearcraft:cassiterite",
+  "ores": [
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/lead"
+      },
+      "weight": 10
+    },
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/tin"
+      },
+      "weight": 90
+    }
+  ]
+}

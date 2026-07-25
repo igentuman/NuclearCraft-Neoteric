@@ -114,6 +114,7 @@ public class DistortShader {
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(false);
 
+        SOURCES.entrySet().removeIf(e -> !e.getValue().isActive());
         for (DistortionSource source : SOURCES.values()) {
             if (processSource(mc, event, pass, source, partialTick)) {
                 chain.process(partialTick);

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:analyzer",
+  "energy_per_tick": 800,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:resonite_crystal"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:resonite_crystal"
+    }
+  ],
+  "process_time": 1600
+}

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:analyzer",
+  "energy_per_tick": 500,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:filled_map"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:filled_map"
+    }
+  ],
+  "process_time": 1100
+}

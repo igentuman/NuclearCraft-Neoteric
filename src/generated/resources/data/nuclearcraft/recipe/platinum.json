@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:nc_ore_veins",
+  "id": "nuclearcraft:platinum",
+  "ores": [
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/platinum"
+      },
+      "weight": 70
+    },
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/gold"
+      },
+      "weight": 30
+    }
+  ],
+  "rarity": 2.0
+}

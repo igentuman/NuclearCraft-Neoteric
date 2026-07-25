@@ -31,6 +31,7 @@ public class ModShaders {
 
     public static PostChain distortPostEffect;
     public static PostChain nukePostEffect;
+    public static PostChain anomalyPostEffect;
 
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
@@ -63,6 +64,14 @@ public class ModShaders {
                 NuclearCraft.rl("shaders/post/nuke.json")
         );
         nukePostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
+
+        anomalyPostEffect = new PostChain(
+                mc.getTextureManager(),
+                mc.getResourceManager(),
+                mc.getMainRenderTarget(),
+                NuclearCraft.rl("shaders/post/anomaly.json")
+        );
+        anomalyPostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
     }
 
     /**

@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:analyzer",
+  "energy_per_tick": 200,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:paper"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:research_paper"
+    }
+  ],
+  "process_time": 500
+}

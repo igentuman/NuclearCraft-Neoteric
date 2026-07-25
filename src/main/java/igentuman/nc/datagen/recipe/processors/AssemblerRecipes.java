@@ -40,7 +40,7 @@ public class AssemblerRecipes {
                 new I[]{prt("compact_nitrogen_collector", 4), plt("beryllium", 1), plt("netherite", 4), prt("motor", 1)});
         assemble(out, "dense_helium_collector", part("dense_helium_collector"), 1,
                 new I[]{prt("compact_helium_collector", 4), plt("zinc", 1), plt("cobalt", 4), prt("motor", 1)});
-        assemble(out, "q36",                   part("q36"),                   1,
+        assemble(out, "q36",                   part("q36_quantite_disruptor"), 1,
                 new I[]{prt("basic_processor", 2), prt("basic_electric_circuit", 1), van(Items.IRON_BARS, 8), prt("coil_bscco", 4)});
         assemble(out, "qnp",                   part("qnp"),                   1,
                 new I[]{plt("hsla_steel", 3), prt("basic_electric_circuit", 1), prt("lithium_ion_cell", 1), prt("coil_magnesium_diboride", 1), prt("actuator", 1)});

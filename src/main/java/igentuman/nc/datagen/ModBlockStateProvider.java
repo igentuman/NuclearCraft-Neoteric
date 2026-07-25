@@ -300,15 +300,24 @@ public class ModBlockStateProvider extends BlockStateProvider {
         Block block = deferredBlock.get();
         String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
 
-        ResourceLocation side = rl("block/processor/side");
-        ResourceLocation top = rl("block/processor/top");
-        ResourceLocation bottom = rl("block/processor/bottom");
-        ResourceLocation front = rl("block/processor/" + path);
-        ResourceLocation frontPowered = textureExists("block/processor/" + path + "_powered")
-                ? rl("block/processor/" + path + "_powered") : front;
+        ModelFile idle;
+        ModelFile powered;
+        if (modelExists("block/" + path)) {
+            idle = models().getExistingFile(rl("block/" + path));
+            powered = modelExists("block/" + path + "_powered")
+                    ? models().getExistingFile(rl("block/" + path + "_powered"))
+                    : idle;
+        } else {
+            ResourceLocation side = rl("block/processor/side");
+            ResourceLocation top = rl("block/processor/top");
+            ResourceLocation bottom = rl("block/processor/bottom");
+            ResourceLocation front = rl("block/processor/" + path);
+            ResourceLocation frontPowered = textureExists("block/processor/" + path + "_powered")
+                    ? rl("block/processor/" + path + "_powered") : front;
 
-        ModelFile idle = models().orientableWithBottom(path, side, front, bottom, top);
-        ModelFile powered = models().orientableWithBottom(path + "_powered", side, frontPowered, bottom, top);
+            idle = models().orientableWithBottom(path, side, front, bottom, top);
+            powered = models().orientableWithBottom(path + "_powered", side, frontPowered, bottom, top);
+        }
 
         getVariantBuilder(block).forAllStates(state -> {
             boolean on = state.getValue(UniversalProcessorBlock.POWERED);

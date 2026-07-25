@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:nc_ore_veins",
+  "id": "nuclearcraft:cobaltite",
+  "ores": [
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/cobalt"
+      },
+      "weight": 99
+    },
+    {
+      "item": {
+        "count": 1,
+        "tag": "c:ores/nickel"
+      },
+      "weight": 1
+    }
+  ]
+}

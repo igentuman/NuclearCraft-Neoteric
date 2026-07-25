@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:basic_barrel"
+    },
+    "S": {
+      "item": "minecraft:iron_bars"
+    },
+    "T": {
+      "item": "nuclearcraft:advanced_voltaic_pile"
+    }
+  },
+  "pattern": [
+    "SBS",
+    "S S",
+    "STS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:charging_station"
+  }
+}

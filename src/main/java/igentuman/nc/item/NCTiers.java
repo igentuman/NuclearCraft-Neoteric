@@ -24,6 +24,11 @@ public final class NCTiers {
             BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
             () -> Ingredient.of(ModEntries.get("thorium").materialEntry().ingot().get()));
 
+    public static final Tier QNP = new NCTier(
+            50000, 20.0F, 14.0F, 25,
+            BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
+            () -> Ingredient.of(ModEntries.get("lithium_ion_cell").item().get()));
+
     private record NCTier(int uses, float speed, float attackDamageBonus, int enchantmentValue,
                           TagKey<Block> incorrectBlocks, Supplier<Ingredient> repair) implements Tier {
 

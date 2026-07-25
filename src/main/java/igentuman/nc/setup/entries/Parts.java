@@ -1,13 +1,19 @@
 package igentuman.nc.setup.entries;
 
+import igentuman.nc.item.HEVItem;
 import igentuman.nc.item.MultitoolItem;
 import igentuman.nc.item.NCTiers;
 import igentuman.nc.item.PaxelItem;
+import igentuman.nc.item.QNPItem;
+import igentuman.nc.item.ResearchPaperItem;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.PickaxeItem;
 import igentuman.nc.registration.ArmorMaterialEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCJukeboxSongs;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.Unbreakable;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import static igentuman.nc.registration.ModEntryBuilder.*;
@@ -17,7 +23,6 @@ public class Parts extends ModEntries {
     public static void parts() {
         String[] parts = {
                 "actuator",
-                "research_paper",
                 "basic_electric_circuit",
                 "bioplastic",
                 "chassis",
@@ -51,6 +56,8 @@ public class Parts extends ModEntries {
         for (String name : parts) {
             addItem(name).build();
         }
+
+        addItem("research_paper", () -> new ResearchPaperItem(new Item.Properties())).build();
     }
 
     public static void records() {
@@ -71,6 +78,11 @@ public class Parts extends ModEntries {
         add("multitool")
                 .item(() -> new MultitoolItem(new Item.Properties().stacksTo(1)))
                 .build();
+        add("qnp")
+                .item(() -> new QNPItem(NCTiers.QNP,
+                        new Item.Properties().stacksTo(1)
+                                .attributes(PickaxeItem.createAttributes(NCTiers.QNP, 11, 2F))))
+                .build();
     }
 
     public static void armor() {
@@ -84,5 +96,19 @@ public class Parts extends ModEntries {
                 .repairItem(() -> Ingredient.of(get("tough_alloy").materialEntry().ingot().get()))
                 .build();
         addArmorSet("tough", tough).build();
+
+        ArmorMaterialEntry hev = ArmorMaterialEntry.builder("hev")
+                .durabilityMultiplier(37)
+                .defense(3, 5, 7, 3)
+                .enchantmentValue(25)
+                .equipSound(SoundEvents.ARMOR_EQUIP_NETHERITE)
+                .toughness(4.0f)
+                .knockbackResistance(0.3f)
+                .repairItem(() -> Ingredient.of(get("plate_extreme").item().get()))
+                .build();
+        addArmorSet("hev", hev)
+                .armorFactory((material, type, props) ->
+                        new HEVItem(material, type, props.component(DataComponents.UNBREAKABLE, new Unbreakable(false))))
+                .build();
     }
 }

@@ -141,6 +141,7 @@ public class TextUtils
 
 	public static String applySpeccialRules(String val)
 	{
+		val = val.replace("Qnp", "QNP");
 		val = val.replace("Rtg", "RTG");
 		val = val.replace("Du", "DU");
 		val = val.replace("Tbu", "TBU");

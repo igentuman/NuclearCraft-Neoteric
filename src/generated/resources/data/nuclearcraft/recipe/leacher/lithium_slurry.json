@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:leacher",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:aqua_regia_acid"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "nuclearcraft:lithium_slurry"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ores/lithium"
+    }
+  ],
+  "process_time": 200
+}

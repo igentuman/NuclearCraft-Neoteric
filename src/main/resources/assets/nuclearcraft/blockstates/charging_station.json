@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "nuclearcraft:block/charging_station" }
+  }
+}

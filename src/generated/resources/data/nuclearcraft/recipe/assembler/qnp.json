@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:hsla_steel_plate"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:basic_electric_circuit"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:lithium_ion_cell"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:coil_magnesium_diboride"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:actuator"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:qnp"
+    }
+  ],
+  "process_time": 200
+}

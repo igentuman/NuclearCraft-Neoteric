@@ -1,5 +1,7 @@
-// 1.21.1	2026-07-23T21:36:37.015815776	Registries
+// 1.21.1	2026-07-25T18:14:06.744902216	Registries
 fd7a52df299c66fcc476e4abd071c844e6c9afe7 data/nuclearcraft/damage_type/acid.json
+9b1935687d9ccbce873c5803c6695e28a4559546 data/nuclearcraft/damage_type/q36.json
+102f90f23ebd746200e2fb66ddcc4124b2f46255 data/nuclearcraft/damage_type/radiation.json
 844bd17c240d66719bd9cbceb1cf1818e4c27f3a data/nuclearcraft/dimension/wasteland.json
 3fff1c76441bf9de4746626c91cb6a18d0bb5688 data/nuclearcraft/dimension_type/wasteland_type.json
 f41672cd49b8b9382805e1d3731e4b126f960152 data/nuclearcraft/jukebox_song/end_of_the_world.json

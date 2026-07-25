@@ -1,0 +1,28 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:basic_processor"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:basic_electric_circuit"
+    },
+    {
+      "count": 8,
+      "item": "minecraft:iron_bars"
+    },
+    {
+      "count": 4,
+      "item": "nuclearcraft:coil_bscco"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:q36_quantite_disruptor"
+    }
+  ],
+  "process_time": 200
+}

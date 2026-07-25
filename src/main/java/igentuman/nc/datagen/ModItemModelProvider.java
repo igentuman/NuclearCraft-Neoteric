@@ -37,6 +37,12 @@ public class ModItemModelProvider  extends ItemModelProvider {
                     craftingPattern();
                     continue;
                 }
+                if (entry.name().equals("qnp")) {
+                    continue;
+                }
+                if (entry.name().equals("q36_quantite_disruptor")) {
+                    continue;
+                }
                 simpleItem(entry.item(), entry.name());
             }
             if (entry.toolSetEntry() instanceof ToolSetEntry toolSet) {

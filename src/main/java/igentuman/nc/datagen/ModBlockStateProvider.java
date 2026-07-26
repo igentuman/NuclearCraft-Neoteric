@@ -22,6 +22,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.registration.HeatSinkEntry;
+import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.MaterialFluidType;
 import igentuman.nc.registration.ModEntry;
@@ -120,22 +121,29 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         blockWithItem(materialEntry.storageBlock(), "material");
                     }
                 }
-                if (materialEntry.hasFluid()) {
-                    var fluidBlock = materialEntry.materialFluid().fluidBlock();
-                    String path = BuiltInRegistries.BLOCK.getKey(fluidBlock.get()).getPath();
-                    if (!blockStateExists(path)) {
-                        // Particle-only model; the fluid renderer draws the liquid itself.
-                        ResourceLocation particle = materialEntry.materialFluid().fluidType().get() instanceof MaterialFluidType mft
-                                ? mft.getStillTexture()
-                                : ResourceLocation.withDefaultNamespace("block/water_still");
-                        ModelFile fluidModel = models().getBuilder(path)
-                                .texture("particle", particle);
-                        getVariantBuilder(fluidBlock.get())
-                                .forAllStates(state -> ConfiguredModel.builder().modelFile(fluidModel).build());
-                    }
-                }
+                fluidBlockState(materialEntry);
             }
         }
+
+        for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
+            for (MaterialEntry materialEntry : fuel.fluids()) {
+                fluidBlockState(materialEntry);
+            }
+        }
+    }
+
+    private void fluidBlockState(MaterialEntry materialEntry) {
+        if (!materialEntry.hasFluid()) return;
+        var fluidBlock = materialEntry.materialFluid().fluidBlock();
+        String path = BuiltInRegistries.BLOCK.getKey(fluidBlock.get()).getPath();
+        if (blockStateExists(path)) return;
+        ResourceLocation particle = materialEntry.materialFluid().fluidType().get() instanceof MaterialFluidType mft
+                ? mft.getStillTexture()
+                : ResourceLocation.withDefaultNamespace("block/water_still");
+        ModelFile fluidModel = models().getBuilder(path)
+                .texture("particle", particle);
+        getVariantBuilder(fluidBlock.get())
+                .forAllStates(state -> ConfiguredModel.builder().modelFile(fluidModel).build());
     }
 
     private void pipes(DeferredBlock<Block> deferredBlock) {

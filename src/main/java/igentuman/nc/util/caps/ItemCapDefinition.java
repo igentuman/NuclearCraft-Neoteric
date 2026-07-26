@@ -8,6 +8,7 @@ public class ItemCapDefinition {
     public int globalSlots = 0;
     public int catalystSlots = 0;
     public int hiddenSlots = 0;
+    public boolean internalInputs = false;
 
     private ItemCapDefinition() {
     }
@@ -38,6 +39,11 @@ public class ItemCapDefinition {
 
     public ItemCapDefinition hidden(int qty) {
         hiddenSlots = qty;
+        return this;
+    }
+
+    public ItemCapDefinition internalInputs(boolean value) {
+        internalInputs = value;
         return this;
     }
 }

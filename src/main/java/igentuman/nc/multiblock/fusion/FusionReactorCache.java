@@ -1,6 +1,8 @@
 package igentuman.nc.multiblock.fusion;
 
 import igentuman.nc.api.impl.MultiblockCacheImpl;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 
 /** Multiblock cache for the fusion reactor; stores derived magnet/amplifier stats and structure size for the runtime. */
 public class FusionReactorCache extends MultiblockCacheImpl {
@@ -41,5 +43,41 @@ public class FusionReactorCache extends MultiblockCacheImpl {
     public void clear() {
         super.clear();
         resetStats();
+    }
+
+    @Override
+    public void saveNbt(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveNbt(tag, registries);
+        tag.putDouble("magneticFieldStrength", magneticFieldStrength);
+        tag.putInt("magnetsEfficiency", magnetsEfficiency);
+        tag.putInt("magnetsPower", magnetsPower);
+        tag.putInt("maxMagnetsTemp", maxMagnetsTemp);
+        tag.putInt("rfAmplification", rfAmplification);
+        tag.putInt("rfAmplifiersPower", rfAmplifiersPower);
+        tag.putInt("rfEfficiency", rfEfficiency);
+        tag.putInt("minRFAmplifiersTemp", minRFAmplifiersTemp);
+        tag.putInt("magnetCount", magnetCount);
+        tag.putInt("amplifierCount", amplifierCount);
+        tag.putInt("connectorCount", connectorCount);
+        tag.putInt("casingCount", casingCount);
+        tag.putInt("size", size);
+    }
+
+    @Override
+    public void loadNbt(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadNbt(tag, registries);
+        magneticFieldStrength = tag.getDouble("magneticFieldStrength");
+        magnetsEfficiency = tag.getInt("magnetsEfficiency");
+        magnetsPower = tag.getInt("magnetsPower");
+        maxMagnetsTemp = tag.getInt("maxMagnetsTemp");
+        rfAmplification = tag.getInt("rfAmplification");
+        rfAmplifiersPower = tag.getInt("rfAmplifiersPower");
+        rfEfficiency = tag.getInt("rfEfficiency");
+        minRFAmplifiersTemp = tag.getInt("minRFAmplifiersTemp");
+        magnetCount = tag.getInt("magnetCount");
+        amplifierCount = tag.getInt("amplifierCount");
+        connectorCount = tag.getInt("connectorCount");
+        casingCount = tag.getInt("casingCount");
+        size = tag.getInt("size");
     }
 }

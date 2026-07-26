@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-25T18:39:33.0632592	Recipes
+// 1.21.1	2026-07-26T16:33:34.504402972	Recipes
 3b8a8f729f4b0a8aa99d1b7771fa8705e5c45f43 data/nuclearcraft/advancement/recipes/combat/hev_boots.json
 0d6337dff6f847eb9e9888bd9bbfa37e406ea920 data/nuclearcraft/advancement/recipes/combat/hev_chestplate.json
 34e337573ea52a1e57cec9a29e3180f82699428d data/nuclearcraft/advancement/recipes/combat/hev_helmet.json
@@ -758,6 +758,8 @@ ef2d8370a4b49f21b979e54c5fa96c2c60f4faf5 data/nuclearcraft/advancement/recipes/m
 29c76379a7beb36262131a5b99966f079606e464 data/nuclearcraft/advancement/recipes/misc/turbine_sic_sic_cmc_rotor_blade.json
 b8c4ba66036b3d830d3a2a355fb4fa8d1dde9c4c data/nuclearcraft/advancement/recipes/misc/turbine_silver_coil.json
 1744681f271892ad72ec16ea5c27d151a82bdf4e data/nuclearcraft/advancement/recipes/misc/turbine_steel_rotor_blade.json
+c2c161ad525bb7e7cb0bd10006cf8e04efaf0cf6 data/nuclearcraft/advancement/recipes/misc/upgrade_energy.json
+756b5ca41357002c956eab2c5d3928cf8bd1d2d5 data/nuclearcraft/advancement/recipes/misc/upgrade_speed.json
 1ee84e89673f2d9c9b4bf95639285565138e0914 data/nuclearcraft/advancement/recipes/misc/uranium_233_ni_sml.json
 ba72c16c256a7ee5bd62437aaca0d8dfdb2f4fcd data/nuclearcraft/advancement/recipes/misc/uranium_233_ox_sml.json
 632849ffe2d5a43e768ce417f5f023c52492660c data/nuclearcraft/advancement/recipes/misc/uranium_233_za_sml.json
@@ -3396,6 +3398,8 @@ cffd2b3a55d3ef60e531752514c91ac66d56fd95 data/nuclearcraft/recipe/turbine_glass.
 e45ed819e32af885b5c3577feebe63111ac48424 data/nuclearcraft/recipe/turbine_sic_sic_cmc_rotor_blade.json
 dcb7ebadc36153c4b2c53946e6d3054b90248cc1 data/nuclearcraft/recipe/turbine_silver_coil.json
 f712eb8196deb378afa08ec8a26ec4d5efcde502 data/nuclearcraft/recipe/turbine_steel_rotor_blade.json
+99d96c1e7c61d57a9c8ee4baaac8672acf6d88ec data/nuclearcraft/recipe/upgrade_energy.json
+1faff4e98e2bbd613f27c424c8a344f6615d905a data/nuclearcraft/recipe/upgrade_speed.json
 dba3ff7f975eac3d81911828b6ab751be474c3b4 data/nuclearcraft/recipe/uraninite.json
 248182ee249f10ef5ab50cc63c76313b3d600978 data/nuclearcraft/recipe/uranium_233_ni_sml.json
 e4bcd7d8f1c73c7e42a48ce2a0491f888e09a404 data/nuclearcraft/recipe/uranium_233_ox_sml.json

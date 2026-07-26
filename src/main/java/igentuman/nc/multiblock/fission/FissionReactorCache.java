@@ -1,6 +1,8 @@
 package igentuman.nc.multiblock.fission;
 
 import igentuman.nc.api.impl.MultiblockCacheImpl;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,5 +66,38 @@ public class FissionReactorCache extends MultiblockCacheImpl {
     public void clear() {
         super.clear();
         resetStats();
+    }
+
+    @Override
+    public void saveNbt(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveNbt(tag, registries);
+        tag.putInt("irradiationLines", irradiationLines);
+        tag.putInt("fuelCellCount", fuelCellCount);
+        tag.putDouble("cellsHeatMult", cellsHeatMult);
+        tag.putDouble("cellsEnergyMult", cellsEnergyMult);
+        tag.putDouble("moderatorsHeatMult", moderatorsHeatMult);
+        tag.putDouble("moderatorsEnergyMult", moderatorsEnergyMult);
+        tag.putDouble("totalCooling", totalCooling);
+        tag.putIntArray("activeCoolantCounts", activeCoolantCounts.clone());
+        tag.putInt("width", width);
+        tag.putInt("height", height);
+        tag.putInt("depth", depth);
+    }
+
+    @Override
+    public void loadNbt(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadNbt(tag, registries);
+        irradiationLines = tag.getInt("irradiationLines");
+        fuelCellCount = tag.getInt("fuelCellCount");
+        cellsHeatMult = tag.getDouble("cellsHeatMult");
+        cellsEnergyMult = tag.getDouble("cellsEnergyMult");
+        moderatorsHeatMult = tag.getDouble("moderatorsHeatMult");
+        moderatorsEnergyMult = tag.getDouble("moderatorsEnergyMult");
+        totalCooling = tag.getDouble("totalCooling");
+        int[] counts = tag.getIntArray("activeCoolantCounts");
+        activeCoolantCounts = counts.length == ActiveCoolant.COUNT ? counts : new int[ActiveCoolant.COUNT];
+        width = tag.getInt("width");
+        height = tag.getInt("height");
+        depth = tag.getInt("depth");
     }
 }

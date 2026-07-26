@@ -14,21 +14,58 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.IntConsumer;
+import java.util.function.Predicate;
 
 /** Sided item handler backing an internal inventory, enforcing per-face access and auto push/pull. */
 public class ItemCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable {
 
     private final ItemStackHandler internal;
     private final Map<Direction, ItemHandlerWrapper> wrappers = new EnumMap<>(Direction.class);
+    private final Predicate<ItemStack>[] validators;
+    private IntConsumer slotChangeListener;
+    private boolean sideInsertLocked = false;
 
+    @SuppressWarnings("unchecked")
     public ItemCapabilityHandler(int inputSlots, int outputSlots, int extraSlots) {
         super(inputSlots, outputSlots, extraSlots);
-        this.internal = new ItemStackHandler(getTotalSlots()) {
+        int total = getTotalSlots();
+        this.validators = new Predicate[total];
+        for (int i = 0; i < total; i++) {
+            this.validators[i] = s -> true;
+        }
+        this.internal = new ItemStackHandler(total) {
             @Override
             protected void onContentsChanged(int slot) {
                 if (tile != null) tile.setChanged();
+                if (slotChangeListener != null) slotChangeListener.accept(slot);
+            }
+
+            @Override
+            public boolean isItemValid(int slot, ItemStack stack) {
+                if (slot >= 0 && slot < validators.length && !validators[slot].test(stack)) return false;
+                return super.isItemValid(slot, stack);
             }
         };
+    }
+
+    /** Restricts which items a slot accepts. A null validator clears the restriction. */
+    public void setSlotValidator(int slot, Predicate<ItemStack> validator) {
+        if (slot >= 0 && slot < validators.length) {
+            validators[slot] = validator == null ? s -> true : validator;
+        }
+    }
+
+    public void setSlotChangeListener(IntConsumer listener) {
+        this.slotChangeListener = listener;
+    }
+
+    public void setSideInsertLocked(boolean locked) {
+        this.sideInsertLocked = locked;
+    }
+
+    public boolean isSideInsertLocked() {
+        return sideInsertLocked;
     }
 
     public ItemStackHandler getInternalHandler() {
@@ -171,6 +208,9 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("Items")) {
             internal.deserializeNBT(provider, tag.getCompound("Items"));
+            if (internal.getSlots() != getTotalSlots()) {
+                internal.setSize(getTotalSlots());
+            }
         }
         if (tag.contains("SideMap")) {
             deserializeSideMap(tag.getCompound("SideMap"));

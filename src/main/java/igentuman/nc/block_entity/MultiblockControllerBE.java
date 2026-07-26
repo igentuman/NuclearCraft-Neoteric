@@ -29,6 +29,8 @@ import static net.minecraft.world.level.block.Block.UPDATE_CLIENTS;
 /** Base controller block entity for a multiblock; bridges block lifecycle to {@link MultiblockHandler} and persists its cache. */
 public class MultiblockControllerBE extends GlobalBlockEntity implements MenuProvider {
 
+    private CompoundTag pendingCacheNbt;
+    private HolderLookup.Provider pendingRegistries;
     protected MultiblockHandler.MultiblockInstance mbInstance;
     @NBTField(syncToClient = true)
     public boolean formed = false;
@@ -95,13 +97,44 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     }
 
     @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        if (level instanceof ServerLevel serverLevel) {
+            MultiblockHandler.MultiblockInstance instance = MultiblockHandler.getInstance(serverLevel, worldPosition);
+            if (instance != null && instance.formed) {
+                CompoundTag cacheTag = new CompoundTag();
+                instance.cache.saveNbt(cacheTag, registries);
+                tag.put("cache", cacheTag);
+            }
+        }
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        if (tag.contains("cache")) {
+            pendingCacheNbt = tag.getCompound("cache");
+            pendingRegistries = registries;
+        } else {
+            pendingCacheNbt = null;
+            pendingRegistries = null;
+        }
+    }
+
+    @Override
     public void onLoad() {
         super.onLoad();
         if (level instanceof ServerLevel serverLevel && name != null) {
             MultiblockEntry entry = MultiblockRegistry.getByController(name);
             if (entry != null) {
-                mbInstance = MultiblockHandler.initMultiblock(serverLevel, worldPosition, facing(), entry);
+                if (pendingCacheNbt != null) {
+                    mbInstance = MultiblockHandler.restoreMultiblock(serverLevel, worldPosition, facing(), entry, pendingCacheNbt, pendingRegistries);
+                } else {
+                    mbInstance = MultiblockHandler.initMultiblock(serverLevel, worldPosition, facing(), entry);
+                }
             }
+            pendingCacheNbt = null;
+            pendingRegistries = null;
         }
     }
 

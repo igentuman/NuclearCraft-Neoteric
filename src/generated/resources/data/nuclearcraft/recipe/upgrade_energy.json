@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "O": {
+      "tag": "c:dusts/obsidian"
+    },
+    "P": {
+      "item": "minecraft:light_weighted_pressure_plate"
+    },
+    "R": {
+      "tag": "c:dusts/quartz"
+    }
+  },
+  "pattern": [
+    "ORO",
+    "RPR",
+    "ORO"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:energy_upgrade"
+  }
+}

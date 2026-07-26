@@ -1,10 +1,12 @@
 package igentuman.nc.screen.element;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import static igentuman.nc.NuclearCraft.rl;
 
@@ -18,6 +20,7 @@ public class SlotWidget extends AbstractWidget {
     public int xOffset = 0;
     public int yOffset = 0;
     private Runnable onPress = null;
+    private ItemStack ghostIcon = ItemStack.EMPTY;
 
     public int X()
     {
@@ -59,6 +62,11 @@ public class SlotWidget extends AbstractWidget {
         return this;
     }
 
+    public SlotWidget ghost(ItemStack stack) {
+        this.ghostIcon = stack == null ? ItemStack.EMPTY : stack;
+        return this;
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (onPress != null && isActive() && visible
@@ -73,6 +81,14 @@ public class SlotWidget extends AbstractWidget {
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.blit(TEXTURE, X()-1, Y()-1, xOffset, yOffset,  18, 18);
+        if (!ghostIcon.isEmpty()) {
+            RenderSystem.enableBlend();
+            RenderSystem.setShaderColor(1f, 1f, 1f, 0.4f);
+            graphics.renderItem(ghostIcon, X(), Y());
+            graphics.flush();
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            RenderSystem.disableBlend();
+        }
     }
 
     @Override

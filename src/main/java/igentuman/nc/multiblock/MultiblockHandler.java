@@ -9,6 +9,8 @@ import igentuman.nc.network.PacketMultiblockBroken;
 import igentuman.nc.network.PacketMultiblockFormed;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -128,6 +130,23 @@ public final class MultiblockHandler {
         return instance;
     }
 
+    public static MultiblockInstance restoreMultiblock(ServerLevel level, BlockPos controllerPos, Direction facing,
+                                                       MultiblockEntry entry, CompoundTag cacheNbt, HolderLookup.Provider registries) {
+        ResourceKey<Level> dim = level.dimension();
+        Map<Long, MultiblockInstance> map = INSTANCES.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
+        MultiblockInstance instance = new MultiblockInstance(entry, facing);
+        if (cacheNbt != null) {
+            instance.cache.loadNbt(cacheNbt, registries);
+        }
+        instance.formed = !instance.cache.getStructurePositions().isEmpty();
+        if (instance.formed) {
+            indexStructure(dim, controllerPos.asLong(), instance.cache);
+            instance.logic.onFormed(level, controllerPos, instance.cache);
+        }
+        map.put(controllerPos.asLong(), instance);
+        return instance;
+    }
+
     /** Destroy a multiblock. Called on controller-block removal. */
     public static void destroyMultiblock(ServerLevel level, BlockPos controllerPos) {
         ResourceKey<Level> dim = level.dimension();
@@ -139,7 +158,7 @@ public final class MultiblockHandler {
         MultiblockExecutorManager.getExecutor().submit(() -> {
             try {
                 if (instance.formed) {
-                    removeFromStructureIndex(dim, instance.cache.getStructurePositions());
+                    removeFromStructureIndex(dim, instance.cache);
                     instance.logic.onBroken(level, controllerPos, instance.cache);
                     sendBroken(level, controllerPos);
                 }
@@ -189,9 +208,25 @@ public final class MultiblockHandler {
         return BlockPos.of(controllerKey);
     }
 
-    static void indexStructure(ResourceKey<Level> dim, long controllerKey, Set<Long> positions) {
+    static void indexStructure(ResourceKey<Level> dim, long controllerKey, IMultiblockCache cache) {
         Map<Long, Long> idx = STRUCTURE_INDEX.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
-        for (long p : positions) idx.put(p, controllerKey);
+        for (long p : cache.getStructurePositions()) idx.put(p, controllerKey);
+    }
+
+    static void indexStructureAABB(ResourceKey<Level> dim, long controllerKey, long minPacked, long maxPacked) {
+        Map<Long, Long> idx = STRUCTURE_INDEX.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
+        BlockPos min = BlockPos.of(minPacked);
+        BlockPos max = BlockPos.of(maxPacked);
+        for (int y = min.getY(); y <= max.getY(); y++)
+            for (int z = min.getZ(); z <= max.getZ(); z++)
+                for (int x = min.getX(); x <= max.getX(); x++)
+                    idx.put(BlockPos.asLong(x, y, z), controllerKey);
+    }
+
+    static void removeFromStructureIndex(ResourceKey<Level> dim, IMultiblockCache cache) {
+        Map<Long, Long> idx = STRUCTURE_INDEX.get(dim);
+        if (idx == null) return;
+        for (long p : cache.getStructurePositions()) idx.remove(p);
     }
 
     static void removeFromStructureIndex(ResourceKey<Level> dim, Set<Long> positions) {
@@ -200,12 +235,30 @@ public final class MultiblockHandler {
         for (long p : positions) idx.remove(p);
     }
 
-    static void sendFormed(ServerLevel level, BlockPos controllerPos, Set<Long> positions) {
-        long[] arr = new long[positions.size()];
-        int i = 0;
-        for (long p : positions) arr[i++] = p;
+    static void removeFromStructureIndexAABB(ResourceKey<Level> dim, long minPacked, long maxPacked) {
+        Map<Long, Long> idx = STRUCTURE_INDEX.get(dim);
+        if (idx == null) return;
+        BlockPos min = BlockPos.of(minPacked);
+        BlockPos max = BlockPos.of(maxPacked);
+        for (int y = min.getY(); y <= max.getY(); y++)
+            for (int z = min.getZ(); z <= max.getZ(); z++)
+                for (int x = min.getX(); x <= max.getX(); x++)
+                    idx.remove(BlockPos.asLong(x, y, z));
+    }
+
+    static void sendFormed(ServerLevel level, BlockPos controllerPos, IMultiblockCache cache) {
+        long[] arr;
+        boolean aabb = cache.hasAABB();
+        if (aabb) {
+            arr = new long[]{cache.aabbMinPacked(), cache.aabbMaxPacked()};
+        } else {
+            Set<Long> positions = cache.getStructurePositions();
+            arr = new long[positions.size()];
+            int i = 0;
+            for (long p : positions) arr[i++] = p;
+        }
         PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(controllerPos),
-                new PacketMultiblockFormed(controllerPos, arr));
+                new PacketMultiblockFormed(controllerPos, arr, aabb));
     }
 
     static void sendBroken(ServerLevel level, BlockPos controllerPos) {
@@ -251,48 +304,72 @@ public final class MultiblockHandler {
         }
 
         void tryValidate(ServerLevel level, BlockPos controllerPos) {
-            Set<Long> previousPositions = new HashSet<>(cache.getStructurePositions());
+            boolean hadAABB = cache.hasAABB();
+            long prevMin = hadAABB ? cache.aabbMinPacked() : 0;
+            long prevMax = hadAABB ? cache.aabbMaxPacked() : 0;
+            Set<Long> previousPositions = hadAABB ? null : new HashSet<>(cache.getStructurePositions());
             cache.clear();
             boolean valid = validator.validate(level, controllerPos, facing, cache);
             if (valid && !formed) {
                 formed = true;
-                indexStructure(level.dimension(), controllerPos.asLong(), cache.getStructurePositions());
+                indexStructure(level.dimension(), controllerPos.asLong(), cache);
                 logic.onFormed(level, controllerPos, cache);
-                sendFormed(level, controllerPos, cache.getStructurePositions());
+                sendFormed(level, controllerPos, cache);
             } else if (!valid && formed) {
                 formed = false;
-                removeFromStructureIndex(level.dimension(), previousPositions);
-                cache.getStructurePositions().addAll(previousPositions);
+                if (hadAABB) {
+                    removeFromStructureIndexAABB(level.dimension(), prevMin, prevMax);
+                    cache.setAABB(BlockPos.of(prevMin), BlockPos.of(prevMax));
+                } else {
+                    removeFromStructureIndex(level.dimension(), previousPositions);
+                    cache.getStructurePositions().addAll(previousPositions);
+                }
                 logic.onBroken(level, controllerPos, cache);
                 sendBroken(level, controllerPos);
-                cache.getStructurePositions().clear();
+                cache.clear();
             }
         }
 
         void onStructureBlockChanged(ServerLevel level, BlockPos controllerPos, Set<Long> changed) {
             for (long c : changed) cache.invalidate(BlockPos.of(c));
-            Set<Long> previousPositions = new HashSet<>(cache.getStructurePositions());
+            boolean hadAABB = cache.hasAABB();
+            long prevMin = hadAABB ? cache.aabbMinPacked() : 0;
+            long prevMax = hadAABB ? cache.aabbMaxPacked() : 0;
+            Set<Long> previousPositions = hadAABB ? null : new HashSet<>(cache.getStructurePositions());
             boolean wasFormed = formed;
             boolean valid = validator.validate(level, controllerPos, facing, cache);
             if (wasFormed && !valid) {
                 formed = false;
-                removeFromStructureIndex(level.dimension(), previousPositions);
-                cache.getStructurePositions().addAll(previousPositions);
+                if (hadAABB) {
+                    removeFromStructureIndexAABB(level.dimension(), prevMin, prevMax);
+                    cache.setAABB(BlockPos.of(prevMin), BlockPos.of(prevMax));
+                } else {
+                    removeFromStructureIndex(level.dimension(), previousPositions);
+                    cache.getStructurePositions().addAll(previousPositions);
+                }
                 logic.onBroken(level, controllerPos, cache);
                 sendBroken(level, controllerPos);
-                cache.getStructurePositions().clear();
+                cache.clear();
             } else if (!wasFormed && valid) {
                 formed = true;
-                indexStructure(level.dimension(), controllerPos.asLong(), cache.getStructurePositions());
+                indexStructure(level.dimension(), controllerPos.asLong(), cache);
                 logic.onFormed(level, controllerPos, cache);
-                sendFormed(level, controllerPos, cache.getStructurePositions());
+                sendFormed(level, controllerPos, cache);
             } else if (wasFormed && valid) {
-                removeFromStructureIndex(level.dimension(), previousPositions);
-                indexStructure(level.dimension(), controllerPos.asLong(), cache.getStructurePositions());
+                if (hadAABB) removeFromStructureIndexAABB(level.dimension(), prevMin, prevMax);
+                else removeFromStructureIndex(level.dimension(), previousPositions);
+                indexStructure(level.dimension(), controllerPos.asLong(), cache);
             }
         }
 
         public BlockPos getCenter(MultiblockCacheImpl multiblockCache) {
+            if (multiblockCache.hasAABB()) {
+                BlockPos min = BlockPos.of(multiblockCache.aabbMinPacked());
+                BlockPos max = BlockPos.of(multiblockCache.aabbMaxPacked());
+                return new BlockPos((min.getX() + max.getX()) / 2,
+                        (min.getY() + max.getY()) / 2,
+                        (min.getZ() + max.getZ()) / 2);
+            }
             Set<Long> positions = multiblockCache.getStructurePositions();
             if (positions.isEmpty()) return BlockPos.ZERO;
             long sumX = 0, sumY = 0, sumZ = 0;

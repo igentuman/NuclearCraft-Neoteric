@@ -409,6 +409,9 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("tooltip.mode.7x7", "7x7");
         add("tooltip.mode.vein", "Vein");
 
+        add("tooltip.nuclearcraft.energy_per_tick", "Energy per tick: %s");
+        add("tooltip.nuclearcraft.speed_multiplier", "Speed Multiplier: %s");
+
         add("tooltip.nc.resonite_crystal.raw", "Unanalyzed");
         add("tooltip.nc.resonite_crystal.rarity", "Rarity: %s");
         add("tooltip.nc.resonite_crystal.effect", "Effect: %s");

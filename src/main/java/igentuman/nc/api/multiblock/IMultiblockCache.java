@@ -1,6 +1,8 @@
 package igentuman.nc.api.multiblock;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,10 +17,21 @@ public interface IMultiblockCache {
     @Nullable
     BlockEntity getBlockEntity(Level level, BlockPos pos);
 
-    /** Mutable set of positions (as {@code BlockPos.asLong()}) belonging to the structure. */
     Set<Long> getStructurePositions();
+
+    default void setAABB(BlockPos min, BlockPos max) {}
+
+    default boolean hasAABB() { return false; }
+
+    default long aabbMinPacked() { return 0; }
+
+    default long aabbMaxPacked() { return 0; }
 
     void invalidate(BlockPos pos);
 
     void clear();
+
+    void saveNbt(CompoundTag tag, HolderLookup.Provider registries);
+
+    void loadNbt(CompoundTag tag, HolderLookup.Provider registries);
 }

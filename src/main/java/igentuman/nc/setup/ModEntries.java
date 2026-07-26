@@ -28,7 +28,6 @@ import static igentuman.nc.setup.entries.Accelerator.accelerator;
 import static igentuman.nc.setup.entries.Blocks.blocks;
 import static igentuman.nc.setup.entries.Bomb.bomb;
 import static igentuman.nc.setup.entries.ChargingStation.chargingStation;
-import static igentuman.nc.setup.entries.Q36.q36;
 import static igentuman.nc.setup.entries.Anomalies.anomalies;
 import static igentuman.nc.setup.entries.FissionFuel.fissionFuel;
 import static igentuman.nc.setup.entries.Energy.energy;

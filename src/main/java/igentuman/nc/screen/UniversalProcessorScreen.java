@@ -1,10 +1,13 @@
 package igentuman.nc.screen;
 
 import igentuman.nc.block_entity.GlobalBlockEntity;
+import igentuman.nc.block_entity.catalyst.CatalystDef;
+import igentuman.nc.block_entity.catalyst.CatalystRegistry;
+import igentuman.nc.block_entity.catalyst.CatalystType;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.network.PacketProcessorButtonPress;
 import igentuman.nc.registration.ModEntry;
-import igentuman.nc.screen.element.EnergyBar;
+import igentuman.nc.screen.element.ProcessorEnergyBar;
 import igentuman.nc.screen.element.ProcessorImageButton;
 import igentuman.nc.screen.element.ProgressBar;
 import igentuman.nc.screen.element.SlotWidget;
@@ -68,19 +71,34 @@ public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalP
             int inputFluidCount = entry.fluidCap() != null ? entry.fluidCap().inputTanks.size() : 0;
             int outputItemCount = entry.itemCap() != null ? entry.itemCap().outputSlots : 0;
             int outputFluidsCount = entry.fluidCap() != null ? entry.fluidCap().outputTanks.size() : 0;
+            boolean internalInputs = entry.itemCap() != null && entry.itemCap().internalInputs;
+
+            int outputFluidCount = entry.fluidCap() != null ? entry.fluidCap().outputTanks.size() : 0;
+            int catalystStart = inputItemCount + inputFluidCount + outputItemCount + outputFluidCount;
+
+            List<CatalystType> catalystTypes = new ArrayList<>(entry.supportedCatalysts());
 
             for (int i = 0; i < layout.slots.size(); i++) {
+                if (internalInputs && i < inputItemCount) continue;
                 SlotDef slotDef = layout.slots.get(i);
                 SlotWidget widget = new SlotWidget(slotDef.x, slotDef.y, 18, 18, Component.empty());
 
                 boolean isInputFluid = i >= inputItemCount && i < inputItemCount + inputFluidCount;
-                boolean isOutputFluid = i >= inputItemCount + inputFluidCount + outputItemCount;
+                boolean isOutputFluid = i >= inputItemCount + inputFluidCount + outputItemCount && i < catalystStart;
 
                 if (isInputFluid || isOutputFluid) {
                     widget.fluid();
                 }
                 if (slotDef.output) {
                     widget.output();
+                }
+
+                int catalystIndex = i - catalystStart;
+                if (catalystIndex >= 0 && catalystIndex < catalystTypes.size()) {
+                    ItemStack icon = catalystIcon(catalystTypes.get(catalystIndex));
+                    if (!icon.isEmpty()) {
+                        widget.ghost(icon);
+                    }
                 }
 
                 slotWidgets.add(widget);
@@ -103,7 +121,7 @@ public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalP
         if (be.hasEnergyStorage()) {
             int barX = leftPos + 8;
             int barY = topPos + 10;
-            addRenderableWidget(new EnergyBar(barX, barY, () -> menu.getBlockEntity().energyStorage));
+            addRenderableWidget(new ProcessorEnergyBar(barX, barY, menu.getBlockEntity()));
         }
 
         addRenderableWidget(new ProcessorImageButton(
@@ -200,6 +218,12 @@ public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalP
                         tanks.getFluidInTank(tankIndex), tanks.getTankCapacity(tankIndex));
             }
         }
+    }
+
+    private ItemStack catalystIcon(CatalystType type) {
+        List<CatalystDef> defs = CatalystRegistry.byType(type);
+        if (defs.isEmpty()) return ItemStack.EMPTY;
+        return new ItemStack(defs.get(0).item().get());
     }
 
     public String getRecipeTypeName() {

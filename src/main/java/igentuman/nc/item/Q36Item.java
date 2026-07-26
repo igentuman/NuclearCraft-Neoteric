@@ -4,7 +4,6 @@ import igentuman.nc.entity.Q36EnergyFlash;
 import igentuman.nc.entity.Q36PulseProjectile;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.setup.NCSounds;
-import igentuman.nc.setup.entries.Q36;
 import igentuman.nc.network.PacketQ36BeamFx;
 import igentuman.nc.util.NCDamageSources;
 import net.minecraft.ChatFormatting;
@@ -42,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.setup.entries.Parts.Q36_ENERGY_FLASH;
 import static igentuman.nc.util.TextUtils.__;
 
 public class Q36Item extends Item {
@@ -235,7 +235,7 @@ public class Q36Item extends Item {
         spawnImpactParticles(level, end, 3.0D);
         spawnMuzzleFlash(level, start);
 
-        Q36EnergyFlash flash = new Q36EnergyFlash(Q36.Q36_ENERGY_FLASH.get(), level);
+        Q36EnergyFlash flash = new Q36EnergyFlash(Q36_ENERGY_FLASH.get(), level);
         flash.setPos(end.x, end.y, end.z);
         level.addFreshEntity(flash);
 

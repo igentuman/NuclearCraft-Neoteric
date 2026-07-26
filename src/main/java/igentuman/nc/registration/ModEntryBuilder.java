@@ -496,6 +496,12 @@ public class ModEntryBuilder {
         return this;
     }
 
+    public ModEntryBuilder internalInputs() {
+        if (itemCapDefinition == null) itemCapDefinition = ItemCapDefinition.create();
+        itemCapDefinition.internalInputs(true);
+        return this;
+    }
+
     public ModEntryBuilder withRecipes() {
         this.recipeTypeSupplier = () -> RecipeType.<UniversalProcessorRecipe>simple(rl(name));
         this.recipeSerializerSupplier = () -> new UniversalProcessorRecipeSerializer(name);
@@ -584,6 +590,9 @@ public class ModEntryBuilder {
         if (!supportedCatalysts.isEmpty()) {
             if (itemCapDefinition == null) itemCapDefinition = ItemCapDefinition.create();
             itemCapDefinition.catalyst(supportedCatalysts.size());
+            if (slotsLayout != null) {
+                slotsLayout = slotsLayout.withCatalysts(supportedCatalysts.size());
+            }
         }
 
         ModEntry entry = new ModEntry(name, block, item, menu, blockEntity, recipeTypeSupplier != null, recipeType, recipeSerializer, material, itemCapDefinition, fluidCapDefinition, energy, slotsLayout, progressBar, toolSetEntry, armorSetEntry, Set.of(), supportedCatalysts);

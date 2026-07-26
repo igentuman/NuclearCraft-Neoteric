@@ -1,20 +1,25 @@
 package igentuman.nc.setup.entries;
 
-import igentuman.nc.item.HEVItem;
-import igentuman.nc.item.MultitoolItem;
-import igentuman.nc.item.NCTiers;
-import igentuman.nc.item.PaxelItem;
-import igentuman.nc.item.QNPItem;
-import igentuman.nc.item.ResearchPaperItem;
+import igentuman.nc.block_entity.catalyst.CatalystType;
+import igentuman.nc.block_entity.catalyst.EnergyCatalyst;
+import igentuman.nc.block_entity.catalyst.SpeedCatalyst;
+import igentuman.nc.entity.Q36EnergyFlash;
+import igentuman.nc.entity.Q36PulseProjectile;
+import igentuman.nc.item.*;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.PickaxeItem;
 import igentuman.nc.registration.ArmorMaterialEntry;
+import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCJukeboxSongs;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.Unbreakable;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import static igentuman.nc.registration.ModEntryBuilder.*;
 
@@ -60,10 +65,37 @@ public class Parts extends ModEntries {
         addItem("research_paper", () -> new ResearchPaperItem(new Item.Properties())).build();
     }
 
+    public static final ModEntry ENERGY_UPGRADE =
+            addCatalyst("energy_upgrade", CatalystType.ENERGY, EnergyCatalyst::new);
+
+    public static final ModEntry SPEED_UPGRADE =
+            addCatalyst("speed_upgrade", CatalystType.SPEED, SpeedCatalyst::new);
+
     public static void records() {
         for (String name : NCJukeboxSongs.RECORDS.keySet()) {
             addItem(name, () -> new Item(new Item.Properties().stacksTo(1).jukeboxPlayable(NCJukeboxSongs.key(name)))).build();
         }
+    }
+
+    public static final DeferredHolder<EntityType<?>, EntityType<Q36PulseProjectile>> Q36_PULSE_PROJECTILE =
+            addEntityType("q36_pulse_projectile",
+                    EntityType.Builder.<Q36PulseProjectile>of(Q36PulseProjectile::new, MobCategory.MISC)
+                            .sized(0.25F, 0.25F)
+                            .clientTrackingRange(8)
+                            .updateInterval(1));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<Q36EnergyFlash>> Q36_ENERGY_FLASH =
+            addEntityType("q36_energy_flash",
+                    EntityType.Builder.<Q36EnergyFlash>of(Q36EnergyFlash::new, MobCategory.MISC)
+                            .sized(0.1F, 0.1F)
+                            .noSummon()
+                            .clientTrackingRange(8)
+                            .updateInterval(20));
+
+    public static void q36() {
+        addItem("q36_quantite_disruptor",
+                () -> new Q36Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)))
+                .build();
     }
 
     public static void tools() {

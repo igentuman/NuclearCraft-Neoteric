@@ -56,6 +56,7 @@ public class CubicMultiblockValidator implements IMultiblockValidator {
             cache.getStructurePositions().clear();
             return false;
         }
+        setStructureAABB(cache, controllerPos, facing, w, h, d, cx, cy, cz);
         return true;
     }
 
@@ -147,7 +148,6 @@ public class CubicMultiblockValidator implements IMultiblockValidator {
                     if (!isController && controllerPredicate.test(state, null)) return false;
                     BlockPredicate predicate = isController ? controllerPredicate : shellPredicate;
                     if (!predicate.test(state, null)) return false;
-                    cache.getStructurePositions().add(pos.asLong());
                     cache.getBlockEntity(level, pos);
                 }
             }
@@ -165,12 +165,33 @@ public class CubicMultiblockValidator implements IMultiblockValidator {
                     BlockState state = cache.getBlockState(level, pos);
                     if (controllerPredicate.test(state, null)) return false;
                     if (!interiorPredicate.test(state, null)) return false;
-                    cache.getStructurePositions().add(pos.asLong());
                     cache.getBlockEntity(level, pos);
                 }
             }
         }
         return true;
+    }
+
+    /** Computes the world-space AABB from the 8 corners of the local bounding box and sets it on the cache. */
+    private static void setStructureAABB(IMultiblockCache cache, BlockPos controllerPos, Direction facing,
+                                         int width, int height, int depth, int cx, int cy, int cz) {
+        int wMax = width - 1, hMax = height - 1, dMax = depth - 1;
+        int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
+        int[][] corners = {
+                {0, 0, 0}, {wMax, 0, 0}, {0, hMax, 0}, {wMax, hMax, 0},
+                {0, 0, dMax}, {wMax, 0, dMax}, {0, hMax, dMax}, {wMax, hMax, dMax}
+        };
+        for (int[] c : corners) {
+            BlockPos wp = worldPos(controllerPos, facing, c[0] - cx, c[1] - cy, c[2] - cz);
+            minX = Math.min(minX, wp.getX());
+            minY = Math.min(minY, wp.getY());
+            minZ = Math.min(minZ, wp.getZ());
+            maxX = Math.max(maxX, wp.getX());
+            maxY = Math.max(maxY, wp.getY());
+            maxZ = Math.max(maxZ, wp.getZ());
+        }
+        cache.setAABB(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
     }
 
     private static BlockPos worldPos(BlockPos controllerPos, Direction facing, int dx, int dy, int dz) {

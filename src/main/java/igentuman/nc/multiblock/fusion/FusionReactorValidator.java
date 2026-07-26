@@ -244,6 +244,7 @@ public class FusionReactorValidator implements IMultiblockValidator {
             for (int i = 0; i < wallLen; i++) {
                 for (int dy : new int[]{0, 2}) {
                     BlockPos p = innerStart.relative(walkDir, i).relative(Direction.UP, dy);
+                    fc.getStructurePositions().add(p.asLong());
                     String bname = blockName(level, p);
                     ElectromagnetDef mag = ElectromagnetDef.get(bname);
                     RFAmplifierDef amp = RFAmplifierDef.get(bname);
@@ -269,6 +270,7 @@ public class FusionReactorValidator implements IMultiblockValidator {
             for (int i = 0; i < outerWallLen; i++) {
                 for (int dy : new int[]{0, 2}) {
                     BlockPos p = outerStart.relative(walkDir, i).relative(Direction.UP, dy);
+                    fc.getStructurePositions().add(p.asLong());
                     String bname = blockName(level, p);
                     ElectromagnetDef mag = ElectromagnetDef.get(bname);
                     RFAmplifierDef amp = RFAmplifierDef.get(bname);

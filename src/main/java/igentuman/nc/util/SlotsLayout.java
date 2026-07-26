@@ -79,4 +79,14 @@ public class SlotsLayout {
         for (int i = 0; i < count; i++) addOutput(startX + (i / 2) * STRIDE, GRID_TOP_Y + (i % 2) * STRIDE);
         return this;
     }
+
+    public SlotsLayout withCatalysts(int count) {
+        SlotsLayout copy = SlotsLayout.create();
+        copy.slots.addAll(this.slots);
+        int startX = 92 - (count - 1) * STRIDE;
+        for (int i = 0; i < count; i++) {
+            copy.slots.add(new SlotDef(startX + i * STRIDE, 74, false));
+        }
+        return copy;
+    }
 }

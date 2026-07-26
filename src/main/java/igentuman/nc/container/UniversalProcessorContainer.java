@@ -58,13 +58,31 @@ public class UniversalProcessorContainer extends AbstractContainerMenu {
             int inputItemOffset  = 0;
             int outputItemOffset = inputItemCount + inputFluidCount;
 
-            for (int i = 0; i < inputItemCount; i++) {
-                SlotDef def = slotsLayout.slots.get(inputItemOffset + i);
-                addSlot(new SlotItemHandler(inv, i, def.x, def.y));
+            boolean internalInputs = entry.itemCap() != null && entry.itemCap().internalInputs;
+            if (!internalInputs) {
+                for (int i = 0; i < inputItemCount; i++) {
+                    SlotDef def = slotsLayout.slots.get(inputItemOffset + i);
+                    addSlot(new SlotItemHandler(inv, i, def.x, def.y));
+                }
             }
             for (int i = 0; i < outputItemCount; i++) {
                 SlotDef def = slotsLayout.slots.get(outputItemOffset + i);
-                addSlot(new SlotItemHandler(inv, inputItemCount + i, def.x, def.y));
+                addSlot(new SlotItemHandler(inv, inputItemCount + i, def.x, def.y) {
+                    @Override
+                    public boolean mayPlace(ItemStack stack) {
+                        return false;
+                    }
+                });
+            }
+            if (entry.hasCatalysts() && entry.itemCap() != null) {
+                int catalystSlotCount = entry.itemCap().catalystSlots;
+                int catalystHandlerBase = entry.itemCap().inputSlots + entry.itemCap().outputSlots + entry.itemCap().globalSlots;
+                int outputFluidCount = entry.fluidCap() != null ? entry.fluidCap().outputTanks.size() : 0;
+                int catalystLayoutBase = inputItemCount + inputFluidCount + outputItemCount + outputFluidCount;
+                for (int i = 0; i < catalystSlotCount; i++) {
+                    SlotDef def = slotsLayout.slots.get(catalystLayoutBase + i);
+                    addSlot(new SlotItemHandler(inv, catalystHandlerBase + i, def.x, def.y));
+                }
             }
         } else if (blockEntity.hasInventory()) {
             IItemHandler inv = blockEntity.getItemHandler(null);
@@ -153,7 +171,7 @@ public class UniversalProcessorContainer extends AbstractContainerMenu {
         ItemStack stack = slot.getItem();
         ItemStack original = stack.copy();
 
-        int beSlots = blockEntity.slotCount;
+        int beSlots = slots.size() - 36;
 
         if (slotIndex < beSlots) {
             if (!moveItemStackTo(stack, beSlots, slots.size(), true)) {

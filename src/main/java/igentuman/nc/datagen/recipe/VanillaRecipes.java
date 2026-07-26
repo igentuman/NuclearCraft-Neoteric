@@ -268,6 +268,26 @@ public class VanillaRecipes {
 
     private static void parts() {
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("speed_upgrade").item())
+                .pattern("LRL")
+                .pattern("RPR")
+                .pattern("LRL")
+                .define('L', dustTag("lapis"))
+                .define('R', dustTag("redstone"))
+                .define('P', HEAVY_WEIGHTED_PRESSURE_PLATE)
+                .unlockedBy("item", has(HEAVY_WEIGHTED_PRESSURE_PLATE))
+                .save(recipeOutput, rl("upgrade_speed"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("energy_upgrade").item())
+                .pattern("ORO")
+                .pattern("RPR")
+                .pattern("ORO")
+                .define('O', dustTag("obsidian"))
+                .define('R', dustTag("quartz"))
+                .define('P', LIGHT_WEIGHTED_PRESSURE_PLATE)
+                .unlockedBy("item", has(HEAVY_WEIGHTED_PRESSURE_PLATE))
+                .save(recipeOutput, rl("upgrade_energy"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("spaxelhoe_thorium").item())
                 .pattern("TTT")
                 .pattern("TIT")

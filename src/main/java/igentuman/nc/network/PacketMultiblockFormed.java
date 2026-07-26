@@ -7,8 +7,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-/** Server -> client payload notifying that a multiblock formed, carrying its structure positions. */
-public record PacketMultiblockFormed(BlockPos controllerPos, long[] structurePositions)
+public record PacketMultiblockFormed(BlockPos controllerPos, long[] structurePositions, boolean aabb)
         implements CustomPacketPayload {
 
     public static final Type<PacketMultiblockFormed> TYPE =
@@ -21,6 +20,7 @@ public record PacketMultiblockFormed(BlockPos controllerPos, long[] structurePos
         BlockPos.STREAM_CODEC.encode(buf, pkt.controllerPos);
         buf.writeVarInt(pkt.structurePositions.length);
         for (long p : pkt.structurePositions) buf.writeLong(p);
+        buf.writeBoolean(pkt.aabb);
     }
 
     private static PacketMultiblockFormed decode(FriendlyByteBuf buf) {
@@ -28,7 +28,8 @@ public record PacketMultiblockFormed(BlockPos controllerPos, long[] structurePos
         int n = buf.readVarInt();
         long[] arr = new long[n];
         for (int i = 0; i < n; i++) arr[i] = buf.readLong();
-        return new PacketMultiblockFormed(pos, arr);
+        boolean aabb = buf.readBoolean();
+        return new PacketMultiblockFormed(pos, arr, aabb);
     }
 
     @Override

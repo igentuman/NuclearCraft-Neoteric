@@ -87,6 +87,7 @@ public class Processors extends ModEntries {
         ModEntryBuilder b = addProcessor(PUMP)
                 .blockEntity(PumpBE::new);
         b.itemCap(0, 1);
+        b.catalysts(CatalystType.ENERGY, CatalystType.SPEED);
         b.fluidCap(1, 1, 0);
         b.withLayout(SlotsLayout.forProcessor(1, 0, 1, 1))
                 .progressBar(0)
@@ -97,6 +98,7 @@ public class Processors extends ModEntries {
         ModEntryBuilder b = addProcessor(LEACHER)
                 .blockEntity(LeacherBE::new);
         b.itemCap(1, 0);
+        b.internalInputs();
         b.fluidCap(1, 1, 0);
         b.catalysts(CatalystType.ORE_SOURCE);
         b.withLayout(SlotsLayout.forProcessor(1, 1, 0, 1))
@@ -108,6 +110,7 @@ public class Processors extends ModEntries {
         ModEntryBuilder b = addProcessor(ANALYZER)
                 .blockEntity(AnalyzerBE::new);
         b.itemCap(1, 1);
+        b.catalysts(CatalystType.ENERGY, CatalystType.SPEED);
         b.withLayout(SlotsLayout.ONE_TO_ONE)
                 .progressBar(0)
                 .build();
@@ -118,6 +121,7 @@ public class Processors extends ModEntries {
                 .blockEntity(IrradiatorBE::new);
         b.itemCap(1, 1);
         b.fluidCap(1, 1, 0);
+        b.catalysts(CatalystType.ENERGY, CatalystType.SPEED);
         b.withLayout(SlotsLayout.forProcessor(1, 1, 1, 1))
                 .progressBar(0)
                 .build();
@@ -131,6 +135,7 @@ public class Processors extends ModEntries {
         if (inFluids > 0 || outFluids > 0) {
             b.fluidCap(inFluids, outFluids, 0);
         }
+        b.catalysts(CatalystType.ENERGY, CatalystType.SPEED);
         b.withLayout(SlotsLayout.forProcessor(inItems, inFluids, outItems, outFluids))
                 .progressBar(progressBar)
                 .build();

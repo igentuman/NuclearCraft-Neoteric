@@ -120,12 +120,18 @@ public class LargeEnergyStorage implements ILongEnergyStorage, INBTSerializable<
 
     @Override
     public Tag serializeNBT(HolderLookup.Provider provider) {
-        return LongTag.valueOf(energy);
+        CompoundTag tag = new CompoundTag();
+        tag.putLong("energy", energy);
+        tag.putLong("capacity", capacity);
+        return tag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, Tag nbt) {
-        if (nbt instanceof LongTag longTag) {
+        if (nbt instanceof CompoundTag tag) {
+            this.capacity = tag.getLong("capacity");
+            this.energy = Math.clamp(tag.getLong("energy"), 0, capacity);
+        } else if (nbt instanceof LongTag longTag) {
             this.energy = longTag.getAsLong();
         }
     }

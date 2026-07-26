@@ -14,7 +14,6 @@ import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.entity.anomaly.GravitationalAnomalyEntity;
 import igentuman.nc.setup.entries.Anomalies;
 import igentuman.nc.setup.entries.Ghouls;
-import igentuman.nc.setup.entries.Q36;
 import igentuman.nc.client.renderer.DelayedRenderHandler;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.container.MultiblockControllerContainer;
@@ -61,6 +60,9 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.client.model.DynamicFluidContainerModel;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+
+import static igentuman.nc.setup.entries.Parts.Q36_ENERGY_FLASH;
+import static igentuman.nc.setup.entries.Parts.Q36_PULSE_PROJECTILE;
 
 /** Client-only setup: registers screens, renderers, particle providers, and fluid render extensions. */
 @Mod(value = NuclearCraft.MODID, dist = Dist.CLIENT)
@@ -219,11 +221,11 @@ public class Client {
                 PrimedFissionBombRenderer::new);
         event.registerEntityRenderer(
                 (EntityType<? extends igentuman.nc.entity.Q36PulseProjectile>) (EntityType<?>)
-                        Q36.Q36_PULSE_PROJECTILE.get(),
+                        Q36_PULSE_PROJECTILE.get(),
                 Q36PulseProjectileRenderer::new);
         event.registerEntityRenderer(
                 (EntityType<? extends igentuman.nc.entity.Q36EnergyFlash>) (EntityType<?>)
-                        Q36.Q36_ENERGY_FLASH.get(),
+                        Q36_ENERGY_FLASH.get(),
                 Q36EnergyFlashRenderer::new);
         event.registerEntityRenderer(
                 (EntityType<? extends GravitationalAnomalyEntity>) (EntityType<?>)

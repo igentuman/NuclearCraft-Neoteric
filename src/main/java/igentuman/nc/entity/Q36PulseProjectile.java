@@ -2,7 +2,7 @@ package igentuman.nc.entity;
 
 import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.item.Q36Item;
-import igentuman.nc.setup.entries.Q36;
+import igentuman.nc.setup.entries.Parts;
 import igentuman.nc.util.NCDamageSources;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -22,7 +22,7 @@ public class Q36PulseProjectile extends ThrowableProjectile {
     }
 
     public Q36PulseProjectile(Level level, LivingEntity owner) {
-        super(Q36.Q36_PULSE_PROJECTILE.get(), owner, level);
+        super(Parts.Q36_PULSE_PROJECTILE.get(), owner, level);
     }
 
     @Override

@@ -645,14 +645,12 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
 
     @Override
     public void validate() {
-        long startTime = System.nanoTime();
         switch (stage) {
             case 0 -> validateOuter();
             case 1 -> validateBeam();
             case 2 -> indexInnerBlocks();
             case 3 -> veryfyCoolers();
         }
-        debugLog("Accelerator validate stage " + stage + " " + initialPos().toShortString() + " in " + (System.nanoTime() - startTime)/1000000 + "ms " + validationResult);
         if(stage < FINAL_STAGE) {
             hasToRefresh = true;
             return;

@@ -174,8 +174,14 @@ public abstract class AbstractAcceleratorControllerBE extends MultiblockControll
         } else if(!formed && thermalInitialized) {
             resetThermal();
         }
-        if(!externalControlled && !isControlledByComputer && currentTick % 10 == 0) {
-            analogSignal = (byte) getRedstoneSignal();
+        if(!isControlledByComputer && currentTick % 10 == 0) {
+            int maxSignal = getRedstoneSignal();
+            for (igentuman.nc.block.entity.MultiblockPortBE port : getMultiblock().getPorts()) {
+                if (port instanceof AcceleratorPortBE accPort && accPort.redstoneMode == AcceleratorPortBE.SignalSource.INPUT) {
+                    maxSignal = Math.max(maxSignal, accPort.getRedstoneSignal());
+                }
+            }
+            analogSignal = (byte) maxSignal;
             accelerationEnergy = analogSignal / 15D;
         }
         controllerEnabled = formed && (analogSignal > 0 || (accelerationEnergy > 0 && externalControlled));

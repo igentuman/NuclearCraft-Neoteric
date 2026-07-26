@@ -95,11 +95,16 @@ public class TargetChamberControllerScreen extends AbstractContainerScreen<Targe
         linkBtn = new Button.Link(150, 14, this, menu.getPosition(), "https://ftb.fandom.com/wiki/NuclearCraft:_Neoteric#Fission_Reactor_+_Irradiator",
                 List.of(__("tooltip.nc.wiki"))
         );
-        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(53, 58).canVoid());
-        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(113, 58).canVoid());
+        addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(16, 16).pos(51, 55).canVoid());
+        addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(16, 16).pos(111, 55).canVoid());
         widgets.add(analyzeBtn);
         widgets.add(linkBtn);
 
+    }
+
+    protected void addWidget(NCGuiElement widget) {
+        widget.setScreen(this);
+        widgets.add(widget);
     }
 
     protected FluidTank getFluidTank(int i) {

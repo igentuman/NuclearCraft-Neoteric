@@ -294,6 +294,16 @@ public abstract class AbstractRecipe implements Recipe<IgnoredIInventory> {
             i++;
         }
 
+        i = contentHandler.inputFluidSlots;
+        for(FluidStack outputFluid: getOutputFluids()) {
+            if(!contentHandler.fluidHandler.insertFluidInternal(i, outputFluid, false).isEmpty()) {
+                if(!contentHandler.fluidHandler.pushExcessFluid(i, outputFluid).isEmpty()) {
+                    return false;
+                }
+            }
+            i++;
+        }
+
         contentHandler.clearHolded();
         return true;
     }

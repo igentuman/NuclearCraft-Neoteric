@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -84,6 +85,10 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
         contentHandler.itemHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
         contentHandler.fluidHandler.setGlobalMode(0, SlotModePair.SlotMode.PULL);
         contentHandler.fluidHandler.setGlobalMode(1, SlotModePair.SlotMode.PUSH);
+        // Initializes fluidHandler.allowedFluids so isValidSlotFluid() doesn't unconditionally
+        // reject every fluid (its null-map check rejects everything, including into empty tanks).
+        // Leaving output slot 1 unregistered makes it permissive for whatever a recipe outputs.
+        contentHandler.setAllowedInputFluids(0, () -> new ArrayList<FluidStack>());
     }
 
     protected CustomEnergyStorage createEnergy() {
@@ -109,7 +114,18 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
 
     public boolean hasRedstoneSignal() {
         if (currentTick % 10 == 0 && getLevel() != null) {
-            hasRedstoneSignal = getLevel().hasNeighborSignal(getBlockPos());
+            boolean signal = getLevel().hasNeighborSignal(getBlockPos());
+            if (!signal && getMultiblock() != null) {
+                for (MultiblockPortBE port : getMultiblock().getPorts()) {
+                    if (port instanceof ParticleChamberPortBE<?, ?> chamberPort
+                            && chamberPort.redstoneMode == ParticleChamberPortBE.SignalSource.INPUT
+                            && chamberPort.getRedstoneSignal() > 0) {
+                        signal = true;
+                        break;
+                    }
+                }
+            }
+            hasRedstoneSignal = signal;
         }
         return enabledByController || hasRedstoneSignal;
     }

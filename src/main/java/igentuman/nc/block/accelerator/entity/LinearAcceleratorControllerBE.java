@@ -87,7 +87,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
             return contentHandler().getFluidCapability(side);
         }
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return LazyOptional.empty();
+            return particleHandler().cast();
         }
         if(isGtLoaded()) {
             if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER && energyStorage() != null) {
@@ -112,7 +112,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
                 return getOCDevice(cap, side);
             }
         }
-        return LazyOptional.empty();
+        return super.getCapability(cap, side);
     }
 
 
@@ -204,15 +204,18 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
             if (stack.getItem() instanceof ParticleSourceItem sourceItem) {
                 stack = sourceItem.use(stack, 10000);
                 ParticleStack particle = sourceItem.getParticleStack(stack);
-                if (particle != null) {
+                // Always write back the (possibly now-depleted/empty) stack so a spent source
+                // is actually removed from the slot, regardless of whether this exact tick
+                // yielded a usable particle (use() returns EMPTY on the final depleting call).
+                contentHandler().itemHandler.setStackInSlot(0, stack);
+                if (particle != null && particle.getParticle() != null) {
                     initialFocus = 0.4d;
                     particle.setAmount(10000);
                     particleStorage.setParticleStack(particle);
-                    contentHandler().itemHandler.setStackInSlot(0, stack);
                 }
             } else {
                 ParticleStack particle = ParticleSources.getParticleFromItem(stack);
-                if (particle != null && ParticleSources.getAmountStored(stack) >= 10000/stack.getCount()) {
+                if (particle != null && particle.getParticle() != null && ParticleSources.getAmountStored(stack) >= 10000/stack.getCount()) {
                     initialFocus = 0.4d;
                     particle.setAmount(10000);
                     particleStorage.setParticleStack(particle);

@@ -73,10 +73,7 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return LazyOptional.empty();
-        }
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return LazyOptional.empty();
+            return particleHandler().cast();
         }
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return contentHandler().getFluidCapability(side);
@@ -103,7 +100,7 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
                 return getOCDevice(cap, side);
             }
         }
-        return LazyOptional.empty();
+        return super.getCapability(cap, side);
     }
 
 

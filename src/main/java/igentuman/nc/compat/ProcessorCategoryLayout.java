@@ -13,8 +13,8 @@ public class ProcessorCategoryLayout {
 
     public static final int SLOT = 18;
     public static final int STRIDE = 20;
-    public static final int FALLBACK_GAP = 30;
-    public static final int PAD = 2;
+    public static final int FALLBACK_GAP = 44;
+    public static final int PAD = 8;
     public static final int BAR_W = 36;
 
     /** Slot sprite atlas offsets mirror {@code screen.element.SlotWidget}: item u0 / fluid u18, input v0 / output v36. */
@@ -77,7 +77,7 @@ public class ProcessorCategoryLayout {
         int[] rawY = new int[n];
         SlotsLayout layout = entry.slotsLayout();
         int totalInputs = itemInputCount + fluidInputCount;
-        if (layout != null && layout.slots.size() == n) {
+        if (layout != null && layout.slots.size() >= n) {
             for (int i = 0; i < n; i++) {
                 rawX[i] = layout.slots.get(i).x;
                 rawY[i] = layout.slots.get(i).y;
@@ -111,7 +111,7 @@ public class ProcessorCategoryLayout {
         boolean arrow = anyIn && anyOut;
         int aRawX = 0, aRawY = 0;
         if (arrow) {
-            aRawX = (inRight + outLeft) / 2 - BAR_W / 2;
+            aRawX = Math.max((inRight + outLeft) / 2 - BAR_W / 2, inRight + 2);
             aRawY = (top + bot) / 2 - barH / 2;
             minX = Math.min(minX, aRawX);
             minY = Math.min(minY, aRawY);

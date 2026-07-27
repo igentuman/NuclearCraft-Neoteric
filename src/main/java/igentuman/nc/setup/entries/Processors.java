@@ -1,14 +1,15 @@
 package igentuman.nc.setup.entries;
 
-import igentuman.nc.block_entity.AnalyzerBE;
-import igentuman.nc.block_entity.IrradiatorBE;
-import igentuman.nc.block_entity.LeacherBE;
-import igentuman.nc.block_entity.PumpBE;
+import igentuman.nc.block.UniversalProcessorBlock;
+import igentuman.nc.block_entity.*;
 import igentuman.nc.block_entity.catalyst.CatalystType;
+import igentuman.nc.container.UniversalProcessorContainer;
+import igentuman.nc.recipe.OreVeinRecipe;
 import igentuman.nc.recipe.OreVeinRecipeSerializer;
 import igentuman.nc.registration.ModEntryBuilder;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.SlotsLayout;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.registration.ModEntryBuilder.add;
@@ -49,7 +50,7 @@ public class Processors extends ModEntries {
         irradiator();
         proc(GAS_SCRUBBER, 1, 0, 1, 0, 0);
         pump();
-        proc(NUCLEAR_FURNACE, 0, 2, 0, 1, 0);
+        nuclearFurnace();
         proc(MANUFACTORY, 0, 1, 0, 1, 13);
         proc(ALLOY_SMELTER, 0, 2, 0, 1, 0);
         proc(ASSEMBLER, 0, 6, 0, 1, 15);
@@ -74,11 +75,23 @@ public class Processors extends ModEntries {
         analyzer();
     }
 
+    private static void nuclearFurnace() {
+        ModEntryBuilder b = add(NUCLEAR_FURNACE)
+                .block(UniversalProcessorBlock::new)
+                .blockEntity(NuclearFurnaceBE::new)
+                .menu(UniversalProcessorContainer::new)
+                .withRecipes();
+        b.itemCap(2, 1);
+        b.withLayout(SlotsLayout.forProcessor(2, 0, 1, 0))
+                .progressBar(0)
+                .build();
+    }
+
     private static void oreVeinRecipes() {
         add("nc_ore_veins")
                 .withRecipes(
-                        () -> net.minecraft.world.item.crafting.RecipeType.<igentuman.nc.recipe.OreVeinRecipe>simple(rl("nc_ore_veins")),
-                        () -> new OreVeinRecipeSerializer()
+                        () -> RecipeType.<OreVeinRecipe>simple(rl("nc_ore_veins")),
+                        OreVeinRecipeSerializer::new
                 )
                 .build();
     }

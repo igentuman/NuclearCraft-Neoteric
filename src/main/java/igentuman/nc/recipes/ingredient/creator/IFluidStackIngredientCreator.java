@@ -17,10 +17,13 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
         if (NCFluids.ALL_FLUID_ENTRIES.get(name) != null) {
             return from(NCFluids.ALL_FLUID_ENTRIES.get(name).getStill(), amount);
         }
-        if (!name.contains(":")) {
-            return IngredientCreatorAccess.fluid().from(new FluidStack(TagUtil.getFluidByName(name), amount));
-        }
-        return IngredientCreatorAccess.fluid().from(name, amount);
+        // TagUtil#getFluidByName resolves both bare names (defaulting to the minecraft
+        // namespace) and full "modid:path" names via ResourceLocation, so it handles the
+        // ":" case too. The previous ":" branch called back into this same method via
+        // IngredientCreatorAccess.fluid().from(name, amount) with unchanged arguments,
+        // recursing infinitely (StackOverflowError) for any foreign-mod fluid name not
+        // already present in NC's own fluid registries.
+        return IngredientCreatorAccess.fluid().from(new FluidStack(TagUtil.getFluidByName(name), amount));
     }
 
     @Override

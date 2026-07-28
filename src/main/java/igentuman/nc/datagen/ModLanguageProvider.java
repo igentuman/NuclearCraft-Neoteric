@@ -27,6 +27,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         heatSinks();
         msr();
         pipes();
+        sounds();
         for (String name : NCJukeboxSongs.RECORDS.keySet()) {
             add("jukebox_song." + MODID + "." + name, convertToName(name));
         }
@@ -200,6 +201,42 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("gui.nuclearcraft.pipe.mode.default", "Mode: Default");
         add("gui.nuclearcraft.pipe.redstone.always", "Redstone: Always");
         add("gui.nuclearcraft.pipe.redstone.on_signal", "Redstone: On Signal");
+    }
+
+    private void sounds() {
+        add("sound_event.nuclearcraft.item.charged", "Item charges");
+        add("sound_event.nuclearcraft.laser.shoot", "Laser fires");
+        add("sound_event.nuclearcraft.boss_hit", "Boss takes damage");
+        add("sound_event.nuclearcraft.boss_idle", "Boss growls");
+        add("sound_event.nuclearcraft.boss_angry", "Boss roars");
+        add("sound_event.nuclearcraft.boss_action", "Boss attacks");
+        add("sound_event.nuclearcraft.feral_ghoul.death", "Feral Ghoul dies");
+        add("sound_event.nuclearcraft.feral_ghoul.idle", "Feral Ghoul growls");
+        add("sound_event.nuclearcraft.fission_reactor", "Fission reactor hums");
+        add("sound_event.nuclearcraft.fusion.charging", "Fusion reactor charges");
+        add("sound_event.nuclearcraft.fusion.running", "Fusion reactor runs");
+        add("sound_event.nuclearcraft.fusion.ready", "Fusion reactor ready");
+        add("sound_event.nuclearcraft.fusion.switch", "Fusion reactor switches mode");
+        add("sound_event.nuclearcraft.turbine", "Turbine spins");
+        add("sound_event.nuclearcraft.blackhole.spawn", "Black hole forms");
+        add("sound_event.nuclearcraft.blackhole.idle", "Black hole hums");
+        add("sound_event.nuclearcraft.bomb.blast", "Bomb explodes");
+        add("sound_event.nuclearcraft.anomaly.gravitational", "Gravitational Anomaly hums");
+        add("sound_event.nuclearcraft.anomaly.electric", "Electric Anomaly crackles");
+        add("sound_event.nuclearcraft.anomaly.radioactive", "Radioactive Anomaly hisses");
+        add("sound_event.nuclearcraft.anomaly.burning", "Burning Anomaly crackles");
+        add("sound_event.nuclearcraft.anomaly.psycho", "Psycho Anomaly shrieks");
+        add("sound_event.nuclearcraft.anomaly.teleporting", "Teleporting Anomaly warps");
+        add("sound_event.nuclearcraft.item.geiger_1", "Geiger counter clicks");
+        add("sound_event.nuclearcraft.item.geiger_2", "Geiger counter clicks");
+        add("sound_event.nuclearcraft.item.geiger_3", "Geiger counter clicks");
+        add("sound_event.nuclearcraft.item.geiger_4", "Geiger counter clicks");
+        add("sound_event.nuclearcraft.item.geiger_5", "Geiger counter clicks");
+        add("sound_event.nuclearcraft.item.geiger_6", "Geiger counter clicks");
+        add("music.wanderer", "Wanderer plays");
+        add("music.end_of_the_world", "End of the World plays");
+        add("music.money_for_nothing", "Money for Nothing plays");
+        add("music.hyperspace", "Hyperspace plays");
     }
 
     private void labels() {

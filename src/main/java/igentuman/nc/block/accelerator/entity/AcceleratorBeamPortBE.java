@@ -105,7 +105,7 @@ public class AcceleratorBeamPortBE extends MultiblockPortBE {
             }
             BlockEntity be = level.getExistingBlockEntity(currentPos);
             if (be instanceof AcceleratorBeamPortBE targetPort) {
-                if (targetPort.getFacing() == facing.getOpposite() && targetPort.isInput()) {
+                if (targetPort.getFacing() == facing.getOpposite() && targetPort.isInput() && targetPort.controller() != null) {
                     int finalDistance = distance;
                     targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
                             .ifPresent(handler -> {

@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static igentuman.nc.NuclearCraft.currentTick;
+import static igentuman.nc.NuclearCraft.debugLog;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;
@@ -70,11 +71,12 @@ public class AcceleratorPortBE extends MultiblockPortBE {
         }
         switch (redstoneMode) {
             case SignalSource.INPUT:
+                // Redstone control is pulled directly by AbstractAcceleratorControllerBE.tickServer()
+                // from every connected INPUT-mode port, rather than pushed from here. Pushing from
+                // each port independently raced against every other port on the same structure
+                // (all default to INPUT mode), and whichever port ticked first each cycle silently
+                // overwrote the others' signal.
                 analogSignal = (byte) Math.max(0, getRedstoneSignal());
-                if(!controller().externalControlled && !controller().isControlledByComputer) {
-                    controller().setRedstoneByPort(getRedstoneSignal());
-                    controller().accelerationEnergy = getRedstoneSignal() / 15D;
-                }
                 break;
             case SignalSource.OUTPUT:
                 analogSignal = (byte) (hasParticle() ? 15 : 0);

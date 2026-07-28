@@ -52,9 +52,6 @@ public class TargetChamberPortBE extends ParticleChamberPortBE<ParticleChamberCo
         if(!isConnectedToController()) return;
         int wasSignal = analogSignal;
         updateAnalogSignal();
-        if(redstoneMode == SignalSource.INPUT && hasRedstoneSignal()) {
-            controller().setRedstoneByPort(getRedstoneSignal());
-        }
         updated |= wasSignal != analogSignal;
         updated |= pushPull();
         updateIfNeeded(updated);

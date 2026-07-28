@@ -186,7 +186,10 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
         if (recipeInfo().be == null) {
             recipeInfo().be = this;
         }
-        if (particleStorage.getParticle() == null) {
+        if (recipe == null) {
+            recipe = recipeInfo().recipe();
+        }
+        if (recipe == null || particleStorage.getParticle() == null) {
             return false;
         }
         recipeInfo().process(particleStorage.getParticle().getAmount() * ((Recipe) recipe).crossSection * efficiency / 100D);

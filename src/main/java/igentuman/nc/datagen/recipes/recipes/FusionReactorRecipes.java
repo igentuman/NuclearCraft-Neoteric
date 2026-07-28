@@ -18,8 +18,9 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
-                        fluidIngredient("deuterium", 250),
-                        fluidIngredient("tritium", 250)
+                        fluidIngredient("tritium", 250),
+                        fluidIngredient("deuterium", 250)
+
                 ),
                 List.of(
                         fluidIngredient("helium", 65),
@@ -32,8 +33,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         
         add(
                 List.of(
-                        fluidIngredient("deuterium", 1000),
-                        fluidIngredient("hydrogen", 1000)
+                        fluidIngredient("hydrogen", 1000),
+                        fluidIngredient("deuterium", 1000)
                 ),
                 List.of(
                         fluidIngredient("helium_3", 250),
@@ -45,8 +46,8 @@ public class FusionReactorRecipes extends AbstractRecipeProvider {
         
         add(
                 List.of(
-                        fluidIngredient("hydrogen", 1000),
-                        fluidIngredient("tritium", 1000)
+                        fluidIngredient("tritium", 1000),
+                        fluidIngredient("hydrogen", 1000)
                 ),
                 List.of(
                         fluidIngredient("helium_3", 250),

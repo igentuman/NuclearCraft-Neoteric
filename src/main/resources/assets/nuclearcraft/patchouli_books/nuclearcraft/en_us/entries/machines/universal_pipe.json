@@ -1,0 +1,33 @@
+{
+  "name": "Universal Pipe",
+  "icon": "nuclearcraft:pipe",
+  "category": "nuclearcraft:machines",
+  "sortnum": 3,
+  "pages": [
+    {
+      "anchor": "intro",
+      "type": "blocks/2",
+      "header": "Pipe & Connector",
+      "block1": "nuclearcraft:pipe",
+      "block2": "nuclearcraft:pipe_connector",
+      "text": "The $(thing)Universal Pipe$() is a single conduit that carries items, fluids, and energy through one network at the same time. Pipes only move the network around; a $(thing)Pipe Connector$() is what actually talks to an adjacent block."
+    },
+    {
+      "anchor": "network",
+      "type": "text",
+      "text": "Connect pipes together and they merge into one network. Every connector on that network shares the same items, fluids, and energy. Place a connector against any inventory, tank, or energy machine to interface with it.$(br)$(br)Open a connector's GUI to configure it."
+    },
+    {
+      "anchor": "capabilities",
+      "type": "text",
+      "header": "Transport Media",
+      "text": "A fresh connector transports nothing. Tick $(l)Items$(), $(l)Fluids$(), or $(l)Energy$() to permit each medium independently.$(br)$(br)All three inert until authorized. (The safety interlock nobody reads.)"
+    },
+    {
+      "anchor": "modes",
+      "type": "text",
+      "header": "Direction & Redstone",
+      "text": "Cycle transfer direction: $(l)Disabled$(), $(l)Pull$() (out of the attached block), $(l)Push$() (into it), or $(l)Auto$() (let the block decide).$(br)$(br)Set $(l)Redstone: Ignored$() to always run, or $(l)Redstone: Required$() to run only on a signal."
+    }
+  ]
+}

@@ -36,6 +36,8 @@ how you build.
 - **World generation** - new biome, new dimension with custom structures. Mini boss. Ores
 - **Anomalies and crystals** - Environmental hazards in Wastelands and buffs.
 - **Nuclear weapons** - Pu-239 / fission and fusion bombs with simulated blast, fallout and structural damage.
+- **Engineer's Crafting Table** - powered autocrafting terminal: load storage containers and encoded patterns, feed it power, and it assembles to spec one operation per tick. Scriptable via ComputerCraft and OpenComputers v2 peripherals.
+- **Universal pipes** - single conduit that transports items, fluids and energy at once; pipe connectors set per-medium pull/push/auto modes and optional redstone gating.
 - **Energy & storage** - Forge Energy (FE/RF) throughout, with Mekanism and GregTech CE:U interop, plus voiding/buffering storage tiers.
 - **Mod integrations** - JEI, EMI, AE2, Refined Storage, ComputerCraft, OpenComputers v2, TIS-3D, KubeJS, Patchouli, Ponder.
 - **In-game guide** - Patchouli Operator's Handbook covering every multiblock and recipe path.

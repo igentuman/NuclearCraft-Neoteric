@@ -29,6 +29,16 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
 
         add(
                 List.of(
+                        fluidIngredient("lithium_fluoride", MOLTEN_INGOT*4),
+                        fluidIngredient("beryllium_fluoride", MOLTEN_INGOT*2)
+                ),
+                List.of(
+                        fluidIngredient("flibe_molten_salt", MOLTEN_INGOT*6)
+                ), 0.5D, 1.2D
+        );
+
+        add(
+                List.of(
                         fluidIngredient(Materials.arsenic, 333),
                         fluidIngredient(Materials.boron, MOLTEN_INGOT/2)
                 ),
@@ -153,20 +163,20 @@ public class ChemicalReactorRecipes extends AbstractRecipeProvider {
         add(
                 List.of(
                         fluidIngredient("lithium", MOLTEN_INGOT*2),
-                        fluidIngredient("fluorite_water", 250)
+                        fluidIngredient("fluorite_water", MOLTEN_INGOT*3)
                 ),
                 List.of(
-                        fluidIngredient("lithium_fluoride", 360)
+                        fluidIngredient("lithium_fluoride", MOLTEN_INGOT*5)
                 ), 0.5D, 0.5D
         );
 
         add(
                 List.of(
                         fluidIngredient("beryllium", MOLTEN_INGOT*2),
-                        fluidIngredient("fluorite_water", 250)
+                        fluidIngredient("fluorite_water", MOLTEN_INGOT*3)
                 ),
                 List.of(
-                        fluidIngredient("beryllium_fluoride", 360)
+                        fluidIngredient("beryllium_fluoride", MOLTEN_INGOT*5)
                 ), 0.5D, 0.5D
         );
 

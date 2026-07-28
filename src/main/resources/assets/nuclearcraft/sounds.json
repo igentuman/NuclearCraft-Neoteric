@@ -169,6 +169,14 @@
     "subtitle": "music.hyperspace",
     "sounds": [ { "name": "nuclearcraft:music/hyperspace", "stream": true } ]
   },
+  "music.wasteland": {
+    "category": "music",
+    "sounds": [
+      { "name": "nuclearcraft:music/wasteland1", "stream": true },
+      { "name": "nuclearcraft:music/wasteland2", "stream": true },
+      { "name": "minecraft:music.nether.nether_wastes", "type": "event" }
+    ]
+  },
   "bomb.first_distance": {
     "sounds": [
       "nuclearcraft:bomb/first_distance"

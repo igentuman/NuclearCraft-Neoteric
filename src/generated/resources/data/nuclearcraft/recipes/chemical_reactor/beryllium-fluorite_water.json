@@ -6,13 +6,13 @@
       "tag": "forge:beryllium"
     },
     {
-      "amount": 250,
+      "amount": 270,
       "tag": "forge:fluorite_water"
     }
   ],
   "outputFluids": [
     {
-      "amount": 360,
+      "amount": 450,
       "tag": "forge:beryllium_fluoride"
     }
   ],

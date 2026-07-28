@@ -30,7 +30,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     public boolean stuck = false;
     public NcRecipe recipe;
     public BlockEntity be;
-    private String recipeId;
+    public String recipeId;
     private SidedContentHandler contentHandler;
 
     public void setRecipe(NcRecipe recipe) {

@@ -4,6 +4,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
+import net.minecraft.sounds.Music;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.*;
@@ -12,6 +13,7 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import static igentuman.nc.setup.registration.Entities.FERAL_GHOUL;
+import static igentuman.nc.setup.registration.NCSounds.MUSIC_WASTELAND;
 import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND_BIOME;
 import static igentuman.nc.world.NCPlacedFeatures.PLACED_FEATURES_KEYS;
 
@@ -53,6 +55,7 @@ public class WastelandBiome {
                         .grassColorOverride(10724473)
                         .foliageColorOverride(9609331)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS)
+                        .backgroundMusic(new Music(MUSIC_WASTELAND.getHolder().get(), 12000, 24000, false))
                         .build())
                 .mobSpawnSettings(spawnBuilder.build())
                 .generationSettings(biomeBuilder.build())
@@ -76,6 +79,7 @@ public class WastelandBiome {
                         .grassColorOverride(10724473)
                         .foliageColorOverride(9609331)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS)
+                        .backgroundMusic(new Music(MUSIC_WASTELAND.getHolder().get(), 12000, 24000, false))
                         .build())
                 .mobSpawnSettings(spawnBuilder.build())
                 .generationSettings(builder.build())

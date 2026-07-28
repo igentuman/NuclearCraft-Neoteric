@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "nuclearcraft:wasteland_village",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 10,
+    "salt": 918273645
+  }
+}

@@ -86,9 +86,6 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return contentHandler().getFluidCapability(side);
         }
-        if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return particleHandler().cast();
-        }
         if(isGtLoaded()) {
             if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER && energyStorage() != null) {
                 if (isGTEUCapEnabled()) {

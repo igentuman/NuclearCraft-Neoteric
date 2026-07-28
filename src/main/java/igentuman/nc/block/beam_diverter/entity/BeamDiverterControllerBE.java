@@ -194,9 +194,6 @@ public class BeamDiverterControllerBE extends AbstractAcceleratorControllerBE {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return particleHandler().cast();
-        }
         if (isOC2Loaded() && cap == DEVICE_CAPABILITY) {
             return getOCDevice(cap, side);
         }

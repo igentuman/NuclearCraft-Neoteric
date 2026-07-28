@@ -72,12 +72,6 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return particleHandler().cast();
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return contentHandler().getFluidCapability(side);
-        }
         if(isGtLoaded()) {
             if (cap == com.gregtechceu.gtceu.api.capability.forge.GTCapability.CAPABILITY_ENERGY_CONTAINER && energyStorage() != null) {
                 if (isGTEUCapEnabled()) {

@@ -6,10 +6,8 @@ import igentuman.nc.content.particles.CapabilityParticleStackHandler;
 import igentuman.nc.content.particles.IParticleStackHandler;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.ParticleStorage;
-import igentuman.nc.datagen.recipes.builder.TConstructRecipeBuilder;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.handler.sided.SlotModePair;
-import igentuman.nc.multiblock.AbstractMultiblock;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.particle_chamber.ParticleChamberMultiblock;
 import igentuman.nc.util.PortMode;
@@ -288,7 +286,7 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
      */
     protected abstract void processChamberTick();
 
-    public LazyOptional<IParticleStackHandler> getParticleHandler() {
+    public LazyOptional<IParticleStackHandler> particleHandler() {
         return particleHandler;
     }
 

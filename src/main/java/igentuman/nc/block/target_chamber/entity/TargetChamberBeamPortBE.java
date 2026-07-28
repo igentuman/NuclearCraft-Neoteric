@@ -5,36 +5,26 @@ import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.block.accelerator.entity.AcceleratorBeamPortBE;
 import igentuman.nc.block.entity.ParticleChamberControllerBE;
 import igentuman.nc.content.particles.ParticleStack;
-import igentuman.nc.handler.sided.capability.FluidCapabilityHandler;
 import igentuman.nc.multiblock.AbstractMultiblock;
-import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.particle_chamber.ParticleChamberMultiblock;
 import igentuman.nc.util.Equations;
 import igentuman.nc.util.PortMode;
 import igentuman.nc.util.annotation.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static igentuman.nc.NuclearCraft.currentTick;
-import static igentuman.nc.compat.oc2.FusionReactorDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
 import static igentuman.nc.multiblock.particle_chamber.ParticleChamberRegistration.TARGET_CHAMBER_BE;
-import static igentuman.nc.util.ModUtil.isCcLoaded;
-import static igentuman.nc.util.ModUtil.isOC2Loaded;
 import static igentuman.nc.util.PortMode.PORT_MODE;
 
 public class TargetChamberBeamPortBE extends MultiblockPortBE {
@@ -77,7 +67,7 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if(!isConnectedToController()) return super.getCapability(cap, side);
         if (cap == PARTICLE_HANDLER_CAPABILITY) {
-            return controller().getParticleHandler().cast();
+            return controller().particleHandler().cast();
         }
         return super.getCapability(cap, side);
     }
@@ -104,9 +94,9 @@ public class TargetChamberBeamPortBE extends MultiblockPortBE {
             }
             BlockEntity be = level.getExistingBlockEntity(currentPos);
             if (be instanceof AcceleratorBeamPortBE targetPort) {
-                if (targetPort.getFacing() == facing.getOpposite() && targetPort.isInput() && targetPort.controller() != null) {
+                if (targetPort.getFacing() == facing.getOpposite() && targetPort.isInput()) {
                     int finalDistance = distance;
-                    targetPort.controller().getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
+                    targetPort.getCapability(PARTICLE_HANDLER_CAPABILITY, facing.getOpposite())
                             .ifPresent(handler -> {
                                 particleStack.addFocus(-Equations.focusLoss(finalDistance, particleStack));
                                 handler.reciveParticle(facing.getOpposite(), particleStack);

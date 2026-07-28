@@ -48,16 +48,32 @@ public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput> {
     public boolean matches(ProcessorRecipeInput input, Level level) {
         if (level.isClientSide()) return false;
 
-        // Check all item inputs match
-        for (int i = 0; i < itemInputs.size(); i++) {
-            if (i >= input.size()) return false;
-            if (!itemInputs.get(i).test(input.getItem(i))) return false;
+        boolean[] usedItemSlots = new boolean[input.size()];
+        for (SizedIngredient ingredient : itemInputs) {
+            int match = -1;
+            for (int slot = 0; slot < input.size(); slot++) {
+                if (usedItemSlots[slot]) continue;
+                if (ingredient.test(input.getItem(slot))) {
+                    match = slot;
+                    break;
+                }
+            }
+            if (match == -1) return false;
+            usedItemSlots[match] = true;
         }
 
-        // Check all fluid inputs match
-        for (int i = 0; i < fluidInputs.size(); i++) {
-            if (i >= input.fluidSize()) return false;
-            if (!fluidInputs.get(i).test(input.getFluid(i))) return false;
+        boolean[] usedFluidSlots = new boolean[input.fluidSize()];
+        for (SizedFluidIngredient ingredient : fluidInputs) {
+            int match = -1;
+            for (int slot = 0; slot < input.fluidSize(); slot++) {
+                if (usedFluidSlots[slot]) continue;
+                if (ingredient.test(input.getFluid(slot))) {
+                    match = slot;
+                    break;
+                }
+            }
+            if (match == -1) return false;
+            usedFluidSlots[match] = true;
         }
 
         return true;

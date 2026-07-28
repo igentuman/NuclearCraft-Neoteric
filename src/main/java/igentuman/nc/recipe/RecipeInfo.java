@@ -205,13 +205,24 @@ public class RecipeInfo {
         if (recipe == null) return;
         if (!(recipe instanceof UniversalProcessorRecipe upr)) return;
 
+        ModEntry entry = be.name != null ? ModEntries.get(be.name) : null;
+
         // Consume item inputs
         List<SizedIngredient> itemInputs = upr.getItemInputs();
         if (be.contentHandler.hasItemCapability()) {
             var itemHandler = be.contentHandler.getItemHandler();
-            for (int i = 0; i < itemInputs.size(); i++) {
-                int count = itemInputs.get(i).count();
-                itemHandler.extractItem(i, count, false);
+            int inputSlots = (entry != null && entry.itemCap() != null)
+                    ? entry.itemCap().inputSlots : itemHandler.getSlots();
+            boolean[] usedItemSlots = new boolean[inputSlots];
+            for (SizedIngredient ingredient : itemInputs) {
+                for (int slot = 0; slot < inputSlots; slot++) {
+                    if (usedItemSlots[slot]) continue;
+                    if (ingredient.test(itemHandler.getStackInSlot(slot))) {
+                        itemHandler.extractItem(slot, ingredient.count(), false);
+                        usedItemSlots[slot] = true;
+                        break;
+                    }
+                }
             }
         }
 
@@ -219,9 +230,18 @@ public class RecipeInfo {
         List<SizedFluidIngredient> fluidInputs = upr.getFluidInputs();
         if (be.contentHandler.hasFluidCapability()) {
             var fluidHandler = be.contentHandler.getFluidHandler();
-            for (int i = 0; i < fluidInputs.size(); i++) {
-                int amount = fluidInputs.get(i).amount();
-                fluidHandler.drainTank(i, amount, IFluidHandler.FluidAction.EXECUTE);
+            int inputTanks = (entry != null && entry.fluidCap() != null)
+                    ? entry.fluidCap().inputTanks.size() : fluidHandler.getTanks();
+            boolean[] usedFluidTanks = new boolean[inputTanks];
+            for (SizedFluidIngredient ingredient : fluidInputs) {
+                for (int tank = 0; tank < inputTanks; tank++) {
+                    if (usedFluidTanks[tank]) continue;
+                    if (ingredient.test(fluidHandler.getFluidInTank(tank))) {
+                        fluidHandler.drainTank(tank, ingredient.amount(), IFluidHandler.FluidAction.EXECUTE);
+                        usedFluidTanks[tank] = true;
+                        break;
+                    }
+                }
             }
         }
         changed = true;

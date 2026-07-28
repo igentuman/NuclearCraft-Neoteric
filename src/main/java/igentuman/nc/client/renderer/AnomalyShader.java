@@ -29,6 +29,10 @@ public class AnomalyShader {
         NeoForge.EVENT_BUS.register(AnomalyShader.class);
     }
 
+    public static void clear() {
+        currentSize = 0;
+    }
+
     private static float baseRadius(AnomalyType type) {
         return switch (type) {
             case GRAVITATIONAL -> 260.0F;
@@ -74,21 +78,18 @@ public class AnomalyShader {
         RenderSystem.depthMask(false);
 
         float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
-        boolean any = false;
         for (Entity e : mc.level.entitiesForRendering()) {
             if (!(e instanceof AnomalyEntity anomaly)) {
                 continue;
             }
             if (processAnomaly(mc, event, pass, anomaly, partialTick)) {
                 chain.process(partialTick);
-                any = true;
             }
         }
 
         RenderSystem.depthMask(true);
-        if (any) {
-            mc.getMainRenderTarget().bindWrite(false);
-        }
+        mc.getMainRenderTarget().bindWrite(false);
+        RenderSystem.depthFunc(515);
     }
 
     private static boolean processAnomaly(Minecraft mc, RenderLevelStageEvent event, PostPass pass, AnomalyEntity anomaly, float partialTick) {

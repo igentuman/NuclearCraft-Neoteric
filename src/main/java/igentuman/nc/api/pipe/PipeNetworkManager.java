@@ -5,11 +5,13 @@ import igentuman.nc.block.pipe.PipeConnectorBlock;
 import igentuman.nc.block_entity.pipe.PipeConnectorBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -254,11 +256,11 @@ public class PipeNetworkManager {
             for (Direction dir : Direction.values()) {
                 BlockPos np = cur.relative(dir);
                 long packed = np.asLong();
-                if (!visited.add(packed) || !level.isLoaded(np)) {
+                if (!visited.add(packed)) {
                     continue;
                 }
-                BlockState st = level.getBlockState(np);
-                if (!isPipeNode(st)) {
+                BlockState st = blockStateIfLoaded(level, np);
+                if (st == null || !isPipeNode(st)) {
                     continue;
                 }
                 if (!posToNetwork.containsKey(packed)) {
@@ -267,6 +269,16 @@ public class PipeNetworkManager {
                 queue.add(np);
             }
         }
+    }
+
+    private static BlockState blockStateIfLoaded(Level level, BlockPos pos) {
+        if (!(level instanceof ServerLevel sl)) {
+            return null;
+        }
+        LevelChunk chunk = sl.getChunkSource().getChunkNow(
+                SectionPos.blockToSectionCoord(pos.getX()),
+                SectionPos.blockToSectionCoord(pos.getZ()));
+        return chunk == null ? null : chunk.getBlockState(pos);
     }
 
     public static boolean isPipeNode(BlockState state) {

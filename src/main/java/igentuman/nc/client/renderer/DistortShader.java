@@ -57,6 +57,7 @@ public class DistortShader {
 
     public static void clear() {
         SOURCES.clear();
+        currentSize = 0;
     }
 
     /**

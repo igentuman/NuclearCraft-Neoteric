@@ -35,7 +35,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 
-@EventBusSubscriber(modid = NuclearCraft.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = NuclearCraft.MODID, value = Dist.CLIENT)
 public class NukeRenderer {
 
     public static final ResourceLocation TEXTURE = rl("textures/particle/nuke.png");

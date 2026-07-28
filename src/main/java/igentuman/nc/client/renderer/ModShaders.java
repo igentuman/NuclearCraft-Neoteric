@@ -14,6 +14,8 @@ import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import java.io.IOException;
 import java.util.function.Supplier;
 
+import static igentuman.nc.NuclearCraft.rl;
+
 /**
  * Registers the mod's custom render shaders and post-processing chains.
  *
@@ -36,15 +38,15 @@ public class ModShaders {
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
         event.registerShader(
-                new ShaderInstance(event.getResourceProvider(), NuclearCraft.rl("rendertype_billboard"), DefaultVertexFormat.POSITION_TEX_COLOR),
+                new ShaderInstance(event.getResourceProvider(), rl("rendertype_billboard"), DefaultVertexFormat.POSITION_TEX_COLOR),
                 BILLBOARD::setInstance
         );
         event.registerShader(
-                new ShaderInstance(event.getResourceProvider(), NuclearCraft.rl("rendertype_nuke"), DefaultVertexFormat.POSITION_TEX_COLOR),
+                new ShaderInstance(event.getResourceProvider(), rl("rendertype_nuke"), DefaultVertexFormat.POSITION_TEX_COLOR),
                 NUKE_CORE::setInstance
         );
         event.registerShader(
-                new ShaderInstance(event.getResourceProvider(), NuclearCraft.rl("rendertype_nuke_smoke"), DefaultVertexFormat.POSITION_TEX_COLOR),
+                new ShaderInstance(event.getResourceProvider(), rl("rendertype_nuke_smoke"), DefaultVertexFormat.POSITION_TEX_COLOR),
                 NUKE_SMOKE::setInstance
         );
 
@@ -53,7 +55,7 @@ public class ModShaders {
                 mc.getTextureManager(),
                 mc.getResourceManager(),
                 mc.getMainRenderTarget(),
-                NuclearCraft.rl("shaders/post/distort.json")
+                rl("shaders/post/distort.json")
         );
         distortPostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
 
@@ -61,7 +63,7 @@ public class ModShaders {
                 mc.getTextureManager(),
                 mc.getResourceManager(),
                 mc.getMainRenderTarget(),
-                NuclearCraft.rl("shaders/post/nuke.json")
+                rl("shaders/post/nuke.json")
         );
         nukePostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
 
@@ -69,7 +71,7 @@ public class ModShaders {
                 mc.getTextureManager(),
                 mc.getResourceManager(),
                 mc.getMainRenderTarget(),
-                NuclearCraft.rl("shaders/post/anomaly.json")
+                rl("shaders/post/anomaly.json")
         );
         anomalyPostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
     }

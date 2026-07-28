@@ -12,8 +12,8 @@ import igentuman.nc.client.renderer.anomaly.GravitationalAnomalyRenderer;
 import igentuman.nc.entity.EntityFeralGhoul;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.entity.anomaly.GravitationalAnomalyEntity;
-import igentuman.nc.setup.entries.Anomalies;
-import igentuman.nc.setup.entries.Ghouls;
+import igentuman.nc.handler.crafter.CraftingPattern;
+import igentuman.nc.setup.entries.*;
 import igentuman.nc.client.renderer.DelayedRenderHandler;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.container.MultiblockControllerContainer;
@@ -36,10 +36,9 @@ import igentuman.nc.client.render.kugelblitz.BlackholeRenderer;
 import igentuman.nc.client.render.kugelblitz.EXPLRenderer;
 import igentuman.nc.container.EXPLContainer;
 import igentuman.nc.screen.*;
-import igentuman.nc.setup.entries.Bomb;
-import igentuman.nc.setup.entries.Storage;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
@@ -80,11 +79,11 @@ public class Client {
             DistortShader.register();
             AnomalyShader.register();
             registerFluidRenderLayers();
-            net.minecraft.client.renderer.item.ItemProperties.register(
-                    igentuman.nc.setup.entries.Crafter.CRAFTING_PATTERN.get(),
+            ItemProperties.register(
+                    Crafter.CRAFTING_PATTERN.get(),
                     NuclearCraft.rl("encoded"),
                     (stack, lvl, entity, seed) ->
-                            igentuman.nc.handler.crafter.CraftingPattern.isEncoded(stack) ? 1f : 0f);
+                           CraftingPattern.isEncoded(stack) ? 1f : 0f);
         });
     }
 

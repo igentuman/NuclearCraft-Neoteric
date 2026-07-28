@@ -11,7 +11,6 @@ uniform vec2 Radius;
 uniform vec2 ScreenSize;
 out vec2 texCoord;
 out vec2 oneTexel;
-out vec4 dummyOut;
 
 void main(){
     vec4 outPos = ProjMat * vec4(Position.xy, 0.0, 1.0);
@@ -20,17 +19,5 @@ void main(){
     oneTexel = 1.0 / InSize;
     texCoord = Position.xy / OutSize;
 
-    // Create a more complex usage that the compiler can't optimize away
-    // Use a conditional that depends on the uniform but always evaluates the same
-    vec4 preserveUniforms;
-    if (BlurPos.x * BlurDir.y > -999999.0) {
-        preserveUniforms = vec4(BlurPos.xy, BlurDir.xy);
-    } else {
-        preserveUniforms = vec4(0.0);
-    }
-
-    // Add Radius with a non-zero coefficient that's extremely small
-    preserveUniforms += vec4(Radius.y) * 0.000001;
-
-    dummyOut = preserveUniforms;
+    gl_Position.x += (BlurPos.x + BlurPos.y + BlurDir.x + BlurDir.y + Radius.x + Radius.y) * 1e-8;
 }

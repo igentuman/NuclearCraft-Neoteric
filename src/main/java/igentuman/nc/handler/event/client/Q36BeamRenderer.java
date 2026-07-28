@@ -44,6 +44,10 @@ public class Q36BeamRenderer {
         ACTIVE.add(new Beam(s, e));
     }
 
+    public static void clear() {
+        ACTIVE.clear();
+    }
+
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post ev) {
         Iterator<Beam> it = ACTIVE.iterator();

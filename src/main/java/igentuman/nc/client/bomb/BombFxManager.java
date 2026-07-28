@@ -49,6 +49,10 @@ public class BombFxManager {
         ACTIVE.add(new ActiveBomb(id, epicenter, yield, delay, d));
     }
 
+    public static void clear() {
+        ACTIVE.clear();
+    }
+
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post ev) {
         Minecraft mc = Minecraft.getInstance();

@@ -28,6 +28,7 @@ import static igentuman.nc.multiblock.turbine.TurbineRegistration.TURBINE_BLOCKS
 import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.HX_BLOCKS;
 import static igentuman.nc.setup.registration.FissionFuel.NC_ISOTOPES;
 import static igentuman.nc.setup.registration.FissionFuel.NC_WASTE;
+import static igentuman.nc.setup.registration.FissionDesignerRegistration.FISSION_REACTOR_DESIGNER_ITEM;
 import static igentuman.nc.setup.registration.NCItems.*;
 
 public class NCItemModels extends ItemModelProvider {
@@ -87,6 +88,10 @@ public class NCItemModels extends ItemModelProvider {
                 mcLoc("item/generated"),
                 "layer0", modLoc("item/"+RESONITE_CRYSTAL.getId().getPath()));
 
+        singleTexture(FISSION_REACTOR_PLAN.getId().getPath(),
+                mcLoc("item/generated"),
+                "layer0", modLoc("item/part/research_paper"));
+
         craftingPattern();
 
         NCFluids.ALL_FLUID_ENTRIES.values().forEach(this::createBucket);
@@ -113,6 +118,7 @@ public class NCItemModels extends ItemModelProvider {
         for(String name: FISSION_BLOCKS.keySet()) {
             withExistingParent(FISSION_BLOCK_ITEMS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }
+        withExistingParent(FISSION_REACTOR_DESIGNER_ITEM.getId().getPath(), modLoc("block/multiblock/fission_reactor_designer"));
         for(String name: TURBINE_BLOCKS.keySet()) {
             withExistingParent(TURBINE_BLOCKS.get(name).getId().getPath(), modLoc("block/multiblock/"+name));
         }

@@ -1,0 +1,51 @@
+{
+  "name": "Reactor Designer",
+  "icon": "nuclearcraft:fission_reactor_designer",
+  "category": "nuclearcraft:fission",
+  "sortnum": 1,
+  "pages": [
+    {
+      "anchor": "intro",
+      "type": "text",
+      "text": "The $(thing)Fission Reactor Designer$() is a planning terminal for reactor interiors. Sketch a 3D cell grid, pick a fuel, and watch the heat and output numbers update live - all on paper, before a single block of casing is placed. (Vault-Tec advises: simulate first, irradiate later.)"
+    },
+    {
+      "anchor": "block",
+      "type": "blocks/1",
+      "header": "Designer Terminal",
+      "block": "nuclearcraft:fission_reactor_designer",
+      "text": "Place the Designer and right-click to open its full-screen editor. Nothing here touches the world - it is a pure sandbox. The design you build is saved onto a $(l:fission/reactor_designer#plan)Fission Reactor Plan$() for a $(l:fission/multiblock_builder)Reactor Builder$() to assemble for real."
+    },
+    {
+      "anchor": "layout",
+      "type": "text",
+      "header": "Laying Out the Interior",
+      "text": "Press $(thing)New$() to set the interior size (X/Y/Z). You are editing only the $(thing)inside$() of the reactor - the shell and controller are added automatically at build time. The interior is shown as one flat, top-down grid per Y layer. $(thing)Left-click / drag$() a cell to place the selected component; $(thing)right-click or Shift-click$() to erase."
+    },
+    {
+      "anchor": "palette",
+      "type": "text",
+      "header": "Component Palette",
+      "text": "The scrollable palette on the right holds the $(item)Fuel Cell$(), $(item)Irradiation Chamber$(), $(item)Pile-Driver Chamber$(), every $(l:fission/general#heatsink)Heatsink$(), and every $(l:fission/general#moderator)Moderator$(). Hover an entry for its name; heatsinks also show their cooling value and placement rule."
+    },
+    {
+      "anchor": "simulation",
+      "type": "text",
+      "header": "Live Simulation",
+      "text": "Every edit re-runs the reactor math and prints $(thing)Heat/t$(), $(thing)Cooling/t$(), $(thing)Net Heat$(), $(thing)FE/t$(), $(thing)Steam/t$(), $(thing)Irradiation$(), and $(thing)Meltdown Time$(). Aim for a net heat of 0 for a fully stable reactor - meltdown time reads infinite once net heat is zero or negative. Pick your fuel from the searchable dropdown; it drives the heat and energy figures."
+    },
+    {
+      "anchor": "validation",
+      "type": "text",
+      "header": "Placement Validation",
+      "text": "The simulator checks every component against its own placement rule - the same rules real reactors enforce. Heatsinks that break their rule, and irradiation chambers missing a moderator-and-fuel-cell line, are drawn with a $(4)red outline$(). Fix the red before you build. (Better a red border than a smoking crater.)"
+    },
+    {
+      "anchor": "plan",
+      "type": "blocks/1",
+      "header": "Save to a Plan",
+      "block": "nuclearcraft:fission_reactor_plan",
+      "text": "$(thing)Save$() writes the layout, fuel, and headline stats onto a $(thing)Fission Reactor Plan$() and hands it to you. $(thing)Load$() reads the Plan in your selected hotbar slot back into the Designer for further editing. The Plan's tooltip shows its size, fuel, and net heat so you can tell blueprints apart."
+    }
+  ]
+}

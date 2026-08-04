@@ -20,6 +20,7 @@ import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.H
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
+import static igentuman.nc.setup.registration.FissionDesignerRegistration.FISSION_REACTOR_DESIGNER;
 import static igentuman.nc.util.TextUtils.convertToName;
 
 public class NCLanguageProvider extends LanguageProvider {
@@ -566,6 +567,9 @@ public class NCLanguageProvider extends LanguageProvider {
         add("advancement.nc.fission_reactor_controller", "Chicago Pile, Domestic Edition");
         add("advancement.nc.fission_reactor_controller.desc", "Splitting the atom in the comfort of your own basement.");
 
+        add("advancement.nc.fission_reactor_designer", "Reactor, on Paper");
+        add("advancement.nc.fission_reactor_designer.desc", "Design and simulate a fission reactor layout before committing steel. Vault-Tec reminds you that paper doesn't melt down.");
+
         // Irradiation
         add("advancement.nc.irradiator", "Irradiator");
         add("advancement.nc.irradiator.desc", "Transforming materials with neutron flux");
@@ -822,6 +826,7 @@ public class NCLanguageProvider extends LanguageProvider {
 
             add(FISSION_BLOCKS.get(name).get(), prefix+title);
         }
+        add(FISSION_REACTOR_DESIGNER.get(), "Fission Reactor Designer");
 
         for(String name: FUSION_BLOCKS.keySet()) {
             String title = convertToName(name);
@@ -895,6 +900,11 @@ public class NCLanguageProvider extends LanguageProvider {
     }
 
     private void tooltips() {
+        add("tooltip.nc.fission_reactor_designer", "Planning terminal for fission reactor layouts. Sketch a 3D cell grid, pick a fuel, and simulate heat and output before imprinting the design onto a Fission Reactor Plan. (Vault-Tec advises: simulate first, irradiate later.)");
+        add("tooltip.nc.fission_reactor_plan.blank", "Blank stock. Feed it to a Fission Reactor Designer to imprint a reactor layout. (Blueprint ink sold separately; graphite works fine.)");
+        add("tooltip.nc.fission_reactor_plan.size", "Layout: %sx%sx%s");
+        add("tooltip.nc.fission_reactor_plan.fuel", "Fuel: %s");
+        add("tooltip.nc.fission_reactor_plan.net_heat", "Net Heat: %s H/t");
         add("tooltip.nc.decay_generator_allowed.desc", "Can be used with Decay Generator");
         add("tooltip.nc.energy_eu_tier.depends_on_terminal", "EU Tier inherits Tier from Terminal");
         add("tooltip.nc.energy_eu_tier.depends_on_controller", "EU Tier inherits Tier from Controller");
@@ -936,8 +946,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.energy_eu_generation", "EU Generation: %s/t");
         add("tooltip.nc.eu_amplifier.power", "EU Required: %s/t");
         add("tooltip.nc.build", "Build Multiblock");
-        add("tooltip.nc.paste_json", "Paste JSON");
-        add("tooltip.nc.paste_json.descr", "File content or file itself");
+        add("tooltip.nc.load_plan", "Load Plan");
+        add("tooltip.nc.load_plan.descr", "You need to hold it in your hand");
         add("tooltip.nc.wiki", "Open WIKI");
         add("tooltip.nc.link.designs", "Reactor Bots Discord");
         add("tooltip.nc.link.designs.descr", "Place where you can generate reactors");
@@ -1014,6 +1024,10 @@ public class NCLanguageProvider extends LanguageProvider {
 
         add("nc.redstone_dimmer.description", "Adjusts redstone output power based on impulses received from the left or right sides.");
         add("nc.multiblock_builder.description", "For automated building.");
+        add("nc.multiblock_builder.area_blocked", "Building area is blocked at: %s, %s, %s");
+        add("nc.multiblock_builder.no_containers", "No containers found adjacent to builder");
+        add("nc.multiblock_builder.missing_blocks", "Missing: %s x%s");
+        add("nc.multiblock_builder.build_success", "Structure built successfully!");
         add("tooltip.nc.fusion_connector.descr", "Used to connect fusion core and toroidal reactor chamber");
         add("tooltip.nc.fusion_casing.descr", "Used to build toroidal fusion reactor chamber");
         add("tooltip.nc.msr_controller.descr", "Runs the Molten Salt Reactor: pumps FLiBe carrier salt past TRISO fuel pebbles, holds the chain reaction, and ships the heat out as hot salt. (No heat sinks, no moderators - just don't let the cooling stop.)");
@@ -1331,6 +1345,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add(LITHIUM_ION_CELL.get(), "Lithium Ion Cell");
         add(RESONITE_SHARD.get(), "Resonite Shard");
         add(RESONITE_CRYSTAL.get(), "Resonite Crystal");
+        add(FISSION_REACTOR_PLAN.get(), "Fission Reactor Plan");
     }
 
     private void armor() {
@@ -1413,7 +1428,7 @@ public class NCLanguageProvider extends LanguageProvider {
             add(NC_RF_AMPLIFIERS.get(name).get(), convertToName(name));
         }
         add("block."+MODID+".redstone_dimmer", "Redstone Dimmer");
-        add("block."+MODID+".multiblock_builder", "Creative Multiblock Builder");
+        add("block."+MODID+".multiblock_builder", "Fission Reactor Builder");
         add("block."+MODID+".engineers_crafting_table", "Engineer's Crafting Table");
         add("block."+MODID+".engineers_crafting_table.desc", "Requisition-grade autocrafting terminal. Feed it storage containers and a live power feed; it assembles to spec, one operation per tick. (Assembly to spec not guaranteed during scheduled brownouts.)");
         add("tooltip.nc.engineers_crafting_table", "Powered autocrafting terminal");

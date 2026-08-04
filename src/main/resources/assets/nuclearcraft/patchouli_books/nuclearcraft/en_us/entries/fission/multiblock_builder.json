@@ -1,0 +1,38 @@
+{
+  "name": "Reactor Builder",
+  "icon": "nuclearcraft:multiblock_builder",
+  "category": "nuclearcraft:fission",
+  "sortnum": 2,
+  "pages": [
+    {
+      "anchor": "intro",
+      "type": "text",
+      "text": "The $(thing)Fission Reactor Builder$() is an automated construction machine. Feed it a $(l:fission/reactor_designer#plan)Fission Reactor Plan$() and it assembles the whole reactor - interior, casing shell, and controller - pulling the blocks it needs out of nearby storage. (Labor-saving, morale-preserving, quota-meeting.)"
+    },
+    {
+      "anchor": "block",
+      "type": "blocks/1",
+      "header": "Builder Block",
+      "block": "nuclearcraft:multiblock_builder",
+      "text": "Place the Builder facing an open area - its facing decides which way the reactor grows out from it. A translucent bounding box previews where the structure will appear. Right-click to open the GUI: a 3D preview, a size readout, and the Load and Build buttons."
+    },
+    {
+      "anchor": "load",
+      "type": "text",
+      "header": "Load a Plan",
+      "text": "Hold a $(thing)Fission Reactor Plan$() in your selected hotbar slot and press $(thing)Load Plan$(). The saved layout streams into the Builder; the preview and size text update to show exactly what will be built. Plans made in the $(l:fission/reactor_designer)Reactor Designer$() carry the full interior, the shell is added for you."
+    },
+    {
+      "anchor": "containers",
+      "type": "text",
+      "header": "Stock the Materials",
+      "text": "The Builder pulls blocks from $(thing)connected inventories$() - it flood-fills through adjacent container block entities (chests, drawers, and the like) touching the Builder or each other. Stock those chests with the casing, glass, controller, heatsinks, moderators, and fuel cells the plan needs."
+    },
+    {
+      "anchor": "build",
+      "type": "text",
+      "header": "Build",
+      "text": "Press $(thing)Build$(). The Builder wraps your interior in a Reactor Casing and Glass shell, drops in a Controller, tallies every required block, consumes them from the containers, and places the multiblock. If the area is blocked it names the obstructed coordinate; if materials are short it lists exactly what is $(4)missing$() and how many. Fix, restock, and try again."
+    }
+  ]
+}

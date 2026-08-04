@@ -13,6 +13,7 @@ import igentuman.nc.client.gui.accelerator.*;
 import igentuman.nc.client.gui.crafter.EngineersCrafterScreen;
 import igentuman.nc.client.gui.crafter.EngineersEncoderScreen;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
+import igentuman.nc.client.gui.fission.FissionDesignerScreen;
 import igentuman.nc.client.gui.fission.FissionPortScreen;
 import igentuman.nc.client.gui.fission.MSRControllerScreen;
 import igentuman.nc.client.gui.fission.MSRPortScreen;
@@ -91,6 +92,7 @@ import static igentuman.nc.setup.registration.NCBlocks.CHARGING_STATION_CONTAINE
 import static igentuman.nc.setup.registration.NCBlocks.MULTIBLOCK_BUILDER_CONTAINER;
 import static igentuman.nc.setup.registration.NCBlocks.PIPE_CONNECTOR_CONTAINER;
 import static igentuman.nc.setup.registration.NCBlocks.REDSTONE_DIMMER_CONTAINER;
+import static igentuman.nc.setup.registration.FissionDesignerRegistration.FISSION_DESIGNER_CONTAINER;
 import static igentuman.nc.setup.registration.NCCrafter.CRAFTING_PATTERN;
 import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_CONTAINER;
 import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_ENCODER_CONTAINER;
@@ -130,6 +132,7 @@ public class ClientSetup {
             MenuScreens.register(HX_PORT_CONTAINER.get(), HeatExchangerPortScreen::new);
             MenuScreens.register(FISSION_CONTROLLER_CONTAINER.get(), FissionControllerScreen::new);
             MenuScreens.register(FISSION_PORT_CONTAINER.get(), FissionPortScreen::new);
+            MenuScreens.register(FISSION_DESIGNER_CONTAINER.get(), FissionDesignerScreen::new);
             MenuScreens.register(MSR_CONTROLLER_CONTAINER.get(), MSRControllerScreen::new);
             MenuScreens.register(MSR_PORT_CONTAINER.get(), MSRPortScreen::new);
             MenuScreens.register(CHAMBER_PORT_CONTAINER.get(), ChamberPortScreen::new);
@@ -227,6 +230,8 @@ public class ClientSetup {
         TooltipHandler.register(event);
         TickHandler.register(event);
         BlockOverlayHandler.register(event);
+        MinecraftForge.EVENT_BUS.addListener(igentuman.nc.client.gui.fission.designer.ClientFissionDesignCache::onClientTick);
+        MinecraftForge.EVENT_BUS.addListener(igentuman.nc.client.gui.fission.designer.ClientFissionDesignCache::onLogout);
     }
 
     @SubscribeEvent

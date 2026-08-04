@@ -34,7 +34,7 @@ public class PacketBuildMultiblock implements INcPacket {
         }
         BlockEntity be = player.level().getBlockEntity(tilePosition);
         if((be instanceof MultiblockBuilderBE ncBe)) {
-            ncBe.build(blockMap);
+            ncBe.build(blockMap, player);
         }
     }
 

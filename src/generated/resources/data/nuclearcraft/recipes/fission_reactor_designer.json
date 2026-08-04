@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_builder",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:chassis"
+    },
+    "L": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "M": {
+      "item": "minecraft:cartography_table"
+    },
+    "P": {
+      "item": "minecraft:repeater"
+    }
+  },
+  "pattern": [
+    "LPL",
+    "CMC",
+    "LCL"
+  ],
+  "result": {
+    "item": "nuclearcraft:fission_reactor_designer"
+  },
+  "show_notification": true
+}

@@ -37,6 +37,7 @@ import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCItems.*;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
+import static igentuman.nc.setup.registration.FissionDesignerRegistration.FISSION_REACTOR_DESIGNER;
 import static igentuman.nc.setup.registration.Tags.*;
 import static net.minecraft.world.item.Items.*;
 
@@ -653,17 +654,30 @@ public class NCRecipes extends RecipeProvider {
     }
 
     private void fusionBlocks(Consumer<FinishedRecipe> consumer) {
-        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MULTIBLOCK_BUILDER_BLOCK.get())
-                .pattern("LPL")
-                .pattern("CMC")
-                .pattern("LPL")
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MULTIBLOCK_BUILDER_BLOCK.get())
+                .pattern("LDL")
+                .pattern("PCP")
+                .pattern("LML")
                 .define('C', BEACON)
+                .define('D', NC_PARTS.get("basic_electric_circuit").get())
                 .define('M', NC_PARTS.get("chassis").get())
                 .define('P', REPEATER)
                 .define('L',  NC_PARTS.get("plate_basic").get())
                 .group(MODID+"_builder")
                 .unlockedBy("item", has(NC_PARTS.get("chassis").get()))
-                .save(consumer);*/
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_REACTOR_DESIGNER.get())
+                .pattern("LPL")
+                .pattern("CMC")
+                .pattern("LCL")
+                .define('M', CARTOGRAPHY_TABLE)
+                .define('C', NC_PARTS.get("chassis").get())
+                .define('P', REPEATER)
+                .define('L',  NC_PARTS.get("plate_basic").get())
+                .group(MODID+"_builder")
+                .unlockedBy("item", has(NC_PARTS.get("chassis").get()))
+                .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, REDSTONE_DIMMER_BLOCK.get())
                 .pattern("LPL")

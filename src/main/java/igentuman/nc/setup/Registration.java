@@ -58,6 +58,7 @@ public class Registration {
         ParticleSources.init();
         NCFluids.init();
         NCRadiationDamageSource.init();
+        FissionDesignerRegistration.init();
         FissionReactorRegistration.init();
         FusionReactorRegistration.init();
         KugelblitzRegistration.init();

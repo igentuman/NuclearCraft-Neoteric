@@ -159,10 +159,17 @@ public class FissionReactorRegistration {
         ALL_NC_ITEMS.put("msr_port", FISSION_BLOCK_ITEMS.get("msr_port"));
     }
 
-    public static final HashSet<Block> blocks = moderators();
+    public static HashSet<Block> blocks = moderators();
 
     public static HashSet<Block> moderators() {
         return getBlocksByTagKey(MODERATORS_BLOCKS.location().toString());
+    }
+
+    public static HashSet<Block> moderatorBlocks() {
+        if (blocks == null || blocks.isEmpty()) {
+            blocks = moderators();
+        }
+        return blocks;
     }
 
     public static final HashMap<String, HeatSinkDef> heatsinks = heatsinks();

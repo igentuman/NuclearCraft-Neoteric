@@ -101,7 +101,7 @@ dependencies {
     compileOnly("cc.tweaked:cc-tweaked-1.21.1-common-api:1.118.0")
     runtimeOnly("cc.tweaked:cc-tweaked-1.21.1-forge:1.118.0")
 
-    compileOnly "curse.maven:emi-580555:8081408"
+    implementation "curse.maven:emi-580555:8081408"
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     implementation("igentuman.nr:NuclearRadiation:1.0.0-beta8") { transitive = false }

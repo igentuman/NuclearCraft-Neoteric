@@ -139,6 +139,16 @@ public class Client {
                                 (MenuType<PipeConnectorContainer>) (MenuType<?>) entry.menu().get(),
                                 PipeConnectorScreen::new
                         );
+                    } else if (entry.name().equals("fission_reactor_designer")) {
+                        event.register(
+                                (MenuType<igentuman.nc.container.FissionDesignerContainer>) (MenuType<?>) entry.menu().get(),
+                                FissionDesignerScreen::new
+                        );
+                    } else if (entry.name().equals("multiblock_builder")) {
+                        event.register(
+                                (MenuType<igentuman.nc.container.MultiblockBuilderContainer>) (MenuType<?>) entry.menu().get(),
+                                MultiblockBuilderScreen::new
+                        );
                     } else if (entry.name().equals("charging_station")) {
                         event.register(
                                 (MenuType<UniversalProcessorContainer>) (MenuType<?>) entry.menu().get(),
@@ -164,6 +174,16 @@ public class Client {
                 EngineersCrafterScreen::new);
         event.register(igentuman.nc.setup.entries.Crafter.ENGINEERS_ENCODER_MENU.get(),
                 EngineersEncoderScreen::new);
+    }
+
+    @SubscribeEvent
+    static void onClientTick(net.neoforged.neoforge.client.event.ClientTickEvent.Post event) {
+        igentuman.nc.client.gui.fission.designer.ClientFissionDesignCache.onClientTick(event);
+    }
+
+    @SubscribeEvent
+    static void onClientLogout(net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent.LoggingOut event) {
+        igentuman.nc.client.gui.fission.designer.ClientFissionDesignCache.onLogout(event);
     }
 
     @SubscribeEvent

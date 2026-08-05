@@ -138,6 +138,26 @@ public class Networking {
                 PacketQ36Fire.STREAM_CODEC,
                 PacketQ36Fire::handle
         );
+        registrar.playToServer(
+                PacketSaveFissionDesign.TYPE,
+                PacketSaveFissionDesign.STREAM_CODEC,
+                PacketSaveFissionDesign::handle
+        );
+        registrar.playToServer(
+                PacketLoadFissionDesign.TYPE,
+                PacketLoadFissionDesign.STREAM_CODEC,
+                PacketLoadFissionDesign::handle
+        );
+        registrar.playToServer(
+                PacketBuildMultiblock.TYPE,
+                PacketBuildMultiblock.STREAM_CODEC,
+                PacketBuildMultiblock::handle
+        );
+        registrar.playToClient(
+                PacketFissionDesignData.TYPE,
+                PacketFissionDesignData.STREAM_CODEC,
+                PacketFissionDesignData::handle
+        );
         registrar.playToClient(
                 PacketQ36BeamFx.TYPE,
                 PacketQ36BeamFx.STREAM_CODEC,

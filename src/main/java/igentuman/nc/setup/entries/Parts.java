@@ -63,6 +63,7 @@ public class Parts extends ModEntries {
         }
 
         addItem("research_paper", () -> new ResearchPaperItem(new Item.Properties())).build();
+        addItem("fission_reactor_plan", () -> new FissionReactorPlanItem(new Item.Properties().stacksTo(1))).build();
     }
 
     public static final ModEntry ENERGY_UPGRADE =

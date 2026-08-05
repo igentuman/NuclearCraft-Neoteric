@@ -32,6 +32,8 @@ import static igentuman.nc.setup.entries.Anomalies.anomalies;
 import static igentuman.nc.setup.entries.FissionFuel.fissionFuel;
 import static igentuman.nc.setup.entries.Energy.energy;
 import static igentuman.nc.setup.entries.FissionReactor.fissionReactor;
+import static igentuman.nc.setup.entries.FissionDesigner.fissionDesigner;
+import static igentuman.nc.setup.entries.MultiblockBuilder.multiblockBuilder;
 import static igentuman.nc.setup.entries.Fluids.fluids;
 import static igentuman.nc.setup.entries.FusionReactor.fusionReactor;
 import static igentuman.nc.setup.entries.Ghouls.ghouls;
@@ -74,6 +76,8 @@ public class ModEntries {
         processors();
         chargingStation();
         fissionReactor();
+        fissionDesigner();
+        multiblockBuilder();
         accelerator();
         FusionRecipes.init();
         fusionReactor();

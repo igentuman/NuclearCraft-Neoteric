@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-25T18:14:06.744328928	Loot Tables
+// 1.21.1	2026-08-05T16:02:27.469318952	Loot Tables
 a04ceb1e40d590051f8ba1b14dbd606dda79b8b8 data/nuclearcraft/loot_table/blocks/active_cryotheum_heat_sink.json
 5c6ee279cf9632c3dd659bcf92277bc2e35f1df0 data/nuclearcraft/loot_table/blocks/active_enderium_heat_sink.json
 960cbf3bce7ade8bd0acd3f15bad425219aabc0d data/nuclearcraft/loot_table/blocks/active_liquid_helium_heat_sink.json
@@ -72,6 +72,7 @@ c5e136c30cb4e1683c010775b9e8ca3ba9f13153 data/nuclearcraft/loot_table/blocks/eve
 dc787e5e9cb56bd47770278aba92e903fdce1a8e data/nuclearcraft/loot_table/blocks/extractor.json
 97b28caedc5df031b534144353bdd23a02473045 data/nuclearcraft/loot_table/blocks/fission_reactor_casing.json
 81e61651fae9f66fc8ff453db42d2aed4f6015bd data/nuclearcraft/loot_table/blocks/fission_reactor_controller.json
+50d66abdd77e164113120c70beb8d74dbdb883d2 data/nuclearcraft/loot_table/blocks/fission_reactor_designer.json
 408080a8546a96d2c14e4191911d4042fcffe058 data/nuclearcraft/loot_table/blocks/fission_reactor_glass.json
 fb79ab755da8b3d6702fcfc3e2a4c7d7661cd890 data/nuclearcraft/loot_table/blocks/fission_reactor_irradiation_chamber.json
 1539f457c6d0034a2bfed2d64db76978c230fa25 data/nuclearcraft/loot_table/blocks/fission_reactor_pile-driver_irradiation_chamber.json
@@ -124,6 +125,7 @@ c90a7c7f3cc810c0f574e1571162290afa340f8a data/nuclearcraft/loot_table/blocks/man
 6552cafe464536eefe085f277ee3f96c672dad09 data/nuclearcraft/loot_table/blocks/msr_controller.json
 165fab4f72ca6fd1e76d9ca6024a8536c4a8168f data/nuclearcraft/loot_table/blocks/msr_fuel_cell.json
 a5b2ffb51f18608bfe861ae0754d5749cee19166 data/nuclearcraft/loot_table/blocks/msr_port.json
+d11fc3e03079a95b331c6549e7cc38dbc9e63435 data/nuclearcraft/loot_table/blocks/multiblock_builder.json
 c293b93107e1e56c51b709d015779020ba896750 data/nuclearcraft/loot_table/blocks/nether_brick_heat_sink.json
 6a220255b633d0fa64e3208f3f746ee3bf5514e0 data/nuclearcraft/loot_table/blocks/netherite_heat_sink.json
 70f90bf85d095eeda586e53e138c7f627c69c162 data/nuclearcraft/loot_table/blocks/neutronium_frame.json

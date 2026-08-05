@@ -102,6 +102,7 @@ public class VanillaRecipes {
         crafterBlocks();
         bomb();
         pipes();
+        designerBlocks();
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("charging_station"), 1)
                 .pattern("SBS")
                 .pattern("S S")
@@ -120,6 +121,30 @@ public class VanillaRecipes {
                 .group(MODID)
                 .unlockedBy("item", has(RESONITE_SHARD.get()))
                 .save(recipeOutput);*/
+    }
+
+    private static void designerBlocks() {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("fission_reactor_designer"), 1)
+                .pattern("PGP")
+                .pattern("GCG")
+                .pattern("PGP")
+                .define('P', item("plate_basic"))
+                .define('G', item("fission_reactor_glass"))
+                .define('C', item("advanced_processor"))
+                .group(MODID)
+                .unlockedBy("item", has(item("advanced_processor")))
+                .save(recipeOutput, rl("fission_reactor_designer"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("multiblock_builder"), 1)
+                .pattern("PCP")
+                .pattern("CFC")
+                .pattern("PCP")
+                .define('P', item("plate_basic"))
+                .define('C', item("basic_processor"))
+                .define('F', item("steel_frame"))
+                .group(MODID)
+                .unlockedBy("item", has(item("steel_frame")))
+                .save(recipeOutput, rl("multiblock_builder"));
     }
 
     private static void hevArmor() {

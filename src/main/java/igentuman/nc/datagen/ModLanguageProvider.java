@@ -28,6 +28,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         msr();
         pipes();
         sounds();
+        fissionDesigner();
         for (String name : NCJukeboxSongs.RECORDS.keySet()) {
             add("jukebox_song." + MODID + "." + name, convertToName(name));
         }
@@ -127,6 +128,7 @@ public class ModLanguageProvider  extends LanguageProvider {
 
     private static String blockDisplayName(String name) {
         if (name.equals("expl")) return "EXPL";
+        if (name.equals("multiblock_builder")) return "Fission Reactor Builder";
         if (name.startsWith("msr_")) {
             return "MSR " + convertToName(name.substring("msr_".length()));
         }
@@ -187,6 +189,22 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("gui.nc.msr.void_pebbles.tooltip", "Void fuel pebbles");
         add("tooltip.nc.msr_controller.descr", "Runs the Molten Salt Reactor: pumps FLiBe carrier salt past TRISO fuel pebbles, holds the chain reaction, and ships the heat out as hot salt. (No heat sinks, no moderators - just don't let the cooling stop.)");
         add("tooltip.nc.msr_port.descr", "Loads fuel pebbles and pipes molten salt in and out. Cold salt in, hot salt out - and that hot-salt flow is the core's only cooling.");
+    }
+
+    private void fissionDesigner() {
+        add("tooltip.nc.fission_reactor_designer", "Design and simulate fission reactor layouts.");
+        add("tooltip.nc.fission_reactor_plan.blank", "Empty plan - design one in the Fission Reactor Designer.");
+        add("tooltip.nc.fission_reactor_plan.size", "Size: %sx%sx%s");
+        add("tooltip.nc.fission_reactor_plan.fuel", "Fuel: %s");
+        add("tooltip.nc.fission_reactor_plan.net_heat", "Net Heat: %s H/t");
+        add("tooltip.nc.fission_reactor_plan.fe_gen", "Power: %s FE/t");
+        add("nc.multiblock_builder.description", "Loads a Fission Reactor Plan and builds it, pulling blocks from adjacent containers.");
+        add("nc.multiblock_builder.load_plan", "Load Plan");
+        add("nc.multiblock_builder.build", "Build");
+        add("nc.multiblock_builder.area_blocked", "Area blocked at %s, %s, %s");
+        add("nc.multiblock_builder.no_containers", "No adjacent containers with building blocks found");
+        add("nc.multiblock_builder.missing_blocks", "Missing %s x%s");
+        add("nc.multiblock_builder.build_success", "Structure built successfully");
     }
 
     private void pipes() {

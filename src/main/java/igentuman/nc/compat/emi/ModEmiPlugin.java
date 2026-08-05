@@ -11,6 +11,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
+import igentuman.nc.recipe.UniversalProcessorRecipeSerializer;
 import igentuman.nc.recipe.fission.BoilingRecipe;
 import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import igentuman.nc.recipe.fission.FissionRecipes;
@@ -37,6 +38,11 @@ public class ModEmiPlugin implements EmiPlugin {
 
     private final Map<String, EmiRecipeCategory> categories = new HashMap<>();
 
+    private boolean isProcessorEntry(ModEntry entry) {
+        return entry.hasRecipes() && entry.isEnabled()
+                && entry.recipeSerializer().get() instanceof UniversalProcessorRecipeSerializer;
+    }
+
     private EmiRecipeCategory getOrCreateCategory(ModEntry entry) {
         return categories.computeIfAbsent(entry.name(), name -> {
             ResourceLocation id = NuclearCraft.rl(name);
@@ -55,7 +61,7 @@ public class ModEmiPlugin implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
-            if (!entry.hasRecipes() || !entry.isEnabled()) continue;
+            if (!isProcessorEntry(entry)) continue;
             EmiRecipeCategory category = getOrCreateCategory(entry);
             registry.addCategory(category);
             if (entry.hasItem()) {
@@ -70,7 +76,7 @@ public class ModEmiPlugin implements EmiPlugin {
         RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
 
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
-            if (!entry.hasRecipes() || !entry.isEnabled()) continue;
+            if (!isProcessorEntry(entry)) continue;
             EmiRecipeCategory category = getOrCreateCategory(entry);
 
             @SuppressWarnings("unchecked")

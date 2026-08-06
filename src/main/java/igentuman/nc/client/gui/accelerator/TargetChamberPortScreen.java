@@ -81,8 +81,8 @@ public class TargetChamberPortScreen extends AbstractContainerScreen<TargetChamb
         modeBtn = new Button.TargetChamberPortRedstoneModeButton(150, 64, this, menu.getPosition());
         widgets.add(modeBtn);
         if (hasFluidTanks()) {
-            addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(53, 58).canVoid());
-            addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(18, 18).pos(113, 58).canVoid());
+            addWidget(FluidTankRenderer.tank(getFluidTank(0)).id(0).size(16, 16).pos(51, 55).canVoid());
+            addWidget(FluidTankRenderer.tank(getFluidTank(1)).id(1).size(16, 16).pos(111, 55).canVoid());
         }
     }
 

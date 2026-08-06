@@ -3,6 +3,7 @@ package igentuman.nc.network;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.network.toClient.PacketBombDetonationStart;
 import igentuman.nc.network.toClient.PacketCraftDenied;
+import igentuman.nc.network.toClient.PacketFissionDesignData;
 import igentuman.nc.network.toClient.PacketPlayerRadiationData;
 import igentuman.nc.network.toClient.PacketQ36BeamFx;
 import igentuman.nc.network.toClient.PacketSyncContainerInventory;
@@ -38,6 +39,8 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketRecipeTransfer.class, PacketRecipeTransfer::decode);
         registerClientToServer(PacketCreativeParticleSource.class, PacketCreativeParticleSource::decode);
         registerClientToServer(PacketQ36Fire.class, PacketQ36Fire::decode);
+        registerClientToServer(PacketSaveFissionDesign.class, PacketSaveFissionDesign::decode);
+        registerClientToServer(PacketLoadFissionDesign.class, PacketLoadFissionDesign::decode);
         if(ModUtil.isAE2Loaded()) {
             registerClientToServer(PacketAE2PatternTransfer.class, PacketAE2PatternTransfer::decode);
         }
@@ -49,5 +52,6 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketBombDetonationStart.class, PacketBombDetonationStart::decode);
         registerServerToClient(PacketCraftDenied.class, PacketCraftDenied::decode);
         registerServerToClient(PacketSyncContainerInventory.class, PacketSyncContainerInventory::decode);
+        registerServerToClient(PacketFissionDesignData.class, PacketFissionDesignData::decode);
     }
 }

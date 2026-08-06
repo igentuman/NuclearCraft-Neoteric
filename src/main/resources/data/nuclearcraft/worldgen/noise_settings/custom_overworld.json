@@ -46,9 +46,9 @@
                   "argument1": {
                     "type": "minecraft:y_clamped_gradient",
                     "from_value": 0.0,
-                    "from_y": -64,
+                    "from_y": 0,
                     "to_value": 1.0,
-                    "to_y": -40
+                    "to_y": 24
                   },
                   "argument2": {
                     "type": "minecraft:add",
@@ -186,9 +186,9 @@
         "argument1": {
           "type": "minecraft:y_clamped_gradient",
           "from_value": 0.0,
-          "from_y": -64,
+          "from_y": 0,
           "to_value": 1.0,
-          "to_y": -40
+          "to_y": 24
         },
         "argument2": {
           "type": "minecraft:add",
@@ -403,6 +403,52 @@
           "result_state": {
             "Name": "minecraft:bedrock"
           }
+        }
+      },
+      {
+        "type": "minecraft:condition",
+        "if_true": {
+          "type": "minecraft:biome",
+          "biome_is": [
+            "minecraft:desert"
+          ]
+        },
+        "then_run": {
+          "type": "minecraft:sequence",
+          "sequence": [
+            {
+              "type": "minecraft:condition",
+              "if_true": {
+                "type": "minecraft:stone_depth",
+                "add_surface_depth": false,
+                "offset": 0,
+                "secondary_depth_range": 0,
+                "surface_type": "floor"
+              },
+              "then_run": {
+                "type": "minecraft:block",
+                "result_state": {
+                  "Name": "minecraft:sand"
+                }
+              }
+            },
+            {
+              "type": "minecraft:condition",
+              "if_true": {
+                "type": "minecraft:stone_depth",
+                "add_surface_depth": true,
+                "offset": 0,
+                "secondary_depth_range": 3,
+                "surface_type": "floor"
+              },
+              "then_run": {
+                "type": "minecraft:block",
+                "result_state": {
+                  "Name": "minecraft:sandstone"
+                }
+              }
+            }
+          ]
         }
       },
       {

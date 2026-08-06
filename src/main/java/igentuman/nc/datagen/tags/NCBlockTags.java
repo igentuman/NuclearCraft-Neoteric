@@ -31,6 +31,7 @@ import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.H
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_BLOCK;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
+import static igentuman.nc.setup.registration.FissionDesignerRegistration.FISSION_REACTOR_DESIGNER;
 import static igentuman.nc.setup.registration.Tags.BLOCK_TAGS;
 import static igentuman.nc.setup.registration.Tags.ORE_TAGS;
 
@@ -260,6 +261,8 @@ public class NCBlockTags extends BlockTagsProvider {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(FISSION_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(FISSION_BLOCKS.get(block).get());
         }
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(FISSION_REACTOR_DESIGNER.get());
+        tag(BlockTags.NEEDS_IRON_TOOL).add(FISSION_REACTOR_DESIGNER.get());
         for(String block: TURBINE_BLOCKS.keySet()) {
             tag(BlockTags.MINEABLE_WITH_PICKAXE).add(TURBINE_BLOCKS.get(block).get());
             tag(BlockTags.NEEDS_IRON_TOOL).add(TURBINE_BLOCKS.get(block).get());

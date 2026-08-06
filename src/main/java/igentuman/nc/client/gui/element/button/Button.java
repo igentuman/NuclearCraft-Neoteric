@@ -12,7 +12,7 @@ import igentuman.nc.compat.emi.EMIPlugin;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.network.toServer.PacketBuildMultiblock;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
-import igentuman.nc.util.builder.ReactorDesignParser;
+import igentuman.nc.network.toServer.PacketLoadFissionDesign;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -379,22 +379,15 @@ public class Button<T extends AbstractContainerScreen<?>> extends NCGuiElement {
             height = 18;
             width = 18;
             btn = new ImageButton(X(), Y(), width, height, 144, 220, 18, TEXTURE, pButton -> {
-                try {
-                    String jsonText = Minecraft.getInstance().keyboardHandler.getClipboard();
-                    if (jsonText != null && !jsonText.isEmpty()) {
-                        screen.jsonText = jsonText;
-                        screen.blockMap = ReactorDesignParser.parseStructure(jsonText);
-                    }
-                } catch (Exception e) {
-                    debugLog("Error getting clipboard data");
-                }
+                int slot = Minecraft.getInstance().player.getInventory().selected;
+                NuclearCraft.packetHandler().sendToServer(new PacketLoadFissionDesign(slot));
             });
         }
 
         public List<Component> getTooltips() {
             List<Component> list = List.of(
-                    __("tooltip.nc.paste_json"),
-                    __("tooltip.nc.paste_json.descr")
+                    __("tooltip.nc.load_plan"),
+                    __("tooltip.nc.load_plan.descr")
             );
             return list;
         }

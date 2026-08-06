@@ -92,11 +92,15 @@ public class CreativeTabs {
             return new ItemStack(uraniumBlock);
         }
 
-        @Override
-        public void fillItemList(NonNullList<ItemStack> items) {
-            items.addAll(getBlocks());
-        }
-    };
+    public static final RegistryObject<CreativeModeTab> FISSION_REACTOR_TAB = CREATIVE_TABS.register("fission_reactor",
+            () -> CreativeModeTab.builder()
+                    .icon(() -> new ItemStack(FISSION_BLOCKS.get("fission_reactor_controller").get()))
+                    .displayItems((displayParams, output) -> {
+                        FISSION_BLOCKS.values().forEach(itemlike -> output.accept(new ItemStack(itemlike.get())));
+                        output.accept(new ItemStack(FissionDesignerRegistration.FISSION_REACTOR_DESIGNER.get()));
+                    })
+                    .title(__("itemGroup.nuclearcraft_fission_reactor"))
+                    .build());
 
     public static final CreativeModeTab NC_ITEMS_TAB = new CreativeModeTab("nuclearcraft_items") {
         @Override
@@ -240,6 +244,7 @@ public class CreativeTabs {
         items.add(new ItemStack(MULTITOOL.get()));
         items.add(new ItemStack(GEIGER_COUNTER.get()));
         items.add(new ItemStack(NCCrafter.CRAFTING_PATTERN.get()));
+        items.add(new ItemStack(FISSION_REACTOR_PLAN.get()));
         items.add(new ItemStack(LITHIUM_ION_CELL.get()));
         items.add(new ItemStack(RESONITE_SHARD.get()));
         items.add(new ItemStack(RESONITE_CRYSTAL.get()));

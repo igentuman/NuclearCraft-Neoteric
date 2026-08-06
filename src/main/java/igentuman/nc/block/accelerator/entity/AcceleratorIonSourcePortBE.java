@@ -54,19 +54,6 @@ public class AcceleratorIonSourcePortBE extends MultiblockPortBE {
         updateIfNeeded(updated);
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(!isConnectedToController()) return super.getCapability(cap, side);
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return controller().contentHandler().getFluidCapability(side);
-        }
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return controller().contentHandler().getItemCapability(side);
-        }
-        return controller().getCapability(cap, side);
-    }
-
     @Override
     public LinearAcceleratorControllerBE controller() {
         return (LinearAcceleratorControllerBE)super.controller();

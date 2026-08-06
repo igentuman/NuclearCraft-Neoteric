@@ -19,6 +19,7 @@ import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_BLOCK;
 import static igentuman.nc.setup.registration.NCEnergyBlocks.ENERGY_BLOCKS;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
+import static igentuman.nc.setup.registration.FissionDesignerRegistration.FISSION_REACTOR_DESIGNER;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
@@ -48,6 +49,7 @@ public class NCLootTables extends BaseLootTableProvider {
             }
         });
         FISSION_BLOCKS.values().forEach(this::add);
+        add(FISSION_REACTOR_DESIGNER.get(), block -> createSimpleTable("block", FISSION_REACTOR_DESIGNER.get()));
         TURBINE_BLOCKS.values().forEach(this::add);
         HX_BLOCKS.values().forEach(this::add);
         FUSION_BLOCKS.values().forEach(this::add);
@@ -98,6 +100,7 @@ public class NCLootTables extends BaseLootTableProvider {
         all.addAll(NC_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(NC_MATERIAL_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(FISSION_BLOCKS.values().stream().map(RegistryObject::get).toList());
+        all.add(FISSION_REACTOR_DESIGNER.get());
         all.addAll(FUSION_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(TURBINE_BLOCKS.values().stream().map(RegistryObject::get).toList());
         all.addAll(HX_BLOCKS.values().stream().map(RegistryObject::get).toList());

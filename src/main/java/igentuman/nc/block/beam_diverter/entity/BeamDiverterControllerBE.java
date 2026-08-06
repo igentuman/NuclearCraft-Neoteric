@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import static igentuman.nc.compat.oc2.TargetChamberDevice.DEVICE_CAPABILITY;
+import static igentuman.nc.content.particles.CapabilityParticleStackHandler.PARTICLE_HANDLER_CAPABILITY;
 import static igentuman.nc.handler.config.AcceleratorConfig.DECAY_CHAMBER_CONFIG;
 import static igentuman.nc.handler.config.CommonConfig.GTCEU_CONFIG;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BE;

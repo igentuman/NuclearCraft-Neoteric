@@ -24,6 +24,7 @@ public class WastelandBiome {
                         .grassColorOverride(10724473)
                         .foliageColorOverride(9609331)
                         .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS)
+                        .backgroundMusic(new Music(MUSIC_WASTELAND.getHolder().get(), 12000, 24000, false))
                         .build())
                 .mobSpawnSettings(spawnBuilder.build())
                 .generationSettings(builder.build())

@@ -163,9 +163,7 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
 
         Direction[] dirs = {Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
         int[] walks = new int[4];
-        boolean[] reachesOutside = new boolean[4];
         int maxWalk = maxDepth() + 2;
-        int beyondScan = 64;
 
         for (int d = 0; d < 4; d++) {
             BlockPos cur = topStart;
@@ -177,18 +175,6 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
                 steps++;
             }
             walks[d] = steps;
-
-            BlockPos beyond = cur.relative(dirs[d]);
-            boolean foundFurther = false;
-            BlockPos scan = beyond;
-            for (int i = 0; i < beyondScan; i++) {
-                if (isValidForOuter(scan)) {
-                    foundFurther = true;
-                    break;
-                }
-                scan = scan.relative(dirs[d]);
-            }
-            reachesOutside[d] = !foundFurther;
         }
 
         int axisXSpan = walks[2] + walks[3] + 1;
@@ -209,17 +195,24 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
             cubeMinX = topStart.getX() - walks[3];
             cubeMaxX = topStart.getX() + walks[2];
         } else {
-            boolean eastOut = reachesOutside[2];
-            boolean westOut = reachesOutside[3];
-            if (eastOut && !westOut) {
-                cubeMaxX = topStart.getX() + walks[2];
-                cubeMinX = cubeMaxX - side + 1;
-            } else if (westOut && !eastOut) {
-                cubeMinX = topStart.getX() - walks[3];
-                cubeMaxX = cubeMinX + side - 1;
+            int eastOutMinX = topStart.getX() + walks[2] - side + 1;
+            int eastOutMaxX = topStart.getX() + walks[2];
+            int westOutMinX = topStart.getX() - walks[3];
+            int westOutMaxX = topStart.getX() - walks[3] + side - 1;
+
+            boolean eastOutValid = isTerminalWall(new BlockPos(eastOutMinX, yTop, topStart.getZ()), Direction.WEST);
+            boolean westOutValid = isTerminalWall(new BlockPos(westOutMaxX, yTop, topStart.getZ()), Direction.EAST);
+
+            if (eastOutValid && !westOutValid) {
+                cubeMinX = eastOutMinX;
+                cubeMaxX = eastOutMaxX;
+            } else if (westOutValid && !eastOutValid) {
+                cubeMinX = westOutMinX;
+                cubeMaxX = westOutMaxX;
             } else {
-                debugLog("Cannot resolve X bounds; E_out=" + eastOut + " W_out=" + westOut);
+                debugLog("Cannot resolve X bounds; East-out far-wall valid=" + eastOutValid + " West-out far-wall valid=" + westOutValid);
                 validationResult = ValidationResult.WRONG_OUTER;
+                errorBlockPos = new BlockPos(topStart.getX() + walks[2], yTop, topStart.getZ());
                 return false;
             }
         }
@@ -229,17 +222,24 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
             cubeMinZ = topStart.getZ() - walks[0];
             cubeMaxZ = topStart.getZ() + walks[1];
         } else {
-            boolean northOut = reachesOutside[0];
-            boolean southOut = reachesOutside[1];
-            if (southOut && !northOut) {
-                cubeMaxZ = topStart.getZ() + walks[1];
-                cubeMinZ = cubeMaxZ - side + 1;
-            } else if (northOut && !southOut) {
-                cubeMinZ = topStart.getZ() - walks[0];
-                cubeMaxZ = cubeMinZ + side - 1;
+            int southOutMinZ = topStart.getZ() + walks[1] - side + 1;
+            int southOutMaxZ = topStart.getZ() + walks[1];
+            int northOutMinZ = topStart.getZ() - walks[0];
+            int northOutMaxZ = topStart.getZ() - walks[0] + side - 1;
+
+            boolean southOutValid = isTerminalWall(new BlockPos(topStart.getX(), yTop, southOutMinZ), Direction.NORTH);
+            boolean northOutValid = isTerminalWall(new BlockPos(topStart.getX(), yTop, northOutMaxZ), Direction.SOUTH);
+
+            if (southOutValid && !northOutValid) {
+                cubeMinZ = southOutMinZ;
+                cubeMaxZ = southOutMaxZ;
+            } else if (northOutValid && !southOutValid) {
+                cubeMinZ = northOutMinZ;
+                cubeMaxZ = northOutMaxZ;
             } else {
-                debugLog("Cannot resolve Z bounds; N_out=" + northOut + " S_out=" + southOut);
+                debugLog("Cannot resolve Z bounds; South-out far-wall valid=" + southOutValid + " North-out far-wall valid=" + northOutValid);
                 validationResult = ValidationResult.WRONG_OUTER;
+                errorBlockPos = new BlockPos(topStart.getX(), yTop, topStart.getZ() + walks[1]);
                 return false;
             }
         }
@@ -247,6 +247,7 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         if (cubeMaxX - cubeMinX != cubeMaxZ - cubeMinZ) {
             debugLog("Ring not square: " + (cubeMaxX - cubeMinX + 1) + "x" + (cubeMaxZ - cubeMinZ + 1));
             validationResult = ValidationResult.WRONG_OUTER;
+            errorBlockPos = new BlockPos(cubeMaxX, yTop, cubeMaxZ);
             return false;
         }
 
@@ -279,6 +280,18 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         topRight = new BlockPosInstance(cubeMaxX, yTop, cubeMaxZ);
         multiblockDirection = facing;
         return true;
+    }
+
+    /**
+     * Checks that {@code pos} is a real, terminating outer-wall block: valid casing at {@code pos}
+     * itself, with non-casing immediately {@code beyond} it. Used by {@link #resolveRingBounds()}
+     * to confirm a hypothesized far-wall coordinate (derived from the ring's already-known side
+     * length) genuinely closes off this ring's casing at the exact geometrically-required position,
+     * rather than matching any same-tagged block that happens to exist nearby (e.g. a second,
+     * separately-built ring of the same type).
+     */
+    private boolean isTerminalWall(BlockPos pos, Direction beyond) {
+        return isValidForOuter(pos) && !isValidForOuter(pos.relative(beyond));
     }
 
     /** Validates the outer cube shell (4 outer vertical faces, top, bottom) minus the donut hole. */
@@ -645,14 +658,12 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
 
     @Override
     public void validate() {
-        long startTime = System.nanoTime();
         switch (stage) {
             case 0 -> validateOuter();
             case 1 -> validateBeam();
             case 2 -> indexInnerBlocks();
             case 3 -> veryfyCoolers();
         }
-        debugLog("Accelerator validate stage " + stage + " " + initialPos().toShortString() + " in " + (System.nanoTime() - startTime)/1000000 + "ms " + validationResult);
         if(stage < FINAL_STAGE) {
             hasToRefresh = true;
             return;

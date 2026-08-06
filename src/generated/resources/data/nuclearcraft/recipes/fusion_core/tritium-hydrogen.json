@@ -3,11 +3,11 @@
   "inputFluids": [
     {
       "amount": 1000,
-      "tag": "forge:hydrogen"
+      "tag": "forge:tritium"
     },
     {
       "amount": 1000,
-      "tag": "forge:tritium"
+      "tag": "forge:hydrogen"
     }
   ],
   "outputFluids": [

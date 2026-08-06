@@ -32,75 +32,70 @@ public enum PipeCapabilityType {
         @Override
         public long pull(ServerLevel level, PipeConnectorBE source, List<Long> destinations, PipeNetworkManager manager) {
             BlockPos sPos = source.getBlockPos();
-            int max = throughput();
+            int budget = throughput();
+            long total = 0;
 
-            IItemHandler src = null;
-            int srcSlot = -1;
-            ItemStack moving = ItemStack.EMPTY;
-            BlockPos srcNeighbor = null;
-            source:
-            for (Direction face : Direction.values()) {
-                BlockEntity nbe = source.getExternalNeighbor(face);
+            for (Direction srcFace : Direction.values()) {
+                if (budget <= 0) break;
+                BlockEntity nbe = source.getExternalNeighbor(srcFace);
                 if (nbe == null) continue;
-                IItemHandler h = nbe.getCapability(ForgeCapabilities.ITEM_HANDLER, face.getOpposite()).resolve().orElse(null);
-                if (h == null) continue;
-                for (int slot = 0; slot < h.getSlots(); slot++) {
-                    ItemStack sim = h.extractItem(slot, max, true);
-                    if (!sim.isEmpty()) {
-                        src = h;
-                        srcSlot = slot;
-                        moving = sim;
-                        srcNeighbor = sPos.relative(face);
-                        break source;
+                IItemHandler src = nbe.getCapability(ForgeCapabilities.ITEM_HANDLER, srcFace.getOpposite()).resolve().orElse(null);
+                if (src == null) continue;
+                BlockPos srcNeighbor = sPos.relative(srcFace);
+
+                for (int srcSlot = 0; srcSlot < src.getSlots(); srcSlot++) {
+                    if (budget <= 0) break;
+                    ItemStack moving = src.extractItem(srcSlot, budget, true);
+                    if (moving.isEmpty()) continue;
+
+                    int remaining = moving.getCount();
+                    List<IItemHandler> targets = new ArrayList<>();
+                    List<Integer> amounts = new ArrayList<>();
+                    for (long packed : destinations) {
+                        if (remaining <= 0) break;
+                        PipeConnectorBE destBE = manager.getConnectorBE(packed);
+                        if (destBE == null || destBE == source) continue;
+                        BlockPos dPos = destBE.getBlockPos();
+                        for (Direction face : Direction.values()) {
+                            BlockPos np = dPos.relative(face);
+                            if (np.equals(srcNeighbor)) continue;
+                            BlockEntity dnbe = destBE.getExternalNeighbor(face);
+                            if (dnbe == null) continue;
+                            IItemHandler h = dnbe.getCapability(ForgeCapabilities.ITEM_HANDLER, face.getOpposite()).resolve().orElse(null);
+                            if (h == null) continue;
+                            ItemStack attempt = moving.copy();
+                            attempt.setCount(remaining);
+                            int accepted = remaining - ItemHandlerHelper.insertItem(h, attempt, true).getCount();
+                            if (accepted <= 0) continue;
+                            targets.add(h);
+                            amounts.add(accepted);
+                            remaining -= accepted;
+                            break;
+                        }
                     }
+                    int moved = moving.getCount() - remaining;
+                    if (moved <= 0) continue;
+
+                    ItemStack extracted = src.extractItem(srcSlot, moved, false);
+                    if (extracted.isEmpty()) continue;
+                    int cursor = 0;
+                    for (int i = 0; i < targets.size() && cursor < extracted.getCount(); i++) {
+                        int amt = Math.min(amounts.get(i), extracted.getCount() - cursor);
+                        ItemStack part = extracted.copy();
+                        part.setCount(amt);
+                        cursor += amt - ItemHandlerHelper.insertItem(targets.get(i), part, false).getCount();
+                    }
+                    int notInserted = extracted.getCount() - cursor;
+                    if (notInserted > 0) {
+                        ItemStack back = extracted.copy();
+                        back.setCount(notInserted);
+                        ItemHandlerHelper.insertItem(src, back, false);
+                    }
+                    total += cursor;
+                    budget -= cursor;
                 }
             }
-            if (src == null || moving.isEmpty()) return 0;
-
-            int remaining = moving.getCount();
-            List<IItemHandler> targets = new ArrayList<>();
-            List<Integer> amounts = new ArrayList<>();
-            for (long packed : destinations) {
-                if (remaining <= 0) break;
-                PipeConnectorBE destBE = manager.getConnectorBE(packed);
-                if (destBE == null || destBE == source) continue;
-                BlockPos dPos = destBE.getBlockPos();
-                for (Direction face : Direction.values()) {
-                    BlockPos np = dPos.relative(face);
-                    if (np.equals(srcNeighbor)) continue;
-                    BlockEntity nbe = destBE.getExternalNeighbor(face);
-                    if (nbe == null) continue;
-                    IItemHandler h = nbe.getCapability(ForgeCapabilities.ITEM_HANDLER, face.getOpposite()).resolve().orElse(null);
-                    if (h == null) continue;
-                    ItemStack attempt = moving.copy();
-                    attempt.setCount(remaining);
-                    int accepted = remaining - ItemHandlerHelper.insertItem(h, attempt, true).getCount();
-                    if (accepted <= 0) continue;
-                    targets.add(h);
-                    amounts.add(accepted);
-                    remaining -= accepted;
-                    break;
-                }
-            }
-            int moved = moving.getCount() - remaining;
-            if (moved <= 0) return 0;
-
-            ItemStack extracted = src.extractItem(srcSlot, moved, false);
-            if (extracted.isEmpty()) return 0;
-            int cursor = 0;
-            for (int i = 0; i < targets.size() && cursor < extracted.getCount(); i++) {
-                int amt = Math.min(amounts.get(i), extracted.getCount() - cursor);
-                ItemStack part = extracted.copy();
-                part.setCount(amt);
-                cursor += amt - ItemHandlerHelper.insertItem(targets.get(i), part, false).getCount();
-            }
-            int notInserted = extracted.getCount() - cursor;
-            if (notInserted > 0) {
-                ItemStack back = extracted.copy();
-                back.setCount(notInserted);
-                ItemHandlerHelper.insertItem(src, back, false);
-            }
-            return cursor;
+            return total;
         }
     },
 
@@ -113,66 +108,62 @@ public enum PipeCapabilityType {
         @Override
         public long pull(ServerLevel level, PipeConnectorBE source, List<Long> destinations, PipeNetworkManager manager) {
             BlockPos sPos = source.getBlockPos();
-            int max = throughput();
+            int budget = throughput();
+            long total = 0;
 
-            IFluidHandler src = null;
-            FluidStack drained = FluidStack.EMPTY;
-            BlockPos srcNeighbor = null;
-            for (Direction face : Direction.values()) {
-                BlockEntity nbe = source.getExternalNeighbor(face);
+            for (Direction srcFace : Direction.values()) {
+                if (budget <= 0) break;
+                BlockEntity nbe = source.getExternalNeighbor(srcFace);
                 if (nbe == null) continue;
-                IFluidHandler h = nbe.getCapability(ForgeCapabilities.FLUID_HANDLER, face.getOpposite()).resolve().orElse(null);
-                if (h == null) continue;
-                FluidStack sim = h.drain(max, IFluidHandler.FluidAction.SIMULATE);
-                if (!sim.isEmpty()) {
-                    src = h;
-                    drained = sim;
-                    srcNeighbor = sPos.relative(face);
-                    break;
-                }
-            }
-            if (src == null || drained.isEmpty()) return 0;
+                IFluidHandler src = nbe.getCapability(ForgeCapabilities.FLUID_HANDLER, srcFace.getOpposite()).resolve().orElse(null);
+                if (src == null) continue;
+                FluidStack drained = src.drain(budget, IFluidHandler.FluidAction.SIMULATE);
+                if (drained.isEmpty()) continue;
+                BlockPos srcNeighbor = sPos.relative(srcFace);
 
-            int remaining = drained.getAmount();
-            List<IFluidHandler> targets = new ArrayList<>();
-            List<Integer> amounts = new ArrayList<>();
-            for (long packed : destinations) {
-                if (remaining <= 0) break;
-                PipeConnectorBE destBE = manager.getConnectorBE(packed);
-                if (destBE == null || destBE == source) continue;
-                BlockPos dPos = destBE.getBlockPos();
-                for (Direction face : Direction.values()) {
-                    BlockPos np = dPos.relative(face);
-                    if (np.equals(srcNeighbor)) continue;
-                    BlockEntity nbe = destBE.getExternalNeighbor(face);
-                    if (nbe == null) continue;
-                    IFluidHandler h = nbe.getCapability(ForgeCapabilities.FLUID_HANDLER, face.getOpposite()).resolve().orElse(null);
-                    if (h == null) continue;
-                    FluidStack attempt = drained.copy();
-                    attempt.setAmount(remaining);
-                    int accepted = h.fill(attempt, IFluidHandler.FluidAction.SIMULATE);
-                    if (accepted <= 0) continue;
-                    targets.add(h);
-                    amounts.add(accepted);
-                    remaining -= accepted;
-                    break;
+                int remaining = drained.getAmount();
+                List<IFluidHandler> targets = new ArrayList<>();
+                List<Integer> amounts = new ArrayList<>();
+                for (long packed : destinations) {
+                    if (remaining <= 0) break;
+                    PipeConnectorBE destBE = manager.getConnectorBE(packed);
+                    if (destBE == null || destBE == source) continue;
+                    BlockPos dPos = destBE.getBlockPos();
+                    for (Direction face : Direction.values()) {
+                        BlockPos np = dPos.relative(face);
+                        if (np.equals(srcNeighbor)) continue;
+                        BlockEntity dnbe = destBE.getExternalNeighbor(face);
+                        if (dnbe == null) continue;
+                        IFluidHandler h = dnbe.getCapability(ForgeCapabilities.FLUID_HANDLER, face.getOpposite()).resolve().orElse(null);
+                        if (h == null) continue;
+                        FluidStack attempt = drained.copy();
+                        attempt.setAmount(remaining);
+                        int accepted = h.fill(attempt, IFluidHandler.FluidAction.SIMULATE);
+                        if (accepted <= 0) continue;
+                        targets.add(h);
+                        amounts.add(accepted);
+                        remaining -= accepted;
+                        break;
+                    }
                 }
-            }
-            int moved = drained.getAmount() - remaining;
-            if (moved <= 0) return 0;
+                int moved = drained.getAmount() - remaining;
+                if (moved <= 0) continue;
 
-            FluidStack toExtract = drained.copy();
-            toExtract.setAmount(moved);
-            FluidStack extracted = src.drain(toExtract, IFluidHandler.FluidAction.EXECUTE);
-            if (extracted.isEmpty()) return 0;
-            int cursor = 0;
-            for (int i = 0; i < targets.size() && cursor < extracted.getAmount(); i++) {
-                int amt = Math.min(amounts.get(i), extracted.getAmount() - cursor);
-                FluidStack part = extracted.copy();
-                part.setAmount(amt);
-                cursor += targets.get(i).fill(part, IFluidHandler.FluidAction.EXECUTE);
+                FluidStack toExtract = drained.copy();
+                toExtract.setAmount(moved);
+                FluidStack extracted = src.drain(toExtract, IFluidHandler.FluidAction.EXECUTE);
+                if (extracted.isEmpty()) continue;
+                int cursor = 0;
+                for (int i = 0; i < targets.size() && cursor < extracted.getAmount(); i++) {
+                    int amt = Math.min(amounts.get(i), extracted.getAmount() - cursor);
+                    FluidStack part = extracted.copy();
+                    part.setAmount(amt);
+                    cursor += targets.get(i).fill(part, IFluidHandler.FluidAction.EXECUTE);
+                }
+                total += cursor;
+                budget -= cursor;
             }
-            return cursor;
+            return total;
         }
     },
 
@@ -185,54 +176,53 @@ public enum PipeCapabilityType {
         @Override
         public long pull(ServerLevel level, PipeConnectorBE source, List<Long> destinations, PipeNetworkManager manager) {
             BlockPos sPos = source.getBlockPos();
-            int max = throughput();
+            int budget = throughput();
+            long total = 0;
 
-            IEnergyStorage src = null;
-            BlockPos srcNeighbor = null;
-            for (Direction face : Direction.values()) {
-                BlockEntity nbe = source.getExternalNeighbor(face);
+            for (Direction srcFace : Direction.values()) {
+                if (budget <= 0) break;
+                BlockEntity nbe = source.getExternalNeighbor(srcFace);
                 if (nbe == null) continue;
-                IEnergyStorage h = nbe.getCapability(ForgeCapabilities.ENERGY, face.getOpposite()).resolve().orElse(null);
-                if (h == null || !h.canExtract() || h.extractEnergy(max, true) <= 0) continue;
-                src = h;
-                srcNeighbor = sPos.relative(face);
-                break;
-            }
-            if (src == null) return 0;
-            int available = src.extractEnergy(max, true);
-            if (available <= 0) return 0;
+                IEnergyStorage src = nbe.getCapability(ForgeCapabilities.ENERGY, srcFace.getOpposite()).resolve().orElse(null);
+                if (src == null || !src.canExtract()) continue;
+                int available = src.extractEnergy(budget, true);
+                if (available <= 0) continue;
+                BlockPos srcNeighbor = sPos.relative(srcFace);
 
-            int remaining = available;
-            List<IEnergyStorage> targets = new ArrayList<>();
-            List<Integer> amounts = new ArrayList<>();
-            for (long packed : destinations) {
-                if (remaining <= 0) break;
-                PipeConnectorBE destBE = manager.getConnectorBE(packed);
-                if (destBE == null || destBE == source) continue;
-                BlockPos dPos = destBE.getBlockPos();
-                for (Direction face : Direction.values()) {
-                    BlockPos np = dPos.relative(face);
-                    if (np.equals(srcNeighbor)) continue;
-                    BlockEntity nbe = destBE.getExternalNeighbor(face);
-                    if (nbe == null) continue;
-                    IEnergyStorage h = nbe.getCapability(ForgeCapabilities.ENERGY, face.getOpposite()).resolve().orElse(null);
-                    if (h == null || !h.canReceive()) continue;
-                    int accepted = h.receiveEnergy(remaining, true);
-                    if (accepted <= 0) continue;
-                    targets.add(h);
-                    amounts.add(accepted);
-                    remaining -= accepted;
-                    break;
+                int remaining = available;
+                List<IEnergyStorage> targets = new ArrayList<>();
+                List<Integer> amounts = new ArrayList<>();
+                for (long packed : destinations) {
+                    if (remaining <= 0) break;
+                    PipeConnectorBE destBE = manager.getConnectorBE(packed);
+                    if (destBE == null || destBE == source) continue;
+                    BlockPos dPos = destBE.getBlockPos();
+                    for (Direction face : Direction.values()) {
+                        BlockPos np = dPos.relative(face);
+                        if (np.equals(srcNeighbor)) continue;
+                        BlockEntity dnbe = destBE.getExternalNeighbor(face);
+                        if (dnbe == null) continue;
+                        IEnergyStorage h = dnbe.getCapability(ForgeCapabilities.ENERGY, face.getOpposite()).resolve().orElse(null);
+                        if (h == null || !h.canReceive()) continue;
+                        int accepted = h.receiveEnergy(remaining, true);
+                        if (accepted <= 0) continue;
+                        targets.add(h);
+                        amounts.add(accepted);
+                        remaining -= accepted;
+                        break;
+                    }
                 }
-            }
-            int moved = available - remaining;
-            if (moved <= 0) return 0;
+                int moved = available - remaining;
+                if (moved <= 0) continue;
 
-            src.extractEnergy(moved, false);
-            for (int i = 0; i < targets.size(); i++) {
-                targets.get(i).receiveEnergy(amounts.get(i), false);
+                src.extractEnergy(moved, false);
+                for (int i = 0; i < targets.size(); i++) {
+                    targets.get(i).receiveEnergy(amounts.get(i), false);
+                }
+                total += moved;
+                budget -= moved;
             }
-            return moved;
+            return total;
         }
     };
 

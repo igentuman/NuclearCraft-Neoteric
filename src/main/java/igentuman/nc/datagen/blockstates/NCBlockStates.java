@@ -38,6 +38,7 @@ import static igentuman.nc.multiblock.heat_exchanger.HeatExchangerRegistration.H
 import static igentuman.nc.setup.registration.NCBlocks.*;
 import static igentuman.nc.setup.registration.NCProcessors.PROCESSORS;
 import static igentuman.nc.setup.registration.NCStorageBlocks.STORAGE_BLOCKS;
+import static igentuman.nc.setup.registration.FissionDesignerRegistration.FISSION_REACTOR_DESIGNER;
 
 public class NCBlockStates extends BlockStateProvider {
 
@@ -344,6 +345,8 @@ public class NCBlockStates extends BlockStateProvider {
                 }
             }
         }
+        horizontalBlock(FISSION_REACTOR_DESIGNER.get(),
+                multiBlockModel(FISSION_REACTOR_DESIGNER.get(), "fission_reactor_designer"));
     }
 
     private void msrReactor() {

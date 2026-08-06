@@ -87,7 +87,6 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         if(lastTickTime == currentTick && level.getRandom().nextDouble() < 0.05) {
             return;
         }
-        lastTickTime = currentTick;
         isActive = isActive();
         //upadteMultiblockConnection();
         if (isActive) {
@@ -109,6 +108,8 @@ public class IrradiatorBE extends NCProcessorBE implements MultiblockAttachable 
         } else {
             contentHandler().tick();
         }
+        lastTickTime = currentTick;
+
         needToUpdate |= isActive != wasActive;
         if(wasFlux != irradiativeFlux || wasFuel != fuelMultiplier || needToUpdate) {
             needToUpdate = false;

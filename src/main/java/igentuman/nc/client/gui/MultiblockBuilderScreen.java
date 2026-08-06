@@ -2,6 +2,7 @@ package igentuman.nc.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import igentuman.nc.client.gui.element.NCGuiElement;
+import igentuman.nc.client.gui.fission.designer.DesignGrid;
 import igentuman.nc.client.gui.element.button.Button;
 import igentuman.nc.container.MultiblockBuilderContainer;
 import igentuman.nc.handler.event.client.BlockOverlayHandler;
@@ -34,7 +35,6 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
     public String jsonText = "";
     private Button.InsertJson insertBtn;
     private Button.Build buildBtn;
-    private Button.Link linkBtn;
     protected int relX;
     protected int relY;
     public HashMap<BlockPos, Block> blockMap = new HashMap<>();
@@ -57,19 +57,14 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
         Minecraft mc = Minecraft.getInstance();
         updateRelativeCords();
         blockMap = getMenu().getBlocksMap();
-        insertBtn = new Button.InsertJson(128, 7, this, menu.getPosition());
-        buildBtn = new Button.Build(110, 7, this, menu.getPosition());
-        linkBtn = new Button.Link(150, 7, this, menu.getPosition(), "https://discord.gg/fGBZj3haga",
-                List.of(
-                        __("tooltip.nc.link.designs"),
-                        __("tooltip.nc.link.designs.descr")
-                )
-        );
+        insertBtn = new Button.InsertJson(128, 5, this, menu.getPosition());
+        buildBtn = new Button.Build(110, 5, this, menu.getPosition());
+
         widgets.clear();
-        widgets.add(linkBtn);
         widgets.add(insertBtn);
         widgets.add(buildBtn);
     }
+
     @Override
     public void render(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(graphics);
@@ -112,7 +107,7 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
         blit(graphics, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
         renderWidgets(graphics, partialTicks, mouseX, mouseY);
         if(!blockMap.isEmpty()) {
-            MultiblockRenderer.render(blockMap, graphics, relX+20, relY+40, 45, 45);
+            MultiblockRenderer.render(blockMap, graphics, relX+40, relY+50, 100, 100);
         }
         getMenu().setBlocksMap(blockMap);
     }
@@ -124,5 +119,10 @@ public class MultiblockBuilderScreen extends AbstractContainerScreen<MultiblockB
                         Optional.empty(), pMouseX, pMouseY);
             }
         }
+    }
+
+    public void applyLoadedDesign(DesignGrid grid) {
+        blockMap = new HashMap<>(grid.cells);
+        getMenu().setBlocksMap(blockMap);
     }
 }

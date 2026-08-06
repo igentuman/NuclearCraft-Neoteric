@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "nuclearcraft:block/multiblock/fission_reactor_designer",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nuclearcraft:block/multiblock/fission_reactor_designer"
+    },
+    "facing=south": {
+      "model": "nuclearcraft:block/multiblock/fission_reactor_designer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "nuclearcraft:block/multiblock/fission_reactor_designer",
+      "y": 270
+    }
+  }
+}

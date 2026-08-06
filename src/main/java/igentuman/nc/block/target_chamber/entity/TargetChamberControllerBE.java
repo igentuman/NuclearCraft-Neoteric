@@ -186,7 +186,10 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
         if (recipeInfo().be == null) {
             recipeInfo().be = this;
         }
-        if (particleStorage.getParticle() == null) {
+        if (recipe == null) {
+            recipe = recipeInfo().recipe();
+        }
+        if (recipe == null || particleStorage.getParticle() == null) {
             return false;
         }
         recipeInfo().process(particleStorage.getParticle().getAmount() * ((Recipe) recipe).crossSection * efficiency / 100D);
@@ -206,12 +209,12 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
         for (ParticleStack out : r.outputParticles) {
             particleOut += out.getAmount();
         }
-        double outputFactor = r.crossSection * ((ParticleChamberControllerBE)controller()).efficiency;
+        double outputFactor = r.crossSection * (controller()).efficiency;
         if(outputFactor >= 1)
         {
             outputFactor = 1;
         }
-        int beamLength = ((ParticleChamberControllerBE)controller()).width;
+        int beamLength = (controller()).width;
         for (ParticleStack out : r.outputParticles) {
             if (out != null && out.getAmount() > 0) {
                 ParticleStack copy = out.copy();
@@ -230,7 +233,7 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
             if (recipe == null) {
                 recipe = recipeInfo().recipe();
             }
-            if (recipe.handleOutputs(contentHandler)) {
+            if (recipeInfo().handleOutputs(contentHandler())) {
                 updateRecipe();
             } else {
                 recipeInfo().stuck = true;
@@ -240,7 +243,10 @@ public class TargetChamberControllerBE extends ParticleChamberControllerBE {
     }
 
     public Recipe getRecipe() {
-        if (contentHandler.itemHandler.getStackInSlot(0).equals(ItemStack.EMPTY)) return null;
+        if (
+                contentHandler().itemHandler.getStackInSlot(0).isEmpty()
+                && contentHandler().fluidHandler.getFluidInSlot(0).isEmpty()
+        ) return null;
         Recipe cachedRecipe = getCachedRecipe();
         if (cachedRecipe != null) return cachedRecipe;
         if (!NcRecipeType.ALL_RECIPES.containsKey("target_chamber")) return null;

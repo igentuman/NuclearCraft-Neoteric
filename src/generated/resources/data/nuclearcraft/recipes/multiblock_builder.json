@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_builder",
+  "key": {
+    "C": {
+      "item": "minecraft:beacon"
+    },
+    "D": {
+      "item": "nuclearcraft:basic_electric_circuit"
+    },
+    "L": {
+      "item": "nuclearcraft:plate_basic"
+    },
+    "M": {
+      "item": "nuclearcraft:chassis"
+    },
+    "P": {
+      "item": "minecraft:repeater"
+    }
+  },
+  "pattern": [
+    "LDL",
+    "PCP",
+    "LML"
+  ],
+  "result": {
+    "item": "nuclearcraft:multiblock_builder"
+  },
+  "show_notification": true
+}

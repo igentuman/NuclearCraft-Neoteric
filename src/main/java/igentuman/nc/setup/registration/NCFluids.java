@@ -415,6 +415,10 @@ public class NCFluids {
                 type = FLUID_TYPES.register(
                         name, () -> makeTypeWithTextures(builder, stillTex, flowingTex)
                 );
+            } else if(name.equals(quantite_energy)) {
+                type = FLUID_TYPES.register(
+                        name, () -> makeCyclingColoredTypeWithTextures(builder, stillTex, flowingTex, color)
+                );
             } else {
                 type = FLUID_TYPES.register(
                         name, () -> makeColoredTypeWithTextures(builder, stillTex, flowingTex, color)
@@ -474,6 +478,68 @@ public class NCFluids {
                     });
                 }
             };
+        }
+
+        private static final long QUANTITE_HUE_CYCLE_MS = 5000L;
+
+        private static FluidType makeCyclingColoredTypeWithTextures(
+                FluidType.Properties builder, ResourceLocation stillTex, ResourceLocation flowingTex, int baseColor
+        )
+        {
+            int alpha = (baseColor >> 24) & 0xFF;
+            return new FluidType(builder)
+            {
+                @Override
+                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
+                {
+                    consumer.accept(new IClientFluidTypeExtensions()
+                    {
+                        @Override
+                        public ResourceLocation getStillTexture()
+                        {
+                            return stillTex;
+                        }
+
+                        @Override
+                        public ResourceLocation getFlowingTexture()
+                        {
+                            return flowingTex;
+                        }
+
+                        @Override
+                        public int getTintColor()
+                        {
+                            float hue = (System.currentTimeMillis() % QUANTITE_HUE_CYCLE_MS) / (float) QUANTITE_HUE_CYCLE_MS;
+                            return (alpha << 24) | hsvToRgb(hue, 0.55F, 0.85F);
+                        }
+                    });
+                }
+            };
+        }
+
+        private static int hsvToRgb(float h, float s, float v)
+        {
+            float i = h * 6.0F;
+            int vi = (int) Math.floor(i);
+            float f = i - vi;
+            float p = v * (1.0F - s);
+            float q = v * (1.0F - s * f);
+            float t = v * (1.0F - s * (1.0F - f));
+            float r;
+            float g;
+            float b;
+            switch (vi % 6)
+            {
+                case 0: r = v; g = t; b = p; break;
+                case 1: r = q; g = v; b = p; break;
+                case 2: r = p; g = v; b = t; break;
+                case 3: r = p; g = q; b = v; break;
+                case 4: r = t; g = p; b = v; break;
+                default: r = v; g = p; b = q; break;
+            }
+            return ((int)(r * 255.0F) & 0xFF) << 16
+                    | ((int)(g * 255.0F) & 0xFF) << 8
+                    | (int)(b * 255.0F) & 0xFF;
         }
 
         private static FluidType makeTypeWithTextures(

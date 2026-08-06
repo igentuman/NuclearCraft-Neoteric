@@ -39,7 +39,7 @@ public class Kugelblitz extends ModEntries {
 
     private static boolean initialized = false;
 
-    private static final List<String> TAB_BLOCKS = List.of(
+    public static final List<String> TAB_BLOCKS = List.of(
             "chamber_terminal", "chamber_port", "neutronium_frame", "quantum_transformer",
             "quantum_flux_regulator", "event_horizon_stabilizer", "photon_concentrator", "expl");
 

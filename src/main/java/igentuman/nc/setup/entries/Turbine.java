@@ -47,7 +47,7 @@ public class Turbine extends ModEntries {
     public static final List<String> COILS = List.of(
             "copper", "magnesium", "silver", "gold", "beryllium", "aluminum");
 
-    private static final List<String> TAB_BLOCKS = buildTabList();
+    public static final List<String> TAB_BLOCKS = buildTabList();
 
     private static List<String> buildTabList() {
         List<String> l = new ArrayList<>();

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "nuclearcraft:block/fission/designer",
+    "side": "nuclearcraft:block/fission/designer",
+    "top": "nuclearcraft:block/fission/designer"
+  }
+}

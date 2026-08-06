@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:basic_processor"
+    },
+    "F": {
+      "item": "nuclearcraft:steel_frame"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    }
+  },
+  "pattern": [
+    "PCP",
+    "CFC",
+    "PCP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:multiblock_builder"
+  }
+}

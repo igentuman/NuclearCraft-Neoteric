@@ -25,7 +25,7 @@ public class HeatExchanger {
 
     private static boolean initialized = false;
 
-    private static final List<String> TAB_BLOCKS = List.of(
+    public static final List<String> TAB_BLOCKS = List.of(
             "heat_exchanger_controller",
             "heat_exchanger_casing",
             "heat_exchanger",

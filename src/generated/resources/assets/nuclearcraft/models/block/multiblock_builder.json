@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "nuclearcraft:block/multiblock_builder/side",
+    "front": "nuclearcraft:block/multiblock_builder/front",
+    "side": "nuclearcraft:block/multiblock_builder/side",
+    "top": "nuclearcraft:block/multiblock_builder/side"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft",
+  "key": {
+    "C": {
+      "item": "nuclearcraft:advanced_processor"
+    },
+    "G": {
+      "item": "nuclearcraft:fission_reactor_glass"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_basic"
+    }
+  },
+  "pattern": [
+    "PGP",
+    "GCG",
+    "PGP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:fission_reactor_designer"
+  }
+}

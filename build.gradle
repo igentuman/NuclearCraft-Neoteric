@@ -55,6 +55,7 @@ repositories {
     maven {
         url = "https://modmaven.dev/"
     }
+    maven { url = "https://maven.createmod.net" }
 }
 
 base {
@@ -122,6 +123,25 @@ dependencies {
     implementation "curse.maven:sodium-394468:8382328"
     implementation "curse.maven:applied-energistics-2-223794:7027323"
     implementation "curse.maven:guideme-1173950:7127444"
+
+    implementation("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}")
+    jarJar("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}") {
+        version {
+            strictly("[1.0,2.0)")
+            prefer("${ponder_version}")
+        }
+    }
+
+    implementation("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
+    jarJar("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}") {
+        version {
+            strictly("[1.0,2.0)")
+            prefer("${flywheel_version}")
+        }
+    }
+
+    compileOnly("curse.maven:create-328085:7178761")
+
 
     //compileOnly "curse.maven:gregtechceu-modern-890405:6766269"
 }

@@ -4,11 +4,16 @@ import com.mojang.serialization.MapCodec;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.block_entity.UniversalProcessorBE;
 import igentuman.nc.setup.ModEntries;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -28,6 +33,10 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+import static igentuman.nc.util.TextUtils.__;
 
 /** Facing, power-lit block entity block for machine processors; opens its menu and ticks the backing BE. */
 public class UniversalProcessorBlock extends BaseEntityBlock {
@@ -131,5 +140,10 @@ public class UniversalProcessorBlock extends BaseEntityBlock {
             }
         }
         super.onRemove(state, level, pos, newState, movedByPiston);
+    }
+
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        tooltipComponents.add(__("processor.description." + asItem().builtInRegistryHolder().getKey().location().getPath()).withStyle(ChatFormatting.GOLD));
     }
 }

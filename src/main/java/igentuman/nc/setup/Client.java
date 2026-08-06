@@ -1,6 +1,7 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.compat.ponder.PonderUtil;
 import igentuman.nc.client.render.bomb.PrimedFissionBombRenderer;
 import igentuman.nc.client.render.q36.Q36EnergyFlashRenderer;
 import igentuman.nc.client.render.q36.Q36PulseProjectileRenderer;
@@ -85,6 +86,7 @@ public class Client {
                     (stack, lvl, entity, seed) ->
                            CraftingPattern.isEncoded(stack) ? 1f : 0f);
         });
+        PonderUtil.initPlugin();
     }
 
     private static void registerFluidRenderLayers() {

@@ -30,6 +30,5 @@
     "recipes": [
       "nuclearcraft:fission_reactor_designer"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

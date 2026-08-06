@@ -30,6 +30,5 @@
     "recipes": [
       "nuclearcraft:multiblock_builder"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

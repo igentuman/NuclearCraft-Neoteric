@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_builder",
   "key": {
     "C": {
@@ -26,6 +25,5 @@
   ],
   "result": {
     "item": "nuclearcraft:multiblock_builder"
-  },
-  "show_notification": true
+  }
 }

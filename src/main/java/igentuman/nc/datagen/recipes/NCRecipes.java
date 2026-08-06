@@ -667,7 +667,7 @@ public class NCRecipes extends RecipeProvider {
                 .unlockedBy("item", has(NC_PARTS.get("chassis").get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FISSION_REACTOR_DESIGNER.get())
+        ShapedRecipeBuilder.shaped(FISSION_REACTOR_DESIGNER.get())
                 .pattern("LPL")
                 .pattern("CMC")
                 .pattern("LCL")

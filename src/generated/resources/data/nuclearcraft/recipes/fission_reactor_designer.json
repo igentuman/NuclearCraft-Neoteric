@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "nuclearcraft_builder",
   "key": {
     "C": {
@@ -23,6 +22,5 @@
   ],
   "result": {
     "item": "nuclearcraft:fission_reactor_designer"
-  },
-  "show_notification": true
+  }
 }

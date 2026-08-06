@@ -118,7 +118,7 @@ public class MultiblockBuilderBE extends NuclearCraftBE {
 
             if (existing.getBlock() == block) continue;
 
-            if (!existing.isAir() && !existing.canBeReplaced()) {
+            if (!existing.isAir() && !existing.getMaterial().isReplaceable()) {
                 if (player != null) {
                     player.sendSystemMessage(TextUtils.applyFormat(
                             __("nc.multiblock_builder.area_blocked",

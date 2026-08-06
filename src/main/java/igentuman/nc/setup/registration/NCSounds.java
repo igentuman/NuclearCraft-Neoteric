@@ -36,7 +36,7 @@ public final class NCSounds {
     public static final RegistryObject<SoundEvent> RECORD_END_OF_THE_WORLD = SOUND_EVENTS.register("music.end_of_the_world", () -> new SoundEvent(rl( "music.end_of_the_world")));
     public static final RegistryObject<SoundEvent> RECORD_MONEY_FOR_NOTHING = SOUND_EVENTS.register("music.money_for_nothing", () -> new SoundEvent(rl( "music.money_for_nothing")));
     public static final RegistryObject<SoundEvent> RECORD_HYPERSPACE = SOUND_EVENTS.register("music.hyperspace", () -> new SoundEvent(rl( "music.hyperspace")));
-    public static final RegistryObject<SoundEvent> MUSIC_WASTELAND = SOUND_EVENTS.register("music.wasteland", () -> SoundEvent.createVariableRangeEvent(rl( "music.wasteland")));
+    public static final RegistryObject<SoundEvent> MUSIC_WASTELAND = SOUND_EVENTS.register("music.wasteland", () -> new SoundEvent(rl( "music.wasteland")));
     public static final RegistryObject<SoundEvent> BOMB_BLAST_FIRST = SOUND_EVENTS.register("bomb.first_distance", () -> new SoundEvent(rl("bomb.first_distance")));
     public static final RegistryObject<SoundEvent> BOMB_BLAST_SECOND = SOUND_EVENTS.register("bomb.second_distance", () -> new SoundEvent(rl("bomb.second_distance")));
     public static final RegistryObject<SoundEvent> BOMB_BLAST_THIRD = SOUND_EVENTS.register("bomb.third_distance", () -> new SoundEvent(rl("bomb.third_distance")));

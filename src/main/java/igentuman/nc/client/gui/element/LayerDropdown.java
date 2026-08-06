@@ -2,7 +2,8 @@ package igentuman.nc.client.gui.element;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
@@ -60,15 +61,15 @@ public class LayerDropdown extends NCGuiElement implements IDropdown {
     }
 
     @Override
-    public void draw(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void draw(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        graphics.fill(X(), Y(), X() + width, Y() + height, 0xFF101010);
-        graphics.fill(X(), Y(), X() + width, Y() + 1, 0xFF5A5A5A);
-        graphics.fill(X(), Y() + height - 1, X() + width, Y() + height, 0xFF5A5A5A);
-        graphics.fill(X(), Y(), X() + 1, Y() + height, 0xFF5A5A5A);
-        graphics.fill(X() + width - 1, Y(), X() + width, Y() + height, 0xFF5A5A5A);
-        graphics.drawString(font, label(selectedIndex), X() + 4, Y() + (height - 8) / 2, 0xFFFFFF);
-        graphics.drawString(font, Component.literal("v"), X() + width - 7, Y() + (height - 8) / 2, 0xFFB0B0B0);
+        GuiComponent.fill(graphics, X(), Y(), X() + width, Y() + height, 0xFF101010);
+        GuiComponent.fill(graphics, X(), Y(), X() + width, Y() + 1, 0xFF5A5A5A);
+        GuiComponent.fill(graphics, X(), Y() + height - 1, X() + width, Y() + height, 0xFF5A5A5A);
+        GuiComponent.fill(graphics, X(), Y(), X() + 1, Y() + height, 0xFF5A5A5A);
+        GuiComponent.fill(graphics, X() + width - 1, Y(), X() + width, Y() + height, 0xFF5A5A5A);
+        font.draw(graphics, label(selectedIndex), X() + 4, Y() + (height - 8) / 2, 0xFFFFFF);
+        font.draw(graphics, Component.literal("v"), X() + width - 7, Y() + (height - 8) / 2, 0xFFB0B0B0);
     }
 
     protected int visibleRows() {
@@ -76,27 +77,27 @@ public class LayerDropdown extends NCGuiElement implements IDropdown {
     }
 
     @Override
-    public void drawOverlay(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawOverlay(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         if (!open) {
             return;
         }
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 300);
+        graphics.pushPose();
+        graphics.translate(0, 0, 300);
         Font font = Minecraft.getInstance().font;
         int rows = visibleRows();
         int top = Y() + height;
         int bottom = top + rows * ROW_HEIGHT;
-        graphics.fill(X() - 1, top - 1, X() + width + 1, bottom + 1, 0xFF5A5A5A);
-        graphics.fill(X(), top, X() + width, bottom, 0xF0101010);
+        GuiComponent.fill(graphics, X() - 1, top - 1, X() + width + 1, bottom + 1, 0xFF5A5A5A);
+        GuiComponent.fill(graphics, X(), top, X() + width, bottom, 0xF0101010);
         for (int i = 0; i < rows; i++) {
             int rowY = top + i * ROW_HEIGHT;
             boolean hovered = mouseX >= X() && mouseX < X() + width && mouseY >= rowY && mouseY < rowY + ROW_HEIGHT;
             if (hovered) {
-                graphics.fill(X(), rowY, X() + width, rowY + ROW_HEIGHT, 0x60FFFFFF);
+                GuiComponent.fill(graphics, X(), rowY, X() + width, rowY + ROW_HEIGHT, 0x60FFFFFF);
             }
-            graphics.drawString(font, label(i), X() + 4, rowY + (ROW_HEIGHT - 8) / 2, 0xFFFFFF);
+            font.draw(graphics, label(i), X() + 4, rowY + (ROW_HEIGHT - 8) / 2, 0xFFFFFF);
         }
-        graphics.pose().popPose();
+        graphics.popPose();
     }
 
     protected boolean inButton(double mouseX, double mouseY) {

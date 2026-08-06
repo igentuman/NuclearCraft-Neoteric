@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.joml.Matrix4f;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
 import java.util.HashMap;
@@ -86,8 +86,8 @@ public class MultiblockRenderer {
         float scale = baseScale / maxDimension;
         stack.scale(scale, -scale, scale);
 
-        stack.mulPose(new Quaternionf().rotationX((float) Math.toRadians(30)));
-        stack.mulPose(new Quaternionf().rotationY((float) Math.toRadians(-45)));
+        stack.mulPose(Vector3f.XP.rotationDegrees(30));
+        stack.mulPose(Vector3f.YP.rotationDegrees(-45));
 
         float fitScale = (float) (1.2f / (Math.log10(Math.max(Math.max(width, height), depth) + 105)));
         stack.scale(fitScale, fitScale, fitScale);
@@ -98,7 +98,7 @@ public class MultiblockRenderer {
         );
 
         Matrix4f modelView = new Matrix4f(RenderSystem.getModelViewMatrix());
-        modelView.mul(stack.last().pose());
+        modelView.multiply(stack.last().pose());
         mesh.draw(modelView, RenderSystem.getProjectionMatrix(), 1.0f, true);
 
         stack.popPose();

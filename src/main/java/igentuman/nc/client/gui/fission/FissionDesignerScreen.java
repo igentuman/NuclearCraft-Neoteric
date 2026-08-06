@@ -13,8 +13,9 @@ import igentuman.nc.multiblock.fission.FissionReactorRegistration;
 import igentuman.nc.network.toServer.PacketLoadFissionDesign;
 import igentuman.nc.network.toServer.PacketSaveFissionDesign;
 import igentuman.nc.util.TextUtils;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -182,14 +183,14 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     }
 
     @Override
-    public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
+    public void render(PoseStack g, int mouseX, int mouseY, float partial) {
         NCGuiElement.RELATIVE_X = 0;
         NCGuiElement.RELATIVE_Y = 0;
         layout();
         simulator.setFuelKey(fuelDropdown.getSelectedFuelKey());
         simulator.simulateIfDirty();
         renderBackground(g);
-        g.drawCenteredString(font, menu.getTitle(), width / 2, topBarY + 2, 0xFFFFFF);
+        drawCenteredString(g, font, menu.getTitle(), width / 2, topBarY + 2, 0xFFFFFF);
         drawButton(g, newBtnX, topBarY, "New", mouseX, mouseY);
         drawButton(g, saveBtnX, topBarY, "Save", mouseX, mouseY);
         drawButton(g, loadBtnX, topBarY, "Load", mouseX, mouseY);
@@ -208,7 +209,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         }
     }
 
-    protected void drawLayers(GuiGraphics g, int mouseX, int mouseY) {
+    protected void drawLayers(PoseStack g, int mouseX, int mouseY) {
         int cols = grid.sizeX;
         int rows = grid.sizeZ;
         for (int layer = 0; layer < grid.sizeY; layer++) {
@@ -218,15 +219,15 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             }
             int gx = o[0];
             int gy = o[1];
-            g.drawString(font, "Layer " + (layer + 1), gx, gy - LABEL_H, 0xCCE0E0E0);
+            font.draw(g, "Layer " + (layer + 1), gx, gy - LABEL_H, 0xCCE0E0E0);
             int w = cell * cols;
             int h = cell * rows;
-            g.fill(gx - 1, gy - 1, gx + w + 1, gy + h + 1, 0xCC3A3A3A);
+            fill(g, gx - 1, gy - 1, gx + w + 1, gy + h + 1, 0xCC3A3A3A);
             for (int cx = 0; cx < cols; cx++) {
                 for (int cz = 0; cz < rows; cz++) {
                     int px = gx + cx * cell;
                     int py = gy + cz * cell;
-                    g.fill(px, py, px + cell - 1, py + cell - 1, 0xCC13545d);
+                    fill(g, px, py, px + cell - 1, py + cell - 1, 0xCC13545d);
                     Block b = grid.get(cx, layer, cz);
                     if (b != null) {
                         renderScaledItem(g, new ItemStack(b), px + (cell - 16) / 2, py + (cell - 16) / 2, cell / 16f);
@@ -244,15 +245,15 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             if (o != null) {
                 int px = o[0] + hc[1] * cell;
                 int py = o[1] + hc[2] * cell;
-                g.fill(px, py, px + cell - 1, py + cell - 1, 0x40FFFFFF);
+                fill(g, px, py, px + cell - 1, py + cell - 1, 0x40FFFFFF);
             }
         }
     }
 
-    protected void drawPalette(GuiGraphics g, int mouseX, int mouseY) {
+    protected void drawPalette(PoseStack g, int mouseX, int mouseY) {
         int areaW = palCols * PAL_SLOT;
         int areaH = palVisibleRows * PAL_SLOT;
-        g.fill(palX - 1, palY - 1, palX + areaW + 1, palY + areaH + 1, 0xFF3A3A3A);
+        fill(g, palX - 1, palY - 1, palX + areaW + 1, palY + areaH + 1, 0xFF3A3A3A);
         for (int i = 0; i < palVisibleRows * palCols; i++) {
             int idx = paletteScroll * palCols + i;
             if (idx >= palette.size()) {
@@ -262,29 +263,29 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             int row = i / palCols;
             int px = palX + col * PAL_SLOT;
             int py = palY + row * PAL_SLOT;
-            g.fill(px, py, px + PAL_SLOT - 1, py + PAL_SLOT - 1, 0xFF101010);
-            g.renderItem(palette.get(idx).stack, px + 1, py + 1);
+            fill(g, px, py, px + PAL_SLOT - 1, py + PAL_SLOT - 1, 0xFF101010);
+            itemRenderer.renderGuiItem(palette.get(idx).stack, px + 1, py + 1);
             if (idx == selectedPaletteIndex) {
                 drawOutline(g, px, py, PAL_SLOT - 1, PAL_SLOT - 1, 0xFFFFD030);
             }
         }
     }
 
-    protected void drawStats(GuiGraphics g) {
+    protected void drawStats(PoseStack g) {
         int y = statsY;
         int color = 0xC0C0C0;
-        g.drawString(font, "Heat/t: " + fmt(simulator.heatPerTick), statsX, y, color);
-        g.drawString(font, "Cooling/t: " + fmt(simulator.coolingPerTick), statsX, y += 11, color);
-        g.drawString(font, "Net heat: " + fmt(simulator.netHeat), statsX, y += 11, color);
-        g.drawString(font, "FE/t: " + fmt(simulator.energyPerTick), statsX, y += 11, color);
-        g.drawString(font, "Steam/t: " + simulator.steamPerTick, statsX, y += 11, color);
-        g.drawString(font, "Irradiation: " + simulator.irradiation, statsX, y += 11, color);
+        font.draw(g, "Heat/t: " + fmt(simulator.heatPerTick), statsX, y, color);
+        font.draw(g, "Cooling/t: " + fmt(simulator.coolingPerTick), statsX, y += 11, color);
+        font.draw(g, "Net heat: " + fmt(simulator.netHeat), statsX, y += 11, color);
+        font.draw(g, "FE/t: " + fmt(simulator.energyPerTick), statsX, y += 11, color);
+        font.draw(g, "Steam/t: " + simulator.steamPerTick, statsX, y += 11, color);
+        font.draw(g, "Irradiation: " + simulator.irradiation, statsX, y += 11, color);
         String meltdown = Double.isInfinite(simulator.meltdownTimeSeconds)
                 ? "∞" : fmt(simulator.meltdownTimeSeconds) + "s";
-        g.drawString(font, "Meltdown: " + meltdown, statsX, y += 11, color);
+        font.draw(g, "Meltdown: " + meltdown, statsX, y += 11, color);
     }
 
-    protected void drawTooltips(GuiGraphics g, int mouseX, int mouseY) {
+    protected void drawTooltips(PoseStack g, int mouseX, int mouseY) {
         // palette hover
         int areaW = palCols * PAL_SLOT;
         int areaH = palVisibleRows * PAL_SLOT;
@@ -293,18 +294,18 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             int row = (mouseY - palY) / PAL_SLOT;
             int idx = paletteScroll * palCols + row * palCols + col;
             if (col < palCols && idx >= 0 && idx < palette.size()) {
-                g.renderComponentTooltip(font, palette.get(idx).tooltip, mouseX, mouseY);
+                renderComponentTooltip(g, palette.get(idx).tooltip, mouseX, mouseY);
             }
         }
     }
 
-    protected void drawNewModal(GuiGraphics g, int mouseX, int mouseY) {
+    protected void drawNewModal(PoseStack g, int mouseX, int mouseY) {
         int mw = 180, mh = 120;
         int mx = (width - mw) / 2, my = (height - mh) / 2;
-        g.fill(0, 0, width, height, 0xA0000000);
-        g.fill(mx, my, mx + mw, mh + my, 0xFF202020);
+        fill(g, 0, 0, width, height, 0xA0000000);
+        fill(g, mx, my, mx + mw, mh + my, 0xFF202020);
         drawOutline(g, mx, my, mw, mh, 0xFF5A5A5A);
-        g.drawCenteredString(font, "New Design", mx + mw / 2, my + 8, 0xFFFFFF);
+        drawCenteredString(g, font, "New Design", mx + mw / 2, my + 8, 0xFFFFFF);
         drawStepper(g, "X", pendingX, mx + 20, my + 30);
         drawStepper(g, "Y", pendingY, mx + 20, my + 52);
         drawStepper(g, "Z", pendingZ, mx + 20, my + 74);
@@ -312,39 +313,40 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         drawButton(g, mx + mw - 20 - BTN_W, my + mh - 24, "Cancel", mouseX, mouseY);
     }
 
-    protected void drawStepper(GuiGraphics g, String label, int value, int x, int y) {
-        g.drawString(font, label + ":", x, y + 4, 0xFFFFFF);
-        g.fill(x + 20, y, x + 34, y + 14, 0xFF404040);
-        g.drawCenteredString(font, "-", x + 27, y + 3, 0xFFFFFF);
-        g.drawCenteredString(font, String.valueOf(value), x + 55, y + 3, 0xFFFFFF);
-        g.fill(x + 76, y, x + 90, y + 14, 0xFF404040);
-        g.drawCenteredString(font, "+", x + 83, y + 3, 0xFFFFFF);
+    protected void drawStepper(PoseStack g, String label, int value, int x, int y) {
+        font.draw(g, label + ":", x, y + 4, 0xFFFFFF);
+        fill(g, x + 20, y, x + 34, y + 14, 0xFF404040);
+        drawCenteredString(g, font, "-", x + 27, y + 3, 0xFFFFFF);
+        drawCenteredString(g, font, String.valueOf(value), x + 55, y + 3, 0xFFFFFF);
+        fill(g, x + 76, y, x + 90, y + 14, 0xFF404040);
+        drawCenteredString(g, font, "+", x + 83, y + 3, 0xFFFFFF);
     }
 
-    protected void drawButton(GuiGraphics g, int x, int y, String text, int mouseX, int mouseY) {
+    protected void drawButton(PoseStack g, int x, int y, String text, int mouseX, int mouseY) {
         boolean hover = mouseX >= x && mouseX < x + BTN_W && mouseY >= y && mouseY < y + BTN_H;
-        g.fill(x, y, x + BTN_W, y + BTN_H, hover ? 0xFF505050 : 0xFF303030);
+        fill(g, x, y, x + BTN_W, y + BTN_H, hover ? 0xFF505050 : 0xFF303030);
         drawOutline(g, x, y, BTN_W, BTN_H, 0xFF5A5A5A);
-        g.drawCenteredString(font, text, x + BTN_W / 2, y + (BTN_H - 8) / 2, 0xFFFFFF);
+        drawCenteredString(g, font, text, x + BTN_W / 2, y + (BTN_H - 8) / 2, 0xFFFFFF);
     }
 
-    protected void drawOutline(GuiGraphics g, int x, int y, int w, int h, int color) {
-        g.fill(x, y, x + w, y + 1, color);
-        g.fill(x, y + h - 1, x + w, y + h, color);
-        g.fill(x, y, x + 1, y + h, color);
-        g.fill(x + w - 1, y, x + w, y + h, color);
+    protected void drawOutline(PoseStack g, int x, int y, int w, int h, int color) {
+        fill(g, x, y, x + w, y + 1, color);
+        fill(g, x, y + h - 1, x + w, y + h, color);
+        fill(g, x, y, x + 1, y + h, color);
+        fill(g, x + w - 1, y, x + w, y + h, color);
     }
 
-    protected void renderScaledItem(GuiGraphics g, ItemStack stack, int x, int y, float scale) {
+    protected void renderScaledItem(PoseStack g, ItemStack stack, int x, int y, float scale) {
         if (scale >= 1f) {
-            g.renderItem(stack, x, y);
+            itemRenderer.renderGuiItem(stack, x, y);
             return;
         }
-        g.pose().pushPose();
-        g.pose().translate(x + 8 - 8 * scale, y + 8 - 8 * scale, 0);
-        g.pose().scale(scale, scale, 1f);
-        g.renderItem(stack, 0, 0);
-        g.pose().popPose();
+        PoseStack mvStack = RenderSystem.getModelViewStack();
+        mvStack.pushPose();
+        mvStack.translate(x + 8 - 8 * scale, y + 8 - 8 * scale, 0);
+        mvStack.scale(scale, scale, 1f);
+        itemRenderer.renderGuiItem(stack, 0, 0);
+        mvStack.popPose();
     }
 
     protected String fmt(double v) {
@@ -593,11 +595,11 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack graphics, float partialTicks, int mouseX, int mouseY) {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack graphics, int mouseX, int mouseY) {
     }
 
     protected record PaletteEntry(Block block, ItemStack stack, List<Component> tooltip) {

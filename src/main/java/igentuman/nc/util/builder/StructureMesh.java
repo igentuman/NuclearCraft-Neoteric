@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
-import org.joml.Matrix4f;
+import com.mojang.math.Matrix4f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,7 +80,7 @@ public class StructureMesh {
                 rendered.release();
                 continue;
             }
-            VertexBuffer vbo = new VertexBuffer(VertexBuffer.Usage.STATIC);
+            VertexBuffer vbo = new VertexBuffer();
             vbo.bind();
             vbo.upload(rendered);
             VertexBuffer.unbind();

@@ -30,7 +30,7 @@ public class StorageContainerItemScreen extends AbstractContainerScreen<StorageC
         super.init();
         magnetButton = Button.builder(magnetLabel(), b ->
                         minecraft.gameMode.handleInventoryButtonClick(menu.containerId, StorageContainerItemMenu.MAGNET_BUTTON))
-                .bounds(leftPos + imageWidth - 24, topPos + 4, 20, 20)
+                .bounds(leftPos + imageWidth - 34, topPos + imageHeight - 83, 18, 18)
                 .build();
         addRenderableWidget(magnetButton);
     }
@@ -60,6 +60,6 @@ public class StorageContainerItemScreen extends AbstractContainerScreen<StorageC
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        graphics.blit(gui, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+        graphics.blit(gui, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
     }
 }

@@ -27,7 +27,7 @@ public final class StorageMenuSlots {
             case 13 -> 41;
             default -> 5;
         };
-        int invY = 5 + rows * 18 + 23;
+        int invY = 5 + (rows - 1) * 18 + 23;
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 9; c++) {
                 sink.add(new Slot(playerInventory, c + r * 9 + 9, xShift + c * 18, invY + r * 18));

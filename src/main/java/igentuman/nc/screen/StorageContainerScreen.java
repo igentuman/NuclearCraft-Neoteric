@@ -34,6 +34,6 @@ public class StorageContainerScreen extends AbstractContainerScreen<StorageConta
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        graphics.blit(gui, x, y, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+        graphics.blit(gui, x, y, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
     }
 }

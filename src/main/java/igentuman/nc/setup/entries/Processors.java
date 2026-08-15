@@ -99,10 +99,10 @@ public class Processors extends ModEntries {
     private static void pump() {
         ModEntryBuilder b = addProcessor(PUMP)
                 .blockEntity(PumpBE::new);
-        b.itemCap(0, 1);
+        b.itemCap(1, 0);
         b.catalysts(CatalystType.ENERGY, CatalystType.SPEED);
-        b.fluidCap(1, 1, 0);
-        b.withLayout(SlotsLayout.forProcessor(1, 0, 1, 1))
+        b.fluidCap(0, 1, 0);
+        b.withLayout(SlotsLayout.forProcessor(1, 0, 0, 1))
                 .progressBar(0)
                 .build();
     }

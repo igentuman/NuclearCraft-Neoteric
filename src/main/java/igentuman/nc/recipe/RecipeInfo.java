@@ -209,7 +209,7 @@ public class RecipeInfo {
 
         // Consume item inputs
         List<SizedIngredient> itemInputs = upr.getItemInputs();
-        if (be.contentHandler.hasItemCapability()) {
+        if (be.shouldConsumeItemInputs() && be.contentHandler.hasItemCapability()) {
             var itemHandler = be.contentHandler.getItemHandler();
             int inputSlots = (entry != null && entry.itemCap() != null)
                     ? entry.itemCap().inputSlots : itemHandler.getSlots();

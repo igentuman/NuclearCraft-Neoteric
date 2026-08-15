@@ -64,6 +64,22 @@ public class Parts extends ModEntries {
 
         addItem("research_paper", () -> new ResearchPaperItem(new Item.Properties())).build();
         addItem("fission_reactor_plan", () -> new FissionReactorPlanItem(new Item.Properties().stacksTo(1))).build();
+
+        String[] collectors = {
+                "water_collector",
+                "compact_water_collector",
+                "dense_water_collector",
+                "nitrogen_collector",
+                "compact_nitrogen_collector",
+                "dense_nitrogen_collector",
+                "helium_collector",
+                "compact_helium_collector",
+                "dense_helium_collector",
+                "lava_collector",
+        };
+        for (String name : collectors) {
+            addItem(name).build();
+        }
     }
 
     public static final ModEntry ENERGY_UPGRADE =

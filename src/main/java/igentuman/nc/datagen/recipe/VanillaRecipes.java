@@ -92,6 +92,7 @@ public class VanillaRecipes {
         }
         processors();
         parts();
+        collectors();
         fissionBlocks();
         fuelPellets();
         storageBlocks();
@@ -481,6 +482,85 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ingot("tough_alloy")))
                 .save(recipeOutput, rl("steel_frame"));
 
+    }
+
+    private static void collectors() {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("water_collector"))
+                .pattern("PIP")
+                .pattern("GBG")
+                .pattern("PIP")
+                .define('G', plateTag("thermoconducting"))
+                .define('P', item("plate_basic"))
+                .define('B', NAUTILUS_SHELL)
+                .define('I', WATER_BUCKET)
+                .group(MODID)
+                .unlockedBy("item", has(item("plate_basic")))
+                .save(recipeOutput, rl("water_collector"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("compact_water_collector"))
+                .pattern("CCC")
+                .pattern("CIC")
+                .pattern("CCC")
+                .define('C', item("water_collector"))
+                .define('I', plateTag("platinum"))
+                .group(MODID)
+                .unlockedBy("item", has(item("water_collector")))
+                .save(recipeOutput, rl("compact_water_collector"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("lava_collector"))
+                .pattern("PIP")
+                .pattern("B B")
+                .pattern("PIP")
+                .define('P', item("plate_advanced"))
+                .define('B', plateTag("thermoconducting"))
+                .define('I', LAVA_BUCKET)
+                .group(MODID)
+                .unlockedBy("item", has(item("plate_advanced")))
+                .save(recipeOutput, rl("lava_collector"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("nitrogen_collector"))
+                .pattern("PIP")
+                .pattern("BMB")
+                .pattern("PIP")
+                .define('M', item("motor"))
+                .define('P', item("plate_advanced"))
+                .define('B', dustTag("pyrolitic_carbon"))
+                .define('I', plateTag("beryllium"))
+                .group(MODID)
+                .unlockedBy("item", has(item("plate_advanced")))
+                .save(recipeOutput, rl("nitrogen_collector"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("compact_nitrogen_collector"))
+                .pattern("CCC")
+                .pattern("CIC")
+                .pattern("CCC")
+                .define('C', item("nitrogen_collector"))
+                .define('I', plateTag("beryllium"))
+                .group(MODID)
+                .unlockedBy("item", has(item("nitrogen_collector")))
+                .save(recipeOutput, rl("compact_nitrogen_collector"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("helium_collector"))
+                .pattern("PIP")
+                .pattern("BMB")
+                .pattern("PIP")
+                .define('M', item("motor"))
+                .define('P', item("plate_advanced"))
+                .define('B', plateTag("thorium"))
+                .define('I', ingotTag("thorium"))
+                .group(MODID)
+                .unlockedBy("item", has(item("plate_advanced")))
+                .save(recipeOutput, rl("helium_collector"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("compact_helium_collector"))
+                .pattern("CCC")
+                .pattern("CIC")
+                .pattern("CCC")
+                .define('C', item("helium_collector"))
+                .define('I', plateTag("cobalt"))
+                .group(MODID)
+                .unlockedBy("item", has(item("helium_collector")))
+                .save(recipeOutput, rl("compact_helium_collector"));
     }
 
     private static void crafterBlocks() {

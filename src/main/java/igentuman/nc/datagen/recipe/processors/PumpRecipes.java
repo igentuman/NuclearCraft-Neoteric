@@ -6,7 +6,7 @@ import net.minecraft.world.level.material.Fluids;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.PUMP;
 
-/** Generates pump recipes that consume collector parts to produce water, gas, and lava fluids. */
+/** Generates pump recipes that use collector items as non-consumed catalysts to produce water, gas, and lava fluids. */
 public class PumpRecipes {
 
     public static void pump(RecipeOutput out) {

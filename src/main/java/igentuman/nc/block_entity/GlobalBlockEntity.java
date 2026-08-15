@@ -580,6 +580,11 @@ public class GlobalBlockEntity extends BlockEntity {
         }
     }
 
+    /** Returns true if recipe processing should consume item inputs. Override to false for machines that use items as non-consumed catalysts (e.g. Pump). */
+    public boolean shouldConsumeItemInputs() {
+        return true;
+    }
+
     public ProcessorRecipeInput inputs() {
         List<ItemStack> items = new ArrayList<>();
         List<FluidStack> fluids = new ArrayList<>();

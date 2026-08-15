@@ -43,6 +43,10 @@ public class ModItemModelProvider  extends ItemModelProvider {
                 if (entry.name().equals("q36_quantite_disruptor")) {
                     continue;
                 }
+                if (entry.name().contains("collector")) {
+                    collectorItem(entry.item(), entry.name());
+                    continue;
+                }
                 simpleItem(entry.item(), entry.name());
             }
             if (entry.toolSetEntry() instanceof ToolSetEntry toolSet) {
@@ -129,6 +133,25 @@ public class ModItemModelProvider  extends ItemModelProvider {
 
     private void simpleItem(DeferredItem<Item> deferredItem, String name) {
         buildItem(deferredItem, name, "item/generated");
+    }
+
+    private void collectorItem(DeferredItem<Item> deferredItem, String name) {
+        String texture = collectorTextureName(name);
+        ResourceLocation item = BuiltInRegistries.ITEM.getKey(deferredItem.asItem());
+        getBuilder(item.toString())
+                .parent(new ModelFile.UncheckedModelFile("block/cube_all"))
+                .texture("all", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/collector/" + texture));
+    }
+
+    private static String collectorTextureName(String itemName) {
+        String base = itemName.replace("_collector", "");
+        if (base.startsWith("compact_")) {
+            return base.replace("compact_", "") + "_compact";
+        }
+        if (base.startsWith("dense_")) {
+            return base.replace("dense_", "") + "_dense";
+        }
+        return base;
     }
 
     private void buildItem(DeferredItem<Item> deferredItem, String name, String parent) {

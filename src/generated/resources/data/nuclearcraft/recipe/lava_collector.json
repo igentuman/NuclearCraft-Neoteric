@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft",
+  "key": {
+    "B": {
+      "tag": "c:plates/thermoconducting"
+    },
+    "I": {
+      "item": "minecraft:lava_bucket"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    }
+  },
+  "pattern": [
+    "PIP",
+    "B B",
+    "PIP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:lava_collector"
+  }
+}

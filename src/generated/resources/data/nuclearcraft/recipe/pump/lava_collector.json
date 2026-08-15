@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pump",
+  "energy_per_tick": 150,
+  "fluid_outputs": [
+    {
+      "fluid": "minecraft:lava"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:lava_collector"
+    }
+  ],
+  "process_time": 200
+}

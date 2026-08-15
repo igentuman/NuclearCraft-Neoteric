@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:pump",
+  "energy_per_tick": 50,
+  "fluid_outputs": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:nitrogen"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:compact_nitrogen_collector"
+    }
+  ],
+  "process_time": 20
+}

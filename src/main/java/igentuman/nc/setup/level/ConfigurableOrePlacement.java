@@ -37,10 +37,14 @@ public class ConfigurableOrePlacement extends PlacementModifier {
     public Stream<BlockPos> getPositions(PlacementContext ctx, RandomSource rand, BlockPos pos) {
         WorldGen.OreGenConfig config = WorldGen.ORE_CONFIGS.get(materialName);
         if (config == null) return Stream.empty();
+        int veins = config.veinsPerChunk().get();
+        if (veins <= 0) return Stream.empty();
         int minH = config.minHeight().get();
         int maxH = Math.max(minH, config.maxHeight().get());
-        int y = Mth.randomBetweenInclusive(rand, minH, maxH);
-        return Stream.of(new BlockPos(pos.getX(), y, pos.getZ()));
+        return Stream.generate(() -> {
+            int y = Mth.randomBetweenInclusive(rand, minH, maxH);
+            return new BlockPos(pos.getX(), y, pos.getZ());
+        }).limit(veins);
     }
 
     @Override

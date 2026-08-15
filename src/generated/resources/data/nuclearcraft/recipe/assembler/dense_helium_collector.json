@@ -1,0 +1,28 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 4,
+      "item": "nuclearcraft:compact_helium_collector"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:zinc_plate"
+    },
+    {
+      "count": 4,
+      "item": "nuclearcraft:cobalt_plate"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:motor"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:dense_helium_collector"
+    }
+  ],
+  "process_time": 200
+}

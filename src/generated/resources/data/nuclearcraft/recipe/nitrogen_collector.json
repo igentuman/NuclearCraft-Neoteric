@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft",
+  "key": {
+    "B": {
+      "tag": "c:dusts/pyrolitic_carbon"
+    },
+    "I": {
+      "tag": "c:plates/beryllium"
+    },
+    "M": {
+      "item": "nuclearcraft:motor"
+    },
+    "P": {
+      "item": "nuclearcraft:plate_advanced"
+    }
+  },
+  "pattern": [
+    "PIP",
+    "BMB",
+    "PIP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:nitrogen_collector"
+  }
+}

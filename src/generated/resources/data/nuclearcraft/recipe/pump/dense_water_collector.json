@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:pump",
+  "energy_per_tick": 50,
+  "fluid_outputs": [
+    {
+      "amount": 10000,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:dense_water_collector"
+    }
+  ],
+  "process_time": 20
+}

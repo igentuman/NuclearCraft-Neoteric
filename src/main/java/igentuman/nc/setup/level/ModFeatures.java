@@ -1,6 +1,7 @@
 package igentuman.nc.setup.level;
 
 import igentuman.nc.setup.Registers;
+import igentuman.nc.world.ConfigurableOreFeature;
 import igentuman.nc.world.structure.WastelandScatterFeature;
 import igentuman.nc.world.structure.WastelandTemplateFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -13,6 +14,9 @@ public final class ModFeatures {
 
     private ModFeatures() {
     }
+
+    public static final DeferredHolder<Feature<?>, ConfigurableOreFeature> CONFIGURABLE_ORE =
+            Registers.FEATURES.register("configurable_ore", ConfigurableOreFeature::new);
 
     public static final DeferredHolder<Feature<?>, WastelandScatterFeature> WASTELAND_RUINS =
             Registers.FEATURES.register("wasteland_ruins", () -> new WastelandScatterFeature(NoneFeatureConfiguration.CODEC, "wasteland/"));

@@ -1,9 +1,9 @@
 package igentuman.nc.setup.level;
 
-import igentuman.nc.config.WorldGen;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.world.ConfigurableOreFeature;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
@@ -38,10 +38,8 @@ public class ModConfiguredFeatures {
                 OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), mat.oreBlock().get().defaultBlockState()),
                 OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), mat.oreBlock().get().defaultBlockState())
             );
-            WorldGen.OreGenConfig cfg = WorldGen.ORE_CONFIGS.get(mat.name);
-            int veinSize = (cfg != null && WorldGen.SPEC != null && WorldGen.SPEC.isLoaded())
-                ? cfg.veinSize().get() : mat.worldgenQty;
-            register(context, registerKey(mat.name + "_ore"), Feature.ORE, new OreConfiguration(targets, veinSize));
+            register(context, registerKey(mat.name + "_ore"), ModFeatures.CONFIGURABLE_ORE.get(),
+                new ConfigurableOreFeature.Config(mat.name, targets, mat.worldgenQty));
         }
 
         registerNone(context, "wasteland_ruins", ModFeatures.WASTELAND_RUINS.get());

@@ -1,8 +1,8 @@
 {
-  "type": "minecraft:ore",
+  "type": "nuclearcraft:configurable_ore",
   "config": {
-    "discard_chance_on_air_exposure": 0.0,
-    "size": 9,
+    "fallback_size": 9,
+    "material": "zinc",
     "targets": [
       {
         "state": {

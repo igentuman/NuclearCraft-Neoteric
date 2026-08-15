@@ -1,0 +1,28 @@
+{
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 4,
+      "item": "nuclearcraft:compact_water_collector"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:conduit"
+    },
+    {
+      "count": 4,
+      "item": "nuclearcraft:platinum_plate"
+    },
+    {
+      "count": 1,
+      "item": "nuclearcraft:motor"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:dense_water_collector"
+    }
+  ],
+  "process_time": 200
+}

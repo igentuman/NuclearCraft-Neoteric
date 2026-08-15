@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:pump",
+  "energy_per_tick": 50,
+  "fluid_outputs": [
+    {
+      "amount": 2500,
+      "fluid": "nuclearcraft:helium"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:dense_helium_collector"
+    }
+  ],
+  "process_time": 20
+}

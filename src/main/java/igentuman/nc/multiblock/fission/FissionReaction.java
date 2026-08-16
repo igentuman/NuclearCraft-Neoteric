@@ -73,7 +73,7 @@ public class FissionReaction {
         double cooling = fc.totalCooling + activeCooling;
 
         if (!processing) {
-            if (fuelConsumed) {
+            if (fuelConsumed && currentRecipe == null) {
                 returnFuel(items);
             }
             reactivityLevel = Math.max(0, reactivityLevel - 1);
@@ -84,6 +84,7 @@ public class FissionReaction {
             be.steamPerTick = 0;
             be.boilingBuffer().reset();
             syncDisplay(be, heat, recipe);
+            be.markDirty();
             return;
         }
 
@@ -138,10 +139,11 @@ public class FissionReaction {
         syncDisplay(be, heat, recipe);
     }
 
-    /** Called when the structure is not formed: bleed off reactivity and clear display values. */
+    /** Called when the structure is not formed: bleed off reactivity and clear display values.
+     *  Preserves fuel and burn progress so the reaction resumes when the structure is reformed. */
     public void idle(FissionReactorControllerBE be) {
         reactivityLevel = Math.max(0, reactivityLevel - 1);
-        if (fuelConsumed) {
+        if (fuelConsumed && currentRecipe == null) {
             returnFuel(be.getItemHandler(null));
         }
         HeatBuffer heat = be.heatBuffer();
@@ -150,7 +152,8 @@ public class FissionReaction {
         be.energyPerTick = 0;
         be.steamPerTick = 0;
         be.boilingBuffer().reset();
-        syncDisplay(be, heat, null);
+        syncDisplay(be, heat, fuelConsumed ? currentRecipe : null);
+        be.markDirty();
     }
 
     private void returnFuel(IItemHandler items) {

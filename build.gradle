@@ -148,6 +148,16 @@ dependencies {
     //compileOnly "curse.maven:gregtechceu-modern-890405:6766269"
 }
 
+jarJar.enable()
+
+tasks.named('jar', Jar).configure {
+    archiveClassifier = 'slim'
+}
+
+tasks.named('jarJar', Jar).configure {
+    archiveClassifier = ''
+}
+
 tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
             minecraft_version      : minecraft_version,

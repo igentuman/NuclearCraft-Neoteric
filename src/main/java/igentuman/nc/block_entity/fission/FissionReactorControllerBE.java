@@ -17,12 +17,14 @@ import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
@@ -51,6 +53,8 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
     @NBTField(syncToClient = true) public int irradiatorLines;
     @NBTField(syncToClient = true) public boolean steamMode;
     @NBTField(syncToClient = true) public int toggleTimer = TOGGLE_IDLE_TICKS;
+    @NBTField public long aabbMinPacked;
+    @NBTField public long aabbMaxPacked;
 
     public FissionReactorControllerBE(BlockPos pos, BlockState state, String name) {
         super(ModEntries.get(name).blockEntity().get(), pos, state, name);
@@ -104,10 +108,35 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
     @Override
     public void clientTick() {
         super.clientTick();
-        if (formed && (energyPerTick > 0 || steamPerTick > 0)) {
+        if (formed && (energyPerTick > 0 || steamPerTick > 0) && reactivity > 0) {
             playSound(NCSounds.FISSION_REACTOR.get(), 0.2f);
+            spawnParticles();
         } else {
             stopSound();
+        }
+    }
+
+    private void spawnParticles() {
+        if (level == null || aabbMinPacked == 0 || aabbMaxPacked == 0) return;
+        if (level.getGameTime() % (level.random.nextInt(5) + 1) != 0) return;
+        BlockPos min = BlockPos.of(aabbMinPacked);
+        BlockPos max = BlockPos.of(aabbMaxPacked);
+        int interiorMinX = min.getX() + 1, interiorMinY = min.getY() + 1, interiorMinZ = min.getZ() + 1;
+        int interiorMaxX = max.getX() - 1, interiorMaxY = max.getY() - 1, interiorMaxZ = max.getZ() - 1;
+        int excludeMinX = min.getX() + 2, excludeMinY = min.getY() + 2, excludeMinZ = min.getZ() + 2;
+        int excludeMaxX = max.getX() - 2, excludeMaxY = max.getY() - 2, excludeMaxZ = max.getZ() - 2;
+        AABB excludeArea = new AABB(excludeMinX, excludeMinY, excludeMinZ, excludeMaxX, excludeMaxY, excludeMaxZ);
+        int width = max.getX() - min.getX() + 1;
+        int height = max.getY() - min.getY() + 1;
+        int depth = max.getZ() - min.getZ() + 1;
+        for (BlockPos pos : BlockPos.randomBetweenClosed(level.random, width + height + depth,
+                interiorMinX, interiorMinY, interiorMinZ, interiorMaxX, interiorMaxY, interiorMaxZ)) {
+            if (excludeArea.contains(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5)) continue;
+            level.addParticle(ParticleTypes.HAPPY_VILLAGER, true,
+                    pos.getX() + level.random.nextFloat(),
+                    pos.getY() + level.random.nextFloat(),
+                    pos.getZ() + level.random.nextFloat(),
+                    0, -0.05f, 0);
         }
     }
 
@@ -171,24 +200,32 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
         int newModerators = fc.allModerators.size();
         int newModerationLevel = (int) Math.round(moderationFactor * 100);
         int newIrradiatorLines = fc.irradiationLines;
+        long newMin = fc.hasAABB() ? fc.aabbMinPacked() : 0;
+        long newMax = fc.hasAABB() ? fc.aabbMaxPacked() : 0;
         if (newFuelCells != fuelCells || newHeatSinks != heatSinks || newModerators != moderators
-                || newModerationLevel != moderationLevel || newIrradiatorLines != irradiatorLines) {
+                || newModerationLevel != moderationLevel || newIrradiatorLines != irradiatorLines
+                || newMin != aabbMinPacked || newMax != aabbMaxPacked) {
             fuelCells = newFuelCells;
             heatSinks = newHeatSinks;
             moderators = newModerators;
             moderationLevel = newModerationLevel;
             irradiatorLines = newIrradiatorLines;
+            aabbMinPacked = newMin;
+            aabbMaxPacked = newMax;
             wasChanged = true;
         }
     }
 
     private void clearStats() {
-        if (fuelCells != 0 || heatSinks != 0 || moderators != 0 || moderationLevel != 0 || irradiatorLines != 0) {
+        if (fuelCells != 0 || heatSinks != 0 || moderators != 0 || moderationLevel != 0
+                || irradiatorLines != 0 || aabbMinPacked != 0 || aabbMaxPacked != 0) {
             fuelCells = 0;
             heatSinks = 0;
             moderators = 0;
             moderationLevel = 0;
             irradiatorLines = 0;
+            aabbMinPacked = 0;
+            aabbMaxPacked = 0;
             wasChanged = true;
         }
     }

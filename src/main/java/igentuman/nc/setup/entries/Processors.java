@@ -109,6 +109,7 @@ public class Processors extends ModEntries {
 
     private static void leacher() {
         ModEntryBuilder b = addProcessor(LEACHER)
+                .customModel()
                 .blockEntity(LeacherBE::new);
         b.itemCap(1, 0);
         b.internalInputs();

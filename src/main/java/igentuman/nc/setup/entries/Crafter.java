@@ -73,7 +73,7 @@ public class Crafter {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void crafter() {
         ModEntry pattern = new ModEntry("crafting_pattern", null, CRAFTING_PATTERN, null, null, false, null, null,
-                null, null, null, null, null, 0, null, null, Set.of(), Set.of());
+                null, null, null, null, null, 0, null, null, Set.of(), Set.of(), false);
         ENTRIES.put("crafting_pattern", pattern);
         CRAFTER_ENTRIES.add(pattern);
 
@@ -81,7 +81,7 @@ public class Crafter {
                 (DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>) (DeferredHolder) ENGINEERS_CRAFTING_TABLE_BE;
         ModEntry table = new ModEntry("engineers_crafting_table", ENGINEERS_CRAFTING_TABLE_BLOCK,
                 ENGINEERS_CRAFTING_TABLE_ITEM, null, beHolder, false, null, null,
-                null, null, null, null, null, 0, null, null, Set.of(), Set.of());
+                null, null, null, null, null, 0, null, null, Set.of(), Set.of(), false);
         ENTRIES.put("engineers_crafting_table", table);
         CRAFTER_ENTRIES.add(table);
     }

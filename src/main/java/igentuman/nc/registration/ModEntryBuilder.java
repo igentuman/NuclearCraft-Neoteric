@@ -96,6 +96,7 @@ public class ModEntryBuilder {
     private TriFunction<Holder<ArmorMaterial>, ArmorItem.Type, Item.Properties, ? extends Item> bootsFactory;
     private DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> registeredBe;
     private Set<CatalystType> supportedCatalysts = Set.of();
+    private boolean customModel = false;
 
     private ModEntryBuilder(String name) {
         this.name = name;
@@ -337,7 +338,7 @@ public class ModEntryBuilder {
     public static ModEntry addMultiblockBlock(String name, Supplier<? extends Block> blockSupplier) {
         DeferredBlock<Block> block = BLOCKS.register(name, blockSupplier);
         DeferredItem<Item> item = ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
-        ModEntry entry = new ModEntry(name, block, item, null, null, false, null, null, null, null, null, null, null, 0, null, null, Set.of(), Set.of());
+        ModEntry entry = new ModEntry(name, block, item, null, null, false, null, null, null, null, null, null, null, 0, null, null, Set.of(), Set.of(), false);
         ENTRIES.put(name, entry);
         return entry;
     }
@@ -389,7 +390,7 @@ public class ModEntryBuilder {
                         CONTAINERS.register(name, () -> IMenuTypeExtension.create(
                                 (IContainerFactory<MultiblockPortContainer>) MultiblockPortContainer::new));
 
-        ModEntry entry = new ModEntry(name, block, item, menu, beHolder[0], false, null, null, null, null, null, null, null, 0, null, null, Set.of(), Set.of());
+        ModEntry entry = new ModEntry(name, block, item, menu, beHolder[0], false, null, null, null, null, null, null, null, 0, null, null, Set.of(), Set.of(), false);
         ENTRIES.put(name, entry);
         return entry;
     }
@@ -496,6 +497,11 @@ public class ModEntryBuilder {
         return this;
     }
 
+    public ModEntryBuilder customModel() {
+        this.customModel = true;
+        return this;
+    }
+
     public ModEntryBuilder internalInputs() {
         if (itemCapDefinition == null) itemCapDefinition = ItemCapDefinition.create();
         itemCapDefinition.internalInputs(true);
@@ -595,7 +601,7 @@ public class ModEntryBuilder {
             }
         }
 
-        ModEntry entry = new ModEntry(name, block, item, menu, blockEntity, recipeTypeSupplier != null, recipeType, recipeSerializer, material, itemCapDefinition, fluidCapDefinition, energy, slotsLayout, progressBar, toolSetEntry, armorSetEntry, Set.of(), supportedCatalysts);
+        ModEntry entry = new ModEntry(name, block, item, menu, blockEntity, recipeTypeSupplier != null, recipeType, recipeSerializer, material, itemCapDefinition, fluidCapDefinition, energy, slotsLayout, progressBar, toolSetEntry, armorSetEntry, Set.of(), supportedCatalysts, customModel);
         ENTRIES.put(name, entry);
         return entry;
 

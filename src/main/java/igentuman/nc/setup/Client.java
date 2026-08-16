@@ -46,6 +46,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -86,7 +87,9 @@ public class Client {
                     (stack, lvl, entity, seed) ->
                            CraftingPattern.isEncoded(stack) ? 1f : 0f);
         });
-        PonderUtil.initPlugin();
+        if (ModList.get().isLoaded("ponder")) {
+            PonderUtil.initPlugin();
+        }
     }
 
     private static void registerFluidRenderLayers() {

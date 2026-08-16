@@ -70,7 +70,7 @@ public class Energy {
         beHolder[0] = (DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>) (DeferredHolder) beReg;
 
         ModEntry entry = new ModEntry(name, block, item, null, beHolder[0], false, null, null, null,
-                null, null, null, null, 0, null, null, Set.of(), Set.of());
+                null, null, null, null, 0, null, null, Set.of(), Set.of(), false);
         ENTRIES.put(name, entry);
         ENERGY_ENTRIES.add(entry);
     }

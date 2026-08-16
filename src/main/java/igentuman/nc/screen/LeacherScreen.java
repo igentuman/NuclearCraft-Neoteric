@@ -53,7 +53,7 @@ public class LeacherScreen extends UniversalProcessorScreen {
             graphics.fill(x, PUMP_Y, x + PUMP_SIZE, PUMP_Y + PUMP_SIZE, valid ? COLOR_VALID : COLOR_INVALID);
             if (relX >= x && relX < x + PUMP_SIZE && relY >= PUMP_Y && relY < PUMP_Y + PUMP_SIZE) {
                 String key = valid ? "leacher.tooltip.valid_pump" : "leacher.tooltip.invalid_pump";
-                graphics.renderTooltip(font, __(key), mouseX, mouseY);
+                graphics.renderTooltip(font, __(key), relX, relY);
             }
         }
     }

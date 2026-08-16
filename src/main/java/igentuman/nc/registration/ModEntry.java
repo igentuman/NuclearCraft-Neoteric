@@ -38,7 +38,8 @@ public record ModEntry (
         ToolSetEntry toolSetEntry,
         ArmorSetEntry armorSetEntry,
         Set<MultiblockEntry> linkedMultiblocks,
-        Set<CatalystType> supportedCatalysts
+        Set<CatalystType> supportedCatalysts,
+        boolean customModel
 ) {
 
     public boolean hasBlockEntity() {

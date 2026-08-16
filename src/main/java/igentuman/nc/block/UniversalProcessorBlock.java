@@ -3,6 +3,7 @@ package igentuman.nc.block;
 import com.mojang.serialization.MapCodec;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.block_entity.UniversalProcessorBE;
+import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -21,6 +22,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -96,6 +100,23 @@ public class UniversalProcessorBlock extends BaseEntityBlock {
     @Override
     protected RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
+    }
+
+    private boolean isCustomModel() {
+        ModEntry entry = ModEntries.get(name);
+        return entry != null && entry.customModel();
+    }
+
+    @Override
+    public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
+        if (isCustomModel()) return false;
+        return super.skipRendering(state, adjacentBlockState, side);
+    }
+
+    @Override
+    protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+        if (isCustomModel()) return Shapes.empty();
+        return super.getOcclusionShape(state, level, pos);
     }
 
     @Override

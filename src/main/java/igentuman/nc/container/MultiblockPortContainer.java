@@ -19,6 +19,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 /** Menu opened from a multiblock port; mirrors the controller's inventory slots and exposes the redstone mode. */
@@ -44,19 +45,28 @@ public class MultiblockPortContainer extends AbstractContainerMenu {
         this.data = data != null ? data : new SimpleContainerData(Math.max(1, blockEntity.getSyncFieldCount()));
         addDataSlots(this.data);
 
-        MultiblockControllerBE controller = blockEntity.controller();
-        if (controller != null) {
-            MultiblockEntry mbEntry = MultiblockRegistry.getByController(controller.getMultiblockName());
-            if (mbEntry != null) {
-                ModEntry controllerEntry = mbEntry.controllerEntry();
+        MultiblockEntry mbEntry = MultiblockRegistry.getByPort(blockEntity.name);
+        if (mbEntry != null) {
+            ModEntry controllerEntry = mbEntry.controllerEntry();
+            if (controllerEntry != null && controllerEntry.itemCap() != null) {
                 SlotsLayout slotsLayout = controllerEntry.slotsLayout();
-                if (controller.hasInventory()) {
-                    if (slotsLayout != null) {
-                        IItemHandler inv = controller.getItemHandler(null);
-                        int inputItemCount = controllerEntry.itemCap() != null ? controllerEntry.itemCap().inputSlots : 0;
-                        int inputFluidCount = controllerEntry.fluidCap() != null ? controllerEntry.fluidCap().inputTanks.size() : 0;
-                        int outputItemCount = controllerEntry.itemCap() != null ? controllerEntry.itemCap().outputSlots : 0;
+                int inputItemCount = controllerEntry.itemCap().inputSlots;
+                int inputFluidCount = controllerEntry.fluidCap() != null ? controllerEntry.fluidCap().inputTanks.size() : 0;
+                int outputItemCount = controllerEntry.itemCap().outputSlots;
 
+                MultiblockControllerBE controller = blockEntity.controller();
+                IItemHandler inv;
+                boolean hasInventory;
+                if (controller != null) {
+                    inv = controller.getItemHandler(null);
+                    hasInventory = controller.hasInventory();
+                } else {
+                    inv = new ItemStackHandler(inputItemCount + outputItemCount);
+                    hasInventory = true;
+                }
+
+                if (hasInventory) {
+                    if (slotsLayout != null) {
                         int inputItemOffset = 0;
                         int outputItemOffset = inputItemCount + inputFluidCount;
 
@@ -71,18 +81,14 @@ public class MultiblockPortContainer extends AbstractContainerMenu {
                             beSlots++;
                         }
                     } else {
-                        int inputitems = controller.contentHandler.getItemHandler().inputSlots;
-                        int outputItems = controller.contentHandler.getItemHandler().outputSlots;
-                        IItemHandler inv = controller.getItemHandler(null);
-                        for (int i = 0; i < inputitems; i++) {
+                        for (int i = 0; i < inputItemCount; i++) {
                             addSlot(new SlotItemHandler(inv, i, 44 + (i % 3) * 18, 26 + (i / 3) * 18));
                             beSlots++;
                         }
-                        for (int i = 0; i < outputItems; i++) {
-                            addSlot(new SlotItemHandler(inv, inputitems + i, 116 + (i % 3) * 18, 26 + (i / 3) * 18));
+                        for (int i = 0; i < outputItemCount; i++) {
+                            addSlot(new SlotItemHandler(inv, inputItemCount + i, 116 + (i % 3) * 18, 26 + (i / 3) * 18));
                             beSlots++;
                         }
-
                     }
                 }
             }
@@ -113,12 +119,9 @@ public class MultiblockPortContainer extends AbstractContainerMenu {
     }
 
     public SlotsLayout getLayout() {
-        MultiblockControllerBE controller = blockEntity.controller();
-        if (controller != null) {
-            MultiblockEntry mbEntry = MultiblockRegistry.getByController(controller.getMultiblockName());
-            if (mbEntry != null) {
-                return mbEntry.controllerEntry().slotsLayout();
-            }
+        MultiblockEntry mbEntry = MultiblockRegistry.getByPort(blockEntity.name);
+        if (mbEntry != null && mbEntry.controllerEntry() != null) {
+            return mbEntry.controllerEntry().slotsLayout();
         }
         return null;
     }

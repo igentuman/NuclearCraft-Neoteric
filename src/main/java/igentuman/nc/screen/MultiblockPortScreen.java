@@ -2,10 +2,11 @@ package igentuman.nc.screen;
 
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
+import igentuman.nc.multiblock.MultiblockEntry;
+import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.element.RedstoneModeButton;
 import igentuman.nc.screen.element.SlotWidget;
-import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.GuiFluidRenderer;
 import igentuman.nc.util.SlotDef;
 import igentuman.nc.util.SlotsLayout;
@@ -41,29 +42,39 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
 
         slotWidgets.clear();
         SlotsLayout layout = menu.getLayout();
-        var controller = menu.getBlockEntity().controller();
-        if (layout != null && controller != null) {
-            SlotWidget.RELATIVE_X = leftPos;
-            SlotWidget.RELATIVE_Y = topPos;
+        MultiblockEntry mbEntry = MultiblockRegistry.getByPort(menu.getBlockEntity().name);
+        ModEntry entry = mbEntry != null ? mbEntry.controllerEntry() : null;
+        SlotWidget.RELATIVE_X = leftPos;
+        SlotWidget.RELATIVE_Y = topPos;
+        if (layout != null && entry != null) {
+            int inputItemCount = entry.itemCap() != null ? entry.itemCap().inputSlots : 0;
+            int inputFluidCount = entry.fluidCap() != null ? entry.fluidCap().inputTanks.size() : 0;
+            int outputItemCount = entry.itemCap() != null ? entry.itemCap().outputSlots : 0;
             for (int i = 0; i < layout.slots.size(); i++) {
                 SlotDef slotDef = layout.slots.get(i);
                 SlotWidget widget = new SlotWidget(slotDef.x, slotDef.y, 18, 18, Component.empty());
-
-                ModEntry entry = ModEntries.get(controller.name);
-                int inputItemCount = entry.itemCap() != null ? entry.itemCap().inputSlots : 0;
-                int inputFluidCount = entry.fluidCap() != null ? entry.fluidCap().inputTanks.size() : 0;
-                int outputItemCount = entry.itemCap() != null ? entry.itemCap().outputSlots : 0;
-
                 boolean isInputFluid = i >= inputItemCount && i < inputItemCount + inputFluidCount;
                 boolean isOutputFluid = i >= inputItemCount + inputFluidCount + outputItemCount;
-
                 if (isInputFluid || isOutputFluid) {
                     widget.fluid();
                 }
                 if (slotDef.output) {
                     widget.output();
                 }
-
+                slotWidgets.add(widget);
+                this.addRenderableWidget(widget);
+            }
+        } else if (entry != null && entry.itemCap() != null) {
+            int inputItemCount = entry.itemCap().inputSlots;
+            int outputItemCount = entry.itemCap().outputSlots;
+            for (int i = 0; i < inputItemCount; i++) {
+                SlotWidget widget = new SlotWidget(44 + (i % 3) * 18, 26 + (i / 3) * 18, 18, 18, Component.empty());
+                slotWidgets.add(widget);
+                this.addRenderableWidget(widget);
+            }
+            for (int i = 0; i < outputItemCount; i++) {
+                SlotWidget widget = new SlotWidget(116 + (i % 3) * 18, 26 + (i / 3) * 18, 18, 18, Component.empty());
+                widget.output();
                 slotWidgets.add(widget);
                 this.addRenderableWidget(widget);
             }
@@ -91,10 +102,9 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
     private void renderFluidTanks(GuiGraphics guiGraphics, int x, int y,
                                    FluidCapabilityHandler tanks, boolean tooltip, int mouseX, int mouseY) {
         SlotsLayout layout = menu.getLayout();
-        var controller = menu.getBlockEntity().controller();
-        if (layout == null || controller == null) return;
-
-        ModEntry entry = ModEntries.get(controller.name);
+        MultiblockEntry mbEntry = MultiblockRegistry.getByPort(menu.getBlockEntity().name);
+        ModEntry entry = mbEntry != null ? mbEntry.controllerEntry() : null;
+        if (layout == null || entry == null) return;
         int inputItemCount  = entry.itemCap()  != null ? entry.itemCap().inputSlots        : 0;
         int inputFluidCount = entry.fluidCap() != null ? entry.fluidCap().inputTanks.size() : 0;
         int outputItemCount = entry.itemCap()  != null ? entry.itemCap().outputSlots        : 0;

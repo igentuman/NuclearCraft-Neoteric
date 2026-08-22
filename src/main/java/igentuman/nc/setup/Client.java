@@ -234,6 +234,10 @@ public class Client {
                 (BlockEntityType<igentuman.nc.block_entity.turbine.TurbineRotorBE>) (BlockEntityType<?>)
                         ModEntries.get("turbine_rotor_shaft").blockEntity().get(),
                 igentuman.nc.client.render.turbine.TurbineRotorRenderer::new);
+        event.registerBlockEntityRenderer(
+                (BlockEntityType<igentuman.nc.block_entity.MultiblockBuilderBE>) (BlockEntityType<?>)
+                        ModEntries.get("multiblock_builder").blockEntity().get(),
+                igentuman.nc.client.render.builder.MultiblockBuilderRenderer::new);
         // Empty renderer stub for the primed bomb entity; all visuals are client FX (Phase 7).
         event.registerEntityRenderer(
                 (EntityType<? extends EntityFeralGhoul>) (EntityType<?>)

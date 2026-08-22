@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
@@ -68,8 +69,9 @@ public record PacketBuildMultiblock(BlockPos pos, CompoundTag blockMapTag) imple
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer player)) return;
             BlockEntity be = player.serverLevel().getBlockEntity(packet.pos());
-            if (be instanceof MultiblockBuilderBE builder) {
-                builder.build(readBlockMap(packet.blockMapTag()), player);
+            if (be instanceof MultiblockBuilderBE builder
+                    && builder.build(readBlockMap(packet.blockMapTag()), player)) {
+                PacketDistributor.sendToPlayer(player, new PacketMultiblockBuilt(packet.pos()));
             }
         });
     }

@@ -59,12 +59,38 @@ public class MultiblockBuilderBE extends BlockEntity {
         return new Vec3i(maxX, maxY, maxZ);
     }
 
-    public boolean build(HashMap<BlockPos, Block> blockMap, Player player) {
-        if (getLevel() == null || getLevel().isClientSide()) return false;
+    public record PlanStatus(Map<BlockPos, BlockState> preview, List<BlockPos> blocked) {}
 
+    public PlanStatus getPlanStatus() {
+        if (blockMap.isEmpty() || getLevel() == null) return new PlanStatus(Map.of(), List.of());
+
+        HashMap<BlockPos, Block> planMap = shiftToInterior(blockMap);
+        Vec3i size = getSize(planMap);
+        fillShellBlocks(planMap, size);
+        BlockPos globalPos = computeGlobalOrigin(planMap);
+
+        Map<BlockPos, BlockState> preview = new HashMap<>();
+        List<BlockPos> blocked = new ArrayList<>();
+
+        for (Map.Entry<BlockPos, Block> entry : planMap.entrySet()) {
+            BlockPos placementPos = toGlobalPos(globalPos, entry.getKey());
+            BlockState existing = getLevel().getBlockState(placementPos);
+            BlockState state = stateFor(entry);
+            if (existing.getBlock() == state.getBlock()) continue;
+
+            BlockPos offset = placementPos.subtract(getBlockPos());
+            if (!existing.isAir() && !existing.canBeReplaced()) {
+                blocked.add(offset);
+            } else {
+                preview.put(offset, state);
+            }
+        }
+
+        return blocked.isEmpty() ? new PlanStatus(preview, blocked) : new PlanStatus(Map.of(), blocked);
+    }
+
+    private BlockPos computeGlobalOrigin(HashMap<BlockPos, Block> blockMap) {
         Vec3i size = getSize(blockMap);
-        fillShellBlocks(blockMap, size);
-
         int offset = switch (getFacing()) {
             case NORTH -> 1;
             case SOUTH -> size.getZ() + 2;
@@ -72,10 +98,32 @@ public class MultiblockBuilderBE extends BlockEntity {
             case WEST -> 1;
             default -> 0;
         };
-        BlockPos globalPos = getBlockPos().relative(getFacing().getOpposite(), offset);
+        return getBlockPos().relative(getFacing().getOpposite(), offset);
+    }
+
+    private BlockState stateFor(Map.Entry<BlockPos, Block> entry) {
+        Block block = entry.getValue();
+        if (entry.getKey().equals(BlockPos.ZERO)) {
+            Direction controllerFacing = switch (getFacing()) {
+                case NORTH, SOUTH -> NORTH;
+                case EAST, WEST -> WEST;
+                default -> UP;
+            };
+            return block.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, controllerFacing);
+        }
+        return block.defaultBlockState();
+    }
+
+    public boolean build(HashMap<BlockPos, Block> blockMap, Player player) {
+        if (getLevel() == null || getLevel().isClientSide()) return false;
+
+        HashMap<BlockPos, Block> planMap = shiftToInterior(blockMap);
+        Vec3i size = getSize(planMap);
+        fillShellBlocks(planMap, size);
+        BlockPos globalPos = computeGlobalOrigin(planMap);
 
         Map<Item, Integer> required = new HashMap<>();
-        for (Map.Entry<BlockPos, Block> entry : blockMap.entrySet()) {
+        for (Map.Entry<BlockPos, Block> entry : planMap.entrySet()) {
             BlockPos placementPos = toGlobalPos(globalPos, entry.getKey());
             Block block = entry.getValue();
             BlockState existing = getLevel().getBlockState(placementPos);
@@ -99,7 +147,7 @@ public class MultiblockBuilderBE extends BlockEntity {
         }
 
         if (required.isEmpty()) {
-            placeBlocks(blockMap, globalPos);
+            placeBlocks(planMap, globalPos);
             return true;
         }
 
@@ -152,13 +200,21 @@ public class MultiblockBuilderBE extends BlockEntity {
             }
         }
 
-        placeBlocks(blockMap, globalPos);
+        placeBlocks(planMap, globalPos);
 
         if (player != null) {
             player.sendSystemMessage(TextUtils.applyFormat(
                     __("nc.multiblock_builder.build_success"), ChatFormatting.GREEN));
         }
         return true;
+    }
+
+    private HashMap<BlockPos, Block> shiftToInterior(HashMap<BlockPos, Block> blockMap) {
+        HashMap<BlockPos, Block> shifted = new HashMap<>();
+        for (Map.Entry<BlockPos, Block> entry : blockMap.entrySet()) {
+            shifted.put(entry.getKey().offset(1, 1, 1), entry.getValue());
+        }
+        return shifted;
     }
 
     private void fillShellBlocks(HashMap<BlockPos, Block> blockMap, Vec3i size) {
@@ -194,21 +250,11 @@ public class MultiblockBuilderBE extends BlockEntity {
     private void placeBlocks(HashMap<BlockPos, Block> blockMap, BlockPos globalPos) {
         for (Map.Entry<BlockPos, Block> entry : blockMap.entrySet()) {
             BlockPos placementPos = toGlobalPos(globalPos, entry.getKey());
-            Block block = entry.getValue();
+            BlockState state = stateFor(entry);
             BlockState existing = getLevel().getBlockState(placementPos);
-            if (existing.getBlock() == block) continue;
+            if (existing.getBlock() == state.getBlock()) continue;
 
-            if (entry.getKey().equals(BlockPos.ZERO)) {
-                Direction controllerFacing = switch (getFacing()) {
-                    case NORTH, SOUTH -> NORTH;
-                    case EAST, WEST -> WEST;
-                    default -> UP;
-                };
-                getLevel().setBlock(placementPos, block.defaultBlockState()
-                        .setValue(BlockStateProperties.HORIZONTAL_FACING, controllerFacing), 3);
-            } else {
-                getLevel().setBlock(placementPos, block.defaultBlockState(), 3);
-            }
+            getLevel().setBlock(placementPos, state, 3);
         }
     }
 

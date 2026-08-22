@@ -163,5 +163,10 @@ public class Networking {
                 PacketQ36BeamFx.STREAM_CODEC,
                 PacketQ36BeamFx::handle
         );
+        registrar.playToClient(
+                PacketMultiblockBuilt.TYPE,
+                PacketMultiblockBuilt.STREAM_CODEC,
+                PacketMultiblockBuilt::handle
+        );
     }
 }

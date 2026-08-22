@@ -35,6 +35,8 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
 
     protected DesignGrid grid = new DesignGrid(5, 5, 5);
     protected DesignSimulator simulator = new DesignSimulator(grid);
+    protected Block[][] copiedLayer;
+    protected int copiedSizeX, copiedSizeZ;
 
     protected final List<PaletteEntry> palette = new ArrayList<>();
     protected int selectedPaletteIndex = -1;
@@ -55,7 +57,9 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     protected static final int PAL_SLOT = 18;
     protected static final int RIGHT_W = 162;
     protected static final int CELL_MAX = 20;
-    protected static final int LABEL_H = 10;
+    protected static final int LABEL_H = 12;
+    protected static final int LAYER_TOP_PAD = 10;
+    protected static final int LAYER_BTN = 10;
     protected static final int LAYER_GAP_X = 10;
     protected static final int LAYER_GAP_Y = 6;
     protected int topBarY;
@@ -92,7 +96,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
 
     protected void layout() {
         topBarY = 6;
-        contentTop = 24;
+        contentTop = 24 + LAYER_TOP_PAD;
         newBtnX = MARGIN;
         saveBtnX = MARGIN + BTN_W + 6;
         loadBtnX = MARGIN + (BTN_W + 6) * 2;
@@ -138,6 +142,45 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         int blockX = layerAreaX + col * (layerBlockW + LAYER_GAP_X);
         int blockY = layerAreaY + row * (layerBlockH + LAYER_GAP_Y);
         return new int[]{blockX, blockY + LABEL_H};
+    }
+
+    protected int[] layerButtonRects(int layer) {
+        int[] o = layerGridOrigin(layer);
+        if (o == null) {
+            return null;
+        }
+        int gx = o[0];
+        int labelY = o[1] - LABEL_H;
+        int btnY = labelY + (LABEL_H - LAYER_BTN) / 2;
+        int pasteX = gx + layerBlockW - LAYER_BTN;
+        int copyX = pasteX - LAYER_BTN - 2;
+        return new int[]{copyX, btnY, pasteX, btnY};
+    }
+
+    protected void copyLayer(int layer) {
+        copiedSizeX = grid.sizeX;
+        copiedSizeZ = grid.sizeZ;
+        copiedLayer = new Block[copiedSizeX][copiedSizeZ];
+        for (int x = 0; x < copiedSizeX; x++) {
+            for (int z = 0; z < copiedSizeZ; z++) {
+                copiedLayer[x][z] = grid.get(x, layer, z);
+            }
+        }
+    }
+
+    protected void pasteLayer(int layer) {
+        if (copiedLayer == null) {
+            return;
+        }
+        int maxX = Math.min(copiedSizeX, grid.sizeX);
+        int maxZ = Math.min(copiedSizeZ, grid.sizeZ);
+        for (int x = 0; x < maxX; x++) {
+            for (int z = 0; z < maxZ; z++) {
+                grid.set(x, layer, z, copiedLayer[x][z]);
+            }
+        }
+        simulator.markDirty();
+        saveToCache();
     }
 
     protected void buildPalette() {
@@ -222,7 +265,12 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             }
             int gx = o[0];
             int gy = o[1];
-            g.drawString(font, "Layer " + (layer + 1), gx, gy - LABEL_H, 0xCCE0E0E0);
+            g.drawString(font, "Layer " + (layer + 1), gx, gy - LABEL_H + 2, 0xCCE0E0E0);
+            int[] br = layerButtonRects(layer);
+            if (br != null) {
+                drawSmallButton(g, br[0], br[1], "C", mouseX, mouseY);
+                drawSmallButton(g, br[2], br[3], "P", mouseX, mouseY);
+            }
             int w = cell * cols;
             int h = cell * rows;
             g.fill(gx - 1, gy - 1, gx + w + 1, gy + h + 1, 0xCC3A3A3A);
@@ -288,6 +336,20 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     }
 
     protected void drawTooltips(GuiGraphics g, int mouseX, int mouseY) {
+        for (int layer = 0; layer < grid.sizeY; layer++) {
+            int[] br = layerButtonRects(layer);
+            if (br == null) {
+                continue;
+            }
+            if (hit(br[0], br[1], LAYER_BTN, LAYER_BTN, mouseX, mouseY)) {
+                g.renderTooltip(font, Component.literal("Copy layer"), mouseX, mouseY);
+                return;
+            }
+            if (hit(br[2], br[3], LAYER_BTN, LAYER_BTN, mouseX, mouseY)) {
+                g.renderTooltip(font, Component.literal("Paste layer"), mouseX, mouseY);
+                return;
+            }
+        }
         int areaW = palCols * PAL_SLOT;
         int areaH = palVisibleRows * PAL_SLOT;
         if (mouseX >= palX && mouseX < palX + areaW && mouseY >= palY && mouseY < palY + areaH) {
@@ -328,6 +390,13 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         g.fill(x, y, x + BTN_W, y + BTN_H, hover ? 0xFF505050 : 0xFF303030);
         drawOutline(g, x, y, BTN_W, BTN_H, 0xFF5A5A5A);
         g.drawCenteredString(font, text, x + BTN_W / 2, y + (BTN_H - 8) / 2, 0xFFFFFF);
+    }
+
+    protected void drawSmallButton(GuiGraphics g, int x, int y, String text, int mouseX, int mouseY) {
+        boolean hover = mouseX >= x && mouseX < x + LAYER_BTN && mouseY >= y && mouseY < y + LAYER_BTN;
+        g.fill(x, y, x + LAYER_BTN, y + LAYER_BTN, hover ? 0xFF505050 : 0xFF303030);
+        drawOutline(g, x, y, LAYER_BTN, LAYER_BTN, 0xFF5A5A5A);
+        g.drawCenteredString(font, text, x + LAYER_BTN / 2, y + (LAYER_BTN - 8) / 2, 0xFFFFFF);
     }
 
     protected void drawOutline(GuiGraphics g, int x, int y, int w, int h, int color) {
@@ -415,6 +484,20 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
                 selectedPaletteIndex = idx;
             }
             return true;
+        }
+        for (int layer = 0; layer < grid.sizeY; layer++) {
+            int[] br = layerButtonRects(layer);
+            if (br == null) {
+                continue;
+            }
+            if (hit(br[0], br[1], LAYER_BTN, LAYER_BTN, mx, my)) {
+                copyLayer(layer);
+                return true;
+            }
+            if (hit(br[2], br[3], LAYER_BTN, LAYER_BTN, mx, my)) {
+                pasteLayer(layer);
+                return true;
+            }
         }
         int[] c = cellAt(mx, my);
         if (c != null) {

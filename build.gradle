@@ -126,8 +126,8 @@ dependencies {
     implementation "curse.maven:applied-energistics-2-223794:7027323"
     implementation "curse.maven:guideme-1173950:7127444"
 
-    implementation("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}")
-    jarJar("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}") {
+    implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}")
+    jarJar("net.createmod.ponder:ponder-neoforge:${ponder_version}") {
         version {
             strictly("[1.0,2.0)")
             prefer("${ponder_version}")
@@ -144,7 +144,7 @@ dependencies {
 
     compileOnly("curse.maven:create-328085:7178761")
 
-
+    
     //compileOnly "curse.maven:gregtechceu-modern-890405:6766269"
 }
 

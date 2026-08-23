@@ -11,4 +11,6 @@ plugins {
 
 if (file('../NuclearRadiation').exists()) {
     includeBuild '../NuclearRadiation'
+} else if (file('NuclearRadiation').exists()) {
+    includeBuild 'NuclearRadiation'
 }

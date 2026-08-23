@@ -78,6 +78,22 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
                 slotWidgets.add(widget);
                 this.addRenderableWidget(widget);
             }
+        } else if (entry != null && entry.fluidCap() != null) {
+            int inputFluidCount = entry.fluidCap().inputTanks.size();
+            int outputFluidCount = entry.fluidCap().outputTanks.size();
+            for (int i = 0; i < inputFluidCount; i++) {
+                SlotWidget widget = new SlotWidget(30 + i * 20, 30, 18, 18, Component.empty());
+                widget.fluid();
+                slotWidgets.add(widget);
+                this.addRenderableWidget(widget);
+            }
+            for (int i = 0; i < outputFluidCount; i++) {
+                SlotWidget widget = new SlotWidget(115 + i * 20, 30, 18, 18, Component.empty());
+                widget.fluid();
+                widget.output();
+                slotWidgets.add(widget);
+                this.addRenderableWidget(widget);
+            }
         }
 
         if (menu.getBlockEntity().redstoneModes().length > 0) {
@@ -104,10 +120,36 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
         SlotsLayout layout = menu.getLayout();
         MultiblockEntry mbEntry = MultiblockRegistry.getByPort(menu.getBlockEntity().name);
         ModEntry entry = mbEntry != null ? mbEntry.controllerEntry() : null;
-        if (layout == null || entry == null) return;
+        if (entry == null) return;
         int inputItemCount  = entry.itemCap()  != null ? entry.itemCap().inputSlots        : 0;
         int inputFluidCount = entry.fluidCap() != null ? entry.fluidCap().inputTanks.size() : 0;
         int outputItemCount = entry.itemCap()  != null ? entry.itemCap().outputSlots        : 0;
+        int outputFluidCount = entry.fluidCap() != null ? entry.fluidCap().outputTanks.size() : 0;
+
+        if (layout == null) {
+            for (int i = 0; i < inputFluidCount; i++) {
+                int fx = x + 30 + i * 20, fy = y + 30;
+                if (tooltip) {
+                    GuiFluidRenderer.renderFluidTooltip(guiGraphics, mouseX, mouseY, fx, fy, 16, 16,
+                            tanks.getFluidInTank(i), tanks.getTankCapacity(i));
+                } else {
+                    GuiFluidRenderer.renderFluidTank(guiGraphics, fx, fy, 16, 16,
+                            tanks.getFluidInTank(i), tanks.getTankCapacity(i));
+                }
+            }
+            for (int i = 0; i < outputFluidCount; i++) {
+                int fx = x + 115 + i * 20, fy = y + 30;
+                int tankIndex = inputFluidCount + i;
+                if (tooltip) {
+                    GuiFluidRenderer.renderFluidTooltip(guiGraphics, mouseX, mouseY, fx, fy, 16, 16,
+                            tanks.getFluidInTank(tankIndex), tanks.getTankCapacity(tankIndex));
+                } else {
+                    GuiFluidRenderer.renderFluidTank(guiGraphics, fx, fy, 16, 16,
+                            tanks.getFluidInTank(tankIndex), tanks.getTankCapacity(tankIndex));
+                }
+            }
+            return;
+        }
 
         int outputFluidOffset = inputItemCount + inputFluidCount + outputItemCount;
 
@@ -123,7 +165,6 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
             }
         }
 
-        int outputFluidCount = entry.fluidCap() != null ? entry.fluidCap().outputTanks.size() : 0;
         for (int i = 0; i < outputFluidCount && (outputFluidOffset + i) < layout.slots.size(); i++) {
             SlotDef def = layout.slots.get(outputFluidOffset + i);
             int tankIndex = inputFluidCount + i;

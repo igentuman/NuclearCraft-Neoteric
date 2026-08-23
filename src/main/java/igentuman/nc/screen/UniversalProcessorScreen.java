@@ -1,6 +1,7 @@
 package igentuman.nc.screen;
 
 import igentuman.nc.block_entity.GlobalBlockEntity;
+import igentuman.nc.block_entity.UniversalProcessorBE;
 import igentuman.nc.block_entity.catalyst.CatalystDef;
 import igentuman.nc.block_entity.catalyst.CatalystRegistry;
 import igentuman.nc.block_entity.catalyst.CatalystType;
@@ -121,7 +122,7 @@ public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalP
         if (be.hasEnergyStorage()) {
             int barX = leftPos + 8;
             int barY = topPos + 10;
-            addRenderableWidget(new ProcessorEnergyBar(barX, barY, menu.getBlockEntity()));
+            addRenderableWidget(new ProcessorEnergyBar(barX, barY, (UniversalProcessorBE) menu.getBlockEntity()));
         }
 
         addRenderableWidget(new ProcessorImageButton(

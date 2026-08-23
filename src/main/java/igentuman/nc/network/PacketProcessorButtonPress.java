@@ -1,6 +1,7 @@
 package igentuman.nc.network;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.block_entity.ChargingStationBE;
 import igentuman.nc.block_entity.UniversalProcessorBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -37,6 +38,10 @@ public record PacketProcessorButtonPress(BlockPos pos, int buttonId)
             BlockEntity be = serverPlayer.serverLevel().getBlockEntity(packet.pos());
             if (packet.buttonId() == REDSTONE_BTN_ID && be instanceof UniversalProcessorBE processor) {
                 processor.toggleRedstoneMode();
+                be.setChanged();
+                serverPlayer.serverLevel().sendBlockUpdated(packet.pos(), be.getBlockState(), be.getBlockState(), 3);
+            } else if (packet.buttonId() == REDSTONE_BTN_ID && be instanceof ChargingStationBE charger) {
+                charger.toggleRedstoneMode();
                 be.setChanged();
                 serverPlayer.serverLevel().sendBlockUpdated(packet.pos(), be.getBlockState(), be.getBlockState(), 3);
             }

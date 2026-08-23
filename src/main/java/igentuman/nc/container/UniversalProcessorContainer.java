@@ -1,6 +1,6 @@
 package igentuman.nc.container;
 
-import igentuman.nc.block_entity.UniversalProcessorBE;
+import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.handler.SidedContentHandler.RelativeDirection;
 import igentuman.nc.handler.SlotModePair;
 import igentuman.nc.registration.ModEntry;
@@ -25,19 +25,19 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 /** Menu for a machine processor: lays out its I/O slots and player inventory and exposes synced progress/redstone state. */
 public class UniversalProcessorContainer extends AbstractContainerMenu {
 
-    private final UniversalProcessorBE blockEntity;
+    private final GlobalBlockEntity blockEntity;
     private final ContainerData data;
     private final ContainerLevelAccess access;
     private final SlotsLayout slotsLayout;
 
     public UniversalProcessorContainer(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf extraData) {
         this(containerId, playerInventory,
-                (UniversalProcessorBE) playerInventory.player.level().getBlockEntity(extraData.readBlockPos()),
+                (GlobalBlockEntity) playerInventory.player.level().getBlockEntity(extraData.readBlockPos()),
                 null);
     }
 
     public UniversalProcessorContainer(int containerId, Inventory playerInventory,
-                                       UniversalProcessorBE blockEntity, ContainerData data) {
+                                       GlobalBlockEntity blockEntity, ContainerData data) {
         super(ModEntries.get(blockEntity.name).menu().get(), containerId);
         this.blockEntity = blockEntity;
         this.data = data != null ? data : new SimpleContainerData(blockEntity.getSyncFieldCount());
@@ -125,7 +125,7 @@ public class UniversalProcessorContainer extends AbstractContainerMenu {
                 ? data.get(blockEntity.getSyncFieldIndex("redstoneMode")) : 0;
     }
 
-    public UniversalProcessorBE getBlockEntity() {
+    public GlobalBlockEntity getBlockEntity() {
         return blockEntity;
     }
 

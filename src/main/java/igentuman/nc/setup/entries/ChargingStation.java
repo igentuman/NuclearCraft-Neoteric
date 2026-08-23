@@ -18,7 +18,7 @@ public class ChargingStation extends ModEntries {
                 .itemCap(1, 0)
                 .fluidCap(1, 0, 0)
                 .withEnergy(1_000_000, 1_000_000, 1_000_000)
-                .withLayout(SlotsLayout.create().addInput(80, 35))
+                .withLayout(SlotsLayout.create().addInput(80, 35).addInput(24, 40))
                 .build();
     }
 }

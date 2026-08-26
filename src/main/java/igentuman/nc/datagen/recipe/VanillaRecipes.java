@@ -131,9 +131,9 @@ public class VanillaRecipes {
                 .pattern("PGP")
                 .define('P', item("plate_basic"))
                 .define('G', item("fission_reactor_glass"))
-                .define('C', item("advanced_processor"))
+                .define('C', item("analyzer"))
                 .group(MODID)
-                .unlockedBy("item", has(item("advanced_processor")))
+                .unlockedBy("item", has(item("analyzer")))
                 .save(recipeOutput, rl("fission_reactor_designer"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("multiblock_builder"), 1)

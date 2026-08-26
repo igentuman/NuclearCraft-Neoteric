@@ -386,7 +386,7 @@ public class FissionReaction {
         WorldSourceRegistry registry = WorldSourceRegistry.get(sl);
         registry.register(new LeftOverRadSource(sl, pos, leftover, now, true));
         RadiationProfile chunk = leftover.copy(now);
-        chunk.reduceAtoms(2);
+        chunk.reduceAtoms(3);
         registry.setChunkRadiation(pos, RadiationProfile.empty(), RadiationProfile.empty(), chunk);
     }
 

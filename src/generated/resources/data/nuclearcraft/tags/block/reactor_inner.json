@@ -5,6 +5,7 @@
     "nuclearcraft:fission_reactor_solid_fuel_cell",
     "nuclearcraft:fission_reactor_irradiation_chamber",
     "nuclearcraft:fission_reactor_pile-driver_irradiation_chamber",
+    "nuclearcraft:empty_active_heat_sink",
     "nuclearcraft:water_heat_sink",
     "nuclearcraft:redstone_heat_sink",
     "nuclearcraft:quartz_heat_sink",

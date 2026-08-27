@@ -85,6 +85,7 @@ public class FissionReactor extends ModEntries {
         addMultiblockBlock("fission_reactor_pile-driver_irradiation_chamber");
 
         register(new HeatSinkDef("empty").heat(0));
+        register(new HeatSinkDef("empty_active").heat(0));
         register(new HeatSinkDef("water").heat(60).rules("fission_reactor_solid_fuel_cell|#nuclearcraft:moderators"));
         register(new HeatSinkDef("redstone").heat(90).rules("fission_reactor_solid_fuel_cell"));
         register(new HeatSinkDef("quartz").heat(90).rules("#nuclearcraft:moderators"));

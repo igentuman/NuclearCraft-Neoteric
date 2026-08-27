@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:fluid_infuser",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:cryotheum"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:empty_active_heat_sink"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:active_cryotheum_heat_sink"
+    }
+  ],
+  "process_time": 200
+}

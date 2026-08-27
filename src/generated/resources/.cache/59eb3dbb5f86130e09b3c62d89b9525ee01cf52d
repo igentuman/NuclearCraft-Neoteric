@@ -1,4 +1,4 @@
-// 1.21.1	2026-08-05T16:02:27.469318952	Loot Tables
+// 1.21.1	2026-08-27T16:49:36.001773447	Loot Tables
 a04ceb1e40d590051f8ba1b14dbd606dda79b8b8 data/nuclearcraft/loot_table/blocks/active_cryotheum_heat_sink.json
 5c6ee279cf9632c3dd659bcf92277bc2e35f1df0 data/nuclearcraft/loot_table/blocks/active_enderium_heat_sink.json
 960cbf3bce7ade8bd0acd3f15bad425219aabc0d data/nuclearcraft/loot_table/blocks/active_liquid_helium_heat_sink.json
@@ -62,6 +62,7 @@ accb8d5d9a279c3da830abb6d3ee574670312b00 data/nuclearcraft/loot_table/blocks/eli
 ce43d4abf472c41b7cdda105eb2abbe89a757cf9 data/nuclearcraft/loot_table/blocks/elite_storage_container.json
 95eefc5651bf47461d1b0ab98cf8c757bab0dd11 data/nuclearcraft/loot_table/blocks/elite_voltaic_pile.json
 9400f01933e6c3e4797e21504d780461d55bda70 data/nuclearcraft/loot_table/blocks/emerald_heat_sink.json
+96a410a6cceb48f10c559682502d0ac607ff9271 data/nuclearcraft/loot_table/blocks/empty_active_heat_sink.json
 5856e08586a00d522506d3e5bc02822e239b3b00 data/nuclearcraft/loot_table/blocks/empty_heat_sink.json
 51fb9079840bba470ea52a7c02ad505af89736e8 data/nuclearcraft/loot_table/blocks/end_stone_heat_sink.json
 f9d6d54f2c05ffb60d0b47da8f034166ec73399e data/nuclearcraft/loot_table/blocks/enderium_heat_sink.json

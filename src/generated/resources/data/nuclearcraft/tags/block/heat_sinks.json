@@ -1,5 +1,6 @@
 {
   "values": [
+    "nuclearcraft:empty_active_heat_sink",
     "nuclearcraft:water_heat_sink",
     "nuclearcraft:redstone_heat_sink",
     "nuclearcraft:quartz_heat_sink",

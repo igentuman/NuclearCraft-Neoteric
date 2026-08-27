@@ -114,14 +114,15 @@ public class VanillaRecipes {
                 .group(MODID)
                 .unlockedBy("item", has(item("advanced_voltaic_pile")))
                 .save(recipeOutput, rl("charging_station"));
-/*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, RESONITE_CRYSTAL.get())
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("resonite_crystal").item())
                 .pattern("SSS")
                 .pattern("SSS")
                 .pattern("SSS")
-                .define('S', RESONITE_SHARD.get())
+                .define('S', ModEntries.get("resonite_shard").item())
                 .group(MODID)
-                .unlockedBy("item", has(RESONITE_SHARD.get()))
-                .save(recipeOutput);*/
+                .unlockedBy("item", has(ModEntries.get("resonite_shard").item()))
+                .save(recipeOutput);
     }
 
     private static void designerBlocks() {
@@ -999,17 +1000,6 @@ public class VanillaRecipes {
         fusionCraftingRecipes(recipeOutput);
         kugelblitzCraftingRecipes(recipeOutput);
 
-/*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, HX_BLOCKS.get("heat_exchanger").get())
-                .pattern("LPL")
-                .pattern("PMP")
-                .pattern("LPL")
-                .define('M', ModEntries.get("chassis").item())
-                .define('P', plateTag("copper"))
-                .define('L',  plateTag(Materials.thermoconducting))
-                .group(MODID+"_fission")
-                .unlockedBy("item", has(ModEntries.get("chassis").item()))
-                .save(recipeOutput);*/
-
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.HEAT_SINKS.get("empty").block())
                 .pattern("TIT")
                 .pattern("ABA")
@@ -1022,7 +1012,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").block()))
                 .save(recipeOutput);
 
-/*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.HEAT_SINKS.get("empty").block())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.HEAT_SINKS.get("empty_active").block())
                 .pattern("TIT")
                 .pattern("IBI")
                 .pattern("TIT")
@@ -1031,7 +1021,7 @@ public class VanillaRecipes {
                 .define('T', plateTag("thermoconducting"))
                 .group(MODID+"_fission")
                 .unlockedBy("item", has(ModEntries.HEAT_SINKS.get("empty").block()))
-                .save(recipeOutput);*/
+                .save(recipeOutput);
 
         for(String name: ModEntries.HEAT_SINKS.keySet()) {
             if(name.matches(".*water.*|.*liquid.*|.*empty.*|.*cryotheum.*")) {
@@ -1043,6 +1033,9 @@ public class VanillaRecipes {
             }
             if(name.contains("nether_brick")) {
                 i = Tags.Items.BRICKS_NETHER;
+            }
+            if(name.contains("prismarine")) {
+                i = Tags.Items.GEMS_PRISMARINE;
             }
             Block empty = ModEntries.HEAT_SINKS.get("empty").block().get();
             if (name.contains("active")) {

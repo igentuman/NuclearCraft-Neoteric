@@ -7,16 +7,19 @@
       "item": "nuclearcraft:empty_heat_sink"
     },
     "I": {
-      "tag": "c:gems/prismarine"
+      "item": "nuclearcraft:motor"
+    },
+    "T": {
+      "tag": "c:plates/thermoconducting"
     }
   },
   "pattern": [
-    " I ",
+    "TIT",
     "IBI",
-    " I "
+    "TIT"
   ],
   "result": {
     "count": 1,
-    "id": "nuclearcraft:prismarine_heat_sink"
+    "id": "nuclearcraft:empty_active_heat_sink"
   }
 }

@@ -2,6 +2,7 @@ package igentuman.nc.datagen.recipe;
 
 import igentuman.nc.datagen.recipe.processors.KugelblitzChamberRecipes;
 import igentuman.nc.registration.FissionFuelEntry;
+import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
@@ -259,7 +260,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     public static Item part(String name) {
         ModEntry e = ModEntries.get(name);
-        return (e != null && e.hasItem()) ? e.item().get() : null;
+        if (e != null && e.hasItem()) return e.item().get();
+        if (name.endsWith("_heat_sink")) {
+            HeatSinkEntry hs = ModEntries.HEAT_SINKS.get(name.substring(0, name.length() - "_heat_sink".length()));
+            return hs != null ? hs.block().get().asItem() : null;
+        }
+        return null;
     }
 
     public static Item modItem(String rl) {

@@ -86,7 +86,7 @@ public class ModDimensions {
                 35,
                 overworld.disableMobGeneration(),
                 overworld.aquifersEnabled(),
-                overworld.oreVeinsEnabled(),
+                true,
                 overworld.useLegacyRandomSource()));
     }
 

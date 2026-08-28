@@ -56,6 +56,9 @@ repositories {
         url = "https://modmaven.dev/"
     }
     maven { url = "https://maven.createmod.net" }
+    maven {
+        url = "https://maven.theillusivec4.top/"
+    }
 }
 
 base {
@@ -145,6 +148,8 @@ dependencies {
     }
 
     compileOnly("curse.maven:create-328085:7178761")
+
+    compileOnly("top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1")
 
     
     //compileOnly "curse.maven:gregtechceu-modern-890405:6766269"

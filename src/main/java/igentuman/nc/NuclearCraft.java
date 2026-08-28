@@ -5,6 +5,7 @@ import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.MultiblockPartBlock;
 import igentuman.nc.entity.EntityFeralGhoul;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
+import igentuman.nc.item.ResoniteCrystalItem;
 import igentuman.nc.setup.entries.Anomalies;
 import igentuman.nc.setup.entries.Ghouls;
 import igentuman.nc.block_entity.GlobalBlockEntity;
@@ -32,8 +33,11 @@ import igentuman.nc.setup.entries.Storage;
 import igentuman.nc.setup.level.ModFeatures;
 import igentuman.nc.util.MultiblocksProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.energy.ComponentEnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.slf4j.Logger;
 
@@ -152,7 +156,7 @@ public class NuclearCraft {
 
         int qnpCap = Common.QNP_ENERGY_STORAGE.get();
         event.registerItem(Capabilities.EnergyStorage.ITEM,
-                (stack, ctx) -> new net.neoforged.neoforge.energy.ComponentEnergyStorage(
+                (stack, ctx) -> new ComponentEnergyStorage(
                         stack, Registers.QNP_ENERGY.get(), qnpCap, qnpCap, qnpCap / 4),
                 ModEntries.get("qnp").item().get());
 
@@ -161,11 +165,26 @@ public class NuclearCraft {
         var hevPieces = java.util.List.of(hevArmor.helmet(), hevArmor.chestplate(), hevArmor.leggings(), hevArmor.boots());
         for (var piece : hevPieces) {
             event.registerItem(Capabilities.EnergyStorage.ITEM,
-                    (stack, ctx) -> new net.neoforged.neoforge.energy.ComponentEnergyStorage(
+                    (stack, ctx) -> new ComponentEnergyStorage(
                             stack, Registers.HEV_ENERGY.get(), hevCap, 5000, hevCap / 4),
                     piece.get());
         }
-        net.minecraft.world.level.material.Fluid quantiteFluid = ModEntries.fluidOf("quantite_energy");
+        var resoniteItem = ModEntries.get("resonite_crystal").item().get();
+        event.registerItem(Capabilities.EnergyStorage.ITEM,
+                (stack, ctx) -> new IEnergyStorage() {
+                    private int fePerTick() { return ResoniteCrystalItem.feOutput(stack); }
+                    @Override public int receiveEnergy(int maxReceive, boolean simulate) { return 0; }
+                    @Override public int extractEnergy(int maxExtract, boolean simulate) {
+                        return Math.min(Math.max(0, maxExtract), fePerTick());
+                    }
+                    @Override public int getEnergyStored() { return fePerTick() > 0 ? Integer.MAX_VALUE : 0; }
+                    @Override public int getMaxEnergyStored() { return Integer.MAX_VALUE; }
+                    @Override public boolean canExtract() { return fePerTick() > 0; }
+                    @Override public boolean canReceive() { return false; }
+                },
+                resoniteItem);
+
+        Fluid quantiteFluid = ModEntries.fluidOf("quantite_energy");
         if (quantiteFluid != null) {
             for (var piece : hevPieces) {
                 event.registerItem(Capabilities.FluidHandler.ITEM,

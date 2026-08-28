@@ -1,18 +1,18 @@
 package igentuman.nc.handler.event;
 
+import igentuman.nc.compat.curios.CuriosHelper;
 import igentuman.nc.config.Common;
 import igentuman.nc.handler.command.DetonateCommand;
 import igentuman.nc.handler.storage.ContainerSyncDispatcher;
 import igentuman.nc.item.ContainerBlockItem;
 import igentuman.nc.item.MultitoolItem;
 import igentuman.nc.item.ResoniteCrystalItem;
+import igentuman.nc.util.ModUtil;
 import igentuman.nc.world.anomaly.AnomalySpawnManager;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -24,6 +24,9 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static igentuman.nc.NuclearCraft.TICK_COUNTER;
 
@@ -51,20 +54,29 @@ public class ServerEvents {
         int duration = Common.ANOMALY_CONFIG.BUFF_DURATION_TICKS.get();
         for (ServerPlayer player : level.players()) {
             if ((level.getGameTime() + player.getId()) % refresh != 0) continue;
+            Map<Holder<MobEffect>, Integer> strongest = new HashMap<>();
             for (ItemStack stack : player.getInventory().items) {
-                if (!(stack.getItem() instanceof ResoniteCrystalItem)) continue;
-                if (!ResoniteCrystalItem.isAnalyzed(stack)) continue;
-                String effectIdStr = ResoniteCrystalItem.getEffectId(stack);
-                if (effectIdStr.isEmpty()) continue;
-                ResourceLocation rl = ResourceLocation.tryParse(effectIdStr);
-                if (rl == null) continue;
-                var key = ResourceKey.create(Registries.MOB_EFFECT, rl);
-                BuiltInRegistries.MOB_EFFECT.getHolder(key).ifPresent(holder -> {
-                    int amp = ResoniteCrystalItem.getShardRarity(stack).amplifier;
-                    player.addEffect(new MobEffectInstance(holder, duration, amp, false, false));
-                });
+                accumulateCrystal(strongest, stack);
+            }
+            if (ModUtil.isCuriosLoaded()) {
+                CuriosHelper.accumulateCurios(strongest, player);
+            }
+            for (Map.Entry<Holder<MobEffect>, Integer> entry : strongest.entrySet()) {
+                Holder<MobEffect> effect = entry.getKey();
+                int amplifier = entry.getValue();
+                MobEffectInstance current = player.getEffect(effect);
+                if (current == null || current.getAmplifier() < amplifier || current.getDuration() < duration / 2) {
+                    player.addEffect(new MobEffectInstance(effect, duration, amplifier, true, false, true));
+                }
             }
         }
+    }
+
+    public static void accumulateCrystal(Map<Holder<MobEffect>, Integer> strongest, ItemStack stack) {
+        if (!(stack.getItem() instanceof ResoniteCrystalItem) || !ResoniteCrystalItem.isAnalyzed(stack)) return;
+        Holder<MobEffect> effect = ResoniteCrystalItem.getEffect(stack);
+        if (effect == null) return;
+        strongest.merge(effect, ResoniteCrystalItem.getShardRarity(stack).amplifier, Math::max);
     }
 
     @SubscribeEvent

@@ -14,6 +14,7 @@ import igentuman.nc.entity.EntityFeralGhoul;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.entity.anomaly.GravitationalAnomalyEntity;
 import igentuman.nc.handler.crafter.CraftingPattern;
+import igentuman.nc.item.ResoniteCrystalItem;
 import igentuman.nc.setup.entries.*;
 import igentuman.nc.client.renderer.DelayedRenderHandler;
 import igentuman.nc.client.renderer.DistortShader;
@@ -37,10 +38,13 @@ import igentuman.nc.client.render.kugelblitz.BlackholeRenderer;
 import igentuman.nc.client.render.kugelblitz.EXPLRenderer;
 import igentuman.nc.container.EXPLContainer;
 import igentuman.nc.screen.*;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
@@ -359,5 +363,15 @@ public class Client {
                 event.register(bucketColors, mat.bucket());
             }
         }
+        event.register(RESONITE_CRYSTAL_COLOR, ModEntries.get("resonite_crystal").item().get());
     }
+
+    private static final ItemColor RESONITE_CRYSTAL_COLOR = (stack, tintIndex) -> {
+        if (tintIndex != 0) {
+            return 0xFFFFFF;
+        }
+        Holder<MobEffect> effect =
+                ResoniteCrystalItem.getEffect(stack);
+        return effect == null ? 0xFFFFFFFF : 0xFF000000 | effect.value().getColor();
+    };
 }

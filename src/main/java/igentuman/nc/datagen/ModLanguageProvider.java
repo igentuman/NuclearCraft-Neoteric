@@ -635,6 +635,16 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("tooltip.nc.resonite_rarity.epic", "Epic");
         add("tooltip.nc.resonite_rarity.legendary", "Legendary");
 
+        add("tooltip.nc.resonite_crystal.patron.noteclip", "Noteclip walked one of these past three checkpoints. The logbook never recorded him leaving.");
+        add("tooltip.nc.resonite_crystal.patron.marcin212", "marcin212 swears a shard like this knit his ribs back after the medics had already filed the paperwork.");
+        add("tooltip.nc.resonite_crystal.patron.personbelowrocks", "PersonBelowRocks pried a stuck blast door off its rails with one of these in his pocket. The door is still missing.");
+        add("tooltip.nc.resonite_crystal.patron.tomdodd4598", "Dr. tomdodd4598 logged this specimen as 'remarkable' in the margins, right where the dosimeter trace flatlines.");
+        add("tooltip.nc.resonite_crystal.patron.ethantabler", "ethantabler crossed an anomaly field on a hunch the size of this crystal. Walked out the far side whistling.");
+        add("tooltip.nc.resonite_crystal.patron.endleon201", "endleon201 caught a round square in the vest, glanced at this, and marked it down as a good day.");
+        add("tooltip.nc.resonite_crystal.patron.sancho_lucky", "sancho.lucky outran the morning blowout with this in hand. Barely. The Zone files 'barely' under 'survived'.");
+        add("tooltip.nc.resonite_crystal.patron.cerusvi", "Cerusvi cleared a containment fence the manual flagged as uncrossable. The manual has since been revised.");
+        add("tooltip.nc.resonite_crystal.patron.tocix9730", "tocix9730 filed a warranty claim from inside the fireball. Per company policy, it was approved.");
+
         add("entity.nuclearcraft.gravitational_anomaly", "Gravitational Anomaly");
         add("entity.nuclearcraft.electric_anomaly", "Electric Anomaly");
         add("entity.nuclearcraft.radioactive_anomaly", "Radioactive Anomaly");

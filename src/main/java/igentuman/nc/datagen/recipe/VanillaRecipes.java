@@ -149,6 +149,39 @@ public class VanillaRecipes {
                 .save(recipeOutput, rl("multiblock_builder"));
     }
 
+    private static void toughArmor() {
+        var tough = ModEntries.get("tough_armor").armorSetEntry();
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tough.helmet().get())
+                .pattern("TTT")
+                .pattern("T T")
+                .define('T', ingotTag("tough_alloy"))
+                .unlockedBy("item", has(ingot("tough_alloy")))
+                .save(recipeOutput, rl("tough_helmet"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tough.chestplate().get())
+                .pattern("T T")
+                .pattern("TTT")
+                .pattern("TTT")
+                .define('T', ingotTag("tough_alloy"))
+                .unlockedBy("item", has(ingot("tough_alloy")))
+                .save(recipeOutput, rl("tough_chestplate"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tough.leggings().get())
+                .pattern("TTT")
+                .pattern("T T")
+                .pattern("T T")
+                .define('T', ingotTag("tough_alloy"))
+                .unlockedBy("item", has(ingot("tough_alloy")))
+                .save(recipeOutput, rl("tough_leggings"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tough.boots().get())
+                .pattern("T T")
+                .pattern("T T")
+                .define('T', ingotTag("tough_alloy"))
+                .unlockedBy("item", has(ingot("tough_alloy")))
+                .save(recipeOutput, rl("tough_boots"));
+    }
+
     private static void hevArmor() {
         var tough = ModEntries.get("tough_armor").armorSetEntry();
         var hev = ModEntries.get("hev_armor").armorSetEntry();
@@ -295,6 +328,15 @@ public class VanillaRecipes {
 
     private static void parts() {
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, part("neutron_initiator"))
+                .pattern(" B ")
+                .pattern("BPB")
+                .pattern(" B ")
+                .define('B', ingotTag("beryllium"))
+                .define('P', dustTag("polonium"))
+                .unlockedBy("item", has(dustTag("polonium")))
+                .save(recipeOutput, rl("neutron_initiator"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("speed_upgrade").item())
                 .pattern("LRL")
                 .pattern("RPR")
@@ -324,27 +366,8 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("thorium").materialEntry().plate()))
                 .save(recipeOutput, rl("spaxelhoe_thorium"));
 
+        toughArmor();
         hevArmor();
-
-        /*ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ALL_NC_ITEMS.get("upgrade_speed").get())
-                .pattern("LRL")
-                .pattern("RPR")
-                .pattern("LRL")
-                .define('L', dustTag("lapis"))
-                .define('R', dustTag("redstone"))
-                .define('P', HEAVY_WEIGHTED_PRESSURE_PLATE)
-                .unlockedBy("item", has(HEAVY_WEIGHTED_PRESSURE_PLATE))
-                .save(recipeOutput, rl("upgrade_speed"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ALL_NC_ITEMS.get("upgrade_energy").get())
-                .pattern("ORO")
-                .pattern("RPR")
-                .pattern("ORO")
-                .define('O', dustTag("obsidian"))
-                .define('R', dustTag("quartz"))
-                .define('P', LIGHT_WEIGHTED_PRESSURE_PLATE)
-                .unlockedBy("item", has(HEAVY_WEIGHTED_PRESSURE_PLATE))
-                .save(recipeOutput, rl("upgrade_energy"));*/
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("plate_basic").item(), 2)
                 .pattern("LG")
@@ -1634,6 +1657,19 @@ public class VanillaRecipes {
                 .define('M', ModEntries.get("motor").item())
                 .group(MODID)
                 .unlockedBy("has_item", has(ModEntries.get("motor").item()))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(LEACHER).block())
+                .pattern("LRL")
+                .pattern("FPF")
+                .pattern("LSL")
+                .define('P', ModEntries.get(CHEMICAL_REACTOR).block())
+                .define('S', ModEntries.get(PUMP).block())
+                .define('F', ModEntries.get("servo").item())
+                .define('L', ModEntries.get("chassis").item())
+                .define('R', ModEntries.get(CENTRIFUGE).block())
+                .group(MODID+"_processors")
+                .unlockedBy("item", has(ModEntries.get(CHEMICAL_REACTOR).block()))
                 .save(recipeOutput);
     }
 

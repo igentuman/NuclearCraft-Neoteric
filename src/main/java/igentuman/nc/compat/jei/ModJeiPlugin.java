@@ -7,6 +7,9 @@ import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.recipe.UniversalProcessorRecipeSerializer;
 import igentuman.nc.recipe.fission.FissionRecipes;
+import igentuman.nc.registration.FissionFuelEntry;
+import igentuman.nc.registration.IsotopeEntry;
+import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.UniversalProcessorScreen;
 import igentuman.nc.setup.entries.Crafter;
@@ -14,9 +17,11 @@ import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.MultiblockStructure;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
@@ -26,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -66,6 +72,8 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new BoilingRecipeCategory(guiHelper));
         registration.addRecipeCategories(new HeatExchangerRecipeCategory(guiHelper));
         registration.addRecipeCategories(new NuclearBlastRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new FuelInfoCategory(guiHelper));
+        registration.addRecipeCategories(new IsotopeInfoCategory(guiHelper));
     }
 
     @Override
@@ -144,12 +152,93 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipes(NuclearBlastRecipeCategory.TYPE,
                 recipeManager.getAllRecipesFor(igentuman.nc.recipe.bomb.NcBlastRecipes.TYPE.get())
                         .stream().map(RecipeHolder::value).toList());
+
+        registration.addRecipes(FuelInfoCategory.TYPE, fuelInfoRecipes());
+        registration.addRecipes(IsotopeInfoCategory.TYPE, isotopeInfoRecipes());
+    }
+
+    private List<FuelInfoRecipe> fuelInfoRecipes() {
+        List<FuelInfoRecipe> out = new ArrayList<>();
+        for (FissionFuelEntry entry : ModEntries.FISSION_FUEL.values()) {
+            FuelInfoRecipe r = new FuelInfoRecipe(entry.group, entry.name);
+            if (!r.getVariants().isEmpty()) out.add(r);
+        }
+        return out;
+    }
+
+    private List<IsotopeInfoRecipe> isotopeInfoRecipes() {
+        List<IsotopeInfoRecipe> out = new ArrayList<>();
+        for (String name : ModEntries.ISOTOPES.keySet()) {
+            IsotopeInfoRecipe r = new IsotopeInfoRecipe(name);
+            if (!r.getVariants().isEmpty()) out.add(r);
+        }
+        return out;
     }
 
     @Override
     public void onRuntimeAvailable(@NotNull IJeiRuntime jeiRuntime) {
         JeiHelper.setRuntime(jeiRuntime);
         JeiHelper.setRecipeTypes(recipeTypes);
+        hideFuelAndIsotopeVariants(jeiRuntime);
+    }
+
+    private static final String[] FUEL_VARIANT_SUFFIXES = {"_ox", "_ni", "_za", "_tr"};
+    private static final String[] ISOTOPE_VARIANT_SUFFIXES = {"_ox", "_ni", "_za"};
+
+    private void hideFuelAndIsotopeVariants(IJeiRuntime jeiRuntime) {
+        List<ItemStack> itemsToHide = new ArrayList<>();
+        List<FluidStack> fluidsToHide = new ArrayList<>();
+
+        for (FissionFuelEntry entry : ModEntries.FISSION_FUEL.values()) {
+            for (String suffix : FUEL_VARIANT_SUFFIXES) {
+                if (entry.fuelItems().containsKey(suffix)) {
+                    itemsToHide.add(new ItemStack(entry.fuelItems().get(suffix).get()));
+                }
+                if (entry.depletedItems().containsKey(suffix)) {
+                    itemsToHide.add(new ItemStack(entry.depletedItems().get(suffix).get()));
+                }
+            }
+            for (MaterialEntry mat : entry.fluids()) {
+                if (mat == null || !mat.hasFluid()) continue;
+                String matName = mat.name;
+                boolean isVariant = false;
+                for (String suf : FUEL_VARIANT_SUFFIXES) {
+                    if (matName.endsWith(suf)) { isVariant = true; break; }
+                }
+                if (!isVariant) continue;
+                fluidsToHide.add(new FluidStack(mat.materialFluid().source().get(), 1000));
+                if (mat.bucket() != null) {
+                    itemsToHide.add(new ItemStack(mat.bucket().get()));
+                }
+            }
+        }
+        for (IsotopeEntry entry : ModEntries.ISOTOPES.values()) {
+            for (String suffix : ISOTOPE_VARIANT_SUFFIXES) {
+                if (entry.variants().containsKey(suffix)) {
+                    itemsToHide.add(new ItemStack(entry.variants().get(suffix).get()));
+                }
+            }
+            for (MaterialEntry mat : entry.fluids()) {
+                if (mat == null || !mat.hasFluid()) continue;
+                String matName = mat.name;
+                boolean isVariant = false;
+                for (String suf : ISOTOPE_VARIANT_SUFFIXES) {
+                    if (matName.endsWith(suf)) { isVariant = true; break; }
+                }
+                if (!isVariant) continue;
+                fluidsToHide.add(new FluidStack(mat.materialFluid().source().get(), 1000));
+                if (mat.bucket() != null) {
+                    itemsToHide.add(new ItemStack(mat.bucket().get()));
+                }
+            }
+        }
+
+        if (!itemsToHide.isEmpty()) {
+            jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, itemsToHide);
+        }
+        if (!fluidsToHide.isEmpty()) {
+            jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(NeoForgeTypes.FLUID_STACK, fluidsToHide);
+        }
     }
 
     @Override

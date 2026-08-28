@@ -30,6 +30,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         sounds();
         ponders();
         fissionDesigner();
+        fuelInfo();
 
         add("processor.description.nuclear_furnace","Fast furnace that uses uranium ingots as fuel. Surprisingly safe, by furnace standards.");
         add("processor.description.alloy_smelter","Smelts and alloys items.");
@@ -637,5 +638,21 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("entity.nuclearcraft.burning_anomaly", "Burning Anomaly");
         add("entity.nuclearcraft.psycho_anomaly", "Psycho Anomaly");
         add("entity.nuclearcraft.teleporting_anomaly", "Teleporting Anomaly");
+    }
+
+    private void fuelInfo() {
+        add("jei.category." + MODID + ".fuel_info", "Fuel Variants");
+        add("jei.category." + MODID + ".isotope_info", "Isotope Forms");
+        add("emi.category." + MODID + ".fuel_info", "Fuel Variants");
+        add("emi.category." + MODID + ".isotope_info", "Isotope Forms");
+        add("jei.nuclearcraft.fuel_info.title", "%s - Available Forms");
+        add("jei.nuclearcraft.fuel_info.row", "FE/t %d | H/t %s | D %ds");
+        add("jei.nuclearcraft.fuel_info.row_triso", "Criticality %d | H/t %s | D %ds");
+        add("jei.nuclearcraft.isotope_info.title", "%s - Forms");
+        add("fuel.variant.default", "Metal");
+        add("fuel.variant.oxide", "Oxide");
+        add("fuel.variant.nitride", "Nitride");
+        add("fuel.variant.zirconium_alloy", "Zr");
+        add("fuel.variant.triso", "TRISO");
     }
 }

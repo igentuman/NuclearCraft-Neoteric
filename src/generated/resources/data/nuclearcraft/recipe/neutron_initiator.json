@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "c:ingots/beryllium"
+    },
+    "P": {
+      "tag": "c:dusts/polonium"
+    }
+  },
+  "pattern": [
+    " B ",
+    "BPB",
+    " B "
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:neutron_initiator"
+  }
+}

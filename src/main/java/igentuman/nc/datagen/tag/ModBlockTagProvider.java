@@ -62,6 +62,13 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 tag(blockTag("ores/" + name)).add(material.oreBlock().get());
             }
 
+            if (material.hasDeepslateOre()) {
+                tag(BlockTags.MINEABLE_WITH_PICKAXE).add(material.deepslateOreBlock().get());
+                tag(BlockTags.NEEDS_IRON_TOOL).add(material.deepslateOreBlock().get());
+                tag(Tags.Blocks.ORES).add(material.deepslateOreBlock().get());
+                tag(blockTag("ores/" + name)).add(material.deepslateOreBlock().get());
+            }
+
             if (material.hasBlock()) {
                 tag(BlockTags.MINEABLE_WITH_PICKAXE).add(material.storageBlock().get());
                 tag(BlockTags.NEEDS_IRON_TOOL).add(material.storageBlock().get());

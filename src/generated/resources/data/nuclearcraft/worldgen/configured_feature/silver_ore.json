@@ -15,7 +15,7 @@
       },
       {
         "state": {
-          "Name": "nuclearcraft:silver_ore"
+          "Name": "nuclearcraft:silver_deepslate_ore"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",

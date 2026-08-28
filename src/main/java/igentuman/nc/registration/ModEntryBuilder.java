@@ -125,6 +125,20 @@ public class ModEntryBuilder {
         return materialEntry;
     }
 
+    public static ModEntryBuilder addMetalOreWithDeepslateMaterial(String name, int color) {
+        ModEntryBuilder materialEntry = add(name)
+                .material(color);
+        materialEntry.material.metalOreWithDeepslate();
+        return materialEntry;
+    }
+
+    public static ModEntryBuilder addDeepslateOnlyMetalOreMaterial(String name, int color) {
+        ModEntryBuilder materialEntry = add(name)
+                .material(color);
+        materialEntry.material.deepslateOnlyMetalOre();
+        return materialEntry;
+    }
+
     public static ModEntryBuilder addToolSet(String name, Tier tier) {
         ModEntryBuilder b = add(name + "_tools");
         b.toolTier = tier;

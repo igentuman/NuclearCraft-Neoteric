@@ -94,6 +94,9 @@ public class ModLanguageProvider  extends LanguageProvider {
                 if (materialEntry.hasOre()) {
                     add(materialEntry.oreBlock().get(), convertToName(materialEntry.name + "_ore"));
                 }
+                if (materialEntry.hasDeepslateOre()) {
+                    add(materialEntry.deepslateOreBlock().get(), convertToName(materialEntry.name + "_deepslate_ore"));
+                }
                 if (materialEntry.hasBlock()) {
                     add(materialEntry.storageBlock().get(), convertToName(materialEntry.name + "_block"));
                 }

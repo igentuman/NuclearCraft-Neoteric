@@ -86,6 +86,11 @@ public class ModItemTagProvider extends ItemTagsProvider {
                 tag(materialTag("ores/" + name)).add(material.oreItem().get());
             }
 
+            if (material.hasDeepslateOre()) {
+                tag(Tags.Items.ORES).add(material.deepslateOreItem().get());
+                tag(materialTag("ores/" + name)).add(material.deepslateOreItem().get());
+            }
+
             if (material.hasBlock()) {
                 tag(Tags.Items.STORAGE_BLOCKS).add(material.storageItem().get());
                 tag(materialTag("storage_blocks/" + name)).add(material.storageItem().get());

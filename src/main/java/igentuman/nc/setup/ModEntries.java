@@ -24,6 +24,8 @@ import java.util.List;
 
 import static igentuman.nc.registration.ModEntryBuilder.add;
 import static igentuman.nc.registration.ModEntryBuilder.addMetalOreMaterial;
+import static igentuman.nc.registration.ModEntryBuilder.addMetalOreWithDeepslateMaterial;
+import static igentuman.nc.registration.ModEntryBuilder.addDeepslateOnlyMetalOreMaterial;
 import static igentuman.nc.setup.entries.Accelerator.accelerator;
 import static igentuman.nc.setup.entries.Blocks.blocks;
 import static igentuman.nc.setup.entries.Bomb.bomb;
@@ -110,6 +112,14 @@ public class ModEntries {
 
     public static void oreMetal(String name, int color) {
         addMetalOreMaterial(name, color).build();
+    }
+
+    public static void oreMetalWithDeepslate(String name, int color) {
+        addMetalOreWithDeepslateMaterial(name, color).build();
+    }
+
+    public static void deepslateOreMetal(String name, int color) {
+        addDeepslateOnlyMetalOreMaterial(name, color).build();
     }
 
     public static void blockOnly(String name) {

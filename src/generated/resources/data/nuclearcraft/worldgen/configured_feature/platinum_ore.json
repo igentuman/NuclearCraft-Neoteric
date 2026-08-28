@@ -6,16 +6,7 @@
     "targets": [
       {
         "state": {
-          "Name": "nuclearcraft:platinum_ore"
-        },
-        "target": {
-          "predicate_type": "minecraft:tag_match",
-          "tag": "minecraft:stone_ore_replaceables"
-        }
-      },
-      {
-        "state": {
-          "Name": "nuclearcraft:platinum_ore"
+          "Name": "nuclearcraft:platinum_deepslate_ore"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",

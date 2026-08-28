@@ -27,6 +27,7 @@ public class Materials {
                     Map<String, ModConfigSpec.BooleanValue> types = new LinkedHashMap<>();
 
                     if (mat.hasOre())    types.put("ore",     BUILDER.define("ore", true));
+                    if (mat.hasDeepslateOre()) types.put("deepslate_ore", BUILDER.define("deepslate_ore", true));
                     if (mat.hasRawOre()) types.put("raw_ore", BUILDER.define("raw_ore", true));
                     if (mat.hasIngot())  types.put("ingot",   BUILDER.define("ingot", true));
                     if (mat.hasGem())    types.put("gem",     BUILDER.define("gem", true));

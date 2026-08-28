@@ -69,6 +69,9 @@ public class ModItemModelProvider  extends ItemModelProvider {
                 if (materialEntry.hasOre()) {
                     withExistingParent(materialEntry.name + "_ore", modLoc("block/" + materialEntry.name + "_ore"));
                 }
+                if (materialEntry.hasDeepslateOre()) {
+                    withExistingParent(materialEntry.name + "_deepslate_ore", modLoc("block/" + materialEntry.name + "_deepslate_ore"));
+                }
                 if (materialEntry.hasIngot()) {
                     simpleItem(materialEntry.ingot(), "material/ingot/" + materialEntry.name);
                 }

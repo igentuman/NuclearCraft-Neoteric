@@ -23,7 +23,7 @@ public class WorldGen {
                 .defineInRange("min_height", mat.worldgenMinHeight, -64, 320);
             ModConfigSpec.IntValue maxHeight = builder
                 .comment("Maximum Y level for ore generation")
-                .defineInRange("max_height", mat.worldgenMaxHeight, -64, 320);
+                .defineInRange("max_height", mat.worldgenMaxHeight, mat.worldgenMinHeight, 320);
             ModConfigSpec.IntValue veinSize = builder
                 .comment("Number of blocks per ore vein")
                 .defineInRange("vein_size", mat.worldgenQty, 1, 64);

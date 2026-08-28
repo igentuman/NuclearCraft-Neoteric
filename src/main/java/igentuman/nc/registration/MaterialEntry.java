@@ -29,11 +29,13 @@ public class MaterialEntry {
     public final String name;
 
     private Supplier<? extends Block> oreBlockSupplier;
+    private Supplier<? extends Block> deepslateOreBlockSupplier;
     private Supplier<? extends Block> storageBlockSupplier;
     private Supplier<? extends Item> ingotSupplier;
     private Supplier<? extends Item> gemSupplier;
     private Supplier<? extends Item> rawOreSupplier;
     private Supplier<? extends BlockItem> oreItemSupplier;
+    private Supplier<? extends BlockItem> deepslateOreItemSupplier;
     private Supplier<? extends BlockItem> storageItemSupplier;
     private Supplier<? extends Item> dustSupplier;
     private Supplier<? extends Item> plateSupplier;
@@ -83,6 +85,12 @@ public class MaterialEntry {
         return this;
     }
 
+    public MaterialEntry setDeepslateOre(Supplier<? extends Block> oreBlock, Supplier<? extends BlockItem> oreItem) {
+        this.deepslateOreBlockSupplier = oreBlock;
+        this.deepslateOreItemSupplier = oreItem;
+        return this;
+    }
+
     public MaterialEntry setDustSupplier(Supplier<? extends Item> dustSupplier) {
         this.dustSupplier = dustSupplier;
         return this;
@@ -112,6 +120,7 @@ public class MaterialEntry {
     public MaterialEntry noGem() { this.gemSupplier = null; return this; }
     public MaterialEntry noBlock() { this.storageBlockSupplier = null; this.storageItemSupplier = null; return this; }
     public MaterialEntry noOre() { this.oreBlockSupplier = null; this.oreItemSupplier = null; return this; }
+    public MaterialEntry noDeepslateOre() { this.deepslateOreBlockSupplier = null; this.deepslateOreItemSupplier = null; return this; }
     public MaterialEntry noDust() { this.dustSupplier = null; return this; }
     public MaterialEntry noNugget() { this.nuggetSupplier = null; return this; }
     public MaterialEntry noRawOre() { this.rawOreSupplier = null; return this; }
@@ -122,6 +131,7 @@ public class MaterialEntry {
     public boolean hasGem() { return gemSupplier != null; }
     public boolean hasBlock() { return storageBlockSupplier != null; }
     public boolean hasOre() { return oreBlockSupplier != null; }
+    public boolean hasDeepslateOre() { return deepslateOreBlockSupplier != null; }
     public boolean hasDust() { return dustSupplier != null; }
     public boolean hasNugget() { return nuggetSupplier != null; }
     public boolean hasRawOre() { return rawOreSupplier != null; }
@@ -137,11 +147,13 @@ public class MaterialEntry {
     }
 
     public DeferredBlock<Block> oreBlock() { return entry.oreBlock(); }
+    public DeferredBlock<Block> deepslateOreBlock() { return entry.deepslateOreBlock(); }
     public DeferredBlock<Block> storageBlock() { return entry.storageBlock(); }
     public DeferredItem<Item> ingot() { return entry.ingot(); }
     public DeferredItem<Item> gem() { return entry.gem(); }
     public DeferredItem<Item> rawOre() { return entry.rawOre(); }
     public DeferredItem<BlockItem> oreItem() { return entry.oreItem(); }
+    public DeferredItem<BlockItem> deepslateOreItem() { return entry.deepslateOreItem(); }
     public DeferredItem<BlockItem> storageItem() { return entry.storageItem(); }
     public DeferredItem<Item> dust() { return entry.dust(); }
     public DeferredItem<Item> plate() { return entry.plate(); }
@@ -173,8 +185,32 @@ public class MaterialEntry {
 
         // Molten metal fluid by default
         this.setFluidDefinition(FluidDefinition.metal());
-        this.worldgenConfig(-64, 64, 9);
+        this.worldgenConfig(-60, 60, 9);
 
+        return this;
+    }
+
+    public MaterialEntry metalOreWithDeepslate() {
+        metalOre();
+        BlockBehaviour.Properties deepslateOreProps = BlockBehaviour.Properties.of()
+                .mapColor(MapColor.DEEPSLATE)
+                .strength(4.5f, 3.0f)
+                .requiresCorrectToolForDrops()
+                .sound(SoundType.DEEPSLATE);
+        this.setDeepslateOre(() -> new Block(deepslateOreProps), () -> new BlockItem(new Block(deepslateOreProps), new Item.Properties()));
+        return this;
+    }
+
+    public MaterialEntry deepslateOnlyMetalOre() {
+        metalOre();
+        this.noOre();
+        BlockBehaviour.Properties deepslateOreProps = BlockBehaviour.Properties.of()
+                .mapColor(MapColor.DEEPSLATE)
+                .strength(4.5f, 3.0f)
+                .requiresCorrectToolForDrops()
+                .sound(SoundType.DEEPSLATE);
+        this.setDeepslateOre(() -> new Block(deepslateOreProps), () -> new BlockItem(new Block(deepslateOreProps), new Item.Properties()));
+        this.worldgenConfig(-60, 0, 9);
         return this;
     }
 
@@ -207,6 +243,8 @@ public class MaterialEntry {
     public MaterialEntry build() {
         DeferredBlock<Block> regOreBlock = null;
         DeferredItem<BlockItem> regOreItem = null;
+        DeferredBlock<Block> regDeepslateOreBlock = null;
+        DeferredItem<BlockItem> regDeepslateOreItem = null;
         DeferredBlock<Block> regStorageBlock = null;
         DeferredItem<BlockItem> regStorageItem = null;
         DeferredItem<Item> regIngot = null;
@@ -222,6 +260,11 @@ public class MaterialEntry {
             regOreBlock = BLOCKS.register(name + "_ore", oreBlockSupplier);
             final DeferredBlock<Block> finalOreBlock = regOreBlock;
             regOreItem = ITEMS.register(name + "_ore", () -> new BlockItem(finalOreBlock.get(), new Item.Properties()));
+        }
+        if (deepslateOreBlockSupplier != null) {
+            regDeepslateOreBlock = BLOCKS.register(name + "_deepslate_ore", deepslateOreBlockSupplier);
+            final DeferredBlock<Block> finalDeepslateOreBlock = regDeepslateOreBlock;
+            regDeepslateOreItem = ITEMS.register(name + "_deepslate_ore", () -> new BlockItem(finalDeepslateOreBlock.get(), new Item.Properties()));
         }
         if (storageBlockSupplier != null) {
             regStorageBlock = BLOCKS.register(name + "_block", storageBlockSupplier);
@@ -256,6 +299,7 @@ public class MaterialEntry {
         entry = new RegisteredEntry(
                 name, color, fluidDefinition,
                 regOreBlock, regOreItem,
+                regDeepslateOreBlock, regDeepslateOreItem,
                 regStorageBlock, regStorageItem,
                 regIngot, regGem, regRawOre,
                 regDust, regPlate, regNugget,
@@ -338,6 +382,8 @@ public class MaterialEntry {
             FluidDefinition fluidDefinition,
             DeferredBlock<Block> oreBlock,
             DeferredItem<BlockItem> oreItem,
+            DeferredBlock<Block> deepslateOreBlock,
+            DeferredItem<BlockItem> deepslateOreItem,
             DeferredBlock<Block> storageBlock,
             DeferredItem<BlockItem> storageItem,
             DeferredItem<Item> ingot,
@@ -350,6 +396,7 @@ public class MaterialEntry {
             MaterialFluid materialFluid
     ) {
         public boolean hasOre() { return oreBlock != null; }
+        public boolean hasDeepslateOre() { return deepslateOreBlock != null; }
         public boolean hasBlock() { return storageBlock != null; }
         public boolean hasIngot() { return ingot != null; }
         public boolean hasGem() { return gem != null; }

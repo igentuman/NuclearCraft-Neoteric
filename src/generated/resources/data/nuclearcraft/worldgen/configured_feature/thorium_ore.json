@@ -15,7 +15,7 @@
       },
       {
         "state": {
-          "Name": "nuclearcraft:thorium_ore"
+          "Name": "nuclearcraft:thorium_deepslate_ore"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",

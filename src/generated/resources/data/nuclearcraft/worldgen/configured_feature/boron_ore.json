@@ -15,7 +15,7 @@
       },
       {
         "state": {
-          "Name": "nuclearcraft:boron_ore"
+          "Name": "nuclearcraft:boron_deepslate_ore"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",

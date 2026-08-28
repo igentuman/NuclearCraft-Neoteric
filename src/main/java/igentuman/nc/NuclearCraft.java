@@ -259,6 +259,7 @@ public class NuclearCraft {
                 String matName = mat.name;
                 if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
                     if (mat.hasOre() && Materials.isTypeEnabled(matName, "ore")) event.accept(mat.oreItem());
+                    if (mat.hasDeepslateOre() && Materials.isTypeEnabled(matName, "deepslate_ore")) event.accept(mat.deepslateOreItem());
                     if (mat.hasRawOre() && Materials.isTypeEnabled(matName, "raw_ore")) event.accept(mat.rawOre());
                 }
                 if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {

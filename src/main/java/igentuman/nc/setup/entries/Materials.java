@@ -5,17 +5,17 @@ import igentuman.nc.setup.ModEntries;
 /** Declares all material entries and their ore/ingot/dust/plate/fluid forms. */
 public class Materials extends ModEntries {
     public static void materials() {
-        oreMetal("uranium", 0xFF476447);
-        oreMetal("thorium", 0xFF2E2E2E);
-        oreMetal("boron", 0xFF999999);
-        oreMetal("silver", 0xFFA49CA6);
+        oreMetalWithDeepslate("uranium", 0xFF476447);
+        oreMetalWithDeepslate("thorium", 0xFF2E2E2E);
+        oreMetalWithDeepslate("boron", 0xFF999999);
+        oreMetalWithDeepslate("silver", 0xFFA49CA6);
         oreMetal("lead", 0xFF778887);
         oreMetal("tin", 0xFFDFDFE8);
         oreMetal("zinc", 0xFFAFB0A6);
-        oreMetal("magnesium", 0xFFF0D0ED);
+        oreMetalWithDeepslate("magnesium", 0xFFF0D0ED);
         oreMetal("lithium", DEFAULT_COLOR);
-        oreMetal("cobalt", 0xFF5A6691);
-        oreMetal("platinum", 0xFF6C939B);
+        oreMetalWithDeepslate("cobalt", 0xFF5A6691);
+        deepslateOreMetal("platinum", 0xFF6C939B);
 
         blockOnly("kumanderite");
         blockOnly("uranium238");

@@ -15,6 +15,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
@@ -34,10 +35,13 @@ public class ModConfiguredFeatures {
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.materialEntry() == null || !entry.materialEntry().hasWorldgenConfig()) continue;
             MaterialEntry mat = entry.materialEntry();
-            List<OreConfiguration.TargetBlockState> targets = List.of(
-                OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), mat.oreBlock().get().defaultBlockState()),
-                OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), mat.oreBlock().get().defaultBlockState())
-            );
+            List<OreConfiguration.TargetBlockState> targets = new ArrayList<>();
+            if (mat.hasOre()) {
+                targets.add(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), mat.oreBlock().get().defaultBlockState()));
+            }
+            if (mat.hasDeepslateOre()) {
+                targets.add(OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), mat.deepslateOreBlock().get().defaultBlockState()));
+            }
             register(context, registerKey(mat.name + "_ore"), ModFeatures.CONFIGURABLE_ORE.get(),
                 new ConfigurableOreFeature.Config(mat.name, targets, mat.worldgenQty));
         }

@@ -115,6 +115,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         blockWithItem(materialEntry.oreBlock(), "material");
                     }
                 }
+                if (materialEntry.hasDeepslateOre()) {
+                    String path = BuiltInRegistries.BLOCK.getKey(materialEntry.deepslateOreBlock().get()).getPath();
+                    if (!blockStateExists(path)) {
+                        blockWithItem(materialEntry.deepslateOreBlock(), "material");
+                    }
+                }
                 if (materialEntry.hasBlock()) {
                     String path = BuiltInRegistries.BLOCK.getKey(materialEntry.storageBlock().get()).getPath();
                     if (!blockStateExists(path)) {

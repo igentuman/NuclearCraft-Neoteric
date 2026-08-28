@@ -24,6 +24,7 @@ public class MelterRecipes {
             if (mat.hasDust())   melt(out, id, mat.name + "_dust",  mat.dust().get(),  1, fluid, MOLTEN_INGOT);
             if (mat.hasGem())    melt(out, id, mat.name + "_gem",   mat.gem().get(),   1, fluid, MOLTEN_INGOT);
             if (mat.hasOre())    melt(out, id, mat.name + "_ore",   mat.oreItem().get(), 1, fluid, MOLTEN_INGOT * 2 + MOLTEN_NUGGET * 6);
+            if (mat.hasDeepslateOre()) melt(out, id, mat.name + "_deepslate_ore", mat.deepslateOreItem().get(), 1, fluid, MOLTEN_INGOT * 2 + MOLTEN_NUGGET * 6);
             if (mat.hasRawOre()) melt(out, id, mat.name + "_raw",   mat.rawOre().get(), 1, fluid, MOLTEN_INGOT + MOLTEN_NUGGET * 3);
         }
 

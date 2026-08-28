@@ -47,6 +47,16 @@ public class ModBlockLootTableProvider  extends BlockLootSubProvider {
                         dropSelf(mat.oreBlock().get());
                     }
                 }
+                if (entry.materialEntry().hasDeepslateOre()) {
+                    MaterialEntry mat = entry.materialEntry();
+                    if (mat.hasRawOre()) {
+                        add(mat.deepslateOreBlock().get(), createOreDrop(mat.deepslateOreBlock().get(), mat.rawOre().get()));
+                    } else if (mat.hasGem()) {
+                        add(mat.deepslateOreBlock().get(), createOreDrop(mat.deepslateOreBlock().get(), mat.gem().get()));
+                    } else {
+                        dropSelf(mat.deepslateOreBlock().get());
+                    }
+                }
                 if (entry.materialEntry().hasBlock()) {
                     dropSelf(entry.materialEntry().storageBlock().get());
                 }
@@ -67,6 +77,9 @@ public class ModBlockLootTableProvider  extends BlockLootSubProvider {
             if (entry.materialEntry() != null) {
                 if (entry.materialEntry().hasOre()) {
                     blocks.add(entry.materialEntry().oreBlock().get());
+                }
+                if (entry.materialEntry().hasDeepslateOre()) {
+                    blocks.add(entry.materialEntry().deepslateOreBlock().get());
                 }
                 if (entry.materialEntry().storageBlock() != null) {
                     blocks.add(entry.materialEntry().storageBlock().get());

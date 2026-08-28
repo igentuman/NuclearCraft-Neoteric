@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 240,
-      "fluid": "nuclearcraft:molten_platinum"
+      "fluid": "nuclearcraft:molten_boron"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:platinum_ore"
+      "item": "nuclearcraft:boron_deepslate_ore"
     }
   ],
   "process_time": 200

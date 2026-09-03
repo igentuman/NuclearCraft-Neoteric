@@ -48,24 +48,33 @@ public class ServerEvents {
         }
     }
 
+    private static final int BUFF_REFILL_MARGIN_TICKS = 40;
+    private static final Map<Integer, Map<Holder<MobEffect>, Integer>> CRYSTAL_BUFF_CACHE = new HashMap<>();
+
     private static void tickCrystalBuffs(ServerLevel level) {
         int refresh = Common.ANOMALY_CONFIG.BUFF_REFRESH_TICKS.get();
         if (refresh <= 0) return;
         int duration = Common.ANOMALY_CONFIG.BUFF_DURATION_TICKS.get();
         for (ServerPlayer player : level.players()) {
-            if ((level.getGameTime() + player.getId()) % refresh != 0) continue;
-            Map<Holder<MobEffect>, Integer> strongest = new HashMap<>();
-            for (ItemStack stack : player.getInventory().items) {
-                accumulateCrystal(strongest, stack);
+            Map<Holder<MobEffect>, Integer> strongest;
+            if ((level.getGameTime() + player.getId()) % refresh == 0) {
+                strongest = new HashMap<>();
+                for (ItemStack stack : player.getInventory().items) {
+                    accumulateCrystal(strongest, stack);
+                }
+                if (ModUtil.isCuriosLoaded()) {
+                    CuriosHelper.accumulateCurios(strongest, player);
+                }
+                CRYSTAL_BUFF_CACHE.put(player.getId(), strongest);
+            } else {
+                strongest = CRYSTAL_BUFF_CACHE.get(player.getId());
             }
-            if (ModUtil.isCuriosLoaded()) {
-                CuriosHelper.accumulateCurios(strongest, player);
-            }
+            if (strongest == null) continue;
             for (Map.Entry<Holder<MobEffect>, Integer> entry : strongest.entrySet()) {
                 Holder<MobEffect> effect = entry.getKey();
                 int amplifier = entry.getValue();
                 MobEffectInstance current = player.getEffect(effect);
-                if (current == null || current.getAmplifier() < amplifier || current.getDuration() < duration / 2) {
+                if (current == null || current.getAmplifier() < amplifier || current.getDuration() <= BUFF_REFILL_MARGIN_TICKS) {
                     player.addEffect(new MobEffectInstance(effect, duration, amplifier, true, false, true));
                 }
             }
@@ -88,6 +97,7 @@ public class ServerEvents {
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             ContainerSyncDispatcher.unsubscribeAll(serverPlayer);
+            CRYSTAL_BUFF_CACHE.remove(serverPlayer.getId());
         }
     }
 

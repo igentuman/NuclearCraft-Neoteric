@@ -2003,6 +2003,7 @@
   "music.hyperspace": "Hyperspace plays",
   "music.money_for_nothing": "Money for Nothing plays",
   "music.wanderer": "Wanderer plays",
+  "nc.fission_designer.no_multitool": "You need to have a Multibuilder Tool in your inventory",
   "nc.label.leacher_no_acid": "No Acid",
   "nc.label.leacher_no_source": "No Source",
   "nc.label.leacher_pumps_error": "Pumps Error",

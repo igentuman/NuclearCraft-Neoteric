@@ -168,5 +168,12 @@ public class Networking {
                 PacketMultiblockBuilt.STREAM_CODEC,
                 PacketMultiblockBuilt::handle
         );
+        if (ModUtil.isMbtoolLoaded()) {
+            registrar.playToServer(
+                    PacketLoadDesignIntoMultitool.TYPE,
+                    PacketLoadDesignIntoMultitool.STREAM_CODEC,
+                    PacketLoadDesignIntoMultitool::handle
+            );
+        }
     }
 }

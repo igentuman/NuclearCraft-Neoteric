@@ -5,28 +5,46 @@ import igentuman.nc.client.gui.fission.designer.ClientFissionDesignCache;
 import igentuman.nc.client.gui.fission.designer.DesignBlocks;
 import igentuman.nc.client.gui.fission.designer.DesignGrid;
 import igentuman.nc.client.gui.fission.designer.DesignSimulator;
+import igentuman.nc.compat.mbtool.MbtoolHelper;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.container.FissionDesignerContainer;
+import igentuman.nc.hub.FirstUseNotice;
+import igentuman.nc.hub.HubApiClient;
+import igentuman.nc.hub.HubConfig;
+import igentuman.nc.hub.HubExecutor;
+import igentuman.nc.hub.HubResult;
+import igentuman.nc.hub.PowSolver;
+import igentuman.nc.hub.dto.ChallengeDto;
+import igentuman.nc.hub.dto.CreateDesignRequestDto;
+import igentuman.nc.hub.dto.CreateDesignResponseDto;
 import igentuman.nc.item.FissionReactorPlanItem;
+import igentuman.nc.network.PacketLoadDesignIntoMultitool;
 import igentuman.nc.network.PacketLoadFissionDesign;
 import igentuman.nc.network.PacketSaveFissionDesign;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.screen.element.FuelDropdown;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.util.FissionShellBuilder;
+import igentuman.nc.util.ModUtil;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.util.TextUtils.__;
 
@@ -63,7 +81,8 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     protected static final int LAYER_GAP_X = 10;
     protected static final int LAYER_GAP_Y = 6;
     protected int topBarY;
-    protected int newBtnX, saveBtnX, loadBtnX;
+    protected int newBtnX, saveBtnX, loadBtnX, hubBtnX, uploadBtnX, mbtoolBtnX;
+    protected boolean uploading = false;
     protected int contentTop;
     protected int rightX;
     protected int cell;
@@ -100,6 +119,9 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         newBtnX = MARGIN;
         saveBtnX = MARGIN + BTN_W + 6;
         loadBtnX = MARGIN + (BTN_W + 6) * 2;
+        hubBtnX = loadBtnX + BTN_W + 6;
+        uploadBtnX = hubBtnX + BTN_W + 6;
+        mbtoolBtnX = (HubConfig.isEnabled() ? uploadBtnX + BTN_W : loadBtnX + BTN_W) + 6;
         rightX = width - RIGHT_W - MARGIN;
 
         layerAreaX = MARGIN;
@@ -240,6 +262,13 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         drawButton(g, newBtnX, topBarY, "New", mouseX, mouseY);
         drawButton(g, saveBtnX, topBarY, "Save", mouseX, mouseY);
         drawButton(g, loadBtnX, topBarY, "Load", mouseX, mouseY);
+        if (HubConfig.isEnabled()) {
+            drawButton(g, hubBtnX, topBarY, "Hub", mouseX, mouseY);
+            drawButton(g, uploadBtnX, topBarY, uploading ? "..." : "Upload", mouseX, mouseY);
+        }
+        if (ModUtil.isMbtoolLoaded()) {
+            drawIconButton(g, mbtoolBtnX, topBarY, MbtoolHelper.toolIcon(), mouseX, mouseY);
+        }
 
         drawLayers(g, mouseX, mouseY);
         drawPalette(g, mouseX, mouseY);
@@ -336,6 +365,10 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     }
 
     protected void drawTooltips(GuiGraphics g, int mouseX, int mouseY) {
+        if (ModUtil.isMbtoolLoaded() && hit(mbtoolBtnX, topBarY, BTN_H, BTN_H, mouseX, mouseY)) {
+            g.renderTooltip(font, Component.literal("Load into multitool"), mouseX, mouseY);
+            return;
+        }
         for (int layer = 0; layer < grid.sizeY; layer++) {
             int[] br = layerButtonRects(layer);
             if (br == null) {
@@ -390,6 +423,13 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         g.fill(x, y, x + BTN_W, y + BTN_H, hover ? 0xFF505050 : 0xFF303030);
         drawOutline(g, x, y, BTN_W, BTN_H, 0xFF5A5A5A);
         g.drawCenteredString(font, text, x + BTN_W / 2, y + (BTN_H - 8) / 2, 0xFFFFFF);
+    }
+
+    protected void drawIconButton(GuiGraphics g, int x, int y, ItemStack icon, int mouseX, int mouseY) {
+        boolean hover = mouseX >= x && mouseX < x + BTN_H && mouseY >= y && mouseY < y + BTN_H;
+        g.fill(x, y, x + BTN_H, y + BTN_H, hover ? 0xFF505050 : 0xFF303030);
+        drawOutline(g, x, y, BTN_H, BTN_H, 0xFF5A5A5A);
+        g.renderItem(icon, x, y);
     }
 
     protected void drawSmallButton(GuiGraphics g, int x, int y, String text, int mouseX, int mouseY) {
@@ -472,6 +512,18 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         }
         if (hit(loadBtnX, topBarY, BTN_W, BTN_H, mx, my)) {
             onLoad();
+            return true;
+        }
+        if (HubConfig.isEnabled() && hit(hubBtnX, topBarY, BTN_W, BTN_H, mx, my)) {
+            onOpenHub();
+            return true;
+        }
+        if (HubConfig.isEnabled() && hit(uploadBtnX, topBarY, BTN_W, BTN_H, mx, my)) {
+            onUploadClick();
+            return true;
+        }
+        if (ModUtil.isMbtoolLoaded() && hit(mbtoolBtnX, topBarY, BTN_H, BTN_H, mx, my)) {
+            onLoadIntoMultitool();
             return true;
         }
         int areaW = palCols * PAL_SLOT;
@@ -631,6 +683,127 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     protected void onLoad() {
         int slot = getMinecraft().player.getInventory().selected;
         PacketDistributor.sendToServer(new PacketLoadFissionDesign(slot));
+    }
+
+    protected void onLoadIntoMultitool() {
+        HashMap<BlockPos, Block> planMap = FissionShellBuilder.shiftToInterior(new HashMap<>(grid.cells));
+        Vec3i size = FissionShellBuilder.getSize(planMap);
+        FissionShellBuilder.fillShellBlocks(planMap, size);
+        CompoundTag structureNbt = FissionShellBuilder.toStructureNbt(planMap);
+        PacketDistributor.sendToServer(new PacketLoadDesignIntoMultitool(structureNbt));
+    }
+
+    protected void withHubAck(Runnable action) {
+        if (FirstUseNotice.isAcknowledged()) {
+            action.run();
+            return;
+        }
+        Minecraft.getInstance().setScreen(HubConfirmDialog.confirm(this,
+                Component.literal("Designs Hub Network Notice"),
+                Component.literal("The Designs Hub connects to an external server not run by the mod author. "
+                        + "Browsing designs is anonymous. Uploading a design or voting also sends your Minecraft "
+                        + "username and player UUID. Shown once. Continue?"),
+                () -> {
+                    FirstUseNotice.acknowledge();
+                    action.run();
+                }));
+    }
+
+    protected void onOpenHub() {
+        withHubAck(() -> Minecraft.getInstance().setScreen(new DesignsHubScreen(this)));
+    }
+
+    protected void onUploadClick() {
+        if (uploading) {
+            return;
+        }
+        String error = validateDesignForUpload();
+        if (error != null) {
+            Minecraft.getInstance().setScreen(HubConfirmDialog.result(this,
+                    Component.literal("Designs Hub"), Component.literal(error)));
+            return;
+        }
+        withHubAck(() -> Minecraft.getInstance().setScreen(HubConfirmDialog.confirmWithName(this,
+                Component.literal("Upload to Designs Hub"),
+                Component.literal("Upload this design to the public Designs Hub?"),
+                defaultUploadName(),
+                this::doUpload)));
+    }
+
+    protected String validateDesignForUpload() {
+        if (grid.cells.isEmpty()) {
+            return "Design is empty. Add blocks before uploading.";
+        }
+        if (grid.sizeX < 5 || grid.sizeY < 5 || grid.sizeZ < 5) {
+            return "Design must be at least 5x5x5.";
+        }
+        simulator.simulateIfDirty();
+        if (!simulator.invalidCells.isEmpty()) {
+            return "Design contains invalid block placements.";
+        }
+        return null;
+    }
+
+    protected String defaultUploadName() {
+        String fuelLabel = fuelDropdown != null ? fuelDropdown.getSelectedLabel() : "";
+        return "[" + grid.sizeX + "x" + grid.sizeZ + "x" + grid.sizeY + "] " + fuelLabel + " - ";
+    }
+
+    protected void doUpload(String name) {
+        Player player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+        uploading = true;
+        simulator.simulateIfDirty();
+
+        CreateDesignRequestDto dto = new CreateDesignRequestDto();
+        dto.name = name;
+        dto.author = player.getGameProfile().getName();
+        dto.playerUuid = player.getGameProfile().getId().toString();
+        dto.version = HubConfig.modVersion();
+        dto.channel = HubConfig.CHANNEL;
+        String fuelKey = fuelDropdown.getSelectedFuelKey();
+        String variant = fuelDropdown.getSelectedVariant();
+        dto.fuel = (fuelKey == null ? "" : fuelKey) + "|" + (variant == null ? "" : variant);
+        dto.design = grid.toTag().toString();
+        dto.cellCount = grid.cells.size();
+
+        HubApiClient.getChallenge().thenComposeAsync(challengeResult -> {
+            if (!(challengeResult instanceof HubResult.Success<ChallengeDto> success)) {
+                return CompletableFuture.completedFuture(FissionDesignerScreen.<CreateDesignResponseDto>toFailure(challengeResult));
+            }
+            ChallengeDto challenge = success.value();
+            String nonce = PowSolver.solve(challenge.challenge, challenge.difficulty);
+            dto.challengeId = challenge.challengeId;
+            dto.nonce = nonce;
+            return HubApiClient.createDesign(dto);
+        }, HubExecutor.get()).thenAccept(result -> Minecraft.getInstance().execute(() -> onUploadResult(result)));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> HubResult<T> toFailure(HubResult<?> other) {
+        return (HubResult<T>) other;
+    }
+
+    protected void onUploadResult(HubResult<CreateDesignResponseDto> result) {
+        uploading = false;
+        String message;
+        if (result instanceof HubResult.Success<CreateDesignResponseDto>) {
+            message = "Design uploaded!";
+        } else if (result instanceof HubResult.RateLimited<CreateDesignResponseDto> r) {
+            message = "You can upload again in " + Math.max(1, r.retryAfterSeconds() / 60) + " minutes.";
+        } else if (result instanceof HubResult.Conflict<CreateDesignResponseDto>) {
+            message = "This exact design was already uploaded.";
+        } else if (result instanceof HubResult.ValidationError<CreateDesignResponseDto> v) {
+            message = "Upload rejected: " + v.code();
+        } else if (result instanceof HubResult.NetworkError<CreateDesignResponseDto>) {
+            message = "Couldn't reach Designs Hub, try again later.";
+        } else {
+            message = "Upload failed.";
+        }
+        Minecraft.getInstance().setScreen(HubConfirmDialog.result(this,
+                Component.literal("Designs Hub"), Component.literal(message)));
     }
 
     public void applyLoadedDesign(DesignGrid loaded, String fuelKey, String variant) {

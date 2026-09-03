@@ -1,6 +1,7 @@
 package igentuman.nc.block_entity;
 
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.util.FissionShellBuilder;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -42,21 +43,8 @@ public class MultiblockBuilderBE extends BlockEntity {
         super(ModEntries.get(name).blockEntity().get(), pos, state);
     }
 
-    private static Block block(String name) {
-        return ModEntries.get(name).block().get();
-    }
-
     public static Vec3i getSize(HashMap<BlockPos, Block> blockMap) {
-        if (blockMap.isEmpty()) {
-            return new Vec3i(1, 1, 1);
-        }
-        int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
-        for (BlockPos pos : blockMap.keySet()) {
-            maxX = Math.max(maxX, pos.getX());
-            maxY = Math.max(maxY, pos.getY());
-            maxZ = Math.max(maxZ, pos.getZ());
-        }
-        return new Vec3i(maxX, maxY, maxZ);
+        return FissionShellBuilder.getSize(blockMap);
     }
 
     public record PlanStatus(Map<BlockPos, BlockState> preview, List<BlockPos> blocked) {}
@@ -210,29 +198,11 @@ public class MultiblockBuilderBE extends BlockEntity {
     }
 
     private HashMap<BlockPos, Block> shiftToInterior(HashMap<BlockPos, Block> blockMap) {
-        HashMap<BlockPos, Block> shifted = new HashMap<>();
-        for (Map.Entry<BlockPos, Block> entry : blockMap.entrySet()) {
-            shifted.put(entry.getKey().offset(1, 1, 1), entry.getValue());
-        }
-        return shifted;
+        return FissionShellBuilder.shiftToInterior(blockMap);
     }
 
     private void fillShellBlocks(HashMap<BlockPos, Block> blockMap, Vec3i size) {
-        for (int x = 0; x <= size.getX() + 1; x++) {
-            for (int y = 0; y <= size.getY() + 1; y++) {
-                for (int z = 0; z <= size.getZ() + 1; z++) {
-                    if ((x == 0 || x == size.getX() + 1) || (y == 0 || y == size.getY() + 1) || (z == 0 || z == size.getZ() + 1)) {
-                        if (x == 0 && z == 0 && y == 0) {
-                            blockMap.put(new BlockPos(x, y, z), block("fission_reactor_controller"));
-                        } else if (isCorner(x, y, z, size.getX() + 1, size.getY() + 1, size.getZ() + 1)) {
-                            blockMap.put(new BlockPos(x, y, z), block("fission_reactor_casing"));
-                        } else {
-                            blockMap.put(new BlockPos(x, y, z), block("fission_reactor_glass"));
-                        }
-                    }
-                }
-            }
-        }
+        FissionShellBuilder.fillShellBlocks(blockMap, size);
     }
 
     private BlockPos toGlobalPos(BlockPos globalPos, BlockPos localPos) {
@@ -278,12 +248,6 @@ public class MultiblockBuilderBE extends BlockEntity {
             }
         }
         return handlers;
-    }
-
-    private boolean isCorner(int x, int y, int z, int maxX, int maxY, int maxZ) {
-        return (x == 0 || x == maxX) && (y == 0 || y == maxY) ||
-               (x == 0 || x == maxX) && (z == 0 || z == maxZ) ||
-               (y == 0 || y == maxY) && (z == 0 || z == maxZ);
     }
 
     private Direction getFacing() {

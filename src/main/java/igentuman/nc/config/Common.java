@@ -31,6 +31,9 @@ public class Common {
     public static final ModConfigSpec.BooleanValue IN_SITU_RANDOMIZED_ORES;
     public static final ModConfigSpec.BooleanValue IN_SITU_ALLOW_IE_VEINS;
 
+    public static final ModConfigSpec.BooleanValue HUB_ENABLED;
+    public static final ModConfigSpec.ConfigValue<String> HUB_BASE_URL;
+
     public static final ModConfigSpec SPEC;
 
     static {
@@ -99,6 +102,15 @@ public class Common {
         IN_SITU_ALLOW_IE_VEINS = BUILDER
                 .comment("Allow leaching IE veins via core sample")
                 .define("allow_to_leach_ie_veins", true);
+        BUILDER.pop();
+
+        BUILDER.push("designs_hub");
+        HUB_ENABLED = BUILDER
+                .comment("Enable the Designs Hub browse/upload screens (online, sends data to an external server)")
+                .define("enabled", true);
+        HUB_BASE_URL = BUILDER
+                .comment("Designs Hub API base URL")
+                .define("base_url", "https://nc-fission-designs-api.itman.website");
         BUILDER.pop();
 
         SPEC = BUILDER.build();

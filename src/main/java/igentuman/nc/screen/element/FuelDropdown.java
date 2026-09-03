@@ -120,6 +120,10 @@ public class FuelDropdown extends AbstractWidget {
         }
     }
 
+    public String getSelectedLabel() {
+        return selectedLabel();
+    }
+
     protected String selectedLabel() {
         if (selectedIndex >= 0 && selectedIndex < all.size()) {
             return all.get(selectedIndex).label();

@@ -364,6 +364,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("nc.multiblock_builder.no_containers", "No adjacent containers with building blocks found");
         add("nc.multiblock_builder.missing_blocks", "Missing %s x%s");
         add("nc.multiblock_builder.build_success", "Structure built successfully");
+        add("nc.fission_designer.no_multitool", "You need to have a Multibuilder Tool in your inventory");
     }
 
     private void pipes() {

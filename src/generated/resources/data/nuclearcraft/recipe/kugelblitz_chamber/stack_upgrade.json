@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:kugelblitz_chamber",
+  "input": {
+    "count": 1,
+    "item": "nuclearcraft:stack_upgrade"
+  },
+  "output": {
+    "count": 1,
+    "item": "nuclearcraft:quantum_upgrade"
+  },
+  "time_modifier": 2.0
+}

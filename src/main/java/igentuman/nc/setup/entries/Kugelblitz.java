@@ -71,7 +71,7 @@ public class Kugelblitz extends ModEntries {
         addMultiblockPart("chamber_port", ChamberPortBE::new);
 
         addMultiblockBlock("neutronium_frame");
-        addMultiblockBlock("quantum_transformer");
+        addMultiblockBlock("quantum_transformer", glassProps());
         addMultiblockBlock("quantum_flux_regulator", glassProps());
         addMultiblockBlock("event_horizon_stabilizer", glassProps());
 

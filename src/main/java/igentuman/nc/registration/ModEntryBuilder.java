@@ -322,7 +322,12 @@ public class ModEntryBuilder {
      * processor supporting {@code type} auto-attaches it. The item participates in F8 gating.
      */
     public static ModEntry addCatalyst(String name, CatalystType type, CatalystFactory factory) {
-        ModEntry entry = add(name).item(() -> new Item(new Item.Properties())).build();
+        return addCatalyst(name, type, factory, () -> new Item(new Item.Properties()));
+    }
+
+    public static ModEntry addCatalyst(String name, CatalystType type, CatalystFactory factory,
+                                       Supplier<? extends Item> itemSupplier) {
+        ModEntry entry = add(name).item(itemSupplier).build();
         CatalystRegistry.register(new CatalystDef(entry.item(), type, factory));
         return entry;
     }

@@ -32,8 +32,8 @@ public class AssemblerRecipes {
         assemble(out, "bscco",                 dust("bscco"),                 3,
                 new I[]{dst("bismuth", 2), dst("strontium", 2), dst("calcium", 2), dst("copper", 2)});
 
-        assemble(out, "upgrade_stack",         part("upgrade_stack"),         1,
-                new I[]{prt("upgrade_speed", 2), plt("cobalt", 1), dst("uranium", 1)});
+        assemble(out, "stack_upgrade",         part("stack_upgrade"),         1,
+                new I[]{prt("speed_upgrade", 2), plt("cobalt", 1), dst("uranium", 1)});
         assemble(out, "dense_water_collector", part("dense_water_collector"), 1,
                 new I[]{prt("compact_water_collector", 4), van(Items.CONDUIT, 1), plt("platinum", 4), prt("motor", 1)});
         assemble(out, "dense_nitrogen_collector", part("dense_nitrogen_collector"), 1,

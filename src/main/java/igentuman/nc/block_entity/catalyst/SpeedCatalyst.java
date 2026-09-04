@@ -11,6 +11,19 @@ public class SpeedCatalyst extends Catalyst {
 
     @Override
     public void preTick() {
-        host.recipeInfo.multiplier += power;
+        host.recipeInfo.multiplier = speedMultiplier();
+        host.recipeInfo.parallelLimit = parallelLimit();
+    }
+
+    public int speedMultiplier() {
+        return speedMultiplier(power);
+    }
+
+    public static int speedMultiplier(int power) {
+        return power + 1;
+    }
+
+    public int parallelLimit() {
+        return 1;
     }
 }

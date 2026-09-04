@@ -2,6 +2,7 @@ package igentuman.nc.datagen.recipe.processors;
 
 import igentuman.nc.recipe.ItemOutput;
 import igentuman.nc.recipe.kugelblitz.KugelblitzRecipe;
+import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +38,10 @@ public class KugelblitzChamberRecipes {
             emit(out, "tough_alloy_bscco",
                     SizedIngredient.of(toughAlloy, 1), ItemOutput.of(bscco, 2));
         }
+        Item stackUpgrade = ModEntries.get("stack_upgrade").item().get();
+        Item quantumUpgrade = ModEntries.get("quantum_upgrade").item().get();
+        emit(out, "stack_upgrade", SizedIngredient.of(stackUpgrade, 1),
+                ItemOutput.of(quantumUpgrade, 1), 2.0);
         for (String path : TAGS) {
             TagKey<Item> tag = tag(path);
             emit(out, path.replace('/', '_'),
@@ -49,7 +54,12 @@ public class KugelblitzChamberRecipes {
     }
 
     private static void emit(RecipeOutput out, String name, SizedIngredient input, ItemOutput output) {
-        KugelblitzRecipe recipe = new KugelblitzRecipe(input, output, 1.0, 1.0);
+        emit(out, name, input, output, 1.0);
+    }
+
+    private static void emit(RecipeOutput out, String name, SizedIngredient input, ItemOutput output,
+                             double timeModifier) {
+        KugelblitzRecipe recipe = new KugelblitzRecipe(input, output, timeModifier, 1.0);
         out.accept(ResourceLocation.fromNamespaceAndPath(MODID, "kugelblitz_chamber/" + name), recipe, null);
     }
 

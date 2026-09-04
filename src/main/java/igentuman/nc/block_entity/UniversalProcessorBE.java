@@ -69,6 +69,7 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
         refreshCatalysts();
         recipeInfo.resetCatalystModifiers();
         for (Catalyst c : activeCatalysts.values()) c.preTick();
+        updateUpgradeMultipliers();
         if (recipeInfo.multiplier > 0) {
             recipeInfo.energyPerTick = (int) (recipeInfo.energyPerTick * energyMultiplier / recipeInfo.multiplier);
         }
@@ -150,22 +151,23 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
             }
             catalyst.power = stack.getCount();
         }
-        speedMultiplier = 1;
-        int energyPower = 0;
-        Catalyst speed = activeCatalysts.get(CatalystType.SPEED);
-        if (speed != null) {
-            speedMultiplier += speed.power;
-        }
         Catalyst energy = activeCatalysts.get(CatalystType.ENERGY);
-        if (energy != null) energyPower = energy.power;
-        double speedMult = Math.min(speedMultiplier, 100);
-        double energyUpgrades = energyPower + 1;
-        energyMultiplier = Math.max(speedMult, Math.pow(speedMult - 1, 2) + speedMult - Math.pow(energyUpgrades, 2));
+        int energyPower = energy == null ? 0 : energy.power;
         if (energyStorage != null && entry.energyCap() != null) {
             long baseCapacity = entry.energyCap().getCapacity();
             long bonus = baseCapacity * ((long) energyPower * EnergyCatalyst.CAPACITY_PERCENT_PER_POWER) / 100;
             energyStorage.setCapacity(baseCapacity + bonus);
         }
+    }
+
+    private void updateUpgradeMultipliers() {
+        speedMultiplier = recipeInfo.multiplier;
+        Catalyst energy = activeCatalysts.get(CatalystType.ENERGY);
+        int energyPower = energy == null ? 0 : energy.power;
+        double effectiveSpeed = Math.min(speedMultiplier + (recipeInfo.parallelLimit - 1) / 2.0, 100);
+        double energyUpgrades = energyPower + 1;
+        energyMultiplier = Math.max(effectiveSpeed,
+                Math.pow(effectiveSpeed - 1, 2) + effectiveSpeed - Math.pow(energyUpgrades, 2));
     }
 
     private void installSlotValidators() {

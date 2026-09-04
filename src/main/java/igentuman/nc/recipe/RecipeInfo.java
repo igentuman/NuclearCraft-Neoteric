@@ -41,6 +41,8 @@ public class RecipeInfo {
     public final GlobalBlockEntity be;
     private String recipeId;
     public int multiplier = 1;
+    public int parallelLimit = 1;
+    public int parallelProcessing = 1;
     public Recipe<?> recipe;
     public Recipe<?> lastRecipe;
     private HashMap<String, Recipe<?>> allRecipes = new HashMap<>();
@@ -82,9 +84,9 @@ public class RecipeInfo {
         if (be.energyStorage == null) {
             return; // no energy storage, cannot process
         }
-        int required = energyPerTick * multiplier;
+        long required = (long) energyPerTick * multiplier;
         if(required > 0) {
-            int extracted = be.energyStorage.getEnergyStored() >= required ? required : 0;
+            long extracted = be.energyStorage.getEnergyStored() >= required ? required : 0;
             if (extracted < required) {
                 return; // not enough energy, stall
             }
@@ -117,6 +119,7 @@ public class RecipeInfo {
      */
     public void resetCatalystModifiers() {
         multiplier = 1;
+        parallelLimit = 1;
         if (recipe instanceof UniversalProcessorRecipe upr) {
             energyPerTick = upr.getEnergyPerTick();
         }
@@ -148,12 +151,16 @@ public class RecipeInfo {
             var itemHandler = be.contentHandler.getItemHandler();
             for (int i = 0; i < itemOutputSize; i++) {
                 if (i >= outputSlotCount) return false;
-                ItemStack output = upr.getOutputStack(i);
+                ItemStack output = scaled(upr.getOutputStack(i), parallelProcessing);
+                if (output.isEmpty()) return false;
                 int slot = outputSlotStart + i;
                 ItemStack existing = itemHandler.getStackInSlot(slot);
                 if (!existing.isEmpty()) {
                     if (!ItemStack.isSameItemSameComponents(existing, output)) return false;
-                    if (existing.getCount() + output.getCount() > existing.getMaxStackSize()) return false;
+                    int limit = Math.min(existing.getMaxStackSize(), itemHandler.getSlotLimit(slot));
+                    if ((long) existing.getCount() + output.getCount() > limit) return false;
+                } else if (output.getCount() > Math.min(output.getMaxStackSize(), itemHandler.getSlotLimit(slot))) {
+                    return false;
                 }
             }
         } else if (itemOutputSize > 0) {
@@ -166,7 +173,8 @@ public class RecipeInfo {
             for (int i = 0; i < fluidOutputSize; i++) {
                 if (i >= outputTankCount) return false;
                 int tankIdx = outputTankStart + i;
-                FluidStack output = upr.getOutputFluidStack(i);
+                FluidStack output = scaled(upr.getOutputFluidStack(i), parallelProcessing);
+                if (output.isEmpty()) return false;
                 int filled = fluidHandler.fillTank(tankIdx, output, IFluidHandler.FluidAction.SIMULATE);
                 if (filled < output.getAmount()) return false;
             }
@@ -179,7 +187,7 @@ public class RecipeInfo {
             var itemHandler = be.contentHandler.getItemHandler();
             for (int i = 0; i < itemOutputSize; i++) {
                 int slot = outputSlotStart + i;
-                ItemStack output = upr.getOutputStack(i);
+                ItemStack output = scaled(upr.getOutputStack(i), parallelProcessing);
                 ItemStack existing = itemHandler.getStackInSlot(slot);
                 if (existing.isEmpty()) {
                     itemHandler.setStackInSlot(slot, output);
@@ -194,77 +202,38 @@ public class RecipeInfo {
             var fluidHandler = be.contentHandler.getFluidHandler();
             for (int i = 0; i < fluidOutputSize; i++) {
                 int tankIdx = outputTankStart + i;
-                fluidHandler.fillTank(tankIdx, upr.getOutputFluidStack(i), IFluidHandler.FluidAction.EXECUTE);
+                fluidHandler.fillTank(tankIdx, scaled(upr.getOutputFluidStack(i), parallelProcessing), IFluidHandler.FluidAction.EXECUTE);
             }
         }
 
         return true;
     }
 
-    public void consumeInputs() {
-        if (recipe == null) return;
-        if (!(recipe instanceof UniversalProcessorRecipe upr)) return;
-
-        ModEntry entry = be.name != null ? ModEntries.get(be.name) : null;
-
-        // Consume item inputs
-        List<SizedIngredient> itemInputs = upr.getItemInputs();
-        if (be.shouldConsumeItemInputs() && be.contentHandler.hasItemCapability()) {
-            var itemHandler = be.contentHandler.getItemHandler();
-            int inputSlots = (entry != null && entry.itemCap() != null)
-                    ? entry.itemCap().inputSlots : itemHandler.getSlots();
-            boolean[] usedItemSlots = new boolean[inputSlots];
-            for (SizedIngredient ingredient : itemInputs) {
-                for (int slot = 0; slot < inputSlots; slot++) {
-                    if (usedItemSlots[slot]) continue;
-                    if (ingredient.test(itemHandler.getStackInSlot(slot))) {
-                        itemHandler.extractItem(slot, ingredient.count(), false);
-                        usedItemSlots[slot] = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        // Consume fluid inputs
-        List<SizedFluidIngredient> fluidInputs = upr.getFluidInputs();
-        if (be.contentHandler.hasFluidCapability()) {
-            var fluidHandler = be.contentHandler.getFluidHandler();
-            int inputTanks = (entry != null && entry.fluidCap() != null)
-                    ? entry.fluidCap().inputTanks.size() : fluidHandler.getTanks();
-            boolean[] usedFluidTanks = new boolean[inputTanks];
-            for (SizedFluidIngredient ingredient : fluidInputs) {
-                for (int tank = 0; tank < inputTanks; tank++) {
-                    if (usedFluidTanks[tank]) continue;
-                    if (ingredient.test(fluidHandler.getFluidInTank(tank))) {
-                        fluidHandler.drainTank(tank, ingredient.amount(), IFluidHandler.FluidAction.EXECUTE);
-                        usedFluidTanks[tank] = true;
-                        break;
-                    }
-                }
-            }
-        }
-        changed = true;
-    }
-
     private void findRecipe() {
         if(lastRecipe != null) {
-            if (isValidRecipe(lastRecipe)) {
-                setRecipe(lastRecipe);
+            if (tryStartRecipe(lastRecipe)) {
                 return;
             }
         }
         for (Recipe<?> r : getRecipes().values()) {
-            if (isValidRecipe(r)) {
-                setRecipe(r);
+            if (tryStartRecipe(r)) {
                 return;
             }
         }
     }
 
-    public void setRecipe(Recipe<?> recipe) {
+    private boolean tryStartRecipe(Recipe<?> recipe) {
+        if (!(recipe instanceof UniversalProcessorRecipe upr)) return false;
+        int batchSize = findMaximumParallelism(upr, parallelLimit);
+        if (batchSize == 0) return false;
+
+        int[] itemAssignment = itemInputAssignment(upr, batchSize);
+        int[] fluidAssignment = fluidInputAssignment(upr, batchSize);
+        if (itemAssignment == null || fluidAssignment == null) return false;
+
         this.recipe = recipe;
         this.lastRecipe = null;
+        this.parallelProcessing = batchSize;
         // Resolve recipeId from the recipes map
         this.recipeId = null;
         for (var entry : getRecipes().entrySet()) {
@@ -274,11 +243,172 @@ public class RecipeInfo {
             }
         }
         clear();
-        if (recipe instanceof UniversalProcessorRecipe upr) {
-            this.ticksNeeded = upr.getProcessTime();
-            this.energyPerTick = upr.getEnergyPerTick();
+        this.ticksNeeded = upr.getProcessTime();
+        this.energyPerTick = upr.getEnergyPerTick();
+        consumeInputs(upr, batchSize, itemAssignment, fluidAssignment);
+        return true;
+    }
+
+    /** Finds the largest feasible batch in O(log limit) simulations instead of scanning down. */
+    private int findMaximumParallelism(UniversalProcessorRecipe recipe, int requested) {
+        int high = Math.max(1, requested);
+        if (itemInputAssignment(recipe, 1) == null
+                || fluidInputAssignment(recipe, 1) == null
+                || !canFitOutputs(recipe, 1)) return 0;
+
+        int low = 2;
+        int result = 1;
+        while (low <= high) {
+            int candidate = low + (high - low) / 2;
+            if (itemInputAssignment(recipe, candidate) != null
+                    && fluidInputAssignment(recipe, candidate) != null
+                    && canFitOutputs(recipe, candidate)) {
+                result = candidate;
+                low = candidate + 1;
+            } else {
+                high = candidate - 1;
+            }
         }
-        consumeInputs();
+        return result;
+    }
+
+    private int[] itemInputAssignment(UniversalProcessorRecipe recipe, int batchSize) {
+        List<SizedIngredient> ingredients = recipe.getItemInputs();
+        int[] assignment = new int[ingredients.size()];
+        java.util.Arrays.fill(assignment, -1);
+        if (ingredients.isEmpty()) return assignment;
+        if (!be.contentHandler.hasItemCapability()) return null;
+
+        ModEntry entry = ModEntries.get(be.name);
+        int slots = entry != null && entry.itemCap() != null
+                ? entry.itemCap().inputSlots : be.contentHandler.getItemHandler().getSlots();
+        boolean[] used = new boolean[slots];
+        return assignItemInput(ingredients, batchSize, 0, used, assignment) ? assignment : null;
+    }
+
+    private boolean assignItemInput(List<SizedIngredient> ingredients, int batchSize, int index,
+                                    boolean[] used, int[] assignment) {
+        if (index == ingredients.size()) return true;
+        SizedIngredient ingredient = ingredients.get(index);
+        int required = scaledAmount(ingredient.count(), be.shouldConsumeItemInputs() ? batchSize : 1);
+        if (required < 0) return false;
+        var handler = be.contentHandler.getItemHandler();
+        for (int slot = 0; slot < used.length; slot++) {
+            ItemStack stack = handler.getStackInSlot(slot);
+            if (used[slot] || stack.getCount() < required || !ingredient.ingredient().test(stack)) continue;
+            used[slot] = true;
+            assignment[index] = slot;
+            if (assignItemInput(ingredients, batchSize, index + 1, used, assignment)) return true;
+            assignment[index] = -1;
+            used[slot] = false;
+        }
+        return false;
+    }
+
+    private int[] fluidInputAssignment(UniversalProcessorRecipe recipe, int batchSize) {
+        List<SizedFluidIngredient> ingredients = recipe.getFluidInputs();
+        int[] assignment = new int[ingredients.size()];
+        java.util.Arrays.fill(assignment, -1);
+        if (ingredients.isEmpty()) return assignment;
+        if (!be.contentHandler.hasFluidCapability()) return null;
+
+        ModEntry entry = ModEntries.get(be.name);
+        int tanks = entry != null && entry.fluidCap() != null
+                ? entry.fluidCap().inputTanks.size() : be.contentHandler.getFluidHandler().getTanks();
+        boolean[] used = new boolean[tanks];
+        return assignFluidInput(ingredients, batchSize, 0, used, assignment) ? assignment : null;
+    }
+
+    private boolean assignFluidInput(List<SizedFluidIngredient> ingredients, int batchSize, int index,
+                                     boolean[] used, int[] assignment) {
+        if (index == ingredients.size()) return true;
+        SizedFluidIngredient ingredient = ingredients.get(index);
+        int required = scaledAmount(ingredient.amount(), batchSize);
+        if (required < 0) return false;
+        var handler = be.contentHandler.getFluidHandler();
+        for (int tank = 0; tank < used.length; tank++) {
+            FluidStack stack = handler.getFluidInTank(tank);
+            if (used[tank] || stack.getAmount() < required || !ingredient.ingredient().test(stack)) continue;
+            used[tank] = true;
+            assignment[index] = tank;
+            if (assignFluidInput(ingredients, batchSize, index + 1, used, assignment)) return true;
+            assignment[index] = -1;
+            used[tank] = false;
+        }
+        return false;
+    }
+
+    private boolean canFitOutputs(UniversalProcessorRecipe recipe, int batchSize) {
+        ModEntry entry = ModEntries.get(be.name);
+        ItemCapDefinition itemCap = entry != null ? entry.itemCap() : null;
+        FluidCapDefinition fluidCap = entry != null ? entry.fluidCap() : null;
+
+        if (!recipe.getItemOutputs().isEmpty()) {
+            if (!be.contentHandler.hasItemCapability() || itemCap == null
+                    || recipe.getItemOutputs().size() > itemCap.outputSlots) return false;
+            var handler = be.contentHandler.getItemHandler();
+            for (int i = 0; i < recipe.getItemOutputs().size(); i++) {
+                ItemStack output = scaled(recipe.getOutputStack(i), batchSize);
+                if (output.isEmpty()) return false;
+                int slot = itemCap.inputSlots + i;
+                ItemStack existing = handler.getStackInSlot(slot);
+                int limit = Math.min(output.getMaxStackSize(), handler.getSlotLimit(slot));
+                if (!existing.isEmpty()) {
+                    if (!ItemStack.isSameItemSameComponents(existing, output)) return false;
+                    if ((long) existing.getCount() + output.getCount() > limit) return false;
+                } else if (output.getCount() > limit) {
+                    return false;
+                }
+            }
+        }
+
+        if (!recipe.getFluidOutputs().isEmpty()) {
+            if (!be.contentHandler.hasFluidCapability() || fluidCap == null
+                    || recipe.getFluidOutputs().size() > fluidCap.outputTanks.size()) return false;
+            var handler = be.contentHandler.getFluidHandler();
+            int start = fluidCap.inputTanks.size();
+            for (int i = 0; i < recipe.getFluidOutputs().size(); i++) {
+                FluidStack output = scaled(recipe.getOutputFluidStack(i), batchSize);
+                if (output.isEmpty()) return false;
+                if (handler.fillTank(start + i, output, IFluidHandler.FluidAction.SIMULATE) < output.getAmount()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void consumeInputs(UniversalProcessorRecipe recipe, int batchSize,
+                               int[] itemAssignment, int[] fluidAssignment) {
+        if (be.shouldConsumeItemInputs() && be.contentHandler.hasItemCapability()) {
+            var handler = be.contentHandler.getItemHandler();
+            for (int i = 0; i < itemAssignment.length; i++) {
+                handler.extractItem(itemAssignment[i], recipe.getItemInputs().get(i).count() * batchSize, false);
+            }
+        }
+        if (be.contentHandler.hasFluidCapability()) {
+            var handler = be.contentHandler.getFluidHandler();
+            for (int i = 0; i < fluidAssignment.length; i++) {
+                handler.drainTank(fluidAssignment[i], recipe.getFluidInputs().get(i).amount() * batchSize,
+                        IFluidHandler.FluidAction.EXECUTE);
+            }
+        }
+        changed = true;
+    }
+
+    private static int scaledAmount(int amount, int multiplier) {
+        long scaled = (long) amount * multiplier;
+        return scaled > Integer.MAX_VALUE ? -1 : (int) scaled;
+    }
+
+    private static ItemStack scaled(ItemStack stack, int multiplier) {
+        int amount = scaledAmount(stack.getCount(), multiplier);
+        return stack.isEmpty() || amount < 0 ? ItemStack.EMPTY : stack.copyWithCount(amount);
+    }
+
+    private static FluidStack scaled(FluidStack stack, int multiplier) {
+        int amount = scaledAmount(stack.getAmount(), multiplier);
+        return stack.isEmpty() || amount < 0 ? FluidStack.EMPTY : stack.copyWithAmount(amount);
     }
 
     @SuppressWarnings("unchecked")
@@ -356,7 +486,9 @@ public class RecipeInfo {
         data.putInt("ticks", ticks);
         data.putInt("ticksNeeded", ticksNeeded);
         data.putInt("energyPerTick", energyPerTick);
-        if(recipe != null && recipeId != null) {
+        data.putInt("parallelProcessing", parallelProcessing);
+        data.putBoolean("stuck", stuck);
+        if((recipe != null || stuck) && recipeId != null) {
             data.putString("recipe", recipeId);
         }
         return data;
@@ -367,10 +499,17 @@ public class RecipeInfo {
             ticks = ((CompoundTag) nbt).getInt("ticks");
             ticksNeeded = ((CompoundTag) nbt).getInt("ticksNeeded");
             energyPerTick = ((CompoundTag) nbt).getInt("energyPerTick");
+            parallelProcessing = Math.max(1, ((CompoundTag) nbt).getInt("parallelProcessing"));
+            stuck = ((CompoundTag) nbt).getBoolean("stuck");
             recipeId = ((CompoundTag) nbt).getString("recipe");
             recipe = null;
             if(!recipeId.isEmpty()) {
-                recipe = getRecipeFromTag(recipeId);
+                Recipe<?> loadedRecipe = getRecipeFromTag(recipeId);
+                if (stuck) {
+                    lastRecipe = loadedRecipe;
+                } else {
+                    recipe = loadedRecipe;
+                }
             }
         }
     }

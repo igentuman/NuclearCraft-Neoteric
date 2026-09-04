@@ -14,7 +14,7 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
 
-/** GUI for the EXPL laser emitter: shows the accumulated charge and a burst trigger button. */
+/** GUI for the EXPL laser emitter: shows accumulated and target charge with a burst trigger button. */
 public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> {
 
     private static final ResourceLocation GUI = rl("textures/gui/small_window.png");
@@ -57,5 +57,8 @@ public class EXPLScreen extends AbstractContainerScreen<EXPLContainer> {
         graphics.drawCenteredString(font,
                 __("screen.nuclearcraft.expl.charge", formatEnergy(menu.getCharge())),
                 imageWidth / 2, titleLabelY + 16, 0xFFFFFF);
+        graphics.drawCenteredString(font,
+                __("screen.nuclearcraft.expl.target_charge", formatEnergy(menu.getTargetCharge())),
+                imageWidth / 2, titleLabelY + 26, 0xFFFFFF);
     }
 }

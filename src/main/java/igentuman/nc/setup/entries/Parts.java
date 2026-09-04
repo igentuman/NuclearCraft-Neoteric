@@ -2,7 +2,9 @@ package igentuman.nc.setup.entries;
 
 import igentuman.nc.block_entity.catalyst.CatalystType;
 import igentuman.nc.block_entity.catalyst.EnergyCatalyst;
+import igentuman.nc.block_entity.catalyst.QuantumCatalyst;
 import igentuman.nc.block_entity.catalyst.SpeedCatalyst;
+import igentuman.nc.block_entity.catalyst.StackCatalyst;
 import igentuman.nc.entity.Q36EnergyFlash;
 import igentuman.nc.entity.Q36PulseProjectile;
 import igentuman.nc.item.*;
@@ -83,10 +85,20 @@ public class Parts extends ModEntries {
     }
 
     public static final ModEntry ENERGY_UPGRADE =
-            addCatalyst("energy_upgrade", CatalystType.ENERGY, EnergyCatalyst::new);
+            addCatalyst("energy_upgrade", CatalystType.ENERGY, EnergyCatalyst::new,
+                    () -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.ENERGY, new Item.Properties()));
 
     public static final ModEntry SPEED_UPGRADE =
-            addCatalyst("speed_upgrade", CatalystType.SPEED, SpeedCatalyst::new);
+            addCatalyst("speed_upgrade", CatalystType.SPEED, SpeedCatalyst::new,
+                    () -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.SPEED, new Item.Properties()));
+
+    public static final ModEntry STACK_UPGRADE =
+            addCatalyst("stack_upgrade", CatalystType.SPEED, StackCatalyst::new,
+                    () -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.STACK, new Item.Properties()));
+
+    public static final ModEntry QUANTUM_UPGRADE =
+            addCatalyst("quantum_upgrade", CatalystType.SPEED, QuantumCatalyst::new,
+                    () -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.QUANTUM, new Item.Properties()));
 
     public static void records() {
         for (String name : NCJukeboxSongs.RECORDS.keySet()) {

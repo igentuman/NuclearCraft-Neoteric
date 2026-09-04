@@ -93,6 +93,8 @@ public class EXPLBE extends GlobalBlockEntity implements MenuProvider {
                     case 0 -> (int) (aggregatedEnergy & 0xFFFFFFFFL);
                     case 1 -> (int) (aggregatedEnergy >>> 32);
                     case 2 -> isReadyToBurst() ? 1 : 0;
+                    case 3 -> (int) (Multiblocks.kugelblitzExplCharge & 0xFFFFFFFFL);
+                    case 4 -> (int) (Multiblocks.kugelblitzExplCharge >>> 32);
                     default -> 0;
                 };
             }
@@ -102,7 +104,7 @@ public class EXPLBE extends GlobalBlockEntity implements MenuProvider {
 
             @Override
             public int getCount() {
-                return 3;
+                return 5;
             }
         };
     }

@@ -459,6 +459,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.kugelblitz.energy", "Output: %s FE/t");
         add("screen.nuclearcraft.kugelblitz.stability", "Stability: %s");
         add("screen.nuclearcraft.expl.charge", "Charge: %s");
+        add("screen.nuclearcraft.expl.target_charge", "Target: %s");
         add("gui.nuclearcraft.button.burst", "Burst");
         add("screen.nuclearcraft.redstone_config_0", "Redstone: Active always");
         add("screen.nuclearcraft.redstone_config_1", "Redstone: Active on signal");
@@ -626,6 +627,13 @@ public class ModLanguageProvider  extends LanguageProvider {
 
         add("tooltip.nuclearcraft.energy_per_tick", "Energy per tick: %s");
         add("tooltip.nuclearcraft.speed_multiplier", "Speed Multiplier: %s");
+        add("tooltip.nuclearcraft.upgrade.energy.description", "Reduces speed-upgrade energy costs and expands the processor's energy buffer.");
+        add("tooltip.nuclearcraft.upgrade.speed.description", "Increases processing speed.");
+        add("tooltip.nuclearcraft.upgrade.stack.description", "Increases speed and processes one parallel recipe per four upgrades.");
+        add("tooltip.nuclearcraft.upgrade.quantum.description", "Increases speed and processes one parallel recipe per upgrade.");
+        add("tooltip.nuclearcraft.upgrade.energy_capacity", "Energy capacity bonus: +%s%%");
+        add("tooltip.nuclearcraft.upgrade.speed_bonus", "Speed multiplier: %sx");
+        add("tooltip.nuclearcraft.upgrade.parallel_bonus", "Parallel processing: %sx");
 
         add("tooltip.nc.resonite_crystal.raw", "Unanalyzed");
         add("tooltip.nc.resonite_crystal.rarity", "Rarity: %s");

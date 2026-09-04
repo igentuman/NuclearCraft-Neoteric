@@ -12,8 +12,10 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 
-/** Menu for the EXPL laser emitter: exposes charge and burst readiness, no item slots. */
+/** Menu for the EXPL laser emitter: exposes charge, burst target, and readiness, no item slots. */
 public class EXPLContainer extends AbstractContainerMenu {
+
+    private static final int DATA_SLOT_COUNT = 5;
 
     private final EXPLBE blockEntity;
     private final ContainerLevelAccess access;
@@ -22,7 +24,7 @@ public class EXPLContainer extends AbstractContainerMenu {
     public EXPLContainer(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf extraData) {
         this(containerId, playerInventory,
                 (EXPLBE) playerInventory.player.level().getBlockEntity(extraData.readBlockPos()),
-                new SimpleContainerData(3));
+                new SimpleContainerData(DATA_SLOT_COUNT));
     }
 
     public EXPLContainer(int containerId, Inventory playerInventory, EXPLBE blockEntity, ContainerData data) {
@@ -39,6 +41,10 @@ public class EXPLContainer extends AbstractContainerMenu {
 
     public boolean isReady() {
         return data.get(2) != 0;
+    }
+
+    public long getTargetCharge() {
+        return (data.get(3) & 0xFFFFFFFFL) | ((long) data.get(4) << 32);
     }
 
     public BlockPos getPosition() {

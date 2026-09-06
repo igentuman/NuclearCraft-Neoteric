@@ -322,7 +322,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE implements Redston
             ticksProcessed = 0;
             ticksNeeded = recipe.getBaseTime();
             processEnergy = recipe.getEnergy();
-            inv.extractItem(0, 1, false);
+            inv.extractItem(0, recipe.input().count(), false);
         } else {
             currentRecipe = null;
             ticksNeeded = 0;

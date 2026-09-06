@@ -76,8 +76,9 @@ public class FusionReaction {
                     be.running = be.energyPerTick > 0 && be.plasmaTemperature > 0 && be.efficiency > 0;
 
                     ticksProcessed += Math.max(0, be.efficiency * 4);
-                    if (recipe.processTime() > 0 && ticksProcessed >= recipe.processTime()) {
-                        produceOutput(be, recipe);
+                    if (recipe.processTime() > 0 && ticksProcessed >= recipe.processTime()
+                            && canFitOutputs(be, recipe)) {
+                        produceOutputs(be, recipe);
                         ticksProcessed = 0;
                         fuelConsumed = false;
                         currentRecipe = null;
@@ -228,22 +229,22 @@ public class FusionReaction {
         }
         FusionCoolantRecipe recipe = findCoolant(be, coolant);
         if (recipe == null) return;
-        double coolingRate = Math.max(1, recipe.coolingRate());
-        if (be.reactorHeat <= coolingRate) return;
-
         int coolantPerOp = recipe.input().amount();
-        if (coolantPerOp <= 0) return;
+        FluidStack output = recipe.output().resolve();
+        if (coolantPerOp <= 0 || output.isEmpty() || output.getAmount() <= 0) return;
+
+        double coolingPerOp = Math.max(1, recipe.coolingRate()) / Math.max(1.0, fc.size);
+        if (be.reactorHeat <= 0 || coolingPerOp <= 0) return;
+
         int possibleOps = coolant.getAmount() / coolantPerOp;
-        int coolantNeeded = (int) (be.reactorHeat / coolingRate);
-        int actualOps = Math.min(possibleOps, coolantNeeded * coolantPerOp);
+        int heatOps = (int) Math.min(Integer.MAX_VALUE, Math.ceil(be.reactorHeat / coolingPerOp));
+        int outputOps = availableOutputOperations(tanks, TANK_HOT_COOLANT, output);
+        int actualOps = Math.min(possibleOps, Math.min(heatOps, outputOps));
         if (actualOps <= 0) return;
 
-        changeHeat(be, -(coolingRate / Math.max(1, fc.size)) * actualOps);
+        changeHeat(be, -coolingPerOp * actualOps);
         tanks.drainTank(TANK_COOLANT, coolantPerOp * actualOps, EXECUTE);
-        FluidStack out = recipe.output().resolve();
-        if (!out.isEmpty()) {
-            tanks.fillTank(TANK_HOT_COOLANT, new FluidStack(out.getFluid(), out.getAmount() * actualOps), EXECUTE);
-        }
+        tanks.fillTank(TANK_HOT_COOLANT, output.copyWithAmount(output.getAmount() * actualOps), EXECUTE);
     }
 
     private void meltdown(FusionReactorControllerBE be, FusionReactorCache fc, Level level) {
@@ -275,7 +276,7 @@ public class FusionReaction {
         if (a.isEmpty() || b.isEmpty()) return null;
         for (RecipeHolder<FusionRecipe> holder : sl.getRecipeManager().getAllRecipesFor(FusionRecipes.FUSION_TYPE.get())) {
             FusionRecipe r = holder.value();
-            if (r.inputA().test(a) && r.inputB().test(b)) return r;
+            if (r.inputA().test(a) && r.inputB().test(b) && canFitOutputs(be, r)) return r;
         }
         return null;
     }
@@ -292,19 +293,38 @@ public class FusionReaction {
         return true;
     }
 
-    private void produceOutput(FusionReactorControllerBE be, FusionRecipe recipe) {
+    private boolean canFitOutputs(FusionReactorControllerBE be, FusionRecipe recipe) {
         FluidStackHandler tanks = be.fluidTanks();
-        if (tanks == null) return;
+        if (tanks == null) return false;
         List<?> outputs = recipe.outputs();
+        if (outputs.isEmpty() || outputs.size() > TANK_HOT_COOLANT - TANK_PRODUCT_FIRST) return false;
         int count = Math.min(outputs.size(), TANK_HOT_COOLANT - TANK_PRODUCT_FIRST);
         for (int i = 0; i < count; i++) {
             FluidStack out = recipe.outputs().get(i).resolve();
-            if (out.isEmpty()) continue;
+            if (out.isEmpty() || out.getAmount() <= 0) return false;
             int tank = TANK_PRODUCT_FIRST + i;
-            FluidStack cur = tanks.getFluidInTank(tank);
-            if (!cur.isEmpty() && cur.getFluid() != out.getFluid()) continue;
+            if (availableOutputOperations(tanks, tank, out) < 1) return false;
+        }
+        return true;
+    }
+
+    private void produceOutputs(FusionReactorControllerBE be, FusionRecipe recipe) {
+        FluidStackHandler tanks = be.fluidTanks();
+        if (tanks == null) return;
+        int count = Math.min(recipe.outputs().size(), TANK_HOT_COOLANT - TANK_PRODUCT_FIRST);
+        for (int i = 0; i < count; i++) {
+            FluidStack out = recipe.outputs().get(i).resolve();
+            int tank = TANK_PRODUCT_FIRST + i;
             tanks.fillTank(tank, out.copy(), EXECUTE);
         }
+    }
+
+    private int availableOutputOperations(FluidStackHandler tanks, int tank, FluidStack output) {
+        FluidStack current = tanks.getFluidInTank(tank);
+        if (!current.isEmpty() && !FluidStack.isSameFluidSameComponents(current, output)) return 0;
+        int stored = current.isEmpty() ? 0 : current.getAmount();
+        int available = tanks.getTankCapacity(tank) - stored;
+        return Math.max(0, available / output.getAmount());
     }
 
     private FusionCoolantRecipe findCoolant(FusionReactorControllerBE be, FluidStack coolant) {

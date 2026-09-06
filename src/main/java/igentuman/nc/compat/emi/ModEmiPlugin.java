@@ -17,6 +17,9 @@ import igentuman.nc.recipe.UniversalProcessorRecipeSerializer;
 import igentuman.nc.recipe.fission.BoilingRecipe;
 import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import igentuman.nc.recipe.fission.FissionRecipes;
+import igentuman.nc.recipe.fusion.FusionRecipes;
+import igentuman.nc.recipe.kugelblitz.KugelblitzRecipes;
+import igentuman.nc.recipe.turbine.TurbineRecipes;
 import igentuman.nc.recipe.bomb.NcBlastRecipes;
 import igentuman.nc.recipe.bomb.NuclearBlastRecipe;
 import igentuman.nc.registration.FissionFuelEntry;
@@ -38,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** EMI plugin registering processor, multiblock, and fission recipe categories and their recipes. */
+/** EMI plugin registering processor, multiblock, and specialized recipe categories and their recipes. */
 @EmiEntrypoint
 public class ModEmiPlugin implements EmiPlugin {
 
@@ -118,6 +121,10 @@ public class ModEmiPlugin implements EmiPlugin {
         }
 
         registerFissionRecipes(registry, recipeManager);
+        registerFusionRecipes(registry, recipeManager);
+        registerTurbineRecipes(registry, recipeManager);
+        registerKugelblitzRecipes(registry, recipeManager);
+        registerOreVeinRecipes(registry, recipeManager);
         registerHeatExchangerRecipes(registry, recipeManager);
         registerNuclearBlastRecipes(registry, recipeManager);
         registerFuelInfoCategory(registry);
@@ -224,6 +231,64 @@ public class ModEmiPlugin implements EmiPlugin {
         for (int i = 0; i < recipes.size(); i++) {
             registry.addRecipe(new HeatExchangerEmiRecipe(category, NuclearCraft.rl("/heat_exchanger/" + i), recipes.get(i)));
         }
+    }
+
+    private void registerFusionRecipes(EmiRegistry registry, RecipeManager recipeManager) {
+        ModEntry controller = ModEntries.get("fusion_reactor_core");
+        if (controller == null || !controller.hasItem()) return;
+        EmiStack workstation = EmiStack.of(new ItemStack(controller.item().get()));
+
+        EmiRecipeCategory fusionCategory = new EmiRecipeCategory(NuclearCraft.rl("fusion_reactor"), workstation);
+        registry.addCategory(fusionCategory);
+        registry.addWorkstation(fusionCategory, workstation);
+        recipeManager.getAllRecipesFor(FusionRecipes.FUSION_TYPE.get()).forEach(holder ->
+                registry.addRecipe(new FusionEmiRecipe(fusionCategory, holder.id(), holder.value())));
+
+        EmiRecipeCategory coolantCategory = new EmiRecipeCategory(NuclearCraft.rl("fusion_coolant"), workstation);
+        registry.addCategory(coolantCategory);
+        registry.addWorkstation(coolantCategory, workstation);
+        recipeManager.getAllRecipesFor(FusionRecipes.COOLANT_TYPE.get()).forEach(holder ->
+                registry.addRecipe(new FusionCoolantEmiRecipe(coolantCategory, holder.id(), holder.value())));
+    }
+
+    private void registerTurbineRecipes(EmiRegistry registry, RecipeManager recipeManager) {
+        ModEntry controller = ModEntries.get("turbine_controller");
+        if (controller == null || !controller.hasItem()) return;
+        EmiStack workstation = EmiStack.of(new ItemStack(controller.item().get()));
+        EmiRecipeCategory category = new EmiRecipeCategory(NuclearCraft.rl("turbine"), workstation);
+        registry.addCategory(category);
+        registry.addWorkstation(category, workstation);
+        recipeManager.getAllRecipesFor(TurbineRecipes.TURBINE_TYPE.get()).forEach(holder ->
+                registry.addRecipe(new TurbineEmiRecipe(category, holder.id(), holder.value())));
+    }
+
+    private void registerKugelblitzRecipes(EmiRegistry registry, RecipeManager recipeManager) {
+        ModEntry controller = ModEntries.get("chamber_terminal");
+        if (controller == null || !controller.hasItem()) return;
+        EmiStack workstation = EmiStack.of(new ItemStack(controller.item().get()));
+        EmiRecipeCategory category = new EmiRecipeCategory(NuclearCraft.rl("kugelblitz_chamber"), workstation);
+        registry.addCategory(category);
+        registry.addWorkstation(category, workstation);
+        recipeManager.getAllRecipesFor(KugelblitzRecipes.KUGELBLITZ_TYPE.get()).stream()
+                .filter(holder -> holder.value().isComplete())
+                .forEach(holder -> registry.addRecipe(new KugelblitzEmiRecipe(category, holder.id(), holder.value())));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void registerOreVeinRecipes(EmiRegistry registry, RecipeManager recipeManager) {
+        ModEntry entry = ModEntries.get("nc_ore_veins");
+        if (entry == null || !entry.hasRecipes()) return;
+        EmiStack icon = EmiStack.of(new ItemStack(net.minecraft.world.item.Items.DIAMOND_PICKAXE));
+        EmiRecipeCategory category = new EmiRecipeCategory(NuclearCraft.rl("nc_ore_veins"), icon);
+        registry.addCategory(category);
+        ModEntry analyzer = ModEntries.get("analyzer");
+        if (analyzer != null && analyzer.hasItem()) {
+            registry.addWorkstation(category, EmiStack.of(new ItemStack(analyzer.item().get())));
+        }
+        RecipeType<igentuman.nc.recipe.OreVeinRecipe> type =
+                (RecipeType<igentuman.nc.recipe.OreVeinRecipe>) entry.recipeType().get();
+        recipeManager.getAllRecipesFor(type).forEach(holder ->
+                registry.addRecipe(new OreVeinEmiRecipe(category, holder.id(), holder.value())));
     }
 
     private void registerNuclearBlastRecipes(EmiRegistry registry, RecipeManager recipeManager) {

@@ -102,16 +102,23 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             if (recipe != null && in.getAmount() > 0) {
                 powerMod = recipe.powerModifier();
                 double cleanFlow = Math.min(maxFlowVal, in.getAmount());
-                realFlowVal = cleanFlow / coilsDrag;
-                if (realFlowVal > 0) {
+                int requestedInput = (int) (cleanFlow / coilsDrag);
+                FluidStack output = recipe.output().resolve();
+                int consumedPerOp = recipe.input().amount();
+                int producedPerOp = output.getAmount();
+                int outputRoom = availableOutput(tanks, output);
+                int inputForOutputRoom = consumedPerOp > 0 && producedPerOp > 0
+                        ? (int) Math.min(Integer.MAX_VALUE, (long) outputRoom * consumedPerOp / producedPerOp)
+                        : 0;
+                int inputAmount = Math.min(requestedInput, inputForOutputRoom);
+                int outputAmount = consumedPerOp > 0
+                        ? (int) ((long) inputAmount * producedPerOp / consumedPerOp)
+                        : 0;
+                if (inputAmount > 0 && outputAmount > 0) {
+                    realFlowVal = inputAmount;
                     genPerTick = generateEnergy(tc, realFlowVal, powerMod);
-                    int drained = tanks.drainTank(0, (int) realFlowVal, EXECUTE).getAmount();
-                    if (drained > 0) {
-                        FluidStack out = recipe.output().resolve();
-                        if (!out.isEmpty()) {
-                            tanks.fillTank(1, new FluidStack(out.getFluid(), drained), EXECUTE);
-                        }
-                    }
+                    tanks.drainTank(0, inputAmount, EXECUTE);
+                    tanks.fillTank(1, output.copyWithAmount(outputAmount), EXECUTE);
                 }
             }
             maxGen = (int) computeEnergy(tc, maxFlowVal, powerMod);
@@ -178,6 +185,14 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             if (holder.value().input().test(in)) return holder.value();
         }
         return null;
+    }
+
+    private int availableOutput(FluidStackHandler tanks, FluidStack output) {
+        if (output.isEmpty() || output.getAmount() <= 0) return 0;
+        FluidStack current = tanks.getFluidInTank(1);
+        if (!current.isEmpty() && !FluidStack.isSameFluidSameComponents(current, output)) return 0;
+        int stored = current.isEmpty() ? 0 : current.getAmount();
+        return Math.max(0, tanks.getTankCapacity(1) - stored);
     }
 
     private FluidStackHandler fluidTanks() {

@@ -7,6 +7,9 @@ import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.recipe.UniversalProcessorRecipeSerializer;
 import igentuman.nc.recipe.fission.FissionRecipes;
+import igentuman.nc.recipe.fusion.FusionRecipes;
+import igentuman.nc.recipe.kugelblitz.KugelblitzRecipes;
+import igentuman.nc.recipe.turbine.TurbineRecipes;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
@@ -36,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-/** JEI plugin registering processor, multiblock, and fission categories plus AE2 recipe transfer. */
+/** JEI plugin registering processor, multiblock, and specialized recipe categories plus AE2 recipe transfer. */
 @JeiPlugin
 public class ModJeiPlugin implements IModPlugin {
 
@@ -72,6 +75,11 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new BoilingRecipeCategory(guiHelper));
         registration.addRecipeCategories(new HeatExchangerRecipeCategory(guiHelper));
         registration.addRecipeCategories(new NuclearBlastRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new FusionRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new FusionCoolantRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new TurbineRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new KugelblitzRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new OreVeinRecipeCategory(guiHelper));
         registration.addRecipeCategories(new FuelInfoCategory(guiHelper));
         registration.addRecipeCategories(new IsotopeInfoCategory(guiHelper));
     }
@@ -93,7 +101,23 @@ public class ModJeiPlugin implements IModPlugin {
         if (hxController != null && hxController.hasItem()) {
             registration.addRecipeCatalyst(new ItemStack(hxController.item().get()), HeatExchangerRecipeCategory.TYPE);
         }
+        addSpecialRecipeCatalyst(registration, "fusion_reactor_core",
+                FusionRecipeCategory.TYPE, FusionCoolantRecipeCategory.TYPE);
+        addSpecialRecipeCatalyst(registration, "turbine_controller", TurbineRecipeCategory.TYPE);
+        addSpecialRecipeCatalyst(registration, "chamber_terminal", KugelblitzRecipeCategory.TYPE);
+        addSpecialRecipeCatalyst(registration, "analyzer", OreVeinRecipeCategory.TYPE);
         registration.addRecipeCatalyst(new ItemStack(Crafter.ENGINEERS_CRAFTING_TABLE_ITEM.get()), RecipeTypes.CRAFTING);
+    }
+
+    @SafeVarargs
+    private final void addSpecialRecipeCatalyst(IRecipeCatalystRegistration registration, String entryName,
+                                                RecipeType<?>... types) {
+        ModEntry entry = ModEntries.get(entryName);
+        if (entry == null || !entry.hasItem()) return;
+        ItemStack stack = new ItemStack(entry.item().get());
+        for (RecipeType<?> type : types) {
+            registration.addRecipeCatalyst(stack, type);
+        }
     }
 
     @Override
@@ -152,6 +176,27 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipes(NuclearBlastRecipeCategory.TYPE,
                 recipeManager.getAllRecipesFor(igentuman.nc.recipe.bomb.NcBlastRecipes.TYPE.get())
                         .stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(FusionRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(FusionRecipes.FUSION_TYPE.get())
+                        .stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(FusionCoolantRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(FusionRecipes.COOLANT_TYPE.get())
+                        .stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(TurbineRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(TurbineRecipes.TURBINE_TYPE.get())
+                        .stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(KugelblitzRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(KugelblitzRecipes.KUGELBLITZ_TYPE.get())
+                        .stream().map(RecipeHolder::value).filter(r -> r.isComplete()).toList());
+        ModEntry oreVeins = ModEntries.get("nc_ore_veins");
+        if (oreVeins != null && oreVeins.hasRecipes()) {
+            @SuppressWarnings("unchecked")
+            net.minecraft.world.item.crafting.RecipeType<igentuman.nc.recipe.OreVeinRecipe> oreVeinType =
+                    (net.minecraft.world.item.crafting.RecipeType<igentuman.nc.recipe.OreVeinRecipe>)
+                            oreVeins.recipeType().get();
+            registration.addRecipes(OreVeinRecipeCategory.TYPE,
+                    recipeManager.getAllRecipesFor(oreVeinType).stream().map(RecipeHolder::value).toList());
+        }
 
         registration.addRecipes(FuelInfoCategory.TYPE, fuelInfoRecipes());
         registration.addRecipes(IsotopeInfoCategory.TYPE, isotopeInfoRecipes());

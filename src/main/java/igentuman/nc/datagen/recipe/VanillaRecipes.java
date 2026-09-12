@@ -24,6 +24,7 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
 import static igentuman.nc.setup.entries.Processors.*;
 import static igentuman.nc.util.TagUtil.*;
+import static igentuman.nr.util.TagUtil.oreTag;
 import static net.minecraft.world.item.Items.*;
 import static net.minecraft.world.item.Items.BUCKET;
 
@@ -79,6 +80,12 @@ public class VanillaRecipes {
                         .save(out, MODID + ":" + name + "_nugget_from_ingot");
             }
             if (entry.materialEntry().hasIngot()) {
+                if (entry.materialEntry().hasOre()) {
+                    smelting(entry.materialEntry().oreItem(), Ingredient.of(oreTag(name)), entry.materialEntry().ingot());
+                }
+                if (entry.materialEntry().hasDeepslateOre()) {
+                    smelting(entry.materialEntry().deepslateOreItem(), Ingredient.of(oreTag(name)), entry.materialEntry().ingot());
+                }
                 if (entry.materialEntry().hasRawOre()) {
                     smelting(entry.materialEntry().rawOre(), Ingredient.of(rawTag(name)), entry.materialEntry().ingot());
                 }
@@ -1673,7 +1680,7 @@ public class VanillaRecipes {
                 .save(recipeOutput);
     }
 
-    public static void smelting(DeferredItem<Item> inputItem, Ingredient input, ItemLike output) {
+    public static void smelting(DeferredItem<? extends Item> inputItem, Ingredient input, ItemLike output) {
         SimpleCookingRecipeBuilder.smelting(input,
                         RecipeCategory.MISC,
                         output, 1.0f, 200)

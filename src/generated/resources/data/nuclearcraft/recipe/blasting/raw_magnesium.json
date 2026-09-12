@@ -4,7 +4,7 @@
   "cookingtime": 100,
   "experience": 1.0,
   "ingredient": {
-    "tag": "c:raw_ore/magnesium"
+    "tag": "c:raw_materials/magnesium"
   },
   "result": {
     "count": 1,

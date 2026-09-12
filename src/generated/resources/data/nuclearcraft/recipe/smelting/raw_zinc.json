@@ -4,7 +4,7 @@
   "cookingtime": 200,
   "experience": 1.0,
   "ingredient": {
-    "tag": "c:raw_ore/zinc"
+    "tag": "c:raw_materials/zinc"
   },
   "result": {
     "count": 1,

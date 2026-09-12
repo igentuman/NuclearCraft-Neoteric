@@ -119,7 +119,7 @@ public class TagUtil {
     }
 
     public static TagKey<Item> rawTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "raw_ore/" + name));
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "raw_materials/" + name));
     }
 
     public static TagKey<Item> ingotTag(String name) {

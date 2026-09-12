@@ -4,7 +4,7 @@
   "cookingtime": 100,
   "experience": 1.0,
   "ingredient": {
-    "tag": "c:raw_ore/boron"
+    "tag": "c:raw_materials/boron"
   },
   "result": {
     "count": 1,

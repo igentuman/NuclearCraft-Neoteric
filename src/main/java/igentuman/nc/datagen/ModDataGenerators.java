@@ -1,6 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.datagen.loot.ModBlockLootTableProvider;
+import igentuman.nc.datagen.loot.ModEntityLootTableProvider;
 import igentuman.nc.datagen.recipe.ModRecipeProvider;
 import igentuman.nc.datagen.tag.ModBlockTagProvider;
 import igentuman.nc.datagen.tag.ModFluidTagProvider;
@@ -49,8 +50,8 @@ public class ModDataGenerators {
                         packOutput,
                         emptySet(),
                         List.of(
-                                new SubProviderEntry(ModBlockLootTableProvider::new, LootContextParamSets.BLOCK)
-                                //new SubProviderEntry(ModEntityLootTableProvider::new, LootContextParamSets.ENTITY)
+                                new SubProviderEntry(ModBlockLootTableProvider::new, LootContextParamSets.BLOCK),
+                                new SubProviderEntry(ModEntityLootTableProvider::new, LootContextParamSets.ENTITY)
                         ),
                         lookupProvider
                 )

@@ -20,6 +20,7 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import igentuman.nc.setup.NCSounds;
+import igentuman.nc.setup.entries.Ghouls;
 
 import static igentuman.nc.NuclearCraft.rl;
 
@@ -47,6 +48,7 @@ public class ModBiomes {
 
         MobSpawnSettings.Builder spawns = new MobSpawnSettings.Builder();
         spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.SPIDER, 50, 1, 4));
+        spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(Ghouls.FERAL_GHOUL.get(), 80, 1, 3));
 
         return new Biome.BiomeBuilder()
                 .temperature(1.5F)

@@ -7,10 +7,15 @@ import igentuman.nc.client.render.q36.Q36EnergyFlashRenderer;
 import igentuman.nc.client.render.q36.Q36PulseProjectileRenderer;
 import igentuman.nc.client.renderer.AnomalyShader;
 import igentuman.nc.client.model.ModelFeralGhoul;
+import igentuman.nc.client.model.ModelWastelandBoss;
 import igentuman.nc.client.renderer.FeralGhoulRenderer;
+import igentuman.nc.client.renderer.WastelandBossRenderer;
+import igentuman.nc.client.renderer.WastelandProjectileRenderer;
 import igentuman.nc.client.renderer.anomaly.AnomalyRenderer;
 import igentuman.nc.client.renderer.anomaly.GravitationalAnomalyRenderer;
 import igentuman.nc.entity.EntityFeralGhoul;
+import igentuman.nc.entity.EntityBlockProjectile;
+import igentuman.nc.entity.EntityWastelandBoss;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.entity.anomaly.GravitationalAnomalyEntity;
 import igentuman.nc.handler.crafter.CraftingPattern;
@@ -217,6 +222,7 @@ public class Client {
     @SubscribeEvent
     static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(ModelFeralGhoul.LAYER_LOCATION, ModelFeralGhoul::createBodyLayer);
+        event.registerLayerDefinition(ModelWastelandBoss.LAYER_LOCATION, ModelWastelandBoss::createBodyLayer);
     }
 
     @SuppressWarnings("unchecked")
@@ -242,11 +248,19 @@ public class Client {
                 (BlockEntityType<igentuman.nc.block_entity.MultiblockBuilderBE>) (BlockEntityType<?>)
                         ModEntries.get("multiblock_builder").blockEntity().get(),
                 igentuman.nc.client.render.builder.MultiblockBuilderRenderer::new);
-        // Empty renderer stub for the primed bomb entity; all visuals are client FX (Phase 7).
         event.registerEntityRenderer(
                 (EntityType<? extends EntityFeralGhoul>) (EntityType<?>)
                         Ghouls.FERAL_GHOUL.get(),
                 FeralGhoulRenderer::new);
+        event.registerEntityRenderer(
+                (EntityType<? extends EntityWastelandBoss>) (EntityType<?>)
+                        Ghouls.FERAL_GHOUL_BOSS.get(),
+                WastelandBossRenderer::new);
+        event.registerEntityRenderer(
+                (EntityType<? extends EntityBlockProjectile>) (EntityType<?>)
+                        Ghouls.WASTELAND_PROJECTILE.get(),
+                WastelandProjectileRenderer::new);
+        // Empty renderer stub for the primed bomb entity; all visuals are client FX (Phase 7).
         event.registerEntityRenderer(
                 (EntityType<? extends PrimedFissionBombEntity>) (EntityType<?>)
                         Bomb.PRIMED_FISSION_BOMB.get(),

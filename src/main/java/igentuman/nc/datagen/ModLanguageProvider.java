@@ -445,6 +445,9 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("tooltip.nc.q36_hint", "Right-click to switch mode. Left-click to fire.");
         add("entity.nuclearcraft.q36_pulse_projectile", "Quantite Pulse");
         add("entity.nuclearcraft.q36_energy_flash", "Energy Flash");
+        add("entity.nuclearcraft.feral_ghoul", "Feral Ghoul");
+        add("entity.nuclearcraft.feral_ghoul_boss", "Boss of the Wasteland");
+        add("entity.nuclearcraft.wasteland_projectile", "Wasteland Debris");
         add("sound_event.nuclearcraft.q36.beam_shot", "Q-36 Quantite Disruptor fires");
         add("sound_event.nuclearcraft.q36.pulse_shot", "Q-36 Quantite Pulse discharge");
         add("itemGroup.nuclearcraft.fission_reactor", "NuclearCraft: Fission Reactor");

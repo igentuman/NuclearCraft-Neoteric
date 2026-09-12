@@ -33,6 +33,10 @@ public class ModItemModelProvider  extends ItemModelProvider {
             // Block item models come from ModBlockStateProvider, which knows the special-ruled
             // model path (e.g. fission/controller); only standalone items are built here.
             if (entry.hasItem() && !entry.hasBlock()) {
+                if (entry.name().endsWith("_spawn_egg")) {
+                    withExistingParent(entry.name(), mcLoc("item/template_spawn_egg"));
+                    continue;
+                }
                 if (entry.name().equals("crafting_pattern")) {
                     craftingPattern();
                     continue;

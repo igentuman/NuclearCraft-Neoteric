@@ -93,6 +93,12 @@
         "maxCount": 4,
         "minCount": 1,
         "weight": 50
+      },
+      {
+        "type": "nuclearcraft:feral_ghoul",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 80
       }
     ],
     "underground_water_creature": [],

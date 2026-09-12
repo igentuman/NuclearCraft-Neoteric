@@ -4,6 +4,7 @@ import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.MultiblockPartBlock;
 import igentuman.nc.entity.EntityFeralGhoul;
+import igentuman.nc.entity.EntityWastelandBoss;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.item.ResoniteCrystalItem;
 import igentuman.nc.setup.entries.Anomalies;
@@ -50,7 +51,10 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.ModContainer;
+import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -86,6 +90,7 @@ public class NuclearCraft {
                         .toList()
         );
         modEventBus.addListener(this::registerEntityAttributes);
+        modEventBus.addListener(this::registerSpawnPlacements);
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(Networking::registerPayloads);
@@ -243,10 +248,24 @@ public class NuclearCraft {
         event.put(Anomalies.PSYCHO_ANOMALY.get(), AnomalyEntity.createAttributes().build());
         event.put(Anomalies.TELEPORTING_ANOMALY.get(), AnomalyEntity.createAttributes().build());
         event.put(Ghouls.FERAL_GHOUL.get(), EntityFeralGhoul.createAttributes().build());
+        event.put(Ghouls.FERAL_GHOUL_BOSS.get(), EntityWastelandBoss.createAttributes().build());
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
 
+    }
+
+    private void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
+        event.register(Ghouls.FERAL_GHOUL.get(),
+                SpawnPlacementTypes.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                EntityFeralGhoul::checkFeralGhoulSpawnRules,
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(Ghouls.FERAL_GHOUL_BOSS.get(),
+                SpawnPlacementTypes.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                EntityWastelandBoss::checkSpawnRules,
+                RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 
     private void registerTicketControllers(RegisterTicketControllersEvent event) {

@@ -8,7 +8,7 @@
             "anchor": "cooling",
 			"type": "text",
             "title": "Cooling",
-            "text": "Accelerators need to be cooled as they and the environment produce heat. If they overheat while operating, some of the overheating components will $(l)explode$(). (Castle Bravo overran its yield estimate by 250%. Don't be Castle Bravo.)$(br2)To cool an accelerator, you need to pipe in a cold coolant and pipe out a hot coolant. Each coolant has a different temperature; this determines the minimum temperature your accelerator can reach."
+            "text": "Accelerators need cooling because their components and environment produce heat. If a running accelerator exceeds its maximum operating temperature, the safety office places it in an $(l)overheated lockout$(): processing stops immediately, but the equipment remains reassuringly unexploded. Redstone and computer control cannot restart it until the cooldown ends.$(br2)Coolant and passive heat exchange continue during the lockout."
         },
 		{
             "type": "text",
@@ -116,7 +116,7 @@
         },
 		{
             "type": "text",
-            "text": "The temperature of the coolant used must be below this for the accelerator to cool down below its maximum operating temperature. If the accelerator temperature rises above its maximum operating temperature while running, then some of the $(l)$(c)overheating components will explode$()."
+            "text": "The coolant temperature must be below this limit for the accelerator to cool beneath its maximum operating temperature. An overheat lockout lasts 1200 ticks (60 seconds) by default; modpacks can change this with $(l)overheat_cooldown_ticks$(). The controller shows the remaining time. If a restart is requested while the machine is still too hot, the safety system immediately begins another cooldown."
         },
 		{
             "anchor": "focus",

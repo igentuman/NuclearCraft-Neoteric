@@ -27,6 +27,8 @@ The linear and ring accelerators expose **different** ComputerCraft peripheral t
 - `getStats()` → table — `accelerating_voltage`, `quadrupole_strength`, `beam_length`
 - `getParticleInfo()` → table | nil — `energy`, `focus`, `amount`, `particle`
 - `isAcceleratorOn()` → boolean — controller is enabled
+- `isOverheated()` → boolean — the safety lockout is active
+- `getOverheatCooldown()` → int — remaining safety lockout in ticks
 - `setEnergyPercentage(percentage)` → nil — set acceleration energy 0..100 (`<5` turns it off); takes computer control
 - `releaseControl()` → nil — hand control back to redstone
 
@@ -48,6 +50,7 @@ Same surface as `nc_accelerator`, with two differences:
 - `getAcceleratingVoltage()` → long, `getQuadrupoleStrength()` → double, `getBeamLength()` → int (linear)
 - `getDipoleStrength()` → double, `getMinEnergy()` → int (ring)
 - `getHeatStored()` → int, `getHeatCapacity()` → long, `getCoolingRate()` → int
+- `isOverheated()` → boolean, `getOverheatCooldown()` → int
 - `getRecipeProgress()` → int (linear)
 
 `getParticleInfo()`, `setEnergyPercentage(percentage)`, `releaseControl()` and (on the ring)

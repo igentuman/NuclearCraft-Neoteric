@@ -57,6 +57,19 @@ maxHeat = (beamLength + 5) × 10000
 `CoolerDef` placement rules use the same operator language as fission heat sinks:
 `>`, `<`, `=`, `-`, `^`. Coolers that fail their rule are inactive.
 
+## Overheat Lockout
+
+The accelerator's maximum operating temperature is the lowest limit among its
+electromagnets and RF amplifiers. If a running accelerator exceeds that temperature, it
+enters an overheated state instead of damaging or exploding its components. Particle
+processing stops immediately and redstone or computer control cannot restart the machine
+until the safety cooldown expires.
+
+Coolant and passive heat exchange continue during the lockout. The default cooldown is
+1,200 ticks (60 seconds) and is controlled by `overheat_cooldown_ticks`. If the accelerator
+is still above its maximum operating temperature when another start is requested, it enters
+a new cooldown immediately. The controller GUI shows the remaining lockout time.
+
 ## Particle Sources
 
 `accelerator_ion_source_port` consumes an item or fluid mapped in `ParticleSources`. Examples:
@@ -92,6 +105,7 @@ The accelerator emits a `ParticleStack` (particle type, amount, energy, focus) t
 `AcceleratorConfig`:
 
 - `min_size` / `max_size`
+- `overheat_cooldown_ticks` - safety lockout duration after overheating (default: 1200 ticks)
 - Per-particle source mappings (overridable via KubeJS)
 - Power / heat / efficiency multipliers
 
@@ -99,7 +113,8 @@ The accelerator emits a `ParticleStack` (particle type, amount, energy, focus) t
 
 Both variants expose a ComputerCraft / OC2 peripheral (`nc_accelerator`). Methods include:
 
-- `isFormed`, `hasParticle`, `isAcceleratorOn`
+- `isFormed`, `hasParticle`, `isAcceleratorOn`, `isOverheated`
+- `getOverheatCooldown` - remaining lockout time in ticks
 - `getEnergyStored`, `getTemperature`, `getMaxTemperature`, `getHeatRate`
 - `getHeatBufferInfo`, `getCoolingInfo`, `getStats`, `getParticleInfo`
 

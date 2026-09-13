@@ -16,7 +16,9 @@ item_ids:
 
 ## Cooling
 
-Accelerators need to be cooled as they and the environment produce heat. If they overheat while operating, some of the overheating components will **explode**. (Castle Bravo overran its yield estimate by 250%. Don't be Castle Bravo.)
+Accelerators need cooling because their components and environment produce heat. If a running accelerator exceeds its maximum operating temperature, the safety office places it in an **overheated lockout**: processing stops immediately, but the equipment remains reassuringly unexploded. Redstone and computer control cannot restart it until the cooldown ends.
+
+Coolant and passive heat exchange continue during the lockout.
 
 To cool an accelerator, you need to pipe in a cold coolant and pipe out a hot coolant. Each coolant has a different temperature; this determines the minimum temperature your accelerator can reach.
 
@@ -79,7 +81,11 @@ To calculate the maximum heating, take the sum of the internal and external heat
 
 Hovering over the coolant bar (right) of the GUI will show you the amount of coolant stored, the maximum rate coolant can be used, and the maximum amount of hot coolant that can be produced. The accelerator's coolant tanks (both input and output) can be cleared by holding shift in the GUI and pressing the button that appears. The type of components you use in the accelerator determines its maximum operating temperature.
 
-The temperature of the coolant used must be below this for the accelerator to cool down below its maximum operating temperature. If the accelerator temperature rises above its maximum operating temperature while running, then some of the **overheating components will explode**.
+The coolant temperature must be below this limit for the accelerator to cool beneath its maximum operating temperature.
+
+## Overheat Lockout
+
+An overheat lockout lasts 1,200 ticks (60 seconds) by default. Modpacks can change the duration with `overheat_cooldown_ticks`. The controller GUI shows the remaining lockout time. If a restart is requested while the accelerator is still above its maximum operating temperature, the safety system immediately begins another cooldown.
 
 ## Focus
 

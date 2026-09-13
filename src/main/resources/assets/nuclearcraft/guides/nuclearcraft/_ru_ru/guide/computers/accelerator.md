@@ -27,6 +27,8 @@ navigation:
 - `getStats()` → table — `accelerating_voltage`, `quadrupole_strength`, `beam_length`
 - `getParticleInfo()` → table | nil — `energy`, `focus`, `amount`, `particle`
 - `isAcceleratorOn()` → boolean — контроллер включён
+- `isOverheated()` → boolean — действует защитная блокировка
+- `getOverheatCooldown()` → int — оставшееся время блокировки в тиках
 - `setEnergyPercentage(percentage)` → nil — задать энергию ускорения 0..100 (`<5` выключает); берёт управление на компьютер
 - `releaseControl()` → nil — вернуть управление редстоуну
 
@@ -48,6 +50,7 @@ navigation:
 - `getAcceleratingVoltage()` → long, `getQuadrupoleStrength()` → double, `getBeamLength()` → int (линейный)
 - `getDipoleStrength()` → double, `getMinEnergy()` → int (кольцевой)
 - `getHeatStored()` → int, `getHeatCapacity()` → long, `getCoolingRate()` → int
+- `isOverheated()` → boolean, `getOverheatCooldown()` → int
 - `getRecipeProgress()` → int (линейный)
 
 `getParticleInfo()`, `setEnergyPercentage(percentage)`, `releaseControl()` и (у кольцевого)

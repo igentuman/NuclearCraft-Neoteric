@@ -135,6 +135,8 @@ Same surface as the fission reactor, plus:
 | `getStats()` | map | `accelerating_voltage`, `quadrupole_strength`, `beam_length` |
 | `getParticleInfo()` | map / nil | `energy`, `focus`, `amount`, `particle` |
 | `isAcceleratorOn()` | boolean | Controller enabled |
+| `isOverheated()` | boolean | Safety lockout is active |
+| `getOverheatCooldown()` | int | Remaining safety lockout in ticks |
 | `setEnergyPercentage(double)` | void | Computer-controlled acceleration 0..100 (`<5` ⇒ off) |
 | `releaseControl()` | void | Hand control back to redstone |
 

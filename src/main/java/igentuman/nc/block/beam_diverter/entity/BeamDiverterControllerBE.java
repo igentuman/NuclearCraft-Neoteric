@@ -79,7 +79,7 @@ public class BeamDiverterControllerBE extends AbstractAcceleratorControllerBE {
     }
 
     @Override
-    protected void handleMeltdown() {
+    protected void handleOverheat() {
 
     }
 

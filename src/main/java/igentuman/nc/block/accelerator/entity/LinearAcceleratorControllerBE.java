@@ -133,15 +133,6 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
     }
 
     @Override
-    protected void handleMeltdown() {
-        if(isAcceleratorTooHot()) {
-            heatStored /= 2;
-            quenchMagnets();
-            controllerEnabled = false;
-        }
-    }
-
-    @Override
     protected AbstractAcceleratorMultiblock getAcceleratorMultiblock() {
         return getMultiblock();
     }

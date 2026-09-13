@@ -162,7 +162,9 @@ public class LinearAcceleratorControllerScreen extends AbstractContainerScreen<L
                 graphics.drawString(font, __("tooltip.nc.accelerator.temperature", container().getTemperature()), 37, 50, 0xffffff);
                 graphics.drawString(font, __("tooltip.nc.accelerator.voltage", container().getVoltage()), 37, 60, 0xffffff);
                 graphics.drawString(font, __("tooltip.nc.accelerator.strength", numberFormat(container().getStrength())), 37, 70, 0xffffff);
-                if (isAcceleratorTooHot()) {
+                if (container().isOverheated()) {
+                    graphics.drawString(font, __("tooltip.nc.accelerator.overheated", (container().getOverheatCooldown() + 19) / 20), 37, 80, ChatFormatting.RED.getColor());
+                } else if (isAcceleratorTooHot()) {
                     graphics.drawString(font, __("tooltip.nc.accelerator.too_hot"), 37, 80, ChatFormatting.RED.getColor());
                 }
             } else {

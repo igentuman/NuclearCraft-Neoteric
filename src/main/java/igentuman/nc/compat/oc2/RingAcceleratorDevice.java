@@ -105,6 +105,16 @@ public class RingAcceleratorDevice {
         }
 
         @Callback
+        public final boolean isOverheated() {
+            return controller.isOverheated();
+        }
+
+        @Callback
+        public final int getOverheatCooldown() {
+            return controller.overheatCooldown;
+        }
+
+        @Callback
         public final Map<String, Object> getParticleInfo() {
             ParticleStack particleStack = controller.getParticleStack();
             if (!controller.hasParticle || particleStack == null || particleStack.isEmpty() || particleStack.getParticle() == null) {

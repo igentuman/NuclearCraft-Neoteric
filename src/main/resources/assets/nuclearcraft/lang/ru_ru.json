@@ -2845,6 +2845,7 @@
   "tooltip.nc.wasteland.disabled": "Пустоши отключены",
   "tooltip.nc.wasteland.portal.descr": "Телепортирует игрока в пустоши",
   "tooltip.nc.accelerator.too_hot": "Ускоритель слишком горячий",
+  "tooltip.nc.accelerator.overheated": "Перегрев: защитная блокировка на %s с",
   "nuclearcraft.ponder.fission_reactor.header": "Ядерный реактор деления",
   "nuclearcraft.ponder.fission_reactor.text_1": "Стены в основном строятся из корпуса или стекла ядерного реактора.",
   "nuclearcraft.ponder.fission_reactor.text_2": "Разместите контроллер ядерного реактора в любом месте, чтобы сформировать структуру.",

@@ -115,6 +115,16 @@ public class RingAcceleratorPeripheral  implements IPeripheral {
         return isMultiblockAssembled() && controller.controllerEnabled;
     }
 
+    @LuaFunction
+    public boolean isOverheated() {
+        return isMultiblockAssembled() && controller.isOverheated();
+    }
+
+    @LuaFunction
+    public int getOverheatCooldown() {
+        return isMultiblockAssembled() ? controller.overheatCooldown : 0;
+    }
+
     @LuaFunction(mainThread = true)
     public void setEnergyPercentage(double percentage)
     {

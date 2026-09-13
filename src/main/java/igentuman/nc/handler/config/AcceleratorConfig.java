@@ -113,7 +113,7 @@ public class AcceleratorConfig {
         public final ForgeConfigSpec.ConfigValue<Double> THERMAL_CONDUCTIVITY;
         public final ForgeConfigSpec.ConfigValue<Integer> MAX_TEMP;
         public final ForgeConfigSpec.ConfigValue<Integer> RING_ACCELERATOR_INPUT_PARTICLE_MIN_ENERGY;
-        public final ForgeConfigSpec.ConfigValue<Boolean> MELTDOWN_ENABLED;
+        public final ForgeConfigSpec.ConfigValue<Integer> OVERHEAT_COOLDOWN_TICKS;
 
         public GeneralConfig(ForgeConfigSpec.Builder builder) {
             builder.comment("Settings for accelerators").push("general");
@@ -160,9 +160,9 @@ public class AcceleratorConfig {
                     .comment("Minimal energy of input particle for ring accelerators in kEV.")
                     .defineInRange("ring_accelerator_input_particle_min_energy", 5000, 1, 100000);
 
-            MELTDOWN_ENABLED = builder
-                    .comment("If true, components exceeding their max operating temperature will explode.")
-                    .define("meltdown_enabled", true);
+            OVERHEAT_COOLDOWN_TICKS = builder
+                    .comment("How long an overheated accelerator remains disabled, in ticks.")
+                    .defineInRange("overheat_cooldown_ticks", 1200, 1, Integer.MAX_VALUE);
 
             builder.pop();
         }

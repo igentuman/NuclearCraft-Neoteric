@@ -202,4 +202,12 @@ public class RingAcceleratorContainer extends AbstractContainerMenu {
     public boolean isAcceleratorTooHot() {
         return blockEntity.isAcceleratorTooHot();
     }
+
+    public boolean isOverheated() {
+        return blockEntity.isOverheated();
+    }
+
+    public int getOverheatCooldown() {
+        return blockEntity.overheatCooldown;
+    }
 }

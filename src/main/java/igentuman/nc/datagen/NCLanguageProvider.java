@@ -1166,6 +1166,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.q36_mode.beam","Beam - sustained discharge");
         add("tooltip.nc.q36_charge","Charge: %s / %s QE");
         add("tooltip.nc.q36_cooldown","Recharging: %s ticks");
+        add("tooltip.nc.accelerator.overheated", "Overheated: safety lockout for %s s");
         add("tooltip.nc.q36_hint","Right-click to switch mode. Left-click to fire.");
         add("tooltip.mode.one_block","One Block");
         add("tooltip.mode.3x3","3x3");
@@ -1465,4 +1466,3 @@ public class NCLanguageProvider extends LanguageProvider {
         add("block."+MODID+".pu_239_bomb.desc", "Plutonium-core implosion assembly, Mk-VII pattern. Arms on redstone input; fuses for 3 s before initiation. Field-rated, civilian-discouraged. (Fat Man wishes it had this trigger logic.)");
     }
 }
-

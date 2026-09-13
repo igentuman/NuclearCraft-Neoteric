@@ -210,14 +210,6 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
     }
 
     @Override
-    protected void handleMeltdown() {
-        if(isAcceleratorTooHot()) {
-            quenchMagnets();
-            controllerEnabled = false;
-        }
-    }
-
-    @Override
     protected AbstractAcceleratorMultiblock getAcceleratorMultiblock() {
         return getMultiblock();
     }

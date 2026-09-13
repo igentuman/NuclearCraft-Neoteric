@@ -105,6 +105,16 @@ public class LinearAcceleratorDevice {
         }
 
         @Callback
+        public final boolean isOverheated() {
+            return terminal.isOverheated();
+        }
+
+        @Callback
+        public final int getOverheatCooldown() {
+            return terminal.overheatCooldown;
+        }
+
+        @Callback
         public final Map<String, Object> getParticleInfo() {
             ParticleStack particleStack = terminal.getParticleStack();
             if (!terminal.hasParticle || particleStack == null || particleStack.isEmpty() || particleStack.getParticle() == null) {

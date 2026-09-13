@@ -1,8 +1,6 @@
 package igentuman.nc.block.accelerator.entity;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.ElectromagnetBlock;
-import igentuman.nc.block.RFAmplifierBlock;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.content.particles.*;
 import igentuman.nc.handler.config.CommonConfig;
@@ -23,7 +21,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,8 +35,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.accelerator.AcceleratorPortBlock.POWERED;
@@ -101,6 +96,8 @@ public abstract class AbstractAcceleratorControllerBE extends MultiblockControll
     public boolean energyIsTooLow = false;
     @NBTField
     public boolean energyIsTooHigh = false;
+    @NBTField
+    public int overheatCooldown = 0;
     protected double initialFocus = 0D;
 
     protected final LazyOptional<IParticleStackHandler> particleHandler;
@@ -174,6 +171,7 @@ public abstract class AbstractAcceleratorControllerBE extends MultiblockControll
         } else if(!formed && thermalInitialized) {
             resetThermal();
         }
+        tickOverheatCooldown();
         if(!isControlledByComputer && currentTick % 10 == 0) {
             int maxSignal = getRedstoneSignal();
             for (igentuman.nc.block.entity.MultiblockPortBE port : getMultiblock().getPorts()) {
@@ -184,7 +182,7 @@ public abstract class AbstractAcceleratorControllerBE extends MultiblockControll
             analogSignal = (byte) maxSignal;
             accelerationEnergy = analogSignal / 15D;
         }
-        controllerEnabled = formed && (analogSignal > 0 || (accelerationEnergy > 0 && externalControlled));
+        controllerEnabled = formed && !isOverheated() && (analogSignal > 0 || (accelerationEnergy > 0 && externalControlled));
         externalControlled = false;
         if (wasEnabled != controllerEnabled) {
             particleStorage.clearClient();
@@ -194,11 +192,12 @@ public abstract class AbstractAcceleratorControllerBE extends MultiblockControll
             externalHeating();
         }
         if (controllerEnabled) {
-            if(hasEnoughEnergy()) {
+            handleOverheat();
+            if(controllerEnabled && hasEnoughEnergy()) {
                 trackChanges(contentHandler().tick());
                 trackChanges(accelerateParticle());
             }
-            handleMeltdown();
+            handleOverheat();
         } else {
             if(particleStorage.getParticleStack() != null) {
                 particleStorage.clearAll();
@@ -219,8 +218,6 @@ public abstract class AbstractAcceleratorControllerBE extends MultiblockControll
     }
 
     protected abstract boolean accelerateParticle();
-
-    protected abstract void handleMeltdown();
 
     public CommonConfig.GTCEUCompatibilityConfig.GTCEUTier getTier() {
         return GTCEU_CONFIG.ACCELERATORS_ENERGY_TIER.get();
@@ -498,34 +495,25 @@ public abstract class AbstractAcceleratorControllerBE extends MultiblockControll
         currentHeating = 0;
     }
 
-    protected void quenchMagnets() {
-        if(!ACCELERATOR_CONFIG.MELTDOWN_ENABLED.get() || !controllerEnabled) return;
-        AbstractAcceleratorMultiblock mb = getAcceleratorMultiblock();
-        if(mb == null || level == null) return;
+    protected void handleOverheat() {
+        if(!controllerEnabled || isOverheated() || !isAcceleratorTooHot()) return;
+        overheatCooldown = ACCELERATOR_CONFIG.OVERHEAT_COOLDOWN_TICKS.get();
+        controllerEnabled = false;
+        particleStorage.clearAll();
+        hasParticle = false;
+        changed = true;
+    }
 
-        double temp = getTemperature() * 1000D;
-        List<BlockPos> overheated = new ArrayList<>();
-        for(Map.Entry<Long, ElectromagnetBlock> e : mb.getElectromagnets().entrySet()) {
-            if(e.getValue().getMaxTemperature() < temp) {
-                overheated.add(BlockPos.of(e.getKey()));
-            }
+    protected void tickOverheatCooldown() {
+        if(overheatCooldown <= 0) return;
+        overheatCooldown--;
+        if(overheatCooldown == 0) {
+            changed = true;
         }
-        for(Map.Entry<Long, RFAmplifierBlock> e : mb.getAmplifiers().entrySet()) {
-            if(e.getValue().getMaxTemperature() < temp) {
-                overheated.add(BlockPos.of(e.getKey()));
-            }
-        }
-        if(overheated.isEmpty()) return;
+    }
 
-        net.minecraft.util.RandomSource rand = level.getRandom();
-        int explosions = 1 + rand.nextInt(1 + overheated.size() / 10);
-        for(int i = 0; i < explosions && !overheated.isEmpty(); i++) {
-            if (level.getRandom().nextInt(50) > 30) {
-                int idx = rand.nextInt(overheated.size());
-                BlockPos pos = overheated.remove(idx);
-                level.explode(null, pos.getX(), pos.getY(), pos.getZ(), 1.0f, Level.ExplosionInteraction.BLOCK);
-            }
-        }
+    public boolean isOverheated() {
+        return overheatCooldown > 0;
     }
 
     public FluidTank getFluidTank(int i) {

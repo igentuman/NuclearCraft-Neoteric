@@ -128,6 +128,16 @@ public class LinearAcceleratorPeripheral implements IPeripheral {
         return isMultiblockAssembled() && controller.controllerEnabled;
     }
 
+    @LuaFunction
+    public boolean isOverheated() {
+        return isMultiblockAssembled() && controller.isOverheated();
+    }
+
+    @LuaFunction
+    public int getOverheatCooldown() {
+        return isMultiblockAssembled() ? controller.overheatCooldown : 0;
+    }
+
     public String getAcceleratorType() {
         return "linear_accelerator";
     }

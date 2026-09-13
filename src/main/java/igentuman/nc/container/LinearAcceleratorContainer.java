@@ -184,6 +184,14 @@ public class LinearAcceleratorContainer extends AbstractContainerMenu {
         return blockEntity.isAcceleratorTooHot();
     }
 
+    public boolean isOverheated() {
+        return blockEntity.isOverheated();
+    }
+
+    public int getOverheatCooldown() {
+        return blockEntity.overheatCooldown;
+    }
+
     public int getMaxTemperature() {
         return blockEntity.maxTemperature;
     }

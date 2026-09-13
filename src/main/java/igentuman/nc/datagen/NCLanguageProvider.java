@@ -1028,6 +1028,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add("nc.multiblock_builder.no_containers", "No containers found adjacent to builder");
         add("nc.multiblock_builder.missing_blocks", "Missing: %s x%s");
         add("nc.multiblock_builder.build_success", "Structure built successfully!");
+        add("nc.fission_designer.no_multitool", "You need to have a Multibuilder Tool in your inventory");
         add("tooltip.nc.fusion_connector.descr", "Used to connect fusion core and toroidal reactor chamber");
         add("tooltip.nc.fusion_casing.descr", "Used to build toroidal fusion reactor chamber");
         add("tooltip.nc.msr_controller.descr", "Runs the Molten Salt Reactor: pumps FLiBe carrier salt past TRISO fuel pebbles, holds the chain reaction, and ships the heat out as hot salt. (No heat sinks, no moderators - just don't let the cooling stop.)");

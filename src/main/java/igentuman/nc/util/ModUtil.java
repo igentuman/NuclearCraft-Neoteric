@@ -20,6 +20,7 @@ public class ModUtil {
     protected static boolean isTis3DLoaded;
     protected static boolean isCreateLoaded;
     protected static boolean isCuriosLoaded;
+    protected static boolean isMbtoolLoaded;
 
     protected static void initialize()
     {
@@ -42,6 +43,7 @@ public class ModUtil {
         isTis3DLoaded = ModList.get().isLoaded("tis3d");
         isCreateLoaded = ModList.get().isLoaded("create");
         isCuriosLoaded = ModList.get().isLoaded("curios");
+        isMbtoolLoaded = ModList.get().isLoaded("mbtool");
     }
 
     public static boolean isCreateLoaded() {
@@ -123,5 +125,10 @@ public class ModUtil {
     public static boolean isCuriosLoaded() {
         initialize();
         return isCuriosLoaded;
+    }
+
+    public static boolean isMbtoolLoaded() {
+        initialize();
+        return isMbtoolLoaded;
     }
 }

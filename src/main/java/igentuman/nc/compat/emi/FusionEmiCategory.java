@@ -61,8 +61,8 @@ public class FusionEmiCategory extends BasicEmiRecipe {
         
         // Add tooltip for progress area
         widgets.addTooltipText(List.of(
-            net.minecraft.network.chat.Component.translatable("fusion_core.recipe.duration", 
-                (int)recipe.getTimeModifier()).withStyle(net.minecraft.ChatFormatting.AQUA),
+            net.minecraft.network.chat.Component.translatable("fusion_core.recipe.duration",
+                (int)(recipe.getTimeModifier() * 10)).withStyle(net.minecraft.ChatFormatting.AQUA),
             net.minecraft.network.chat.Component.translatable("fusion_core.recipe.power", 
                 (int)recipe.getEnergy()).withStyle(net.minecraft.ChatFormatting.RED),
             net.minecraft.network.chat.Component.translatable("fusion_core.recipe.radiation", 

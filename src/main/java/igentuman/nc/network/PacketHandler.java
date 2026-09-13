@@ -44,6 +44,9 @@ public class PacketHandler extends BasePacketHandler {
         if(ModUtil.isAE2Loaded()) {
             registerClientToServer(PacketAE2PatternTransfer.class, PacketAE2PatternTransfer::decode);
         }
+        if(ModUtil.isMbtoolLoaded()) {
+            registerClientToServer(PacketLoadDesignIntoMultitool.class, PacketLoadDesignIntoMultitool::decode);
+        }
 
         //Server to client messages
         registerServerToClient(PacketWorldRadiationData.class, PacketWorldRadiationData::decode);

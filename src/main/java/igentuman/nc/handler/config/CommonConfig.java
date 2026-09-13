@@ -29,6 +29,7 @@ public class CommonConfig {
     public static final BombConfig BOMB_CONFIG = new BombConfig(BUILDER);
     public static final AnomalyConfig ANOMALY_CONFIG = new AnomalyConfig(BUILDER);
     public static final PipeConfig PIPE_CONFIG = new PipeConfig(BUILDER);
+    public static final DesignsHubConfig DESIGNS_HUB = new DesignsHubConfig(BUILDER);
 
     public static final StorageBlocksConfig STORAGE_BLOCKS = new StorageBlocksConfig(BUILDER);
     public static final ForgeConfigSpec spec = BUILDER.build();
@@ -132,6 +133,25 @@ public class CommonConfig {
             MAX_NETWORK_SIZE = builder
                     .comment("Node budget for a single pipe network's flood-fill discovery; caps recompute cost")
                     .defineInRange("max_network_size", 4096, 16, Integer.MAX_VALUE);
+
+            builder.pop();
+        }
+    }
+
+    public static class DesignsHubConfig {
+        public final ForgeConfigSpec.BooleanValue HUB_ENABLED;
+        public final ForgeConfigSpec.ConfigValue<String> HUB_BASE_URL;
+
+        public DesignsHubConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("designs_hub");
+
+            HUB_ENABLED = builder
+                    .comment("Enable the Designs Hub: browse/upload/vote on shared fission reactor designs")
+                    .define("enabled", true);
+
+            HUB_BASE_URL = builder
+                    .comment("Base URL of the Designs Hub API")
+                    .define("base_url", "https://nc-fission-designs-api.itman.website");
 
             builder.pop();
         }

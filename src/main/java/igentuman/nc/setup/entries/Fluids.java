@@ -77,5 +77,25 @@ public class Fluids extends ModEntries {
         liquid("tin_slurry", 0xFFDFDFE8, 300);
         liquid("boron_slurry", 0xFF999999, 300);
         liquid("sodium_slurry", DEFAULT_COLOR, 300);
+
+        liquid("uranium_clean_slurry", 0xDD476447, 300);
+        liquid("thorium_clean_slurry", 0xDD2E2E2E, 300);
+        liquid("lead_clean_slurry", 0xDD778887, 300);
+        liquid("silver_clean_slurry", 0xDDA49CA6, 300);
+        liquid("copper_clean_slurry", 0xDDA86F32, 300);
+        liquid("iron_clean_slurry", 0xDD7D0707, 300);
+        liquid("platinum_clean_slurry", 0xDD6C939B, 300);
+        liquid("gold_clean_slurry", 0xDDD4CD08, 300);
+        liquid("cobalt_clean_slurry", 0xDD5A6691, 300);
+        liquid("nickel_clean_slurry", 0xDDDFDFE8, 300);
+        liquid("lithium_clean_slurry", DEFAULT_COLOR, 300);
+        liquid("aluminum_clean_slurry", 0xDDABEBCB, 300);
+        liquid("magnesium_clean_slurry", 0xDDF0D0ED, 300);
+        liquid("zinc_clean_slurry", 0xDDAFB0A6, 300);
+        liquid("tin_clean_slurry", 0xDDDFDFE8, 300);
+        liquid("boron_clean_slurry", 0xDD999999, 300);
+        liquid("sodium_clean_slurry", DEFAULT_COLOR, 300);
+
+        liquid("calcium_sulfate_solution", 0x50B8B0A6, 300);
     }
 }

@@ -1,0 +1,24 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:fluorite_water"
+    },
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:sulfuric_acid"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "nuclearcraft:hydrofluoric_acid"
+    },
+    {
+      "amount": 50,
+      "fluid": "nuclearcraft:calcium_sulfate_solution"
+    }
+  ],
+  "process_time": 200
+}

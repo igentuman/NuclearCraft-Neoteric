@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "nuclearcraft:barium_dust"
+    },
+    {
+      "item": "minecraft:gunpowder"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:barium_nitrate_dust"
+  }
+}

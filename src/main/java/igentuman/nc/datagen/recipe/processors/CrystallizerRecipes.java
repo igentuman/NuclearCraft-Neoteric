@@ -27,5 +27,9 @@ public class CrystallizerRecipes {
         crystal(out, "borax",            fluidOf("borax_solution"),      250, dst("borax", 1), 100, 25);
         crystal(out, "irradiated_borax", fluidOf("irradiated_borax_solution"), 250, dst("irradiated_borax", 1), 100, 25);
         crystal(out, "polonium",         fluidOf("polonium"),            1000, i(modItem("mekanism:pellet_polonium"), 1), 600);
+
+        for (String material : LeacherRecipes.SLURRY_MATERIALS) {
+            crystal(out, material + "_clean_slurry", fluidOf(material + "_clean_slurry"), 400, dst(material, 2));
+        }
     }
 }

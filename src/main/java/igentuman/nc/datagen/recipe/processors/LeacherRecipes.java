@@ -12,7 +12,7 @@ import static igentuman.nc.setup.entries.Processors.LEACHER;
 
 public class LeacherRecipes {
 
-    private static final String[] SLURRY_MATERIALS = {
+    public static final String[] SLURRY_MATERIALS = {
             "uranium", "thorium", "lead", "silver", "copper", "iron",
             "platinum", "gold", "cobalt", "nickel", "lithium", "aluminum",
             "magnesium", "zinc", "tin", "boron", "sodium"

@@ -128,7 +128,7 @@ public class TextUtils
 				result.append(" ").append(l.substring(0, 1).toUpperCase()).append(l.substring(1));
 			}
 		}
-		return applySpeccialRules(result.toString());
+		return applySpecialRules(result.toString());
 	}
 
 	public static String formatLiquid(int val)
@@ -139,11 +139,15 @@ public class TextUtils
 		return TextUtils.numberFormat((double) val/1000)+" B";
 	}
 
-	public static String applySpeccialRules(String val)
+	public static String applySpecialRules(String val)
 	{
 		val = val.replace("Qnp", "QNP");
 		val = val.replace("Rtg", "RTG");
-		val = val.replace("Du", "DU");
+		val = val.replace("Msr", "MSR");
+		val = val.replace("Flibe", "FLiBe");
+		if (!val.contains("Dust")) {
+			val = val.replace("Du", "DU");
+		}
 		val = val.replace("Tbu", "TBU");
 		val = val.replace("Bssco", "BSSCO");
 		val = val.replace("Rf", "RF");

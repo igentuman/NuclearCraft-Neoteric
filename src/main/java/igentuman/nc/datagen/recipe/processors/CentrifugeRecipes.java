@@ -45,5 +45,11 @@ public class CentrifugeRecipes {
             String name = "depleted_" + e.getKey().replace('/', '_').replace('-', '_');
             split(out, id, name, depletedFuelFluid(e.getKey(), ""), MOLTEN_INGOT * 9, outs, e.getValue().time());
         }
+
+        for (String material : LeacherRecipes.SLURRY_MATERIALS) {
+            split(out, id, material + "_slurry", fluidOf(material + "_slurry"), 1000,
+                    new F[]{fl(material + "_clean_slurry", 800), fl("hydrochloric_acid", 50),
+                    fl("nitric_acid", 50), fl("calcium_sulfate_solution", 10)});
+        }
     }
 }

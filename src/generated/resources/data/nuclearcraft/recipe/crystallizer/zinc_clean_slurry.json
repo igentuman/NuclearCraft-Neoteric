@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 400,
+      "fluid": "nuclearcraft:zinc_clean_slurry"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:zinc_dust"
+    }
+  ],
+  "process_time": 200
+}

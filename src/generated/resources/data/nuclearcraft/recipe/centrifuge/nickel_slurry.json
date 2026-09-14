@@ -1,0 +1,29 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:nickel_slurry"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 800,
+      "fluid": "nuclearcraft:nickel_clean_slurry"
+    },
+    {
+      "amount": 50,
+      "fluid": "nuclearcraft:hydrochloric_acid"
+    },
+    {
+      "amount": 50,
+      "fluid": "nuclearcraft:nitric_acid"
+    },
+    {
+      "amount": 10,
+      "fluid": "nuclearcraft:calcium_sulfate_solution"
+    }
+  ],
+  "process_time": 200
+}

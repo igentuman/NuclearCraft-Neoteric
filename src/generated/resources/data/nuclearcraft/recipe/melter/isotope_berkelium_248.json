@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_berkelium_248"
+      "tag": "c:molten_berkelium_248"
     }
   ],
   "item_inputs": [

@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.02,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:boron_11"
+    }
+  ],
+  "particle_input": {
+    "amount": 50000000,
+    "maximum_energy": 30500,
+    "minimum_energy": 24500,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:photon"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:deuteron"
+    }
+  ],
+  "released_energy_kev": -17400
+}

@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/tin_silver"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:tin_silver_ingot"
+      "tag": "c:ingots/tin_silver"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:tin_silver_dust"
+      "tag": "c:dusts/tin_silver"
     }
   ],
   "process_time": 200

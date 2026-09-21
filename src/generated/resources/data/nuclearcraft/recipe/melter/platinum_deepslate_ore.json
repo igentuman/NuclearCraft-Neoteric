@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 240,
-      "fluid": "nuclearcraft:molten_platinum"
+      "tag": "c:molten_platinum"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:platinum_deepslate_ore"
+      "tag": "c:ores/platinum"
     }
   ],
   "process_time": 200

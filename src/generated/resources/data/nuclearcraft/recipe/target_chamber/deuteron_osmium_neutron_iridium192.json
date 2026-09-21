@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 1.0,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/osmium"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:iridium_192"
+    }
+  ],
+  "particle_input": {
+    "amount": 1000000,
+    "maximum_energy": 14500,
+    "minimum_energy": 12000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:deuteron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": -4050
+}

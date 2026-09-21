@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/copper"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:copper_dust"
+      "tag": "c:dusts/copper"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:copper_plate"
+      "tag": "c:plates/copper"
     }
   ],
   "process_time": 200

@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/shibuichi"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 3,
-      "item": "nuclearcraft:copper_dust"
+      "tag": "c:dusts/copper"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:silver_dust"
+      "tag": "c:dusts/silver"
     }
   ],
   "item_outputs": [
     {
       "count": 4,
-      "item": "nuclearcraft:shibuichi_ingot"
+      "tag": "c:ingots/shibuichi"
     }
   ],
   "process_time": 300

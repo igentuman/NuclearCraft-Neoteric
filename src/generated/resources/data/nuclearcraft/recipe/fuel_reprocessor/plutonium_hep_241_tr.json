@@ -1,4 +1,20 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/promethium_147"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/strontium_90"
+      }
+    }
+  ],
   "type": "nuclearcraft:fuel_reprocessor",
   "energy_per_tick": 50,
   "item_inputs": [
@@ -23,10 +39,10 @@
       "item": "nuclearcraft:plutonium_242"
     },
     {
-      "item": "nuclearcraft:promethium_147_dust"
+      "tag": "c:dusts/promethium_147"
     },
     {
-      "item": "nuclearcraft:strontium_90_dust"
+      "tag": "c:dusts/strontium_90"
     }
   ],
   "process_time": 300

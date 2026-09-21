@@ -4,11 +4,11 @@
   "item_inputs": [
     {
       "count": 3,
-      "item": "nuclearcraft:bscco_dust"
+      "tag": "c:dusts/bscco"
     },
     {
       "count": 6,
-      "item": "nuclearcraft:silver_ingot"
+      "tag": "c:ingots/silver"
     }
   ],
   "item_outputs": [

@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/polonium"
+      }
+    }
+  ],
   "type": "nuclearcraft:irradiator",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:bismuth_dust"
+      "tag": "c:dusts/bismuth"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:polonium_dust"
+      "tag": "c:dusts/polonium"
     }
   ],
   "process_time": 400

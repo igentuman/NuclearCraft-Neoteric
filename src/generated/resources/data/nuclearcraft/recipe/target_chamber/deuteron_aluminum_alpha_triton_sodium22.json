@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.08,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/aluminum"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:sodium_22"
+    }
+  ],
+  "particle_input": {
+    "amount": 12500000,
+    "maximum_energy": 200000,
+    "minimum_energy": 56000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:deuteron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:triton"
+    }
+  ],
+  "released_energy_kev": -16300
+}

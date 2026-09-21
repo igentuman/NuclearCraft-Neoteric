@@ -1,4 +1,13 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/copper"
+      }
+    }
+  ],
   "type": "nuclearcraft:ingot_former",
   "energy_per_tick": 50,
   "fluid_inputs": [
@@ -9,7 +18,7 @@
   ],
   "item_outputs": [
     {
-      "item": "minecraft:copper_ingot"
+      "tag": "c:ingots/copper"
     }
   ],
   "process_time": 200

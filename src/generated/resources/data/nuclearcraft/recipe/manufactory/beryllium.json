@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/beryllium"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:beryllium_ingot"
+      "tag": "c:ingots/beryllium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:beryllium_dust"
+      "tag": "c:dusts/beryllium"
     }
   ],
   "process_time": 200

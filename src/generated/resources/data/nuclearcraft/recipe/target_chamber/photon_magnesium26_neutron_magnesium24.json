@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.04,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:magnesium_26"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:magnesium_24"
+    }
+  ],
+  "particle_input": {
+    "amount": 25000000,
+    "maximum_energy": 28000,
+    "minimum_energy": 21000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:photon"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": -18400
+}

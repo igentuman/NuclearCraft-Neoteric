@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.02,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/lead"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:polonium_dust"
+    }
+  ],
+  "particle_input": {
+    "amount": 50000000,
+    "maximum_energy": 30000,
+    "minimum_energy": 23000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:helion"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": 1060
+}

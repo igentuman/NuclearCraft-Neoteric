@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/thallium"
+      }
+    }
+  ],
   "type": "nuclearcraft:decay_hastener",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:bismuth_dust"
+      "tag": "c:dusts/bismuth"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:thallium_dust"
+      "tag": "c:dusts/thallium"
     }
   ],
   "process_time": 200

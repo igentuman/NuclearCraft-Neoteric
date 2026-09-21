@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_baratol"
+      "tag": "c:molten_baratol"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:baratol_dust"
+      "tag": "c:dusts/baratol"
     }
   ],
   "process_time": 200

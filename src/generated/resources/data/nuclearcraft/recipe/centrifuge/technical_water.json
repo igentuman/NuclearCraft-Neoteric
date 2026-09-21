@@ -10,11 +10,11 @@
   "fluid_outputs": [
     {
       "amount": 750,
-      "fluid": "nuclearcraft:deuterium"
+      "tag": "c:deuterium"
     },
     {
       "amount": 250,
-      "fluid": "nuclearcraft:oxygen"
+      "tag": "c:oxygen"
     }
   ],
   "process_time": 380

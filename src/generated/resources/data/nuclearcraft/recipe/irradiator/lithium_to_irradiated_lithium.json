@@ -10,7 +10,7 @@
   "fluid_outputs": [
     {
       "amount": 500,
-      "fluid": "nuclearcraft:irradiated_lithium"
+      "tag": "c:irradiated_lithium"
     }
   ],
   "process_time": 300

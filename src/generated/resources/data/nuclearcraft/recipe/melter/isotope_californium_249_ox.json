@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_californium_249_ox"
+      "tag": "c:molten_californium_249_ox"
     }
   ],
   "item_inputs": [

@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 120,
-      "fluid": "nuclearcraft:molten_lead"
+      "tag": "c:molten_lead"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:raw_lead"
+      "tag": "c:raw_materials/lead"
     }
   ],
   "process_time": 200

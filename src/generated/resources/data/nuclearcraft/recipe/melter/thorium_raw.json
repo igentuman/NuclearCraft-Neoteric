@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 120,
-      "fluid": "nuclearcraft:molten_thorium"
+      "tag": "c:molten_thorium"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:raw_thorium"
+      "tag": "c:raw_materials/thorium"
     }
   ],
   "process_time": 200

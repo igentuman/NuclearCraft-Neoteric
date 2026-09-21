@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.125,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/iron"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:manganese_ingot"
+    }
+  ],
+  "particle_input": {
+    "amount": 8000000,
+    "maximum_energy": 21000,
+    "minimum_energy": 14500,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:photon"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    }
+  ],
+  "released_energy_kev": -10200
+}

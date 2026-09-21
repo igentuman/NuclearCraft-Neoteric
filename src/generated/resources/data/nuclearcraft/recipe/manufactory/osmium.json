@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/osmium"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:osmium_ingot"
+      "tag": "c:ingots/osmium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:osmium_dust"
+      "tag": "c:dusts/osmium"
     }
   ],
   "process_time": 200

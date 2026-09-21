@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.016,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/yttrium"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:strontium_ingot"
+    }
+  ],
+  "particle_input": {
+    "amount": 62500000,
+    "maximum_energy": 23000,
+    "minimum_energy": 16000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:photon"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    }
+  ],
+  "released_energy_kev": -7070
+}

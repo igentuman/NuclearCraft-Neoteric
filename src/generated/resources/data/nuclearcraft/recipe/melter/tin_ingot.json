@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_tin"
+      "tag": "c:molten_tin"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:tin_ingot"
+      "tag": "c:ingots/tin"
     }
   ],
   "process_time": 200

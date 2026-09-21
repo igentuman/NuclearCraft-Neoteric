@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.02,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:oxygen"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:boron_10"
+    }
+  ],
+  "particle_input": {
+    "amount": 50000000,
+    "maximum_energy": 150000,
+    "minimum_energy": 65000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:proton"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:helion"
+    }
+  ],
+  "released_energy_kev": -26900
+}

@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_sodium_hydroxide"
+      "tag": "c:molten_sodium_hydroxide"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:sodium_hydroxide_dust"
+      "tag": "c:dusts/sodium_hydroxide"
     }
   ],
   "process_time": 200

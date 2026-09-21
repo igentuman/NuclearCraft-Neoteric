@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_hard_carbon"
+      "tag": "c:molten_hard_carbon"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:hard_carbon_dust"
+      "tag": "c:dusts/hard_carbon"
     }
   ],
   "process_time": 200

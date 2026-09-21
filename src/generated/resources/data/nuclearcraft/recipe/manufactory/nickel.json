@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/nickel"
+      }
+    }
+  ],
+  "type": "nuclearcraft:manufactory",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/nickel"
+    }
+  ],
+  "item_outputs": [
+    {
+      "tag": "c:dusts/nickel"
+    }
+  ],
+  "process_time": 200
+}

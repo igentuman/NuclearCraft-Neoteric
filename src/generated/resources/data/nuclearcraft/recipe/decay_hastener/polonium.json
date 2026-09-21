@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/lead"
+      }
+    }
+  ],
   "type": "nuclearcraft:decay_hastener",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:polonium_dust"
+      "tag": "c:dusts/polonium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:lead_dust"
+      "tag": "c:dusts/lead"
     }
   ],
   "process_time": 200

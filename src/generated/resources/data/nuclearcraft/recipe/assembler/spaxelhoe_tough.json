@@ -4,11 +4,11 @@
   "item_inputs": [
     {
       "count": 5,
-      "item": "nuclearcraft:tough_alloy_plate"
+      "tag": "c:plates/tough_alloy"
     },
     {
       "count": 2,
-      "item": "minecraft:iron_ingot"
+      "tag": "c:ingots/iron"
     }
   ],
   "item_outputs": [

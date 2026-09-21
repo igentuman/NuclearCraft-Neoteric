@@ -9,7 +9,7 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:thorium_slurry"
+      "tag": "c:thorium_slurry"
     }
   ],
   "item_inputs": [

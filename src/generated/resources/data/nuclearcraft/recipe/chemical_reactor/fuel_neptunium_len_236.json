@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_fuel_neptunium_len_236"
+      "tag": "c:molten_fuel_neptunium_len_236"
     }
   ],
   "process_time": 200

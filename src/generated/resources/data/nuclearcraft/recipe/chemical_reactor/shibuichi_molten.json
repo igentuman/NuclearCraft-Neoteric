@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 360,
-      "fluid": "nuclearcraft:molten_shibuichi"
+      "tag": "c:molten_shibuichi"
     }
   ],
   "process_time": 100

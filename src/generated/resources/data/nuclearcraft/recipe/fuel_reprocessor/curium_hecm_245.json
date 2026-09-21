@@ -1,4 +1,20 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/molybdenum"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/europium_155"
+      }
+    }
+  ],
   "type": "nuclearcraft:fuel_reprocessor",
   "energy_per_tick": 50,
   "item_inputs": [
@@ -23,10 +39,10 @@
       "item": "nuclearcraft:californium_249"
     },
     {
-      "item": "nuclearcraft:molybdenum_dust"
+      "tag": "c:dusts/molybdenum"
     },
     {
-      "item": "nuclearcraft:europium_155_dust"
+      "tag": "c:dusts/europium_155"
     }
   ],
   "process_time": 300

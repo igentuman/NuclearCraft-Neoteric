@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 1440,
-      "fluid": "nuclearcraft:molten_hsla_steel"
+      "tag": "c:molten_hsla_steel"
     }
   ],
   "process_time": 300

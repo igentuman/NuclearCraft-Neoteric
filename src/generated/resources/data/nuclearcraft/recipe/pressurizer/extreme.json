@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/extreme"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:extreme_ingot"
+      "tag": "c:ingots/extreme"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:extreme_plate"
+      "tag": "c:plates/extreme"
     }
   ],
   "process_time": 200

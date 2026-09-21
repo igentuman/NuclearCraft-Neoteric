@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_depleted_fuel_xenorium_xen_298"
+      "tag": "c:molten_depleted_fuel_xenorium_xen_298"
     }
   ],
   "item_inputs": [

@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_gold"
+      "tag": "c:molten_gold"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:gold_dust"
+      "tag": "c:dusts/gold"
     }
   ],
   "process_time": 200

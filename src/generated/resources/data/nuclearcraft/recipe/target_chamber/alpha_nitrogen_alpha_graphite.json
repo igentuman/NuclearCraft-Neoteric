@@ -1,0 +1,42 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.25,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:nitrogen"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:graphite_dust"
+    }
+  ],
+  "particle_input": {
+    "amount": 4000000,
+    "maximum_energy": 56000,
+    "minimum_energy": 30000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:alpha"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    }
+  ],
+  "released_energy_kev": -12500
+}

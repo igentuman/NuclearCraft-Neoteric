@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_fuel_berkelium_leb_248_za"
+      "tag": "c:molten_fuel_berkelium_leb_248_za"
     }
   ],
   "process_time": 200

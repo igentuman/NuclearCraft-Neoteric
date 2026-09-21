@@ -1,4 +1,13 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/tin"
+      }
+    }
+  ],
   "type": "nuclearcraft:ingot_former",
   "energy_per_tick": 50,
   "fluid_inputs": [
@@ -9,7 +18,7 @@
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:tin_ingot"
+      "tag": "c:ingots/tin"
     }
   ],
   "process_time": 200

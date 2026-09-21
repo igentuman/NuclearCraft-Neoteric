@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_thermoconducting"
+      "tag": "c:molten_thermoconducting"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:thermoconducting_ingot"
+      "tag": "c:ingots/thermoconducting"
     }
   ],
   "process_time": 200

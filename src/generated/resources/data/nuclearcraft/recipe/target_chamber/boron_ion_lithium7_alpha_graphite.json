@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.2,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:lithium_7"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:graphite_dust"
+    }
+  ],
+  "particle_input": {
+    "amount": 5000000,
+    "maximum_energy": 12000,
+    "minimum_energy": 6000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:boron_ion"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    },
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": 5010
+}

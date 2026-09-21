@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/lead_platinum"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 3,
-      "item": "nuclearcraft:lead_dust"
+      "tag": "c:dusts/lead"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:platinum_dust"
+      "tag": "c:dusts/platinum"
     }
   ],
   "item_outputs": [
     {
       "count": 4,
-      "item": "nuclearcraft:lead_platinum_ingot"
+      "tag": "c:ingots/lead_platinum"
     }
   ],
   "process_time": 300

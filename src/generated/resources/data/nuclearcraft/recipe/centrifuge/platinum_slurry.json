@@ -10,19 +10,19 @@
   "fluid_outputs": [
     {
       "amount": 800,
-      "fluid": "nuclearcraft:platinum_clean_slurry"
+      "tag": "c:platinum_clean_slurry"
     },
     {
       "amount": 50,
-      "fluid": "nuclearcraft:hydrochloric_acid"
+      "tag": "c:hydrochloric_acid"
     },
     {
       "amount": 50,
-      "fluid": "nuclearcraft:nitric_acid"
+      "tag": "c:nitric_acid"
     },
     {
       "amount": 10,
-      "fluid": "nuclearcraft:calcium_sulfate_solution"
+      "tag": "c:calcium_sulfate_solution"
     }
   ],
   "process_time": 200

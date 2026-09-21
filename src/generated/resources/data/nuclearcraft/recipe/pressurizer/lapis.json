@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/lapis"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:lapis_dust"
+      "tag": "c:dusts/lapis"
     }
   ],
   "item_outputs": [
     {
-      "item": "minecraft:lapis_lazuli"
+      "tag": "c:gems/lapis"
     }
   ],
   "process_time": 200

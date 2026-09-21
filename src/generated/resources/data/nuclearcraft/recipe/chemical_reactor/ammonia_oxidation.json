@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 750,
-      "fluid": "nuclearcraft:nitric_oxide"
+      "tag": "c:nitric_oxide"
     },
     {
       "amount": 250,

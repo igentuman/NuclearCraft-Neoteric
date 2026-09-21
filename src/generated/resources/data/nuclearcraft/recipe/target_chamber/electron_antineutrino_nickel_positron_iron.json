@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.01,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/nickel"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "particle_input": {
+    "amount": 100000000,
+    "maximum_energy": 10900,
+    "minimum_energy": 200,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:electron_antineutrino"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "particle": "nuclearcraft:positron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:electron_neutrino"
+    }
+  ],
+  "released_energy_kev": -117
+}

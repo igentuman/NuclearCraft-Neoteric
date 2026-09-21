@@ -1,4 +1,13 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/magnesium"
+      }
+    }
+  ],
   "type": "nuclearcraft:crystallizer",
   "energy_per_tick": 50,
   "fluid_inputs": [
@@ -10,7 +19,7 @@
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:magnesium_dust"
+      "tag": "c:dusts/magnesium"
     }
   ],
   "process_time": 200

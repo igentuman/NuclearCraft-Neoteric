@@ -9,7 +9,7 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:gold_slurry"
+      "tag": "c:gold_slurry"
     }
   ],
   "item_inputs": [

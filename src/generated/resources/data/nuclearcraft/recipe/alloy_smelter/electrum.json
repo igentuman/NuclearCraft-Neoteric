@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/electrum"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:gold_dust"
+      "tag": "c:dusts/gold"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:silver_dust"
+      "tag": "c:dusts/silver"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:electrum_ingot"
+      "tag": "c:ingots/electrum"
     }
   ],
   "process_time": 400

@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/extreme"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:extreme_ingot"
+      "tag": "c:ingots/extreme"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:extreme_dust"
+      "tag": "c:dusts/extreme"
     }
   ],
   "process_time": 200

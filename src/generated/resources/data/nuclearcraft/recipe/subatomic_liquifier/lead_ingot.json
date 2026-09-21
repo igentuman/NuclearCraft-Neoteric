@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 450,
-      "fluid": "nuclearcraft:subliquid_matter"
+      "tag": "c:subliquid_matter"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:lead_ingot"
+      "tag": "c:ingots/lead"
     }
   ],
   "process_time": 240

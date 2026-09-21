@@ -1,16 +1,25 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/borax"
+      }
+    }
+  ],
   "type": "nuclearcraft:decay_hastener",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:irradiated_borax_dust"
+      "tag": "c:dusts/irradiated_borax"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:borax_dust"
+      "tag": "c:dusts/borax"
     }
   ],
   "process_time": 400

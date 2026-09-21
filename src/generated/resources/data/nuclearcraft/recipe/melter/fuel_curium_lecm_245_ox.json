@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_fuel_curium_lecm_245_ox"
+      "tag": "c:molten_fuel_curium_lecm_245_ox"
     }
   ],
   "item_inputs": [

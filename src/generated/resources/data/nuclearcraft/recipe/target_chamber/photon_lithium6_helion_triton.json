@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.02,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:lithium_6"
+    }
+  ],
+  "particle_input": {
+    "amount": 50000000,
+    "maximum_energy": 25500,
+    "minimum_energy": 18500,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:photon"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:helion"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:triton"
+    }
+  ],
+  "released_energy_kev": -15800
+}

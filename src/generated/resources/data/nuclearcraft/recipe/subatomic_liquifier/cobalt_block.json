@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 4050,
-      "fluid": "nuclearcraft:subliquid_matter"
+      "tag": "c:subliquid_matter"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:cobalt_block"
+      "tag": "c:storage_blocks/cobalt"
     }
   ],
   "process_time": 800

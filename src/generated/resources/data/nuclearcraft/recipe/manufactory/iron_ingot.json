@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/iron"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "minecraft:iron_ingot"
+      "tag": "c:ingots/iron"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:iron_dust"
+      "tag": "c:dusts/iron"
     }
   ],
   "process_time": 240

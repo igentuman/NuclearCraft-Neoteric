@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/magnesium_diboride"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:magnesium_dust"
+      "tag": "c:dusts/magnesium"
     },
     {
       "count": 2,
-      "item": "nuclearcraft:boron_dust"
+      "tag": "c:dusts/boron"
     }
   ],
   "item_outputs": [
     {
       "count": 3,
-      "item": "nuclearcraft:magnesium_diboride_ingot"
+      "tag": "c:ingots/magnesium_diboride"
     }
   ],
   "process_time": 200

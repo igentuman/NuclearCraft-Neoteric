@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/carbon_manganese"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:carbon_manganese_ingot"
+      "tag": "c:ingots/carbon_manganese"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:carbon_manganese_dust"
+      "tag": "c:dusts/carbon_manganese"
     }
   ],
   "process_time": 200

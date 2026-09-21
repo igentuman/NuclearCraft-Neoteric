@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.625,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:uranium_238"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:plutonium_239"
+    }
+  ],
+  "particle_input": {
+    "amount": 1600000,
+    "maximum_energy": 30000,
+    "minimum_energy": 27000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:alpha"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 3,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": -23100
+}

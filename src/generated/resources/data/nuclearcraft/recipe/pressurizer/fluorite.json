@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/fluorite"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:fluorite_dust"
+      "tag": "c:dusts/fluorite"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:fluorite_gem"
+      "tag": "c:gems/fluorite"
     }
   ],
   "process_time": 200

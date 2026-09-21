@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/zirconium_molybdenum"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:zirconium_molybdenum_ingot"
+      "tag": "c:ingots/zirconium_molybdenum"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:zirconium_molybdenum_dust"
+      "tag": "c:dusts/zirconium_molybdenum"
     }
   ],
   "process_time": 200

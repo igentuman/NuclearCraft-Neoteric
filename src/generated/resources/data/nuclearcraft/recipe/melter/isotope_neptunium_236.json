@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_neptunium_236"
+      "tag": "c:molten_neptunium_236"
     }
   ],
   "item_inputs": [

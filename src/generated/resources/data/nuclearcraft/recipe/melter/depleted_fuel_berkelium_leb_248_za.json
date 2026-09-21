@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_depleted_fuel_berkelium_leb_248_za"
+      "tag": "c:molten_depleted_fuel_berkelium_leb_248_za"
     }
   ],
   "item_inputs": [

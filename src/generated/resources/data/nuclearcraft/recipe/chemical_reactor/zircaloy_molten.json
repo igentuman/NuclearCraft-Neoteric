@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 720,
-      "fluid": "nuclearcraft:molten_zircaloy"
+      "tag": "c:molten_zircaloy"
     }
   ],
   "process_time": 100

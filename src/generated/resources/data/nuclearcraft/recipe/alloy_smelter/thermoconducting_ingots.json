@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/thermoconducting"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 75,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:extreme_ingot"
+      "tag": "c:ingots/extreme"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:boron_arsenide_gem"
+      "tag": "c:gems/boron_arsenide"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:thermoconducting_ingot"
+      "tag": "c:ingots/thermoconducting"
     }
   ],
   "process_time": 400

@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_purpur"
+      "tag": "c:molten_purpur"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:purpur_dust"
+      "tag": "c:dusts/purpur"
     }
   ],
   "process_time": 200

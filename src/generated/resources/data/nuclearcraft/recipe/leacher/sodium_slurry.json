@@ -9,7 +9,7 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:sodium_slurry"
+      "tag": "c:sodium_slurry"
     }
   ],
   "item_inputs": [

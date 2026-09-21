@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/emerald"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:emerald_dust"
+      "tag": "c:dusts/emerald"
     }
   ],
   "item_outputs": [
     {
-      "item": "minecraft:emerald"
+      "tag": "c:gems/emerald"
     }
   ],
   "process_time": 200

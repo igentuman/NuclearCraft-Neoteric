@@ -4,7 +4,7 @@
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:hafnium_dust"
+      "tag": "c:dusts/hafnium"
     },
     {
       "count": 4,
@@ -16,7 +16,7 @@
     },
     {
       "count": 1,
-      "item": "nuclearcraft:platinum_ingot"
+      "tag": "c:ingots/platinum"
     }
   ],
   "item_outputs": [

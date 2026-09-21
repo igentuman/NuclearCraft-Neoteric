@@ -1,0 +1,42 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 1.0,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:californium_252"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:californium_spallation_waste"
+    }
+  ],
+  "particle_input": {
+    "amount": 1000000,
+    "maximum_energy": 10000000,
+    "minimum_energy": 1,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:antiproton"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:pion_plus"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:pion_naught"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:pion_minus"
+    }
+  ],
+  "released_energy_kev": 1460000
+}

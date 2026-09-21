@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_barium_nitrate"
+      "tag": "c:molten_barium_nitrate"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:barium_nitrate_dust"
+      "tag": "c:dusts/barium_nitrate"
     }
   ],
   "process_time": 200

@@ -1,0 +1,25 @@
+{
+  "type": "nuclearcraft:decay_chamber",
+  "cross_section": 0.07,
+  "particle_input": {
+    "amount": 1,
+    "maximum_energy": 9223372036854775807,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:charmed_eta"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:kaon_naught"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:antikaon_naught"
+    }
+  ],
+  "released_energy_kev": 1984000
+}

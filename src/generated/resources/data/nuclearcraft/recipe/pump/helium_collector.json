@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 50,
-      "fluid": "nuclearcraft:helium"
+      "tag": "c:helium"
     }
   ],
   "item_inputs": [

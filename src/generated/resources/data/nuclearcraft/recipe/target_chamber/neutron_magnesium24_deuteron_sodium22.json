@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.25,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:magnesium_24"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:sodium_22"
+    }
+  ],
+  "particle_input": {
+    "amount": 4000000,
+    "maximum_energy": 60000,
+    "minimum_energy": 35000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:neutron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:deuteron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": -21900
+}

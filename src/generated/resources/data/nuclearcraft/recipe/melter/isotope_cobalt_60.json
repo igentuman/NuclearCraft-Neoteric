@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_cobalt_60"
+      "tag": "c:molten_cobalt_60"
     }
   ],
   "item_inputs": [

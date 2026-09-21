@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 120,
-      "fluid": "nuclearcraft:molten_uranium"
+      "tag": "c:molten_uranium"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:raw_uranium"
+      "tag": "c:raw_materials/uranium"
     }
   ],
   "process_time": 200

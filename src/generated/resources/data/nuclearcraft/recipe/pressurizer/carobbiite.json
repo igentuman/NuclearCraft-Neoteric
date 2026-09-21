@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/carobbiite"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:carobbiite_dust"
+      "tag": "c:dusts/carobbiite"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:carobbiite_gem"
+      "tag": "c:gems/carobbiite"
     }
   ],
   "process_time": 200

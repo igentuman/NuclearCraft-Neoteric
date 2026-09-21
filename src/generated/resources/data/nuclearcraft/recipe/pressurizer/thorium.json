@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/thorium"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:thorium_ingot"
+      "tag": "c:ingots/thorium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:thorium_plate"
+      "tag": "c:plates/thorium"
     }
   ],
   "process_time": 200

@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.016,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/barium"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:caesium_137_dust"
+    }
+  ],
+  "particle_input": {
+    "amount": 62500000,
+    "maximum_energy": 34000,
+    "minimum_energy": 18200,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:neutron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    }
+  ],
+  "released_energy_kev": -393
+}

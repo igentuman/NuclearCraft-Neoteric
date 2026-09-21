@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_sulfur"
+      "tag": "c:molten_sulfur"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:sulfur_dust"
+      "tag": "c:dusts/sulfur"
     }
   ],
   "process_time": 200

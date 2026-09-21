@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/rhodochrosite"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:rhodochrosite_dust"
+      "tag": "c:dusts/rhodochrosite"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:rhodochrosite_gem"
+      "tag": "c:gems/rhodochrosite"
     }
   ],
   "process_time": 200

@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/graphite"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:graphite_ingot"
+      "tag": "c:ingots/graphite"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:graphite_dust"
+      "tag": "c:dusts/graphite"
     }
   ],
   "process_time": 200

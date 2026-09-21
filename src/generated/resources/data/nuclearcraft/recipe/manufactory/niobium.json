@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/niobium"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:niobium_ingot"
+      "tag": "c:ingots/niobium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:niobium_dust"
+      "tag": "c:dusts/niobium"
     }
   ],
   "process_time": 200

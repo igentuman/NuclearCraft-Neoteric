@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/tough_alloy"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:tough_alloy_ingot"
+      "tag": "c:ingots/tough_alloy"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:tough_alloy_plate"
+      "tag": "c:plates/tough_alloy"
     }
   ],
   "process_time": 200

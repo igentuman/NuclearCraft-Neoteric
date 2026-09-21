@@ -4,11 +4,11 @@
   "item_inputs": [
     {
       "count": 3,
-      "item": "nuclearcraft:steel_plate"
+      "tag": "c:plates/steel"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:lead_dust"
+      "tag": "c:dusts/lead"
     },
     {
       "count": 1,

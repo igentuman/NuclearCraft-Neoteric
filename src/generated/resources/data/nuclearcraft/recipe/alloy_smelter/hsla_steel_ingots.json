@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/hsla_steel"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 125,
   "item_inputs": [
     {
       "count": 15,
-      "item": "minecraft:iron_ingot"
+      "tag": "c:ingots/iron"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:carbon_manganese_ingot"
+      "tag": "c:ingots/carbon_manganese"
     }
   ],
   "item_outputs": [
     {
       "count": 16,
-      "item": "nuclearcraft:hsla_steel_ingot"
+      "tag": "c:ingots/hsla_steel"
     }
   ],
   "process_time": 1700

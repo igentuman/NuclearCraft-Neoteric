@@ -10,19 +10,19 @@
   "fluid_outputs": [
     {
       "amount": 125,
-      "fluid": "nuclearcraft:carbon_dioxide"
+      "tag": "c:carbon_dioxide"
     },
     {
       "amount": 125,
-      "fluid": "nuclearcraft:carbon_monoxide"
+      "tag": "c:carbon_monoxide"
     },
     {
       "amount": 375,
-      "fluid": "nuclearcraft:carbon"
+      "tag": "c:carbon"
     },
     {
       "amount": 375,
-      "fluid": "nuclearcraft:oxygen"
+      "tag": "c:oxygen"
     }
   ],
   "process_time": 200

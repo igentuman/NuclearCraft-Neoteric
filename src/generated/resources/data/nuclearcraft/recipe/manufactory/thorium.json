@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/thorium"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:thorium_ingot"
+      "tag": "c:ingots/thorium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:thorium_dust"
+      "tag": "c:dusts/thorium"
     }
   ],
   "process_time": 200

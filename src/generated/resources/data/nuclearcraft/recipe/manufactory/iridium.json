@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/iridium"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:iridium_ingot"
+      "tag": "c:ingots/iridium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:iridium_dust"
+      "tag": "c:dusts/iridium"
     }
   ],
   "process_time": 200

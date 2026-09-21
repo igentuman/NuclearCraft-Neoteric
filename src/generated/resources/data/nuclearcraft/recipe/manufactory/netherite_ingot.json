@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/netherite"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "minecraft:netherite_ingot"
+      "tag": "c:ingots/netherite"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:netherite_dust"
+      "tag": "c:dusts/netherite"
     }
   ],
   "process_time": 500

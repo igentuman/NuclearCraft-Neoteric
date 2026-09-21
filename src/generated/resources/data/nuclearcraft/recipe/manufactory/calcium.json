@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/calcium"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:calcium_ingot"
+      "tag": "c:ingots/calcium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:calcium_dust"
+      "tag": "c:dusts/calcium"
     }
   ],
   "process_time": 200

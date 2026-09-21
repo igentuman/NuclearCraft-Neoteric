@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_boron_10"
+      "tag": "c:molten_boron_10"
     }
   ],
   "item_inputs": [

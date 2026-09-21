@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/extreme"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:tough_alloy_dust"
+      "tag": "c:dusts/tough_alloy"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:hard_carbon_dust"
+      "tag": "c:dusts/hard_carbon"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:extreme_ingot"
+      "tag": "c:ingots/extreme"
     }
   ],
   "process_time": 200

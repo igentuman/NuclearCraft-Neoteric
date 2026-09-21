@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/manganese_oxide"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:manganese_oxide_ingot"
+      "tag": "c:ingots/manganese_oxide"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:manganese_oxide_dust"
+      "tag": "c:dusts/manganese_oxide"
     }
   ],
   "process_time": 200

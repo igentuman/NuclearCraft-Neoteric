@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 540,
-      "fluid": "nuclearcraft:flibe_molten_salt"
+      "tag": "c:flibe_molten_salt"
     }
   ],
   "process_time": 100

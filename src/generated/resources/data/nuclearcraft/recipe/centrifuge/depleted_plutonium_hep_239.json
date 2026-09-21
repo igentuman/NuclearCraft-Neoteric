@@ -10,27 +10,27 @@
   "fluid_outputs": [
     {
       "amount": 360,
-      "fluid": "nuclearcraft:molten_americium_243"
+      "tag": "c:molten_americium_243"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_curium_243"
+      "tag": "c:molten_curium_243"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_plutonium_241"
+      "tag": "c:molten_plutonium_241"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_plutonium_242"
+      "tag": "c:molten_plutonium_242"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_promethium_147"
+      "tag": "c:molten_promethium_147"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_strontium_90"
+      "tag": "c:molten_strontium_90"
     }
   ],
   "process_time": 300

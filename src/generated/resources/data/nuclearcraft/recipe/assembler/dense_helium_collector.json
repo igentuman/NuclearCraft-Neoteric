@@ -8,11 +8,11 @@
     },
     {
       "count": 1,
-      "item": "nuclearcraft:zinc_plate"
+      "tag": "c:plates/zinc"
     },
     {
       "count": 4,
-      "item": "nuclearcraft:cobalt_plate"
+      "tag": "c:plates/cobalt"
     },
     {
       "count": 1,

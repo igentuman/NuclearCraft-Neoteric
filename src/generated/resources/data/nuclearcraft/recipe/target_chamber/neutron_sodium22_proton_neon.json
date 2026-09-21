@@ -1,0 +1,31 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.25,
+  "fluid_outputs": [
+    {
+      "fluid": "nuclearcraft:neon"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:sodium_22"
+    }
+  ],
+  "particle_input": {
+    "amount": 4000000,
+    "maximum_energy": 11000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:neutron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    }
+  ],
+  "released_energy_kev": 3630
+}

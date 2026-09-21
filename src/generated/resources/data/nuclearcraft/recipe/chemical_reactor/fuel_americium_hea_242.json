@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_fuel_americium_hea_242"
+      "tag": "c:molten_fuel_americium_hea_242"
     }
   ],
   "process_time": 200

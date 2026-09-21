@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_fuel_curium_hecm_245"
+      "tag": "c:molten_fuel_curium_hecm_245"
     }
   ],
   "process_time": 200

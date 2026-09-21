@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_promethium_147"
+      "tag": "c:molten_promethium_147"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:promethium_147_dust"
+      "tag": "c:dusts/promethium_147"
     }
   ],
   "process_time": 200

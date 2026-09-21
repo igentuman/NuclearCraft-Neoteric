@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.2,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/graphite"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:boron_11"
+    }
+  ],
+  "particle_input": {
+    "amount": 5000000,
+    "maximum_energy": 60000,
+    "minimum_energy": 29500,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:neutron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:deuteron"
+    }
+  ],
+  "released_energy_kev": -13700
+}

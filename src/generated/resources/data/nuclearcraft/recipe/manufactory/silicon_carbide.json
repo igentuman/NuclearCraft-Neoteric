@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/silicon_carbide"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:silicon_carbide_ingot"
+      "tag": "c:ingots/silicon_carbide"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:silicon_carbide_dust"
+      "tag": "c:dusts/silicon_carbide"
     }
   ],
   "process_time": 200

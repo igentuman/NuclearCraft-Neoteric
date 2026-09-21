@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/ferroboron"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:ferroboron_ingot"
+      "tag": "c:ingots/ferroboron"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:ferroboron_dust"
+      "tag": "c:dusts/ferroboron"
     }
   ],
   "process_time": 200

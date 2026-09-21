@@ -10,19 +10,19 @@
   "fluid_outputs": [
     {
       "amount": 540,
-      "fluid": "nuclearcraft:molten_californium_252"
+      "tag": "c:molten_californium_252"
     },
     {
       "amount": 180,
-      "fluid": "nuclearcraft:molten_californium_250"
+      "tag": "c:molten_californium_250"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_ruthenium_106"
+      "tag": "c:molten_ruthenium_106"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_promethium_147"
+      "tag": "c:molten_promethium_147"
     }
   ],
   "process_time": 300

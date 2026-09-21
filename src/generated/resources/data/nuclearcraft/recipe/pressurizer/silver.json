@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/silver"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:silver_ingot"
+      "tag": "c:ingots/silver"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:silver_plate"
+      "tag": "c:plates/silver"
     }
   ],
   "process_time": 200

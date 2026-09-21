@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/tbp"
+      }
+    }
+  ],
   "type": "nuclearcraft:irradiator",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:thorium_dust"
+      "tag": "c:dusts/thorium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:tbp_dust"
+      "tag": "c:dusts/tbp"
     }
   ],
   "process_time": 300

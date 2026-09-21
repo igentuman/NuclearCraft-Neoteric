@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/protactinium_233"
+      }
+    }
+  ],
   "type": "nuclearcraft:irradiator",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:tbp_dust"
+      "tag": "c:dusts/tbp"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:protactinium_233_dust"
+      "tag": "c:dusts/protactinium_233"
     }
   ],
   "process_time": 500

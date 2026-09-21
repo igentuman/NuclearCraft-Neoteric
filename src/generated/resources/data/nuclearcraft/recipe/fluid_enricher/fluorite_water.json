@@ -10,13 +10,13 @@
   "fluid_outputs": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:fluorite_water"
+      "tag": "c:fluorite_water"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:fluorite_dust"
+      "tag": "c:dusts/fluorite"
     }
   ],
   "process_time": 200

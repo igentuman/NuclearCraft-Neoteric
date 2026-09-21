@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.032,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:nitrogen"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:beryllium_7"
+    }
+  ],
+  "particle_input": {
+    "amount": 31250000,
+    "maximum_energy": 26000,
+    "minimum_energy": 17000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:proton"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    }
+  ],
+  "released_energy_kev": -10500
+}

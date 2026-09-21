@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_tough_alloy"
+      "tag": "c:molten_tough_alloy"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:tough_alloy_dust"
+      "tag": "c:dusts/tough_alloy"
     }
   ],
   "process_time": 200

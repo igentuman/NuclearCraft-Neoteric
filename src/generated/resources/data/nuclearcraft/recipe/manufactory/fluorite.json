@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/fluorite"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:fluorite_gem"
+      "tag": "c:gems/fluorite"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:fluorite_dust"
+      "tag": "c:dusts/fluorite"
     }
   ],
   "process_time": 300

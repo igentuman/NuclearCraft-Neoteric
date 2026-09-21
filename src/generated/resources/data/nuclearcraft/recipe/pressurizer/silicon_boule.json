@@ -4,7 +4,7 @@
   "item_inputs": [
     {
       "count": 3,
-      "item": "nuclearcraft:silicon_carbide_ingot"
+      "tag": "c:ingots/silicon_carbide"
     }
   ],
   "item_outputs": [

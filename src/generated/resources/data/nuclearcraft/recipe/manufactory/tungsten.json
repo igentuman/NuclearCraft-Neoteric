@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/tungsten"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:tungsten_ingot"
+      "tag": "c:ingots/tungsten"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:tungsten_dust"
+      "tag": "c:dusts/tungsten"
     }
   ],
   "process_time": 200

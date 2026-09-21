@@ -4,7 +4,7 @@
   "item_inputs": [
     {
       "count": 10,
-      "item": "nuclearcraft:yellowcake_dust"
+      "tag": "c:dusts/yellowcake"
     }
   ],
   "item_outputs": [

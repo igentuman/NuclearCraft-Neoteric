@@ -8,15 +8,15 @@
     },
     {
       "count": 1,
-      "item": "nuclearcraft:graphite_dust"
+      "tag": "c:dusts/graphite"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:pyrolitic_carbon_ingot"
+      "tag": "c:ingots/pyrolitic_carbon"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:silicon_carbide_ingot"
+      "tag": "c:ingots/silicon_carbide"
     }
   ],
   "item_outputs": [

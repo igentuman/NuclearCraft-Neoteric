@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/stainless_steel"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:steel_dust"
+      "tag": "c:dusts/steel"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:chromium_dust"
+      "tag": "c:dusts/chromium"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:stainless_steel_ingot"
+      "tag": "c:ingots/stainless_steel"
     }
   ],
   "process_time": 600

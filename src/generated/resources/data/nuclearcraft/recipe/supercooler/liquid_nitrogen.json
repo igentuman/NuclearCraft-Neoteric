@@ -10,7 +10,7 @@
   "fluid_outputs": [
     {
       "amount": 100,
-      "fluid": "nuclearcraft:liquid_nitrogen"
+      "tag": "c:liquid_nitrogen"
     }
   ],
   "process_time": 200

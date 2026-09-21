@@ -10,13 +10,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_potassium_iodide"
+      "tag": "c:molten_potassium_iodide"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:iodine_dust"
+      "tag": "c:dusts/iodine"
     }
   ],
   "process_time": 200

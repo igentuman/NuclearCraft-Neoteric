@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_palladium"
+      "tag": "c:molten_palladium"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:palladium_ingot"
+      "tag": "c:ingots/palladium"
     }
   ],
   "process_time": 200

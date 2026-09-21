@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-/** A processor fluid output: a concrete fluid or a fluid tag resolved to one stack at production time, with an amount. */
+/** A processor fluid output: a concrete fluid, or a serialized tag resolved by the recipe serializer. */
 public record FluidOutput(@Nullable Fluid fluid, @Nullable TagKey<Fluid> tag, int amount) {
 
     public static FluidOutput of(Fluid fluid, int amount) {
@@ -25,6 +25,14 @@ public record FluidOutput(@Nullable Fluid fluid, @Nullable TagKey<Fluid> tag, in
 
     public static FluidOutput of(TagKey<Fluid> tag, int amount) {
         return new FluidOutput(null, tag, amount);
+    }
+
+    private static FluidOutput decode(Optional<Fluid> fluid, Optional<TagKey<Fluid>> tag, int amount) {
+        if (tag.isPresent()) {
+            FluidStack resolved = TagOutputResolver.resolveFluid(tag.get(), amount);
+            return resolved.isEmpty() ? of(tag.get(), amount) : of(resolved.getFluid(), amount);
+        }
+        return new FluidOutput(fluid.orElse(null), null, amount);
     }
 
     public boolean isTag() {
@@ -47,15 +55,16 @@ public record FluidOutput(@Nullable Fluid fluid, @Nullable TagKey<Fluid> tag, in
 
     /** A tag output is complete only if it resolves to at least one member. */
     public boolean isComplete() {
+        if (amount <= 0) return false;
         if (tag != null) return !TagOutputResolver.membersFluid(tag, amount).isEmpty();
-        return fluid != null && amount > 0;
+        return fluid != null && fluid != Fluids.EMPTY;
     }
 
     public static final Codec<FluidOutput> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             BuiltInRegistries.FLUID.byNameCodec().optionalFieldOf("fluid").forGetter(o -> Optional.ofNullable(o.fluid)),
             TagKey.codec(Registries.FLUID).optionalFieldOf("tag").forGetter(o -> Optional.ofNullable(o.tag)),
             Codec.INT.optionalFieldOf("amount", 1000).forGetter(FluidOutput::amount)
-    ).apply(inst, (fluid, tag, amount) -> new FluidOutput(fluid.orElse(null), tag.orElse(null), amount)));
+    ).apply(inst, FluidOutput::decode));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidOutput> STREAM_CODEC = StreamCodec.of(
             (buf, o) -> {
@@ -72,7 +81,7 @@ public record FluidOutput(@Nullable Fluid fluid, @Nullable TagKey<Fluid> tag, in
                 ResourceLocation rl = buf.readResourceLocation();
                 int amount = buf.readVarInt();
                 return isTag
-                        ? FluidOutput.of(TagKey.create(Registries.FLUID, rl), amount)
+                        ? decode(Optional.empty(), Optional.of(TagKey.create(Registries.FLUID, rl)), amount)
                         : new FluidOutput(BuiltInRegistries.FLUID.get(rl), null, amount);
             }
     );

@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 120,
-      "fluid": "nuclearcraft:molten_zinc"
+      "tag": "c:molten_zinc"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:raw_zinc"
+      "tag": "c:raw_materials/zinc"
     }
   ],
   "process_time": 200

@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.01,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:americium_242"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:plutonium_242"
+    }
+  ],
+  "particle_input": {
+    "amount": 100000000,
+    "maximum_energy": 30000,
+    "minimum_energy": 300,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:electron_antineutrino"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:positron"
+    }
+  ],
+  "released_energy_kev": -271
+}

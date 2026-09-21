@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:accelerator_coolant",
+  "heat_per_mb": 1000,
+  "input_fluid": {
+    "amount": 1,
+    "fluid": "nuclearcraft:liquid_nitrogen"
+  },
+  "output_fluid": {
+    "amount": 1,
+    "fluid": "nuclearcraft:nitrogen"
+  }
+}

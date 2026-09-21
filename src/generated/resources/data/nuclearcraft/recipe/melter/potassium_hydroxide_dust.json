@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_potassium_hydroxide"
+      "tag": "c:molten_potassium_hydroxide"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:potassium_hydroxide_dust"
+      "tag": "c:dusts/potassium_hydroxide"
     }
   ],
   "process_time": 200

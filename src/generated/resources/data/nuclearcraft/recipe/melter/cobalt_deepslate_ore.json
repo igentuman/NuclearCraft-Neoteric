@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 240,
-      "fluid": "nuclearcraft:molten_cobalt"
+      "tag": "c:molten_cobalt"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:cobalt_deepslate_ore"
+      "tag": "c:ores/cobalt"
     }
   ],
   "process_time": 200

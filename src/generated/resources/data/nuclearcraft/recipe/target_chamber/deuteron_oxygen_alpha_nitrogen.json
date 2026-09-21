@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.25,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:oxygen"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "nuclearcraft:nitrogen"
+    }
+  ],
+  "particle_input": {
+    "amount": 4000000,
+    "maximum_energy": 10000,
+    "minimum_energy": 3500,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:deuteron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    }
+  ],
+  "released_energy_kev": 3110
+}

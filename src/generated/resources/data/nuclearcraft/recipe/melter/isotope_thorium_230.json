@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_thorium_230"
+      "tag": "c:molten_thorium_230"
     }
   ],
   "item_inputs": [

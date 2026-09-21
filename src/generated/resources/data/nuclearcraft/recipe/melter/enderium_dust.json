@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_enderium"
+      "tag": "c:molten_enderium"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:enderium_dust"
+      "tag": "c:dusts/enderium"
     }
   ],
   "process_time": 200

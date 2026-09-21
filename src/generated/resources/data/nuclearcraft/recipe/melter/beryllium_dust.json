@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_beryllium"
+      "tag": "c:molten_beryllium"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:beryllium_dust"
+      "tag": "c:dusts/beryllium"
     }
   ],
   "process_time": 200

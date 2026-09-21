@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_magnesium"
+      "tag": "c:molten_magnesium"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:magnesium_ingot"
+      "tag": "c:ingots/magnesium"
     }
   ],
   "process_time": 200

@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 180,
-      "fluid": "nuclearcraft:molten_thermoconducting"
+      "tag": "c:molten_thermoconducting"
     }
   ],
   "process_time": 100

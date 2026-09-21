@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/pyrolitic_carbon"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:graphite_ingot"
+      "tag": "c:ingots/graphite"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:pyrolitic_carbon_ingot"
+      "tag": "c:ingots/pyrolitic_carbon"
     }
   ],
   "process_time": 200

@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_steel"
+      "tag": "c:molten_steel"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:steel_dust"
+      "tag": "c:dusts/steel"
     }
   ],
   "process_time": 200

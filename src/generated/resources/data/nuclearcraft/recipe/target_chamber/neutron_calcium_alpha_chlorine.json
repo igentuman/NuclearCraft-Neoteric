@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.1,
+  "fluid_outputs": [
+    {
+      "fluid": "nuclearcraft:chlorine"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/calcium"
+    }
+  ],
+  "particle_input": {
+    "amount": 10000000,
+    "maximum_energy": 15500,
+    "minimum_energy": 3000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:neutron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:electron_neutrino"
+    }
+  ],
+  "released_energy_kev": 2050
+}

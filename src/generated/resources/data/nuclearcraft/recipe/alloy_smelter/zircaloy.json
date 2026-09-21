@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/zircaloy"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 7,
-      "item": "nuclearcraft:zirconium_dust"
+      "tag": "c:dusts/zirconium"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:tin_dust"
+      "tag": "c:dusts/tin"
     }
   ],
   "item_outputs": [
     {
       "count": 8,
-      "item": "nuclearcraft:zircaloy_ingot"
+      "tag": "c:ingots/zircaloy"
     }
   ],
   "process_time": 200

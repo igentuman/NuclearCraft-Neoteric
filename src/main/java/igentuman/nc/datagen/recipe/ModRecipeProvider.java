@@ -13,7 +13,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
@@ -54,6 +58,11 @@ import static igentuman.nc.datagen.recipe.processors.SubatomicLiquifierRecipes.s
 import static igentuman.nc.datagen.recipe.processors.OreVeinRecipes.oreVeins;
 import static igentuman.nc.datagen.recipe.processors.TurbineRecipes.turbine;
 import static igentuman.nc.datagen.recipe.processors.SupercoolerRecipes.supercooler;
+import static igentuman.nc.util.TagUtil.*;
+import igentuman.nc.datagen.recipe.particle.AcceleratorCoolantRecipes;
+import igentuman.nc.datagen.recipe.particle.CollisionChamberRecipes;
+import igentuman.nc.datagen.recipe.particle.DecayChamberRecipes;
+import igentuman.nc.datagen.recipe.particle.TargetChamberRecipes;
 
 /** Root recipe provider that dispatches to every processor generator and exposes shared recipe helpers. */
 public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
@@ -100,6 +109,10 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         heatExchanger(recipeOutput);
         msr(recipeOutput);
         KugelblitzChamberRecipes.generate(recipeOutput);
+        AcceleratorCoolantRecipes.generate(recipeOutput);
+        TargetChamberRecipes.generate(recipeOutput);
+        DecayChamberRecipes.generate(recipeOutput);
+        CollisionChamberRecipes.generate(recipeOutput);
         NuclearBlastRecipes.nuclearBlast(recipeOutput);
         leacher(recipeOutput);
         analyzer(recipeOutput);
@@ -268,6 +281,10 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         return null;
     }
 
+    public static Item waste(String name) {
+        return part(name + "_spallation_waste");
+    }
+
     public static Item modItem(String rl) {
         ResourceLocation id = ResourceLocation.parse(rl);
         return BuiltInRegistries.ITEM.containsKey(id) ? BuiltInRegistries.ITEM.get(id) : null;
@@ -281,6 +298,79 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     public static Item blockItem(String name) {
         ModEntry e = ModEntries.get(name);
         return (e != null && e.materialEntry() != null && e.materialEntry().hasBlock()) ? e.materialEntry().storageItem().get() : null;
+    }
+
+    /** Returns the common material tag for a concrete material form used in a recipe. */
+    public static TagKey<Item> materialTag(ItemLike itemLike) {
+        if (itemLike == null) return null;
+        Item item = itemLike.asItem();
+        for (MaterialEntry material : materials()) {
+            String name = material.name;
+            if (material.hasIngot() && material.ingot().get() == item) return ingotTag(name);
+            if (material.hasDust() && material.dust().get() == item) return dustTag(name);
+            if (material.hasPlate() && material.plate().get() == item) return plateTag(name);
+            if (material.hasBlock() && material.storageItem().get() == item) return blockTag(name);
+            if (material.hasGem() && material.gem().get() == item) return gemTag(name);
+            if (material.hasNugget() && material.nugget().get() == item) return nuggetTag(name);
+            if (material.hasRawOre() && material.rawOre().get() == item) return rawTag(name);
+            if (material.hasOre() && material.oreItem().get() == item) return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ores/" + name));
+            if (material.hasDeepslateOre() && material.deepslateOreItem().get() == item) return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ores/" + name));
+        }
+        if (item == Items.IRON_INGOT) return ingotTag("iron");
+        if (item == Items.GOLD_INGOT) return ingotTag("gold");
+        if (item == Items.COPPER_INGOT) return ingotTag("copper");
+        if (item == Items.NETHERITE_INGOT) return ingotTag("netherite");
+        if (item == Items.DIAMOND) return gemTag("diamond");
+        if (item == Items.EMERALD) return gemTag("emerald");
+        if (item == Items.LAPIS_LAZULI) return gemTag("lapis");
+        if (item == Items.QUARTZ) return gemTag("quartz");
+        if (item == Items.AMETHYST_SHARD) return gemTag("amethyst");
+        if (item == Items.REDSTONE) return dustTag("redstone");
+        if (item == Items.GLOWSTONE_DUST) return dustTag("glowstone");
+        if (item == Items.RAW_IRON) return rawTag("iron");
+        if (item == Items.RAW_GOLD) return rawTag("gold");
+        if (item == Items.RAW_COPPER) return rawTag("copper");
+        if (item == Items.IRON_BLOCK) return blockTag("iron");
+        if (item == Items.GOLD_BLOCK) return blockTag("gold");
+        if (item == Items.COPPER_BLOCK) return blockTag("copper");
+        if (item == Items.NETHERITE_BLOCK) return blockTag("netherite");
+        if (item == Items.DIAMOND_BLOCK) return blockTag("diamond");
+        if (item == Items.EMERALD_BLOCK) return blockTag("emerald");
+        if (item == Items.LAPIS_BLOCK) return blockTag("lapis");
+        if (item == Items.REDSTONE_BLOCK) return blockTag("redstone");
+        if (item == Items.COAL_BLOCK) return blockTag("coal");
+        if (item == Items.QUARTZ_BLOCK) return blockTag("quartz");
+        return null;
+    }
+
+    /** Returns the common tag generated for a concrete NuclearCraft material fluid. */
+    public static TagKey<Fluid> fluidTag(Fluid fluid) {
+        if (fluid == null) return null;
+        for (MaterialEntry material : materials()) {
+            TagKey<Fluid> tag = fluidTag(material, fluid);
+            if (tag != null) return tag;
+        }
+        for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
+            for (MaterialEntry material : fuel.fluids()) {
+                TagKey<Fluid> tag = fluidTag(material, fluid);
+                if (tag != null) return tag;
+            }
+        }
+        for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
+            for (MaterialEntry material : isotope.fluids()) {
+                TagKey<Fluid> tag = fluidTag(material, fluid);
+                if (tag != null) return tag;
+            }
+        }
+        return null;
+    }
+
+    private static TagKey<Fluid> fluidTag(MaterialEntry material, Fluid fluid) {
+        if (!material.hasFluid()) return null;
+        var materialFluid = material.materialFluid();
+        if (materialFluid.source().get() != fluid && materialFluid.flowing().get() != fluid) return null;
+        String fluidName = material.fluidDefinition.resolveName(material.name);
+        return FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", fluidName));
     }
 
     public static Item isotope(String name) {

@@ -13,7 +13,7 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:aqua_regia_acid"
+      "tag": "c:aqua_regia_acid"
     }
   ],
   "process_time": 300

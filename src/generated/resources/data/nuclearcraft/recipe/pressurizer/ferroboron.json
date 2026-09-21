@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/ferroboron"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:ferroboron_ingot"
+      "tag": "c:ingots/ferroboron"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:ferroboron_plate"
+      "tag": "c:plates/ferroboron"
     }
   ],
   "process_time": 200

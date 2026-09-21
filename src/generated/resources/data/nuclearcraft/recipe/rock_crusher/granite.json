@@ -1,4 +1,20 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/rhodochrosite"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/villiaumite"
+      }
+    }
+  ],
   "type": "nuclearcraft:rock_crusher",
   "energy_per_tick": 50,
   "item_inputs": [
@@ -10,10 +26,10 @@
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:rhodochrosite_dust"
+      "tag": "c:dusts/rhodochrosite"
     },
     {
-      "item": "nuclearcraft:villiaumite_dust"
+      "tag": "c:dusts/villiaumite"
     }
   ],
   "process_time": 200

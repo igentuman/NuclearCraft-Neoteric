@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_shibuichi"
+      "tag": "c:molten_shibuichi"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:shibuichi_dust"
+      "tag": "c:dusts/shibuichi"
     }
   ],
   "process_time": 200

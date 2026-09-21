@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_curium_247_za"
+      "tag": "c:molten_curium_247_za"
     }
   ],
   "item_inputs": [

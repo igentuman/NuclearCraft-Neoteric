@@ -1,4 +1,20 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/beryllium"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/arsenic"
+      }
+    }
+  ],
   "type": "nuclearcraft:rock_crusher",
   "energy_per_tick": 50,
   "item_inputs": [
@@ -10,10 +26,10 @@
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:beryllium_dust"
+      "tag": "c:dusts/beryllium"
     },
     {
-      "item": "nuclearcraft:arsenic_dust"
+      "tag": "c:dusts/arsenic"
     }
   ],
   "process_time": 200

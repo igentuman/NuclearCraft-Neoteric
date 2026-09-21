@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/thermoconducting"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:thermoconducting_ingot"
+      "tag": "c:ingots/thermoconducting"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:thermoconducting_plate"
+      "tag": "c:plates/thermoconducting"
     }
   ],
   "process_time": 200

@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/quartz"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:quartz_dust"
+      "tag": "c:dusts/quartz"
     }
   ],
   "item_outputs": [
     {
-      "item": "minecraft:quartz"
+      "tag": "c:gems/quartz"
     }
   ],
   "process_time": 200

@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_magnesium_24"
+      "tag": "c:molten_magnesium_24"
     }
   ],
   "item_inputs": [

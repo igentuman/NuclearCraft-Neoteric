@@ -10,27 +10,27 @@
   "fluid_outputs": [
     {
       "amount": 450,
-      "fluid": "nuclearcraft:molten_curium_246"
+      "tag": "c:molten_curium_246"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_berkelium_247"
+      "tag": "c:molten_berkelium_247"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_californium_249"
+      "tag": "c:molten_californium_249"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_berkelium_248"
+      "tag": "c:molten_berkelium_248"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_molybdenum"
+      "tag": "c:molten_molybdenum"
     },
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_europium_155"
+      "tag": "c:molten_europium_155"
     }
   ],
   "process_time": 100

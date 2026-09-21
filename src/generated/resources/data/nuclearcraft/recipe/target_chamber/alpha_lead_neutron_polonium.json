@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 1.0,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/lead"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:polonium_dust"
+    }
+  ],
+  "particle_input": {
+    "amount": 1000000,
+    "maximum_energy": 32000,
+    "minimum_energy": 26000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:alpha"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": -19500
+}

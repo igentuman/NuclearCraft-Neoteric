@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 240,
-      "fluid": "nuclearcraft:molten_magnesium"
+      "tag": "c:molten_magnesium"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:magnesium_ore"
+      "tag": "c:ores/magnesium"
     }
   ],
   "process_time": 200

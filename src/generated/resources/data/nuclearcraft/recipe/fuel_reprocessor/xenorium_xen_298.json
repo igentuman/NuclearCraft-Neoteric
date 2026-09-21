@@ -1,4 +1,13 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/promethium_147"
+      }
+    }
+  ],
   "type": "nuclearcraft:fuel_reprocessor",
   "energy_per_tick": 50,
   "item_inputs": [
@@ -15,7 +24,7 @@
       "item": "nuclearcraft:berkelium_247"
     },
     {
-      "item": "nuclearcraft:promethium_147_dust"
+      "tag": "c:dusts/promethium_147"
     }
   ],
   "process_time": 1100

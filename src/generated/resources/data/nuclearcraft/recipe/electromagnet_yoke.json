@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "F": {
+      "item": "nuclearcraft:steel_frame"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "III",
+    "IFI",
+    "III"
+  ],
+  "result": {
+    "count": 4,
+    "id": "nuclearcraft:electromagnet_yoke"
+  }
+}

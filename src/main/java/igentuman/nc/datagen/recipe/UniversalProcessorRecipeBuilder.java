@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.datagen.recipe.ModRecipeProvider.fluidTag;
+import static igentuman.nc.datagen.recipe.ModRecipeProvider.materialTag;
 
 /** Fluent builder that assembles and serializes universal processor recipes with item/fluid I/O. */
 public class UniversalProcessorRecipeBuilder implements RecipeBuilder {
@@ -57,7 +59,8 @@ public class UniversalProcessorRecipeBuilder implements RecipeBuilder {
     }
 
     public UniversalProcessorRecipeBuilder itemInput(ItemLike item, int count) {
-        itemInputs.add(new SizedIngredient(Ingredient.of(item), count));
+        TagKey<Item> tag = materialTag(item);
+        itemInputs.add(new SizedIngredient(tag == null ? Ingredient.of(item) : Ingredient.of(tag), count));
         return this;
     }
 
@@ -100,7 +103,8 @@ public class UniversalProcessorRecipeBuilder implements RecipeBuilder {
     }
 
     public UniversalProcessorRecipeBuilder itemOutput(ItemLike item, int count) {
-        itemOutputs.add(ItemOutput.of(item, count));
+        TagKey<Item> tag = materialTag(item);
+        itemOutputs.add(tag == null ? ItemOutput.of(item, count) : ItemOutput.of(tag, count));
         return this;
     }
 
@@ -112,13 +116,13 @@ public class UniversalProcessorRecipeBuilder implements RecipeBuilder {
     // --- Fluid outputs ---
 
     public UniversalProcessorRecipeBuilder fluidOutput(Fluid fluid, int amount) {
-        fluidOutputs.add(FluidOutput.of(fluid, amount));
+        TagKey<Fluid> tag = fluidTag(fluid);
+        fluidOutputs.add(tag == null ? FluidOutput.of(fluid, amount) : FluidOutput.of(tag, amount));
         return this;
     }
 
     public UniversalProcessorRecipeBuilder fluidOutput(FluidStack fluidStack) {
-        fluidOutputs.add(FluidOutput.of(fluidStack.getFluid(), fluidStack.getAmount()));
-        return this;
+        return fluidOutput(fluidStack.getFluid(), fluidStack.getAmount());
     }
 
     public UniversalProcessorRecipeBuilder fluidOutput(TagKey<Fluid> tag, int amount) {

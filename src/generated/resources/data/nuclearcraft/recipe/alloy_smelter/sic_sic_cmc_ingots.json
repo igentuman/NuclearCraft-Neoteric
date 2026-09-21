@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/sic_sic_cmc"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:carbon_manganese_ingot"
+      "tag": "c:ingots/carbon_manganese"
     },
     {
       "count": 11,
-      "item": "nuclearcraft:titanium_ingot"
+      "tag": "c:ingots/titanium"
     }
   ],
   "item_outputs": [
     {
       "count": 12,
-      "item": "nuclearcraft:sic_sic_cmc_ingot"
+      "tag": "c:ingots/sic_sic_cmc"
     }
   ],
   "process_time": 1400

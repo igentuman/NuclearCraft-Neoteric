@@ -9,7 +9,7 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:platinum_slurry"
+      "tag": "c:platinum_slurry"
     }
   ],
   "item_inputs": [

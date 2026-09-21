@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_sic_sic_cmc"
+      "tag": "c:molten_sic_sic_cmc"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:sic_sic_cmc_dust"
+      "tag": "c:dusts/sic_sic_cmc"
     }
   ],
   "process_time": 200

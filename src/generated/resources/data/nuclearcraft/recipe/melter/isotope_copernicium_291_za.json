@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_copernicium_291_za"
+      "tag": "c:molten_copernicium_291_za"
     }
   ],
   "item_inputs": [

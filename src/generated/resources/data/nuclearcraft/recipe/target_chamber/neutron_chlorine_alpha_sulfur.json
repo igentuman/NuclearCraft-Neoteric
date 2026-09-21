@@ -1,0 +1,42 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.2,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:chlorine"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:sulfur_dust"
+    }
+  ],
+  "particle_input": {
+    "amount": 5000000,
+    "maximum_energy": 13500,
+    "minimum_energy": 3000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:neutron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:electron_antineutrino"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:electron"
+    }
+  ],
+  "released_energy_kev": 2650
+}

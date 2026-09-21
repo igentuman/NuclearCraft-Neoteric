@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_zirconium"
+      "tag": "c:molten_zirconium"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:zirconium_ingot"
+      "tag": "c:ingots/zirconium"
     }
   ],
   "process_time": 200

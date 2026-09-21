@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/zinc"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:zinc_ingot"
+      "tag": "c:ingots/zinc"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:zinc_dust"
+      "tag": "c:dusts/zinc"
     }
   ],
   "process_time": 200

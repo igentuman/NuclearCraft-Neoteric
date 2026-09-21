@@ -10,13 +10,13 @@
   "fluid_outputs": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:calcium_sulfate_solution"
+      "tag": "c:calcium_sulfate_solution"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:calcium_sulfate_dust"
+      "tag": "c:dusts/calcium_sulfate"
     }
   ],
   "process_time": 200

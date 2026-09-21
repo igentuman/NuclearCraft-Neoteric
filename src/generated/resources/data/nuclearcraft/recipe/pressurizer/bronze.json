@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/bronze"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:bronze_ingot"
+      "tag": "c:ingots/bronze"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:bronze_plate"
+      "tag": "c:plates/bronze"
     }
   ],
   "process_time": 200

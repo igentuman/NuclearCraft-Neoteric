@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_fuel_californium_lecf_251_za"
+      "tag": "c:molten_fuel_californium_lecf_251_za"
     }
   ],
   "process_time": 200

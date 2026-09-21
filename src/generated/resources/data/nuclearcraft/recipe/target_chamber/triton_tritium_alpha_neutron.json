@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.1,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:tritium"
+    }
+  ],
+  "particle_input": {
+    "amount": 10000000,
+    "maximum_energy": 3000,
+    "minimum_energy": 1200,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:triton"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    },
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": 10800
+}

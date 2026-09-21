@@ -14,11 +14,11 @@
   "fluid_outputs": [
     {
       "amount": 45,
-      "fluid": "nuclearcraft:molten_manganese"
+      "tag": "c:molten_manganese"
     },
     {
       "amount": 750,
-      "fluid": "nuclearcraft:carbon_monoxide"
+      "tag": "c:carbon_monoxide"
     }
   ],
   "process_time": 100

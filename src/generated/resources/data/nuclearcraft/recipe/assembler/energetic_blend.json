@@ -1,28 +1,37 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/energetic_blend"
+      }
+    }
+  ],
   "type": "nuclearcraft:assembler",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "minecraft:glowstone_dust"
+      "tag": "c:dusts/glowstone"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:quartz_dust"
+      "tag": "c:dusts/quartz"
     },
     {
       "count": 1,
-      "item": "minecraft:redstone"
+      "tag": "c:dusts/redstone"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:emerald_dust"
+      "tag": "c:dusts/emerald"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:energetic_blend_dust"
+      "tag": "c:dusts/energetic_blend"
     }
   ],
   "process_time": 200

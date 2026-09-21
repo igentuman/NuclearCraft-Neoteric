@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:collision_chamber",
+  "cross_section": 0.025,
+  "particle_inputs": [
+    {
+      "amount": 1,
+      "maximum_energy": 5872314,
+      "minimum_energy": 3914876,
+      "minimum_focus": 1.0,
+      "species": [
+        "nuclearcraft:electron"
+      ]
+    },
+    {
+      "amount": 1,
+      "maximum_energy": 5872314,
+      "minimum_energy": 3914876,
+      "minimum_focus": 1.0,
+      "species": [
+        "nuclearcraft:positron"
+      ]
+    }
+  ],
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:tau"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:antitau"
+    }
+  ],
+  "released_energy_kev": -3558978
+}

@@ -1,4 +1,13 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/carbon_manganese"
+      }
+    }
+  ],
   "type": "nuclearcraft:fluid_infuser",
   "energy_per_tick": 50,
   "fluid_inputs": [
@@ -10,12 +19,12 @@
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:manganese_dust"
+      "tag": "c:dusts/manganese"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:carbon_manganese_dust"
+      "tag": "c:dusts/carbon_manganese"
     }
   ],
   "process_time": 200

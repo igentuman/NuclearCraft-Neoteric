@@ -9,7 +9,7 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:quantite_energy"
+      "tag": "c:quantite_energy"
     }
   ],
   "item_inputs": [

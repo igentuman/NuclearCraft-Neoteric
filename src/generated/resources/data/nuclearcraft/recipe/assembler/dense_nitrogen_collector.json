@@ -8,11 +8,11 @@
     },
     {
       "count": 1,
-      "item": "nuclearcraft:beryllium_plate"
+      "tag": "c:plates/beryllium"
     },
     {
       "count": 4,
-      "item": "nuclearcraft:netherite_plate"
+      "tag": "c:plates/netherite"
     },
     {
       "count": 1,

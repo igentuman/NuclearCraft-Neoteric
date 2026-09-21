@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_fuel_uranium_leu_233"
+      "tag": "c:molten_fuel_uranium_leu_233"
     }
   ],
   "process_time": 200

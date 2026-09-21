@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.08,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/bismuth"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:polonium_dust"
+    }
+  ],
+  "particle_input": {
+    "amount": 12500000,
+    "maximum_energy": 15000,
+    "minimum_energy": 10000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:deuteron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": 2760
+}

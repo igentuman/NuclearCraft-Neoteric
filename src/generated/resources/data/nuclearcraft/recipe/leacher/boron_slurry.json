@@ -9,7 +9,7 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:boron_slurry"
+      "tag": "c:boron_slurry"
     }
   ],
   "item_inputs": [

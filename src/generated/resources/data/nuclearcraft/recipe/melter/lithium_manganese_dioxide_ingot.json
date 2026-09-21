@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_lithium_manganese_dioxide"
+      "tag": "c:molten_lithium_manganese_dioxide"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:lithium_manganese_dioxide_ingot"
+      "tag": "c:ingots/lithium_manganese_dioxide"
     }
   ],
   "process_time": 200

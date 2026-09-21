@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.025,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/platinum"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:osmium_ingot"
+    }
+  ],
+  "particle_input": {
+    "amount": 40000000,
+    "maximum_energy": 27000,
+    "minimum_energy": 19000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:neutron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    }
+  ],
+  "released_energy_kev": 8730
+}

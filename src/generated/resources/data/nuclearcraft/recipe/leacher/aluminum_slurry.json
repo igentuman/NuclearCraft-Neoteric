@@ -9,7 +9,7 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:aluminum_slurry"
+      "tag": "c:aluminum_slurry"
     }
   ],
   "item_inputs": [

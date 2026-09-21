@@ -4,7 +4,7 @@
   "item_inputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:kumanderite_block"
+      "tag": "c:storage_blocks/kumanderite"
     }
   ],
   "item_outputs": [

@@ -10,7 +10,7 @@
   "fluid_outputs": [
     {
       "amount": 100,
-      "fluid": "nuclearcraft:exhaust_steam"
+      "tag": "c:exhaust_steam"
     }
   ],
   "process_time": 40

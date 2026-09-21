@@ -10,13 +10,13 @@
   "fluid_outputs": [
     {
       "amount": 200,
-      "fluid": "nuclearcraft:molten_baratol"
+      "tag": "c:molten_baratol"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:barium_nitrate_dust"
+      "tag": "c:dusts/barium_nitrate"
     }
   ],
   "process_time": 200

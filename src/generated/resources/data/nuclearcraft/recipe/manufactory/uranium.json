@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/uranium"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:uranium_ingot"
+      "tag": "c:ingots/uranium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:uranium_dust"
+      "tag": "c:dusts/uranium"
     }
   ],
   "process_time": 200

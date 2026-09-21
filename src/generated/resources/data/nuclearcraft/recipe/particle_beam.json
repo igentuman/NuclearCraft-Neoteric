@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "B": {
+      "item": "minecraft:glass"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "BBB",
+    "SSS"
+  ],
+  "result": {
+    "count": 3,
+    "id": "nuclearcraft:particle_beam"
+  }
+}

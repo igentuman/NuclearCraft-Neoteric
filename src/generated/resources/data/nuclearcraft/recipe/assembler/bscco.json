@@ -1,28 +1,37 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/bscco"
+      }
+    }
+  ],
   "type": "nuclearcraft:assembler",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:bismuth_dust"
+      "tag": "c:dusts/bismuth"
     },
     {
       "count": 2,
-      "item": "nuclearcraft:strontium_dust"
+      "tag": "c:dusts/strontium"
     },
     {
       "count": 2,
-      "item": "nuclearcraft:calcium_dust"
+      "tag": "c:dusts/calcium"
     },
     {
       "count": 2,
-      "item": "nuclearcraft:copper_dust"
+      "tag": "c:dusts/copper"
     }
   ],
   "item_outputs": [
     {
       "count": 3,
-      "item": "nuclearcraft:bscco_dust"
+      "tag": "c:dusts/bscco"
     }
   ],
   "process_time": 200

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:ingots/gold"
+    },
+    "W": {
+      "tag": "c:ingots/tungsten"
+    }
+  },
+  "pattern": [
+    "GWG"
+  ],
+  "result": {
+    "count": 4,
+    "id": "nuclearcraft:wire_gold_tungsten"
+  }
+}

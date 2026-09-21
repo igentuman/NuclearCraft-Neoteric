@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/sic_sic_cmc"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:sic_sic_cmc_ingot"
+      "tag": "c:ingots/sic_sic_cmc"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:sic_sic_cmc_dust"
+      "tag": "c:dusts/sic_sic_cmc"
     }
   ],
   "process_time": 200

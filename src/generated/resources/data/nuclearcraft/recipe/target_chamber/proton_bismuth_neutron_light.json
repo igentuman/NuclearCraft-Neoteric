@@ -1,0 +1,31 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.4,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/bismuth"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:light_spallation_waste"
+    }
+  ],
+  "particle_input": {
+    "amount": 2500000,
+    "maximum_energy": 600000,
+    "minimum_energy": 100000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:proton"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ]
+}

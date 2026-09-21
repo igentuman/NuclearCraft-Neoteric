@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:sulfuric_acid"
+      "tag": "c:sulfuric_acid"
     }
   ],
   "process_time": 100

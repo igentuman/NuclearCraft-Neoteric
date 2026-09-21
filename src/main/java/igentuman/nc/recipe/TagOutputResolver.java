@@ -41,7 +41,7 @@ public class TagOutputResolver {
         for (Holder<Item> holder : set.get()) {
             Item item = holder.value();
             int r = rank(BuiltInRegistries.ITEM.getKey(item).getNamespace());
-            if (r < bestRank) {
+            if (best == null || r < bestRank) {
                 bestRank = r;
                 best = item;
             }
@@ -72,7 +72,7 @@ public class TagOutputResolver {
         for (Holder<Fluid> holder : set.get()) {
             Fluid fluid = holder.value();
             int r = rank(BuiltInRegistries.FLUID.getKey(fluid).getNamespace());
-            if (r < bestRank) {
+            if (best == null || r < bestRank) {
                 bestRank = r;
                 best = fluid;
             }

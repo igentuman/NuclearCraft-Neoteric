@@ -1,0 +1,42 @@
+{
+  "type": "nuclearcraft:collision_chamber",
+  "cross_section": 0.025,
+  "particle_inputs": [
+    {
+      "amount": 1,
+      "maximum_energy": 150968400,
+      "minimum_energy": 100645600,
+      "minimum_focus": 1.0,
+      "species": [
+        "nuclearcraft:proton"
+      ]
+    },
+    {
+      "amount": 1,
+      "maximum_energy": 150968400,
+      "minimum_energy": 100645600,
+      "minimum_focus": 1.0,
+      "species": [
+        "nuclearcraft:proton"
+      ]
+    }
+  ],
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:delta_plus_plus"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:z_boson"
+    }
+  ],
+  "released_energy_kev": -91496000
+}

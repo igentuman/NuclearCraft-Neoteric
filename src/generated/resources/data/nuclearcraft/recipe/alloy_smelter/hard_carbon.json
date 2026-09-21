@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/hard_carbon"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 75,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:graphite_dust"
+      "tag": "c:dusts/graphite"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:diamond_dust"
+      "tag": "c:dusts/diamond"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:hard_carbon_ingot"
+      "tag": "c:ingots/hard_carbon"
     }
   ],
   "process_time": 200

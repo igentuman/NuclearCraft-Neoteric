@@ -4,7 +4,7 @@
   "item_inputs": [
     {
       "count": 10,
-      "item": "nuclearcraft:thorium_dust"
+      "tag": "c:dusts/thorium"
     }
   ],
   "item_outputs": [

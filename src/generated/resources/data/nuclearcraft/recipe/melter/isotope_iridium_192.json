@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_iridium_192"
+      "tag": "c:molten_iridium_192"
     }
   ],
   "item_inputs": [

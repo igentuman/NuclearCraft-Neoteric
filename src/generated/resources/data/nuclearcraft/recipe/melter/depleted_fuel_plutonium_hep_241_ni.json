@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_depleted_fuel_plutonium_hep_241_ni"
+      "tag": "c:molten_depleted_fuel_plutonium_hep_241_ni"
     }
   ],
   "item_inputs": [

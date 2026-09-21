@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/lapis"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "minecraft:lapis_lazuli"
+      "tag": "c:gems/lapis"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:lapis_dust"
+      "tag": "c:dusts/lapis"
     }
   ],
   "process_time": 200

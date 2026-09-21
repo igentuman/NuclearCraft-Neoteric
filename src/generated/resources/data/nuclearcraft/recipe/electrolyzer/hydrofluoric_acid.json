@@ -10,11 +10,11 @@
   "fluid_outputs": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:hydrogen"
+      "tag": "c:hydrogen"
     },
     {
       "amount": 250,
-      "fluid": "nuclearcraft:fluorine"
+      "tag": "c:fluorine"
     }
   ],
   "process_time": 100

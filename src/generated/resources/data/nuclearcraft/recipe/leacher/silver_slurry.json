@@ -9,7 +9,7 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:silver_slurry"
+      "tag": "c:silver_slurry"
     }
   ],
   "item_inputs": [

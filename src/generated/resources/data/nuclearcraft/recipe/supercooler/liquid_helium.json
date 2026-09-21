@@ -10,7 +10,7 @@
   "fluid_outputs": [
     {
       "amount": 100,
-      "fluid": "nuclearcraft:liquid_helium"
+      "tag": "c:liquid_helium"
     }
   ],
   "process_time": 200

@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/carbon_manganese"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 250,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:manganese_dust"
+      "tag": "c:dusts/manganese"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:graphite_dust"
+      "tag": "c:dusts/graphite"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:carbon_manganese_ingot"
+      "tag": "c:ingots/carbon_manganese"
     }
   ],
   "process_time": 1000

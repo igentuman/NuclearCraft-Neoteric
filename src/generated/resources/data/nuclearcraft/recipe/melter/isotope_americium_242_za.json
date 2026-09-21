@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_americium_242_za"
+      "tag": "c:molten_americium_242_za"
     }
   ],
   "item_inputs": [

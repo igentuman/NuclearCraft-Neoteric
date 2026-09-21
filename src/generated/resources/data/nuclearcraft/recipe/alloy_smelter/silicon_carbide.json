@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/silicon_carbide"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 100,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:silicon_gem"
+      "tag": "c:gems/silicon"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:graphite_dust"
+      "tag": "c:dusts/graphite"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:silicon_carbide_ingot"
+      "tag": "c:ingots/silicon_carbide"
     }
   ],
   "process_time": 400

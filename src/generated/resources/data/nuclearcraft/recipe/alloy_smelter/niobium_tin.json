@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/niobium_tin"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:niobium_dust"
+      "tag": "c:dusts/niobium"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:tin_dust"
+      "tag": "c:dusts/tin"
     }
   ],
   "item_outputs": [
     {
       "count": 3,
-      "item": "nuclearcraft:niobium_tin_ingot"
+      "tag": "c:ingots/niobium_tin"
     }
   ],
   "process_time": 600

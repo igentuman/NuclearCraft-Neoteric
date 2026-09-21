@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/lithium"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:lithium_ingot"
+      "tag": "c:ingots/lithium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:lithium_plate"
+      "tag": "c:plates/lithium"
     }
   ],
   "process_time": 200

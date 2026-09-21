@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_bronze"
+      "tag": "c:molten_bronze"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:bronze_ingot"
+      "tag": "c:ingots/bronze"
     }
   ],
   "process_time": 200

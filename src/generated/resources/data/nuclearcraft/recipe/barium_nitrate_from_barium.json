@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "nuclearcraft:barium_dust"
+      "tag": "c:dusts/barium"
     },
     {
       "item": "minecraft:gunpowder"

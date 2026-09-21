@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_obsidian"
+      "tag": "c:molten_obsidian"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:obsidian_dust"
+      "tag": "c:dusts/obsidian"
     }
   ],
   "process_time": 200

@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/thermoconducting"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:thermoconducting_ingot"
+      "tag": "c:ingots/thermoconducting"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:thermoconducting_dust"
+      "tag": "c:dusts/thermoconducting"
     }
   ],
   "process_time": 200

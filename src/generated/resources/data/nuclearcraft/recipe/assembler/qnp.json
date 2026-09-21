@@ -4,7 +4,7 @@
   "item_inputs": [
     {
       "count": 3,
-      "item": "nuclearcraft:hsla_steel_plate"
+      "tag": "c:plates/hsla_steel"
     },
     {
       "count": 1,

@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/lead_platinum"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:lead_platinum_ingot"
+      "tag": "c:ingots/lead_platinum"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:lead_platinum_dust"
+      "tag": "c:dusts/lead_platinum"
     }
   ],
   "process_time": 200

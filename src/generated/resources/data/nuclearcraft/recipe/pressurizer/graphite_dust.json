@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/graphite"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:graphite_dust"
+      "tag": "c:dusts/graphite"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:graphite_plate"
+      "tag": "c:plates/graphite"
     }
   ],
   "process_time": 200

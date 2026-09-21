@@ -1,16 +1,25 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/cobalt"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:raw_cobalt"
+      "tag": "c:raw_materials/cobalt"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:cobalt_dust"
+      "tag": "c:dusts/cobalt"
     }
   ],
   "process_time": 200

@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_fuel_californium_hecf_249"
+      "tag": "c:molten_fuel_californium_hecf_249"
     }
   ],
   "process_time": 200

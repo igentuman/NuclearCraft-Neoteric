@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/lead"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:lead_ingot"
+      "tag": "c:ingots/lead"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:lead_plate"
+      "tag": "c:plates/lead"
     }
   ],
   "process_time": 200

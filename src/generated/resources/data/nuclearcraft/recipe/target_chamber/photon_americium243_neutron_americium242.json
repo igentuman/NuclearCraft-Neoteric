@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 1.0,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:americium_243"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:americium_242"
+    }
+  ],
+  "particle_input": {
+    "amount": 1000000,
+    "maximum_energy": 12500,
+    "minimum_energy": 10000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:photon"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": -6360
+}

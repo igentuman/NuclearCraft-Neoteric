@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 250,
-      "fluid": "nuclearcraft:carbon_monoxide"
+      "tag": "c:carbon_monoxide"
     },
     {
       "amount": 250,

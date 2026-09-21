@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 1.0,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/beryllium"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:boron_11"
+    }
+  ],
+  "particle_input": {
+    "amount": 1000000,
+    "maximum_energy": 7000,
+    "minimum_energy": 1000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:triton"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": 9560
+}

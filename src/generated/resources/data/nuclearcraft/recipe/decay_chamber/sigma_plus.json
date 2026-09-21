@@ -1,0 +1,25 @@
+{
+  "type": "nuclearcraft:decay_chamber",
+  "cross_section": 0.52,
+  "particle_input": {
+    "amount": 1,
+    "maximum_energy": 9223372036854775807,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:sigma_plus"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:pion_naught"
+    }
+  ],
+  "released_energy_kev": 117000
+}

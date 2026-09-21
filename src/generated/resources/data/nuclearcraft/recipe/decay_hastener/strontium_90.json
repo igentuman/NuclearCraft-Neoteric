@@ -1,16 +1,25 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/strontium"
+      }
+    }
+  ],
   "type": "nuclearcraft:decay_hastener",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:strontium_90_dust"
+      "tag": "c:dusts/strontium_90"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:strontium_dust"
+      "tag": "c:dusts/strontium"
     }
   ],
   "process_time": 400

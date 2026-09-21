@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/quartz"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "minecraft:quartz"
+      "tag": "c:gems/quartz"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:quartz_dust"
+      "tag": "c:dusts/quartz"
     }
   ],
   "process_time": 200

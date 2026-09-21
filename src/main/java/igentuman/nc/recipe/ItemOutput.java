@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-/** A processor item output: a concrete item or an item tag resolved to one stack at production time, with a count. */
+/** A processor item output: a concrete item, or a serialized tag resolved by the recipe serializer. */
 public record ItemOutput(@Nullable Item item, @Nullable TagKey<Item> tag, int count) {
 
     public static ItemOutput of(ItemLike item, int count) {
@@ -26,6 +26,14 @@ public record ItemOutput(@Nullable Item item, @Nullable TagKey<Item> tag, int co
 
     public static ItemOutput of(TagKey<Item> tag, int count) {
         return new ItemOutput(null, tag, count);
+    }
+
+    private static ItemOutput decode(Optional<Item> item, Optional<TagKey<Item>> tag, int count) {
+        if (tag.isPresent()) {
+            ItemStack resolved = TagOutputResolver.resolveItem(tag.get(), count);
+            return resolved.isEmpty() ? of(tag.get(), count) : of(resolved.getItem(), count);
+        }
+        return new ItemOutput(item.orElse(null), null, count);
     }
 
     public boolean isTag() {
@@ -48,15 +56,16 @@ public record ItemOutput(@Nullable Item item, @Nullable TagKey<Item> tag, int co
 
     /** A tag output is complete only if it resolves to at least one member. */
     public boolean isComplete() {
+        if (count <= 0) return false;
         if (tag != null) return !TagOutputResolver.membersItem(tag, count).isEmpty();
-        return item != null && count > 0;
+        return item != null && item != Items.AIR;
     }
 
     public static final Codec<ItemOutput> CODEC = RecordCodecBuilder.create(inst -> inst.group(
             BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf("item").forGetter(o -> Optional.ofNullable(o.item)),
             TagKey.codec(Registries.ITEM).optionalFieldOf("tag").forGetter(o -> Optional.ofNullable(o.tag)),
             Codec.INT.optionalFieldOf("count", 1).forGetter(ItemOutput::count)
-    ).apply(inst, (item, tag, count) -> new ItemOutput(item.orElse(null), tag.orElse(null), count)));
+    ).apply(inst, ItemOutput::decode));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ItemOutput> STREAM_CODEC = StreamCodec.of(
             (buf, o) -> {
@@ -73,7 +82,7 @@ public record ItemOutput(@Nullable Item item, @Nullable TagKey<Item> tag, int co
                 ResourceLocation rl = buf.readResourceLocation();
                 int count = buf.readVarInt();
                 return isTag
-                        ? ItemOutput.of(TagKey.create(Registries.ITEM, rl), count)
+                        ? decode(Optional.empty(), Optional.of(TagKey.create(Registries.ITEM, rl)), count)
                         : new ItemOutput(BuiltInRegistries.ITEM.get(rl), null, count);
             }
     );

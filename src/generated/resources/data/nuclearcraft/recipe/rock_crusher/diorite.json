@@ -1,4 +1,27 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/zirconium"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/fluorite"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/carobbiite"
+      }
+    }
+  ],
   "type": "nuclearcraft:rock_crusher",
   "energy_per_tick": 50,
   "item_inputs": [
@@ -10,13 +33,13 @@
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:zirconium_dust"
+      "tag": "c:dusts/zirconium"
     },
     {
-      "item": "nuclearcraft:fluorite_gem"
+      "tag": "c:gems/fluorite"
     },
     {
-      "item": "nuclearcraft:carobbiite_gem"
+      "tag": "c:gems/carobbiite"
     }
   ],
   "process_time": 200

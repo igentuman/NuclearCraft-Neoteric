@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_silver"
+      "tag": "c:molten_silver"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:silver_dust"
+      "tag": "c:dusts/silver"
     }
   ],
   "process_time": 200

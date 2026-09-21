@@ -4,7 +4,7 @@
   "item_inputs": [
     {
       "count": 4,
-      "item": "nuclearcraft:obsidian_dust"
+      "tag": "c:dusts/obsidian"
     }
   ],
   "item_outputs": [

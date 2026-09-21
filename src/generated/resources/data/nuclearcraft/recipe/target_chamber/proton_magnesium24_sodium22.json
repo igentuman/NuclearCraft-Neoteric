@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.32,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:magnesium_24"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:sodium_22"
+    }
+  ],
+  "particle_input": {
+    "amount": 3125000,
+    "maximum_energy": 56000,
+    "minimum_energy": 38000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:proton"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 2,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": -24100
+}

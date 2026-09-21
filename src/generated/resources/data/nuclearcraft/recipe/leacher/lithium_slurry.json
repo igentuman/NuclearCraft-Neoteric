@@ -9,7 +9,7 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:lithium_slurry"
+      "tag": "c:lithium_slurry"
     }
   ],
   "item_inputs": [

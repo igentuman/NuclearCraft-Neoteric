@@ -3,7 +3,7 @@
   "energy_per_tick": 50,
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:molten_tnt"
+      "tag": "c:molten_tnt"
     }
   ],
   "item_inputs": [

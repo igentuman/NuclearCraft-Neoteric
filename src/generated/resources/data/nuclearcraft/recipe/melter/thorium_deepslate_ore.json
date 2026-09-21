@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 240,
-      "fluid": "nuclearcraft:molten_thorium"
+      "tag": "c:molten_thorium"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:thorium_deepslate_ore"
+      "tag": "c:ores/thorium"
     }
   ],
   "process_time": 200

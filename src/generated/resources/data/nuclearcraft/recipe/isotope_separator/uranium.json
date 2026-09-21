@@ -4,7 +4,7 @@
   "item_inputs": [
     {
       "count": 10,
-      "item": "nuclearcraft:uranium_dust"
+      "tag": "c:dusts/uranium"
     }
   ],
   "item_outputs": [

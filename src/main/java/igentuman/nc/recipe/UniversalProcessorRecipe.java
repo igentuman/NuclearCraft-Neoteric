@@ -13,6 +13,7 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /** Shared recipe implementation for every processor, holding item/fluid inputs and outputs, process time, and energy. */
@@ -172,5 +173,35 @@ public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput> {
             if (!output.isComplete()) return false;
         }
         return true;
+    }
+
+    /** Describes inputs and outputs that decoded successfully but resolve to no registered content. */
+    public List<String> getResolutionProblems() {
+        List<String> problems = new ArrayList<>();
+        for (int i = 0; i < itemInputs.size(); i++) {
+            SizedIngredient input = itemInputs.get(i);
+            if (input.ingredient().isEmpty()) {
+                problems.add("item_inputs[" + i + "] resolved to no items: " + input);
+            }
+        }
+        for (int i = 0; i < fluidInputs.size(); i++) {
+            SizedFluidIngredient input = fluidInputs.get(i);
+            if (input.ingredient().isEmpty()) {
+                problems.add("fluid_inputs[" + i + "] resolved to no fluids: " + input);
+            }
+        }
+        for (int i = 0; i < itemOutputs.size(); i++) {
+            ItemOutput output = itemOutputs.get(i);
+            if (!output.isComplete()) {
+                problems.add("item_outputs[" + i + "] could not be resolved: " + output);
+            }
+        }
+        for (int i = 0; i < fluidOutputs.size(); i++) {
+            FluidOutput output = fluidOutputs.get(i);
+            if (!output.isComplete()) {
+                problems.add("fluid_outputs[" + i + "] could not be resolved: " + output);
+            }
+        }
+        return problems;
     }
 }

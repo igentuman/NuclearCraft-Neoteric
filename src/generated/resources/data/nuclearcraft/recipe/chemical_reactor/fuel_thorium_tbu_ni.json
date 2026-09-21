@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_fuel_thorium_tbu_ni"
+      "tag": "c:molten_fuel_thorium_tbu_ni"
     }
   ],
   "process_time": 200

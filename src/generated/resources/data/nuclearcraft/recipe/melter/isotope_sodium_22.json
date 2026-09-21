@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_sodium_22"
+      "tag": "c:molten_sodium_22"
     }
   ],
   "item_inputs": [

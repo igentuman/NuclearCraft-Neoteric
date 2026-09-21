@@ -14,6 +14,7 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.dust;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.ingot;
+import static igentuman.nc.datagen.recipe.ModRecipeProvider.materialTag;
 
 /** Generates the kugelblitz chamber transmutation recipe pool. */
 public class KugelblitzChamberRecipes {
@@ -35,8 +36,10 @@ public class KugelblitzChamberRecipes {
         Item toughAlloy = ingot("tough_alloy");
         Item bscco = dust("bscco");
         if (toughAlloy != null && bscco != null) {
+            TagKey<Item> toughAlloyTag = materialTag(toughAlloy);
             emit(out, "tough_alloy_bscco",
-                    SizedIngredient.of(toughAlloy, 1), ItemOutput.of(bscco, 2));
+                    toughAlloyTag == null ? SizedIngredient.of(toughAlloy, 1) : SizedIngredient.of(toughAlloyTag, 1),
+                    ItemOutput.of(bscco, 2));
         }
         Item stackUpgrade = ModEntries.get("stack_upgrade").item().get();
         Item quantumUpgrade = ModEntries.get("quantum_upgrade").item().get();

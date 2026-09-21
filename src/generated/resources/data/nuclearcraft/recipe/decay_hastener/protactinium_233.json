@@ -4,7 +4,7 @@
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:protactinium_233_dust"
+      "tag": "c:dusts/protactinium_233"
     }
   ],
   "item_outputs": [

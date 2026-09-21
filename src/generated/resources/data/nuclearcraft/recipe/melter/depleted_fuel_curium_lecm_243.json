@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_depleted_fuel_curium_lecm_243"
+      "tag": "c:molten_depleted_fuel_curium_lecm_243"
     }
   ],
   "item_inputs": [

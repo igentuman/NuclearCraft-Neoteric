@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/palladium"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:palladium_ingot"
+      "tag": "c:ingots/palladium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:palladium_dust"
+      "tag": "c:dusts/palladium"
     }
   ],
   "process_time": 200

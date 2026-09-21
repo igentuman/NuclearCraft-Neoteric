@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/nichrome"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "minecraft:iron_ingot"
+      "tag": "c:ingots/iron"
     },
     {
       "count": 4,
-      "item": "nuclearcraft:chromium_ingot"
+      "tag": "c:ingots/chromium"
     }
   ],
   "item_outputs": [
     {
       "count": 5,
-      "item": "nuclearcraft:nichrome_ingot"
+      "tag": "c:ingots/nichrome"
     }
   ],
   "process_time": 500

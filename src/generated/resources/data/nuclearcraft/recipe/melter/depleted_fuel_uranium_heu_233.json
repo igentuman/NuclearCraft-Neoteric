@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_depleted_fuel_uranium_heu_233"
+      "tag": "c:molten_depleted_fuel_uranium_heu_233"
     }
   ],
   "item_inputs": [

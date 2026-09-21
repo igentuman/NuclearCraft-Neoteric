@@ -4,7 +4,7 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_fuel_plutonium_lep_241"
+      "tag": "c:molten_fuel_plutonium_lep_241"
     }
   ],
   "item_inputs": [

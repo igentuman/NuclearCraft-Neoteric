@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/strontium"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:strontium_ingot"
+      "tag": "c:ingots/strontium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:strontium_dust"
+      "tag": "c:dusts/strontium"
     }
   ],
   "process_time": 200

@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/hsla_steel"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:hsla_steel_ingot"
+      "tag": "c:ingots/hsla_steel"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:hsla_steel_plate"
+      "tag": "c:plates/hsla_steel"
     }
   ],
   "process_time": 200

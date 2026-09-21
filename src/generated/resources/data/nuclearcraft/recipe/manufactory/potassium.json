@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/potassium"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:potassium_ingot"
+      "tag": "c:ingots/potassium"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:potassium_dust"
+      "tag": "c:dusts/potassium"
     }
   ],
   "process_time": 200

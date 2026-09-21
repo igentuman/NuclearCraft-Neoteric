@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/gadolinium"
+      }
+    }
+  ],
   "type": "nuclearcraft:decay_hastener",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:europium_155_dust"
+      "tag": "c:dusts/europium_155"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:gadolinium_dust"
+      "tag": "c:dusts/gadolinium"
     }
   ],
   "process_time": 200

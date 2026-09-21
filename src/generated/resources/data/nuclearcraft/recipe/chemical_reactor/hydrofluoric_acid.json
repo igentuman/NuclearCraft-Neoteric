@@ -13,11 +13,11 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:hydrofluoric_acid"
+      "tag": "c:hydrofluoric_acid"
     },
     {
       "amount": 50,
-      "fluid": "nuclearcraft:calcium_sulfate_solution"
+      "tag": "c:calcium_sulfate_solution"
     }
   ],
   "process_time": 200

@@ -1,0 +1,12 @@
+{
+  "type": "nuclearcraft:accelerator_coolant",
+  "heat_per_mb": 1,
+  "input_fluid": {
+    "amount": 100,
+    "fluid": "nuclearcraft:technical_water"
+  },
+  "output_fluid": {
+    "amount": 100,
+    "fluid": "nuclearcraft:high_pressure_steam"
+  }
+}

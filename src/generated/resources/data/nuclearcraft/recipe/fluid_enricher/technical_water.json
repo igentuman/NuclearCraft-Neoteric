@@ -10,13 +10,13 @@
   "fluid_outputs": [
     {
       "amount": 5000,
-      "fluid": "nuclearcraft:technical_water"
+      "tag": "c:technical_water"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:coal_dust"
+      "tag": "c:dusts/coal"
     }
   ],
   "process_time": 200

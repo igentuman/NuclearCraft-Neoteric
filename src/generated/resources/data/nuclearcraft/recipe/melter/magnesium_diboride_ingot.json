@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_magnesium_diboride"
+      "tag": "c:molten_magnesium_diboride"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:magnesium_diboride_ingot"
+      "tag": "c:ingots/magnesium_diboride"
     }
   ],
   "process_time": 200

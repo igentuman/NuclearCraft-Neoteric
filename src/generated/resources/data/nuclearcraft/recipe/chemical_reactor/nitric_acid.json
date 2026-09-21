@@ -13,7 +13,7 @@
   ],
   "fluid_outputs": [
     {
-      "fluid": "nuclearcraft:nitric_acid"
+      "tag": "c:nitric_acid"
     }
   ],
   "process_time": 300

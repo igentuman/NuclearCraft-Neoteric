@@ -1,0 +1,42 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.02,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/graphite"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:lithium_6"
+    }
+  ],
+  "particle_input": {
+    "amount": 50000000,
+    "maximum_energy": 55000,
+    "minimum_energy": 42500,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:photon"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    }
+  ],
+  "released_energy_kev": -31900
+}

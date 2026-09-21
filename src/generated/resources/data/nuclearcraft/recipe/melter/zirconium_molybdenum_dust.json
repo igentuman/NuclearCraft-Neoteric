@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_zirconium_molybdenum"
+      "tag": "c:molten_zirconium_molybdenum"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:zirconium_molybdenum_dust"
+      "tag": "c:dusts/zirconium_molybdenum"
     }
   ],
   "process_time": 200

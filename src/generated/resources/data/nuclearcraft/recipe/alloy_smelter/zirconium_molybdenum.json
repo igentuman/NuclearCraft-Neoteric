@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/zirconium_molybdenum"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 100,
   "item_inputs": [
     {
       "count": 15,
-      "item": "nuclearcraft:molybdenum_dust"
+      "tag": "c:dusts/molybdenum"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:zirconium_dust"
+      "tag": "c:dusts/zirconium"
     }
   ],
   "item_outputs": [
     {
       "count": 16,
-      "item": "nuclearcraft:zirconium_molybdenum_ingot"
+      "tag": "c:ingots/zirconium_molybdenum"
     }
   ],
   "process_time": 1600

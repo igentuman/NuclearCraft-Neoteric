@@ -1,0 +1,47 @@
+{
+  "type": "nuclearcraft:collision_chamber",
+  "cross_section": 0.025,
+  "particle_inputs": [
+    {
+      "amount": 1,
+      "maximum_energy": 269996100,
+      "minimum_energy": 179997400,
+      "minimum_focus": 1.0,
+      "species": [
+        "nuclearcraft:proton"
+      ]
+    },
+    {
+      "amount": 1,
+      "maximum_energy": 269996100,
+      "minimum_energy": 179997400,
+      "minimum_focus": 1.0,
+      "species": [
+        "nuclearcraft:antiproton"
+      ]
+    }
+  ],
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:glueball"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:w_plus_boson"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:w_minus_boson"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:charmed_eta"
+    }
+  ],
+  "released_energy_kev": -163634000
+}

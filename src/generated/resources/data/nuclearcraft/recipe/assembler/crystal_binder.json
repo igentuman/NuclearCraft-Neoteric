@@ -1,28 +1,37 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/crystal_binder"
+      }
+    }
+  ],
   "type": "nuclearcraft:assembler",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:rhodochrosite_dust"
+      "tag": "c:dusts/rhodochrosite"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:calcium_sulfate_dust"
+      "tag": "c:dusts/calcium_sulfate"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:magnesium_dust"
+      "tag": "c:dusts/magnesium"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:obsidian_dust"
+      "tag": "c:dusts/obsidian"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:crystal_binder_dust"
+      "tag": "c:dusts/crystal_binder"
     }
   ],
   "process_time": 200

@@ -1,0 +1,26 @@
+{
+  "type": "nuclearcraft:decay_chamber",
+  "cross_section": 1.0,
+  "particle_input": {
+    "amount": 1,
+    "maximum_energy": 230000,
+    "minimum_energy": 1120,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:photon"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:electron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:positron"
+    }
+  ],
+  "released_energy_kev": -1020
+}

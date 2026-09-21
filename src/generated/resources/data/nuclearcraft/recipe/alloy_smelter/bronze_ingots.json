@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/bronze"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 3,
-      "item": "minecraft:copper_ingot"
+      "tag": "c:ingots/copper"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:tin_ingot"
+      "tag": "c:ingots/tin"
     }
   ],
   "item_outputs": [
     {
       "count": 4,
-      "item": "nuclearcraft:bronze_ingot"
+      "tag": "c:ingots/bronze"
     }
   ],
   "process_time": 300

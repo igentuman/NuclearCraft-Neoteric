@@ -1,4 +1,13 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:storage_blocks/supercold_ice"
+      }
+    }
+  ],
   "type": "nuclearcraft:fluid_infuser",
   "energy_per_tick": 50,
   "fluid_inputs": [
@@ -15,7 +24,7 @@
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:supercold_ice_block"
+      "tag": "c:storage_blocks/supercold_ice"
     }
   ],
   "process_time": 200

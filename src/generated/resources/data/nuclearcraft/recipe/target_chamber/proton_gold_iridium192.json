@@ -1,0 +1,42 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.02,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/gold"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:iridium_192"
+    }
+  ],
+  "particle_input": {
+    "amount": 50000000,
+    "maximum_energy": 200000,
+    "minimum_energy": 100000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:proton"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    }
+  ],
+  "released_energy_kev": -6800
+}

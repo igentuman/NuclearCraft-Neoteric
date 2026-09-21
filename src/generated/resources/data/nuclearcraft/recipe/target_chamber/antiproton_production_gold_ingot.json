@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.2,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/gold"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:gold_spallation_waste"
+    }
+  ],
+  "particle_input": {
+    "amount": 5000000,
+    "maximum_energy": 20000000,
+    "minimum_energy": 5630000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:proton"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:antiproton"
+    }
+  ],
+  "released_energy_kev": -1880000
+}

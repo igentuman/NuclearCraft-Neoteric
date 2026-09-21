@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 750,
-      "fluid": "nuclearcraft:ammonia"
+      "tag": "c:ammonia"
     }
   ],
   "process_time": 100

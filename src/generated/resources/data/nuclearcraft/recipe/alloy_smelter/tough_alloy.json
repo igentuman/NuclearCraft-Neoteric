@@ -1,20 +1,29 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/tough_alloy"
+      }
+    }
+  ],
   "type": "nuclearcraft:alloy_smelter",
   "energy_per_tick": 75,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:ferroboron_dust"
+      "tag": "c:dusts/ferroboron"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:lithium_dust"
+      "tag": "c:dusts/lithium"
     }
   ],
   "item_outputs": [
     {
       "count": 2,
-      "item": "nuclearcraft:tough_alloy_ingot"
+      "tag": "c:ingots/tough_alloy"
     }
   ],
   "process_time": 300

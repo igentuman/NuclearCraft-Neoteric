@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/steel"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:steel_ingot"
+      "tag": "c:ingots/steel"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:steel_dust"
+      "tag": "c:dusts/steel"
     }
   ],
   "process_time": 200

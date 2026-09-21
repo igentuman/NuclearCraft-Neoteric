@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 450,
-      "fluid": "nuclearcraft:subliquid_matter"
+      "tag": "c:subliquid_matter"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:silver_dust"
+      "tag": "c:dusts/silver"
     }
   ],
   "process_time": 200

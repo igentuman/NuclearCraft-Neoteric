@@ -1,0 +1,31 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.5,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/cobalt"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:cobalt_60"
+    }
+  ],
+  "particle_input": {
+    "amount": 2000000,
+    "maximum_energy": 10000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:neutron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:photon"
+    }
+  ],
+  "released_energy_kev": 7490
+}

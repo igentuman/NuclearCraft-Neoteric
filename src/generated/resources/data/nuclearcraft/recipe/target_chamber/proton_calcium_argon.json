@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.2,
+  "fluid_outputs": [
+    {
+      "fluid": "nuclearcraft:argon"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/calcium"
+    }
+  ],
+  "particle_input": {
+    "amount": 5000000,
+    "maximum_energy": 43000,
+    "minimum_energy": 30000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:proton"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 3,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    }
+  ],
+  "released_energy_kev": -14700
+}

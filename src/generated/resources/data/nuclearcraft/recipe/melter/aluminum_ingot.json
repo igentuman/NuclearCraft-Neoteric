@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_aluminum"
+      "tag": "c:molten_aluminum"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:aluminum_ingot"
+      "tag": "c:ingots/aluminum"
     }
   ],
   "process_time": 200

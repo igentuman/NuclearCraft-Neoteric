@@ -1,0 +1,40 @@
+{
+  "type": "nuclearcraft:collision_chamber",
+  "cross_section": 1.0,
+  "particle_inputs": [
+    {
+      "amount": 1,
+      "maximum_energy": 50000000,
+      "minimum_focus": 1.0,
+      "species": [
+        "nuclearcraft:proton"
+      ]
+    },
+    {
+      "amount": 1,
+      "maximum_energy": 50000000,
+      "minimum_focus": 1.0,
+      "species": [
+        "nuclearcraft:antineutron"
+      ]
+    }
+  ],
+  "particle_outputs": [
+    {
+      "amount": 5,
+      "focus": 1.0,
+      "particle": "nuclearcraft:pion_plus"
+    },
+    {
+      "amount": 4,
+      "focus": 1.0,
+      "particle": "nuclearcraft:pion_naught"
+    },
+    {
+      "amount": 4,
+      "focus": 1.0,
+      "particle": "nuclearcraft:pion_minus"
+    }
+  ],
+  "released_energy_kev": 81800
+}

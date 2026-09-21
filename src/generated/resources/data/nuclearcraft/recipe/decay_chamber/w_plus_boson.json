@@ -1,0 +1,20 @@
+{
+  "type": "nuclearcraft:decay_chamber",
+  "cross_section": 0.32,
+  "particle_input": {
+    "amount": 1,
+    "maximum_energy": 9223372036854775807,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:w_plus_boson"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:pion_plus"
+    }
+  ],
+  "released_energy_kev": 80260000
+}

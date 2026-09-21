@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 270,
-      "fluid": "nuclearcraft:molten_magnesium_diboride"
+      "tag": "c:molten_magnesium_diboride"
     }
   ],
   "process_time": 100

@@ -1,0 +1,33 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.04,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/copper"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:zinc_ingot"
+    }
+  ],
+  "particle_input": {
+    "amount": 25000000,
+    "maximum_energy": 5900,
+    "minimum_energy": 4500,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:proton"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "energy": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:photon"
+    }
+  ],
+  "released_energy_kev": 7710
+}

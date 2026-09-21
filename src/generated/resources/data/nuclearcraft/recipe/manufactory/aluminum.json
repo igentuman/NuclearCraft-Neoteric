@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/aluminum"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:aluminum_ingot"
+      "tag": "c:ingots/aluminum"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:aluminum_dust"
+      "tag": "c:dusts/aluminum"
     }
   ],
   "process_time": 200

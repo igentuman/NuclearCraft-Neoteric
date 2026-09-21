@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 360,
-      "fluid": "nuclearcraft:molten_tin_silver"
+      "tag": "c:molten_tin_silver"
     }
   ],
   "process_time": 100

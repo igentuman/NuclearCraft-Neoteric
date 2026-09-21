@@ -1,4 +1,13 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/sic_sic_cmc"
+      }
+    }
+  ],
   "type": "nuclearcraft:ingot_former",
   "energy_per_tick": 50,
   "fluid_inputs": [
@@ -9,7 +18,7 @@
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:sic_sic_cmc_ingot"
+      "tag": "c:ingots/sic_sic_cmc"
     }
   ],
   "process_time": 200

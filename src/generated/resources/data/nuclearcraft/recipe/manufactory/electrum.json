@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/electrum"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:electrum_ingot"
+      "tag": "c:ingots/electrum"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:electrum_dust"
+      "tag": "c:dusts/electrum"
     }
   ],
   "process_time": 200

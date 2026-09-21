@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 360,
-      "fluid": "nuclearcraft:lithium_fluoride"
+      "tag": "c:lithium_fluoride"
     }
   ],
   "process_time": 100

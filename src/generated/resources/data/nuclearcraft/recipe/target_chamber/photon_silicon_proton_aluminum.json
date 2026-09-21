@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.08,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:gems/silicon"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:aluminum_ingot"
+    }
+  ],
+  "particle_input": {
+    "amount": 12500000,
+    "maximum_energy": 23000,
+    "minimum_energy": 18000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:photon"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:proton"
+    }
+  ],
+  "released_energy_kev": -11600
+}

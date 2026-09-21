@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/emerald"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 60,
   "item_inputs": [
     {
       "count": 1,
-      "item": "minecraft:emerald"
+      "tag": "c:gems/emerald"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:emerald_dust"
+      "tag": "c:dusts/emerald"
     }
   ],
   "process_time": 240

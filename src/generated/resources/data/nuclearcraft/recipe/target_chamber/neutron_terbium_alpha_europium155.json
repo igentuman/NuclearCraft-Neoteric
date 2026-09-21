@@ -1,0 +1,37 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.5,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/terbium"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:europium_155_dust"
+    }
+  ],
+  "particle_input": {
+    "amount": 2000000,
+    "maximum_energy": 34000,
+    "minimum_energy": 20800,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:neutron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    }
+  ],
+  "released_energy_kev": -140
+}

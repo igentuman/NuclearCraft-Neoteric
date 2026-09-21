@@ -1,0 +1,36 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.01,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:plutonium_239"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:heavy_spallation_waste"
+    }
+  ],
+  "particle_input": {
+    "amount": 100000000,
+    "maximum_energy": 300000,
+    "minimum_energy": 170000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:electron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:neutron"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:electron"
+    }
+  ]
+}

@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_copper"
+      "tag": "c:molten_copper"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "minecraft:copper_ingot"
+      "tag": "c:ingots/copper"
     }
   ],
   "process_time": 200

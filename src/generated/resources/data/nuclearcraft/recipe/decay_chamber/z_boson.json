@@ -1,0 +1,25 @@
+{
+  "type": "nuclearcraft:decay_chamber",
+  "cross_section": 0.068,
+  "particle_input": {
+    "amount": 1,
+    "maximum_energy": 9223372036854775807,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:z_boson"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:electron_neutrino"
+    },
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:electron_antineutrino"
+    }
+  ],
+  "released_energy_kev": 91200000
+}

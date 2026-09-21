@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/boron_arsenide"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:boron_arsenide_gem"
+      "tag": "c:gems/boron_arsenide"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:boron_arsenide_dust"
+      "tag": "c:dusts/boron_arsenide"
     }
   ],
   "process_time": 300

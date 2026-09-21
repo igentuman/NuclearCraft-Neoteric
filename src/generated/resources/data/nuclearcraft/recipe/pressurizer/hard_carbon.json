@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/hard_carbon"
+      }
+    }
+  ],
   "type": "nuclearcraft:pressurizer",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:hard_carbon_ingot"
+      "tag": "c:ingots/hard_carbon"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:hard_carbon_plate"
+      "tag": "c:plates/hard_carbon"
     }
   ],
   "process_time": 200

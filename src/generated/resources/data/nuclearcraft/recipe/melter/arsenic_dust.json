@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_arsenic"
+      "tag": "c:molten_arsenic"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:arsenic_dust"
+      "tag": "c:dusts/arsenic"
     }
   ],
   "process_time": 200

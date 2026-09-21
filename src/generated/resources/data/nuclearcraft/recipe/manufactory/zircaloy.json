@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/zircaloy"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:zircaloy_ingot"
+      "tag": "c:ingots/zircaloy"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:zircaloy_dust"
+      "tag": "c:dusts/zircaloy"
     }
   ],
   "process_time": 200

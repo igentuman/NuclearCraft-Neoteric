@@ -2,7 +2,7 @@
   "type": "nuclearcraft:kugelblitz_chamber",
   "input": {
     "count": 1,
-    "item": "nuclearcraft:tough_alloy_ingot"
+    "tag": "c:ingots/tough_alloy"
   },
   "output": {
     "count": 2,

@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_extreme"
+      "tag": "c:molten_extreme"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:extreme_ingot"
+      "tag": "c:ingots/extreme"
     }
   ],
   "process_time": 200

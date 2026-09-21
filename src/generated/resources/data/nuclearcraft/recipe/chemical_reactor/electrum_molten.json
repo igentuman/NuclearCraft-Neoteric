@@ -14,7 +14,7 @@
   "fluid_outputs": [
     {
       "amount": 180,
-      "fluid": "nuclearcraft:molten_electrum"
+      "tag": "c:molten_electrum"
     }
   ],
   "process_time": 100

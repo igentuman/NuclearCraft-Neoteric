@@ -1,15 +1,24 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/diamond"
+      }
+    }
+  ],
   "type": "nuclearcraft:manufactory",
   "energy_per_tick": 75,
   "item_inputs": [
     {
       "count": 1,
-      "item": "minecraft:diamond"
+      "tag": "c:gems/diamond"
     }
   ],
   "item_outputs": [
     {
-      "item": "nuclearcraft:diamond_dust"
+      "tag": "c:dusts/diamond"
     }
   ],
   "process_time": 300

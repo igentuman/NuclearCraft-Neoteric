@@ -1,19 +1,35 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/cobalt"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/osmium"
+      }
+    }
+  ],
   "type": "nuclearcraft:rock_crusher",
   "energy_per_tick": 50,
   "item_inputs": [
     {
       "count": 4,
-      "item": "nuclearcraft:cobalt_ore"
+      "tag": "c:ores/cobalt"
     }
   ],
   "item_outputs": [
     {
       "count": 3,
-      "item": "nuclearcraft:cobalt_dust"
+      "tag": "c:dusts/cobalt"
     },
     {
-      "item": "nuclearcraft:osmium_dust"
+      "tag": "c:dusts/osmium"
     }
   ],
   "process_time": 200

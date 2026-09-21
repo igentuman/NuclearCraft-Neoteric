@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.5,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:lithium_6"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:beryllium_7"
+    }
+  ],
+  "particle_input": {
+    "amount": 2000000,
+    "maximum_energy": 30000,
+    "minimum_energy": 11000,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:helion"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:deuteron"
+    }
+  ],
+  "released_energy_kev": 113
+}

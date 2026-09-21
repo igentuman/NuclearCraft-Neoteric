@@ -4,13 +4,13 @@
   "fluid_outputs": [
     {
       "amount": 90,
-      "fluid": "nuclearcraft:molten_lapis"
+      "tag": "c:molten_lapis"
     }
   ],
   "item_inputs": [
     {
       "count": 1,
-      "item": "nuclearcraft:lapis_dust"
+      "tag": "c:dusts/lapis"
     }
   ],
   "process_time": 200

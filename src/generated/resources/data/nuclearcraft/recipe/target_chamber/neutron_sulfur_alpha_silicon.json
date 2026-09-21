@@ -1,0 +1,32 @@
+{
+  "type": "nuclearcraft:target_chamber",
+  "cross_section": 0.2,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/sulfur"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:silicon_gem"
+    }
+  ],
+  "particle_input": {
+    "amount": 5000000,
+    "maximum_energy": 4000,
+    "minimum_energy": 2800,
+    "minimum_focus": 1.0,
+    "species": [
+      "nuclearcraft:neutron"
+    ]
+  },
+  "particle_outputs": [
+    {
+      "amount": 1,
+      "focus": 1.0,
+      "particle": "nuclearcraft:alpha"
+    }
+  ],
+  "released_energy_kev": 1530
+}

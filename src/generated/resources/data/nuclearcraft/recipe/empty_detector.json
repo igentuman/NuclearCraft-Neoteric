@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:basic_processor"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "T": {
+      "tag": "c:ingots/tungsten"
+    }
+  },
+  "pattern": [
+    "STS",
+    "SBS",
+    "STS"
+  ],
+  "result": {
+    "count": 4,
+    "id": "nuclearcraft:empty_detector"
+  }
+}

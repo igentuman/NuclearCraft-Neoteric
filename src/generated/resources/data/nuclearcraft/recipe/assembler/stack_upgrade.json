@@ -8,11 +8,11 @@
     },
     {
       "count": 1,
-      "item": "nuclearcraft:cobalt_plate"
+      "tag": "c:plates/cobalt"
     },
     {
       "count": 1,
-      "item": "nuclearcraft:uranium_dust"
+      "tag": "c:dusts/uranium"
     }
   ],
   "item_outputs": [

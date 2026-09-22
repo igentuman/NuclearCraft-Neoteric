@@ -85,8 +85,4 @@ public class HeatExchangerControllerScreen extends MultiblockControllerScreen {
         g.pose().popPose();
     }
 
-    private int synced(String field) {
-        int idx = menu.getBlockEntity().getSyncFieldIndex(field);
-        return idx >= 0 ? menu.getSyncedValue(idx) : 0;
-    }
 }

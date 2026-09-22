@@ -2,6 +2,7 @@ package igentuman.nc.block;
 
 import com.mojang.serialization.MapCodec;
 import igentuman.nc.block_entity.MultiblockControllerBE;
+import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -104,6 +105,12 @@ public class MultiblockControllerBlock extends BaseEntityBlock {
     }
 
     @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        MultiblockHandler.trackBlockChange(level, pos, oldState, state);
+    }
+
+    @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
         if (level instanceof ServerLevel serverLevel) {
@@ -116,6 +123,7 @@ public class MultiblockControllerBlock extends BaseEntityBlock {
 
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        MultiblockHandler.trackBlockChange(level, pos, state, newState);
         if (!state.is(newState.getBlock()) && level instanceof ServerLevel serverLevel) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof MultiblockControllerBE controller) {

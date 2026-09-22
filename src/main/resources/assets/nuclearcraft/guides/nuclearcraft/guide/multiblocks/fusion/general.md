@@ -2,7 +2,7 @@
 navigation:
   title: General Info
   parent: multiblocks/fusion.md
-  icon: fusion_core
+  icon: fusion_reactor_core
 item_ids:
   - nuclearcraft:fusion_reactor_core
   - nuclearcraft:fusion_reactor_casing

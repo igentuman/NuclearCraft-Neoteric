@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Ядерный синтез
-  icon: fusion_core
+  icon: fusion_reactor_core
   parent: multiblocks.md
 ---
 

@@ -19,6 +19,10 @@ import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import igentuman.nc.recipe.fission.FissionRecipes;
 import igentuman.nc.recipe.fusion.FusionRecipes;
 import igentuman.nc.recipe.kugelblitz.KugelblitzRecipes;
+import igentuman.nc.recipe.particle.CollisionChamberRecipe;
+import igentuman.nc.recipe.particle.DecayChamberRecipe;
+import igentuman.nc.recipe.particle.ParticleRecipes;
+import igentuman.nc.recipe.particle.TargetChamberRecipe;
 import igentuman.nc.recipe.turbine.TurbineRecipes;
 import igentuman.nc.recipe.bomb.NcBlastRecipes;
 import igentuman.nc.recipe.bomb.NuclearBlastRecipe;
@@ -127,8 +131,10 @@ public class ModEmiPlugin implements EmiPlugin {
         registerOreVeinRecipes(registry, recipeManager);
         registerHeatExchangerRecipes(registry, recipeManager);
         registerNuclearBlastRecipes(registry, recipeManager);
+        registerParticleChamberRecipes(registry, recipeManager);
         registerFuelInfoCategory(registry);
         registerIsotopeInfoCategory(registry);
+        registerParticleInfoCategory(registry);
         hideFuelAndIsotopeVariants(registry);
     }
 
@@ -160,6 +166,15 @@ public class ModEmiPlugin implements EmiPlugin {
                 registry.addRecipe(new IsotopeInfoEmiRecipe(category, r));
             }
         }
+    }
+
+    private void registerParticleInfoCategory(EmiRegistry registry) {
+        EmiRecipeCategory category = new EmiRecipeCategory(NuclearCraft.rl("particle_info"),
+                ParticleEmiStack.of(new igentuman.nc.api.particle.ParticleStack(NuclearCraft.rl("proton"), 1, 0, 0)));
+        registry.addCategory(category);
+
+        igentuman.nc.particle.ParticleCatalog.fromRegistry().definitions().forEach((id, definition) ->
+                registry.addRecipe(new ParticleInfoEmiRecipe(category, new igentuman.nc.compat.jei.ParticleInfoRecipe(id, definition))));
     }
 
     private static final String[] FUEL_VARIANT_SUFFIXES = {"_ox", "_ni", "_za", "_tr"};
@@ -303,6 +318,45 @@ public class ModEmiPlugin implements EmiPlugin {
         for (int i = 0; i < recipes.size(); i++) {
             registry.addRecipe(new NuclearBlastEmiRecipe(category, NuclearCraft.rl("/nuclear_blast/" + i), recipes.get(i)));
         }
+    }
+
+    private void registerParticleChamberRecipes(EmiRegistry registry, RecipeManager recipeManager) {
+        EmiRecipeCategory targetCategory = particleChamberCategory(registry, "target_chamber_controller", "target_chamber");
+        if (targetCategory != null) {
+            List<TargetChamberRecipe> recipes = recipeManager.getAllRecipesFor(ParticleRecipes.TARGET_CHAMBER_TYPE.get())
+                    .stream().map(RecipeHolder::value).toList();
+            for (int i = 0; i < recipes.size(); i++) {
+                registry.addRecipe(new TargetChamberEmiRecipe(targetCategory, NuclearCraft.rl("/target_chamber/" + i), recipes.get(i)));
+            }
+        }
+
+        EmiRecipeCategory decayCategory = particleChamberCategory(registry, "decay_chamber_controller", "decay_chamber");
+        if (decayCategory != null) {
+            List<DecayChamberRecipe> recipes = recipeManager.getAllRecipesFor(ParticleRecipes.DECAY_CHAMBER_TYPE.get())
+                    .stream().map(RecipeHolder::value).toList();
+            for (int i = 0; i < recipes.size(); i++) {
+                registry.addRecipe(new DecayChamberEmiRecipe(decayCategory, NuclearCraft.rl("/decay_chamber/" + i), recipes.get(i)));
+            }
+        }
+
+        EmiRecipeCategory collisionCategory = particleChamberCategory(registry, "collision_chamber_controller", "collision_chamber");
+        if (collisionCategory != null) {
+            List<CollisionChamberRecipe> recipes = recipeManager.getAllRecipesFor(ParticleRecipes.COLLISION_CHAMBER_TYPE.get())
+                    .stream().map(RecipeHolder::value).toList();
+            for (int i = 0; i < recipes.size(); i++) {
+                registry.addRecipe(new CollisionChamberEmiRecipe(collisionCategory, NuclearCraft.rl("/collision_chamber/" + i), recipes.get(i)));
+            }
+        }
+    }
+
+    private EmiRecipeCategory particleChamberCategory(EmiRegistry registry, String controllerName, String categoryName) {
+        ModEntry controller = ModEntries.get(controllerName);
+        if (controller == null || !controller.hasItem()) return null;
+        EmiStack workstation = EmiStack.of(new ItemStack(controller.item().get()));
+        EmiRecipeCategory category = new EmiRecipeCategory(NuclearCraft.rl(categoryName), workstation);
+        registry.addCategory(category);
+        registry.addWorkstation(category, workstation);
+        return category;
     }
 
     private void registerFissionRecipes(EmiRegistry registry, RecipeManager recipeManager) {

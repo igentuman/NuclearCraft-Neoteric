@@ -33,18 +33,13 @@ public class MultiblockBlock extends Block {
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
-        MultiblockHandler.trackBlockChange(level, pos, state);
+        MultiblockHandler.trackBlockChange(level, pos, oldState, state);
     }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         super.onRemove(state, level, pos, newState, movedByPiston);
-        MultiblockHandler.trackBlockChange(level, pos, newState);
+        MultiblockHandler.trackBlockChange(level, pos, state, newState);
     }
 
-    @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean movedByPiston) {
-        super.neighborChanged(state, level, pos, block, neighborPos, movedByPiston);
-        MultiblockHandler.trackBlockChange(level, neighborPos, level.getBlockState(neighborPos));
-    }
 }

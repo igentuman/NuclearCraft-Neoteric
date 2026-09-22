@@ -47,6 +47,34 @@ public class Multiblocks {
     public static final ModConfigSpec.IntValue MSR_PEBBLES_PER_FUEL_CELL;
     public static final ModConfigSpec.IntValue MSR_VOLUME_PER_FUEL_CELL;
 
+    public static final ModConfigSpec.IntValue ACCELERATOR_SCALE_PRESET;
+    public static final ModConfigSpec.DoubleValue ACCELERATOR_BEAM_ATTENUATION;
+    public static final ModConfigSpec.LongValue ACCELERATOR_BEAM_SCALING;
+    public static final ModConfigSpec.LongValue ACCELERATOR_HEAT_CAPACITY_PER_BLOCK;
+    public static final ModConfigSpec.LongValue ACCELERATOR_BASE_ENERGY_REQUIREMENT;
+    public static final ModConfigSpec.DoubleValue ACCELERATOR_THERMAL_CONDUCTIVITY;
+    public static final ModConfigSpec.LongValue RING_ACCELERATOR_MINIMUM_INPUT_ENERGY_KEV;
+    public static final ModConfigSpec.IntValue ACCELERATOR_OVERHEAT_COOLDOWN_TICKS;
+    public static final ModConfigSpec.IntValue ACCELERATOR_BEAM_CONNECTION_REACH;
+
+    public static final ModConfigSpec.IntValue TARGET_CHAMBER_MIN_SIZE;
+    public static final ModConfigSpec.IntValue TARGET_CHAMBER_MAX_SIZE;
+    public static final ModConfigSpec.IntValue DECAY_CHAMBER_MIN_SIZE;
+    public static final ModConfigSpec.IntValue DECAY_CHAMBER_MAX_SIZE;
+    public static final ModConfigSpec.LongValue DECAY_CHAMBER_BASE_POWER;
+    public static final ModConfigSpec.IntValue COLLISION_CHAMBER_MIN_TRANSVERSE_SIZE;
+    public static final ModConfigSpec.IntValue COLLISION_CHAMBER_MAX_TRANSVERSE_SIZE;
+    public static final ModConfigSpec.IntValue COLLISION_CHAMBER_MIN_LENGTH;
+    public static final ModConfigSpec.IntValue COLLISION_CHAMBER_MAX_LENGTH;
+    public static final ModConfigSpec.IntValue COLLISION_CHAMBER_PREFERRED_LENGTH;
+    public static final ModConfigSpec.LongValue COLLISION_CHAMBER_BASE_POWER;
+
+    public static final ModConfigSpec.LongValue PARTICLE_SCHEDULER_TIME_BUDGET_NANOS;
+    public static final ModConfigSpec.IntValue PARTICLE_SCHEDULER_BLOCK_READ_BUDGET;
+    public static final ModConfigSpec.IntValue PARTICLE_SCHEDULER_BLOCK_ENTITY_READ_BUDGET;
+    public static final ModConfigSpec.IntValue PARTICLE_SCHEDULER_MUTATION_BUDGET;
+    public static final ModConfigSpec.IntValue PARTICLE_SCHEDULER_AUDIT_INTERVAL_TICKS;
+
     public static final ModConfigSpec SPEC;
 
     public static int fissionMinSize = 3;
@@ -89,6 +117,35 @@ public class Multiblocks {
     public static int msrMaxSize = 11;
     public static int msrPebblesPerFuelCell = 10;
     public static int msrVolumePerFuelCell = 10000;
+
+    public static int acceleratorScalePreset = 1;
+    public static double acceleratorBeamAttenuation = 0.02;
+    public static long acceleratorBeamScaling = 10_000L;
+    public static long acceleratorHeatCapacityPerBlock = 25_000L;
+    public static long acceleratorBaseEnergyRequirement = 10_000L;
+    public static double acceleratorThermalConductivity = 0.0025;
+    public static long ringAcceleratorMinimumInputEnergyKeV = 5_000L;
+    public static int acceleratorOverheatCooldownTicks = 1_200;
+    public static int acceleratorBeamConnectionReach = 16;
+
+    public static int targetChamberMinSize = 5;
+    public static int targetChamberMaxSize = 11;
+    public static int decayChamberMinSize = 5;
+    public static int decayChamberMaxSize = 11;
+    public static long decayChamberBasePower = 2_000L;
+    public static int collisionChamberMinTransverseSize = 5;
+    public static int collisionChamberMaxTransverseSize = 11;
+    public static int collisionChamberMinLength = 13;
+    public static int collisionChamberMaxLength = 21;
+    public static int collisionChamberPreferredLength = 17;
+    public static long collisionChamberBasePower = 2_000L;
+
+    public static long particleSchedulerTimeBudgetNanos = 2_000_000L;
+    public static int particleSchedulerBlockReadBudget = 4_096;
+    public static int particleSchedulerBlockEntityReadBudget = 128;
+    public static int particleSchedulerMutationBudget = 16;
+    public static int particleSchedulerAuditIntervalTicks = 200;
+    private static long particleMachinesRevision;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -187,6 +244,41 @@ public class Multiblocks {
                 .defineInRange("volume_per_fuel_cell", 10000, 1, 1000000);
         builder.pop();
 
+        builder.push("accelerators");
+        ACCELERATOR_SCALE_PRESET = builder.comment("Accelerator size preset: 1 = 6..100, 2 = 60..1000, 3 = 600..10000.")
+                .defineInRange("scale_preset", 1, 1, 3);
+        ACCELERATOR_BEAM_ATTENUATION = builder.defineInRange("beam_attenuation", 0.02, 0.0, 1.0);
+        ACCELERATOR_BEAM_SCALING = builder.defineInRange("beam_scaling", 10_000L, 1L, Long.MAX_VALUE);
+        ACCELERATOR_HEAT_CAPACITY_PER_BLOCK = builder.defineInRange("heat_capacity_per_block", 25_000L, 1L, 1_000_000_000L);
+        ACCELERATOR_BASE_ENERGY_REQUIREMENT = builder.defineInRange("base_energy_requirement", 10_000L, 0L, Long.MAX_VALUE);
+        ACCELERATOR_THERMAL_CONDUCTIVITY = builder.defineInRange("thermal_conductivity", 0.0025, 0.0, 1.0);
+        RING_ACCELERATOR_MINIMUM_INPUT_ENERGY_KEV = builder.defineInRange("ring_minimum_input_energy_kev", 5_000L, 0L, Long.MAX_VALUE);
+        ACCELERATOR_OVERHEAT_COOLDOWN_TICKS = builder.defineInRange("overheat_cooldown_ticks", 1_200, 0, 72_000);
+        ACCELERATOR_BEAM_CONNECTION_REACH = builder.defineInRange("beam_connection_reach", 16, 1, 256);
+        builder.pop();
+
+        builder.push("particle_chambers");
+        TARGET_CHAMBER_MIN_SIZE = builder.defineInRange("target_min_size", 5, 5, 11);
+        TARGET_CHAMBER_MAX_SIZE = builder.defineInRange("target_max_size", 11, 5, 11);
+        DECAY_CHAMBER_MIN_SIZE = builder.defineInRange("decay_min_size", 5, 5, 11);
+        DECAY_CHAMBER_MAX_SIZE = builder.defineInRange("decay_max_size", 11, 5, 11);
+        DECAY_CHAMBER_BASE_POWER = builder.defineInRange("decay_base_power", 2_000L, 0L, Long.MAX_VALUE);
+        COLLISION_CHAMBER_MIN_TRANSVERSE_SIZE = builder.defineInRange("collision_min_transverse_size", 5, 5, 11);
+        COLLISION_CHAMBER_MAX_TRANSVERSE_SIZE = builder.defineInRange("collision_max_transverse_size", 11, 5, 11);
+        COLLISION_CHAMBER_MIN_LENGTH = builder.defineInRange("collision_min_length", 13, 13, 21);
+        COLLISION_CHAMBER_MAX_LENGTH = builder.defineInRange("collision_max_length", 21, 13, 21);
+        COLLISION_CHAMBER_PREFERRED_LENGTH = builder.defineInRange("collision_preferred_length", 17, 13, 21);
+        COLLISION_CHAMBER_BASE_POWER = builder.defineInRange("collision_base_power", 2_000L, 0L, Long.MAX_VALUE);
+        builder.pop();
+
+        builder.push("particle_multiblock_scheduler");
+        PARTICLE_SCHEDULER_TIME_BUDGET_NANOS = builder.defineInRange("time_budget_nanos", 2_000_000L, 50_000L, 50_000_000L);
+        PARTICLE_SCHEDULER_BLOCK_READ_BUDGET = builder.defineInRange("block_read_budget", 4_096, 1, 1_000_000);
+        PARTICLE_SCHEDULER_BLOCK_ENTITY_READ_BUDGET = builder.defineInRange("block_entity_read_budget", 128, 0, 65_536);
+        PARTICLE_SCHEDULER_MUTATION_BUDGET = builder.defineInRange("mutation_budget", 16, 1, 65_536);
+        PARTICLE_SCHEDULER_AUDIT_INTERVAL_TICKS = builder.defineInRange("audit_interval_ticks", 200, 20, 72_000);
+        builder.pop();
+
         SPEC = builder.build();
     }
 
@@ -228,5 +320,48 @@ public class Multiblocks {
         msrMaxSize = MSR_MAX_SIZE.get();
         msrPebblesPerFuelCell = MSR_PEBBLES_PER_FUEL_CELL.get();
         msrVolumePerFuelCell = MSR_VOLUME_PER_FUEL_CELL.get();
+        acceleratorScalePreset = ACCELERATOR_SCALE_PRESET.get();
+        acceleratorBeamAttenuation = ACCELERATOR_BEAM_ATTENUATION.get();
+        acceleratorBeamScaling = ACCELERATOR_BEAM_SCALING.get();
+        acceleratorHeatCapacityPerBlock = ACCELERATOR_HEAT_CAPACITY_PER_BLOCK.get();
+        acceleratorBaseEnergyRequirement = ACCELERATOR_BASE_ENERGY_REQUIREMENT.get();
+        acceleratorThermalConductivity = ACCELERATOR_THERMAL_CONDUCTIVITY.get();
+        ringAcceleratorMinimumInputEnergyKeV = RING_ACCELERATOR_MINIMUM_INPUT_ENERGY_KEV.get();
+        acceleratorOverheatCooldownTicks = ACCELERATOR_OVERHEAT_COOLDOWN_TICKS.get();
+        acceleratorBeamConnectionReach = ACCELERATOR_BEAM_CONNECTION_REACH.get();
+        targetChamberMinSize = TARGET_CHAMBER_MIN_SIZE.get();
+        targetChamberMaxSize = TARGET_CHAMBER_MAX_SIZE.get();
+        decayChamberMinSize = DECAY_CHAMBER_MIN_SIZE.get();
+        decayChamberMaxSize = DECAY_CHAMBER_MAX_SIZE.get();
+        decayChamberBasePower = DECAY_CHAMBER_BASE_POWER.get();
+        collisionChamberMinTransverseSize = COLLISION_CHAMBER_MIN_TRANSVERSE_SIZE.get();
+        collisionChamberMaxTransverseSize = COLLISION_CHAMBER_MAX_TRANSVERSE_SIZE.get();
+        collisionChamberMinLength = COLLISION_CHAMBER_MIN_LENGTH.get();
+        collisionChamberMaxLength = COLLISION_CHAMBER_MAX_LENGTH.get();
+        collisionChamberPreferredLength = COLLISION_CHAMBER_PREFERRED_LENGTH.get();
+        collisionChamberBasePower = COLLISION_CHAMBER_BASE_POWER.get();
+        particleSchedulerTimeBudgetNanos = PARTICLE_SCHEDULER_TIME_BUDGET_NANOS.get();
+        particleSchedulerBlockReadBudget = PARTICLE_SCHEDULER_BLOCK_READ_BUDGET.get();
+        particleSchedulerBlockEntityReadBudget = PARTICLE_SCHEDULER_BLOCK_ENTITY_READ_BUDGET.get();
+        particleSchedulerMutationBudget = PARTICLE_SCHEDULER_MUTATION_BUDGET.get();
+        particleSchedulerAuditIntervalTicks = PARTICLE_SCHEDULER_AUDIT_INTERVAL_TICKS.get();
+        particleMachinesRevision = Math.incrementExact(particleMachinesRevision);
+    }
+
+    public static ParticleMachinesConfig particleMachines() {
+        return new ParticleMachinesConfig(
+                new ParticleMachinesConfig.Accelerator(acceleratorScalePreset, acceleratorBeamAttenuation,
+                        acceleratorBeamScaling, acceleratorHeatCapacityPerBlock, acceleratorBaseEnergyRequirement,
+                        acceleratorThermalConductivity, ringAcceleratorMinimumInputEnergyKeV,
+                        acceleratorOverheatCooldownTicks, acceleratorBeamConnectionReach),
+                new ParticleMachinesConfig.Chambers(targetChamberMinSize, targetChamberMaxSize,
+                        decayChamberMinSize, decayChamberMaxSize, decayChamberBasePower,
+                        collisionChamberMinTransverseSize, collisionChamberMaxTransverseSize,
+                        collisionChamberMinLength, collisionChamberMaxLength, collisionChamberPreferredLength,
+                        collisionChamberBasePower),
+                new ParticleMachinesConfig.Scheduler(particleSchedulerTimeBudgetNanos,
+                        particleSchedulerBlockReadBudget, particleSchedulerBlockEntityReadBudget,
+                        particleSchedulerMutationBudget, particleSchedulerAuditIntervalTicks),
+                particleMachinesRevision);
     }
 }

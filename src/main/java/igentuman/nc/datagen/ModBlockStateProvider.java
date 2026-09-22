@@ -1,6 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.block.UniversalProcessorBlock;
+import igentuman.nc.block.accelerator.BeamPortMode;
 import igentuman.nc.block.energy.EnergyBlock;
 import igentuman.nc.block.pipe.PipeBlock;
 import igentuman.nc.block.pipe.PipeConnection;
@@ -23,6 +24,7 @@ import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.FissionFuelEntry;
+import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.MaterialFluidType;
 import igentuman.nc.registration.ModEntry;
@@ -98,6 +100,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     heatExchangerBlock(entry.block(), path);
                 } else if (isMsrBlock(path)) {
                     msrBlock(entry.block(), path);
+                } else if (isAcceleratorControlBlock(path)) {
+                    acceleratorControlBlock(entry.block(), path);
+                } else if (isParticleChamberControlBlock(path)) {
+                    particleChamberControlBlock(entry.block(), path);
+                } else if (path.endsWith("_cooler")) {
+                    coolerBlock(entry.block(), path);
                 } else if (entry.block().get() instanceof EnergyBlock) {
                     energyBlock(entry.block(), path);
                 } else if (entry.block().get() instanceof UniversalProcessorBlock) {
@@ -133,6 +141,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
             for (MaterialEntry materialEntry : fuel.fluids()) {
+                fluidBlockState(materialEntry);
+            }
+        }
+
+        for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
+            for (MaterialEntry materialEntry : isotope.fluids()) {
                 fluidBlockState(materialEntry);
             }
         }
@@ -306,6 +320,27 @@ public class ModBlockStateProvider extends BlockStateProvider {
         }
         if (path.contains("fusion_reactor_")) {
             path = path.replace("fusion_reactor_", "fusion/");
+        }
+        if (path.equals("accelerator_casing") || path.equals("accelerator_casing_glass")
+                || path.equals("electromagnet_yoke") || path.equals("particle_beam")) {
+            path = "accelerator/" + path;
+        }
+        if (path.equals("target_chamber_casing")) {
+            path = "particle_chamber/casing";
+        } else if (path.equals("target_chamber_casing_glass")) {
+            path = "particle_chamber/glass";
+        } else if (path.equals("target_chamber_camera")) {
+            path = "particle_chamber/camera";
+        } else if (path.equals("silicon_tracker")) {
+            path = "particle_chamber/silicon_tracker";
+        } else if (path.equals("bubble_chamber")) {
+            path = "particle_chamber/bubble_chamber";
+        } else if (path.equals("wire_chamber")) {
+            path = "particle_chamber/wire_chamber";
+        } else if (path.equals("em_calorimeter")) {
+            path = "particle_chamber/em_calorimeter";
+        } else if (path.equals("hadron_calorimeter")) {
+            path = "particle_chamber/hadron_calorimeter";
         }
         return path;
     }
@@ -575,6 +610,96 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 itemModels().getBuilder("item/msr_port").parent(model);
             }
         }
+    }
+
+    private boolean isAcceleratorControlBlock(String path) {
+        return path.equals("linear_accelerator_controller") || path.equals("ring_accelerator_controller")
+                || path.equals("beam_diverter_controller") || path.equals("accelerator_port")
+                || path.equals("accelerator_beam_port") || path.equals("accelerator_ion_source_port");
+    }
+
+    private void acceleratorControlBlock(DeferredBlock<Block> deferredBlock, String path) {
+        switch (path) {
+            case "linear_accelerator_controller", "ring_accelerator_controller", "beam_diverter_controller" ->
+                    controllerBlock(deferredBlock, path, "accelerator/controller");
+            case "accelerator_beam_port" -> beamPortBlock(deferredBlock, path, "accelerator/accelerator_beam_port");
+            default -> simplePortBlock(deferredBlock, path, "accelerator/" + path + "/" + path);
+        }
+    }
+
+    private boolean isParticleChamberControlBlock(String path) {
+        return path.equals("target_chamber_controller") || path.equals("decay_chamber_controller")
+                || path.equals("collision_chamber_controller") || path.equals("target_chamber_port")
+                || path.equals("target_chamber_beam_port");
+    }
+
+    private void particleChamberControlBlock(DeferredBlock<Block> deferredBlock, String path) {
+        switch (path) {
+            case "target_chamber_controller", "decay_chamber_controller", "collision_chamber_controller" ->
+                    controllerBlock(deferredBlock, path, "particle_chamber/" + path);
+            case "target_chamber_beam_port" -> beamPortBlock(deferredBlock, path, "particle_chamber/beam_port");
+            default -> simplePortBlock(deferredBlock, path, "particle_chamber/port/" + path);
+        }
+    }
+
+    /** Facing controller block: shared side/top/bottom, per-name front texture, e.g. block/{family}/{path}. */
+    private void controllerBlock(DeferredBlock<Block> deferredBlock, String path, String family) {
+        Block block = deferredBlock.get();
+        ModelFile model = models().orientableWithBottom(path,
+                rl("block/" + family + "/side"),
+                rl("block/" + family + "/" + path),
+                rl("block/" + family + "/bottom"),
+                rl("block/" + family + "/top"));
+        horizontalBlock(block, model);
+        itemModels().getBuilder("item/" + path).parent(model);
+    }
+
+    /** Plain service port with no mode texture: single representative texture on every face. */
+    private void simplePortBlock(DeferredBlock<Block> deferredBlock, String path, String texturePath) {
+        Block block = deferredBlock.get();
+        ModelFile model = models().cubeAll(path, rl("block/" + texturePath));
+        simpleBlock(block, model);
+        itemModels().getBuilder("item/" + path).parent(model);
+    }
+
+    private void coolerBlock(DeferredBlock<Block> deferredBlock, String path) {
+        Block block = deferredBlock.get();
+        String textureName = path.substring(0, path.length() - "_cooler".length());
+        ResourceLocation texture = rl("block/accelerator/cooler/" + textureName);
+        ModelFile model = models().cubeAll(path, texture);
+        simpleBlock(block, model);
+        itemModels().getBuilder("item/" + path).parent(model);
+    }
+
+    /** Beam port with a PORT_MODE (input/output/disabled) property driving the front face texture. */
+    @SuppressWarnings("unchecked")
+    private void beamPortBlock(DeferredBlock<Block> deferredBlock, String path, String family) {
+        Block block = deferredBlock.get();
+        ResourceLocation down = rl("block/" + family + "/bottom");
+        ResourceLocation up = rl("block/" + family + "/top");
+        ResourceLocation south = rl("block/" + family + "/back");
+        ResourceLocation side = rl("block/" + family + "/side");
+        ModelFile inputModel = models().cube(path + "_input", down, up, rl("block/" + family + "/input"), south, side, side);
+        ModelFile outputModel = models().cube(path + "_output", down, up, rl("block/" + family + "/output"), south, side, side);
+        ModelFile disabledModel = models().cube(path + "_disabled", down, up, rl("block/" + family + "/disabled"), south, side, side);
+
+        EnumProperty<BeamPortMode> modeProperty =
+                (EnumProperty<BeamPortMode>) block.getStateDefinition().getProperty("port_mode");
+        getVariantBuilder(block).forAllStates(state -> {
+            ModelFile model = switch (state.getValue(modeProperty)) {
+                case INPUT -> inputModel;
+                case OUTPUT -> outputModel;
+                case DISABLED -> disabledModel;
+            };
+            int yRot = switch (state.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
+                case EAST -> 90;
+                case SOUTH -> 180;
+                case WEST -> 270;
+                default -> 0;
+            };
+            return ConfiguredModel.builder().modelFile(model).rotationY(yRot).build();
+        });
+        itemModels().getBuilder("item/" + path).parent(disabledModel);
     }
 
     private void engineersCrafterBlock(DeferredBlock<Block> deferredBlock, String path) {

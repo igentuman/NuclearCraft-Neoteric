@@ -42,7 +42,7 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
 
         slotWidgets.clear();
         SlotsLayout layout = menu.getLayout();
-        MultiblockEntry mbEntry = MultiblockRegistry.getByPort(menu.getBlockEntity().name);
+        MultiblockEntry mbEntry = resolveMultiblockEntry();
         ModEntry entry = mbEntry != null ? mbEntry.controllerEntry() : null;
         SlotWidget.RELATIVE_X = leftPos;
         SlotWidget.RELATIVE_Y = topPos;
@@ -102,6 +102,13 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
         }
     }
 
+    private MultiblockEntry resolveMultiblockEntry() {
+        var controller = menu.getBlockEntity().controller();
+        return controller != null
+                ? MultiblockRegistry.getByController(controller.getMultiblockName())
+                : MultiblockRegistry.getByPort(menu.getBlockEntity().name);
+    }
+
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderLabels(guiGraphics, mouseX, mouseY);
@@ -118,7 +125,7 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
     private void renderFluidTanks(GuiGraphics guiGraphics, int x, int y,
                                    FluidCapabilityHandler tanks, boolean tooltip, int mouseX, int mouseY) {
         SlotsLayout layout = menu.getLayout();
-        MultiblockEntry mbEntry = MultiblockRegistry.getByPort(menu.getBlockEntity().name);
+        MultiblockEntry mbEntry = resolveMultiblockEntry();
         ModEntry entry = mbEntry != null ? mbEntry.controllerEntry() : null;
         if (entry == null) return;
         int inputItemCount  = entry.itemCap()  != null ? entry.itemCap().inputSlots        : 0;

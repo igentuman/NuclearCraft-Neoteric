@@ -8,6 +8,7 @@ import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ToolSetEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCJukeboxSongs;
+import igentuman.nc.setup.entries.Particles;
 import net.minecraft.data.DataGenerator;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
@@ -31,6 +32,11 @@ public class ModLanguageProvider  extends LanguageProvider {
         ponders();
         fissionDesigner();
         fuelInfo();
+
+        for (String particle : Particles.SPECIES) {
+            add("nuclearcraft.particle." + particle + ".name", convertToName(particle));
+        }
+        particleDescriptions();
 
         add("processor.description.nuclear_furnace","Fast furnace that uses uranium ingots as fuel. Surprisingly safe, by furnace standards.");
         add("processor.description.alloy_smelter","Smelts and alloys items.");
@@ -58,6 +64,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("processor.description.analyzer","Analyzes items and environmental samples.");
         add("processor.description.leacher","Leaches underground minerals with acids and pumps the slurry back to the surface.");
         add("processor.description.subatomic_liquifier","Decomposes elements into their subatomic constituents.");
+        add("processor.description.creative_particle_source", "Emits a configurable particle beam for creative testing.");
 
         for (String name : NCJukeboxSongs.RECORDS.keySet()) {
             add("jukebox_song." + MODID + "." + name, convertToName(name));
@@ -437,6 +444,18 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("nc.ore_vein.cassiterite", "Cassiterite Vein");
         add("nc.ore_vein.borax", "Borax Vein");
         add("tooltip.nc.charging_station", "Charges energy items from stored power and fills fluid items with Quantite Energy gas.");
+        add("tooltip.nuclearcraft.particle_source.species", "Particle: %s");
+        add("tooltip.nuclearcraft.particle_source.remaining", "Charge: %s / %s");
+        add("tooltip.nuclearcraft.target_chamber.progress", "Irradiation progress: %s%%");
+        add("tooltip.nuclearcraft.decay_chamber.progress", "Reaction buffer: %s%%");
+        add("tooltip.nuclearcraft.collision_chamber.progress", "Reaction buffer: %s%%");
+        add("gui.nuclearcraft.creative_particle_source.particle", "Particle");
+        add("gui.nuclearcraft.creative_particle_source.search", "Search particles...");
+        add("gui.nuclearcraft.creative_particle_source.focus", "Focus");
+        add("gui.nuclearcraft.creative_particle_source.energy", "Energy");
+        add("gui.nuclearcraft.creative_particle_source.apply", "Apply");
+        add("gui.nuclearcraft.creative_particle_source.canonical", "Beam energy: %s keV");
+        add("gui.nuclearcraft.creative_particle_source.invalid", "Invalid beam settings");
         add("tooltip.nc.q36_mode", "Mode: %s");
         add("tooltip.nc.q36_mode.pulse", "Pulse");
         add("tooltip.nc.q36_mode.beam", "Beam");
@@ -451,6 +470,8 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("sound_event.nuclearcraft.q36.beam_shot", "Q-36 Quantite Disruptor fires");
         add("sound_event.nuclearcraft.q36.pulse_shot", "Q-36 Quantite Pulse discharge");
         add("itemGroup.nuclearcraft.fission_reactor", "NuclearCraft: Fission Reactor");
+        add("itemGroup.nuclearcraft.accelerator", "NuclearCraft: Accelerators");
+        add("itemGroup.nuclearcraft.particle_chamber", "NuclearCraft: Particle Chambers");
         add("itemGroup.nuclearcraft.kugelblitz", "NuclearCraft: Kugelblitz Chamber");
         add("block.nuclearcraft.pu_239_bomb.desc", "Warning: arms on redstone signal and detonates after a short fuse. Not safe for dispenser placement.");
         add("screen.nuclearcraft.kugelblitz", "Kugelblitz Chamber");
@@ -475,6 +496,21 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.heat_rate", "Heat Rate: %s/t");
         add("screen.nuclearcraft.net_heat", "Net Rate: %s/t");
         add("screen.nuclearcraft.cooldown_rate", "Cooling Rate: %s/t");
+        add("screen.nuclearcraft.accelerator.temperature", "Temperature: %s K / %s K");
+        add("screen.nuclearcraft.accelerator.maximum_temperature", "Max Temperature: %s K");
+        add("screen.nuclearcraft.accelerator.current_temperature", "Temperature: %s K");
+        add("screen.nuclearcraft.accelerator.magnet_strength", "Magnet Strength: %s T");
+        add("screen.nuclearcraft.accelerator.overheated", "Overheated: %s ticks left");
+        add("screen.nuclearcraft.accelerator.control_signal", "Control signal: %s/15");
+        add("screen.nuclearcraft.accelerator.voltage", "Voltage: %s V");
+        add("screen.nuclearcraft.accelerator.beam_length", "Beam length: %s");
+        add("screen.nuclearcraft.accelerator.quadrupole_field", "Quadrupole field: %s");
+        add("screen.nuclearcraft.accelerator.dipole_field", "Dipole field: %s");
+        add("screen.nuclearcraft.accelerator.particle_beam", "Beam: %s @ %s");
+        add("screen.nuclearcraft.accelerator.energy_too_low", "Input energy too low");
+        add("screen.nuclearcraft.accelerator.energy_too_high", "Input energy too high");
+        add("screen.nuclearcraft.accelerator.incompatible_particle", "Incompatible particle");
+        add("screen.nuclearcraft.accelerator.max_energy", "Max output energy: %s");
         add("screen.nuclearcraft.fission.energy", "Output");
         add("screen.nuclearcraft.fission.reactivity", "Reactivity");
         add("screen.nuclearcraft.fission.fuel_cells", "Fuel Cells");
@@ -504,6 +540,9 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.heat_exchanger.cold_cycle", "Cold Cycle: %s ops/t");
         add("screen.nuclearcraft.heat_exchanger.radiator_toggle.enable", "Enable radiators");
         add("screen.nuclearcraft.heat_exchanger.radiator_toggle.disable", "Disable radiators");
+        add("screen.nuclearcraft.beam_diverter.output", "Output: %s");
+        add("screen.nuclearcraft.beam_diverter.output_tooltip", "Click to cycle the selected output channel");
+        add("screen.nuclearcraft.beam_diverter.incompatible_turn", "Incompatible turn: neutral/massless particle");
         add("gui.nuclearcraft.heat_exchanger", "Heat Exchanger");
         add("gui.nuclearcraft.heat_exchanger.heat_add", "Heat output: +%s H");
         add("gui.nuclearcraft.heat_exchanger.heat_remove", "Heat draw: -%s H");
@@ -551,6 +590,10 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("message.nuclearcraft.redstone_mode.items", "Fuel amount");
         add("message.nuclearcraft.redstone_mode.switch", "Activation switch");
         add("message.nuclearcraft.redstone_mode.moderator", "Moderation control");
+        add("message.nuclearcraft.beam_port_mode", "Beam port mode: %s");
+        add("message.nuclearcraft.beam_port_mode.input", "Input");
+        add("message.nuclearcraft.beam_port_mode.output", "Output");
+        add("message.nuclearcraft.beam_port_mode.disabled", "Disabled");
         add("gui.nuclearcraft.nuclear_blast", "Nuclear Blast");
         add("gui.nuclearcraft.nuclear_blast.chance", "Chance: %s");
         add("gui.nuclearcraft.fission_fuel", "Fission Reactor: Fuel");
@@ -679,11 +722,92 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("entity.nuclearcraft.teleporting_anomaly", "Teleporting Anomaly");
     }
 
+    private void particleDescriptions() {
+        add("nuclearcraft.particle.up_quark.desc", "The Up Quark is the lightest quark. Up and Down quarks combine to form Protons and Neutrons");
+        add("nuclearcraft.particle.antiup_quark.desc", "The Anti-Up Quark is the antimatter partner of the Up Quark.");
+        add("nuclearcraft.particle.down_quark.desc", "The Down Quark is the second lightest quark. Up and Down quarks combine to form Protons and Neutrons");
+        add("nuclearcraft.particle.antidown_quark.desc", "The Anti-Down Quark is the antimatter partner of the Down Quark.");
+        add("nuclearcraft.particle.charm_quark.desc", "The Charm Quark is a heavy version of the Up Quark.");
+        add("nuclearcraft.particle.anticharm_quark.desc", "The Anti-Charm Quark is the antimatter partner of the Charm Quark.");
+        add("nuclearcraft.particle.strange_quark.desc", "The Strange Quark is a heavy version of the Down Quark.");
+        add("nuclearcraft.particle.antistrange_quark.desc", "The Anti-Strange Quark is the antimatter partner of the Strange Quark.");
+        add("nuclearcraft.particle.top_quark.desc", "The Top Quark is a very heavy version of the Up Quark.");
+        add("nuclearcraft.particle.antitop_quark.desc", "The Anti-Top Quark is the antimatter partner of the Top Quark.");
+        add("nuclearcraft.particle.bottom_quark.desc", "The Bottom Quark is a very heavy version of the Down Quark.");
+        add("nuclearcraft.particle.antibottom_quark.desc", "The Anti-Bottom Quark is the antimatter partner of the Bottom Quark.");
+        add("nuclearcraft.particle.electron.desc", "The Electron is the lightest charged lepton. It is commonly found in orbitals around nuclei, forming atoms.");
+        add("nuclearcraft.particle.positron.desc", "The Positron is the antimatter partner of the Electron. When an electron and positron meet they annihilate, converting all their mass into energy in the form of two gamma rays.");
+        add("nuclearcraft.particle.electron_neutrino.desc", "The Electron Neutrino is the neutrino partner of the Electron.");
+        add("nuclearcraft.particle.electron_antineutrino.desc", "The Electron Antineutrino is the antimatter partner of the Electron Neutrino.");
+        add("nuclearcraft.particle.muon.desc", "The Muon is essentially a heavy electron.");
+        add("nuclearcraft.particle.antimuon.desc", "The Anti-Muon is the antimatter partner of the Muon.");
+        add("nuclearcraft.particle.muon_neutrino.desc", "The Muon Neutrino is the neutrino partner of the Muon.");
+        add("nuclearcraft.particle.muon_antineutrino.desc", "The Muon Antineutrino is the antimatter partner of the Muon Neutrino.");
+        add("nuclearcraft.particle.tau.desc", "The Tau is essentially a very heavy electron.");
+        add("nuclearcraft.particle.antitau.desc", "The Anti-Tau is the antimatter partner of the Tau.");
+        add("nuclearcraft.particle.tau_neutrino.desc", "The Tau Neutrino is the neutrino partner of the Tau.");
+        add("nuclearcraft.particle.tau_antineutrino.desc", "The Tau Antineutrino is the antimatter partner of the Tau Neutrino.");
+        add("nuclearcraft.particle.photon.desc", "Photons are the particles that make up light. They are the carriers of the electromagnetic force. High-energy Photons are called gamma rays.");
+        add("nuclearcraft.particle.gluon.desc", "Gluons are the carriers of the strong force. The strong force binds quarks together to create composite particles like protons and neutrons.");
+        add("nuclearcraft.particle.w_plus_boson.desc", "The Z and W bosons are the carriers of the weak force. The weak force allows certain particles to decay and is responsible for beta decay.");
+        add("nuclearcraft.particle.w_minus_boson.desc", "The Z and W bosons are the carriers of the weak force. The weak force allows certain particles to decay and is responsible for beta decay.");
+        add("nuclearcraft.particle.z_boson.desc", "The Z and W bosons are the carriers of the weak force. The weak force allows certain particles to decay and is responsible for beta decay.");
+        add("nuclearcraft.particle.higgs_boson.desc", "The Higgs Boson is the boson of the Higgs Field which is responsible for giving particles their mass.");
+        add("nuclearcraft.particle.proton.desc", "The Proton is a nucleon. Together with the Neutron, it makes up the nucleus of atoms.");
+        add("nuclearcraft.particle.antiproton.desc", "The Anti-Proton is the antimatter partner of the Proton.");
+        add("nuclearcraft.particle.neutron.desc", "The Neutron is a nucleon. Together with the Proton, it makes up the nucleus of atoms. Neutrons are used in nuclear fission to split fissile nuclei.");
+        add("nuclearcraft.particle.antineutron.desc", "The Anti-Neutron is the antimatter partner of the Neutron.");
+        add("nuclearcraft.particle.deuteron.desc", "The Deuteron is the nucleus of a Deuterium Atom.");
+        add("nuclearcraft.particle.antideuteron.desc", "The Anti-Deuteron is the antimatter partner of the Deuteron.");
+        add("nuclearcraft.particle.alpha.desc", "Alpha Particle is another name for the nucleus of helium 4. It is commonly released in the decay of heavy elements like uranium and plutonium.");
+        add("nuclearcraft.particle.antialpha.desc", "The Anti-Alpha Particle is the antimatter partner of the Alpha Particle.");
+        add("nuclearcraft.particle.pion_plus.desc", "Pions are responsible for holding nuclei together. Although not colored themselves, they distribute the \"residual\" strong force that keeps nuclei bound.");
+        add("nuclearcraft.particle.pion_naught.desc", "Pions are responsible for holding nuclei together. Although not colored themselves, they distribute the \"residual\" strong force that keeps nuclei bound.");
+        add("nuclearcraft.particle.pion_minus.desc", "Pions are responsible for holding nuclei together. Although not colored themselves, they distribute the \"residual\" strong force that keeps nuclei bound.");
+        add("nuclearcraft.particle.triton.desc", "The Triton is the nucleus of a Tritium Atom.");
+        add("nuclearcraft.particle.antitriton.desc", "The Anti-Triton is the antimatter partner of the Triton.");
+        add("nuclearcraft.particle.helion.desc", "The Helion is the nucleus of a Helium-3 Atom.");
+        add("nuclearcraft.particle.antihelion.desc", "The Anti-Helion is the antimatter partner of the Helion.");
+        add("nuclearcraft.particle.boron_ion.desc", "A Boron atom with one electron missing.");
+        add("nuclearcraft.particle.calcium_48_ion.desc", "A Calcium-48 atom with one electron missing. A particularly neutron-rich atom, useful for creating superheavy elements.");
+        add("nuclearcraft.particle.kaon_plus.desc", "The Kaon + is a meson with strangeness of 1.");
+        add("nuclearcraft.particle.kaon_naught.desc", "The Kaon 0 is a meson with strangeness of 1.");
+        add("nuclearcraft.particle.antikaon_naught.desc", "The Anti-Kaon 0 is a meson with strangeness of -1.");
+        add("nuclearcraft.particle.kaon_minus.desc", "The Kaon - is a meson with strangeness of -1.");
+        add("nuclearcraft.particle.eta.desc", "Eta Mesons are flavorless mesons, meaning their flavor numbers like strangeness and isospin are 0.");
+        add("nuclearcraft.particle.eta_prime.desc", "Eta Mesons are flavorless mesons, meaning their flavor numbers like strangeness and isospin are 0.");
+        add("nuclearcraft.particle.charmed_eta.desc", "Eta Mesons are flavorless mesons, meaning their flavor numbers like strangeness and isospin are 0.");
+        add("nuclearcraft.particle.bottom_eta.desc", "Eta Mesons are flavorless mesons, meaning their flavor numbers like strangeness and isospin are 0.");
+        add("nuclearcraft.particle.glueball.desc", "Glueballs are particles made entirely out of gluons.");
+        add("nuclearcraft.particle.sigma_plus.desc", "Sigma Baryons contain one Strange Quark. They are heavier than Protons and Neutrons.");
+        add("nuclearcraft.particle.antisigma_plus.desc", "Anti-Sigma Baryons contain one Anti-Strange Quark. They are heavier than Anti-Protons and Anti-Neutrons.");
+        add("nuclearcraft.particle.sigma_minus.desc", "Sigma Baryons contain one Strange Quark. They are heavier than Protons and Neutrons.");
+        add("nuclearcraft.particle.antisigma_minus.desc", "Anti-Sigma Baryons contain one Anti-Strange Quark. They are heavier than Anti-Protons and Anti-Neutrons.");
+        add("nuclearcraft.particle.delta_plus_plus.desc", "Delta ++ is a baryon containing three Up Quarks. It quickly decays via the strong force.");
+        add("nuclearcraft.particle.antidelta_plus_plus.desc", "Anti-Delta ++ is a baryon containing three Anti-Up Quarks. It quickly decays via the strong force.");
+        add("nuclearcraft.particle.delta_minus.desc", "Delta - is a baryon containing three Down Quarks. It quickly decays via the strong force.");
+        add("nuclearcraft.particle.antidelta_minus.desc", "Anti-Delta - is a baryon containing three Anti-Down Quarks. It quickly decays via the strong force.");
+    }
+
     private void fuelInfo() {
         add("jei.category." + MODID + ".fuel_info", "Fuel Variants");
         add("jei.category." + MODID + ".isotope_info", "Isotope Forms");
+        add("jei.category." + MODID + ".particle_info", "Particle Info");
         add("emi.category." + MODID + ".fuel_info", "Fuel Variants");
         add("emi.category." + MODID + ".isotope_info", "Isotope Forms");
+        add("emi.category." + MODID + ".particle_info", "Particle Info");
+        add("gui.nuclearcraft.jei.particle.mass", "Mass: %s");
+        add("gui.nuclearcraft.jei.particle.charge", "Charge: %s");
+        add("gui.nuclearcraft.jei.particle.spin", "Spin: %s");
+        add("gui.nuclearcraft.jei.particle.colour", "Feels Strong Force: %s");
+        add("gui.nuclearcraft.jei.particle.weak", "Feels Weak Force: %s");
+        add("jei.nuclearcraft.particle.energy", "Energy: %s");
+        add("emi.category." + MODID + ".target_chamber", "Target Chamber");
+        add("emi.category." + MODID + ".decay_chamber", "Decay Chamber");
+        add("emi.category." + MODID + ".collision_chamber", "Collision Chamber");
+        add("tooltip.nuclearcraft.particlestack.amount", "%s particles");
+        add("tooltip.nuclearcraft.particlestack.energy", "Energy: %s");
+        add("tooltip.nuclearcraft.particlestack.focus", "Focus: %s");
         add("jei.nuclearcraft.fuel_info.title", "%s - Available Forms");
         add("jei.nuclearcraft.fuel_info.row", "FE/t %d | H/t %s | D %ds");
         add("jei.nuclearcraft.fuel_info.row_triso", "Criticality %d | H/t %s | D %ds");

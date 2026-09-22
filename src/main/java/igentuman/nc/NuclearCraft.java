@@ -3,6 +3,7 @@ package igentuman.nc;
 import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.MultiblockPartBlock;
+import igentuman.nc.api.particle.ParticleCapabilities;
 import igentuman.nc.entity.EntityFeralGhoul;
 import igentuman.nc.entity.EntityWastelandBoss;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
@@ -16,6 +17,8 @@ import igentuman.nc.handler.event.PipeEvents;
 import igentuman.nc.handler.event.ServerEvents;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
+import igentuman.nc.particle.ParticleCatalog;
+import igentuman.nc.particle.ParticleCatalogValidator;
 import igentuman.nc.block_entity.MultiblockPortBE;
 import igentuman.nc.network.*;
 import igentuman.nc.registration.FissionFuelEntry;
@@ -23,6 +26,7 @@ import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.item.HEVItem;
+import igentuman.nc.recipe.RecipeDeserializationLogger;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCSounds;
 import igentuman.nc.setup.NcParticles;
@@ -34,12 +38,15 @@ import igentuman.nc.setup.entries.Storage;
 import igentuman.nc.setup.level.ModFeatures;
 import igentuman.nc.util.MultiblocksProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.energy.ComponentEnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -64,6 +71,9 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static igentuman.nc.config.Common.DEBUG_LOGGING;
 
@@ -97,6 +107,8 @@ public class NuclearCraft {
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::onConfigReload);
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListener);
+        NeoForge.EVENT_BUS.addListener(this::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(this::onDatapackSync);
         if (FMLEnvironment.dist.isClient()) {
             modEventBus.addListener(this::registerClientReloadListeners);
         }
@@ -218,6 +230,7 @@ public class NuclearCraft {
 
         // Multiblock ports proxy capabilities from their controller. The port's own ModEntry
         // has no cap definitions, so register caps here unconditionally for every port BE type.
+        Set<BlockEntityType<?>> particlePortTypes = new HashSet<>();
         for (MultiblockEntry mb : MultiblockRegistry.ENTRIES.values()) {
             for (ModEntry port : mb.portEntries()) {
                 if (!port.hasBlockEntity()) continue;
@@ -236,6 +249,14 @@ public class NuclearCraft {
                         port.blockEntity().get(),
                         (be, side) -> be instanceof MultiblockPortBE part ? part.getEnergyHandler(side) : null
                 );
+                if (particlePortTypes.add(port.blockEntity().get())) {
+                    event.registerBlockEntity(
+                            ParticleCapabilities.BLOCK,
+                            port.blockEntity().get(),
+                            (be, side) -> be instanceof MultiblockPortBE part
+                                    ? part.getParticleHandler(side) : null
+                    );
+                }
             }
         }
     }
@@ -252,7 +273,10 @@ public class NuclearCraft {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-
+        ParticleCatalogValidator.Report report = ParticleCatalogValidator.validate(ParticleCatalog.fromRegistry().definitions());
+        for (ParticleCatalogValidator.Problem problem : report.problems()) {
+            LOGGER.error("Particle catalog: {} {}: {}", problem.particleId(), problem.fieldPath(), problem.message());
+        }
     }
 
     private void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
@@ -284,6 +308,16 @@ public class NuclearCraft {
 
     private void onAddReloadListener(AddReloadListenerEvent event) {
         event.addListener(MultiblocksProvider.getInstance());
+    }
+
+    private void onServerStarted(ServerStartedEvent event) {
+        RecipeDeserializationLogger.logProcessorRecipes(event.getServer().getRecipeManager());
+    }
+
+    private void onDatapackSync(OnDatapackSyncEvent event) {
+        if (event.getPlayer() == null) {
+            RecipeDeserializationLogger.logProcessorRecipes(event.getPlayerList().getServer().getRecipeManager());
+        }
     }
 
     private void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {

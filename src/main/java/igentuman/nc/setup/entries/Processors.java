@@ -1,8 +1,11 @@
 package igentuman.nc.setup.entries;
 
 import igentuman.nc.block.UniversalProcessorBlock;
+import igentuman.nc.block.particle.CreativeParticleSourceBlock;
 import igentuman.nc.block_entity.*;
+import igentuman.nc.block_entity.particle.CreativeParticleSourceBE;
 import igentuman.nc.block_entity.catalyst.CatalystType;
+import igentuman.nc.container.CreativeParticleSourceContainer;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.recipe.OreVeinRecipe;
 import igentuman.nc.recipe.OreVeinRecipeSerializer;
@@ -44,11 +47,13 @@ public class Processors extends ModEntries {
     public static final String IRRADIATOR = "irradiator";
     public static final String LEACHER = "leacher";
     public static final String ANALYZER = "analyzer";
+    public static final String CREATIVE_PARTICLE_SOURCE = "creative_particle_source";
 
     public static void processors() {
         oreVeinRecipes();
+        creativeParticleSource();
         irradiator();
-        proc(GAS_SCRUBBER, 1, 0, 1, 0, 0);
+        gasScrubber();
         pump();
         nuclearFurnace();
         proc(MANUFACTORY, 0, 1, 0, 1, 13);
@@ -75,6 +80,15 @@ public class Processors extends ModEntries {
         analyzer();
     }
 
+    private static void creativeParticleSource() {
+        add(CREATIVE_PARTICLE_SOURCE)
+                .block(CreativeParticleSourceBlock::new)
+                .blockEntity(CreativeParticleSourceBE::new)
+                .menu(CreativeParticleSourceContainer::new)
+                .withoutRecipes()
+                .build();
+    }
+
     private static void nuclearFurnace() {
         ModEntryBuilder b = add(NUCLEAR_FURNACE)
                 .block(UniversalProcessorBlock::new)
@@ -83,6 +97,16 @@ public class Processors extends ModEntries {
                 .withRecipes();
         b.itemCap(2, 1);
         b.withLayout(SlotsLayout.forProcessor(2, 0, 1, 0))
+                .progressBar(0)
+                .build();
+    }
+
+    private static void gasScrubber() {
+        ModEntryBuilder b = addProcessor(GAS_SCRUBBER)
+                .blockEntity(GasScrubberBE::new);
+        b.fluidCap(1, 1, 0);
+        b.catalysts(CatalystType.ENERGY);
+        b.withLayout(SlotsLayout.forProcessor(0, 1, 0, 1))
                 .progressBar(0)
                 .build();
     }

@@ -1,8 +1,10 @@
 package igentuman.nc.datagen.tag;
 
+import igentuman.nc.multiblock.accelerator.AcceleratorTags;
 import igentuman.nc.multiblock.fission.FissionTags;
 import igentuman.nc.multiblock.fusion.FusionTags;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzTags;
+import igentuman.nc.setup.entries.Accelerator;
 import igentuman.nc.setup.entries.FusionReactor;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.MaterialEntry;
@@ -84,6 +86,14 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         addFissionStructureTags();
         addFusionStructureTags();
         addKugelblitzStructureTags();
+        addAcceleratorStructureTags();
+    }
+
+    private void addAcceleratorStructureTags() {
+        var coolers = tag(AcceleratorTags.COOLERS);
+        for (String cooler : Accelerator.COOLERS) {
+            coolers.add(b(cooler));
+        }
     }
 
     private void addKugelblitzStructureTags() {

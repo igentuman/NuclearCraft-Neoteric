@@ -4,6 +4,7 @@ import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import igentuman.nc.block_entity.MultiblockControllerBE;
+import igentuman.nc.block_entity.accelerator.BeamDiverterControllerBE;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.ItemCapabilityHandler;
 import igentuman.nc.multiblock.MultiblockHandler;
@@ -184,6 +185,16 @@ public class ControllerPerihperal implements IPeripheral {
         if (slot < 1 || slot > handler.getSlots()) return false;
         handler.setStackInSlot(slot - 1, ItemStack.EMPTY);
         return true;
+    }
+
+    @LuaFunction
+    public final boolean selectOutput(int channel) {
+        return be instanceof BeamDiverterControllerBE diverter && diverter.setSelectedOutputChannel(channel - 1);
+    }
+
+    @LuaFunction
+    public final int getSelectedOutput() {
+        return be instanceof BeamDiverterControllerBE diverter ? diverter.selectedOutputChannel + 1 : 0;
     }
 
     @LuaFunction

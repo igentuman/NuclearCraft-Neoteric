@@ -7,6 +7,8 @@ import igentuman.nc.api.multiblock.IMultiblockValidator;
 import igentuman.nc.api.impl.CubicMultiblockValidator;
 import igentuman.nc.api.impl.MultiblockCacheImpl;
 import igentuman.nc.api.impl.MultiblockLogicImpl;
+import igentuman.nc.multiblock.discovery.GeometryDiscoveryJobFactory;
+import igentuman.nc.multiblock.validation.ValidationJobFactory;
 import igentuman.nc.registration.ModEntry;
 import net.minecraft.world.level.block.Block;
 
@@ -14,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+
+import static igentuman.nc.NuclearCraft.rl;
 
 /** Fluent builder that assembles a {@link MultiblockEntry} from controller, ports, casing, interior, and size. */
 public class MultiblockEntryBuilder {
@@ -32,6 +36,8 @@ public class MultiblockEntryBuilder {
     private Supplier<IMultiblockLogic> logicSupplier = () -> new MultiblockLogicImpl();
     private Supplier<IMultiblockCache> cacheSupplier = MultiblockCacheImpl::new;
     private Supplier<IMultiblockValidator> validatorSupplier;
+    private MultiblockExecutionStrategy executionStrategy = MultiblockExecutionStrategy.LEGACY_ASYNC;
+    private ScheduledMultiblockDefinition scheduledDefinition;
 
     private MultiblockEntryBuilder(String name) {
         this.name = name;
@@ -102,6 +108,18 @@ public class MultiblockEntryBuilder {
         return this;
     }
 
+    public MultiblockEntryBuilder executionStrategy(MultiblockExecutionStrategy executionStrategy) {
+        this.executionStrategy = executionStrategy;
+        return this;
+    }
+
+    public MultiblockEntryBuilder scheduled(GeometryDiscoveryJobFactory discoveryFactory,
+                                            ValidationJobFactory validationFactory) {
+        this.executionStrategy = MultiblockExecutionStrategy.SCHEDULED_SERVER_THREAD;
+        this.scheduledDefinition = new ScheduledMultiblockDefinition(rl(name), discoveryFactory, validationFactory);
+        return this;
+    }
+
     public MultiblockEntry build() {
         Supplier<IMultiblockValidator> validator = validatorSupplier != null
                 ? validatorSupplier
@@ -115,7 +133,8 @@ public class MultiblockEntryBuilder {
         required.addAll(casing);
         required.addAll(interior);
 
-        MultiblockEntry entry = new MultiblockEntry(name, validator, logicSupplier, cacheSupplier, required, controller, List.copyOf(ports));
+        MultiblockEntry entry = new MultiblockEntry(name, validator, logicSupplier, cacheSupplier, required,
+                controller, List.copyOf(ports), executionStrategy, scheduledDefinition);
 
         MultiblockRegistry.register(entry);
         return entry;
@@ -164,6 +183,7 @@ public class MultiblockEntryBuilder {
         }
         List<Supplier<Block>> interiorList = List.copyOf(interior);
         return (state, be) -> {
+            if (state.isAir()) return true;
             for (Supplier<Block> i : interiorList) {
                 Block block = i.get();
                 if (block != null && state.is(block)) return true;

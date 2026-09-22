@@ -1,10 +1,12 @@
 package igentuman.nc.multiblock.kugelblitz;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.api.multiblock.IMultiblockCache;
 import igentuman.nc.api.multiblock.IMultiblockValidator;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -12,6 +14,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static igentuman.nc.multiblock.MultiblockDebug.bounds;
+import static igentuman.nc.multiblock.MultiblockDebug.fail;
+import static igentuman.nc.multiblock.MultiblockDebug.step;
 
 public class KugelblitzValidator implements IMultiblockValidator {
 
@@ -24,40 +30,53 @@ public class KugelblitzValidator implements IMultiblockValidator {
 
     @Override
     public boolean validate(Level level, BlockPos controllerPos, Direction facing, IMultiblockCache cache) {
-        if (!(cache instanceof KugelblitzCache kc)) return false;
+        if (!(cache instanceof KugelblitzCache kc)) {
+            fail("multiblock.kugelblitz.wrong_cache", controllerPos, NuclearCraft.rl("kugelblitz_cache"), null);
+            return false;
+        }
         kc.resetStats();
         Set<Long> positions = kc.getStructurePositions();
         positions.clear();
 
-        BlockPos center = findCenter(level, controllerPos);
-        if (center == null) return false;
+        BlockPos center = findCenter(level, controllerPos, kc);
+        if (center == null) {
+            fail("multiblock.kugelblitz.center_not_found", controllerPos,
+                    NuclearCraft.rl("photon_concentrator"), blockId(kc.getBlockState(level, controllerPos)));
+            return false;
+        }
+        bounds(center.offset(-5, -5, -5), center.offset(5, 5, 5));
 
+        step("kugelblitz center={} validating symmetric walls", center.toShortString());
         if (!validateWalls(level, center, kc, positions)) return false;
-        if (!validateRings(level, center, positions)) return false;
-        if (!validateCorners(level, center, positions)) return false;
-        if (!validateInterior(level, center, positions)) return false;
+        step("kugelblitz walls passed; validating frame rings");
+        if (!validateRings(level, center, kc, positions)) return false;
+        step("kugelblitz rings passed; validating corners");
+        if (!validateCorners(level, center, kc, positions)) return false;
+        step("kugelblitz corners passed; validating interior");
+        if (!validateInterior(level, center, kc, positions)) return false;
 
         positions.add(controllerPos.asLong());
         kc.center = center.asLong();
+        step("kugelblitz validation passed positions={}", positions.size());
         return true;
     }
 
-    private BlockPos findCenter(Level level, BlockPos controllerPos) {
+    private BlockPos findCenter(Level level, BlockPos controllerPos, KugelblitzCache kc) {
         for (int dx = -6; dx <= 6; dx++) {
             for (int dy = -6; dy <= 6; dy++) {
                 for (int dz = -6; dz <= 6; dz++) {
                     BlockPos c = controllerPos.offset(dx, dy, dz);
-                    if (hasAllConcentrators(level, c)) return c;
+                    if (hasAllConcentrators(level, c, kc)) return c;
                 }
             }
         }
         return null;
     }
 
-    private boolean hasAllConcentrators(Level level, BlockPos center) {
+    private boolean hasAllConcentrators(Level level, BlockPos center, KugelblitzCache kc) {
         Block photon = blockOf("photon_concentrator");
         for (int[] a : AXES) {
-            if (!level.getBlockState(center.offset(a[0], a[1], a[2])).is(photon)) return false;
+            if (!kc.getBlockState(level, center.offset(a[0], a[1], a[2])).is(photon)) return false;
         }
         return true;
     }
@@ -71,7 +90,11 @@ public class KugelblitzValidator implements IMultiblockValidator {
         List<Block> reference = null;
         for (int[] a : AXES) {
             BlockPos faceCenter = center.offset(a[0], a[1], a[2]);
-            if (!level.getBlockState(faceCenter).is(photon)) return false;
+            if (!kc.getBlockState(level, faceCenter).is(photon)) {
+                fail("multiblock.kugelblitz.missing_photon_concentrator", faceCenter,
+                        NuclearCraft.rl("photon_concentrator"), blockId(kc.getBlockState(level, faceCenter)));
+                return false;
+            }
             int[][] basis = basis(a);
             List<Block> wall = new ArrayList<>(25);
             for (int i = -2; i <= 2; i++) {
@@ -79,8 +102,12 @@ public class KugelblitzValidator implements IMultiblockValidator {
                     BlockPos p = faceCenter.offset(basis[0][0] * i + basis[1][0] * j,
                             basis[0][1] * i + basis[1][1] * j,
                             basis[0][2] * i + basis[1][2] * j);
-                    BlockState state = level.getBlockState(p);
-                    if (!isCasing(state)) return false;
+                    BlockState state = kc.getBlockState(level, p);
+                    if (!isCasing(state)) {
+                        fail("multiblock.kugelblitz.wrong_wall", p, NuclearCraft.rl("kugelblitz_casing"),
+                                blockId(state));
+                        return false;
+                    }
                     if (state.is(transformer)) kc.transformers++;
                     if (state.is(flux)) kc.fluxRegulators++;
                     if (state.is(stabilizer)) kc.stabilizers++;
@@ -91,13 +118,15 @@ public class KugelblitzValidator implements IMultiblockValidator {
             if (reference == null) {
                 reference = wall;
             } else if (!reference.equals(wall)) {
+                fail("multiblock.kugelblitz.asymmetric_walls", faceCenter,
+                        NuclearCraft.rl("symmetric_kugelblitz_wall"), blockId(kc.getBlockState(level, faceCenter)));
                 return false;
             }
         }
         return true;
     }
 
-    private boolean validateRings(Level level, BlockPos center, Set<Long> positions) {
+    private boolean validateRings(Level level, BlockPos center, KugelblitzCache kc, Set<Long> positions) {
         for (int[] r : RINGS) {
             BlockPos ringCenter = center.offset(r[0], r[1], r[2]);
             int[][] basis = basis(r);
@@ -108,7 +137,12 @@ public class KugelblitzValidator implements IMultiblockValidator {
                     BlockPos p = ringCenter.offset(basis[0][0] * i + basis[1][0] * j,
                             basis[0][1] * i + basis[1][1] * j,
                             basis[0][2] * i + basis[1][2] * j);
-                    if (!isFrame(level.getBlockState(p))) return false;
+                    BlockState state = kc.getBlockState(level, p);
+                    if (!isFrame(state)) {
+                        fail("multiblock.kugelblitz.wrong_frame", p, NuclearCraft.rl("neutronium_frame"),
+                                blockId(state));
+                        return false;
+                    }
                     positions.add(p.asLong());
                 }
             }
@@ -116,12 +150,17 @@ public class KugelblitzValidator implements IMultiblockValidator {
         return true;
     }
 
-    private boolean validateCorners(Level level, BlockPos center, Set<Long> positions) {
+    private boolean validateCorners(Level level, BlockPos center, KugelblitzCache kc, Set<Long> positions) {
         for (int sx = -1; sx <= 1; sx += 2) {
             for (int sy = -1; sy <= 1; sy += 2) {
                 for (int sz = -1; sz <= 1; sz += 2) {
                     BlockPos p = center.offset(sx * 3, sy * 3, sz * 3);
-                    if (!isCasing(level.getBlockState(p))) return false;
+                    BlockState state = kc.getBlockState(level, p);
+                    if (!isCasing(state)) {
+                        fail("multiblock.kugelblitz.wrong_corner", p, NuclearCraft.rl("kugelblitz_casing"),
+                                blockId(state));
+                        return false;
+                    }
                     positions.add(p.asLong());
                 }
             }
@@ -129,15 +168,20 @@ public class KugelblitzValidator implements IMultiblockValidator {
         return true;
     }
 
-    private boolean validateInterior(Level level, BlockPos center, Set<Long> positions) {
+    private boolean validateInterior(Level level, BlockPos center, KugelblitzCache kc, Set<Long> positions) {
         Block blackHole = blockOf("black_hole");
         for (int x = -4; x <= 4; x++) {
             for (int y = -4; y <= 4; y++) {
                 for (int z = -4; z <= 4; z++) {
                     if (x * x + y * y + z * z > 16) continue;
                     BlockPos p = center.offset(x, y, z);
-                    BlockState state = level.getBlockState(p);
-                    if (!state.isAir() && !state.is(blackHole)) return false;
+                    BlockState state = kc.getBlockState(level, p);
+                    if (!state.isAir() && !state.is(blackHole)) {
+                        fail("multiblock.kugelblitz.wrong_inner", p,
+                                BuiltInRegistries.BLOCK.getKey(net.minecraft.world.level.block.Blocks.AIR),
+                                blockId(state));
+                        return false;
+                    }
                     positions.add(p.asLong());
                 }
             }
@@ -159,6 +203,10 @@ public class KugelblitzValidator implements IMultiblockValidator {
         return state.is(blockOf("neutronium_frame"))
                 || state.is(blockOf("chamber_terminal"))
                 || state.is(blockOf("chamber_port"));
+    }
+
+    private static net.minecraft.resources.ResourceLocation blockId(BlockState state) {
+        return BuiltInRegistries.BLOCK.getKey(state.getBlock());
     }
 
     private static Block blockOf(String name) {

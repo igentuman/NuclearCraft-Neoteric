@@ -17,6 +17,8 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /** Immutable record bundling all deferred registry refs and capability config for one registered content entry. */
@@ -29,6 +31,7 @@ public record ModEntry (
         boolean hasRecipes,
         DeferredHolder<RecipeType<?>, RecipeType<?>> recipeType,
         DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> recipeSerializer,
+        RecipeFamilyEntry recipeFamily,
         MaterialEntry materialEntry,
         ItemCapDefinition itemCap,
         FluidCapDefinition fluidCap,
@@ -41,6 +44,38 @@ public record ModEntry (
         Set<CatalystType> supportedCatalysts,
         boolean customModel
 ) {
+
+    public ModEntry(
+            String name,
+            DeferredBlock<Block> block,
+            DeferredItem<Item> item,
+            DeferredHolder<MenuType<?>, MenuType<?>> menu,
+            DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> blockEntity,
+            boolean hasRecipes,
+            DeferredHolder<RecipeType<?>, RecipeType<?>> recipeType,
+            DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> recipeSerializer,
+            MaterialEntry materialEntry,
+            ItemCapDefinition itemCap,
+            FluidCapDefinition fluidCap,
+            EnergyCapDefinition energyCap,
+            SlotsLayout slotsLayout,
+            int progressBar,
+            ToolSetEntry toolSetEntry,
+            ArmorSetEntry armorSetEntry,
+            Set<MultiblockEntry> linkedMultiblocks,
+            Set<CatalystType> supportedCatalysts,
+            boolean customModel
+    ) {
+        this(name, block, item, menu, blockEntity, hasRecipes, recipeType, recipeSerializer, null,
+                materialEntry, itemCap, fluidCap, energyCap, slotsLayout, progressBar, toolSetEntry,
+                armorSetEntry, linkedMultiblocks, supportedCatalysts, customModel);
+    }
+
+    public ModEntry {
+        linkedMultiblocks = linkedMultiblocks == null
+                ? new LinkedHashSet<>()
+                : new LinkedHashSet<>(linkedMultiblocks);
+    }
 
     public boolean hasBlockEntity() {
         return blockEntity != null;
@@ -97,7 +132,7 @@ public record ModEntry (
     }
 
     public Set<MultiblockEntry> linkedMultiblocks() {
-        return this.linkedMultiblocks;
+        return Collections.unmodifiableSet(this.linkedMultiblocks);
     }
 
     public void unlinkMultiblock(MultiblockEntry entry) {

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nuclearcraft:block/accelerator_ion_source_port"
+    }
+  }
+}

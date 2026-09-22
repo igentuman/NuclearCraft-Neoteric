@@ -100,11 +100,6 @@ public class FissionReactorScreen extends MultiblockControllerScreen {
                 x, y, 0x404040, false);
     }
 
-    private int synced(String field) {
-        int idx = menu.getBlockEntity().getSyncFieldIndex(field);
-        return idx >= 0 ? menu.getSyncedValue(idx) : 0;
-    }
-
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         int x = (this.width - this.imageWidth) / 2;

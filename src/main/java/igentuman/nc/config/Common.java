@@ -25,6 +25,8 @@ public class Common {
 
     public static final ModConfigSpec.IntValue HEV_ENERGY_STORAGE;
 
+    public static final ModConfigSpec.DoubleValue GAS_SCRUBBER_RADIATION_REDUCTION_BQ;
+
     public static final ModConfigSpec.BooleanValue IN_SITU_ENABLE_VEINS;
     public static final ModConfigSpec.ConfigValue<List<? extends Integer>> IN_SITU_VEIN_BLOCKS_AMOUNT;
     public static final ModConfigSpec.IntValue IN_SITU_VEINS_RARITY;
@@ -43,7 +45,7 @@ public class Common {
         MOD_TAG_PRIORITY = BUILDER
                 .comment("Mod id priority for resolving tag-based recipe outputs.",
                         "Earlier entries win; namespaces not listed rank last (tiebreak = tag order).")
-                .defineList("mod_tag_priority", List.of("minecraft"), o -> o instanceof String);
+                .defineList("mod_tag_priority", List.of("minecraft", "nuclearcraft", "mekanism", "immersiveengineering"), o -> o instanceof String);
         BUILDER.pop();
 
         BUILDER.push("misc");
@@ -84,6 +86,12 @@ public class Common {
         HEV_ENERGY_STORAGE = BUILDER
                 .comment("HEV armor FE capacity per piece")
                 .defineInRange("energy_storage", 1_000_000, 1000, Integer.MAX_VALUE);
+        BUILDER.pop();
+
+        BUILDER.push("gas_scrubber");
+        GAS_SCRUBBER_RADIATION_REDUCTION_BQ = BUILDER
+                .comment("Radiation activity in Bq cancelled by an operating gas scrubber within 64 blocks")
+                .defineInRange("radiation_reduction_bq", 10_000_000_000D, 0D, Double.MAX_VALUE);
         BUILDER.pop();
 
         BUILDER.push("in_situ_leaching");

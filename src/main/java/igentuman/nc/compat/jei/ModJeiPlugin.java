@@ -1,7 +1,11 @@
 package igentuman.nc.compat.jei;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.compat.ae2.JEI2PatternEncoderTransfer;
+import igentuman.nc.compat.jei.particle.ParticleIngredientHelper;
+import igentuman.nc.compat.jei.particle.ParticleIngredientRenderer;
+import igentuman.nc.compat.jei.particle.ParticleType;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
@@ -9,6 +13,7 @@ import igentuman.nc.recipe.UniversalProcessorRecipeSerializer;
 import igentuman.nc.recipe.fission.FissionRecipes;
 import igentuman.nc.recipe.fusion.FusionRecipes;
 import igentuman.nc.recipe.kugelblitz.KugelblitzRecipes;
+import igentuman.nc.recipe.particle.ParticleRecipes;
 import igentuman.nc.recipe.turbine.TurbineRecipes;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
@@ -17,6 +22,7 @@ import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.UniversalProcessorScreen;
 import igentuman.nc.setup.entries.Crafter;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.Registers;
 import igentuman.nc.util.MultiblockStructure;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -61,6 +67,14 @@ public class ModJeiPlugin implements IModPlugin {
     }
 
     @Override
+    public void registerIngredients(IModIngredientRegistration registration) {
+        List<ParticleStack> allParticles = Registers.PARTICLE_DEFINITION_REGISTRY.keySet().stream()
+                .map(id -> new ParticleStack(id, 1, 0, 0))
+                .toList();
+        registration.register(ParticleType.PARTICLE, allParticles, new ParticleIngredientHelper(), new ParticleIngredientRenderer(), ParticleStack.CODEC);
+    }
+
+    @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         var guiHelper = registration.getJeiHelpers().getGuiHelper();
 
@@ -80,8 +94,12 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new TurbineRecipeCategory(guiHelper));
         registration.addRecipeCategories(new KugelblitzRecipeCategory(guiHelper));
         registration.addRecipeCategories(new OreVeinRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new TargetChamberRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new DecayChamberRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new CollisionChamberRecipeCategory(guiHelper));
         registration.addRecipeCategories(new FuelInfoCategory(guiHelper));
         registration.addRecipeCategories(new IsotopeInfoCategory(guiHelper));
+        registration.addRecipeCategories(new ParticleInfoCategory(guiHelper));
     }
 
     @Override
@@ -106,6 +124,9 @@ public class ModJeiPlugin implements IModPlugin {
         addSpecialRecipeCatalyst(registration, "turbine_controller", TurbineRecipeCategory.TYPE);
         addSpecialRecipeCatalyst(registration, "chamber_terminal", KugelblitzRecipeCategory.TYPE);
         addSpecialRecipeCatalyst(registration, "analyzer", OreVeinRecipeCategory.TYPE);
+        addSpecialRecipeCatalyst(registration, "target_chamber_controller", TargetChamberRecipeCategory.TYPE);
+        addSpecialRecipeCatalyst(registration, "decay_chamber_controller", DecayChamberRecipeCategory.TYPE);
+        addSpecialRecipeCatalyst(registration, "collision_chamber_controller", CollisionChamberRecipeCategory.TYPE);
         registration.addRecipeCatalyst(new ItemStack(Crafter.ENGINEERS_CRAFTING_TABLE_ITEM.get()), RecipeTypes.CRAFTING);
     }
 
@@ -188,6 +209,15 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipes(KugelblitzRecipeCategory.TYPE,
                 recipeManager.getAllRecipesFor(KugelblitzRecipes.KUGELBLITZ_TYPE.get())
                         .stream().map(RecipeHolder::value).filter(r -> r.isComplete()).toList());
+        registration.addRecipes(TargetChamberRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(ParticleRecipes.TARGET_CHAMBER_TYPE.get())
+                        .stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(DecayChamberRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(ParticleRecipes.DECAY_CHAMBER_TYPE.get())
+                        .stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(CollisionChamberRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(ParticleRecipes.COLLISION_CHAMBER_TYPE.get())
+                        .stream().map(RecipeHolder::value).toList());
         ModEntry oreVeins = ModEntries.get("nc_ore_veins");
         if (oreVeins != null && oreVeins.hasRecipes()) {
             @SuppressWarnings("unchecked")
@@ -200,6 +230,14 @@ public class ModJeiPlugin implements IModPlugin {
 
         registration.addRecipes(FuelInfoCategory.TYPE, fuelInfoRecipes());
         registration.addRecipes(IsotopeInfoCategory.TYPE, isotopeInfoRecipes());
+        registration.addRecipes(ParticleInfoCategory.TYPE, particleInfoRecipes());
+    }
+
+    private List<ParticleInfoRecipe> particleInfoRecipes() {
+        List<ParticleInfoRecipe> out = new ArrayList<>();
+        igentuman.nc.particle.ParticleCatalog.fromRegistry().definitions()
+                .forEach((id, definition) -> out.add(new ParticleInfoRecipe(id, definition)));
+        return out;
     }
 
     private List<FuelInfoRecipe> fuelInfoRecipes() {

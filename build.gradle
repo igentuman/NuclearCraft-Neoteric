@@ -101,6 +101,9 @@ configurations {
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.2"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.10.2"
+
     compileOnly("cc.tweaked:cc-tweaked-1.21.1-common-api:1.118.0")
     runtimeOnly("cc.tweaked:cc-tweaked-1.21.1-forge:1.118.0")
 
@@ -110,7 +113,7 @@ dependencies {
     implementation("igentuman.nr:NuclearRadiation:1.0.0-beta8") { transitive = false }
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     implementation "curse.maven:multi-builder-tool-827020:8797925"
-    implementation "curse.maven:immersive-engineering-231951:6733669"
+    compileOnly "curse.maven:immersive-engineering-231951:6733669"
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
     compileOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE:api")
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
@@ -123,8 +126,8 @@ dependencies {
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:tools")// Mekanism: Tools
 
-    runtimeOnly "curse.maven:large-ore-deposits-318833:8595420"
-    runtimeOnly "curse.maven:forgeendertech-244844:8714321"
+    //runtimeOnly "curse.maven:large-ore-deposits-318833:8595420"
+    //runtimeOnly "curse.maven:forgeendertech-244844:8714321"
 
     implementation "curse.maven:sodium-394468:8382328"
 
@@ -153,6 +156,10 @@ dependencies {
 
     
     //compileOnly "curse.maven:gregtechceu-modern-890405:6766269"
+}
+
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
 }
 
 jarJar.enable()

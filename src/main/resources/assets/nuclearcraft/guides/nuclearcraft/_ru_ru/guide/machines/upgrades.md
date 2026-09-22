@@ -2,12 +2,12 @@
 navigation:
   title: Улучшения процессоров
   parent: machines.md
-  icon: upgrade_speed
+  icon: speed_upgrade
 item_ids:
-  - nuclearcraft:upgrade_speed
-  - nuclearcraft:upgrade_energy
-  - nuclearcraft:upgrade_stack
-  - nuclearcraft:upgrade_quantum
+  - nuclearcraft:speed_upgrade
+  - nuclearcraft:energy_upgrade
+  - nuclearcraft:stack_upgrade
+  - nuclearcraft:quantum_upgrade
 ---
 
 # Улучшения процессоров
@@ -19,7 +19,7 @@ item_ids:
 ## Улучшение скорости
 
 <Column alignItems="center" fullWidth={true}>
-  <ItemImage id="upgrade_speed" />
+  <ItemImage id="speed_upgrade" />
 </Column>
 
 **Улучшение скорости** даёт `+1 скорости` за предмет. Рецепт идёт быстрее, но расход энергии растёт квадратично от скорости. До 64 штук в слот.
@@ -27,7 +27,7 @@ item_ids:
 ## Улучшение энергии
 
 <Column alignItems="center" fullWidth={true}>
-  <ItemImage id="upgrade_energy" />
+  <ItemImage id="energy_upgrade" />
 </Column>
 
 **Улучшение энергии** снижает расход энергии (квадратично) и увеличивает внутренний буфер энергии (`x N / 10`). Нужно, чтобы держать в разумных пределах процессоры с сильным разгоном.
@@ -35,7 +35,7 @@ item_ids:
 ## Улучшение пакетной обработки
 
 <Column alignItems="center" fullWidth={true}>
-  <ItemImage id="upgrade_stack" />
+  <ItemImage id="stack_upgrade" />
 </Column>
 
 **Улучшение пакетной обработки** включает параллельные рецепты: `ceil(count / 4)` рецептов за тик, не более 32. Работает как скорость + параллельный ввод/вывод. Энергоэффективнее простого ускорения.
@@ -43,7 +43,7 @@ item_ids:
 ## Квантовое улучшение
 
 <Column alignItems="center" fullWidth={true}>
-  <ItemImage id="upgrade_quantum" />
+  <ItemImage id="quantum_upgrade" />
 </Column>
 
 **Квантовое улучшение** = `x5 скорости` и `1 параллельный рецепт на предмет`. Конечный уровень. Энергозатраты растут жёстко. Сочетайте с большим числом улучшений энергии.

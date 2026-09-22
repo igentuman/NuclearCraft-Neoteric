@@ -1,7 +1,8 @@
 package igentuman.nc.api.impl;
 
 import igentuman.nc.api.multiblock.IMultiblockCache;
-import igentuman.nc.util.WorldUtil;
+import igentuman.nc.multiblock.validation.UnloadedStructureException;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -29,12 +30,17 @@ public class MultiblockCacheImpl implements IMultiblockCache {
     private volatile long aabbMin;
     private volatile long aabbMax;
 
+    public BlockState observedBlockState(BlockPos pos) {
+        return blockStateCache.get(pos.asLong());
+    }
+
     @Override
     public BlockState getBlockState(Level level, BlockPos pos) {
+        LevelChunk chunk = loadedChunk(level, pos);
         long key = pos.asLong();
         BlockState cached = blockStateCache.get(key);
         if (cached != null) return cached;
-        BlockState fresh = WorldUtil.getBlockState(pos, (ServerLevel) level);
+        BlockState fresh = chunk.getBlockState(pos);
         blockStateCache.put(key, fresh);
         return fresh;
     }
@@ -42,12 +48,19 @@ public class MultiblockCacheImpl implements IMultiblockCache {
     @Override
     @Nullable
     public BlockEntity getBlockEntity(Level level, BlockPos pos) {
+        LevelChunk chunk = loadedChunk(level, pos);
         long key = pos.asLong();
         BlockEntity cached = blockEntityCache.get(key);
         if (cached != null) return cached;
-        BlockEntity fresh = WorldUtil.getBlockEntity(pos, (ServerLevel) level);
+        BlockEntity fresh = chunk.getBlockEntity(pos);
         if (fresh != null) blockEntityCache.put(key, fresh);
         return fresh;
+    }
+
+    private static LevelChunk loadedChunk(Level level, BlockPos pos) {
+        LevelChunk chunk = ((ServerLevel) level).getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
+        if (chunk == null) throw new UnloadedStructureException(pos);
+        return chunk;
     }
 
     @Override

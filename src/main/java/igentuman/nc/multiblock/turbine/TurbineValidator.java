@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.multiblock.MultiblockDebug.fail;
+import static igentuman.nc.multiblock.MultiblockDebug.step;
+
 public class TurbineValidator implements IMultiblockValidator {
 
     private final CubicMultiblockValidator shape;
@@ -78,7 +82,10 @@ public class TurbineValidator implements IMultiblockValidator {
         Map<Long, String> coilNames = new HashMap<>();
         classify(level, tc, bearings, coilNames);
 
-        if (bearings.size() != 2) return fail(tc);
+        step("turbine classified bearings={} rotorBlocks={} coils={}", bearings.size(),
+                tc.rotorPositions.size(), tc.coilPositions.size());
+        if (bearings.size() != 2) return invalid(tc, "multiblock.turbine.bearing_count", controllerPos,
+                rl("turbine_bearing"), null);
 
         int[] box = boundingBox(tc);
         int minX = box[0], minY = box[1], minZ = box[2], maxX = box[3], maxY = box[4], maxZ = box[5];
@@ -87,29 +94,41 @@ public class TurbineValidator implements IMultiblockValidator {
         tc.depth = maxZ - minZ + 1;
 
         Direction.Axis axis = axisOf(bearings.get(0), bearings.get(1));
-        if (axis == null) return fail(tc);
+        if (axis == null) return invalid(tc, "multiblock.turbine.bearings_not_aligned", bearings.get(0),
+                rl("aligned_turbine_bearings"), null);
 
-        if (!checkProportions(axis, tc)) return fail(tc);
+        if (!checkProportions(axis, tc)) return invalid(tc, "multiblock.turbine.wrong_proportions", controllerPos,
+                rl("odd_square_turbine_cross_section"), null);
 
         int cx = (minX + maxX) / 2, cy = (minY + maxY) / 2, cz = (minZ + maxZ) / 2;
 
         Set<Long> expectedBearings = expectedBearings(axis, minX, minY, minZ, maxX, maxY, maxZ, cx, cy, cz);
         Set<Long> detectedBearings = new HashSet<>();
         for (BlockPos b : bearings) detectedBearings.add(b.asLong());
-        if (!detectedBearings.equals(expectedBearings)) return fail(tc);
+        if (!detectedBearings.equals(expectedBearings)) {
+            BlockPos mismatch = mismatch(detectedBearings, expectedBearings, controllerPos);
+            return invalid(tc, "multiblock.turbine.wrong_bearing_position", mismatch,
+                    rl("turbine_bearing"), null);
+        }
 
         Set<Long> rotorLine = expectedRotorLine(axis, minX, minY, minZ, maxX, maxY, maxZ, cx, cy, cz);
-        if (!tc.rotorPositions.equals(rotorLine)) return fail(tc);
+        if (!tc.rotorPositions.equals(rotorLine)) {
+            BlockPos mismatch = mismatch(tc.rotorPositions, rotorLine, controllerPos);
+            return invalid(tc, "multiblock.turbine.wrong_rotor_line", mismatch,
+                    rl("turbine_rotor_shaft"), null);
+        }
         for (long key : rotorLine) {
             BlockState bs = tc.getBlockState(level, BlockPos.of(key));
             if (!bs.hasProperty(TurbineRotorBlock.FACING)
                     || bs.getValue(TurbineRotorBlock.FACING).getAxis() != axis) {
-                return fail(tc);
+                return invalid(tc, "multiblock.turbine.rotor_facing", BlockPos.of(key),
+                        rl("turbine_rotor_shaft"), BuiltInRegistries.BLOCK.getKey(bs.getBlock()));
             }
         }
 
         double flow = countBlades(level, tc, rotorLine, axis);
-        if (tc.bladeCount % 4 != 0) return fail(tc);
+        if (tc.bladeCount % 4 != 0) return invalid(tc, "multiblock.turbine.incomplete_blade_set", controllerPos,
+                rl("turbine_blade_set"), null);
 
         countCoils(level, tc, coilNames);
 
@@ -117,13 +136,24 @@ public class TurbineValidator implements IMultiblockValidator {
         tc.bearingPos1 = bearings.get(0).asLong();
         tc.bearingPos2 = bearings.get(1).asLong();
         tc.flow = flow;
+        step("turbine validation passed axis={} blades={} activeCoils={} flow={}", axis, tc.bladeCount,
+                tc.activeCoils, flow);
         return true;
     }
 
-    private boolean fail(TurbineCache tc) {
+    private boolean invalid(TurbineCache tc, String key, BlockPos pos,
+                            net.minecraft.resources.ResourceLocation expected,
+                            net.minecraft.resources.ResourceLocation actual) {
+        fail(key, pos, expected, actual);
         tc.resetStats();
         tc.getStructurePositions().clear();
         return false;
+    }
+
+    private static BlockPos mismatch(Set<Long> detected, Set<Long> expected, BlockPos fallback) {
+        for (long key : expected) if (!detected.contains(key)) return BlockPos.of(key);
+        for (long key : detected) if (!expected.contains(key)) return BlockPos.of(key);
+        return fallback;
     }
 
     private void classify(Level level, TurbineCache tc, List<BlockPos> bearings, Map<Long, String> coilNames) {

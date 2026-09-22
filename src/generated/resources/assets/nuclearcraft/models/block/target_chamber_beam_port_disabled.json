@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "nuclearcraft:block/particle_chamber/beam_port/bottom",
+    "east": "nuclearcraft:block/particle_chamber/beam_port/side",
+    "north": "nuclearcraft:block/particle_chamber/beam_port/disabled",
+    "south": "nuclearcraft:block/particle_chamber/beam_port/back",
+    "up": "nuclearcraft:block/particle_chamber/beam_port/top",
+    "west": "nuclearcraft:block/particle_chamber/beam_port/side"
+  }
+}

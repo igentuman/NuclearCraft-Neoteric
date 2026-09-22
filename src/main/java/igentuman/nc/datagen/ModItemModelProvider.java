@@ -5,6 +5,7 @@ import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ToolSetEntry;
+import igentuman.nc.item.ParticleSourceItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -45,6 +46,10 @@ public class ModItemModelProvider  extends ItemModelProvider {
                     continue;
                 }
                 if (entry.name().equals("q36_quantite_disruptor")) {
+                    continue;
+                }
+                if (entry.item().get() instanceof ParticleSourceItem) {
+                    simpleItem(entry.item(), "particle_sources/" + entry.name());
                     continue;
                 }
                 if (entry.name().contains("collector")) {

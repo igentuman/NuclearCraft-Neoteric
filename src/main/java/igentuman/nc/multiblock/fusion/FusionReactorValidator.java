@@ -15,6 +15,11 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
+import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.multiblock.MultiblockDebug.bounds;
+import static igentuman.nc.multiblock.MultiblockDebug.fail;
+import static igentuman.nc.multiblock.MultiblockDebug.step;
+
 /** Validates the fusion reactor's toroidal ring and empty interior, then tallies magnet and amplifier stats. */
 public class FusionReactorValidator implements IMultiblockValidator {
 
@@ -27,22 +32,29 @@ public class FusionReactorValidator implements IMultiblockValidator {
                 corePos, facing, cache == null ? "null" : cache.getClass().getSimpleName());
         if (!(cache instanceof FusionReactorCache fc)) {
             NuclearCraft.LOGGER.debug("[Fusion] validate FAIL: cache is not FusionReactorCache");
+            fail("multiblock.fusion.wrong_cache", corePos, rl("fusion_reactor_cache"), null);
             return false;
         }
         fc.resetStats();
         fc.getStructurePositions().clear();
 
-        int size = resolveSize(level, corePos);
+        int size = resolveSize(level, corePos, fc);
         NuclearCraft.LOGGER.debug("[Fusion] resolved size={}", size);
         if (size < MIN_SIZE) {
             NuclearCraft.LOGGER.debug("[Fusion] validate FAIL: size {} < MIN_SIZE {}", size, MIN_SIZE);
+            fail("multiblock.fusion.size_unresolved", corePos, rl("fusion_reactor_connector"),
+                    blockId(level, fc, corePos.above()));
             return false;
         }
+        int radius = size + 2;
+        bounds(corePos.offset(-radius, 0, -radius), corePos.offset(radius, 2, radius));
 
+        step("fusion ring validation size={}", size);
         if (!validateRing(level, corePos, size, fc)) {
             NuclearCraft.LOGGER.debug("[Fusion] validate FAIL: ring invalid");
             return false;
         }
+        step("fusion ring passed; validating empty plasma interior");
         if (!validateInterior(level, corePos, size, fc)) {
             NuclearCraft.LOGGER.debug("[Fusion] validate FAIL: interior not empty");
             return false;
@@ -52,6 +64,8 @@ public class FusionReactorValidator implements IMultiblockValidator {
         addCoreProxies(corePos, fc);
 
         fc.size = size;
+        step("fusion validation passed casing={} connectors={} magnets={} amplifiers={}", fc.casingCount,
+                fc.connectorCount, fc.magnetCount, fc.amplifierCount);
         NuclearCraft.LOGGER.debug("[Fusion] validate OK size={} casing={} connectors={} magnets={} amplifiers={} magField={} magPower={} magEff={} maxMagTemp={} rfAmp={} rfPower={} rfEff={} minRfTemp={} positions={}",
                 size, fc.casingCount, fc.connectorCount, fc.magnetCount, fc.amplifierCount,
                 fc.magneticFieldStrength, fc.magnetsPower, fc.magnetsEfficiency, fc.maxMagnetsTemp,
@@ -60,7 +74,7 @@ public class FusionReactorValidator implements IMultiblockValidator {
         return true;
     }
 
-    private int resolveSize(Level level, BlockPos corePos) {
+    private int resolveSize(Level level, BlockPos corePos, FusionReactorCache fc) {
         BlockPos mid = corePos.above();
         Block connector = blockOf("fusion_reactor_connector");
         if (connector == Blocks.AIR) {
@@ -73,7 +87,7 @@ public class FusionReactorValidator implements IMultiblockValidator {
             int count = 0;
             for (Direction side : List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
                 BlockPos p = mid.relative(side, dist);
-                if (level.getBlockState(p).is(connector)) count++;
+                if (fc.getBlockState(level, p).is(connector)) count++;
             }
             NuclearCraft.LOGGER.debug("[Fusion] resolveSize: dist={} connectorsFound={}/4", dist, count);
             if (count == 4) {
@@ -128,9 +142,10 @@ public class FusionReactorValidator implements IMultiblockValidator {
 
             for (int i = 0; i < wallLen; i++) {
                 BlockPos p = innerStart.relative(walkDir, i);
-                if (!isCasing(level, p)) {
+                if (!isCasing(level, fc, p)) {
+                    fail("multiblock.fusion.wrong_inner_wall", p, rl("fusion_reactor_casing"), blockId(level, fc, p));
                     NuclearCraft.LOGGER.debug("[Fusion] ring FAIL: side={} innerWall i={}/{} pos={} block={} (expected casing tag)",
-                            side, i, wallLen, p, blockName(level, p));
+                            side, i, wallLen, p, blockName(level, fc, p));
                     return false;
                 }
                 fc.getStructurePositions().add(p.asLong());
@@ -141,19 +156,22 @@ public class FusionReactorValidator implements IMultiblockValidator {
                 BlockPos po = outerStart.relative(walkDir, i);
                 BlockPos pb = bottomStart.relative(walkDir, i);
                 BlockPos pt = topStart.relative(walkDir, i);
-                if (!isCasing(level, po)) {
+                if (!isCasing(level, fc, po)) {
+                    fail("multiblock.fusion.wrong_outer_wall", po, rl("fusion_reactor_casing"), blockId(level, fc, po));
                     NuclearCraft.LOGGER.debug("[Fusion] ring FAIL: side={} outerWall i={}/{} pos={} block={} (expected casing tag)",
-                            side, i, outerWallLen, po, blockName(level, po));
+                            side, i, outerWallLen, po, blockName(level, fc, po));
                     return false;
                 }
-                if (!isCasing(level, pb)) {
+                if (!isCasing(level, fc, pb)) {
+                    fail("multiblock.fusion.wrong_bottom_wall", pb, rl("fusion_reactor_casing"), blockId(level, fc, pb));
                     NuclearCraft.LOGGER.debug("[Fusion] ring FAIL: side={} bottomWall i={}/{} pos={} block={} (expected casing tag)",
-                            side, i, outerWallLen, pb, blockName(level, pb));
+                            side, i, outerWallLen, pb, blockName(level, fc, pb));
                     return false;
                 }
-                if (!isCasing(level, pt)) {
+                if (!isCasing(level, fc, pt)) {
+                    fail("multiblock.fusion.wrong_top_wall", pt, rl("fusion_reactor_casing"), blockId(level, fc, pt));
                     NuclearCraft.LOGGER.debug("[Fusion] ring FAIL: side={} topWall i={}/{} pos={} block={} (expected casing tag)",
-                            side, i, outerWallLen, pt, blockName(level, pt));
+                            side, i, outerWallLen, pt, blockName(level, fc, pt));
                     return false;
                 }
                 fc.getStructurePositions().add(po.asLong());
@@ -192,9 +210,12 @@ public class FusionReactorValidator implements IMultiblockValidator {
 
             for (int i = 0; i < walkLen; i++) {
                 BlockPos p = start.relative(walkDir, i);
-                if (!level.getBlockState(p).isAir()) {
+                fc.getStructurePositions().add(p.asLong());
+                if (!fc.getBlockState(level, p).isAir()) {
+                    fail("multiblock.fusion.interior_not_empty", p,
+                            BuiltInRegistries.BLOCK.getKey(Blocks.AIR), blockId(level, fc, p));
                     NuclearCraft.LOGGER.debug("[Fusion] interior FAIL: side={} i={}/{} pos={} block={} (expected air)",
-                            side, i, walkLen, p, blockName(level, p));
+                            side, i, walkLen, p, blockName(level, fc, p));
                     return false;
                 }
             }
@@ -245,7 +266,7 @@ public class FusionReactorValidator implements IMultiblockValidator {
                 for (int dy : new int[]{0, 2}) {
                     BlockPos p = innerStart.relative(walkDir, i).relative(Direction.UP, dy);
                     fc.getStructurePositions().add(p.asLong());
-                    String bname = blockName(level, p);
+                    String bname = blockName(level, fc, p);
                     ElectromagnetDef mag = ElectromagnetDef.get(bname);
                     RFAmplifierDef amp = RFAmplifierDef.get(bname);
                     if (mag != null) {
@@ -271,7 +292,7 @@ public class FusionReactorValidator implements IMultiblockValidator {
                 for (int dy : new int[]{0, 2}) {
                     BlockPos p = outerStart.relative(walkDir, i).relative(Direction.UP, dy);
                     fc.getStructurePositions().add(p.asLong());
-                    String bname = blockName(level, p);
+                    String bname = blockName(level, fc, p);
                     ElectromagnetDef mag = ElectromagnetDef.get(bname);
                     RFAmplifierDef amp = RFAmplifierDef.get(bname);
                     if (mag != null) {
@@ -312,13 +333,17 @@ public class FusionReactorValidator implements IMultiblockValidator {
         }
     }
 
-    private boolean isCasing(Level level, BlockPos pos) {
-        return level.getBlockState(pos).is(FusionTags.CASING);
+    private boolean isCasing(Level level, FusionReactorCache fc, BlockPos pos) {
+        return fc.getBlockState(level, pos).is(FusionTags.CASING);
     }
 
-    private String blockName(Level level, BlockPos pos) {
-        BlockState bs = level.getBlockState(pos);
+    private String blockName(Level level, FusionReactorCache fc, BlockPos pos) {
+        BlockState bs = fc.getBlockState(level, pos);
         return BuiltInRegistries.BLOCK.getKey(bs.getBlock()).getPath();
+    }
+
+    private static net.minecraft.resources.ResourceLocation blockId(Level level, FusionReactorCache fc, BlockPos pos) {
+        return BuiltInRegistries.BLOCK.getKey(fc.getBlockState(level, pos).getBlock());
     }
 
     private static Block blockOf(String name) {

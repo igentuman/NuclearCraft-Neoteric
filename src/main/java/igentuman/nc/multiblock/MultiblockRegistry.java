@@ -26,11 +26,16 @@ public class MultiblockRegistry {
     }
 
     public static MultiblockEntry getByPort(String name) {
+        MultiblockEntry match = null;
         for (MultiblockEntry entry : ENTRIES.values()) {
             for (ModEntry port : entry.portEntries()) {
-                if (port.name().equals(name)) return entry;
+                if (port.name().equals(name)) {
+                    if (match != null && match != entry) return null;
+                    match = entry;
+                    break;
+                }
             }
         }
-        return null;
+        return match;
     }
 }

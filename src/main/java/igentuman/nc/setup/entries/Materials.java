@@ -1,5 +1,6 @@
 package igentuman.nc.setup.entries;
 
+import igentuman.nc.registration.FluidDefinition;
 import igentuman.nc.setup.ModEntries;
 
 /** Declares all material entries and their ore/ingot/dust/plate/fluid forms. */
@@ -86,6 +87,9 @@ public class Materials extends ModEntries {
         dustIngot("titanium");
         dustIngot("tungsten");
         dustIngot("yttrium");
+        dustIngot("nickel");
+
+        mat("mercury", 0xFFB5B5B5).ingot().fluid(FluidDefinition.liquid().setName("mercury")).build();
 
         dustFluid("ruthenium_106", 0xFF8174B0, 600);
         dustFluid("strontium_90", 0xFF8174B0, 600);

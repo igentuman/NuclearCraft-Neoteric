@@ -1,5 +1,6 @@
 package igentuman.nc.network;
 
+import igentuman.nc.network.particle.CreativeParticleSourceSettingsPayload;
 import igentuman.nc.util.ModUtil;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -42,6 +43,11 @@ public class Networking {
                 PacketHeatExchangerToggleRadiators::handle
         );
         registrar.playToServer(
+                PacketBeamDiverterCycleOutput.TYPE,
+                PacketBeamDiverterCycleOutput.STREAM_CODEC,
+                PacketBeamDiverterCycleOutput::handle
+        );
+        registrar.playToServer(
                 PacketFusionAmplificationAdjust.TYPE,
                 PacketFusionAmplificationAdjust.STREAM_CODEC,
                 PacketFusionAmplificationAdjust::handle
@@ -60,6 +66,11 @@ public class Networking {
                 PacketMsrVoidFuel.TYPE,
                 PacketMsrVoidFuel.STREAM_CODEC,
                 PacketMsrVoidFuel::handle
+        );
+        registrar.playToServer(
+                CreativeParticleSourceSettingsPayload.TYPE,
+                CreativeParticleSourceSettingsPayload.STREAM_CODEC,
+                CreativeParticleSourceSettingsPayload::handle
         );
         registrar.playToServer(
                 PacketExplBurst.TYPE,
@@ -117,6 +128,16 @@ public class Networking {
                 PacketMultiblockBroken.TYPE,
                 PacketMultiblockBroken.STREAM_CODEC,
                 PacketMultiblockBroken::handle
+        );
+        registrar.playToClient(
+                PacketScheduledMultiblockFormed.TYPE,
+                PacketScheduledMultiblockFormed.STREAM_CODEC,
+                PacketScheduledMultiblockFormed::handle
+        );
+        registrar.playToClient(
+                PacketMultiblockDebug.TYPE,
+                PacketMultiblockDebug.STREAM_CODEC,
+                PacketMultiblockDebug::handle
         );
         registrar.playToClient(
                 PacketBombDetonationStart.TYPE,

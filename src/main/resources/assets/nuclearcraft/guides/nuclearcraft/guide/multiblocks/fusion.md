@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Nuclear Fusion
-  icon: fusion_core
+  icon: fusion_reactor_core
   parent: multiblocks.md
 ---
 

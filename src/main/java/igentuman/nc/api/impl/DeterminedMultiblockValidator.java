@@ -1,5 +1,6 @@
 package igentuman.nc.api.impl;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.api.multiblock.BlockPredicate;
 import igentuman.nc.api.multiblock.IMultiblockCache;
 import igentuman.nc.api.multiblock.IMultiblockValidator;
@@ -7,11 +8,16 @@ import igentuman.nc.util.MultiblockStructure;
 import igentuman.nc.util.MultiblocksProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Map;
+
+import static igentuman.nc.multiblock.MultiblockDebug.bounds;
+import static igentuman.nc.multiblock.MultiblockDebug.fail;
+import static igentuman.nc.multiblock.MultiblockDebug.step;
 
 /** Validates a multiblock against a saved NBT structure, matched at any horizontal orientation. */
 public class DeterminedMultiblockValidator implements IMultiblockValidator {
@@ -28,12 +34,17 @@ public class DeterminedMultiblockValidator implements IMultiblockValidator {
 
     @Override
     public boolean validate(Level level, BlockPos controllerPos, Direction facing, IMultiblockCache cache) {
+        step("loading fixed structure template {}", structureName);
         if (!ensureLoaded()) {
+            fail("multiblock.validation.missing_template", controllerPos,
+                    NuclearCraft.rl(structureName), null);
             cache.getStructurePositions().clear();
             return false;
         }
         Rotation rotation = rotationFor(facing);
         cache.getStructurePositions().clear();
+        resolveBounds(controllerPos, rotation);
+        step("validating {} template cells rotation={}", structure.getBlocks().size(), rotation);
 
         for (Map.Entry<BlockPos, BlockState> e : structure.getBlocks().entrySet()) {
             BlockPos local = e.getKey().subtract(controllerLocal);
@@ -46,18 +57,26 @@ public class DeterminedMultiblockValidator implements IMultiblockValidator {
             boolean isController = e.getKey().equals(controllerLocal);
             if (isController) {
                 if (!controllerPredicate.test(actual, null)) {
+                    fail("multiblock.validation.wrong_controller", worldPos,
+                            blockId(expected), blockId(actual));
                     cache.getStructurePositions().clear();
                     return false;
                 }
             } else if (controllerPredicate.test(actual, null)) {
+                fail("multiblock.validation.extra_controller", worldPos,
+                        blockId(expected), blockId(actual));
                 cache.getStructurePositions().clear();
                 return false;
             } else if (expected.isAir()) {
                 if (!actual.isAir()) {
+                    fail("multiblock.validation.expected_air", worldPos,
+                            blockId(expected), blockId(actual));
                     cache.getStructurePositions().clear();
                     return false;
                 }
-            } else if (!actual.equals(expected)) {
+            } else if (!igentuman.nc.multiblock.StructuralBlockState.equivalent(actual, expected)) {
+                fail("multiblock.validation.wrong_block", worldPos,
+                        blockId(expected), blockId(actual));
                 cache.getStructurePositions().clear();
                 return false;
             }
@@ -65,7 +84,27 @@ public class DeterminedMultiblockValidator implements IMultiblockValidator {
             cache.getStructurePositions().add(worldPos.asLong());
             cache.getBlockEntity(level, worldPos);
         }
+        step("fixed structure template passed");
         return true;
+    }
+
+    private void resolveBounds(BlockPos controllerPos, Rotation rotation) {
+        int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
+        for (BlockPos templatePos : structure.getBlocks().keySet()) {
+            BlockPos worldPos = controllerPos.offset(templatePos.subtract(controllerLocal).rotate(rotation));
+            minX = Math.min(minX, worldPos.getX());
+            minY = Math.min(minY, worldPos.getY());
+            minZ = Math.min(minZ, worldPos.getZ());
+            maxX = Math.max(maxX, worldPos.getX());
+            maxY = Math.max(maxY, worldPos.getY());
+            maxZ = Math.max(maxZ, worldPos.getZ());
+        }
+        bounds(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
+    }
+
+    private static net.minecraft.resources.ResourceLocation blockId(BlockState state) {
+        return BuiltInRegistries.BLOCK.getKey(state.getBlock());
     }
 
     private boolean ensureLoaded() {

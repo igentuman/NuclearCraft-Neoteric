@@ -2,8 +2,12 @@ package igentuman.nc.setup;
 
 import com.mojang.serialization.Codec;
 import igentuman.nc.handler.crafter.CraftingPatternData;
+import igentuman.nc.api.particle.ParticleDefinition;
+import igentuman.nc.particle.ParticleSourceData;
 import igentuman.nc.setup.level.ConfigurableOrePlacement;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -30,6 +34,9 @@ import static igentuman.nc.NuclearCraft.MODID;
 
 /** Owns every DeferredRegister for the mod and registers them all to the mod event bus. */
 public class Registers {
+    public static final ResourceKey<Registry<ParticleDefinition>> PARTICLE_DEFINITION_REGISTRY_KEY = ResourceKey.createRegistryKey(igentuman.nc.NuclearCraft.rl("particle"));
+    public static final DeferredRegister<ParticleDefinition> PARTICLE_DEFINITIONS = DeferredRegister.create(PARTICLE_DEFINITION_REGISTRY_KEY, MODID);
+    public static final Registry<ParticleDefinition> PARTICLE_DEFINITION_REGISTRY = PARTICLE_DEFINITIONS.makeRegistry(builder -> builder.sync(true));
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
@@ -85,6 +92,12 @@ public class Registers {
                     .networkSynchronized(CraftingPatternData.STREAM_CODEC)
                     .build());
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ParticleSourceData>> PARTICLE_SOURCE =
+            DATA_COMPONENTS.register("particle_source", () -> DataComponentType.<ParticleSourceData>builder()
+                    .persistent(ParticleSourceData.CODEC)
+                    .networkSynchronized(ParticleSourceData.STREAM_CODEC)
+                    .build());
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static final DeferredHolder<PlacementModifierType<?>, PlacementModifierType<?>> CONFIGURABLE_ORE_PLACEMENT =
         (DeferredHolder) PLACEMENT_MODIFIER_TYPES.register("configurable_ore",
@@ -104,6 +117,7 @@ public class Registers {
         PLACEMENT_MODIFIER_TYPES.register(modEventBus);
         FEATURES.register(modEventBus);
         PARTICLE_TYPES.register(modEventBus);
+        PARTICLE_DEFINITIONS.register(modEventBus);
         ENTITY_TYPES.register(modEventBus);
         SOUND_EVENTS.register(modEventBus);
         MOB_EFFECTS.register(modEventBus);

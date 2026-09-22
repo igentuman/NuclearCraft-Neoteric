@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "nuclearcraft:block/particle_chamber/target_chamber_controller/bottom",
+    "front": "nuclearcraft:block/particle_chamber/target_chamber_controller/target_chamber_controller",
+    "side": "nuclearcraft:block/particle_chamber/target_chamber_controller/side",
+    "top": "nuclearcraft:block/particle_chamber/target_chamber_controller/top"
+  }
+}

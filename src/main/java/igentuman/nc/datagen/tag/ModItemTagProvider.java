@@ -5,6 +5,7 @@ import igentuman.nc.registration.*;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCJukeboxSongs;
 import igentuman.nc.util.WrenchUtil;
+import igentuman.nc.setup.entries.Particles;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -19,6 +20,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.MODID;
+import static igentuman.nc.NuclearCraft.rl;
 
 /** Generates item tags for tools, armor, materials, isotopes, and fission fuels. */
 public class ModItemTagProvider extends ItemTagsProvider {
@@ -112,6 +114,18 @@ public class ModItemTagProvider extends ItemTagsProvider {
         }
 
         tag(WrenchUtil.WRENCH).add(ModEntries.get("multitool").item().get());
+
+        TagKey<Item> ionSources = ItemTags.create(rl("ion_sources"));
+        for (String name : Particles.ITEM_SOURCES) {
+            Item source = ModEntries.get(name).item().get();
+            tag(ionSources).add(source);
+            String legacyName = switch (name) {
+                case "source_calcium_48" -> "calcium_48";
+                case "source_iridium_192" -> "iridium_192";
+                default -> name;
+            };
+            tag(ItemTags.create(rl("ion_sources/" + legacyName))).add(source);
+        }
     }
 
     private static TagKey<Item> materialTag(String path) {

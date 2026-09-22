@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@EventBusSubscriber(modid = NuclearCraft.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = NuclearCraft.MODID, value = Dist.CLIENT)
 public class BombFxManager {
 
     public static final int NEAR_RANGE = 128;

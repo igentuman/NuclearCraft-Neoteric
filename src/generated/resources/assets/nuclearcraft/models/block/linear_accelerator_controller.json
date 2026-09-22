@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "nuclearcraft:block/accelerator/controller/bottom",
+    "front": "nuclearcraft:block/accelerator/controller/linear_accelerator_controller",
+    "side": "nuclearcraft:block/accelerator/controller/side",
+    "top": "nuclearcraft:block/accelerator/controller/top"
+  }
+}

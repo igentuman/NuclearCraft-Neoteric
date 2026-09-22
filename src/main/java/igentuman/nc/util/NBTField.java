@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface NBTField {
     boolean syncToClient() default false;
+
+    int syncLength() default 0;
 }

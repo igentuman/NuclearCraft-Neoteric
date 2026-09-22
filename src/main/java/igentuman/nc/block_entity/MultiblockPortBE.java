@@ -1,8 +1,9 @@
 package igentuman.nc.block_entity;
 
+import igentuman.nc.api.particle.IParticleHandler;
+import igentuman.nc.multiblock.StructureRecord;
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.util.NBTField;
-import igentuman.nc.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -33,14 +34,30 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
     @Nullable
     @NBTField(syncToClient = true)
     public BlockPos controllerPos;
+    private boolean sampleControlSignal;
+    private int controlSignalSample;
 
     public MultiblockPortBE(BlockEntityType<?> type, BlockPos pos, BlockState state, String name) {
         super(type, pos, state, name);
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level instanceof ServerLevel serverLevel) {
+            BlockPos owner = igentuman.nc.multiblock.MultiblockHandler.getControllerForPos(serverLevel, worldPosition);
+            if (owner != null) setControllerPos(owner);
+            if (controllerPos != null) igentuman.nc.multiblock.MultiblockLevelState.get(serverLevel)
+                    .structureAt(controllerPos)
+                    .filter(record -> record.state() == igentuman.nc.multiblock.StructureLifecycleState.FORMED)
+                    .ifPresent(this::configureFromStructure);
+        }
+    }
+
+    @Override
     public void serverTick() {
-        // Ports proxy to the controller; skip GlobalBlockEntity recipe/content processing.
+        controlSignalSample = sampleControlSignal && controllerPos != null && level != null
+                ? level.getBestNeighborSignal(worldPosition) : 0;
         if (wasChanged) {
             wasChanged = false;
             setChanged();
@@ -48,8 +65,40 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
     }
 
     public void setControllerPos(@Nullable BlockPos pos) {
+        if (!java.util.Objects.equals(controllerPos, pos)) controlSignalSample = 0;
+        if (pos == null) sampleControlSignal = false;
         this.controllerPos = pos;
         markDirty();
+    }
+
+    public void configureFromStructure(StructureRecord record) {
+        sampleControlSignal = !record.machineId().getPath().equals("beam_diverter")
+                && record.roles().getOrDefault(igentuman.nc.multiblock.geometry.StructureRole.SERVICE_PORT,
+                        java.util.List.of()).contains(worldPosition);
+    }
+
+    public void clearStructureConfiguration() {
+        sampleControlSignal = false;
+        controlSignalSample = 0;
+    }
+
+    public int controlSignalSample() {
+        return isRemoved() || controllerPos == null ? 0 : controlSignalSample;
+    }
+
+    @Override
+    public void onChunkUnloaded() {
+        controlSignalSample = 0;
+        super.onChunkUnloaded();
+    }
+
+    @Nullable
+    public IParticleHandler getParticleHandler(@Nullable Direction side) {
+        return null;
+    }
+
+    public void recordParticleTransfer(igentuman.nc.api.particle.ParticleStack stack, long gameTime,
+                                       Direction direction) {
     }
 
     @Nullable
@@ -59,7 +108,7 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
 
     @Nullable
     public MultiblockControllerBE controller() {
-        if (controllerPos == null || level == null) return null;
+        if (controllerPos == null || level == null || !level.hasChunkAt(controllerPos)) return null;
         BlockEntity be = level.getBlockEntity(controllerPos);
         return be instanceof MultiblockControllerBE c ? c : null;
     }

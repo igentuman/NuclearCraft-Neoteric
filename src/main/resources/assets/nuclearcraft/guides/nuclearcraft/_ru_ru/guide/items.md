@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Предметы
-  icon: geiger_counter
+  icon: multitool
   position: 2
 ---
 

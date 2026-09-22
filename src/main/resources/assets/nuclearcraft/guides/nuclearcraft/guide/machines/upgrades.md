@@ -2,12 +2,12 @@
 navigation:
   title: Processor Upgrades
   parent: machines.md
-  icon: upgrade_speed
+  icon: speed_upgrade
 item_ids:
-  - nuclearcraft:upgrade_speed
-  - nuclearcraft:upgrade_energy
-  - nuclearcraft:upgrade_stack
-  - nuclearcraft:upgrade_quantum
+  - nuclearcraft:speed_upgrade
+  - nuclearcraft:energy_upgrade
+  - nuclearcraft:stack_upgrade
+  - nuclearcraft:quantum_upgrade
 ---
 
 # Processor Upgrades
@@ -19,7 +19,7 @@ Slot 0 takes **Energy Upgrades**. Slot 1 takes speed-type upgrades. Single-slot 
 ## Speed Upgrade
 
 <Column alignItems="center" fullWidth={true}>
-  <ItemImage id="upgrade_speed" />
+  <ItemImage id="speed_upgrade" />
 </Column>
 
 **Speed Upgrade** adds `+1 speed` per item. Recipe runs faster, but energy cost grows quadratically with speed. Stack up to 64 per slot.
@@ -27,7 +27,7 @@ Slot 0 takes **Energy Upgrades**. Slot 1 takes speed-type upgrades. Single-slot 
 ## Energy Upgrade
 
 <Column alignItems="center" fullWidth={true}>
-  <ItemImage id="upgrade_energy" />
+  <ItemImage id="energy_upgrade" />
 </Column>
 
 **Energy Upgrade** reduces energy cost (subtracts quadratically) and grows the internal energy buffer (`x N / 10`). Required to keep heavily speed-boosted processors affordable.
@@ -35,7 +35,7 @@ Slot 0 takes **Energy Upgrades**. Slot 1 takes speed-type upgrades. Single-slot 
 ## Stack Upgrade
 
 <Column alignItems="center" fullWidth={true}>
-  <ItemImage id="upgrade_stack" />
+  <ItemImage id="stack_upgrade" />
 </Column>
 
 **Stack Upgrade** enables parallel processing: `ceil(count / 4)` recipes per tick, capped at 32. Acts like speed plus parallel I/O. More energy-efficient than raw speed.
@@ -43,7 +43,7 @@ Slot 0 takes **Energy Upgrades**. Slot 1 takes speed-type upgrades. Single-slot 
 ## Quantum Upgrade
 
 <Column alignItems="center" fullWidth={true}>
-  <ItemImage id="upgrade_quantum" />
+  <ItemImage id="quantum_upgrade" />
 </Column>
 
 **Quantum Upgrade** = `x5 speed` and `1 parallel recipe per item`. End-game tier. Energy cost scales hard. Pair with many Energy Upgrades.

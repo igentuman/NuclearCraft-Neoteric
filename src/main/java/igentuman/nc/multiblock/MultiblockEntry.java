@@ -26,6 +26,8 @@ public class MultiblockEntry {
     private final List<Supplier<Block>> requiredBlocks;
     private final ModEntry controllerEntry;
     private final List<ModEntry> portEntries;
+    private final MultiblockExecutionStrategy executionStrategy;
+    private final ScheduledMultiblockDefinition scheduledDefinition;
 
     public MultiblockEntry(String name,
                            Supplier<IMultiblockValidator> validatorSupplier,
@@ -34,6 +36,31 @@ public class MultiblockEntry {
                            List<Supplier<Block>> requiredBlocks,
                            ModEntry controllerEntry,
                            List<ModEntry> portEntries) {
+        this(name, validatorSupplier, logicSupplier, cacheSupplier, requiredBlocks, controllerEntry, portEntries,
+                MultiblockExecutionStrategy.LEGACY_ASYNC, null);
+    }
+
+    public MultiblockEntry(String name,
+                           Supplier<IMultiblockValidator> validatorSupplier,
+                           Supplier<IMultiblockLogic> logicSupplier,
+                           Supplier<IMultiblockCache> cacheSupplier,
+                           List<Supplier<Block>> requiredBlocks,
+                           ModEntry controllerEntry,
+                           List<ModEntry> portEntries,
+                           MultiblockExecutionStrategy executionStrategy) {
+        this(name, validatorSupplier, logicSupplier, cacheSupplier, requiredBlocks, controllerEntry, portEntries,
+                executionStrategy, null);
+    }
+
+    public MultiblockEntry(String name,
+                           Supplier<IMultiblockValidator> validatorSupplier,
+                           Supplier<IMultiblockLogic> logicSupplier,
+                           Supplier<IMultiblockCache> cacheSupplier,
+                           List<Supplier<Block>> requiredBlocks,
+                           ModEntry controllerEntry,
+                           List<ModEntry> portEntries,
+                           MultiblockExecutionStrategy executionStrategy,
+                           ScheduledMultiblockDefinition scheduledDefinition) {
         this.name = name;
         this.validatorSupplier = validatorSupplier;
         this.logicSupplier = logicSupplier;
@@ -41,6 +68,14 @@ public class MultiblockEntry {
         this.requiredBlocks = requiredBlocks != null ? List.copyOf(requiredBlocks) : List.of();
         this.controllerEntry = controllerEntry;
         this.portEntries = portEntries != null ? List.copyOf(portEntries) : List.of();
+        this.executionStrategy = executionStrategy;
+        this.scheduledDefinition = scheduledDefinition;
+        if (executionStrategy == MultiblockExecutionStrategy.SCHEDULED_SERVER_THREAD && scheduledDefinition == null) {
+            throw new IllegalArgumentException("Scheduled multiblocks require discovery and validation factories");
+        }
+        if (executionStrategy != MultiblockExecutionStrategy.SCHEDULED_SERVER_THREAD && scheduledDefinition != null) {
+            throw new IllegalArgumentException("Legacy multiblocks cannot have a scheduled definition");
+        }
     }
 
     public MultiblockEntry(String name,
@@ -71,6 +106,8 @@ public class MultiblockEntry {
     public List<Supplier<Block>> requiredBlocks() { return requiredBlocks; }
     public ModEntry controllerEntry() { return controllerEntry; }
     public List<ModEntry> portEntries() { return portEntries; }
+    public MultiblockExecutionStrategy executionStrategy() { return executionStrategy; }
+    public ScheduledMultiblockDefinition scheduledDefinition() { return scheduledDefinition; }
 
     /**
      * Returns true if every block referenced by this multiblock resolves to a registered, non-air block.

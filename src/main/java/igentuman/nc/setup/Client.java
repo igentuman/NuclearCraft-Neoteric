@@ -135,6 +135,18 @@ public class Client {
                             event.register(menuType, HeatExchangerControllerScreen::new);
                         } else if (entry.name().equals("msr_controller")) {
                             event.register(menuType, MsrControllerScreen::new);
+                        } else if (entry.name().equals("beam_diverter_controller")) {
+                            event.register(menuType, igentuman.nc.screen.BeamDiverterScreen::new);
+                        } else if (entry.name().equals("target_chamber_controller")) {
+                            event.register(menuType, igentuman.nc.screen.TargetChamberScreen::new);
+                        } else if (entry.name().equals("decay_chamber_controller")) {
+                            event.register(menuType, igentuman.nc.screen.DecayChamberScreen::new);
+                        } else if (entry.name().equals("collision_chamber_controller")) {
+                            event.register(menuType, igentuman.nc.screen.CollisionChamberScreen::new);
+                        } else if (entry.name().equals("ring_accelerator_controller")) {
+                            event.register(menuType, igentuman.nc.screen.RingAcceleratorScreen::new);
+                        } else if (entry.name().equals("linear_accelerator_controller")) {
+                            event.register(menuType, igentuman.nc.screen.LinearAcceleratorScreen::new);
                         } else {
                             event.register(menuType, MultiblockControllerScreen::new);
                         }
@@ -167,6 +179,11 @@ public class Client {
                         event.register(
                                 (MenuType<UniversalProcessorContainer>) (MenuType<?>) entry.menu().get(),
                                 igentuman.nc.screen.ChargingStationScreen::new
+                        );
+                    } else if (entry.name().equals("creative_particle_source")) {
+                        event.register(
+                                (MenuType<UniversalProcessorContainer>) (MenuType<?>) entry.menu().get(),
+                                CreativeParticleSourceScreen::new
                         );
                     } else if (entry.name().equals("leacher")) {
                         event.register(
@@ -217,6 +234,8 @@ public class Client {
     @SubscribeEvent
     static void registerGuiLayers(net.neoforged.neoforge.client.event.RegisterGuiLayersEvent event) {
         event.registerAboveAll(NuclearCraft.rl("bomb_flash"), igentuman.nc.client.bomb.BombFlashOverlay.BOMB_FLASH);
+        event.registerAboveAll(NuclearCraft.rl("multiblock_debug"),
+                igentuman.nc.client.multiblock.MultiblockDebugOverlay.INSTANCE);
     }
 
     @SubscribeEvent

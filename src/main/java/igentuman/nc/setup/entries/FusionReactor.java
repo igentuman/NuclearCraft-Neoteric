@@ -34,8 +34,7 @@ public class FusionReactor extends ModEntries {
 
     private static boolean initialized = false;
 
-    public static final List<String> MAGNET_TIERS = List.of(
-            "basic", "magnesium_diboride", "niobium_tin", "niobium_titanium", "bscco");
+    public static final List<String> MAGNET_TIERS = HighEnergyComponents.TIERS;
 
     private static final int ENERGY_BUFFER = 2_048_000_000;
 
@@ -67,6 +66,7 @@ public class FusionReactor extends ModEntries {
     public static void fusionReactor() {
         if (initialized) return;
         initialized = true;
+        HighEnergyComponents.highEnergyComponents();
 
         addMultiblockController("fusion_reactor_core")
                 .blockEntity(FusionReactorControllerBE::new)
@@ -79,12 +79,6 @@ public class FusionReactor extends ModEntries {
         addMultiblockBlock("fusion_reactor_glass", glassProps());
         addMultiblockBlock("fusion_reactor_connector");
         addMultiblockPart("fusion_reactor_core_proxy", coreProxyProps(), FusionCoreProxyBlock::new, FusionCoreProxyBE::new);
-
-        for (String t : MAGNET_TIERS) {
-            add(t + "_electromagnet").block(name -> new ElectromagnetBlock(magnetProps())).build();
-            add(t + "_electromagnet_slope").block(name -> new ElectromagnetSlopeBlock(slopeProps())).build();
-            add(t + "_rf_amplifier").block(name -> new RFAmplifierBlock(magnetProps())).build();
-        }
 
         MultiblockEntryBuilder.name("fusion_reactor")
                 .controller(ModEntries.get("fusion_reactor_core"))

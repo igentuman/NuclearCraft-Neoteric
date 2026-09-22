@@ -59,6 +59,12 @@ public class Parts extends ModEntries {
                 "compression_charge",
                 "pu_239_pit",
                 "pu_239_core",
+                "empty_detector",
+                "wire_chamber_casing",
+                "scintillator_pwo",
+                "scintillator_plastic",
+                "laser_assembly",
+                "wire_gold_tungsten",
         };
         for (String name : parts) {
             addItem(name).build();

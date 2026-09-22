@@ -1,12 +1,18 @@
 package igentuman.nc.api.impl;
 
+import igentuman.nc.NuclearCraft;
 import igentuman.nc.api.multiblock.BlockPredicate;
 import igentuman.nc.api.multiblock.IMultiblockCache;
 import igentuman.nc.api.multiblock.IMultiblockValidator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+
+import static igentuman.nc.multiblock.MultiblockDebug.bounds;
+import static igentuman.nc.multiblock.MultiblockDebug.fail;
+import static igentuman.nc.multiblock.MultiblockDebug.step;
 
 /** Validates an axis-aligned hollow-box multiblock by detecting its bounds, then its shell and interior. */
 public class CubicMultiblockValidator implements IMultiblockValidator {
@@ -40,23 +46,31 @@ public class CubicMultiblockValidator implements IMultiblockValidator {
 
     @Override
     public boolean validate(Level level, BlockPos controllerPos, Direction facing, IMultiblockCache cache) {
+        step("detecting cuboid dimensions facing={}", facing);
         int[] dims = detectDimensions(level, controllerPos, facing, cache);
         if (dims == null) {
+            fail("multiblock.validation.dimensions_unresolved", controllerPos,
+                    NuclearCraft.rl("valid_dimensions"), blockId(cache.getBlockState(level, controllerPos)));
             cache.getStructurePositions().clear();
             return false;
         }
         int w = dims[0], h = dims[1], d = dims[2];
         int cx = dims[3], cy = dims[4], cz = dims[5];
+        BlockPos[] resolvedBounds = structureBounds(controllerPos, facing, w, h, d, cx, cy, cz);
+        bounds(resolvedBounds[0], resolvedBounds[1]);
         cache.getStructurePositions().clear();
+        step("validating outer shell cells");
         if (!validateOuter(level, controllerPos, facing, cache, w, h, d, cx, cy, cz)) {
             cache.getStructurePositions().clear();
             return false;
         }
+        step("outer shell passed; validating interior cells");
         if (!validateInner(level, controllerPos, facing, cache, w, h, d, cx, cy, cz)) {
             cache.getStructurePositions().clear();
             return false;
         }
-        setStructureAABB(cache, controllerPos, facing, w, h, d, cx, cy, cz);
+        cache.setAABB(resolvedBounds[0], resolvedBounds[1]);
+        step("cuboid validation passed dimensions={}x{}x{}", w, h, d);
         return true;
     }
 
@@ -145,9 +159,18 @@ public class CubicMultiblockValidator implements IMultiblockValidator {
                     BlockPos pos = worldPos(controllerPos, facing, x - cx, y - cy, z - cz);
                     BlockState state = cache.getBlockState(level, pos);
                     boolean isController = (x == cx && y == cy && z == cz);
-                    if (!isController && controllerPredicate.test(state, null)) return false;
+                    if (!isController && controllerPredicate.test(state, null)) {
+                        fail("multiblock.validation.extra_controller", pos,
+                                NuclearCraft.rl("multiblock_shell"), blockId(state));
+                        return false;
+                    }
                     BlockPredicate predicate = isController ? controllerPredicate : shellPredicate;
-                    if (!predicate.test(state, null)) return false;
+                    if (!predicate.test(state, null)) {
+                        fail(isController ? "multiblock.validation.wrong_controller" : "multiblock.validation.wrong_outer",
+                                pos, NuclearCraft.rl(isController ? "multiblock_controller" : "multiblock_shell"),
+                                blockId(state));
+                        return false;
+                    }
                     cache.getBlockEntity(level, pos);
                 }
             }
@@ -163,8 +186,16 @@ public class CubicMultiblockValidator implements IMultiblockValidator {
                 for (int x = 1; x < wMax; x++) {
                     BlockPos pos = worldPos(controllerPos, facing, x - cx, y - cy, z - cz);
                     BlockState state = cache.getBlockState(level, pos);
-                    if (controllerPredicate.test(state, null)) return false;
-                    if (!interiorPredicate.test(state, null)) return false;
+                    if (controllerPredicate.test(state, null)) {
+                        fail("multiblock.validation.extra_controller", pos,
+                                NuclearCraft.rl("multiblock_interior"), blockId(state));
+                        return false;
+                    }
+                    if (!state.isAir() && !interiorPredicate.test(state, null)) {
+                        fail("multiblock.validation.wrong_inner", pos,
+                                NuclearCraft.rl("multiblock_interior"), blockId(state));
+                        return false;
+                    }
                     cache.getBlockEntity(level, pos);
                 }
             }
@@ -173,8 +204,8 @@ public class CubicMultiblockValidator implements IMultiblockValidator {
     }
 
     /** Computes the world-space AABB from the 8 corners of the local bounding box and sets it on the cache. */
-    private static void setStructureAABB(IMultiblockCache cache, BlockPos controllerPos, Direction facing,
-                                         int width, int height, int depth, int cx, int cy, int cz) {
+    private static BlockPos[] structureBounds(BlockPos controllerPos, Direction facing,
+                                              int width, int height, int depth, int cx, int cy, int cz) {
         int wMax = width - 1, hMax = height - 1, dMax = depth - 1;
         int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
         int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
@@ -191,7 +222,11 @@ public class CubicMultiblockValidator implements IMultiblockValidator {
             maxY = Math.max(maxY, wp.getY());
             maxZ = Math.max(maxZ, wp.getZ());
         }
-        cache.setAABB(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
+        return new BlockPos[]{new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ)};
+    }
+
+    private static net.minecraft.resources.ResourceLocation blockId(BlockState state) {
+        return BuiltInRegistries.BLOCK.getKey(state.getBlock());
     }
 
     private static BlockPos worldPos(BlockPos controllerPos, Direction facing, int dx, int dy, int dz) {

@@ -13,6 +13,7 @@ import igentuman.nc.recipe.heat_exchanger.HeatExchangerRecipes;
 import igentuman.nc.recipe.turbine.TurbineRecipes;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.registration.ModEntryBuilder;
+import igentuman.nc.registration.ParticleEntry;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -44,17 +45,21 @@ import static igentuman.nc.setup.entries.Kugelblitz.kugelblitz;
 import static igentuman.nc.setup.entries.MSR.msr;
 import static igentuman.nc.setup.entries.Materials.materials;
 import static igentuman.nc.setup.entries.ParticleChamber.particleChamber;
+import static igentuman.nc.setup.entries.Particles.particles;
 import static igentuman.nc.setup.entries.Parts.*;
 import static igentuman.nc.setup.entries.Pipes.pipes;
 import static igentuman.nc.setup.entries.Processors.processors;
 import static igentuman.nc.setup.entries.Storage.storage;
 import static igentuman.nc.setup.entries.Crafter.crafter;
 import static igentuman.nc.setup.entries.HeatExchanger.heatExchanger;
+import static igentuman.nc.setup.entries.HighEnergyComponents.highEnergyComponents;
 import static igentuman.nc.setup.entries.Turbine.turbine;
+import static igentuman.nc.setup.entries.Waste.waste;
 
 /** Central registry of all mod content entries with the init entry-point and declaration helpers. */
 public class ModEntries {
     public static final HashMap<String, ModEntry> ENTRIES = new HashMap<>();
+    public static final LinkedHashMap<String, ParticleEntry> PARTICLE_ENTRIES = new LinkedHashMap<>();
     public static final HashMap<String, IsotopeEntry> ISOTOPES = new HashMap<>();
     public static final LinkedHashMap<String, FissionFuelEntry> FISSION_FUEL = new LinkedHashMap<>();
     public static final LinkedHashMap<String, HeatSinkEntry> HEAT_SINKS = new LinkedHashMap<>();
@@ -71,15 +76,18 @@ public class ModEntries {
         fluids();
         fissionFuel();
         parts();
+        waste();
         records();
         blocks();
         tools();
         armor();
+        particles();
         processors();
         chargingStation();
         fissionReactor();
         fissionDesigner();
         multiblockBuilder();
+        highEnergyComponents();
         accelerator();
         FusionRecipes.init();
         fusionReactor();
@@ -180,6 +188,10 @@ public class ModEntries {
 
     public static ModEntry get(String name) {
         return ENTRIES.getOrDefault(name, null);
+    }
+
+    public static ParticleEntry getParticle(String name) {
+        return PARTICLE_ENTRIES.getOrDefault(name, null);
     }
 
     /** Resolves the source {@link net.minecraft.world.level.material.Fluid} registered for a material

@@ -202,6 +202,21 @@ public class TextUtils
 		return TextUtils.numberFormat(energy)+" FE";
 	}
 
+	public static String formatParticleEnergy(long energyKeV)
+	{
+		double magnitude = Math.abs((double) energyKeV);
+		if (magnitude >= 1_000_000_000D) {
+			return numberFormat(energyKeV / 1_000_000_000D) + " TeV";
+		}
+		if (magnitude >= 1_000_000D) {
+			return numberFormat(energyKeV / 1_000_000D) + " GeV";
+		}
+		if (magnitude >= 1_000D) {
+			return numberFormat(energyKeV / 1_000D) + " MeV";
+		}
+		return numberFormat(energyKeV) + " keV";
+	}
+
 	public static String formatRads(long radiation) {
 		if(radiation >= 1000000) {
 			return String.format(Locale.US,"%.2f", (float)radiation/1000000)+" Rad";

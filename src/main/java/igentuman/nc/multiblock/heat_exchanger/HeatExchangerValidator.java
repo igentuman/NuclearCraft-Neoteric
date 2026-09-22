@@ -8,11 +8,16 @@ import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.Set;
+
+import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.multiblock.MultiblockDebug.fail;
+import static igentuman.nc.multiblock.MultiblockDebug.step;
 
 public class HeatExchangerValidator implements IMultiblockValidator {
 
@@ -55,6 +60,7 @@ public class HeatExchangerValidator implements IMultiblockValidator {
         interior = blockOf("heat_exchanger");
         radiator = blockOf("heat_exchanger_radiator");
 
+        step("validating heat exchanger corner casings");
         if (!cornersAreCasing(level, hc)) {
             hc.getStructurePositions().clear();
             return false;
@@ -69,6 +75,7 @@ public class HeatExchangerValidator implements IMultiblockValidator {
         }
         hc.heatExchangers = n;
         hc.radiators = rad;
+        step("heat exchanger components exchangers={} radiators={}", n, rad);
         return true;
     }
 
@@ -98,7 +105,13 @@ public class HeatExchangerValidator implements IMultiblockValidator {
         for (int x : xs) {
             for (int y : ys) {
                 for (int z : zs) {
-                    if (hc.getBlockState(level, new BlockPos(x, y, z)).getBlock() != casing) return false;
+                    BlockPos pos = new BlockPos(x, y, z);
+                    var state = hc.getBlockState(level, pos);
+                    if (state.getBlock() != casing) {
+                        fail("multiblock.heat_exchanger.wrong_corner", pos, rl("heat_exchanger_casing"),
+                                BuiltInRegistries.BLOCK.getKey(state.getBlock()));
+                        return false;
+                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 package igentuman.nc.screen;
 
+import igentuman.nc.api.particle.ParticleDefinition;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
@@ -9,9 +10,11 @@ import igentuman.nc.screen.element.EnergyBar;
 import igentuman.nc.screen.element.ProgressBar;
 import igentuman.nc.screen.element.SlotWidget;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.Registers;
 import igentuman.nc.util.GuiFluidRenderer;
 import igentuman.nc.util.SlotDef;
 import igentuman.nc.util.SlotsLayout;
+import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,6 +26,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
@@ -32,6 +36,7 @@ public class MultiblockControllerScreen extends AbstractContainerScreen<Multiblo
 
     private static final ResourceLocation TEXTURE = rl("textures/gui/processor.png");
     protected final List<SlotWidget> slotWidgets = new ArrayList<>();
+    protected ResourceLocation backgroundTexture = TEXTURE;
     protected ProgressBar progressBar;
     protected Checkbox infoCheckbox;
     protected EnergyBar  energyBar;
@@ -93,6 +98,47 @@ public class MultiblockControllerScreen extends AbstractContainerScreen<Multiblo
         }
     }
 
+    protected int synced(String field) {
+        int idx = menu.getBlockEntity().getSyncFieldIndex(field);
+        return idx >= 0 ? menu.getSyncedValue(idx) : 0;
+    }
+
+    protected int syncedArray(String field, int channel) {
+        int idx = menu.getBlockEntity().getSyncFieldIndex(field, channel);
+        return idx >= 0 ? menu.getSyncedValue(idx) : 0;
+    }
+
+    protected void renderParticleChannel(GuiGraphics guiGraphics, int localMouseX, int localMouseY,
+                                          int x, int y, String prefix, int channel) {
+        int regId = syncedArray(prefix + "ParticleRegId", channel);
+        if (regId < 0) return;
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.byId(regId);
+        if (definition == null) return;
+
+        guiGraphics.blit(definition.textureId(), x, y, 0, 0, 16, 16, 16, 16);
+
+        if (localMouseX >= x && localMouseX < x + 16 && localMouseY >= y && localMouseY < y + 16) {
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(Component.translatable(definition.translationKey()));
+            long amount = syncedArray(prefix + "ParticleAmount", channel);
+            long energy = syncedArray(prefix + "ParticleEnergy", channel);
+            double focus = syncedArray(prefix + "ParticleFocus", channel) / 1000D;
+            if (amount > 0) {
+                tooltip.add(__("tooltip.nuclearcraft.particlestack.amount", TextUtils.scaledFormat(amount))
+                        .withStyle(ChatFormatting.GRAY));
+            }
+            if (energy > 0) {
+                tooltip.add(__("tooltip.nuclearcraft.particlestack.energy", TextUtils.formatParticleEnergy(energy))
+                        .withStyle(ChatFormatting.GRAY));
+            }
+            if (focus > 0) {
+                tooltip.add(__("tooltip.nuclearcraft.particlestack.focus", TextUtils.numberFormat(focus))
+                        .withStyle(ChatFormatting.GRAY));
+            }
+            guiGraphics.renderTooltip(font, tooltip, Optional.empty(), localMouseX, localMouseY);
+        }
+    }
+
     public List<Component> infoCheckboxTooltip() {
         List<Component> tooltip = new ArrayList<>();
         if (menu.isFormed()) {
@@ -107,7 +153,7 @@ public class MultiblockControllerScreen extends AbstractContainerScreen<Multiblo
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(backgroundTexture, x, y, 0, 0, this.imageWidth, this.imageHeight);
         progressBar.setProgress(menu.getProgress());
     }
 

@@ -1,9 +1,14 @@
 package igentuman.nc.block_entity;
 
+import igentuman.nc.api.particle.IParticleHandler;
+import igentuman.nc.block.accelerator.BeamPortMode;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.MultiblockExecutionStrategy;
+import igentuman.nc.multiblock.MultiblockLevelState;
 import igentuman.nc.multiblock.MultiblockRegistry;
+import igentuman.nc.multiblock.StructureRecord;
 import igentuman.nc.util.BoilingBuffer;
 import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
@@ -24,6 +29,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 import static net.minecraft.world.level.block.Block.UPDATE_CLIENTS;
 
 /** Base controller block entity for a multiblock; bridges block lifecycle to {@link MultiblockHandler} and persists its cache. */
@@ -43,6 +50,16 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
         return name;
     }
 
+    public Optional<StructureRecord> scheduledStructure() {
+        if (!(level instanceof ServerLevel serverLevel)) return Optional.empty();
+        return MultiblockLevelState.get(serverLevel).structureAt(worldPosition);
+    }
+
+    @Nullable
+    public IParticleHandler getParticleHandler(BlockPos portPos, BeamPortMode mode, int channel) {
+        return null;
+    }
+
     /** Called from the controller block on first placement (server side). */
     public void onControllerPlaced(ServerLevel level) {
         MultiblockEntry entry = MultiblockRegistry.getByController(name);
@@ -57,6 +74,12 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     }
 
     public void tickMultiblock(ServerLevel level) {
+        MultiblockEntry entry = MultiblockRegistry.getByController(name);
+        if (entry != null && entry.executionStrategy() == MultiblockExecutionStrategy.SCHEDULED_SERVER_THREAD) {
+            MultiblockLevelState state = MultiblockLevelState.get(level);
+            state.beginDiscovery(entry.scheduledDefinition(), worldPosition, facing());
+            return;
+        }
         MultiblockHandler.submitTick(level, mbInstance, worldPosition);
         if (mbInstance == null) {
             mbInstance = MultiblockHandler.getInstance(level, worldPosition);
@@ -67,7 +90,11 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     public void serverTick() {
         if (!(level instanceof ServerLevel serverLevel)) return;
         tickMultiblock(serverLevel);
-        boolean newFormed = mbInstance != null && mbInstance.formed;
+        MultiblockEntry entry = MultiblockRegistry.getByController(name);
+        boolean scheduled = entry != null
+                && entry.executionStrategy() == MultiblockExecutionStrategy.SCHEDULED_SERVER_THREAD;
+        boolean newFormed = scheduled ? MultiblockLevelState.get(serverLevel).isFormed(worldPosition)
+                : mbInstance != null && mbInstance.formed && !mbInstance.dirty;
         if (formed != newFormed) {
             formed = newFormed;
             wasChanged = true;
@@ -101,9 +128,10 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
         super.saveAdditional(tag, registries);
         if (level instanceof ServerLevel serverLevel) {
             MultiblockHandler.MultiblockInstance instance = MultiblockHandler.getInstance(serverLevel, worldPosition);
-            if (instance != null && instance.formed) {
+            if (instance != null) {
                 CompoundTag cacheTag = new CompoundTag();
                 instance.cache.saveNbt(cacheTag, registries);
+                instance.saveTracking(cacheTag);
                 tag.put("cache", cacheTag);
             }
         }
@@ -140,8 +168,12 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = super.getUpdateTag(registries);
-        saveAdditional(tag, registries);
+        CompoundTag tag = new CompoundTag();
+        saveClientTagData(tag);
+        tag.put("ContentHandler", contentHandler.serializeNBT(registries));
+        if (energyStorage != null) {
+            tag.put("Energy", energyStorage.serializeNBT(registries));
+        }
         return tag;
     }
 

@@ -100,9 +100,4 @@ public class TurbineControllerScreen extends MultiblockControllerScreen {
                 (int) (x / scale), (int) (y / scale), 0x404040, false);
         g.pose().popPose();
     }
-
-    private int synced(String field) {
-        int idx = menu.getBlockEntity().getSyncFieldIndex(field);
-        return idx >= 0 ? menu.getSyncedValue(idx) : 0;
-    }
 }

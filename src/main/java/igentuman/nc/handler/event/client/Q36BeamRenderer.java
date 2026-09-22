@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@EventBusSubscriber(modid = NuclearCraft.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = NuclearCraft.MODID, value = Dist.CLIENT)
 public class Q36BeamRenderer {
 
     private static final int LIFETIME_TICKS = 4;

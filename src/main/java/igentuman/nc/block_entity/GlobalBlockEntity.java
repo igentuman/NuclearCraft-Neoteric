@@ -74,12 +74,19 @@ public class GlobalBlockEntity extends BlockEntity {
     private final List<Field> directionFields;
     private final List<Field> bufferFields;
 
-    /** Fields annotated with @NBTField(syncToClient = true), used for ContainerData sync. */
-    private final List<Field> syncFields;
+    /** One ContainerData slot: a scalar @NBTField, or one element of an @NBTField(syncLength > 0) int[] field. */
+    private record SyncSlot(Field field, int arrayIndex) {
+        boolean isArray() {
+            return arrayIndex >= 0;
+        }
+    }
+
+    /** Flattened @NBTField(syncToClient = true) slots, used for ContainerData sync. */
+    private final List<SyncSlot> syncFields;
 
     /**
      * Dynamically built ContainerData that syncs all @NBTField(syncToClient = true) fields.
-     * Supports int, boolean, byte, and short field types.
+     * Supports int, boolean, byte, short, and fixed-length int[] (via syncLength) field types.
      * Adding a new annotated field to any subclass will automatically include it.
      */
     public final ContainerData containerData;
@@ -244,8 +251,13 @@ public class GlobalBlockEntity extends BlockEntity {
             @Override
             public int get(int index) {
                 if (index < 0 || index >= syncFields.size()) return 0;
-                Field field = syncFields.get(index);
+                SyncSlot slot = syncFields.get(index);
+                Field field = slot.field();
                 try {
+                    if (slot.isArray()) {
+                        int[] array = (int[]) field.get(GlobalBlockEntity.this);
+                        return array != null && slot.arrayIndex() < array.length ? array[slot.arrayIndex()] : 0;
+                    }
                     Class<?> type = field.getType();
                     if (type == int.class) return field.getInt(GlobalBlockEntity.this);
                     if (type == boolean.class) return field.getBoolean(GlobalBlockEntity.this) ? 1 : 0;
@@ -260,8 +272,14 @@ public class GlobalBlockEntity extends BlockEntity {
             @Override
             public void set(int index, int value) {
                 if (index < 0 || index >= syncFields.size()) return;
-                Field field = syncFields.get(index);
+                SyncSlot slot = syncFields.get(index);
+                Field field = slot.field();
                 try {
+                    if (slot.isArray()) {
+                        int[] array = (int[]) field.get(GlobalBlockEntity.this);
+                        if (array != null && slot.arrayIndex() < array.length) array[slot.arrayIndex()] = value;
+                        return;
+                    }
                     Class<?> type = field.getType();
                     if (type == int.class) field.setInt(GlobalBlockEntity.this, value);
                     else if (type == boolean.class) field.setBoolean(GlobalBlockEntity.this, value != 0);
@@ -325,14 +343,19 @@ public class GlobalBlockEntity extends BlockEntity {
     /**
      * Collects fields annotated with @NBTField(syncToClient = true)
      * that can be represented as int for ContainerData sync.
-     * Supported types: int, boolean, byte, short.
+     * Supported types: int, boolean, byte, short, and int[] (one slot per element, up to syncLength).
      */
-    private List<Field> initSyncFields() {
-        List<Field> fields = new ArrayList<>();
+    private List<SyncSlot> initSyncFields() {
+        List<SyncSlot> fields = new ArrayList<>();
         for (Field field : collectAllNBTFields()) {
             NBTField annotation = field.getAnnotation(NBTField.class);
-            if (annotation.syncToClient() && isSyncableType(field.getType())) {
-                fields.add(field);
+            if (!annotation.syncToClient()) continue;
+            if (isSyncableType(field.getType())) {
+                fields.add(new SyncSlot(field, -1));
+            } else if (field.getType() == int[].class && annotation.syncLength() > 0) {
+                for (int i = 0; i < annotation.syncLength(); i++) {
+                    fields.add(new SyncSlot(field, i));
+                }
             }
         }
         return fields;
@@ -348,10 +371,22 @@ public class GlobalBlockEntity extends BlockEntity {
         return syncFields.size();
     }
 
-    /** Returns the ContainerData index for the given field name, or -1 if not found. */
+    /** Returns the ContainerData index for the given scalar field name, or -1 if not found. */
     public int getSyncFieldIndex(String fieldName) {
         for (int i = 0; i < syncFields.size(); i++) {
-            if (syncFields.get(i).getName().equals(fieldName)) {
+            SyncSlot slot = syncFields.get(i);
+            if (!slot.isArray() && slot.field().getName().equals(fieldName)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /** Returns the ContainerData index for the given element of an int[] sync field, or -1 if not found. */
+    public int getSyncFieldIndex(String fieldName, int arrayIndex) {
+        for (int i = 0; i < syncFields.size(); i++) {
+            SyncSlot slot = syncFields.get(i);
+            if (slot.isArray() && slot.arrayIndex() == arrayIndex && slot.field().getName().equals(fieldName)) {
                 return i;
             }
         }
@@ -497,6 +532,31 @@ public class GlobalBlockEntity extends BlockEntity {
         } catch (IllegalAccessException ignore) { }
     }
 
+    /** Writes only explicitly client-synchronized scalar fields for bounded block update packets. */
+    protected void saveClientTagData(CompoundTag tag) {
+        try {
+            for (Field field : collectAllNBTFields()) {
+                NBTField annotation = field.getAnnotation(NBTField.class);
+                if (annotation == null || !annotation.syncToClient()) continue;
+                Class<?> type = field.getType();
+                if (type == boolean.class) tag.putBoolean(field.getName(), field.getBoolean(this));
+                else if (type == int.class) tag.putInt(field.getName(), field.getInt(this));
+                else if (type == long.class) tag.putLong(field.getName(), field.getLong(this));
+                else if (type == double.class) tag.putDouble(field.getName(), field.getDouble(this));
+                else if (type == float.class) tag.putFloat(field.getName(), field.getFloat(this));
+                else if (type == byte.class) tag.putByte(field.getName(), field.getByte(this));
+                else if (type == short.class) tag.putShort(field.getName(), field.getShort(this));
+                else if (type == String.class && field.get(this) instanceof String value) {
+                    tag.putString(field.getName(), value.substring(0, Math.min(value.length(), 256)));
+                } else if (type == BlockPos.class && field.get(this) instanceof BlockPos value) {
+                    tag.putLong(field.getName(), value.asLong());
+                } else if (type == Direction.class && field.get(this) instanceof Direction value) {
+                    tag.putString(field.getName(), value.getName());
+                }
+            }
+        } catch (IllegalAccessException ignored) { }
+    }
+
     public boolean supportRecipes() {
         return ModEntries.get(name).hasRecipes();
     }
@@ -618,4 +678,3 @@ public class GlobalBlockEntity extends BlockEntity {
         return null;
     }
 }
-

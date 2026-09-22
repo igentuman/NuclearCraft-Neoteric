@@ -45,7 +45,10 @@ public class MultiblockPortContainer extends AbstractContainerMenu {
         this.data = data != null ? data : new SimpleContainerData(Math.max(1, blockEntity.getSyncFieldCount()));
         addDataSlots(this.data);
 
-        MultiblockEntry mbEntry = MultiblockRegistry.getByPort(blockEntity.name);
+        MultiblockControllerBE controllerForLookup = blockEntity.controller();
+        MultiblockEntry mbEntry = controllerForLookup != null
+                ? MultiblockRegistry.getByController(controllerForLookup.getMultiblockName())
+                : MultiblockRegistry.getByPort(blockEntity.name);
         if (mbEntry != null) {
             ModEntry controllerEntry = mbEntry.controllerEntry();
             if (controllerEntry != null && controllerEntry.itemCap() != null) {
@@ -54,7 +57,7 @@ public class MultiblockPortContainer extends AbstractContainerMenu {
                 int inputFluidCount = controllerEntry.fluidCap() != null ? controllerEntry.fluidCap().inputTanks.size() : 0;
                 int outputItemCount = controllerEntry.itemCap().outputSlots;
 
-                MultiblockControllerBE controller = blockEntity.controller();
+                MultiblockControllerBE controller = controllerForLookup;
                 IItemHandler inv;
                 boolean hasInventory;
                 if (controller != null) {
@@ -119,7 +122,10 @@ public class MultiblockPortContainer extends AbstractContainerMenu {
     }
 
     public SlotsLayout getLayout() {
-        MultiblockEntry mbEntry = MultiblockRegistry.getByPort(blockEntity.name);
+        MultiblockControllerBE controllerForLookup = blockEntity.controller();
+        MultiblockEntry mbEntry = controllerForLookup != null
+                ? MultiblockRegistry.getByController(controllerForLookup.getMultiblockName())
+                : MultiblockRegistry.getByPort(blockEntity.name);
         if (mbEntry != null && mbEntry.controllerEntry() != null) {
             return mbEntry.controllerEntry().slotsLayout();
         }

@@ -15,7 +15,8 @@ public class MultiblockLogicImpl implements IMultiblockLogic {
         for (long key : cache.getStructurePositions()) {
             if (key == controllerKey) continue;
             BlockPos pos = BlockPos.of(key);
-            BlockEntity be = cache.getBlockEntity(level, pos);
+            if (!level.hasChunkAt(pos)) continue;
+            BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof MultiblockPortBE part) {
                 part.setControllerPos(controllerPos);
             }
@@ -28,8 +29,9 @@ public class MultiblockLogicImpl implements IMultiblockLogic {
         for (long key : cache.getStructurePositions()) {
             if (key == controllerKey) continue;
             BlockPos pos = BlockPos.of(key);
-            BlockEntity be = cache.getBlockEntity(level, pos);
-            if (be instanceof MultiblockPortBE part) {
+            if (!level.hasChunkAt(pos)) continue;
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof MultiblockPortBE part && controllerPos.equals(part.getControllerPos())) {
                 part.setControllerPos(null);
             }
         }

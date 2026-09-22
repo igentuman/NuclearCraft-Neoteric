@@ -51,9 +51,11 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import org.apache.commons.lang3.function.TriFunction;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -76,6 +78,8 @@ public class ModEntryBuilder {
     private FluidCapDefinition fluidCapDefinition;
     private Supplier<RecipeType<?>> recipeTypeSupplier;
     private Supplier<RecipeSerializer<?>> recipeSerializerSupplier;
+    private String recipeFamilyId;
+    private RecipeSchemaKind recipeSchemaKind;
     public MaterialEntry material;
     private SlotsLayout slotsLayout;
     private int progressBar = 0;
@@ -334,8 +338,19 @@ public class ModEntryBuilder {
 
     @SuppressWarnings("unchecked")
     public static ModEntryBuilder addMultiblockController(String name) {
+        return addMultiblockController(name, MultiblockControllerBlock::new);
+    }
+
+    @FunctionalInterface
+    public interface ControllerBlockFactory {
+        Block create(BlockBehaviour.Properties props, String name,
+                     Supplier<BlockEntityType<? extends MultiblockControllerBE>> beTypeSupplier);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static ModEntryBuilder addMultiblockController(String name, ControllerBlockFactory blockFactory) {
         ModEntryBuilder b = add(name);
-        b.blockSupplier = () -> new MultiblockControllerBlock(defaultMultiblockProps(), name,
+        b.blockSupplier = () -> blockFactory.create(defaultMultiblockProps(), name,
                 () -> (BlockEntityType<? extends MultiblockControllerBE>) b.registeredBe.get());
         b.entitySupplierFactory = block -> () -> BlockEntityType.Builder.of(
                 (pos, state) -> new MultiblockControllerBE(b.registeredBe.get(), pos, state, name),
@@ -389,6 +404,19 @@ public class ModEntryBuilder {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static ModEntry addMultiblockPart(String name, BlockBehaviour.Properties props,
                                              PartBlockFactory blockFactory, MultiblockPortBE.Factory beFactory) {
+        return addMultiblockPart(name, props, blockFactory, beFactory, MultiblockPortContainer::new);
+    }
+
+    public static ModEntry addMultiblockPartWithoutMenu(String name, BlockBehaviour.Properties props,
+                                                        PartBlockFactory blockFactory,
+                                                        MultiblockPortBE.Factory beFactory) {
+        return addMultiblockPart(name, props, blockFactory, beFactory, null);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static ModEntry addMultiblockPart(String name, BlockBehaviour.Properties props,
+                                             PartBlockFactory blockFactory, MultiblockPortBE.Factory beFactory,
+                                             @Nullable IContainerFactory<? extends AbstractContainerMenu> menuFactory) {
         final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>[] beHolder = new DeferredHolder[1];
 
         DeferredBlock<Block> block = BLOCKS.register(name, () ->
@@ -404,10 +432,11 @@ public class ModEntryBuilder {
 
         DeferredItem<Item> item = ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
 
-        DeferredHolder<MenuType<?>, MenuType<?>> menu =
-                (DeferredHolder<MenuType<?>, MenuType<?>>) (DeferredHolder<?, ?>)
-                        CONTAINERS.register(name, () -> IMenuTypeExtension.create(
-                                (IContainerFactory<MultiblockPortContainer>) MultiblockPortContainer::new));
+        DeferredHolder<MenuType<?>, MenuType<?>> menu = null;
+        if (menuFactory != null) {
+            menu = (DeferredHolder<MenuType<?>, MenuType<?>>) (DeferredHolder<?, ?>)
+                    CONTAINERS.register(name, () -> IMenuTypeExtension.create((IContainerFactory) menuFactory));
+        }
 
         ModEntry entry = new ModEntry(name, block, item, menu, beHolder[0], false, null, null, null, null, null, null, null, 0, null, null, Set.of(), Set.of(), false);
         ENTRIES.put(name, entry);
@@ -528,17 +557,37 @@ public class ModEntryBuilder {
     }
 
     public ModEntryBuilder withRecipes() {
-        this.recipeTypeSupplier = () -> RecipeType.<UniversalProcessorRecipe>simple(rl(name));
-        this.recipeSerializerSupplier = () -> new UniversalProcessorRecipeSerializer(name);
-        return this;
+        return withRecipeFamily(name, RecipeSchemaKind.UNIVERSAL_PROCESSOR,
+                () -> RecipeType.<UniversalProcessorRecipe>simple(rl(name)),
+                () -> new UniversalProcessorRecipeSerializer(name));
     }
 
     public ModEntryBuilder withRecipes(
             Supplier<RecipeType<?>> recipeTypeSupplier,
             Supplier<RecipeSerializer<?>> recipeSerializerSupplier
     ) {
+        return withRecipeFamily(name, RecipeSchemaKind.UNIVERSAL_PROCESSOR,
+                recipeTypeSupplier, recipeSerializerSupplier);
+    }
+
+    public ModEntryBuilder withRecipeFamily(
+            String familyId,
+            RecipeSchemaKind schemaKind,
+            Supplier<RecipeType<?>> recipeTypeSupplier,
+            Supplier<RecipeSerializer<?>> recipeSerializerSupplier
+    ) {
+        this.recipeFamilyId = familyId;
+        this.recipeSchemaKind = schemaKind;
         this.recipeTypeSupplier = recipeTypeSupplier;
         this.recipeSerializerSupplier = recipeSerializerSupplier;
+        return this;
+    }
+
+    public ModEntryBuilder withoutRecipes() {
+        this.recipeFamilyId = null;
+        this.recipeSchemaKind = null;
+        this.recipeTypeSupplier = null;
+        this.recipeSerializerSupplier = null;
         return this;
     }
 
@@ -578,17 +627,19 @@ public class ModEntryBuilder {
         }
         DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> recipeSerializer = null;
         if (recipeTypeSupplier != null) {
+            String registryName = recipeFamilyId == null ? name : recipeFamilyId;
             @SuppressWarnings("unchecked")
             DeferredHolder<RecipeType<?>, RecipeType<?>> recipeCast =
                     (DeferredHolder<RecipeType<?>, RecipeType<?>>)
-                            (DeferredHolder<?, ?>) RECIPE_TYPES.register(name, recipeTypeSupplier);
+                            (DeferredHolder<?, ?>) RECIPE_TYPES.register(registryName, recipeTypeSupplier);
             recipeType = recipeCast;
         }
         if (recipeSerializerSupplier != null) {
+            String registryName = recipeFamilyId == null ? name : recipeFamilyId;
             @SuppressWarnings("unchecked")
             DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> serializerCast =
                     (DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>>)
-                            (DeferredHolder<?, ?>) RECIPE_SERIALIZERS.register(name, recipeSerializerSupplier);
+                            (DeferredHolder<?, ?>) RECIPE_SERIALIZERS.register(registryName, recipeSerializerSupplier);
             recipeSerializer = serializerCast;
         }
 
@@ -620,7 +671,13 @@ public class ModEntryBuilder {
             }
         }
 
-        ModEntry entry = new ModEntry(name, block, item, menu, blockEntity, recipeTypeSupplier != null, recipeType, recipeSerializer, material, itemCapDefinition, fluidCapDefinition, energy, slotsLayout, progressBar, toolSetEntry, armorSetEntry, Set.of(), supportedCatalysts, customModel);
+        RecipeFamilyEntry recipeFamily = recipeType == null || recipeSerializer == null ? null : new RecipeFamilyEntry(
+                rl(recipeFamilyId == null ? name : recipeFamilyId), recipeType, recipeSerializer,
+                recipeSchemaKind == null ? RecipeSchemaKind.UNIVERSAL_PROCESSOR : recipeSchemaKind,
+                name, List.of(name), List.of());
+        ModEntry entry = new ModEntry(name, block, item, menu, blockEntity, recipeTypeSupplier != null,
+                recipeType, recipeSerializer, recipeFamily, material, itemCapDefinition, fluidCapDefinition,
+                energy, slotsLayout, progressBar, toolSetEntry, armorSetEntry, Set.of(), supportedCatalysts, customModel);
         ENTRIES.put(name, entry);
         return entry;
 

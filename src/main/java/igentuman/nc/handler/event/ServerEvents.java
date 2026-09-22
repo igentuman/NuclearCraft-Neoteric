@@ -7,6 +7,7 @@ import igentuman.nc.handler.storage.ContainerSyncDispatcher;
 import igentuman.nc.item.ContainerBlockItem;
 import igentuman.nc.item.MultitoolItem;
 import igentuman.nc.item.ResoniteCrystalItem;
+import igentuman.nc.particle.ParticleTransfer;
 import igentuman.nc.util.ModUtil;
 import igentuman.nc.world.anomaly.AnomalySpawnManager;
 import net.minecraft.core.Holder;
@@ -38,6 +39,7 @@ public class ServerEvents {
     public void onServerTick(ServerTickEvent.Post event) {
         TICK_COUNTER++;
         MultitoolItem.tickTasks();
+        ParticleTransfer.resetTick();
     }
 
     @SubscribeEvent

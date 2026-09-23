@@ -1,18 +1,17 @@
 package igentuman.nc.multiblock.turbine;
 
-import igentuman.nc.api.impl.CubicMultiblockValidator;
-import igentuman.nc.api.multiblock.IMultiblockCache;
-import igentuman.nc.api.multiblock.IMultiblockValidator;
+import igentuman.nc.api.multiblock.AbstractCuboidValidator;
+import igentuman.nc.api.multiblock.part.BladeDef;
+import igentuman.nc.api.multiblock.part.TurbineCoilDef;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.config.Multiblocks;
-import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.entries.Turbine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.Level;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
@@ -23,131 +22,151 @@ import java.util.Map;
 import java.util.Set;
 
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.multiblock.MultiblockDebug.fail;
 import static igentuman.nc.multiblock.MultiblockDebug.step;
 
-public class TurbineValidator implements IMultiblockValidator {
+public class TurbineValidator extends AbstractCuboidValidator<TurbineCache> {
 
-    private final CubicMultiblockValidator shape;
-
-    private final Block controller;
-    private final Block bearing;
-    private final Block rotorShaft;
+    private Block controller;
+    private Block bearing;
+    private Block rotorShaft;
+    private Block port;
+    private Block casing;
+    private Block glass;
     private final Set<Block> coilBlocks = new HashSet<>();
     private final Set<Block> bladeBlocks = new HashSet<>();
+    private boolean resolved;
 
-    public TurbineValidator() {
-        int min = Multiblocks.turbineMinSize;
-        int max = Multiblocks.turbineMaxSize;
-
+    @Override
+    protected boolean resolveBlocks() {
+        if (resolved) return true;
         controller = blockOf("turbine_controller");
         bearing = blockOf("turbine_bearing");
         rotorShaft = blockOf("turbine_rotor_shaft");
-
-        Block port = blockOf("turbine_port");
-        Block casing = blockOf("turbine_casing");
-        Block glass = blockOf("turbine_glass");
-        Set<Block> shellBlocks = new HashSet<>(List.of(port, casing, glass, bearing));
-        for (String c : igentuman.nc.setup.entries.Turbine.COILS) {
-            coilBlocks.add(blockOf("turbine_" + c + "_coil"));
+        port = blockOf("turbine_port");
+        casing = blockOf("turbine_casing");
+        glass = blockOf("turbine_glass");
+        coilBlocks.clear();
+        for (String coil : Turbine.COILS) {
+            Block block = blockOf("turbine_" + coil + "_coil");
+            if (block != null) coilBlocks.add(block);
         }
-        shellBlocks.addAll(coilBlocks);
-
-        Set<Block> interiorBlocks = new HashSet<>();
-        interiorBlocks.add(rotorShaft);
-        for (String b : igentuman.nc.setup.entries.Turbine.BLADES) {
-            bladeBlocks.add(blockOf(b));
+        bladeBlocks.clear();
+        for (String blade : Turbine.BLADES) {
+            Block block = blockOf(blade);
+            if (block != null) bladeBlocks.add(block);
         }
-        interiorBlocks.addAll(bladeBlocks);
-
-        this.shape = new CubicMultiblockValidator(
-                (state, be) -> state.is(controller),
-                (state, be) -> shellBlocks.contains(state.getBlock()),
-                (state, be) -> state.isAir() || interiorBlocks.contains(state.getBlock()),
-                min, max, min, max, min, max);
+        resolved = controller != null && bearing != null && rotorShaft != null && port != null
+                && casing != null && glass != null;
+        return resolved;
     }
 
     @Override
-    public boolean validate(Level level, BlockPos controllerPos, Direction facing, IMultiblockCache cache) {
-        if (!(cache instanceof TurbineCache tc)) {
-            return shape.validate(level, controllerPos, facing, cache);
+    protected int minSize() {
+        return Multiblocks.turbineMinSize;
+    }
+
+    @Override
+    protected int maxSize() {
+        return Multiblocks.turbineMaxSize;
+    }
+
+    @Override
+    protected boolean isController(BlockState state) {
+        return state.is(controller);
+    }
+
+    @Override
+    protected boolean isShell(BlockState state) {
+        Block block = state.getBlock();
+        return block == casing || block == glass || block == port || block == bearing || coilBlocks.contains(block);
+    }
+
+    @Override
+    protected boolean acceptShell(TurbineCache cache, BlockPos pos, BlockState state, boolean corner) {
+        if (!isShell(state)) return fail("multiblock.validation.wrong_outer", pos, rl("multiblock_shell"), state);
+        Block block = state.getBlock();
+        if (block == bearing) {
+            cache.workingBearings.add(pos.immutable());
+        } else if (coilBlocks.contains(block)) {
+            cache.workingCoils.put(pos.asLong(), coilName(block));
         }
-        if (!shape.validate(level, controllerPos, facing, tc)) {
-            tc.resetStats();
-            return false;
-        }
-        tc.resetStats();
-
-        List<BlockPos> bearings = new ArrayList<>();
-        Map<Long, String> coilNames = new HashMap<>();
-        classify(level, tc, bearings, coilNames);
-
-        step("turbine classified bearings={} rotorBlocks={} coils={}", bearings.size(),
-                tc.rotorPositions.size(), tc.coilPositions.size());
-        if (bearings.size() != 2) return invalid(tc, "multiblock.turbine.bearing_count", controllerPos,
-                rl("turbine_bearing"), null);
-
-        int[] box = boundingBox(tc);
-        int minX = box[0], minY = box[1], minZ = box[2], maxX = box[3], maxY = box[4], maxZ = box[5];
-        tc.width = maxX - minX + 1;
-        tc.height = maxY - minY + 1;
-        tc.depth = maxZ - minZ + 1;
-
-        Direction.Axis axis = axisOf(bearings.get(0), bearings.get(1));
-        if (axis == null) return invalid(tc, "multiblock.turbine.bearings_not_aligned", bearings.get(0),
-                rl("aligned_turbine_bearings"), null);
-
-        if (!checkProportions(axis, tc)) return invalid(tc, "multiblock.turbine.wrong_proportions", controllerPos,
-                rl("odd_square_turbine_cross_section"), null);
-
-        int cx = (minX + maxX) / 2, cy = (minY + maxY) / 2, cz = (minZ + maxZ) / 2;
-
-        Set<Long> expectedBearings = expectedBearings(axis, minX, minY, minZ, maxX, maxY, maxZ, cx, cy, cz);
-        Set<Long> detectedBearings = new HashSet<>();
-        for (BlockPos b : bearings) detectedBearings.add(b.asLong());
-        if (!detectedBearings.equals(expectedBearings)) {
-            BlockPos mismatch = mismatch(detectedBearings, expectedBearings, controllerPos);
-            return invalid(tc, "multiblock.turbine.wrong_bearing_position", mismatch,
-                    rl("turbine_bearing"), null);
-        }
-
-        Set<Long> rotorLine = expectedRotorLine(axis, minX, minY, minZ, maxX, maxY, maxZ, cx, cy, cz);
-        if (!tc.rotorPositions.equals(rotorLine)) {
-            BlockPos mismatch = mismatch(tc.rotorPositions, rotorLine, controllerPos);
-            return invalid(tc, "multiblock.turbine.wrong_rotor_line", mismatch,
-                    rl("turbine_rotor_shaft"), null);
-        }
-        for (long key : rotorLine) {
-            BlockState bs = tc.getBlockState(level, BlockPos.of(key));
-            if (!bs.hasProperty(TurbineRotorBlock.FACING)
-                    || bs.getValue(TurbineRotorBlock.FACING).getAxis() != axis) {
-                return invalid(tc, "multiblock.turbine.rotor_facing", BlockPos.of(key),
-                        rl("turbine_rotor_shaft"), BuiltInRegistries.BLOCK.getKey(bs.getBlock()));
-            }
-        }
-
-        double flow = countBlades(level, tc, rotorLine, axis);
-        if (tc.bladeCount % 4 != 0) return invalid(tc, "multiblock.turbine.incomplete_blade_set", controllerPos,
-                rl("turbine_blade_set"), null);
-
-        countCoils(level, tc, coilNames);
-
-        tc.axis = axis;
-        tc.bearingPos1 = bearings.get(0).asLong();
-        tc.bearingPos2 = bearings.get(1).asLong();
-        tc.flow = flow;
-        step("turbine validation passed axis={} blades={} activeCoils={} flow={}", axis, tc.bladeCount,
-                tc.activeCoils, flow);
         return true;
     }
 
-    private boolean invalid(TurbineCache tc, String key, BlockPos pos,
-                            net.minecraft.resources.ResourceLocation expected,
-                            net.minecraft.resources.ResourceLocation actual) {
-        fail(key, pos, expected, actual);
-        tc.resetStats();
-        tc.getStructurePositions().clear();
-        return false;
+    @Override
+    protected boolean acceptInterior(TurbineCache cache, BlockPos pos, BlockState state) {
+        if (state.isAir()) return true;
+        Block block = state.getBlock();
+        if (block == rotorShaft) {
+            cache.workingRotors.add(pos.asLong());
+            return true;
+        }
+        if (bladeBlocks.contains(block)) return true;
+        return fail("multiblock.validation.wrong_inner", pos, rl("multiblock_interior"), state);
+    }
+
+    @Override
+    protected boolean validateRelations(TurbineCache cache) {
+        BlockPos controllerPos = cache.controllerPos();
+        List<BlockPos> bearings = cache.workingBearings;
+        step("turbine classified bearings={} rotorBlocks={} coils={}", bearings.size(),
+                cache.workingRotors.size(), cache.workingCoils.size());
+        if (bearings.size() != 2) {
+            return fail("multiblock.turbine.bearing_count", controllerPos, rl("turbine_bearing"), (ResourceLocation) null);
+        }
+
+        BlockPos min = cache.workingMin();
+        BlockPos max = cache.workingMax();
+        Direction.Axis axis = axisOf(bearings.get(0), bearings.get(1));
+        if (axis == null) {
+            return fail("multiblock.turbine.bearings_not_aligned", bearings.get(0), rl("aligned_turbine_bearings"),
+                    (ResourceLocation) null);
+        }
+        if (!checkProportions(axis, min, max)) {
+            return fail("multiblock.turbine.wrong_proportions", controllerPos, rl("odd_square_turbine_cross_section"),
+                    (ResourceLocation) null);
+        }
+
+        BlockPos center = new BlockPos((min.getX() + max.getX()) / 2, (min.getY() + max.getY()) / 2,
+                (min.getZ() + max.getZ()) / 2);
+
+        Set<Long> expectedBearings = expectedBearings(axis, min, max, center);
+        Set<Long> detectedBearings = new HashSet<>();
+        for (BlockPos pos : bearings) detectedBearings.add(pos.asLong());
+        if (!detectedBearings.equals(expectedBearings)) {
+            return fail("multiblock.turbine.wrong_bearing_position",
+                    mismatch(detectedBearings, expectedBearings, controllerPos), rl("turbine_bearing"),
+                    (ResourceLocation) null);
+        }
+
+        Set<Long> rotorLine = expectedRotorLine(axis, min, max, center);
+        if (!cache.workingRotors.equals(rotorLine)) {
+            return fail("multiblock.turbine.wrong_rotor_line", mismatch(cache.workingRotors, rotorLine, controllerPos),
+                    rl("turbine_rotor_shaft"), (ResourceLocation) null);
+        }
+        for (long key : rotorLine) {
+            BlockPos pos = BlockPos.of(key);
+            BlockState state = cache.getBlockState(pos);
+            if (!state.hasProperty(TurbineRotorBlock.FACING)
+                    || state.getValue(TurbineRotorBlock.FACING).getAxis() != axis) {
+                return fail("multiblock.turbine.rotor_facing", pos, rl("turbine_rotor_shaft"), state);
+            }
+        }
+
+        cache.workingFlow = countBlades(cache, rotorLine, axis);
+        if (cache.workingBlades.size() % 4 != 0) {
+            return fail("multiblock.turbine.incomplete_blade_set", controllerPos, rl("turbine_blade_set"),
+                    (ResourceLocation) null);
+        }
+        cache.workingAxis = axis;
+        return true;
+    }
+
+    @Override
+    protected void calculateStatistics(TurbineCache cache) {
+        countCoils(cache);
+        step("turbine validation passed axis={} blades={} activeCoils={} flow={}", cache.workingAxis,
+                cache.workingBlades.size(), cache.workingActiveCoils, cache.workingFlow);
     }
 
     private static BlockPos mismatch(Set<Long> detected, Set<Long> expected, BlockPos fallback) {
@@ -156,130 +175,104 @@ public class TurbineValidator implements IMultiblockValidator {
         return fallback;
     }
 
-    private void classify(Level level, TurbineCache tc, List<BlockPos> bearings, Map<Long, String> coilNames) {
-        for (long key : tc.getStructurePositions()) {
-            BlockPos p = BlockPos.of(key);
-            Block b = tc.getBlockState(level, p).getBlock();
-            if (b == rotorShaft) {
-                tc.rotorPositions.add(key);
-            } else if (b == bearing) {
-                bearings.add(p);
-            } else if (coilBlocks.contains(b)) {
-                tc.coilPositions.add(key);
-                coilNames.put(key, coilName(b));
-            }
-        }
-    }
-
-    private int[] boundingBox(TurbineCache tc) {
-        boolean first = true;
-        int minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
-        for (long key : tc.getStructurePositions()) {
-            BlockPos p = BlockPos.of(key);
-            if (first) {
-                minX = maxX = p.getX();
-                minY = maxY = p.getY();
-                minZ = maxZ = p.getZ();
-                first = false;
-            } else {
-                minX = Math.min(minX, p.getX());
-                minY = Math.min(minY, p.getY());
-                minZ = Math.min(minZ, p.getZ());
-                maxX = Math.max(maxX, p.getX());
-                maxY = Math.max(maxY, p.getY());
-                maxZ = Math.max(maxZ, p.getZ());
-            }
-        }
-        return new int[]{minX, minY, minZ, maxX, maxY, maxZ};
-    }
-
-    private static Direction.Axis axisOf(BlockPos a, BlockPos b) {
-        int dx = a.getX() != b.getX() ? 1 : 0;
-        int dy = a.getY() != b.getY() ? 1 : 0;
-        int dz = a.getZ() != b.getZ() ? 1 : 0;
+    private static Direction.Axis axisOf(BlockPos first, BlockPos second) {
+        int dx = first.getX() != second.getX() ? 1 : 0;
+        int dy = first.getY() != second.getY() ? 1 : 0;
+        int dz = first.getZ() != second.getZ() ? 1 : 0;
         if (dx + dy + dz != 1) return null;
         if (dx == 1) return Direction.Axis.X;
         if (dy == 1) return Direction.Axis.Y;
         return Direction.Axis.Z;
     }
 
-    /** For the rotor axis, the two perpendicular bounding dims must be equal and odd (single-block cross-section centre). */
-    private boolean checkProportions(Direction.Axis axis, TurbineCache tc) {
-        int a, b;
+    private static boolean checkProportions(Direction.Axis axis, BlockPos min, BlockPos max) {
+        int width = max.getX() - min.getX() + 1;
+        int height = max.getY() - min.getY() + 1;
+        int depth = max.getZ() - min.getZ() + 1;
+        int first;
+        int second;
         switch (axis) {
-            case X -> { a = tc.height; b = tc.depth; }
-            case Y -> { a = tc.width; b = tc.depth; }
-            default -> { a = tc.width; b = tc.height; }
+            case X -> {
+                first = height;
+                second = depth;
+            }
+            case Y -> {
+                first = width;
+                second = depth;
+            }
+            default -> {
+                first = width;
+                second = height;
+            }
         }
-        return a == b && a % 2 != 0;
+        return first == second && first % 2 != 0;
     }
 
-    private Set<Long> expectedBearings(Direction.Axis axis, int minX, int minY, int minZ,
-                                       int maxX, int maxY, int maxZ, int cx, int cy, int cz) {
+    private static Set<Long> expectedBearings(Direction.Axis axis, BlockPos min, BlockPos max, BlockPos center) {
         Set<Long> set = new HashSet<>();
         switch (axis) {
             case X -> {
-                set.add(new BlockPos(minX, cy, cz).asLong());
-                set.add(new BlockPos(maxX, cy, cz).asLong());
+                set.add(new BlockPos(min.getX(), center.getY(), center.getZ()).asLong());
+                set.add(new BlockPos(max.getX(), center.getY(), center.getZ()).asLong());
             }
             case Y -> {
-                set.add(new BlockPos(cx, minY, cz).asLong());
-                set.add(new BlockPos(cx, maxY, cz).asLong());
+                set.add(new BlockPos(center.getX(), min.getY(), center.getZ()).asLong());
+                set.add(new BlockPos(center.getX(), max.getY(), center.getZ()).asLong());
             }
             default -> {
-                set.add(new BlockPos(cx, cy, minZ).asLong());
-                set.add(new BlockPos(cx, cy, maxZ).asLong());
+                set.add(new BlockPos(center.getX(), center.getY(), min.getZ()).asLong());
+                set.add(new BlockPos(center.getX(), center.getY(), max.getZ()).asLong());
             }
         }
         return set;
     }
 
-    private Set<Long> expectedRotorLine(Direction.Axis axis, int minX, int minY, int minZ,
-                                        int maxX, int maxY, int maxZ, int cx, int cy, int cz) {
+    private static Set<Long> expectedRotorLine(Direction.Axis axis, BlockPos min, BlockPos max, BlockPos center) {
         Set<Long> set = new HashSet<>();
         switch (axis) {
             case X -> {
-                for (int x = minX + 1; x < maxX; x++) set.add(new BlockPos(x, cy, cz).asLong());
+                for (int x = min.getX() + 1; x < max.getX(); x++) {
+                    set.add(new BlockPos(x, center.getY(), center.getZ()).asLong());
+                }
             }
             case Y -> {
-                for (int y = minY + 1; y < maxY; y++) set.add(new BlockPos(cx, y, cz).asLong());
+                for (int y = min.getY() + 1; y < max.getY(); y++) {
+                    set.add(new BlockPos(center.getX(), y, center.getZ()).asLong());
+                }
             }
             default -> {
-                for (int z = minZ + 1; z < maxZ; z++) set.add(new BlockPos(cx, cy, z).asLong());
-            }
-        }
-        return set;
-    }
-
-    /** Walks blades outward perpendicular to the rotor axis from each shaft segment; sums flow, tallies valid blades. */
-    private double countBlades(Level level, TurbineCache tc, Set<Long> rotorLine, Direction.Axis axis) {
-        double flow = 0;
-        List<Direction> perpendicular = new ArrayList<>();
-        for (Direction d : Direction.values()) {
-            if (d.getAxis() != axis) perpendicular.add(d);
-        }
-        for (long key : rotorLine) {
-            BlockPos rotor = BlockPos.of(key);
-            for (Direction d : perpendicular) {
-                BlockPos p = rotor;
-                while (true) {
-                    p = p.relative(d);
-                    Block b = tc.getBlockState(level, p).getBlock();
-                    if (!bladeBlocks.contains(b)) break;
-                    if (tc.bladePositions.add(p.asLong())) {
-                        flow += bladeFlow(b);
-                    }
+                for (int z = min.getZ() + 1; z < max.getZ(); z++) {
+                    set.add(new BlockPos(center.getX(), center.getY(), z).asLong());
                 }
             }
         }
-        tc.bladeCount = tc.bladePositions.size();
+        return set;
+    }
+
+    private double countBlades(TurbineCache cache, Set<Long> rotorLine, Direction.Axis axis) {
+        double flow = 0;
+        List<Direction> perpendicular = new ArrayList<>();
+        for (Direction direction : Direction.values()) {
+            if (direction.getAxis() != axis) perpendicular.add(direction);
+        }
+        for (long key : rotorLine) {
+            BlockPos rotor = BlockPos.of(key);
+            for (Direction direction : perpendicular) {
+                BlockPos pos = rotor;
+                while (true) {
+                    pos = pos.relative(direction);
+                    Block block = cache.getBlockState(pos).getBlock();
+                    if (!bladeBlocks.contains(block)) break;
+                    if (cache.workingBlades.add(pos.asLong())) flow += bladeFlow(block);
+                }
+            }
+        }
         return flow;
     }
 
-    /** Validates coils in dependency schedule order, then averages efficiency exactly as the original (invalid coils contribute 0). */
-    private void countCoils(Level level, TurbineCache tc, Map<Long, String> coilNames) {
+    private void countCoils(TurbineCache cache) {
         Map<String, List<Long>> byName = new HashMap<>();
-        coilNames.forEach((pos, name) -> byName.computeIfAbsent(name, k -> new ArrayList<>()).add(pos));
+        cache.workingCoils.forEach((pos, name) -> byName.computeIfAbsent(name, k -> new ArrayList<>()).add(pos));
 
         for (String name : ModEntries.COIL_SCHEDULE) {
             List<Long> positions = byName.get(name);
@@ -287,45 +280,39 @@ public class TurbineValidator implements IMultiblockValidator {
             TurbineCoilDef def = ModEntries.TURBINE_COILS.get(name);
             if (def == null) continue;
             for (long key : positions) {
-                if (tc.validCoils.contains(key)) continue;
-                if (TurbineCoilValidator.isValid(def, level, BlockPos.of(key), tc, tc.validCoils)) {
-                    tc.validCoils.add(key);
+                if (cache.workingValidCoils.contains(key)) continue;
+                if (TurbineCoilValidator.isValid(def, BlockPos.of(key), cache)) {
+                    cache.workingValidCoils.add(key);
                 }
             }
         }
 
-        List<Long> ordered = new ArrayList<>(tc.coilPositions);
+        List<Long> ordered = new ArrayList<>(cache.workingCoils.keySet());
         ordered.sort(Long::compareTo);
-        double eff = 0;
+        double efficiency = 0;
         int active = 0;
         for (long key : ordered) {
-            TurbineCoilDef def = ModEntries.TURBINE_COILS.get(coilNames.get(key));
-            double real = (def != null && tc.validCoils.contains(key)) ? def.getEfficiency() : 0;
-            if (eff == 0) eff = real;
-            eff = (eff + real) / 2;
-            if (tc.validCoils.contains(key)) active++;
+            TurbineCoilDef def = ModEntries.TURBINE_COILS.get(cache.workingCoils.get(key));
+            boolean valid = cache.workingValidCoils.contains(key);
+            double real = def != null && valid ? def.getEfficiency() : 0;
+            if (efficiency == 0) efficiency = real;
+            efficiency = (efficiency + real) / 2;
+            if (valid) active++;
         }
-        tc.coilsEfficiency = eff;
-        tc.activeCoils = active;
+        cache.workingCoilsEfficiency = efficiency;
+        cache.workingActiveCoils = active;
     }
 
-    private double bladeFlow(Block b) {
-        BladeDef def = ModEntries.TURBINE_BLADES.get(BuiltInRegistries.BLOCK.getKey(b).getPath());
+    private static double bladeFlow(Block block) {
+        BladeDef def = ModEntries.TURBINE_BLADES.get(BuiltInRegistries.BLOCK.getKey(block).getPath());
         return def == null ? 0 : def.getEfficiency() / 100.0;
     }
 
-    private static String coilName(Block b) {
-        String path = BuiltInRegistries.BLOCK.getKey(b).getPath();
+    private static String coilName(Block block) {
+        String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
         if (path.startsWith("turbine_") && path.endsWith("_coil")) {
             return path.substring("turbine_".length(), path.length() - "_coil".length());
         }
         return null;
-    }
-
-    private static Block blockOf(String name) {
-        ModEntry entry = ModEntries.get(name);
-        if (entry == null || entry.block() == null) return Blocks.AIR;
-        Block b = entry.block().get();
-        return b == null ? Blocks.AIR : b;
     }
 }

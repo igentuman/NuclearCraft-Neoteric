@@ -1,7 +1,7 @@
 package igentuman.nc.block.turbine;
 
 import igentuman.nc.block.MultiblockBlock;
-import igentuman.nc.multiblock.turbine.TurbineCoilDef;
+import igentuman.nc.api.multiblock.part.TurbineCoilDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

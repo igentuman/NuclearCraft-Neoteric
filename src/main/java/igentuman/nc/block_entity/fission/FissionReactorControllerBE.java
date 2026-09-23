@@ -7,7 +7,7 @@ import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.multiblock.fission.ActiveCoolant;
-import igentuman.nc.multiblock.fission.FissionReaction;
+import igentuman.nc.multiblock.fission.FissionReactorLogic;
 import igentuman.nc.multiblock.fission.FissionReactorCache;
 import igentuman.nc.setup.NCSounds;
 import igentuman.nc.util.BoilingBuffer;
@@ -34,7 +34,6 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
 
     private static final int TOGGLE_ARM_TICKS = 200;
     private static final int TOGGLE_IDLE_TICKS = 2000;
-    private final FissionReaction reaction = new FissionReaction();
     private boolean validatorsReady = false;
     private boolean redstoneActivated = true;
     private double moderationFactor = 1.0;
@@ -62,6 +61,27 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
 
     public HeatBuffer heatBuffer() {
         return heatBuffer;
+    }
+
+    public void updateHeatDisplay(HeatBuffer source) {
+        if (heatBuffer.capacity == source.capacity && heatBuffer.currentHeat == source.currentHeat
+                && heatBuffer.heatPerTick == source.heatPerTick && heatBuffer.cooldownPerTick == source.cooldownPerTick) {
+            return;
+        }
+        heatBuffer.capacity = source.capacity;
+        heatBuffer.currentHeat = source.currentHeat;
+        heatBuffer.heatPerTick = source.heatPerTick;
+        heatBuffer.cooldownPerTick = source.cooldownPerTick;
+        markDirty();
+    }
+
+    public boolean isRedstoneActivated() {
+        return redstoneActivated;
+    }
+
+    @Nullable
+    private FissionReactorLogic reaction() {
+        return mbInstance != null && mbInstance.logic instanceof FissionReactorLogic logic ? logic : null;
     }
 
     public boolean isSteamMode() {
@@ -151,15 +171,12 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
             wasChanged = true;
         }
         tickToggle();
-        if (formed && mbInstance != null && mbInstance.cache instanceof FissionReactorCache fc) {
+        if (formed && mbInstance.cache instanceof FissionReactorCache fc) {
             updateStats(fc);
         } else {
             clearStats();
-        }
-        if (formed && redstoneActivated && mbInstance.cache instanceof FissionReactorCache fc) {
-            reaction.tick(this, fc);
-        } else {
-            reaction.idle(this);
+            FissionReactorLogic reaction = reaction();
+            if (reaction != null) reaction.idle(this);
         }
         if (wasChanged) {
             assert getLevel() != null;
@@ -187,8 +204,8 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
         if (!(level instanceof ServerLevel serverLevel)) return;
         serverLevel.invalidateCapabilities(worldPosition);
         MultiblockHandler.MultiblockInstance instance = MultiblockHandler.getInstance(serverLevel, worldPosition);
-        if (instance != null && instance.cache != null) {
-            for (long key : instance.cache.getStructurePositions()) {
+        if (instance != null && instance.cache instanceof FissionReactorCache fc) {
+            for (long key : fc.ports()) {
                 serverLevel.invalidateCapabilities(BlockPos.of(key));
             }
         }
@@ -196,8 +213,8 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
 
     private void updateStats(FissionReactorCache fc) {
         int newFuelCells = fc.fuelCellCount;
-        int newHeatSinks = fc.validHeatSinks.size();
-        int newModerators = fc.allModerators.size();
+        int newHeatSinks = fc.heatSinkCount;
+        int newModerators = fc.moderatorCount;
         int newModerationLevel = (int) Math.round(moderationFactor * 100);
         int newIrradiatorLines = fc.irradiationLines;
         long newMin = fc.hasAABB() ? fc.aabbMinPacked() : 0;
@@ -234,7 +251,8 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
         if (!(level instanceof ServerLevel sl)) return 0;
         if (mbInstance == null || !mbInstance.formed || !(mbInstance.cache instanceof FissionReactorCache fc)) return 0;
         int lines = fc.irradiationLines;
-        if (reaction.currentRecipe == null) return 0;
+        FissionReactorLogic reaction = reaction();
+        if (reaction == null || reaction.currentRecipe == null) return 0;
         int heat = reaction.currentRecipe.heat();
         int depletion = reaction.currentRecipe.processTime();
         double hm = Math.pow(heat, 1.8)/1000D;
@@ -298,9 +316,6 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        CompoundTag reactionTag = new CompoundTag();
-        reaction.save(reactionTag, registries);
-        tag.put("Reaction", reactionTag);
         tag.putBoolean("SteamMode", steamMode);
         tag.putInt("ToggleTimer", toggleTimer);
         tag.putBoolean("RedstoneActivated", redstoneActivated);
@@ -309,8 +324,8 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        if (!tag.contains("runtime") && tag.contains("Reaction")) tag.put("runtime", tag.getCompound("Reaction"));
         super.loadAdditional(tag, registries);
-        if (tag.contains("Reaction")) reaction.load(tag.getCompound("Reaction"), registries);
         steamMode = tag.getBoolean("SteamMode");
         toggleTimer = tag.contains("ToggleTimer") ? tag.getInt("ToggleTimer") : TOGGLE_IDLE_TICKS;
         redstoneActivated = !tag.contains("RedstoneActivated") || tag.getBoolean("RedstoneActivated");

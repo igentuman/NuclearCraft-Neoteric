@@ -14,6 +14,7 @@ import igentuman.nc.container.ChamberTerminalContainer;
 import igentuman.nc.container.EXPLContainer;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzCache;
+import igentuman.nc.multiblock.kugelblitz.KugelblitzLogic;
 import igentuman.nc.multiblock.kugelblitz.KugelblitzValidator;
 import igentuman.nc.recipe.kugelblitz.KugelblitzRecipes;
 import igentuman.nc.registration.ModEntry;
@@ -107,8 +108,8 @@ public class Kugelblitz extends ModEntries {
                         () -> ModEntries.get("quantum_flux_regulator").block().get(),
                         () -> ModEntries.get("event_horizon_stabilizer").block().get(),
                         () -> ModEntries.get("photon_concentrator").block().get())
-                .size(11, 11, 11)
                 .validator(KugelblitzValidator::new)
+                .logic(KugelblitzLogic::new)
                 .cache(KugelblitzCache::new)
                 .build();
     }

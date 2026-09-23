@@ -6,8 +6,9 @@ import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.ValidationScheduler;
 import igentuman.nc.multiblock.fission.ActiveCoolant;
 import igentuman.nc.multiblock.fission.FissionReactorCache;
+import igentuman.nc.multiblock.fission.FissionReactorLogic;
 import igentuman.nc.multiblock.fission.FissionReactorValidator;
-import igentuman.nc.multiblock.fission.HeatSinkDef;
+import igentuman.nc.api.multiblock.part.HeatSinkDef;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
@@ -137,8 +138,8 @@ public class FissionReactor extends ModEntries {
                         () -> ModEntries.get("fission_reactor_casing").block().get(),
                         () -> ModEntries.get("fission_reactor_glass").block().get())
                 .interior(() -> ModEntries.get("fission_reactor_solid_fuel_cell").block().get())
-                .sizeRange(3, 26, 3, 26, 3, 26)
                 .validator(FissionReactorValidator::new)
+                .logic(FissionReactorLogic::new)
                 .cache(FissionReactorCache::new)
                 .build();
     }

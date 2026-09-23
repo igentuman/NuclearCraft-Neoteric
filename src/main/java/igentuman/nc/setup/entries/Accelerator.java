@@ -6,40 +6,33 @@ import igentuman.nc.block.accelerator.AcceleratorControllerBlock;
 import igentuman.nc.block.accelerator.AcceleratorIonSourcePortBlock;
 import igentuman.nc.block.accelerator.AcceleratorPortBlock;
 import igentuman.nc.block.accelerator.CoolerBlock;
-import igentuman.nc.block.fusion.ElectromagnetBlock;
-import igentuman.nc.block.fusion.ElectromagnetSlopeBlock;
-import igentuman.nc.block.fusion.RFAmplifierBlock;
 import igentuman.nc.block_entity.accelerator.AcceleratorBeamPortBE;
 import igentuman.nc.block_entity.accelerator.AcceleratorIonSourcePortBE;
 import igentuman.nc.block_entity.accelerator.AcceleratorPortBE;
 import igentuman.nc.block_entity.accelerator.BeamDiverterControllerBE;
 import igentuman.nc.block_entity.accelerator.LinearAcceleratorControllerBE;
 import igentuman.nc.block_entity.accelerator.RingAcceleratorControllerBE;
-import igentuman.nc.config.Multiblocks;
-import igentuman.nc.multiblock.accelerator.CoolerDef;
+import igentuman.nc.api.multiblock.part.CoolerDef;
 import igentuman.nc.container.AcceleratorIonSourcePortContainer;
 import igentuman.nc.container.AcceleratorPortContainer;
 import igentuman.nc.container.BeamDiverterContainer;
 import igentuman.nc.container.LinearAcceleratorContainer;
 import igentuman.nc.container.RingAcceleratorContainer;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
-import igentuman.nc.multiblock.StructureRecord;
-import igentuman.nc.multiblock.accelerator.BeamDiverterValidationContext;
-import igentuman.nc.multiblock.accelerator.BeamDiverterValidationJob;
-import igentuman.nc.multiblock.accelerator.LinearAcceleratorValidationContext;
-import igentuman.nc.multiblock.accelerator.LinearAcceleratorValidationJob;
-import igentuman.nc.multiblock.accelerator.RingAcceleratorValidationContext;
-import igentuman.nc.multiblock.accelerator.RingAcceleratorValidationJob;
-import igentuman.nc.multiblock.discovery.BoundaryDiscoverySpec;
-import igentuman.nc.multiblock.discovery.BoundaryGeometryDiscoveryJob;
-import igentuman.nc.multiblock.fusion.ElectromagnetDef;
-import igentuman.nc.multiblock.fusion.RFAmplifierDef;
+import igentuman.nc.multiblock.accelerator.BeamDiverterCache;
+import igentuman.nc.multiblock.accelerator.BeamDiverterLogic;
+import igentuman.nc.multiblock.accelerator.BeamDiverterValidator;
+import igentuman.nc.multiblock.accelerator.LinearAcceleratorCache;
+import igentuman.nc.multiblock.accelerator.LinearAcceleratorLogic;
+import igentuman.nc.multiblock.accelerator.LinearAcceleratorValidator;
+import igentuman.nc.multiblock.accelerator.RingAcceleratorCache;
+import igentuman.nc.multiblock.accelerator.RingAcceleratorLogic;
+import igentuman.nc.multiblock.accelerator.RingAcceleratorValidator;
 import igentuman.nc.item.ParticleSourceItem;
 import igentuman.nc.particle.ParticleSourceCatalog;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.Registers;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -130,15 +123,9 @@ public class Accelerator extends ModEntries {
                         () -> get("accelerator_casing_glass").block().get())
                 .interior(() -> get("particle_beam").block().get(),
                         () -> get("electromagnet_yoke").block().get())
-                .sizeRange(5, 10_000, 5, 5, 5, 10_000)
-                .scheduled((id, pos, facing) -> {
-                            int[] range = linearSizeRange();
-                            return new BoundaryGeometryDiscoveryJob(id, pos, facing,
-                                    new BoundaryDiscoverySpec(BoundaryDiscoverySpec.Shape.LINEAR_TUBE,
-                                            5, range[1], 5, 5, 5, range[1], 0, range[0],
-                                            Accelerator::isLinearShell));
-                        },
-                        (id, record) -> new LinearAcceleratorValidationJob(id, validationContext(record)))
+                .validator(LinearAcceleratorValidator::new)
+                .logic(LinearAcceleratorLogic::new)
+                .cache(LinearAcceleratorCache::new)
                 .build();
 
         ModEntry ringController = addMultiblockController("ring_accelerator_controller", AcceleratorControllerBlock::new)
@@ -156,17 +143,9 @@ public class Accelerator extends ModEntries {
                         () -> get("accelerator_casing_glass").block().get())
                 .interior(() -> get("particle_beam").block().get(),
                         () -> get("electromagnet_yoke").block().get())
-                .sizeRange(RingAcceleratorValidationJob.MINIMUM_OUTER_SIDE, 10_000, 5, 5,
-                        RingAcceleratorValidationJob.MINIMUM_OUTER_SIDE, 10_000)
-                .scheduled((id, pos, facing) -> {
-                            int[] range = ringSizeRange();
-                            return new BoundaryGeometryDiscoveryJob(id, pos, facing,
-                                    new BoundaryDiscoverySpec(BoundaryDiscoverySpec.Shape.SQUARE_RING,
-                                            range[0], range[1], 5, 5, range[0], range[1],
-                                            RingAcceleratorValidationJob.WALL_OFFSET,
-                                            Accelerator::isRingOrDiverterShell));
-                        },
-                        (id, record) -> new RingAcceleratorValidationJob(id, ringValidationContext(record)))
+                .validator(RingAcceleratorValidator::new)
+                .logic(RingAcceleratorLogic::new)
+                .cache(RingAcceleratorCache::new)
                 .build();
 
         ModEntry diverterController = addMultiblockController("beam_diverter_controller", AcceleratorControllerBlock::new)
@@ -183,51 +162,10 @@ public class Accelerator extends ModEntries {
                         () -> get("accelerator_casing_glass").block().get())
                 .interior(() -> get("particle_beam").block().get(),
                         () -> get("electromagnet_yoke").block().get())
-                .size(5, 5, 5)
-                .scheduled((id, pos, facing) -> new BoundaryGeometryDiscoveryJob(id, pos, facing,
-                                new BoundaryDiscoverySpec(BoundaryDiscoverySpec.Shape.BOX,
-                                        5, 5, 5, 5, 5, 5, 0, Accelerator::isRingOrDiverterShell)),
-                        (id, record) -> new BeamDiverterValidationJob(id, diverterValidationContext(record)))
+                .validator(BeamDiverterValidator::new)
+                .logic(BeamDiverterLogic::new)
+                .cache(BeamDiverterCache::new)
                 .build();
-    }
-
-    private static int[] ringSizeRange() {
-        int[] range = linearSizeRange();
-        return new int[]{Math.max(range[0], RingAcceleratorValidationJob.MINIMUM_OUTER_SIDE), range[1]};
-    }
-
-    private static RingAcceleratorValidationContext ringValidationContext(StructureRecord record) {
-        return new RingAcceleratorValidationContext(record,
-                state -> is(state, "accelerator_casing"),
-                Accelerator::isRingOrDiverterShell,
-                state -> is(state, "ring_accelerator_controller"),
-                state -> is(state, "accelerator_port"),
-                state -> is(state, "accelerator_beam_port"),
-                state -> is(state, "particle_beam"),
-                state -> is(state, "electromagnet_yoke"),
-                Accelerator::electromagnet,
-                Accelerator::rfAmplifier,
-                state -> state.getBlock() instanceof CoolerBlock cooler ? cooler.definition() : null,
-                Multiblocks.acceleratorHeatCapacityPerBlock);
-    }
-
-    private static BeamDiverterValidationContext diverterValidationContext(StructureRecord record) {
-        return new BeamDiverterValidationContext(record,
-                state -> is(state, "accelerator_casing"),
-                Accelerator::isRingOrDiverterShell,
-                state -> is(state, "beam_diverter_controller"),
-                state -> is(state, "accelerator_port"),
-                state -> is(state, "accelerator_beam_port"),
-                state -> is(state, "particle_beam"),
-                state -> is(state, "electromagnet_yoke"),
-                Accelerator::electromagnet,
-                Multiblocks.acceleratorHeatCapacityPerBlock);
-    }
-
-    private static boolean isRingOrDiverterShell(BlockState state) {
-        return is(state, "accelerator_casing") || is(state, "accelerator_casing_glass")
-                || is(state, "ring_accelerator_controller") || is(state, "beam_diverter_controller")
-                || is(state, "accelerator_port") || is(state, "accelerator_beam_port");
     }
 
     private static void registerParticleSources() {
@@ -257,50 +195,9 @@ public class Accelerator extends ModEntries {
         return entries;
     }
 
-    private static LinearAcceleratorValidationContext validationContext(StructureRecord record) {
-        return new LinearAcceleratorValidationContext(record,
-                state -> is(state, "accelerator_casing"),
-                Accelerator::isLinearShell,
-                state -> is(state, "linear_accelerator_controller"),
-                state -> is(state, "accelerator_port"),
-                state -> is(state, "accelerator_beam_port"),
-                state -> is(state, "accelerator_ion_source_port"),
-                state -> is(state, "particle_beam"),
-                state -> is(state, "electromagnet_yoke"),
-                Accelerator::electromagnet,
-                Accelerator::rfAmplifier,
-                state -> state.getBlock() instanceof CoolerBlock cooler ? cooler.definition() : null,
-                Multiblocks.acceleratorHeatCapacityPerBlock);
-    }
-
-    private static boolean isLinearShell(BlockState state) {
-        return is(state, "accelerator_casing") || is(state, "accelerator_casing_glass")
-                || is(state, "linear_accelerator_controller") || is(state, "accelerator_port")
-                || is(state, "accelerator_beam_port") || is(state, "accelerator_ion_source_port");
-    }
-
     private static boolean is(BlockState state, String name) {
         ModEntry entry = get(name);
         return entry != null && entry.block() != null && state.is(entry.block().get());
-    }
-
-    private static ElectromagnetDef electromagnet(BlockState state) {
-        if (!(state.getBlock() instanceof ElectromagnetBlock)
-                || state.getBlock() instanceof ElectromagnetSlopeBlock) return null;
-        return ElectromagnetDef.get(BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath());
-    }
-
-    private static RFAmplifierDef rfAmplifier(BlockState state) {
-        if (!(state.getBlock() instanceof RFAmplifierBlock)) return null;
-        return RFAmplifierDef.get(BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath());
-    }
-
-    private static int[] linearSizeRange() {
-        return switch (Multiblocks.acceleratorScalePreset) {
-            case 2 -> new int[]{60, 1_000};
-            case 3 -> new int[]{600, 10_000};
-            default -> new int[]{6, 100};
-        };
     }
 
     private static BlockBehaviour.Properties metalProps() {

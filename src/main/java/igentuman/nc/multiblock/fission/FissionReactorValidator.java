@@ -1,19 +1,14 @@
 package igentuman.nc.multiblock.fission;
 
-import igentuman.nc.api.impl.CubicMultiblockValidator;
-import igentuman.nc.api.multiblock.BlockPredicate;
-import igentuman.nc.api.multiblock.IMultiblockCache;
-import igentuman.nc.api.multiblock.IMultiblockValidator;
+import igentuman.nc.api.multiblock.AbstractCuboidValidator;
+import igentuman.nc.api.multiblock.part.HeatSinkDef;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.registration.HeatSinkEntry;
-import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
@@ -21,130 +16,117 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Validates the fission reactor's cuboid shell and interior, then classifies components and derives reactor stats. */
-public class FissionReactorValidator implements IMultiblockValidator {
+import static igentuman.nc.NuclearCraft.rl;
+
+public class FissionReactorValidator extends AbstractCuboidValidator<FissionReactorCache> {
 
     private static final int MAX_MODERATOR_RUN = 4;
 
-    private final CubicMultiblockValidator shape;
+    private Block controller;
+    private Block fuelCell;
+    private Block irradiationChamber;
+    private Block pileDriverChamber;
 
-    private Block fuelCell = Blocks.AIR;
-    private Block irradiationChamber = Blocks.AIR;
-    private Block pileDriverChamber = Blocks.AIR;
-
-    public FissionReactorValidator() {
-        int min = Multiblocks.fissionMinSize;
-        int max = Multiblocks.fissionMaxSize;
-        this.shape = new CubicMultiblockValidator(
-                (state, be) -> state.is(blockOf("fission_reactor_controller")),
-                BlockPredicate.ofTag(FissionTags.CASING),
-                (state, be) -> state.isAir() || state.is(FissionTags.REACTOR_INNER),
-                min, max, min, max, min, max);
+    @Override
+    protected boolean resolveBlocks() {
+        if (controller == null) controller = blockOf("fission_reactor_controller");
+        if (fuelCell == null) fuelCell = blockOf("fission_reactor_solid_fuel_cell");
+        if (irradiationChamber == null) irradiationChamber = blockOf("fission_reactor_irradiation_chamber");
+        if (pileDriverChamber == null) pileDriverChamber = blockOf("fission_reactor_pile-driver_irradiation_chamber");
+        return controller != null && fuelCell != null;
     }
 
     @Override
-    public boolean validate(Level level, BlockPos controllerPos, Direction facing, IMultiblockCache cache) {
-        if (!(cache instanceof FissionReactorCache fc)) {
-            return shape.validate(level, controllerPos, facing, cache);
-        }
-        if (!shape.validate(level, controllerPos, facing, fc)) {
-            fc.resetStats();
-            return false;
-        }
-        fc.resetStats();
-        fuelCell = blockOf("fission_reactor_solid_fuel_cell");
-        irradiationChamber = blockOf("fission_reactor_irradiation_chamber");
-        pileDriverChamber = blockOf("fission_reactor_pile-driver_irradiation_chamber");
+    protected int minSize() {
+        return Multiblocks.fissionMinSize;
+    }
 
-        classify(level, fc);
-        computeFuelCellAttachments(level, fc);
-        validateHeatSinks(level, fc);
-        computeIrradiators(level, fc);
-        sumCooling(fc);
-        computeDimensions(fc);
-        fc.fuelCellCount = fc.fuelCells.size();
+    @Override
+    protected int maxSize() {
+        return Multiblocks.fissionMaxSize;
+    }
+
+    @Override
+    protected boolean isController(BlockState state) {
+        return state.is(controller);
+    }
+
+    @Override
+    protected boolean isShell(BlockState state) {
+        return state.is(FissionTags.CASING);
+    }
+
+    @Override
+    protected boolean acceptShell(FissionReactorCache cache, BlockPos pos, BlockState state, boolean corner) {
+        if (!isShell(state)) return fail("multiblock.validation.wrong_outer", pos, rl("multiblock_shell"), state);
         return true;
     }
 
-    /** Bounding box of the structure (used by the logic to scale heat capacity). */
-    private void computeDimensions(FissionReactorCache fc) {
-        boolean first = true;
-        int minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
-        for (long key : fc.getStructurePositions()) {
-            BlockPos p = BlockPos.of(key);
-            if (first) {
-                minX = maxX = p.getX();
-                minY = maxY = p.getY();
-                minZ = maxZ = p.getZ();
-                first = false;
-            } else {
-                minX = Math.min(minX, p.getX());
-                minY = Math.min(minY, p.getY());
-                minZ = Math.min(minZ, p.getZ());
-                maxX = Math.max(maxX, p.getX());
-                maxY = Math.max(maxY, p.getY());
-                maxZ = Math.max(maxZ, p.getZ());
-            }
+    @Override
+    protected boolean acceptInterior(FissionReactorCache cache, BlockPos pos, BlockState state) {
+        if (state.isAir()) return true;
+        if (!state.is(FissionTags.REACTOR_INNER)) {
+            return fail("multiblock.validation.wrong_inner", pos, rl("multiblock_interior"), state);
         }
-        fc.width = maxX - minX + 1;
-        fc.height = maxY - minY + 1;
-        fc.depth = maxZ - minZ + 1;
+        long key = pos.asLong();
+        Block block = state.getBlock();
+        if (block instanceof HeatSinkBlock heatSink) {
+            cache.workingHeatSinks.put(key, heatSink.getDef().name);
+        } else if (block == fuelCell) {
+            cache.workingFuelCells.add(key);
+        } else if (state.is(FissionTags.MODERATORS)) {
+            cache.workingModerators.add(key);
+        }
+        if (isIrradiator(block)) cache.workingIrradiators.add(key);
+        return true;
     }
 
-    private void classify(Level level, FissionReactorCache fc) {
-        for (long key : fc.getStructurePositions()) {
-            BlockPos p = BlockPos.of(key);
-            BlockState bs = fc.getBlockState(level, p);
-            Block b = bs.getBlock();
-            if (b instanceof HeatSinkBlock hsb) {
-                fc.heatSinks.put(key, hsb.getDef().name);
-            } else if (b == fuelCell) {
-                fc.fuelCells.add(key);
-            } else if (bs.is(FissionTags.MODERATORS)) {
-                fc.allModerators.add(key);
-            }
-            if (b == irradiationChamber || b == pileDriverChamber) {
-                fc.irradiators.add(key);
-            }
-        }
+    private boolean isIrradiator(Block block) {
+        return (irradiationChamber != null && block == irradiationChamber)
+                || (pileDriverChamber != null && block == pileDriverChamber);
     }
 
-    /** Per fuel cell: count linked neighbor cells (through moderator runs) and mark adjacent
-     *  moderators active, accumulating the cell + moderator multipliers. */
-    private void computeFuelCellAttachments(Level level, FissionReactorCache fc) {
-        for (long key : fc.fuelCells) {
-            BlockPos p = BlockPos.of(key);
+    @Override
+    protected boolean validateRelations(FissionReactorCache cache) {
+        computeFuelCellAttachments(cache);
+        validateHeatSinks(cache);
+        computeIrradiators(cache);
+        sumCooling(cache);
+        return true;
+    }
+
+    private void computeFuelCellAttachments(FissionReactorCache cache) {
+        for (long key : cache.workingFuelCells) {
+            BlockPos pos = BlockPos.of(key);
             int extra = 0;
             for (Direction dir : Direction.values()) {
-                if (hasLinkedCell(level, fc, p, dir)) extra++;
+                if (hasLinkedCell(cache, pos, dir)) extra++;
             }
-            fc.cellsHeatMult += (extra + 1) * (extra + 2) / 2.0;
-            fc.cellsEnergyMult += extra + 1;
+            cache.workingCellsHeatMult += (extra + 1) * (extra + 2) / 2.0;
+            cache.workingCellsEnergyMult += extra + 1;
 
-            int mods = 0;
+            int moderators = 0;
             for (Direction dir : Direction.values()) {
-                BlockPos np = p.relative(dir);
-                if (fc.getBlockState(level, np).is(FissionTags.MODERATORS)) {
-                    fc.activeModerators.add(np.asLong());
-                    mods++;
+                BlockPos neighbour = pos.relative(dir);
+                if (cache.getBlockState(neighbour).is(FissionTags.MODERATORS)) {
+                    cache.workingActiveModerators.add(neighbour.asLong());
+                    moderators++;
                 }
             }
-            fc.moderatorsHeatMult += mods * (extra + 1) * (Multiblocks.fissionModeratorHeatMultiplier / 100.0);
-            fc.moderatorsEnergyMult += mods * (extra + 1) * (Multiblocks.fissionModeratorFeMultiplier / 100.0);
+            cache.workingModeratorsHeatMult += moderators * (extra + 1) * (Multiblocks.fissionModeratorHeatMultiplier / 100.0);
+            cache.workingModeratorsEnergyMult += moderators * (extra + 1) * (Multiblocks.fissionModeratorFeMultiplier / 100.0);
         }
     }
 
-    /** A direction links to another fuel cell directly, or through a run of up to
-     *  {@link #MAX_MODERATOR_RUN} moderators terminated by a fuel cell. */
-    private boolean hasLinkedCell(Level level, FissionReactorCache fc, BlockPos from, Direction dir) {
-        int mods = 0;
-        BlockPos p = from;
-        for (int k = 1; k <= MAX_MODERATOR_RUN + 1; k++) {
-            p = p.relative(dir);
-            BlockState bs = fc.getBlockState(level, p);
-            if (bs.getBlock() == fuelCell) return true;
-            if (bs.is(FissionTags.MODERATORS)) {
-                if (++mods > MAX_MODERATOR_RUN) return false;
+    private boolean hasLinkedCell(FissionReactorCache cache, BlockPos from, Direction dir) {
+        int moderators = 0;
+        BlockPos pos = from;
+        for (int step = 1; step <= MAX_MODERATOR_RUN + 1; step++) {
+            pos = pos.relative(dir);
+            BlockState state = cache.getBlockState(pos);
+            if (state.getBlock() == fuelCell) return true;
+            if (state.is(FissionTags.MODERATORS)) {
+                if (++moderators > MAX_MODERATOR_RUN) return false;
                 continue;
             }
             return false;
@@ -152,11 +134,9 @@ public class FissionReactorValidator implements IMultiblockValidator {
         return false;
     }
 
-    /** Validate heat sinks in topological dependency order (a sink rule may reference another
-     *  sink type, which must be validated first). Cyclic groups appear twice in the schedule. */
-    private void validateHeatSinks(Level level, FissionReactorCache fc) {
+    private void validateHeatSinks(FissionReactorCache cache) {
         Map<String, List<Long>> byName = new HashMap<>();
-        fc.heatSinks.forEach((pos, name) -> byName.computeIfAbsent(name, k -> new ArrayList<>()).add(pos));
+        cache.workingHeatSinks.forEach((pos, name) -> byName.computeIfAbsent(name, k -> new ArrayList<>()).add(pos));
 
         for (String name : ModEntries.HS_SCHEDULE) {
             List<Long> positions = byName.get(name);
@@ -165,58 +145,42 @@ public class FissionReactorValidator implements IMultiblockValidator {
             if (entry == null || !entry.isEnabled()) continue;
             HeatSinkDef def = entry.def();
             for (long key : positions) {
-                if (fc.validHeatSinks.contains(key)) continue;
-                BlockPos p = BlockPos.of(key);
-                if (HeatSinkValidator.isValid(def, level, p, fc)) {
-                    fc.validHeatSinks.add(key);
-                    if (def.isActive()) fc.activeHeatSinks.add(key);
+                if (cache.workingValidHeatSinks.contains(key)) continue;
+                if (HeatSinkValidator.isValid(def, BlockPos.of(key), cache)) {
+                    cache.workingValidHeatSinks.add(key);
                 }
             }
         }
     }
 
-    /** An irradiator scores a line per axis where: neighbor is an active moderator and the block
-     *  beyond it is a fuel cell (chamber -> moderator -> fuel cell). */
-    private void computeIrradiators(Level level, FissionReactorCache fc) {
-        for (long key : fc.irradiators) {
-            BlockPos p = BlockPos.of(key);
-            boolean anyLine = false;
+    private void computeIrradiators(FissionReactorCache cache) {
+        for (long key : cache.workingIrradiators) {
+            BlockPos pos = BlockPos.of(key);
             for (Direction dir : Direction.values()) {
-                BlockPos n1 = p.relative(dir);
-                BlockPos n2 = n1.relative(dir);
-                if (fc.getBlockState(level, n1).is(FissionTags.MODERATORS)
-                        && fc.activeModerators.contains(n1.asLong())
-                        && fc.getBlockState(level, n2).getBlock() == fuelCell) {
-                    fc.irradiationLines++;
-                    anyLine = true;
+                BlockPos first = pos.relative(dir);
+                BlockPos second = first.relative(dir);
+                if (cache.getBlockState(first).is(FissionTags.MODERATORS)
+                        && cache.workingActiveModerators.contains(first.asLong())
+                        && cache.getBlockState(second).getBlock() == fuelCell) {
+                    cache.workingIrradiationLines++;
                 }
             }
-            if (anyLine) fc.validIrradiators.add(key);
         }
     }
 
-    /** Passive sinks contribute their cooling directly; active sinks are tallied per coolant so the
-     *  runtime logic can cool only when the matching coolant fluid is available. */
-    private void sumCooling(FissionReactorCache fc) {
+    private void sumCooling(FissionReactorCache cache) {
         int[] active = new int[ActiveCoolant.COUNT];
-        for (long key : fc.validHeatSinks) {
-            String name = fc.heatSinks.get(key);
+        for (long key : cache.workingValidHeatSinks) {
+            String name = cache.workingHeatSinks.get(key);
             HeatSinkEntry entry = ModEntries.HEAT_SINKS.get(name);
             if (entry == null) continue;
             if (entry.def().isActive()) {
-                ActiveCoolant c = ActiveCoolant.bySinkName(name);
-                if (c != null) active[c.ordinal()]++;
+                ActiveCoolant coolant = ActiveCoolant.bySinkName(name);
+                if (coolant != null) active[coolant.ordinal()]++;
             } else {
-                fc.totalCooling += entry.def().heat;
+                cache.workingTotalCooling += entry.def().heat;
             }
         }
-        fc.activeCoolantCounts = active;
-    }
-
-    private static Block blockOf(String name) {
-        ModEntry entry = ModEntries.get(name);
-        if (entry == null || entry.block() == null) return Blocks.AIR;
-        Block b = entry.block().get();
-        return b == null ? Blocks.AIR : b;
+        cache.workingActiveCoolantCounts = active;
     }
 }

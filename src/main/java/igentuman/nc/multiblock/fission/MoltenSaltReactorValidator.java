@@ -1,88 +1,58 @@
 package igentuman.nc.multiblock.fission;
 
-import igentuman.nc.api.impl.CubicMultiblockValidator;
-import igentuman.nc.api.multiblock.BlockPredicate;
-import igentuman.nc.api.multiblock.IMultiblockCache;
-import igentuman.nc.api.multiblock.IMultiblockValidator;
+import igentuman.nc.api.multiblock.AbstractCuboidValidator;
 import igentuman.nc.config.Multiblocks;
-import igentuman.nc.registration.ModEntry;
-import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class MoltenSaltReactorValidator implements IMultiblockValidator {
+import static igentuman.nc.NuclearCraft.rl;
 
-    private final CubicMultiblockValidator shape;
+public class MoltenSaltReactorValidator extends AbstractCuboidValidator<MsrCache> {
 
-    private Block fuelCell = Blocks.AIR;
+    private Block controller;
+    private Block fuelCell;
 
-    public MoltenSaltReactorValidator() {
-        int min = Multiblocks.msrMinSize;
-        int max = Multiblocks.msrMaxSize;
-        this.shape = new CubicMultiblockValidator(
-                (state, be) -> state.is(blockOf("msr_controller")),
-                BlockPredicate.ofTag(FissionTags.CASING),
-                (state, be) -> state.is(blockOf("msr_fuel_cell")),
-                min, max, min, max, min, max);
+    @Override
+    protected boolean resolveBlocks() {
+        if (controller == null) controller = blockOf("msr_controller");
+        if (fuelCell == null) fuelCell = blockOf("msr_fuel_cell");
+        return controller != null && fuelCell != null;
     }
 
     @Override
-    public boolean validate(Level level, BlockPos controllerPos, Direction facing, IMultiblockCache cache) {
-        if (!(cache instanceof MsrCache mc)) {
-            return shape.validate(level, controllerPos, facing, cache);
-        }
-        if (!shape.validate(level, controllerPos, facing, mc)) {
-            mc.resetStats();
-            return false;
-        }
-        mc.resetStats();
-        fuelCell = blockOf("msr_fuel_cell");
-        classify(level, mc);
-        computeDimensions(mc);
-        mc.fuelCellCount = mc.fuelCells.size();
+    protected int minSize() {
+        return Multiblocks.msrMinSize;
+    }
+
+    @Override
+    protected int maxSize() {
+        return Multiblocks.msrMaxSize;
+    }
+
+    @Override
+    protected boolean isController(BlockState state) {
+        return state.is(controller);
+    }
+
+    @Override
+    protected boolean isShell(BlockState state) {
+        return state.is(FissionTags.CASING);
+    }
+
+    @Override
+    protected boolean acceptShell(MsrCache cache, BlockPos pos, BlockState state, boolean corner) {
+        if (!isShell(state)) return fail("multiblock.validation.wrong_outer", pos, rl("multiblock_shell"), state);
         return true;
     }
 
-    private void classify(Level level, MsrCache mc) {
-        for (long key : mc.getStructurePositions()) {
-            BlockPos p = BlockPos.of(key);
-            if (mc.getBlockState(level, p).getBlock() == fuelCell) {
-                mc.fuelCells.add(key);
-            }
+    @Override
+    protected boolean acceptInterior(MsrCache cache, BlockPos pos, BlockState state) {
+        if (state.is(fuelCell)) {
+            cache.addFuelCell(pos);
+            return true;
         }
-    }
-
-    private void computeDimensions(MsrCache mc) {
-        boolean first = true;
-        int minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
-        for (long key : mc.getStructurePositions()) {
-            BlockPos p = BlockPos.of(key);
-            if (first) {
-                minX = maxX = p.getX();
-                minY = maxY = p.getY();
-                minZ = maxZ = p.getZ();
-                first = false;
-            } else {
-                minX = Math.min(minX, p.getX());
-                minY = Math.min(minY, p.getY());
-                minZ = Math.min(minZ, p.getZ());
-                maxX = Math.max(maxX, p.getX());
-                maxY = Math.max(maxY, p.getY());
-                maxZ = Math.max(maxZ, p.getZ());
-            }
-        }
-        mc.width = maxX - minX + 1;
-        mc.height = maxY - minY + 1;
-        mc.depth = maxZ - minZ + 1;
-    }
-
-    private static Block blockOf(String name) {
-        ModEntry entry = ModEntries.get(name);
-        if (entry == null || entry.block() == null) return Blocks.AIR;
-        Block b = entry.block().get();
-        return b == null ? Blocks.AIR : b;
+        if (!state.isAir()) return fail("multiblock.validation.wrong_inner", pos, rl("multiblock_interior"), state);
+        return true;
     }
 }

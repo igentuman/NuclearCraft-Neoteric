@@ -1,14 +1,12 @@
 package igentuman.nc.multiblock.fusion;
 
-import igentuman.nc.NuclearCraft;
-import igentuman.nc.api.multiblock.IMultiblockCache;
-import igentuman.nc.api.multiblock.IMultiblockValidator;
-import igentuman.nc.registration.ModEntry;
-import igentuman.nc.setup.ModEntries;
+import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
+import igentuman.nc.api.multiblock.part.ElectromagnetDef;
+import igentuman.nc.api.multiblock.part.RFAmplifierDef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.Level;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,340 +14,195 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.multiblock.MultiblockDebug.bounds;
-import static igentuman.nc.multiblock.MultiblockDebug.fail;
 import static igentuman.nc.multiblock.MultiblockDebug.step;
 
-/** Validates the fusion reactor's toroidal ring and empty interior, then tallies magnet and amplifier stats. */
-public class FusionReactorValidator implements IMultiblockValidator {
+public class FusionReactorValidator extends AbstractMultiblockValidator<FusionReactorCache> {
 
-    private static final int MIN_SIZE = 1;
     private static final int MAX_SIZE = 32;
+    private static final int MAX_CONNECTOR_DISTANCE = MAX_SIZE / 2 + 1;
+    private static final List<Direction> SIDES = List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
+    private static final ResourceLocation EXPECTED_CASING = rl("fusion_reactor_casing");
+    private static final ResourceLocation EXPECTED_CONNECTOR = rl("fusion_reactor_connector");
+    private static final ResourceLocation EXPECTED_AIR = BuiltInRegistries.BLOCK.getKey(Blocks.AIR);
+
+    private Block connector;
+    private Block proxy;
+    private int size;
+
+    private boolean resolveBlocks() {
+        if (connector == null) connector = blockOf("fusion_reactor_connector");
+        if (proxy == null) proxy = blockOf("fusion_reactor_core_proxy");
+        return connector != null;
+    }
 
     @Override
-    public boolean validate(Level level, BlockPos corePos, Direction facing, IMultiblockCache cache) {
-        NuclearCraft.LOGGER.debug("[Fusion] validate start core={} facing={} cache={}",
-                corePos, facing, cache == null ? "null" : cache.getClass().getSimpleName());
-        if (!(cache instanceof FusionReactorCache fc)) {
-            NuclearCraft.LOGGER.debug("[Fusion] validate FAIL: cache is not FusionReactorCache");
-            fail("multiblock.fusion.wrong_cache", corePos, rl("fusion_reactor_cache"), null);
-            return false;
+    protected boolean findBounds(FusionReactorCache cache) {
+        size = 0;
+        BlockPos core = cache.controllerPos();
+        if (!resolveBlocks()) {
+            return fail("multiblock.fusion.size_unresolved", core, EXPECTED_CONNECTOR, cache.getBlockState(core.above()));
         }
-        fc.resetStats();
-        fc.getStructurePositions().clear();
-
-        int size = resolveSize(level, corePos, fc);
-        NuclearCraft.LOGGER.debug("[Fusion] resolved size={}", size);
-        if (size < MIN_SIZE) {
-            NuclearCraft.LOGGER.debug("[Fusion] validate FAIL: size {} < MIN_SIZE {}", size, MIN_SIZE);
-            fail("multiblock.fusion.size_unresolved", corePos, rl("fusion_reactor_connector"),
-                    blockId(level, fc, corePos.above()));
-            return false;
-        }
-        int radius = size + 2;
-        bounds(corePos.offset(-radius, 0, -radius), corePos.offset(radius, 2, radius));
-
+        int reach = MAX_CONNECTOR_DISTANCE + 3;
+        cache.prefetch(core.offset(-reach, 0, -reach), core.offset(reach, 2, reach));
+        size = resolveSize(cache, core.above());
+        int radius = size + 3;
+        cache.setWorkingBounds(core.offset(-radius, 0, -radius), core.offset(radius, 2, radius));
         step("fusion ring validation size={}", size);
-        if (!validateRing(level, corePos, size, fc)) {
-            NuclearCraft.LOGGER.debug("[Fusion] validate FAIL: ring invalid");
-            return false;
-        }
-        step("fusion ring passed; validating empty plasma interior");
-        if (!validateInterior(level, corePos, size, fc)) {
-            NuclearCraft.LOGGER.debug("[Fusion] validate FAIL: interior not empty");
-            return false;
-        }
-
-        collectFunctionalParts(level, corePos, size, fc);
-        addCoreProxies(corePos, fc);
-
-        fc.size = size;
-        step("fusion validation passed casing={} connectors={} magnets={} amplifiers={}", fc.casingCount,
-                fc.connectorCount, fc.magnetCount, fc.amplifierCount);
-        NuclearCraft.LOGGER.debug("[Fusion] validate OK size={} casing={} connectors={} magnets={} amplifiers={} magField={} magPower={} magEff={} maxMagTemp={} rfAmp={} rfPower={} rfEff={} minRfTemp={} positions={}",
-                size, fc.casingCount, fc.connectorCount, fc.magnetCount, fc.amplifierCount,
-                fc.magneticFieldStrength, fc.magnetsPower, fc.magnetsEfficiency, fc.maxMagnetsTemp,
-                fc.rfAmplification, fc.rfAmplifiersPower, fc.rfEfficiency, fc.minRFAmplifiersTemp,
-                fc.getStructurePositions().size());
         return true;
     }
 
-    private int resolveSize(Level level, BlockPos corePos, FusionReactorCache fc) {
-        BlockPos mid = corePos.above();
-        Block connector = blockOf("fusion_reactor_connector");
-        if (connector == Blocks.AIR) {
-            NuclearCraft.LOGGER.debug("[Fusion] resolveSize FAIL: block 'fusion_reactor_connector' not registered (got AIR)");
-            return 0;
-        }
-
-        int size = 1;
-        for (int dist = 2; dist <= MAX_SIZE / 2 + 1; dist++) {
+    private int resolveSize(FusionReactorCache cache, BlockPos mid) {
+        int resolved = 1;
+        for (int dist = 2; dist <= MAX_CONNECTOR_DISTANCE; dist++) {
             int count = 0;
-            for (Direction side : List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
-                BlockPos p = mid.relative(side, dist);
-                if (fc.getBlockState(level, p).is(connector)) count++;
+            for (Direction side : SIDES) {
+                if (cache.getBlockState(mid.relative(side, dist)).is(connector)) count++;
             }
-            NuclearCraft.LOGGER.debug("[Fusion] resolveSize: dist={} connectorsFound={}/4", dist, count);
-            if (count == 4) {
-                size = dist;
-            } else {
-                break;
-            }
+            if (count != 4) break;
+            resolved = dist;
         }
-        return size;
+        return resolved;
     }
 
-    private boolean validateRing(Level level, BlockPos corePos, int size, FusionReactorCache fc) {
-        BlockPos mid = corePos.above();
+    private static Direction offsetDir(Direction side) {
+        return side.getAxis() == Direction.Axis.Z ? side.getCounterClockWise() : side.getClockWise();
+    }
+
+    private static BlockPos corner(BlockPos origin, Direction side, int outward, int along) {
+        return origin.relative(side, outward).relative(offsetDir(side), along);
+    }
+
+    @Override
+    protected boolean validateShell(FusionReactorCache cache) {
+        BlockPos mid = cache.controllerPos().above();
         int shift = size + 1;
         int wallLen = size * 2 + 3;
         int outerWallLen = wallLen + 2;
-
-        for (Direction side : List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
-            Direction walkDir;
-            BlockPos innerStart, outerStart, bottomStart, topStart;
-
-            switch (side) {
-                case NORTH -> {
-                    walkDir = Direction.EAST;
-                    innerStart  = mid.relative(Direction.NORTH, shift).relative(Direction.WEST, shift);
-                    outerStart  = mid.relative(Direction.NORTH, shift + 2).relative(Direction.WEST, shift + 1);
-                    bottomStart = mid.relative(Direction.NORTH, shift + 1).relative(Direction.WEST, shift + 1).below();
-                    topStart    = mid.relative(Direction.NORTH, shift + 1).relative(Direction.WEST, shift + 1).above();
-                }
-                case SOUTH -> {
-                    walkDir = Direction.WEST;
-                    innerStart  = mid.relative(Direction.SOUTH, shift).relative(Direction.EAST, shift);
-                    outerStart  = mid.relative(Direction.SOUTH, shift + 2).relative(Direction.EAST, shift + 1);
-                    bottomStart = mid.relative(Direction.SOUTH, shift + 1).relative(Direction.EAST, shift + 1).below();
-                    topStart    = mid.relative(Direction.SOUTH, shift + 1).relative(Direction.EAST, shift + 1).above();
-                }
-                case WEST -> {
-                    walkDir = Direction.SOUTH;
-                    innerStart  = mid.relative(Direction.WEST, shift).relative(Direction.NORTH, shift);
-                    outerStart  = mid.relative(Direction.WEST, shift + 2).relative(Direction.NORTH, shift + 1);
-                    bottomStart = mid.relative(Direction.WEST, shift + 1).relative(Direction.NORTH, shift + 1).below();
-                    topStart    = mid.relative(Direction.WEST, shift + 1).relative(Direction.NORTH, shift + 1).above();
-                }
-                default -> {
-                    walkDir = Direction.NORTH;
-                    innerStart  = mid.relative(Direction.EAST, shift).relative(Direction.SOUTH, shift);
-                    outerStart  = mid.relative(Direction.EAST, shift + 2).relative(Direction.SOUTH, shift + 1);
-                    bottomStart = mid.relative(Direction.EAST, shift + 1).relative(Direction.SOUTH, shift + 1).below();
-                    topStart    = mid.relative(Direction.EAST, shift + 1).relative(Direction.SOUTH, shift + 1).above();
-                }
-            }
-
+        for (Direction side : SIDES) {
+            Direction walk = offsetDir(side).getOpposite();
+            BlockPos innerStart = corner(mid, side, shift, shift);
+            BlockPos outerStart = corner(mid, side, shift + 2, shift + 1);
+            BlockPos bottomStart = corner(mid, side, shift + 1, shift + 1).below();
+            BlockPos topStart = corner(mid, side, shift + 1, shift + 1).above();
             for (int i = 0; i < wallLen; i++) {
-                BlockPos p = innerStart.relative(walkDir, i);
-                if (!isCasing(level, fc, p)) {
-                    fail("multiblock.fusion.wrong_inner_wall", p, rl("fusion_reactor_casing"), blockId(level, fc, p));
-                    NuclearCraft.LOGGER.debug("[Fusion] ring FAIL: side={} innerWall i={}/{} pos={} block={} (expected casing tag)",
-                            side, i, wallLen, p, blockName(level, fc, p));
-                    return false;
-                }
-                fc.getStructurePositions().add(p.asLong());
-                fc.casingCount++;
+                if (!casing(cache, innerStart.relative(walk, i), "multiblock.fusion.wrong_inner_wall")) return false;
+                cache.workingCasingCount++;
             }
-
             for (int i = 0; i < outerWallLen; i++) {
-                BlockPos po = outerStart.relative(walkDir, i);
-                BlockPos pb = bottomStart.relative(walkDir, i);
-                BlockPos pt = topStart.relative(walkDir, i);
-                if (!isCasing(level, fc, po)) {
-                    fail("multiblock.fusion.wrong_outer_wall", po, rl("fusion_reactor_casing"), blockId(level, fc, po));
-                    NuclearCraft.LOGGER.debug("[Fusion] ring FAIL: side={} outerWall i={}/{} pos={} block={} (expected casing tag)",
-                            side, i, outerWallLen, po, blockName(level, fc, po));
-                    return false;
-                }
-                if (!isCasing(level, fc, pb)) {
-                    fail("multiblock.fusion.wrong_bottom_wall", pb, rl("fusion_reactor_casing"), blockId(level, fc, pb));
-                    NuclearCraft.LOGGER.debug("[Fusion] ring FAIL: side={} bottomWall i={}/{} pos={} block={} (expected casing tag)",
-                            side, i, outerWallLen, pb, blockName(level, fc, pb));
-                    return false;
-                }
-                if (!isCasing(level, fc, pt)) {
-                    fail("multiblock.fusion.wrong_top_wall", pt, rl("fusion_reactor_casing"), blockId(level, fc, pt));
-                    NuclearCraft.LOGGER.debug("[Fusion] ring FAIL: side={} topWall i={}/{} pos={} block={} (expected casing tag)",
-                            side, i, outerWallLen, pt, blockName(level, fc, pt));
-                    return false;
-                }
-                fc.getStructurePositions().add(po.asLong());
-                fc.getStructurePositions().add(pb.asLong());
-                fc.getStructurePositions().add(pt.asLong());
-                fc.casingCount += 3;
-            }
-
-            for (int dist = 2; dist <= size; dist++) {
-                BlockPos p = mid.relative(side, dist);
-                fc.getStructurePositions().add(p.asLong());
-                fc.connectorCount++;
+                if (!casing(cache, outerStart.relative(walk, i), "multiblock.fusion.wrong_outer_wall")) return false;
+                if (!casing(cache, bottomStart.relative(walk, i), "multiblock.fusion.wrong_bottom_wall")) return false;
+                if (!casing(cache, topStart.relative(walk, i), "multiblock.fusion.wrong_top_wall")) return false;
+                cache.workingCasingCount += 3;
             }
         }
-
-        fc.getStructurePositions().add(corePos.asLong());
-        fc.getStructurePositions().add(mid.asLong());
-        fc.getStructurePositions().add(corePos.above(2).asLong());
         return true;
     }
 
-    private boolean validateInterior(Level level, BlockPos corePos, int size, FusionReactorCache fc) {
-        BlockPos mid = corePos.above();
+    private boolean casing(FusionReactorCache cache, BlockPos pos, String errorKey) {
+        BlockState state = cache.getBlockState(pos);
+        if (state.is(FusionTags.CASING)) return true;
+        return fail(errorKey, pos, EXPECTED_CASING, state);
+    }
+
+    @Override
+    protected boolean validateInterior(FusionReactorCache cache) {
+        step("fusion ring passed; validating empty plasma interior");
+        BlockPos mid = cache.controllerPos().above();
         int shift = size + 2;
         int walkLen = size * 2 + 3;
-
-        for (Direction side : List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
-            Direction walkDir;
-            BlockPos start;
-            switch (side) {
-                case NORTH -> { walkDir = Direction.EAST;  start = mid.relative(Direction.NORTH, shift).relative(Direction.WEST, shift); }
-                case SOUTH -> { walkDir = Direction.WEST;  start = mid.relative(Direction.SOUTH, shift).relative(Direction.EAST, shift); }
-                case WEST  -> { walkDir = Direction.SOUTH; start = mid.relative(Direction.WEST, shift).relative(Direction.NORTH, shift); }
-                default    -> { walkDir = Direction.NORTH; start = mid.relative(Direction.EAST, shift).relative(Direction.SOUTH, shift); }
-            }
-
+        for (Direction side : SIDES) {
+            Direction walk = offsetDir(side).getOpposite();
+            BlockPos start = corner(mid, side, shift, shift);
             for (int i = 0; i < walkLen; i++) {
-                BlockPos p = start.relative(walkDir, i);
-                fc.getStructurePositions().add(p.asLong());
-                if (!fc.getBlockState(level, p).isAir()) {
-                    fail("multiblock.fusion.interior_not_empty", p,
-                            BuiltInRegistries.BLOCK.getKey(Blocks.AIR), blockId(level, fc, p));
-                    NuclearCraft.LOGGER.debug("[Fusion] interior FAIL: side={} i={}/{} pos={} block={} (expected air)",
-                            side, i, walkLen, p, blockName(level, fc, p));
-                    return false;
-                }
+                BlockPos pos = start.relative(walk, i);
+                BlockState state = cache.getBlockState(pos);
+                if (!state.isAir()) return fail("multiblock.fusion.interior_not_empty", pos, EXPECTED_AIR, state);
             }
         }
         return true;
     }
 
-    private void collectFunctionalParts(Level level, BlockPos corePos, int size, FusionReactorCache fc) {
-        BlockPos mid = corePos;
+    @Override
+    protected void calculateStatistics(FusionReactorCache cache) {
+        BlockPos core = cache.controllerPos();
         int shift = size + 1;
         int wallLen = size * 2 + 3;
         int outerWallLen = wallLen + 2;
-
-        double totalMagField = 0;
-        double totalMagEff = 0;
-        double totalRfEff = 0;
-        int maxMagTemp = Integer.MAX_VALUE;
-        int minRfTemp = Integer.MAX_VALUE;
-
-        for (Direction side : List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
-            Direction walkDir;
-            BlockPos innerStart, outerStart;
-
-            switch (side) {
-                case NORTH -> {
-                    walkDir = Direction.EAST;
-                    innerStart = mid.relative(Direction.NORTH, shift).relative(Direction.WEST, shift);
-                    outerStart = mid.relative(Direction.NORTH, shift + 2).relative(Direction.WEST, shift + 1);
-                }
-                case SOUTH -> {
-                    walkDir = Direction.WEST;
-                    innerStart = mid.relative(Direction.SOUTH, shift).relative(Direction.EAST, shift);
-                    outerStart = mid.relative(Direction.SOUTH, shift + 2).relative(Direction.EAST, shift + 1);
-                }
-                case WEST -> {
-                    walkDir = Direction.SOUTH;
-                    innerStart = mid.relative(Direction.WEST, shift).relative(Direction.NORTH, shift);
-                    outerStart = mid.relative(Direction.WEST, shift + 2).relative(Direction.NORTH, shift + 1);
-                }
-                default -> {
-                    walkDir = Direction.NORTH;
-                    innerStart = mid.relative(Direction.EAST, shift).relative(Direction.SOUTH, shift);
-                    outerStart = mid.relative(Direction.EAST, shift + 2).relative(Direction.SOUTH, shift + 1);
-                }
-            }
-
+        Tally tally = new Tally();
+        for (Direction side : SIDES) {
+            Direction walk = offsetDir(side).getOpposite();
+            BlockPos innerStart = corner(core, side, shift, shift);
+            BlockPos outerStart = corner(core, side, shift + 2, shift + 1);
             for (int i = 0; i < wallLen; i++) {
-                for (int dy : new int[]{0, 2}) {
-                    BlockPos p = innerStart.relative(walkDir, i).relative(Direction.UP, dy);
-                    fc.getStructurePositions().add(p.asLong());
-                    String bname = blockName(level, fc, p);
-                    ElectromagnetDef mag = ElectromagnetDef.get(bname);
-                    RFAmplifierDef amp = RFAmplifierDef.get(bname);
-                    if (mag != null) {
-                        totalMagField += mag.magneticField;
-                        totalMagEff += mag.efficiency;
-                        fc.magnetsPower += mag.power;
-                        if (mag.maxTemp < maxMagTemp) maxMagTemp = mag.maxTemp;
-                        fc.magnetCount++;
-                    } else if (amp != null) {
-                        fc.rfAmplification += amp.voltage;
-                        fc.rfAmplifiersPower += amp.power;
-                        totalRfEff += amp.efficiency;
-                        if (amp.maxTemp < minRfTemp) minRfTemp = amp.maxTemp;
-                        fc.amplifierCount++;
-                    } else {
-                        NuclearCraft.LOGGER.debug("[Fusion] functional (inner) side={} i={} dy={} pos={} block={} not magnet/amplifier",
-                                side, i, dy, p, bname);
-                    }
-                }
+                tally.add(cache, innerStart.relative(walk, i));
+                tally.add(cache, innerStart.relative(walk, i).above(2));
             }
-
             for (int i = 0; i < outerWallLen; i++) {
-                for (int dy : new int[]{0, 2}) {
-                    BlockPos p = outerStart.relative(walkDir, i).relative(Direction.UP, dy);
-                    fc.getStructurePositions().add(p.asLong());
-                    String bname = blockName(level, fc, p);
-                    ElectromagnetDef mag = ElectromagnetDef.get(bname);
-                    RFAmplifierDef amp = RFAmplifierDef.get(bname);
-                    if (mag != null) {
-                        totalMagField += mag.magneticField;
-                        totalMagEff += mag.efficiency;
-                        fc.magnetsPower += mag.power;
-                        if (mag.maxTemp < maxMagTemp) maxMagTemp = mag.maxTemp;
-                        fc.magnetCount++;
-                    } else if (amp != null) {
-                        fc.rfAmplification += amp.voltage;
-                        fc.rfAmplifiersPower += amp.power;
-                        totalRfEff += amp.efficiency;
-                        if (amp.maxTemp < minRfTemp) minRfTemp = amp.maxTemp;
-                        fc.amplifierCount++;
-                    } else {
-                        NuclearCraft.LOGGER.debug("[Fusion] functional (outer) side={} i={} dy={} pos={} block={} not magnet/amplifier",
-                                side, i, dy, p, bname);
-                    }
-                }
+                tally.add(cache, outerStart.relative(walk, i));
+                tally.add(cache, outerStart.relative(walk, i).above(2));
             }
         }
-
-        fc.magneticFieldStrength = totalMagField;
-        fc.magnetsEfficiency = fc.magnetCount > 0 ? (int) (totalMagEff / fc.magnetCount) : 0;
-        fc.rfEfficiency = fc.amplifierCount > 0 ? (int) (totalRfEff / fc.amplifierCount) : 0;
-        fc.maxMagnetsTemp = maxMagTemp == Integer.MAX_VALUE ? 0 : maxMagTemp;
-        fc.minRFAmplifiersTemp = minRfTemp == Integer.MAX_VALUE ? 0 : minRfTemp;
+        cache.workingMagneticFieldStrength = tally.magneticField;
+        cache.workingMagnetsEfficiency = tally.magnets > 0 ? (int) (tally.magnetEfficiency / tally.magnets) : 0;
+        cache.workingRfEfficiency = tally.amplifiers > 0 ? (int) (tally.rfEfficiency / tally.amplifiers) : 0;
+        cache.workingMaxMagnetsTemp = tally.magnets > 0 ? tally.maxMagnetTemp : 0;
+        cache.workingMinRFAmplifiersTemp = tally.amplifiers > 0 ? tally.minRfTemp : 0;
+        cache.workingMagnetsPower = tally.magnetPower;
+        cache.workingRfAmplification = tally.rfAmplification;
+        cache.workingRfAmplifiersPower = tally.rfPower;
+        cache.workingMagnetCount = tally.magnets;
+        cache.workingAmplifierCount = tally.amplifiers;
+        cache.workingConnectorCount = SIDES.size() * (size - 1);
+        cache.workingSize = size;
+        collectProxies(cache, core);
+        step("fusion validation passed casing={} connectors={} magnets={} amplifiers={}", cache.workingCasingCount,
+                cache.workingConnectorCount, cache.workingMagnetCount, cache.workingAmplifierCount);
     }
 
-    private void addCoreProxies(BlockPos corePos, FusionReactorCache fc) {
+    private void collectProxies(FusionReactorCache cache, BlockPos core) {
+        if (proxy == null) return;
         for (int y = 0; y < 3; y++) {
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
-                    BlockPos p = corePos.offset(x, y, z);
-                    fc.getStructurePositions().add(p.asLong());
+                    if (x == 0 && y == 0 && z == 0) continue;
+                    BlockPos pos = core.offset(x, y, z);
+                    if (cache.getBlockState(pos).is(proxy)) cache.addWorkingPort(pos);
                 }
             }
         }
     }
 
-    private boolean isCasing(Level level, FusionReactorCache fc, BlockPos pos) {
-        return fc.getBlockState(level, pos).is(FusionTags.CASING);
-    }
+    private static final class Tally {
+        private double magneticField;
+        private double magnetEfficiency;
+        private double rfEfficiency;
+        private int magnetPower;
+        private int rfAmplification;
+        private int rfPower;
+        private int maxMagnetTemp = Integer.MAX_VALUE;
+        private int minRfTemp = Integer.MAX_VALUE;
+        private int magnets;
+        private int amplifiers;
 
-    private String blockName(Level level, FusionReactorCache fc, BlockPos pos) {
-        BlockState bs = fc.getBlockState(level, pos);
-        return BuiltInRegistries.BLOCK.getKey(bs.getBlock()).getPath();
-    }
-
-    private static net.minecraft.resources.ResourceLocation blockId(Level level, FusionReactorCache fc, BlockPos pos) {
-        return BuiltInRegistries.BLOCK.getKey(fc.getBlockState(level, pos).getBlock());
-    }
-
-    private static Block blockOf(String name) {
-        ModEntry entry = ModEntries.get(name);
-        if (entry == null || entry.block() == null) return Blocks.AIR;
-        Block b = entry.block().get();
-        return b == null ? Blocks.AIR : b;
+        private void add(FusionReactorCache cache, BlockPos pos) {
+            String name = BuiltInRegistries.BLOCK.getKey(cache.getBlockState(pos).getBlock()).getPath();
+            ElectromagnetDef magnet = ElectromagnetDef.get(name);
+            if (magnet != null) {
+                magneticField += magnet.magneticField;
+                magnetEfficiency += magnet.efficiency;
+                magnetPower += magnet.power;
+                maxMagnetTemp = Math.min(maxMagnetTemp, magnet.maxTemp);
+                magnets++;
+                return;
+            }
+            RFAmplifierDef amplifier = RFAmplifierDef.get(name);
+            if (amplifier != null) {
+                rfAmplification += amplifier.voltage;
+                rfPower += amplifier.power;
+                rfEfficiency += amplifier.efficiency;
+                minRfTemp = Math.min(minRfTemp, amplifier.maxTemp);
+                amplifiers++;
+            }
+        }
     }
 }

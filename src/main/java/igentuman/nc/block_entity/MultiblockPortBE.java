@@ -1,7 +1,6 @@
 package igentuman.nc.block_entity;
 
 import igentuman.nc.api.particle.IParticleHandler;
-import igentuman.nc.multiblock.StructureRecord;
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
@@ -47,10 +46,8 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
         if (level instanceof ServerLevel serverLevel) {
             BlockPos owner = igentuman.nc.multiblock.MultiblockHandler.getControllerForPos(serverLevel, worldPosition);
             if (owner != null) setControllerPos(owner);
-            if (controllerPos != null) igentuman.nc.multiblock.MultiblockLevelState.get(serverLevel)
-                    .structureAt(controllerPos)
-                    .filter(record -> record.state() == igentuman.nc.multiblock.StructureLifecycleState.FORMED)
-                    .ifPresent(this::configureFromStructure);
+            MultiblockControllerBE controller = controller();
+            if (controller != null && controller.structureFormed()) configureFromController(controller);
         }
     }
 
@@ -71,10 +68,13 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
         markDirty();
     }
 
-    public void configureFromStructure(StructureRecord record) {
-        sampleControlSignal = !record.machineId().getPath().equals("beam_diverter")
-                && record.roles().getOrDefault(igentuman.nc.multiblock.geometry.StructureRole.SERVICE_PORT,
-                        java.util.List.of()).contains(worldPosition);
+    public void configureFromController(MultiblockControllerBE controller) {
+        configureServiceSignal(!controller.getMultiblockName().startsWith("beam_diverter"),
+                controller.rolePositions(igentuman.nc.multiblock.StructureRole.SERVICE_PORT));
+    }
+
+    private void configureServiceSignal(boolean allowed, java.util.List<BlockPos> servicePorts) {
+        sampleControlSignal = allowed && servicePorts.contains(worldPosition);
     }
 
     public void clearStructureConfiguration() {

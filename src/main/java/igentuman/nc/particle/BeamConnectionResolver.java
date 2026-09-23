@@ -4,8 +4,6 @@ import igentuman.nc.api.particle.IParticleHandler;
 import igentuman.nc.api.particle.ParticleCapabilities;
 import igentuman.nc.block.accelerator.AcceleratorBeamPortBlock;
 import igentuman.nc.block.particle.ParticleChamberBeamPortBlock;
-import igentuman.nc.multiblock.MultiblockLevelState;
-import igentuman.nc.multiblock.validation.ServerLevelStructureReader;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,16 +16,10 @@ public final class BeamConnectionResolver {
     }
 
     @Nullable
-    public static BeamConnection resolve(ServerLevel level, @Nullable BeamConnection cached,
-                                         BlockPos source, Direction direction, int maximumReach) {
-        ServerLevelStructureReader reader = new ServerLevelStructureReader(level, MultiblockLevelState.get(level));
-        if (cached != null && cached.source().equals(source) && cached.direction() == direction
-                && cached.maximumReach() == maximumReach && !cached.isStale(reader)) {
-            return cached;
-        }
+    public static BeamConnection resolve(ServerLevel level, BlockPos source, Direction direction, int maximumReach) {
         var beamEntry = ModEntries.get("particle_beam");
         if (beamEntry == null || !beamEntry.hasBlock()) return null;
-        return BeamConnection.scan(reader, source, direction, maximumReach,
+        return BeamConnection.scan(level, source, direction, maximumReach,
                 state -> state.is(beamEntry.block().get()),
                 state -> state.getBlock() instanceof AcceleratorBeamPortBlock
                         || state.getBlock() instanceof ParticleChamberBeamPortBlock,

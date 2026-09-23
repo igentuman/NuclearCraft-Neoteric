@@ -1,6 +1,6 @@
 package igentuman.nc.block.particle;
 
-import igentuman.nc.multiblock.particle_chamber.DetectorDef;
+import igentuman.nc.api.multiblock.part.DetectorDef;
 
 public class DetectorBlock extends ParticleChamberBlock {
 

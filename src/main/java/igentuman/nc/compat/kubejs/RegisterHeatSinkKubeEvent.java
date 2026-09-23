@@ -1,7 +1,7 @@
 package igentuman.nc.compat.kubejs;
 
 import dev.latvian.mods.kubejs.event.KubeEvent;
-import igentuman.nc.multiblock.fission.HeatSinkDef;
+import igentuman.nc.api.multiblock.part.HeatSinkDef;
 import igentuman.nc.setup.entries.FissionReactor;
 
 import java.util.ArrayList;

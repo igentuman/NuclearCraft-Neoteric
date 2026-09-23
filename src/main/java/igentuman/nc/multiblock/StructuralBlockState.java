@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class StructuralBlockState {
-    private static final Set<String> RUNTIME_PROPERTIES = Set.of("powered", "power", "lit", "active", "hidden", "port_mode");
+    private static final Set<String> RUNTIME_PROPERTIES = Set.of("powered", "power", "lit", "active", "hidden");
     private static final Map<BlockState, BlockState> SIGNATURES = new ConcurrentHashMap<>();
 
     private StructuralBlockState() {}

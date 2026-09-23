@@ -43,14 +43,9 @@ public final class MultiblockExecutorManager {
                     TimeUnit.SECONDS,
                     workQueue,
                     THREAD_FACTORY,
-                    new ThreadPoolExecutor.CallerRunsPolicy()
+                    new ThreadPoolExecutor.AbortPolicy()
             );
             executor.prestartAllCoreThreads();
-            executor.setRejectedExecutionHandler((r, e) -> {
-                if (!e.isShutdown()) {
-                    r.run();
-                }
-            });
         }
         return executor;
     }

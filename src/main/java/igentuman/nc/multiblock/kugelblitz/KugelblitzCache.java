@@ -1,53 +1,51 @@
 package igentuman.nc.multiblock.kugelblitz;
 
-import igentuman.nc.api.impl.MultiblockCacheImpl;
+import igentuman.nc.api.multiblock.AbstractMultiblockCache;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Nullable;
 
-public class KugelblitzCache extends MultiblockCacheImpl {
+public class KugelblitzCache extends AbstractMultiblockCache {
+
+    private int workingTransformers;
+    private int workingFluxRegulators;
+    private int workingStabilizers;
+    private BlockPos workingCenter;
 
     public volatile int transformers;
     public volatile int fluxRegulators;
     public volatile int stabilizers;
-    public volatile long center = Long.MIN_VALUE;
+    @Nullable
+    public volatile BlockPos center;
 
-    public void resetStats() {
-        transformers = 0;
-        fluxRegulators = 0;
-        stabilizers = 0;
-        center = Long.MIN_VALUE;
+    void countTransformer() {
+        workingTransformers++;
     }
 
-    public boolean hasCenter() {
-        return center != Long.MIN_VALUE;
+    void countFluxRegulator() {
+        workingFluxRegulators++;
     }
 
-    public BlockPos centerPos() {
-        return BlockPos.of(center);
+    void countStabilizer() {
+        workingStabilizers++;
     }
 
-    @Override
-    public void clear() {
-        super.clear();
-        resetStats();
+    void setWorkingCenter(BlockPos pos) {
+        workingCenter = pos.immutable();
     }
 
     @Override
-    public void saveNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveNbt(tag, registries);
-        tag.putInt("transformers", transformers);
-        tag.putInt("fluxRegulators", fluxRegulators);
-        tag.putInt("stabilizers", stabilizers);
-        tag.putLong("center", center);
+    protected void resetWorkingData() {
+        workingTransformers = 0;
+        workingFluxRegulators = 0;
+        workingStabilizers = 0;
+        workingCenter = null;
     }
 
     @Override
-    public void loadNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadNbt(tag, registries);
-        transformers = tag.getInt("transformers");
-        fluxRegulators = tag.getInt("fluxRegulators");
-        stabilizers = tag.getInt("stabilizers");
-        center = tag.contains("center") ? tag.getLong("center") : Long.MIN_VALUE;
+    protected void publishData() {
+        transformers = workingTransformers;
+        fluxRegulators = workingFluxRegulators;
+        stabilizers = workingStabilizers;
+        center = workingCenter;
     }
 }

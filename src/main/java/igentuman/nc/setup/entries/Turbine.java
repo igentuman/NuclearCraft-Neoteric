@@ -7,12 +7,11 @@ import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.block_entity.turbine.TurbineControllerBE;
 import igentuman.nc.block_entity.turbine.TurbinePortBE;
 import igentuman.nc.block_entity.turbine.TurbineRotorBE;
-import igentuman.nc.config.Multiblocks;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.ValidationScheduler;
-import igentuman.nc.multiblock.turbine.BladeDef;
+import igentuman.nc.api.multiblock.part.BladeDef;
 import igentuman.nc.multiblock.turbine.TurbineCache;
-import igentuman.nc.multiblock.turbine.TurbineCoilDef;
+import igentuman.nc.api.multiblock.part.TurbineCoilDef;
 import igentuman.nc.multiblock.turbine.TurbineValidator;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
@@ -119,8 +118,6 @@ public class Turbine extends ModEntries {
         ModEntries.TURBINE_BLADES.put("turbine_extreme_rotor_blade", new BladeDef("extreme", 110, 160));
         ModEntries.TURBINE_BLADES.put("turbine_sic_sic_cmc_rotor_blade", new BladeDef("sic_sic_cmc", 125, 180));
 
-        int min = Multiblocks.turbineMinSize;
-        int max = Multiblocks.turbineMaxSize;
         MultiblockEntryBuilder.name("turbine")
                 .controller(ModEntries.get("turbine_controller"))
                 .ports(ModEntries.get("turbine_port"))
@@ -129,7 +126,6 @@ public class Turbine extends ModEntries {
                         () -> ModEntries.get("turbine_glass").block().get(),
                         () -> ModEntries.get("turbine_bearing").block().get())
                 .interior(() -> ModEntries.get("turbine_rotor_shaft").block().get())
-                .sizeRange(min, max, min, max, min, max)
                 .validator(TurbineValidator::new)
                 .cache(TurbineCache::new)
                 .build();

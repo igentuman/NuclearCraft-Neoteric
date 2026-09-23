@@ -1,25 +1,36 @@
 package igentuman.nc.multiblock.turbine;
 
-import igentuman.nc.api.impl.MultiblockCacheImpl;
+import igentuman.nc.api.multiblock.AbstractMultiblockCache;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-public class TurbineCache extends MultiblockCacheImpl {
+public class TurbineCache extends AbstractMultiblockCache {
 
-    public final Set<Long> rotorPositions = new HashSet<>();
-    public final Set<Long> coilPositions = new HashSet<>();
-    public final Set<Long> validCoils = new HashSet<>();
-    public final Set<Long> bladePositions = new HashSet<>();
+    final Set<Long> workingRotors = new HashSet<>();
+    final List<BlockPos> workingBearings = new ArrayList<>();
+    final Map<Long, String> workingCoils = new HashMap<>();
+    final Set<Long> workingValidCoils = new HashSet<>();
+    final Set<Long> workingBlades = new HashSet<>();
+    Direction.Axis workingAxis;
+    double workingFlow;
+    int workingActiveCoils;
+    double workingCoilsEfficiency;
 
+    @Nullable
     public volatile Direction.Axis axis;
-    public volatile long bearingPos1 = Long.MIN_VALUE;
-    public volatile long bearingPos2 = Long.MIN_VALUE;
+    @Nullable
+    public volatile BlockPos bearingPos1;
+    @Nullable
+    public volatile BlockPos bearingPos2;
     public volatile double flow;
-    public volatile float rotationSpeed;
     public volatile int bladeCount;
     public volatile int activeCoils;
     public volatile double coilsEfficiency;
@@ -27,58 +38,38 @@ public class TurbineCache extends MultiblockCacheImpl {
     public volatile int height;
     public volatile int depth;
 
-    public void resetStats() {
-        rotorPositions.clear();
-        coilPositions.clear();
-        validCoils.clear();
-        bladePositions.clear();
-        axis = null;
-        bearingPos1 = Long.MIN_VALUE;
-        bearingPos2 = Long.MIN_VALUE;
-        flow = 0;
-        rotationSpeed = 0;
-        bladeCount = 0;
-        activeCoils = 0;
-        coilsEfficiency = 0;
-        width = 0;
-        height = 0;
-        depth = 0;
+    @Override
+    protected void resetWorkingData() {
+        workingRotors.clear();
+        workingBearings.clear();
+        workingCoils.clear();
+        workingValidCoils.clear();
+        workingBlades.clear();
+        workingAxis = null;
+        workingFlow = 0;
+        workingActiveCoils = 0;
+        workingCoilsEfficiency = 0;
     }
 
     @Override
-    public void clear() {
-        super.clear();
-        resetStats();
-    }
-
-    @Override
-    public void saveNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveNbt(tag, registries);
-        tag.putInt("axis", axis == null ? -1 : axis.ordinal());
-        tag.putLong("bearingPos1", bearingPos1);
-        tag.putLong("bearingPos2", bearingPos2);
-        tag.putDouble("flow", flow);
-        tag.putInt("bladeCount", bladeCount);
-        tag.putInt("activeCoils", activeCoils);
-        tag.putDouble("coilsEfficiency", coilsEfficiency);
-        tag.putInt("width", width);
-        tag.putInt("height", height);
-        tag.putInt("depth", depth);
-    }
-
-    @Override
-    public void loadNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadNbt(tag, registries);
-        int a = tag.getInt("axis");
-        axis = (a >= 0 && a < Direction.Axis.values().length) ? Direction.Axis.values()[a] : null;
-        bearingPos1 = tag.getLong("bearingPos1");
-        bearingPos2 = tag.getLong("bearingPos2");
-        flow = tag.getDouble("flow");
-        bladeCount = tag.getInt("bladeCount");
-        activeCoils = tag.getInt("activeCoils");
-        coilsEfficiency = tag.getDouble("coilsEfficiency");
-        width = tag.getInt("width");
-        height = tag.getInt("height");
-        depth = tag.getInt("depth");
+    protected void publishData() {
+        axis = workingAxis;
+        bearingPos1 = workingBearings.size() > 0 ? workingBearings.get(0) : null;
+        bearingPos2 = workingBearings.size() > 1 ? workingBearings.get(1) : null;
+        flow = workingFlow;
+        bladeCount = workingBlades.size();
+        activeCoils = workingActiveCoils;
+        coilsEfficiency = workingCoilsEfficiency;
+        BlockPos min = workingMin();
+        BlockPos max = workingMax();
+        if (min == null || max == null) {
+            width = 0;
+            height = 0;
+            depth = 0;
+            return;
+        }
+        width = max.getX() - min.getX() + 1;
+        height = max.getY() - min.getY() + 1;
+        depth = max.getZ() - min.getZ() + 1;
     }
 }

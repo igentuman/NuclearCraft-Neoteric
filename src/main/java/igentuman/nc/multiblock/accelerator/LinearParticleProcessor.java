@@ -3,7 +3,6 @@ package igentuman.nc.multiblock.accelerator;
 import igentuman.nc.api.particle.ParticleDefinition;
 import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.config.ParticleMachinesConfig;
-import igentuman.nc.multiblock.StructureRecord;
 import igentuman.nc.particle.ParticlePhysics;
 
 public final class LinearParticleProcessor {
@@ -12,7 +11,7 @@ public final class LinearParticleProcessor {
     }
 
     public static ParticleStack accelerate(ParticleStack input, ParticleDefinition definition,
-                                           StructureRecord.StructureAggregates aggregates,
+                                           AcceleratorStats aggregates,
                                            ParticleMachinesConfig.Accelerator config, int controlSignal) {
         if (input.isEmpty()) return ParticleStack.EMPTY;
         if (definition == null || aggregates == null || config == null) {
@@ -41,7 +40,7 @@ public final class LinearParticleProcessor {
                 Math.max(0D, input.focus() - loss));
     }
 
-    public static long requiredEnergy(StructureRecord.StructureAggregates aggregates,
+    public static long requiredEnergy(AcceleratorStats aggregates,
                                       ParticleMachinesConfig.Accelerator config) {
         return Math.addExact(config.baseEnergyRequirement(), aggregates.energyPerTick());
     }

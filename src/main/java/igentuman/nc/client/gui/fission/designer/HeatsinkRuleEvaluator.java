@@ -1,7 +1,7 @@
 package igentuman.nc.client.gui.fission.designer;
 
 import igentuman.nc.block.fission.HeatSinkBlock;
-import igentuman.nc.multiblock.fission.HeatSinkDef;
+import igentuman.nc.api.multiblock.part.HeatSinkDef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;

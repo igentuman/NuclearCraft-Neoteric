@@ -1,58 +1,38 @@
 package igentuman.nc.multiblock.fission;
 
-import igentuman.nc.api.impl.MultiblockCacheImpl;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import igentuman.nc.api.multiblock.AbstractMultiblockCache;
+import net.minecraft.core.BlockPos;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class MsrCache extends MultiblockCacheImpl {
+public class MsrCache extends AbstractMultiblockCache {
 
-    public final Set<Long> fuelCells = new HashSet<>();
+    private final Set<Long> workingFuelCells = new HashSet<>();
 
+    public volatile Set<Long> fuelCells = Set.of();
     public volatile int fuelCellCount;
     public volatile int width;
     public volatile int height;
     public volatile int depth;
 
-    public void resetStats() {
-        fuelCells.clear();
-        fuelCellCount = 0;
-        width = 0;
-        height = 0;
-        depth = 0;
+    void addFuelCell(BlockPos pos) {
+        workingFuelCells.add(pos.asLong());
     }
 
     @Override
-    public void clear() {
-        super.clear();
-        resetStats();
+    protected void resetWorkingData() {
+        workingFuelCells.clear();
     }
 
     @Override
-    public void saveNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveNbt(tag, registries);
-        tag.putInt("fuelCellCount", fuelCellCount);
-        tag.putInt("width", width);
-        tag.putInt("height", height);
-        tag.putInt("depth", depth);
-        long[] cells = new long[fuelCells.size()];
-        int i = 0;
-        for (long p : fuelCells) cells[i++] = p;
-        tag.putLongArray("fuelCells", cells);
-    }
-
-    @Override
-    public void loadNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadNbt(tag, registries);
-        fuelCellCount = tag.getInt("fuelCellCount");
-        width = tag.getInt("width");
-        height = tag.getInt("height");
-        depth = tag.getInt("depth");
-        fuelCells.clear();
-        if (tag.contains("fuelCells")) {
-            for (long p : tag.getLongArray("fuelCells")) fuelCells.add(p);
-        }
+    protected void publishData() {
+        fuelCells = Set.copyOf(workingFuelCells);
+        fuelCellCount = workingFuelCells.size();
+        BlockPos min = workingMin();
+        BlockPos max = workingMax();
+        width = max.getX() - min.getX() + 1;
+        height = max.getY() - min.getY() + 1;
+        depth = max.getZ() - min.getZ() + 1;
     }
 }

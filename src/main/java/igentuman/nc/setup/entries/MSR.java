@@ -1,7 +1,6 @@
 package igentuman.nc.setup.entries;
 
 import igentuman.nc.block_entity.fission.MsrControllerBE;
-import igentuman.nc.config.Multiblocks;
 import igentuman.nc.container.MsrControllerContainer;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.fission.MoltenSaltReactorValidator;
@@ -42,8 +41,6 @@ public class MSR {
 
         addMultiblockPart("msr_port");
 
-        int min = Multiblocks.msrMinSize;
-        int max = Multiblocks.msrMaxSize;
         MultiblockEntryBuilder.name("molten_salt_reactor")
                 .controller(ModEntries.get("msr_controller"))
                 .ports(ModEntries.get("msr_port"))
@@ -51,7 +48,6 @@ public class MSR {
                         () -> ModEntries.get("fission_reactor_casing").block().get(),
                         () -> ModEntries.get("fission_reactor_glass").block().get())
                 .interior(() -> ModEntries.get("msr_fuel_cell").block().get())
-                .sizeRange(min, max, min, max, min, max)
                 .validator(MoltenSaltReactorValidator::new)
                 .cache(MsrCache::new)
                 .build();

@@ -1,7 +1,7 @@
 package igentuman.nc.block.fusion;
 
 import igentuman.nc.block.MultiblockBlock;
-import igentuman.nc.multiblock.fusion.ElectromagnetDef;
+import igentuman.nc.api.multiblock.part.ElectromagnetDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;

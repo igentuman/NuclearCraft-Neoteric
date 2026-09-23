@@ -44,7 +44,6 @@ public class CreativeParticleSourceBE extends UniversalProcessorBE {
     private double focus = 1D;
     private double energyValue = 1D;
     private int energyScale = 1;
-    private BeamConnection outputConnection;
 
     public CreativeParticleSourceBE(BlockPos pos, BlockState state, String name) {
         super(pos, state, name);
@@ -117,7 +116,7 @@ public class CreativeParticleSourceBE extends UniversalProcessorBE {
         ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(particleId);
         if (definition == null || !getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) return false;
         Direction direction = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite();
-        outputConnection = BeamConnectionResolver.resolve(serverLevel, outputConnection, worldPosition, direction,
+        BeamConnection outputConnection = BeamConnectionResolver.resolve(serverLevel, worldPosition, direction,
                 Multiblocks.particleMachines().accelerator().beamConnectionReach());
         if (outputConnection == null) return false;
         IParticleHandler destination = BeamConnectionResolver.destination(serverLevel, outputConnection);

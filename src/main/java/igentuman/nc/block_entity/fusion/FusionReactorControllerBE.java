@@ -6,7 +6,7 @@ import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.container.FusionReactorContainer;
 import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
-import igentuman.nc.multiblock.fusion.FusionReaction;
+import igentuman.nc.multiblock.fusion.FusionReactorLogic;
 import igentuman.nc.multiblock.fusion.FusionReactorCache;
 import igentuman.nc.recipe.fusion.FusionRecipe;
 import igentuman.nc.recipe.fusion.FusionRecipes;
@@ -41,8 +41,6 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
     public static final int MODE_EFFICIENCY = 2;
     public static final int MODE_COUNT = 3;
     public static final String[] MODE_KEYS = {"energy", "heat", "efficiency"};
-
-    private final FusionReaction reaction = new FusionReaction();
 
     private boolean fluidValidatorsReady = false;
 
@@ -105,6 +103,11 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
         return false;
     }
 
+    @Nullable
+    private FusionReactorLogic reaction() {
+        return mbInstance != null && mbInstance.logic instanceof FusionReactorLogic logic ? logic : null;
+    }
+
     public boolean isRunning() {
         return running;
     }
@@ -163,21 +166,9 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
             formed = newFormed;
             wasChanged = true;
         }
-        if (formed) {
-            if (mbInstance.cache instanceof FusionReactorCache fc) {
-                syncStats(fc);
-            }
-            updateRedstoneInput(serverLevel);
-            if (hasRedstoneSignal() && mbInstance.cache instanceof FusionReactorCache fc) {
-                reaction.tick(this, fc);
-                if (running && energyPerTick > 0) {
-                    renderBeam(serverLevel, fc.size);
-                }
-            } else {
-                reaction.idle(this);
-            }
-        } else {
-            reaction.idle(this);
+        if (!formed) {
+            FusionReactorLogic reaction = reaction();
+            if (reaction != null) reaction.idle(this);
         }
         if (wasChanged) {
             getLevel().sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
@@ -185,7 +176,7 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
         }
     }
 
-    private void syncStats(FusionReactorCache fc) {
+    public void updateStructureDisplay(FusionReactorCache fc) {
         magneticFieldStrength = fc.magneticFieldStrength;
         magnetsPower = fc.magnetsPower;
         maxMagnetsTemp = fc.maxMagnetsTemp;
@@ -197,7 +188,7 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
     }
 
     /** Emits four beam particles tracing the plasma ring, one per edge of the square. */
-    private void renderBeam(ServerLevel level, int size) {
+    public void renderBeam(ServerLevel level, int size) {
         BlockPos mid = worldPosition.above();
         float beamLength = size * 2 + 4;
         sendBeamData(level, new FusionBeamParticleData(Direction.EAST, beamLength, 0.35f),
@@ -218,7 +209,7 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
     }
 
     /** Strongest redstone signal touching any cell of the 3x3x3 core cage. Drives amplification. */
-    private void updateRedstoneInput(ServerLevel level) {
+    public void updateRedstoneInput(ServerLevel level) {
         int signal = level.getBestNeighborSignal(worldPosition);
         for (int y = 0; y < 3; y++) {
             for (int x = -1; x <= 1; x++) {
@@ -234,6 +225,14 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
             rfAmplificationRatio = ratio;
             markDirty();
         }
+    }
+
+    public void updateReactionDisplay(double heat, long plasma, long charge) {
+        if (heat == reactorHeat && plasma == plasmaTemperature && charge == chargeAmount) return;
+        reactorHeat = heat;
+        plasmaTemperature = plasma;
+        chargeAmount = charge;
+        markDirty();
     }
 
     public boolean hasRedstoneSignal() {
@@ -325,16 +324,8 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        CompoundTag reactionTag = new CompoundTag();
-        reaction.save(reactionTag);
-        tag.put("Reaction", reactionTag);
-    }
-
-    @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        if (!tag.contains("runtime") && tag.contains("Reaction")) tag.put("runtime", tag.getCompound("Reaction"));
         super.loadAdditional(tag, registries);
-        if (tag.contains("Reaction")) reaction.load(tag.getCompound("Reaction"));
     }
 }

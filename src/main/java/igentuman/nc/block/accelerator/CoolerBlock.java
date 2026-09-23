@@ -1,7 +1,7 @@
 package igentuman.nc.block.accelerator;
 
 import igentuman.nc.block.MultiblockBlock;
-import igentuman.nc.multiblock.accelerator.CoolerDef;
+import igentuman.nc.api.multiblock.part.CoolerDef;
 
 
 public class CoolerBlock extends MultiblockBlock {

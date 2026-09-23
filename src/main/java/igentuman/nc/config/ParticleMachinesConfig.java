@@ -3,7 +3,6 @@ package igentuman.nc.config;
 public record ParticleMachinesConfig(
         Accelerator accelerator,
         Chambers chambers,
-        Scheduler scheduler,
         long revision
 ) {
 
@@ -32,15 +31,6 @@ public record ParticleMachinesConfig(
             int collisionMaximumLength,
             int collisionPreferredLength,
             long collisionBasePower
-    ) {
-    }
-
-    public record Scheduler(
-            long timeBudgetNanos,
-            int blockReadBudget,
-            int blockEntityReadBudget,
-            int mutationBudget,
-            int auditIntervalTicks
     ) {
     }
 }

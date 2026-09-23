@@ -6,27 +6,21 @@ import igentuman.nc.block.particle.ParticleChamberBlock;
 import igentuman.nc.block.particle.ParticleChamberCameraBlock;
 import igentuman.nc.block.particle.ParticleChamberControllerBlock;
 import igentuman.nc.block.particle.ParticleChamberPortBlock;
-import igentuman.nc.block_entity.particle.CollisionChamberControllerBE;
-import igentuman.nc.block_entity.particle.DecayChamberControllerBE;
 import igentuman.nc.block_entity.particle.ParticleChamberBeamPortBE;
+import igentuman.nc.block_entity.particle.ParticleChamberControllerBE;
 import igentuman.nc.block_entity.particle.ParticleChamberPortBE;
-import igentuman.nc.block_entity.particle.TargetChamberControllerBE;
-import igentuman.nc.config.Multiblocks;
 import igentuman.nc.container.CollisionChamberContainer;
 import igentuman.nc.container.DecayChamberContainer;
 import igentuman.nc.container.ParticleChamberPortContainer;
 import igentuman.nc.container.TargetChamberContainer;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
-import igentuman.nc.multiblock.StructureRecord;
-import igentuman.nc.multiblock.discovery.BoundaryDiscoverySpec;
-import igentuman.nc.multiblock.discovery.BoundaryGeometryDiscoveryJob;
-import igentuman.nc.multiblock.particle_chamber.CollisionChamberValidationContext;
-import igentuman.nc.multiblock.particle_chamber.CollisionChamberValidationJob;
-import igentuman.nc.multiblock.particle_chamber.DecayChamberValidationContext;
-import igentuman.nc.multiblock.particle_chamber.DecayChamberValidationJob;
-import igentuman.nc.multiblock.particle_chamber.DetectorDef;
-import igentuman.nc.multiblock.particle_chamber.TargetChamberValidationContext;
-import igentuman.nc.multiblock.particle_chamber.TargetChamberValidationJob;
+import igentuman.nc.multiblock.particle_chamber.CollisionChamberLogic;
+import igentuman.nc.multiblock.particle_chamber.CollisionChamberValidator;
+import igentuman.nc.multiblock.particle_chamber.CubeChamberValidator;
+import igentuman.nc.multiblock.particle_chamber.DecayChamberLogic;
+import igentuman.nc.api.multiblock.part.DetectorDef;
+import igentuman.nc.multiblock.particle_chamber.ParticleChamberCache;
+import igentuman.nc.multiblock.particle_chamber.TargetChamberLogic;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.SlotsLayout;
@@ -35,7 +29,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -107,7 +100,7 @@ public class ParticleChamber extends ModEntries {
         add("hadron_calorimeter").block(() -> new DetectorBlock(metalProps(), HADRON_CALORIMETER)).build();
 
         ModEntry controller = addMultiblockController("target_chamber_controller", ParticleChamberControllerBlock::new)
-                .blockEntity(TargetChamberControllerBE::new)
+                .blockEntity(ParticleChamberControllerBE::new)
                 .menu(TargetChamberContainer::new)
                 .itemCap(1, 1)
                 .fluidCap(1, 1, 0)
@@ -132,24 +125,13 @@ public class ParticleChamber extends ModEntries {
                         () -> get("wire_chamber").block().get(),
                         () -> get("em_calorimeter").block().get(),
                         () -> get("hadron_calorimeter").block().get())
-                .sizeRange(Multiblocks.targetChamberMinSize, Multiblocks.targetChamberMaxSize,
-                        Multiblocks.targetChamberMinSize, Multiblocks.targetChamberMaxSize,
-                        Multiblocks.targetChamberMinSize, Multiblocks.targetChamberMaxSize)
-                .scheduled((id, pos, facing) -> {
-                            int minimum = Math.min(Multiblocks.targetChamberMinSize,
-                                    Multiblocks.targetChamberMaxSize);
-                            int maximum = Math.max(Multiblocks.targetChamberMinSize,
-                                    Multiblocks.targetChamberMaxSize);
-                            return new BoundaryGeometryDiscoveryJob(id, pos, facing,
-                                    new BoundaryDiscoverySpec(BoundaryDiscoverySpec.Shape.ODD_CUBE,
-                                            minimum, maximum, minimum, maximum, minimum, maximum,
-                                            0, ParticleChamber::isTargetShell));
-                        },
-                        (id, record) -> new TargetChamberValidationJob(id, validationContext(record)))
+                .validator(CubeChamberValidator::target)
+                .logic(TargetChamberLogic::new)
+                .cache(ParticleChamberCache::new)
                 .build();
 
         ModEntry decayController = addMultiblockController("decay_chamber_controller", ParticleChamberControllerBlock::new)
-                .blockEntity(DecayChamberControllerBE::new)
+                .blockEntity(ParticleChamberControllerBE::new)
                 .menu(DecayChamberContainer::new)
                 .withEnergyInput(1_000_000)
                 .withoutRecipes()
@@ -167,24 +149,13 @@ public class ParticleChamber extends ModEntries {
                         () -> get("wire_chamber").block().get(),
                         () -> get("em_calorimeter").block().get(),
                         () -> get("hadron_calorimeter").block().get())
-                .sizeRange(Multiblocks.decayChamberMinSize, Multiblocks.decayChamberMaxSize,
-                        Multiblocks.decayChamberMinSize, Multiblocks.decayChamberMaxSize,
-                        Multiblocks.decayChamberMinSize, Multiblocks.decayChamberMaxSize)
-                .scheduled((id, pos, facing) -> {
-                            int minimum = Math.min(Multiblocks.decayChamberMinSize,
-                                    Multiblocks.decayChamberMaxSize);
-                            int maximum = Math.max(Multiblocks.decayChamberMinSize,
-                                    Multiblocks.decayChamberMaxSize);
-                            return new BoundaryGeometryDiscoveryJob(id, pos, facing,
-                                    new BoundaryDiscoverySpec(BoundaryDiscoverySpec.Shape.ODD_CUBE,
-                                            minimum, maximum, minimum, maximum, minimum, maximum,
-                                            0, ParticleChamber::isDecayShell));
-                        },
-                        (id, record) -> new DecayChamberValidationJob(id, decayValidationContext(record)))
+                .validator(CubeChamberValidator::decay)
+                .logic(DecayChamberLogic::new)
+                .cache(ParticleChamberCache::new)
                 .build();
 
         ModEntry collisionController = addMultiblockController("collision_chamber_controller", ParticleChamberControllerBlock::new)
-                .blockEntity(CollisionChamberControllerBE::new)
+                .blockEntity(ParticleChamberControllerBE::new)
                 .menu(CollisionChamberContainer::new)
                 .withEnergyInput(1_000_000)
                 .withoutRecipes()
@@ -202,87 +173,10 @@ public class ParticleChamber extends ModEntries {
                         () -> get("wire_chamber").block().get(),
                         () -> get("em_calorimeter").block().get(),
                         () -> get("hadron_calorimeter").block().get())
-                .sizeRange(Multiblocks.collisionChamberMinTransverseSize, Multiblocks.collisionChamberMaxTransverseSize,
-                        Multiblocks.collisionChamberMinTransverseSize, Multiblocks.collisionChamberMaxTransverseSize,
-                        Multiblocks.collisionChamberMinLength, Multiblocks.collisionChamberMaxLength)
-                .scheduled((id, pos, facing) -> {
-                            int minTransverse = Math.min(Multiblocks.collisionChamberMinTransverseSize,
-                                    Multiblocks.collisionChamberMaxTransverseSize);
-                            int maxTransverse = Math.max(Multiblocks.collisionChamberMinTransverseSize,
-                                    Multiblocks.collisionChamberMaxTransverseSize);
-                            int minLength = Math.min(Multiblocks.collisionChamberMinLength,
-                                    Multiblocks.collisionChamberMaxLength);
-                            int maxLength = Math.max(Multiblocks.collisionChamberMinLength,
-                                    Multiblocks.collisionChamberMaxLength);
-                            return new BoundaryGeometryDiscoveryJob(id, pos, facing,
-                                    new BoundaryDiscoverySpec(BoundaryDiscoverySpec.Shape.COLLISION_BOX,
-                                            minTransverse, maxTransverse, minTransverse, maxTransverse,
-                                            minLength, maxLength, 0, ParticleChamber::isCollisionShell));
-                        },
-                        (id, record) -> new CollisionChamberValidationJob(id, collisionValidationContext(record)))
+                .validator(CollisionChamberValidator::new)
+                .logic(CollisionChamberLogic::new)
+                .cache(ParticleChamberCache::new)
                 .build();
-    }
-
-    private static TargetChamberValidationContext validationContext(StructureRecord record) {
-        return new TargetChamberValidationContext(record,
-                state -> is(state, "target_chamber_casing"),
-                ParticleChamber::isTargetShell,
-                state -> is(state, "target_chamber_controller"),
-                state -> is(state, "target_chamber_port"),
-                state -> is(state, "target_chamber_beam_port"),
-                state -> is(state, "particle_beam"),
-                state -> is(state, "target_chamber_camera"),
-                state -> is(state, "particle_beam"),
-                state -> state.getBlock() instanceof DetectorBlock detector ? detector.definition() : null);
-    }
-
-    private static boolean isTargetShell(BlockState state) {
-        return is(state, "target_chamber_casing") || is(state, "target_chamber_casing_glass")
-                || is(state, "target_chamber_controller") || is(state, "target_chamber_port")
-                || is(state, "target_chamber_beam_port");
-    }
-
-    private static DecayChamberValidationContext decayValidationContext(StructureRecord record) {
-        return new DecayChamberValidationContext(record,
-                state -> is(state, "target_chamber_casing"),
-                ParticleChamber::isDecayShell,
-                state -> is(state, "decay_chamber_controller"),
-                state -> is(state, "target_chamber_port"),
-                state -> is(state, "target_chamber_beam_port"),
-                state -> is(state, "particle_beam"),
-                state -> is(state, "target_chamber_camera"),
-                state -> is(state, "particle_beam"),
-                state -> state.getBlock() instanceof DetectorBlock detector ? detector.definition() : null);
-    }
-
-    private static boolean isDecayShell(BlockState state) {
-        return is(state, "target_chamber_casing") || is(state, "target_chamber_casing_glass")
-                || is(state, "decay_chamber_controller") || is(state, "target_chamber_port")
-                || is(state, "target_chamber_beam_port");
-    }
-
-    private static CollisionChamberValidationContext collisionValidationContext(StructureRecord record) {
-        return new CollisionChamberValidationContext(record,
-                state -> is(state, "target_chamber_casing"),
-                ParticleChamber::isCollisionShell,
-                state -> is(state, "collision_chamber_controller"),
-                state -> is(state, "target_chamber_port"),
-                state -> is(state, "target_chamber_beam_port"),
-                state -> is(state, "particle_beam"),
-                state -> is(state, "target_chamber_camera"),
-                state -> is(state, "particle_beam"),
-                state -> state.getBlock() instanceof DetectorBlock detector ? detector.definition() : null);
-    }
-
-    private static boolean isCollisionShell(BlockState state) {
-        return is(state, "target_chamber_casing") || is(state, "target_chamber_casing_glass")
-                || is(state, "collision_chamber_controller") || is(state, "target_chamber_port")
-                || is(state, "target_chamber_beam_port");
-    }
-
-    private static boolean is(BlockState state, String name) {
-        ModEntry entry = get(name);
-        return entry != null && entry.block() != null && state.is(entry.block().get());
     }
 
     private static BlockBehaviour.Properties metalProps() {

@@ -5,11 +5,8 @@ import igentuman.nc.block.accelerator.BeamPortMode;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.MultiblockExecutionStrategy;
-import igentuman.nc.multiblock.MultiblockLevelState;
 import igentuman.nc.multiblock.MultiblockRegistry;
-import igentuman.nc.multiblock.StructureRecord;
-import igentuman.nc.util.BoilingBuffer;
+import igentuman.nc.multiblock.StructureRole;
 import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,7 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
+import java.util.List;
 
 import static net.minecraft.world.level.block.Block.UPDATE_CLIENTS;
 
@@ -37,6 +34,7 @@ import static net.minecraft.world.level.block.Block.UPDATE_CLIENTS;
 public class MultiblockControllerBE extends GlobalBlockEntity implements MenuProvider {
 
     private CompoundTag pendingCacheNbt;
+    private CompoundTag pendingRuntimeNbt;
     private HolderLookup.Provider pendingRegistries;
     protected MultiblockHandler.MultiblockInstance mbInstance;
     @NBTField(syncToClient = true)
@@ -50,9 +48,22 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
         return name;
     }
 
-    public Optional<StructureRecord> scheduledStructure() {
-        if (!(level instanceof ServerLevel serverLevel)) return Optional.empty();
-        return MultiblockLevelState.get(serverLevel).structureAt(worldPosition);
+    @Nullable
+    protected MultiblockHandler.MultiblockInstance instance() {
+        if (mbInstance == null && level instanceof ServerLevel serverLevel) {
+            mbInstance = MultiblockHandler.getInstance(serverLevel, worldPosition);
+        }
+        return mbInstance;
+    }
+
+    /** Whether this controller currently owns an accepted structure; ports read capabilities through it. */
+    public boolean structureFormed() {
+        return formed;
+    }
+
+    /** Positions this controller assigned to a structural role, in channel order. */
+    public List<BlockPos> rolePositions(StructureRole role) {
+        return List.of();
     }
 
     @Nullable
@@ -74,12 +85,6 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     }
 
     public void tickMultiblock(ServerLevel level) {
-        MultiblockEntry entry = MultiblockRegistry.getByController(name);
-        if (entry != null && entry.executionStrategy() == MultiblockExecutionStrategy.SCHEDULED_SERVER_THREAD) {
-            MultiblockLevelState state = MultiblockLevelState.get(level);
-            state.beginDiscovery(entry.scheduledDefinition(), worldPosition, facing());
-            return;
-        }
         MultiblockHandler.submitTick(level, mbInstance, worldPosition);
         if (mbInstance == null) {
             mbInstance = MultiblockHandler.getInstance(level, worldPosition);
@@ -90,11 +95,7 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     public void serverTick() {
         if (!(level instanceof ServerLevel serverLevel)) return;
         tickMultiblock(serverLevel);
-        MultiblockEntry entry = MultiblockRegistry.getByController(name);
-        boolean scheduled = entry != null
-                && entry.executionStrategy() == MultiblockExecutionStrategy.SCHEDULED_SERVER_THREAD;
-        boolean newFormed = scheduled ? MultiblockLevelState.get(serverLevel).isFormed(worldPosition)
-                : mbInstance != null && mbInstance.formed && !mbInstance.dirty;
+        boolean newFormed = mbInstance != null && mbInstance.formed && !mbInstance.dirty;
         if (formed != newFormed) {
             formed = newFormed;
             wasChanged = true;
@@ -131,8 +132,10 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
             if (instance != null) {
                 CompoundTag cacheTag = new CompoundTag();
                 instance.cache.saveNbt(cacheTag, registries);
-                instance.saveTracking(cacheTag);
                 tag.put("cache", cacheTag);
+                CompoundTag runtimeTag = new CompoundTag();
+                instance.logic.saveRuntime(runtimeTag, registries);
+                if (!runtimeTag.isEmpty()) tag.put("runtime", runtimeTag);
             }
         }
     }
@@ -140,12 +143,14 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        pendingRuntimeNbt = tag.contains("runtime") ? tag.getCompound("runtime")
+                : tag.contains("particleRuntime") ? tag.getCompound("particleRuntime") : null;
         if (tag.contains("cache")) {
             pendingCacheNbt = tag.getCompound("cache");
             pendingRegistries = registries;
         } else {
             pendingCacheNbt = null;
-            pendingRegistries = null;
+            pendingRegistries = pendingRuntimeNbt == null ? null : registries;
         }
     }
 
@@ -160,8 +165,12 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
                 } else {
                     mbInstance = MultiblockHandler.initMultiblock(serverLevel, worldPosition, facing(), entry);
                 }
+                if (mbInstance != null && pendingRuntimeNbt != null) {
+                    mbInstance.logic.loadRuntime(pendingRuntimeNbt, pendingRegistries);
+                }
             }
             pendingCacheNbt = null;
+            pendingRuntimeNbt = null;
             pendingRegistries = null;
         }
     }

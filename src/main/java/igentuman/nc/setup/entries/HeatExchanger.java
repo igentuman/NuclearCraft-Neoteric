@@ -6,6 +6,7 @@ import igentuman.nc.block_entity.heat_exchanger.HeatExchangerHotPortBE;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.heat_exchanger.HeatExchangerCache;
+import igentuman.nc.multiblock.heat_exchanger.HeatExchangerLogic;
 import igentuman.nc.multiblock.heat_exchanger.HeatExchangerValidator;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
@@ -60,8 +61,6 @@ public class HeatExchanger {
         addMultiblockPart("heat_exchanger_hot_coolant_port", HeatExchangerHotPortBE::new);
         addMultiblockPart("heat_exchanger_cold_coolant_port", HeatExchangerColdPortBE::new);
 
-        int min = Multiblocks.hxMinSize;
-        int max = Multiblocks.hxMaxSize;
         MultiblockEntryBuilder.name("heat_exchanger")
                 .controller(ModEntries.get("heat_exchanger_controller"))
                 .ports(ModEntries.get("heat_exchanger_hot_coolant_port"),
@@ -69,8 +68,8 @@ public class HeatExchanger {
                 .casing(() -> ModEntries.get("heat_exchanger_casing").block().get(),
                         () -> ModEntries.get("heat_exchanger_radiator").block().get())
                 .interior(() -> ModEntries.get("heat_exchanger").block().get())
-                .sizeRange(min, max, min, max, min, max)
                 .validator(HeatExchangerValidator::new)
+                .logic(HeatExchangerLogic::new)
                 .cache(HeatExchangerCache::new)
                 .build();
     }

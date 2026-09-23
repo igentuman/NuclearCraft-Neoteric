@@ -7,15 +7,10 @@ import igentuman.nc.block.particle.ParticleChamberBeamPortBlock;
 import igentuman.nc.block_entity.IBeamPort;
 import igentuman.nc.block_entity.MultiblockControllerBE;
 import igentuman.nc.block_entity.ParticleBeamPortState;
-import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.MultiblockLevelState;
-import igentuman.nc.multiblock.StructureLifecycleState;
-import igentuman.nc.multiblock.StructureRecord;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -35,8 +30,9 @@ public class ParticleChamberBeamPortBE extends ParticleChamberPortBE implements 
     }
 
     @Override
-    public void configureFromStructure(StructureRecord record) {
-        particlePort.configure(record, worldPosition);
+    public void configureFromController(MultiblockControllerBE controller) {
+        super.configureFromController(controller);
+        particlePort.configure(controller::rolePositions, worldPosition);
         updateModeBlockState();
         markDirty();
     }
@@ -58,13 +54,9 @@ public class ParticleChamberBeamPortBE extends ParticleChamberPortBE implements 
         if (particlePort.mode() == mode && particlePort.channel() == channel) {
             return;
         }
-        boolean roleChanged = particlePort.mode() != mode;
         particlePort.set(mode, channel);
         updateModeBlockState();
         markDirty();
-        if (roleChanged && level instanceof ServerLevel serverLevel) {
-            MultiblockLevelState.get(serverLevel).markChanged(worldPosition);
-        }
     }
 
     @Nullable
@@ -74,8 +66,7 @@ public class ParticleChamberBeamPortBE extends ParticleChamberPortBE implements 
                 || !getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)
                 || getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING) != side) return null;
         MultiblockControllerBE controller = controller();
-        if (controller == null || controller.scheduledStructure()
-                .filter(record -> record.state() == StructureLifecycleState.FORMED).isEmpty()) return null;
+        if (controller == null || !controller.structureFormed()) return null;
         return controller.getParticleHandler(worldPosition, particlePort.mode(), particlePort.channel());
     }
 
@@ -97,9 +88,7 @@ public class ParticleChamberBeamPortBE extends ParticleChamberPortBE implements 
     private void ensureConfigured() {
         if (particlePort.isConfigured()) return;
         MultiblockControllerBE controller = controller();
-        if (controller != null) controller.scheduledStructure()
-                .filter(record -> record.state() == StructureLifecycleState.FORMED)
-                .ifPresent(this::configureFromStructure);
+        if (controller != null && controller.structureFormed()) configureFromController(controller);
     }
 
     private void updateModeBlockState() {

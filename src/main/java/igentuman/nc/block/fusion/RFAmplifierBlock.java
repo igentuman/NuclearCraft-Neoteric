@@ -1,7 +1,7 @@
 package igentuman.nc.block.fusion;
 
 import igentuman.nc.block.MultiblockBlock;
-import igentuman.nc.multiblock.fusion.RFAmplifierDef;
+import igentuman.nc.api.multiblock.part.RFAmplifierDef;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

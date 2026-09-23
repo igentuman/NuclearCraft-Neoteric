@@ -1,9 +1,7 @@
 package igentuman.nc.block_entity;
 
 import igentuman.nc.block.accelerator.BeamPortMode;
-import igentuman.nc.multiblock.StructureLifecycleState;
-import igentuman.nc.multiblock.StructureRecord;
-import igentuman.nc.multiblock.geometry.StructureRole;
+import igentuman.nc.multiblock.StructureRole;
 import net.minecraft.core.BlockPos;
 
 import java.util.List;
@@ -37,18 +35,15 @@ public interface IBeamPort {
 
         MultiblockControllerBE controller = controller();
         if (debug != null) debug.accept("controller=" + (controller != null ? controller.getBlockPos() : "null"));
-        StructureRecord record = controller == null ? null : controller.scheduledStructure()
-                .filter(candidate -> candidate.state() == StructureLifecycleState.FORMED)
-                .orElse(null);
+        boolean formed = controller != null && controller.structureFormed();
         if (debug != null) {
-            debug.accept("scheduledStructure=" + (controller == null ? "no controller"
-                    : controller.scheduledStructure().map(r -> r.state().toString()).orElse("absent")));
+            debug.accept("structureFormed=" + (controller == null ? "no controller" : formed));
         }
 
         int channel = 0;
-        if (record != null) {
+        if (formed) {
             StructureRole role = next == BeamPortMode.INPUT ? StructureRole.BEAM_INPUT : StructureRole.BEAM_OUTPUT;
-            List<BlockPos> positions = record.roles().getOrDefault(role, List.of());
+            List<BlockPos> positions = controller.rolePositions(role);
             int found = positions.indexOf(getBlockPos());
             if (debug != null) {
                 debug.accept(next + " role list=" + positions + " thisPort=" + getBlockPos() + " channel=" + found);

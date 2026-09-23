@@ -1,9 +1,8 @@
 package igentuman.nc.multiblock;
 
-import igentuman.nc.api.multiblock.IMultiblockCache;
-import igentuman.nc.api.multiblock.IMultiblockLogic;
-import igentuman.nc.api.multiblock.IMultiblockValidator;
-import igentuman.nc.api.impl.MultiblockCacheImpl;
+import igentuman.nc.api.multiblock.AbstractMultiblockCache;
+import igentuman.nc.api.multiblock.AbstractMultiblockLogic;
+import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.util.MultiblockStructure;
 import igentuman.nc.util.MultiblocksProvider;
@@ -20,47 +19,20 @@ import java.util.function.Supplier;
 public class MultiblockEntry {
 
     private final String name;
-    private final Supplier<IMultiblockValidator> validatorSupplier;
-    private final Supplier<IMultiblockLogic> logicSupplier;
-    private final Supplier<IMultiblockCache> cacheSupplier;
+    private final Supplier<? extends AbstractMultiblockValidator<?>> validatorSupplier;
+    private final Supplier<? extends AbstractMultiblockLogic<?>> logicSupplier;
+    private final Supplier<? extends AbstractMultiblockCache> cacheSupplier;
     private final List<Supplier<Block>> requiredBlocks;
     private final ModEntry controllerEntry;
     private final List<ModEntry> portEntries;
-    private final MultiblockExecutionStrategy executionStrategy;
-    private final ScheduledMultiblockDefinition scheduledDefinition;
 
     public MultiblockEntry(String name,
-                           Supplier<IMultiblockValidator> validatorSupplier,
-                           Supplier<IMultiblockLogic> logicSupplier,
-                           Supplier<IMultiblockCache> cacheSupplier,
+                           Supplier<? extends AbstractMultiblockValidator<?>> validatorSupplier,
+                           Supplier<? extends AbstractMultiblockLogic<?>> logicSupplier,
+                           Supplier<? extends AbstractMultiblockCache> cacheSupplier,
                            List<Supplier<Block>> requiredBlocks,
                            ModEntry controllerEntry,
                            List<ModEntry> portEntries) {
-        this(name, validatorSupplier, logicSupplier, cacheSupplier, requiredBlocks, controllerEntry, portEntries,
-                MultiblockExecutionStrategy.LEGACY_ASYNC, null);
-    }
-
-    public MultiblockEntry(String name,
-                           Supplier<IMultiblockValidator> validatorSupplier,
-                           Supplier<IMultiblockLogic> logicSupplier,
-                           Supplier<IMultiblockCache> cacheSupplier,
-                           List<Supplier<Block>> requiredBlocks,
-                           ModEntry controllerEntry,
-                           List<ModEntry> portEntries,
-                           MultiblockExecutionStrategy executionStrategy) {
-        this(name, validatorSupplier, logicSupplier, cacheSupplier, requiredBlocks, controllerEntry, portEntries,
-                executionStrategy, null);
-    }
-
-    public MultiblockEntry(String name,
-                           Supplier<IMultiblockValidator> validatorSupplier,
-                           Supplier<IMultiblockLogic> logicSupplier,
-                           Supplier<IMultiblockCache> cacheSupplier,
-                           List<Supplier<Block>> requiredBlocks,
-                           ModEntry controllerEntry,
-                           List<ModEntry> portEntries,
-                           MultiblockExecutionStrategy executionStrategy,
-                           ScheduledMultiblockDefinition scheduledDefinition) {
         this.name = name;
         this.validatorSupplier = validatorSupplier;
         this.logicSupplier = logicSupplier;
@@ -68,46 +40,30 @@ public class MultiblockEntry {
         this.requiredBlocks = requiredBlocks != null ? List.copyOf(requiredBlocks) : List.of();
         this.controllerEntry = controllerEntry;
         this.portEntries = portEntries != null ? List.copyOf(portEntries) : List.of();
-        this.executionStrategy = executionStrategy;
-        this.scheduledDefinition = scheduledDefinition;
-        if (executionStrategy == MultiblockExecutionStrategy.SCHEDULED_SERVER_THREAD && scheduledDefinition == null) {
-            throw new IllegalArgumentException("Scheduled multiblocks require discovery and validation factories");
-        }
-        if (executionStrategy != MultiblockExecutionStrategy.SCHEDULED_SERVER_THREAD && scheduledDefinition != null) {
-            throw new IllegalArgumentException("Legacy multiblocks cannot have a scheduled definition");
-        }
     }
 
     public MultiblockEntry(String name,
-                           Supplier<IMultiblockValidator> validatorSupplier,
-                           Supplier<IMultiblockLogic> logicSupplier,
-                           Supplier<IMultiblockCache> cacheSupplier,
+                           Supplier<? extends AbstractMultiblockValidator<?>> validatorSupplier,
+                           Supplier<? extends AbstractMultiblockLogic<?>> logicSupplier,
+                           Supplier<? extends AbstractMultiblockCache> cacheSupplier,
                            List<Supplier<Block>> requiredBlocks) {
         this(name, validatorSupplier, logicSupplier, cacheSupplier, requiredBlocks, null, Collections.emptyList());
     }
 
     public MultiblockEntry(String name,
-                           Supplier<IMultiblockValidator> validatorSupplier,
-                           Supplier<IMultiblockLogic> logicSupplier,
-                           Supplier<IMultiblockCache> cacheSupplier) {
+                           Supplier<? extends AbstractMultiblockValidator<?>> validatorSupplier,
+                           Supplier<? extends AbstractMultiblockLogic<?>> logicSupplier,
+                           Supplier<? extends AbstractMultiblockCache> cacheSupplier) {
         this(name, validatorSupplier, logicSupplier, cacheSupplier, Collections.emptyList(), null, Collections.emptyList());
     }
 
-    public static MultiblockEntry of(String name,
-                                     Supplier<IMultiblockValidator> validator,
-                                     Supplier<IMultiblockLogic> logic) {
-        return new MultiblockEntry(name, validator, logic, MultiblockCacheImpl::new);
-    }
-
     public String name() { return name; }
-    public Supplier<IMultiblockValidator> validatorSupplier() { return validatorSupplier; }
-    public Supplier<IMultiblockLogic> logicSupplier() { return logicSupplier; }
-    public Supplier<IMultiblockCache> cacheSupplier() { return cacheSupplier; }
+    public Supplier<? extends AbstractMultiblockValidator<?>> validatorSupplier() { return validatorSupplier; }
+    public Supplier<? extends AbstractMultiblockLogic<?>> logicSupplier() { return logicSupplier; }
+    public Supplier<? extends AbstractMultiblockCache> cacheSupplier() { return cacheSupplier; }
     public List<Supplier<Block>> requiredBlocks() { return requiredBlocks; }
     public ModEntry controllerEntry() { return controllerEntry; }
     public List<ModEntry> portEntries() { return portEntries; }
-    public MultiblockExecutionStrategy executionStrategy() { return executionStrategy; }
-    public ScheduledMultiblockDefinition scheduledDefinition() { return scheduledDefinition; }
 
     /**
      * Returns true if every block referenced by this multiblock resolves to a registered, non-air block.

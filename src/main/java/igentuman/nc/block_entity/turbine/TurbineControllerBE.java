@@ -127,8 +127,10 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         updateStats(tc, realFlowVal, maxFlowVal, genPerTick, maxGen);
 
         double flowForSpin = Math.max(1, tc.flow);
-        float newSpeed = (float) ((tc.rotationSpeed * 4 + realFlowVal / (flowForSpin * Multiblocks.turbineBladeFlow)) / 5f);
-        tc.rotationSpeed = newSpeed < 0.001f ? 0f : newSpeed;
+        float newSpeed = (float) ((rotationSpeed * 4 + realFlowVal / (flowForSpin * Multiblocks.turbineBladeFlow)) / 5f);
+        newSpeed = newSpeed < 0.001f ? 0f : newSpeed;
+        if (Math.abs(rotationSpeed - newSpeed) > 0.001f) markDirty();
+        rotationSpeed = newSpeed;
     }
 
     private double computeEnergy(TurbineCache tc, double flowValue, double powerModifier) {
@@ -209,8 +211,8 @@ public class TurbineControllerBE extends MultiblockControllerBE {
                 changed = true;
             }
         }
-        BlockPos b1 = tc.bearingPos1 == Long.MIN_VALUE ? null : BlockPos.of(tc.bearingPos1);
-        BlockPos b2 = tc.bearingPos2 == Long.MIN_VALUE ? null : BlockPos.of(tc.bearingPos2);
+        BlockPos b1 = tc.bearingPos1;
+        BlockPos b2 = tc.bearingPos2;
         if (!Objects.equals(b1, bearingPos1)) {
             bearingPos1 = b1;
             changed = true;
@@ -229,10 +231,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         }
         if (depth != tc.depth) {
             depth = tc.depth;
-            changed = true;
-        }
-        if (Math.abs(rotationSpeed - tc.rotationSpeed) > 0.001f) {
-            rotationSpeed = tc.rotationSpeed;
             changed = true;
         }
         if (changed) markDirty();
@@ -271,7 +269,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
             case EAST, WEST -> emitSteam(bearingPos2.relative(orientation, -2), axis, vent1, mag);
             case UP, DOWN -> emitSteam(bearingPos2.relative(orientation, 2), axis, vent1, mag);
         }
-        //emitSteam(bearingPos2, axis, vent1, mag);
     }
 
     private void emitSteam(BlockPos bearing, Direction.Axis axis, Direction vent, float mag) {

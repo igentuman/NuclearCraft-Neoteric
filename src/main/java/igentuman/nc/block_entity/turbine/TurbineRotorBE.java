@@ -4,7 +4,6 @@ import igentuman.nc.block.turbine.TurbineBladeBlock;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.turbine.TurbineCache;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
@@ -32,9 +31,9 @@ public class TurbineRotorBE extends GlobalBlockEntity {
             BlockPos ctrl = MultiblockHandler.getControllerForPos(serverLevel, worldPosition);
             if (ctrl != null) {
                 MultiblockHandler.MultiblockInstance inst = MultiblockHandler.getInstance(serverLevel, ctrl);
-                if (inst != null && inst.formed && inst.cache instanceof TurbineCache tc) {
+                if (inst != null && inst.formed && serverLevel.getBlockEntity(ctrl) instanceof TurbineControllerBE controller) {
                     formed = true;
-                    speed = tc.rotationSpeed;
+                    speed = controller.rotationSpeed;
                 }
             }
             if (formed != turbineFormed) {

@@ -1,10 +1,10 @@
 package igentuman.nc.multiblock.fission;
 
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.api.multiblock.part.HeatSinkDef;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -33,7 +33,7 @@ public final class HeatSinkValidator {
         NuclearCraft.debugLog(message);
     }
 
-    public static boolean isValid(HeatSinkDef def, Level level, BlockPos pos, FissionReactorCache fc) {
+    public static boolean isValid(HeatSinkDef def, BlockPos pos, FissionReactorCache fc) {
         Map<String[], List<Block>> conditions = def.getValidator().blocks();
         debugLog("[HeatSink] validate start name={} pos={} conditions={}", def.name, pos, conditions.size());
         if (conditions.isEmpty()) {
@@ -46,11 +46,11 @@ public final class HeatSinkValidator {
             String rule = e.getKey()[2];
             List<Block> blocks = e.getValue();
             boolean ok = switch (func) {
-                case "<" -> isLessThan(count, blocks, level, pos, fc);
-                case "=" -> isExact(count, blocks, level, pos, fc);
-                case "-" -> isBetween(blocks, level, pos, fc);
-                case "^" -> inCorner(count, blocks, level, pos, fc);
-                default -> isAtLeast(count, blocks, level, pos, fc);
+                case "<" -> isLessThan(count, blocks, pos, fc);
+                case "=" -> isExact(count, blocks, pos, fc);
+                case "-" -> isBetween(blocks, pos, fc);
+                case "^" -> inCorner(count, blocks, pos, fc);
+                default -> isAtLeast(count, blocks, pos, fc);
             };
             debugLog("[HeatSink] cond name={} pos={} func='{}' count={} rule='{}' blocks={} -> {}",
                     def.name, pos, func, count, rule, blocks, ok);
@@ -71,19 +71,19 @@ public final class HeatSinkValidator {
         }
     }
 
-    private static boolean qualifies(List<Block> blocks, Level level, BlockPos pos, FissionReactorCache fc) {
-        BlockState bs = fc.getBlockState(level, pos);
+    private static boolean qualifies(List<Block> blocks, BlockPos pos, FissionReactorCache fc) {
+        BlockState bs = fc.getBlockState(pos);
         Block b = bs.getBlock();
         if (!blocks.contains(b)) {
             debugLog("[HeatSink] qualify pos={} block={} -> false (not in list)", pos, b);
             return false;
         }
         long key = pos.asLong();
-        if (b instanceof HeatSinkBlock && !fc.validHeatSinks.contains(key)) {
+        if (b instanceof HeatSinkBlock && !fc.workingValidHeatSinks.contains(key)) {
             debugLog("[HeatSink] qualify pos={} block={} -> false (heat sink not valid this pass)", pos, b);
             return false;
         }
-        if (bs.is(FissionTags.MODERATORS) && !fc.activeModerators.contains(key)) {
+        if (bs.is(FissionTags.MODERATORS) && !fc.workingActiveModerators.contains(key)) {
             debugLog("[HeatSink] qualify pos={} block={} -> false (moderator inactive)", pos, b);
             return false;
         }
@@ -91,46 +91,46 @@ public final class HeatSinkValidator {
         return true;
     }
 
-    private static boolean isAtLeast(int n, List<Block> blocks, Level level, BlockPos pos, FissionReactorCache fc) {
+    private static boolean isAtLeast(int n, List<Block> blocks, BlockPos pos, FissionReactorCache fc) {
         int c = 0;
         for (Direction dir : Direction.values()) {
-            if (qualifies(blocks, level, pos.relative(dir), fc) && ++c >= n) return true;
+            if (qualifies(blocks, pos.relative(dir), fc) && ++c >= n) return true;
         }
         return c >= n;
     }
 
-    private static boolean isLessThan(int n, List<Block> blocks, Level level, BlockPos pos, FissionReactorCache fc) {
+    private static boolean isLessThan(int n, List<Block> blocks, BlockPos pos, FissionReactorCache fc) {
         int c = 0;
         for (Direction dir : Direction.values()) {
-            if (qualifies(blocks, level, pos.relative(dir), fc) && ++c >= n) return false;
+            if (qualifies(blocks, pos.relative(dir), fc) && ++c >= n) return false;
         }
         return c < n;
     }
 
-    private static boolean isExact(int n, List<Block> blocks, Level level, BlockPos pos, FissionReactorCache fc) {
+    private static boolean isExact(int n, List<Block> blocks, BlockPos pos, FissionReactorCache fc) {
         int c = 0;
         for (Direction dir : Direction.values()) {
-            if (qualifies(blocks, level, pos.relative(dir), fc) && ++c > n) return false;
+            if (qualifies(blocks, pos.relative(dir), fc) && ++c > n) return false;
         }
         return c == n;
     }
 
-    private static boolean isBetween(List<Block> blocks, Level level, BlockPos pos, FissionReactorCache fc) {
+    private static boolean isBetween(List<Block> blocks, BlockPos pos, FissionReactorCache fc) {
         for (Direction dir : Direction.values()) {
-            if (qualifies(blocks, level, pos.relative(dir), fc)
-                    && qualifies(blocks, level, pos.relative(dir.getOpposite()), fc)) {
+            if (qualifies(blocks, pos.relative(dir), fc)
+                    && qualifies(blocks, pos.relative(dir.getOpposite()), fc)) {
                 return true;
             }
         }
         return false;
     }
 
-    private static boolean inCorner(int qty, List<Block> blocks, Level level, BlockPos pos, FissionReactorCache fc) {
-        int vertical = qualifies(blocks, level, pos.above(), fc) ? 1 : 0;
-        if (qualifies(blocks, level, pos.below(), fc)) vertical = 1;
+    private static boolean inCorner(int qty, List<Block> blocks, BlockPos pos, FissionReactorCache fc) {
+        int vertical = qualifies(blocks, pos.above(), fc) ? 1 : 0;
+        if (qualifies(blocks, pos.below(), fc)) vertical = 1;
         int[] m = new int[4];
         for (int i = 0; i < 4; i++) {
-            if (qualifies(blocks, level, pos.relative(HORIZONTAL[i]), fc)) {
+            if (qualifies(blocks, pos.relative(HORIZONTAL[i]), fc)) {
                 if (1 + vertical >= qty) return true;
                 m[i] = 1;
             }

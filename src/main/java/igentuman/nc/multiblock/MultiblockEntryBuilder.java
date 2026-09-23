@@ -1,25 +1,18 @@
 package igentuman.nc.multiblock;
 
-import igentuman.nc.api.multiblock.BlockPredicate;
-import igentuman.nc.api.multiblock.IMultiblockCache;
-import igentuman.nc.api.multiblock.IMultiblockLogic;
-import igentuman.nc.api.multiblock.IMultiblockValidator;
-import igentuman.nc.api.impl.CubicMultiblockValidator;
-import igentuman.nc.api.impl.MultiblockCacheImpl;
-import igentuman.nc.api.impl.MultiblockLogicImpl;
-import igentuman.nc.multiblock.discovery.GeometryDiscoveryJobFactory;
-import igentuman.nc.multiblock.validation.ValidationJobFactory;
+import igentuman.nc.api.multiblock.AbstractMultiblockCache;
+import igentuman.nc.api.multiblock.AbstractMultiblockLogic;
+import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
 import igentuman.nc.registration.ModEntry;
 import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
-import static igentuman.nc.NuclearCraft.rl;
-
-/** Fluent builder that assembles a {@link MultiblockEntry} from controller, ports, casing, interior, and size. */
+/** Fluent builder that assembles a {@link MultiblockEntry} from controller, ports, casing, interior, validator, logic and cache. */
 public class MultiblockEntryBuilder {
 
     private final String name;
@@ -27,17 +20,10 @@ public class MultiblockEntryBuilder {
     private final List<ModEntry> ports = new ArrayList<>();
     private final List<Supplier<Block>> casing = new ArrayList<>();
     private final List<Supplier<Block>> interior = new ArrayList<>();
-    private int minWidth = 3;
-    private int maxWidth = 3;
-    private int minHeight = 3;
-    private int maxHeight = 3;
-    private int minDepth = 3;
-    private int maxDepth = 3;
-    private Supplier<IMultiblockLogic> logicSupplier = () -> new MultiblockLogicImpl();
-    private Supplier<IMultiblockCache> cacheSupplier = MultiblockCacheImpl::new;
-    private Supplier<IMultiblockValidator> validatorSupplier;
-    private MultiblockExecutionStrategy executionStrategy = MultiblockExecutionStrategy.LEGACY_ASYNC;
-    private ScheduledMultiblockDefinition scheduledDefinition;
+    private Supplier<? extends AbstractMultiblockLogic<?>> logicSupplier = () -> new AbstractMultiblockLogic<>() {
+    };
+    private Supplier<? extends AbstractMultiblockCache> cacheSupplier;
+    private Supplier<? extends AbstractMultiblockValidator<?>> validatorSupplier;
 
     private MultiblockEntryBuilder(String name) {
         this.name = name;
@@ -69,62 +55,24 @@ public class MultiblockEntryBuilder {
         return this;
     }
 
-    public MultiblockEntryBuilder size(int width, int height, int depth) {
-        this.minWidth = width;
-        this.maxWidth = width;
-        this.minHeight = height;
-        this.maxHeight = height;
-        this.minDepth = depth;
-        this.maxDepth = depth;
-        return this;
-    }
-
-    public MultiblockEntryBuilder sizeRange(int minWidth, int maxWidth, int minHeight, int maxHeight, int minDepth, int maxDepth) {
-        if (minWidth < 1 || minHeight < 1 || minDepth < 1)
-            throw new IllegalArgumentException("multiblock size must be >= 1");
-        if (maxWidth < minWidth || maxHeight < minHeight || maxDepth < minDepth)
-            throw new IllegalArgumentException("multiblock size range max < min");
-        this.minWidth = minWidth;
-        this.maxWidth = maxWidth;
-        this.minHeight = minHeight;
-        this.maxHeight = maxHeight;
-        this.minDepth = minDepth;
-        this.maxDepth = maxDepth;
-        return this;
-    }
-
-    public MultiblockEntryBuilder logic(Supplier<IMultiblockLogic> logicSupplier) {
+    public MultiblockEntryBuilder logic(Supplier<? extends AbstractMultiblockLogic<?>> logicSupplier) {
         this.logicSupplier = logicSupplier;
         return this;
     }
 
-    public MultiblockEntryBuilder cache(Supplier<IMultiblockCache> cacheSupplier) {
+    public MultiblockEntryBuilder cache(Supplier<? extends AbstractMultiblockCache> cacheSupplier) {
         this.cacheSupplier = cacheSupplier;
         return this;
     }
 
-    public MultiblockEntryBuilder validator(Supplier<IMultiblockValidator> validatorSupplier) {
+    public MultiblockEntryBuilder validator(Supplier<? extends AbstractMultiblockValidator<?>> validatorSupplier) {
         this.validatorSupplier = validatorSupplier;
         return this;
     }
 
-    public MultiblockEntryBuilder executionStrategy(MultiblockExecutionStrategy executionStrategy) {
-        this.executionStrategy = executionStrategy;
-        return this;
-    }
-
-    public MultiblockEntryBuilder scheduled(GeometryDiscoveryJobFactory discoveryFactory,
-                                            ValidationJobFactory validationFactory) {
-        this.executionStrategy = MultiblockExecutionStrategy.SCHEDULED_SERVER_THREAD;
-        this.scheduledDefinition = new ScheduledMultiblockDefinition(rl(name), discoveryFactory, validationFactory);
-        return this;
-    }
-
     public MultiblockEntry build() {
-        Supplier<IMultiblockValidator> validator = validatorSupplier != null
-                ? validatorSupplier
-                : defaultValidatorSupplier();
-
+        Objects.requireNonNull(validatorSupplier, () -> name + " multiblock needs a validator");
+        Objects.requireNonNull(cacheSupplier, () -> name + " multiblock needs a cache");
         List<Supplier<Block>> required = new ArrayList<>();
         if (controller != null && controller.block() != null) required.add(() -> controller.block().get());
         for (ModEntry port : ports) {
@@ -133,62 +81,10 @@ public class MultiblockEntryBuilder {
         required.addAll(casing);
         required.addAll(interior);
 
-        MultiblockEntry entry = new MultiblockEntry(name, validator, logicSupplier, cacheSupplier, required,
-                controller, List.copyOf(ports), executionStrategy, scheduledDefinition);
+        MultiblockEntry entry = new MultiblockEntry(name, validatorSupplier, logicSupplier, cacheSupplier, required,
+                controller, List.copyOf(ports));
 
         MultiblockRegistry.register(entry);
         return entry;
-    }
-
-    private Supplier<IMultiblockValidator> defaultValidatorSupplier() {
-        BlockPredicate controllerPredicate = controllerPredicate();
-        BlockPredicate shellPredicate = shellPredicate();
-        BlockPredicate interiorPredicate = interiorPredicate();
-        int minW = minWidth, maxW = maxWidth;
-        int minH = minHeight, maxH = maxHeight;
-        int minD = minDepth, maxD = maxDepth;
-        return () -> new CubicMultiblockValidator(
-                controllerPredicate, shellPredicate, interiorPredicate,
-                minW, maxW, minH, maxH, minD, maxD);
-    }
-
-    private BlockPredicate controllerPredicate() {
-        if (controller == null || controller.block() == null) {
-            return BlockPredicate.any();
-        }
-        ModEntry ctrl = controller;
-        return (state, be) -> state.is(ctrl.block().get());
-    }
-
-    private BlockPredicate shellPredicate() {
-        List<ModEntry> portList = List.copyOf(ports);
-        List<Supplier<Block>> casingList = List.copyOf(casing);
-        ModEntry ctrl = controller;
-        return (state, be) -> {
-            if (ctrl != null && ctrl.block() != null && state.is(ctrl.block().get())) return true;
-            for (ModEntry p : portList) {
-                if (p.block() != null && state.is(p.block().get())) return true;
-            }
-            for (Supplier<Block> c : casingList) {
-                Block block = c.get();
-                if (block != null && state.is(block)) return true;
-            }
-            return false;
-        };
-    }
-
-    private BlockPredicate interiorPredicate() {
-        if (interior.isEmpty()) {
-            return BlockPredicate.any();
-        }
-        List<Supplier<Block>> interiorList = List.copyOf(interior);
-        return (state, be) -> {
-            if (state.isAir()) return true;
-            for (Supplier<Block> i : interiorList) {
-                Block block = i.get();
-                if (block != null && state.is(block)) return true;
-            }
-            return false;
-        };
     }
 }

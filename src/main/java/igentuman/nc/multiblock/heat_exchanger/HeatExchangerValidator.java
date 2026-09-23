@@ -1,127 +1,82 @@
 package igentuman.nc.multiblock.heat_exchanger;
 
-import igentuman.nc.api.impl.CubicMultiblockValidator;
-import igentuman.nc.api.multiblock.IMultiblockCache;
-import igentuman.nc.api.multiblock.IMultiblockValidator;
+import igentuman.nc.api.multiblock.AbstractCuboidValidator;
 import igentuman.nc.config.Multiblocks;
-import igentuman.nc.registration.ModEntry;
-import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-
-import java.util.Set;
+import net.minecraft.world.level.block.state.BlockState;
 
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.multiblock.MultiblockDebug.fail;
-import static igentuman.nc.multiblock.MultiblockDebug.step;
 
-public class HeatExchangerValidator implements IMultiblockValidator {
+public class HeatExchangerValidator extends AbstractCuboidValidator<HeatExchangerCache> {
 
-    private final CubicMultiblockValidator shape;
+    private Block controller;
+    private Block casing;
+    private Block radiator;
+    private Block interior;
+    private Block hotPort;
+    private Block coldPort;
+    private boolean resolved;
 
-    private Block casing = Blocks.AIR;
-    private Block interior = Blocks.AIR;
-    private Block radiator = Blocks.AIR;
-
-    public HeatExchangerValidator() {
-        int min = Multiblocks.hxMinSize;
-        int max = Multiblocks.hxMaxSize;
-
-        Block controller = blockOf("heat_exchanger_controller");
-        Block casingBlock = blockOf("heat_exchanger_casing");
-        Block radiatorBlock = blockOf("heat_exchanger_radiator");
-        Block hotPort = blockOf("heat_exchanger_hot_coolant_port");
-        Block coldPort = blockOf("heat_exchanger_cold_coolant_port");
-        Block interiorBlock = blockOf("heat_exchanger");
-        Set<Block> shellBlocks = Set.of(controller, casingBlock, radiatorBlock, hotPort, coldPort);
-
-        this.shape = new CubicMultiblockValidator(
-                (state, be) -> state.is(controller),
-                (state, be) -> shellBlocks.contains(state.getBlock()),
-                (state, be) -> state.isAir() || state.is(interiorBlock),
-                min, max, min, max, min, max);
+    @Override
+    protected boolean resolveBlocks() {
+        if (resolved) return true;
+        controller = blockOf("heat_exchanger_controller");
+        casing = blockOf("heat_exchanger_casing");
+        radiator = blockOf("heat_exchanger_radiator");
+        interior = blockOf("heat_exchanger");
+        hotPort = blockOf("heat_exchanger_hot_coolant_port");
+        coldPort = blockOf("heat_exchanger_cold_coolant_port");
+        resolved = controller != null && casing != null && radiator != null && interior != null
+                && hotPort != null && coldPort != null;
+        return resolved;
     }
 
     @Override
-    public boolean validate(Level level, BlockPos controllerPos, Direction facing, IMultiblockCache cache) {
-        if (!(cache instanceof HeatExchangerCache hc)) {
-            return shape.validate(level, controllerPos, facing, cache);
-        }
-        if (!shape.validate(level, controllerPos, facing, hc)) {
-            hc.resetStats();
-            return false;
-        }
-        hc.resetStats();
-        casing = blockOf("heat_exchanger_casing");
-        interior = blockOf("heat_exchanger");
-        radiator = blockOf("heat_exchanger_radiator");
+    protected int minSize() {
+        return Multiblocks.hxMinSize;
+    }
 
-        step("validating heat exchanger corner casings");
-        if (!cornersAreCasing(level, hc)) {
-            hc.getStructurePositions().clear();
-            return false;
-        }
+    @Override
+    protected int maxSize() {
+        return Multiblocks.hxMaxSize;
+    }
 
-        int n = 0;
-        int rad = 0;
-        for (long key : hc.getStructurePositions()) {
-            Block b = hc.getBlockState(level, BlockPos.of(key)).getBlock();
-            if (b == interior) n++;
-            else if (b == radiator) rad++;
+    @Override
+    protected boolean isController(BlockState state) {
+        return state.is(controller);
+    }
+
+    @Override
+    protected boolean isShell(BlockState state) {
+        return state.is(controller) || state.is(casing) || state.is(radiator)
+                || state.is(hotPort) || state.is(coldPort);
+    }
+
+    @Override
+    protected boolean acceptShell(HeatExchangerCache cache, BlockPos pos, BlockState state, boolean corner) {
+        if (corner) {
+            if (!state.is(casing)) {
+                return fail("multiblock.heat_exchanger.wrong_corner", pos, rl("heat_exchanger_casing"), state);
+            }
+            return true;
         }
-        hc.heatExchangers = n;
-        hc.radiators = rad;
-        step("heat exchanger components exchangers={} radiators={}", n, rad);
+        if (!isShell(state)) {
+            return fail("multiblock.validation.wrong_outer", pos, rl("multiblock_shell"), state);
+        }
+        if (state.is(radiator)) cache.countRadiator();
         return true;
     }
 
-    private boolean cornersAreCasing(Level level, HeatExchangerCache hc) {
-        boolean first = true;
-        int minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
-        for (long key : hc.getStructurePositions()) {
-            BlockPos p = BlockPos.of(key);
-            if (first) {
-                minX = maxX = p.getX();
-                minY = maxY = p.getY();
-                minZ = maxZ = p.getZ();
-                first = false;
-            } else {
-                minX = Math.min(minX, p.getX());
-                minY = Math.min(minY, p.getY());
-                minZ = Math.min(minZ, p.getZ());
-                maxX = Math.max(maxX, p.getX());
-                maxY = Math.max(maxY, p.getY());
-                maxZ = Math.max(maxZ, p.getZ());
-            }
+    @Override
+    protected boolean acceptInterior(HeatExchangerCache cache, BlockPos pos, BlockState state) {
+        if (state.is(interior)) {
+            cache.countHeatExchanger();
+            return true;
         }
-        if (first) return false;
-        int[] xs = {minX, maxX};
-        int[] ys = {minY, maxY};
-        int[] zs = {minZ, maxZ};
-        for (int x : xs) {
-            for (int y : ys) {
-                for (int z : zs) {
-                    BlockPos pos = new BlockPos(x, y, z);
-                    var state = hc.getBlockState(level, pos);
-                    if (state.getBlock() != casing) {
-                        fail("multiblock.heat_exchanger.wrong_corner", pos, rl("heat_exchanger_casing"),
-                                BuiltInRegistries.BLOCK.getKey(state.getBlock()));
-                        return false;
-                    }
-                }
-            }
+        if (!state.isAir()) {
+            return fail("multiblock.validation.wrong_inner", pos, rl("multiblock_interior"), state);
         }
         return true;
-    }
-
-    private static Block blockOf(String name) {
-        ModEntry entry = ModEntries.get(name);
-        if (entry == null || entry.block() == null) return Blocks.AIR;
-        Block b = entry.block().get();
-        return b == null ? Blocks.AIR : b;
     }
 }

@@ -1,28 +1,20 @@
 package igentuman.nc.particle;
 
-import igentuman.nc.multiblock.validation.LoadedStructureReader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.SectionPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Predicate;
 
 public record BeamConnection(
         BlockPos source,
         Direction direction,
         int maximumReach,
-        BlockPos destination,
-        Map<Long, Long> scannedSectionRevisions
+        BlockPos destination
 ) {
-
-    public BeamConnection {
-        scannedSectionRevisions = Map.copyOf(scannedSectionRevisions);
-    }
 
     public enum Outcome {
         CONNECTED,
@@ -40,7 +32,7 @@ public record BeamConnection(
     }
 
     public static ScanResult scan(
-            LoadedStructureReader reader,
+            ServerLevel level,
             BlockPos source,
             Direction direction,
             int maximumReach,
@@ -52,25 +44,22 @@ public record BeamConnection(
             return ScanResult.of(Outcome.OUT_OF_REACH);
         }
 
-        Map<Long, Long> scannedSections = new LinkedHashMap<>();
         for (int step = 1; step <= maximumReach; step++) {
             BlockPos pos = source.relative(direction, step);
-            SectionPos sectionPos = SectionPos.of(pos);
-            if (!reader.isLoaded(sectionPos)) {
+            if (!level.hasChunkAt(pos)) {
                 return ScanResult.of(Outcome.UNLOADED);
             }
-            scannedSections.putIfAbsent(sectionPos.asLong(), reader.sectionRevision(sectionPos));
-
-            if (reader.matchesBlock(pos, particleBeam)) {
+            BlockState state = level.getBlockState(pos);
+            if (particleBeam.test(state)) {
                 continue;
             }
-            if (!reader.matchesBlock(pos, receiverCandidate)) {
+            if (!receiverCandidate.test(state)) {
                 return ScanResult.of(Outcome.OBSTRUCTED);
             }
-            if (!reader.matchesBlock(pos, facesTowardSource)) {
+            if (!facesTowardSource.test(state)) {
                 return ScanResult.of(Outcome.WRONG_FACING);
             }
-            return new ScanResult(Outcome.CONNECTED, new BeamConnection(source, direction, maximumReach, pos, scannedSections));
+            return new ScanResult(Outcome.CONNECTED, new BeamConnection(source, direction, maximumReach, pos));
         }
         return ScanResult.of(Outcome.OUT_OF_REACH);
     }
@@ -79,15 +68,5 @@ public record BeamConnection(
         Direction expected = direction.getOpposite();
         return state -> state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)
                 && state.getValue(BlockStateProperties.HORIZONTAL_FACING) == expected;
-    }
-
-    public boolean isStale(LoadedStructureReader reader) {
-        for (Map.Entry<Long, Long> entry : scannedSectionRevisions.entrySet()) {
-            SectionPos sectionPos = SectionPos.of(entry.getKey());
-            if (!reader.isLoaded(sectionPos) || reader.sectionRevision(sectionPos) != entry.getValue()) {
-                return true;
-            }
-        }
-        return false;
     }
 }

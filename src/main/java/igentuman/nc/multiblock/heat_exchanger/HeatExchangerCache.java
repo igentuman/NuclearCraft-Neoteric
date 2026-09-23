@@ -1,35 +1,44 @@
 package igentuman.nc.multiblock.heat_exchanger;
 
-import igentuman.nc.api.impl.MultiblockCacheImpl;
-import net.minecraft.core.HolderLookup;
+import igentuman.nc.api.multiblock.AbstractMultiblockCache;
 import net.minecraft.nbt.CompoundTag;
 
-public class HeatExchangerCache extends MultiblockCacheImpl {
+public class HeatExchangerCache extends AbstractMultiblockCache {
+
+    private int workingHeatExchangers;
+    private int workingRadiators;
 
     public volatile int heatExchangers;
     public volatile int radiators;
 
-    public void resetStats() {
-        heatExchangers = 0;
-        radiators = 0;
+    public void countHeatExchanger() {
+        workingHeatExchangers++;
+    }
+
+    public void countRadiator() {
+        workingRadiators++;
     }
 
     @Override
-    public void clear() {
-        super.clear();
-        resetStats();
+    protected void resetWorkingData() {
+        workingHeatExchangers = 0;
+        workingRadiators = 0;
     }
 
     @Override
-    public void saveNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveNbt(tag, registries);
+    protected void publishData() {
+        heatExchangers = workingHeatExchangers;
+        radiators = workingRadiators;
+    }
+
+    @Override
+    protected void saveData(CompoundTag tag) {
         tag.putInt("heatExchangers", heatExchangers);
         tag.putInt("radiators", radiators);
     }
 
     @Override
-    public void loadNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadNbt(tag, registries);
+    protected void loadData(CompoundTag tag) {
         heatExchangers = tag.getInt("heatExchangers");
         radiators = tag.getInt("radiators");
     }

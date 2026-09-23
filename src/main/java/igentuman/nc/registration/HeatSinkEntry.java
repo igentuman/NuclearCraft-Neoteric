@@ -1,7 +1,7 @@
 package igentuman.nc.registration;
 
 import igentuman.nc.block.fission.HeatSinkBlock;
-import igentuman.nc.multiblock.fission.HeatSinkDef;
+import igentuman.nc.api.multiblock.part.HeatSinkDef;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;

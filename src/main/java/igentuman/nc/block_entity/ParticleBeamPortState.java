@@ -1,12 +1,11 @@
 package igentuman.nc.block_entity;
 
 import igentuman.nc.block.accelerator.BeamPortMode;
-import igentuman.nc.multiblock.StructureRecord;
-import igentuman.nc.multiblock.geometry.StructureRole;
+import igentuman.nc.multiblock.StructureRole;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 
 import java.util.List;
+import java.util.function.Function;
 
 public final class ParticleBeamPortState {
 
@@ -14,19 +13,19 @@ public final class ParticleBeamPortState {
     private int channel = -1;
     private boolean configured;
 
-    public void configure(StructureRecord record, BlockPos position) {
+    public void configure(Function<StructureRole, List<BlockPos>> roles, BlockPos position) {
         if (configured) {
             StructureRole role = mode == BeamPortMode.INPUT ? StructureRole.BEAM_INPUT
                     : mode == BeamPortMode.OUTPUT ? StructureRole.BEAM_OUTPUT : null;
-            channel = role == null ? -1 : indexOf(record, role, position);
+            channel = role == null ? -1 : roles.apply(role).indexOf(position);
             return;
         }
-        int input = indexOf(record, StructureRole.BEAM_INPUT, position);
+        int input = roles.apply(StructureRole.BEAM_INPUT).indexOf(position);
         if (input >= 0) {
             set(BeamPortMode.INPUT, input);
             return;
         }
-        int output = indexOf(record, StructureRole.BEAM_OUTPUT, position);
+        int output = roles.apply(StructureRole.BEAM_OUTPUT).indexOf(position);
         if (output >= 0) {
             set(BeamPortMode.OUTPUT, output);
             return;
@@ -72,8 +71,4 @@ public final class ParticleBeamPortState {
         clear();
     }
 
-    private static int indexOf(StructureRecord record, StructureRole role, BlockPos position) {
-        List<BlockPos> positions = record.roles().getOrDefault(role, List.of());
-        return positions.indexOf(position);
-    }
 }

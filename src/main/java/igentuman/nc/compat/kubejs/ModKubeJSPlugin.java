@@ -10,7 +10,7 @@ import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.script.ScriptManager;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import igentuman.nc.content.fuel.FuelDef;
-import igentuman.nc.multiblock.fission.HeatSinkDef;
+import igentuman.nc.api.multiblock.part.HeatSinkDef;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.entries.FissionFuel;

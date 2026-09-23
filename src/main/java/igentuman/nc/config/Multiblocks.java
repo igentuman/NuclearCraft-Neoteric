@@ -69,11 +69,6 @@ public class Multiblocks {
     public static final ModConfigSpec.IntValue COLLISION_CHAMBER_PREFERRED_LENGTH;
     public static final ModConfigSpec.LongValue COLLISION_CHAMBER_BASE_POWER;
 
-    public static final ModConfigSpec.LongValue PARTICLE_SCHEDULER_TIME_BUDGET_NANOS;
-    public static final ModConfigSpec.IntValue PARTICLE_SCHEDULER_BLOCK_READ_BUDGET;
-    public static final ModConfigSpec.IntValue PARTICLE_SCHEDULER_BLOCK_ENTITY_READ_BUDGET;
-    public static final ModConfigSpec.IntValue PARTICLE_SCHEDULER_MUTATION_BUDGET;
-    public static final ModConfigSpec.IntValue PARTICLE_SCHEDULER_AUDIT_INTERVAL_TICKS;
 
     public static final ModConfigSpec SPEC;
 
@@ -140,11 +135,6 @@ public class Multiblocks {
     public static int collisionChamberPreferredLength = 17;
     public static long collisionChamberBasePower = 2_000L;
 
-    public static long particleSchedulerTimeBudgetNanos = 2_000_000L;
-    public static int particleSchedulerBlockReadBudget = 4_096;
-    public static int particleSchedulerBlockEntityReadBudget = 128;
-    public static int particleSchedulerMutationBudget = 16;
-    public static int particleSchedulerAuditIntervalTicks = 200;
     private static long particleMachinesRevision;
 
     static {
@@ -271,14 +261,6 @@ public class Multiblocks {
         COLLISION_CHAMBER_BASE_POWER = builder.defineInRange("collision_base_power", 2_000L, 0L, Long.MAX_VALUE);
         builder.pop();
 
-        builder.push("particle_multiblock_scheduler");
-        PARTICLE_SCHEDULER_TIME_BUDGET_NANOS = builder.defineInRange("time_budget_nanos", 2_000_000L, 50_000L, 50_000_000L);
-        PARTICLE_SCHEDULER_BLOCK_READ_BUDGET = builder.defineInRange("block_read_budget", 4_096, 1, 1_000_000);
-        PARTICLE_SCHEDULER_BLOCK_ENTITY_READ_BUDGET = builder.defineInRange("block_entity_read_budget", 128, 0, 65_536);
-        PARTICLE_SCHEDULER_MUTATION_BUDGET = builder.defineInRange("mutation_budget", 16, 1, 65_536);
-        PARTICLE_SCHEDULER_AUDIT_INTERVAL_TICKS = builder.defineInRange("audit_interval_ticks", 200, 20, 72_000);
-        builder.pop();
-
         SPEC = builder.build();
     }
 
@@ -340,11 +322,6 @@ public class Multiblocks {
         collisionChamberMaxLength = COLLISION_CHAMBER_MAX_LENGTH.get();
         collisionChamberPreferredLength = COLLISION_CHAMBER_PREFERRED_LENGTH.get();
         collisionChamberBasePower = COLLISION_CHAMBER_BASE_POWER.get();
-        particleSchedulerTimeBudgetNanos = PARTICLE_SCHEDULER_TIME_BUDGET_NANOS.get();
-        particleSchedulerBlockReadBudget = PARTICLE_SCHEDULER_BLOCK_READ_BUDGET.get();
-        particleSchedulerBlockEntityReadBudget = PARTICLE_SCHEDULER_BLOCK_ENTITY_READ_BUDGET.get();
-        particleSchedulerMutationBudget = PARTICLE_SCHEDULER_MUTATION_BUDGET.get();
-        particleSchedulerAuditIntervalTicks = PARTICLE_SCHEDULER_AUDIT_INTERVAL_TICKS.get();
         particleMachinesRevision = Math.incrementExact(particleMachinesRevision);
     }
 
@@ -359,9 +336,6 @@ public class Multiblocks {
                         collisionChamberMinTransverseSize, collisionChamberMaxTransverseSize,
                         collisionChamberMinLength, collisionChamberMaxLength, collisionChamberPreferredLength,
                         collisionChamberBasePower),
-                new ParticleMachinesConfig.Scheduler(particleSchedulerTimeBudgetNanos,
-                        particleSchedulerBlockReadBudget, particleSchedulerBlockEntityReadBudget,
-                        particleSchedulerMutationBudget, particleSchedulerAuditIntervalTicks),
                 particleMachinesRevision);
     }
 }

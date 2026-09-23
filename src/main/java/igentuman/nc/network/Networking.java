@@ -130,11 +130,6 @@ public class Networking {
                 PacketMultiblockBroken::handle
         );
         registrar.playToClient(
-                PacketScheduledMultiblockFormed.TYPE,
-                PacketScheduledMultiblockFormed.STREAM_CODEC,
-                PacketScheduledMultiblockFormed::handle
-        );
-        registrar.playToClient(
                 PacketMultiblockDebug.TYPE,
                 PacketMultiblockDebug.STREAM_CODEC,
                 PacketMultiblockDebug::handle

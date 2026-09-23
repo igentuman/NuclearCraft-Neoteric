@@ -1,103 +1,78 @@
 package igentuman.nc.multiblock.fission;
 
-import igentuman.nc.api.impl.MultiblockCacheImpl;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import igentuman.nc.api.multiblock.AbstractMultiblockCache;
+import net.minecraft.core.BlockPos;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/** Multiblock cache for the fission reactor; stores classified components and derived stats for the runtime reaction. */
-public class FissionReactorCache extends MultiblockCacheImpl {
+public class FissionReactorCache extends AbstractMultiblockCache {
 
-    public final Set<Long> fuelCells = new HashSet<>();
-    public final Set<Long> allModerators = new HashSet<>();
-    public final Set<Long> activeModerators = new HashSet<>();
-    /** Heat-sink position -> sink name (all placed sinks, valid or not). */
-    public final Map<Long, String> heatSinks = new HashMap<>();
-    public final Set<Long> validHeatSinks = new HashSet<>();
-    public final Set<Long> activeHeatSinks = new HashSet<>();
-    public final Set<Long> irradiators = new HashSet<>();
-    public final Set<Long> validIrradiators = new HashSet<>();
+    final Set<Long> workingFuelCells = new HashSet<>();
+    final Set<Long> workingModerators = new HashSet<>();
+    final Set<Long> workingActiveModerators = new HashSet<>();
+    final Map<Long, String> workingHeatSinks = new HashMap<>();
+    final Set<Long> workingValidHeatSinks = new HashSet<>();
+    final Set<Long> workingIrradiators = new HashSet<>();
+    int workingIrradiationLines;
+    double workingCellsHeatMult;
+    double workingCellsEnergyMult;
+    double workingModeratorsHeatMult;
+    double workingModeratorsEnergyMult;
+    double workingTotalCooling;
+    int[] workingActiveCoolantCounts = new int[ActiveCoolant.COUNT];
 
-    // Scalars are written off-thread during validation and read on the main thread by the
-    // reactor logic; volatile gives visibility. The logic reads only these scalars (never the
-    // mutable position sets), so it cannot observe a half-cleared collection.
-    public volatile int irradiationLines;
+    public volatile Set<Long> fuelCells = Set.of();
     public volatile int fuelCellCount;
+    public volatile int heatSinkCount;
+    public volatile int moderatorCount;
+    public volatile int irradiationLines;
     public volatile double cellsHeatMult;
     public volatile double cellsEnergyMult;
     public volatile double moderatorsHeatMult;
     public volatile double moderatorsEnergyMult;
-    /** Passive (always-on) heat-sink cooling only; active sinks cool at runtime when fed coolant. */
     public volatile double totalCooling;
-    /** Count of valid active heat sinks per {@link ActiveCoolant} (indexed by ordinal). Replaced
-     *  atomically each validation pass; the reactor logic reads it on the main thread. */
     public volatile int[] activeCoolantCounts = new int[ActiveCoolant.COUNT];
     public volatile int width;
     public volatile int height;
     public volatile int depth;
 
-    public void resetStats() {
-        fuelCells.clear();
-        allModerators.clear();
-        activeModerators.clear();
-        heatSinks.clear();
-        validHeatSinks.clear();
-        activeHeatSinks.clear();
-        irradiators.clear();
-        validIrradiators.clear();
-        irradiationLines = 0;
-        fuelCellCount = 0;
-        cellsHeatMult = 0;
-        cellsEnergyMult = 0;
-        moderatorsHeatMult = 0;
-        moderatorsEnergyMult = 0;
-        totalCooling = 0;
-        activeCoolantCounts = new int[ActiveCoolant.COUNT];
-        width = 0;
-        height = 0;
-        depth = 0;
+    @Override
+    protected void resetWorkingData() {
+        workingFuelCells.clear();
+        workingModerators.clear();
+        workingActiveModerators.clear();
+        workingHeatSinks.clear();
+        workingValidHeatSinks.clear();
+        workingIrradiators.clear();
+        workingIrradiationLines = 0;
+        workingCellsHeatMult = 0;
+        workingCellsEnergyMult = 0;
+        workingModeratorsHeatMult = 0;
+        workingModeratorsEnergyMult = 0;
+        workingTotalCooling = 0;
+        workingActiveCoolantCounts = new int[ActiveCoolant.COUNT];
     }
 
     @Override
-    public void clear() {
-        super.clear();
-        resetStats();
-    }
-
-    @Override
-    public void saveNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveNbt(tag, registries);
-        tag.putInt("irradiationLines", irradiationLines);
-        tag.putInt("fuelCellCount", fuelCellCount);
-        tag.putDouble("cellsHeatMult", cellsHeatMult);
-        tag.putDouble("cellsEnergyMult", cellsEnergyMult);
-        tag.putDouble("moderatorsHeatMult", moderatorsHeatMult);
-        tag.putDouble("moderatorsEnergyMult", moderatorsEnergyMult);
-        tag.putDouble("totalCooling", totalCooling);
-        tag.putIntArray("activeCoolantCounts", activeCoolantCounts.clone());
-        tag.putInt("width", width);
-        tag.putInt("height", height);
-        tag.putInt("depth", depth);
-    }
-
-    @Override
-    public void loadNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadNbt(tag, registries);
-        irradiationLines = tag.getInt("irradiationLines");
-        fuelCellCount = tag.getInt("fuelCellCount");
-        cellsHeatMult = tag.getDouble("cellsHeatMult");
-        cellsEnergyMult = tag.getDouble("cellsEnergyMult");
-        moderatorsHeatMult = tag.getDouble("moderatorsHeatMult");
-        moderatorsEnergyMult = tag.getDouble("moderatorsEnergyMult");
-        totalCooling = tag.getDouble("totalCooling");
-        int[] counts = tag.getIntArray("activeCoolantCounts");
-        activeCoolantCounts = counts.length == ActiveCoolant.COUNT ? counts : new int[ActiveCoolant.COUNT];
-        width = tag.getInt("width");
-        height = tag.getInt("height");
-        depth = tag.getInt("depth");
+    protected void publishData() {
+        fuelCells = Set.copyOf(workingFuelCells);
+        fuelCellCount = workingFuelCells.size();
+        heatSinkCount = workingValidHeatSinks.size();
+        moderatorCount = workingModerators.size();
+        irradiationLines = workingIrradiationLines;
+        cellsHeatMult = workingCellsHeatMult;
+        cellsEnergyMult = workingCellsEnergyMult;
+        moderatorsHeatMult = workingModeratorsHeatMult;
+        moderatorsEnergyMult = workingModeratorsEnergyMult;
+        totalCooling = workingTotalCooling;
+        activeCoolantCounts = workingActiveCoolantCounts.clone();
+        BlockPos min = workingMin();
+        BlockPos max = workingMax();
+        width = max.getX() - min.getX() + 1;
+        height = max.getY() - min.getY() + 1;
+        depth = max.getZ() - min.getZ() + 1;
     }
 }

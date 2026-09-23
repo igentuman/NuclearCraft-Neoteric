@@ -9,6 +9,7 @@ import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
 import igentuman.nc.container.FusionReactorContainer;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.fusion.FusionReactorCache;
+import igentuman.nc.multiblock.fusion.FusionReactorLogic;
 import igentuman.nc.multiblock.fusion.FusionReactorValidator;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
@@ -87,8 +88,8 @@ public class FusionReactor extends ModEntries {
                         () -> ModEntries.get("fusion_reactor_casing").block().get(),
                         () -> ModEntries.get("fusion_reactor_glass").block().get(),
                         () -> ModEntries.get("fusion_reactor_connector").block().get())
-                .sizeRange(3, 67, 3, 3, 3, 67)
                 .validator(FusionReactorValidator::new)
+                .logic(FusionReactorLogic::new)
                 .cache(FusionReactorCache::new)
                 .build();
     }

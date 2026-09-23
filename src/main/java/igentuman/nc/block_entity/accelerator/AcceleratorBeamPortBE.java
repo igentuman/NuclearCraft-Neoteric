@@ -6,9 +6,6 @@ import igentuman.nc.block.accelerator.AcceleratorBeamPortBlock;
 import igentuman.nc.block_entity.IBeamPort;
 import igentuman.nc.block_entity.MultiblockControllerBE;
 import igentuman.nc.block_entity.ParticleBeamPortState;
-import igentuman.nc.multiblock.MultiblockHandler;
-import igentuman.nc.multiblock.StructureLifecycleState;
-import igentuman.nc.multiblock.StructureRecord;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -32,8 +29,9 @@ public class AcceleratorBeamPortBE extends AcceleratorPortBE implements IBeamPor
     }
 
     @Override
-    public void configureFromStructure(StructureRecord record) {
-        particlePort.configure(record, worldPosition);
+    public void configureFromController(MultiblockControllerBE controller) {
+        super.configureFromController(controller);
+        particlePort.configure(controller::rolePositions, worldPosition);
         updateModeBlockState();
         markDirty();
     }
@@ -67,8 +65,7 @@ public class AcceleratorBeamPortBE extends AcceleratorPortBE implements IBeamPor
                 || !getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)
                 || getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING) != side) return null;
         MultiblockControllerBE controller = controller();
-        if (controller == null || controller.scheduledStructure()
-                .filter(record -> record.state() == StructureLifecycleState.FORMED).isEmpty()) return null;
+        if (controller == null || !controller.structureFormed()) return null;
         return controller.getParticleHandler(worldPosition, particlePort.mode(), particlePort.channel());
     }
 
@@ -90,9 +87,7 @@ public class AcceleratorBeamPortBE extends AcceleratorPortBE implements IBeamPor
     private void ensureConfigured() {
         if (particlePort.isConfigured()) return;
         MultiblockControllerBE controller = controller();
-        if (controller != null) controller.scheduledStructure()
-                .filter(record -> record.state() == StructureLifecycleState.FORMED)
-                .ifPresent(this::configureFromStructure);
+        if (controller != null && controller.structureFormed()) configureFromController(controller);
     }
 
     private void updateModeBlockState() {

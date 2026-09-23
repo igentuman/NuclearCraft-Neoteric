@@ -1,43 +1,38 @@
 package igentuman.nc.block_entity.turbine;
 
 import igentuman.nc.block_entity.MultiblockControllerBE;
-import igentuman.nc.config.Multiblocks;
 import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.multiblock.turbine.TurbineCache;
-import igentuman.nc.recipe.turbine.TurbineRecipe;
-import igentuman.nc.recipe.turbine.TurbineRecipes;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
-
 public class TurbineControllerBE extends MultiblockControllerBE {
 
-    @NBTField
+    @NBTField(syncToClient = true)
     public float rotationSpeed = 0f;
-    @NBTField
+    @NBTField(syncToClient = true)
     public Direction orientation = Direction.NORTH;
-    @NBTField
+    @NBTField(syncToClient = true)
     public BlockPos bearingPos1;
-    @NBTField
+    @NBTField(syncToClient = true)
     public BlockPos bearingPos2;
-    @NBTField
+    @NBTField(syncToClient = true)
     public int width = 0;
-    @NBTField
+    @NBTField(syncToClient = true)
     public int height = 0;
-    @NBTField
+    @NBTField(syncToClient = true)
     public int depth = 0;
     @NBTField(syncToClient = true)
     public int flow = 0;
@@ -66,174 +61,63 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     public void serverTick() {
         super.serverTick();
         if (!(level instanceof ServerLevel)) return;
-        if (mbInstance == null || !mbInstance.formed || !(mbInstance.cache instanceof TurbineCache tc)) {
-            if (rotationSpeed != 0f || flow != 0 || bladeCount != 0 || activeCoils != 0
-                    || coilEfficiency != 0 || realFlow != 0 || maxFlow != 0 || flowRatio != 0
-                    || energyPerTick != 0 || maxEnergyGen != 0) {
-                rotationSpeed = 0f;
-                resetStats();
-                markDirty();
-            }
-            return;
+        if (mbInstance != null && mbInstance.formed) return;
+        if (rotationSpeed != 0f || flow != 0 || bladeCount != 0 || activeCoils != 0
+                || coilEfficiency != 0 || realFlow != 0 || maxFlow != 0 || flowRatio != 0
+                || energyPerTick != 0 || maxEnergyGen != 0) {
+            rotationSpeed = 0f;
+            flow = 0;
+            bladeCount = 0;
+            activeCoils = 0;
+            coilEfficiency = 0;
+            realFlow = 0;
+            maxFlow = 0;
+            flowRatio = 0;
+            energyPerTick = 0;
+            maxEnergyGen = 0;
+            markDirty();
         }
-
-        runTurbine(tc);
-        syncFromCache(tc);
     }
 
-    private void runTurbine(TurbineCache tc) {
-        double realFlowVal = 0;
-        double maxFlowVal = 0;
-        int genPerTick = 0;
-        int maxGen = 0;
-        double powerMod = 1.0;
-
-        FluidStackHandler tanks = fluidTanks();
-        if (tc.flow > 0 && tc.bladeCount > 0) {
-            double flowD = Math.max(1, tc.flow);
-            double bladeFlow = Multiblocks.turbineBladeFlow;
-            maxFlowVal = flowD * bladeFlow * Math.pow(Math.log10(flowD), 2.8);
-            double coilsDrag = tc.coilsEfficiency > 0
-                    ? Math.max(1, 100.0 / tc.coilsEfficiency * Math.log(Math.log10(tc.activeCoils + 4) + 2))
-                    : 1;
-
-            FluidStack in = tanks != null ? tanks.getFluidInTank(0) : FluidStack.EMPTY;
-            TurbineRecipe recipe = in.isEmpty() ? null : findRecipe(in);
-            if (recipe != null && in.getAmount() > 0) {
-                powerMod = recipe.powerModifier();
-                double cleanFlow = Math.min(maxFlowVal, in.getAmount());
-                int requestedInput = (int) (cleanFlow / coilsDrag);
-                FluidStack output = recipe.output().resolve();
-                int consumedPerOp = recipe.input().amount();
-                int producedPerOp = output.getAmount();
-                int outputRoom = availableOutput(tanks, output);
-                int inputForOutputRoom = consumedPerOp > 0 && producedPerOp > 0
-                        ? (int) Math.min(Integer.MAX_VALUE, (long) outputRoom * consumedPerOp / producedPerOp)
-                        : 0;
-                int inputAmount = Math.min(requestedInput, inputForOutputRoom);
-                int outputAmount = consumedPerOp > 0
-                        ? (int) ((long) inputAmount * producedPerOp / consumedPerOp)
-                        : 0;
-                if (inputAmount > 0 && outputAmount > 0) {
-                    realFlowVal = inputAmount;
-                    genPerTick = generateEnergy(tc, realFlowVal, powerMod);
-                    tanks.drainTank(0, inputAmount, EXECUTE);
-                    tanks.fillTank(1, output.copyWithAmount(outputAmount), EXECUTE);
-                }
-            }
-            maxGen = (int) computeEnergy(tc, maxFlowVal, powerMod);
-        }
-
-        updateStats(tc, realFlowVal, maxFlowVal, genPerTick, maxGen);
-
-        double flowForSpin = Math.max(1, tc.flow);
-        float newSpeed = (float) ((rotationSpeed * 4 + realFlowVal / (flowForSpin * Multiblocks.turbineBladeFlow)) / 5f);
-        newSpeed = newSpeed < 0.001f ? 0f : newSpeed;
-        if (Math.abs(rotationSpeed - newSpeed) > 0.001f) markDirty();
-        rotationSpeed = newSpeed;
-    }
-
-    private double computeEnergy(TurbineCache tc, double flowValue, double powerModifier) {
-        if (tc.activeCoils < 1 || tc.coilsEfficiency <= 0 || tc.bladeCount <= 0) return 0;
-        double bladesEfficiency = tc.flow / tc.bladeCount;
-        double efficiencyRate = Math.log10(tc.activeCoils) * tc.coilsEfficiency * bladesEfficiency / 1000.0;
-        if (efficiencyRate <= 0) return 0;
-        return Math.sqrt((flowValue + 1) * (flowValue + 2) / 2.0)
-                * Multiblocks.turbineEnergyGen * efficiencyRate * powerModifier * 4;
-    }
-
-    private int generateEnergy(TurbineCache tc, double realFlowVal, double powerModifier) {
-        double energy = computeEnergy(tc, realFlowVal, powerModifier);
-        if (energy <= 0 || energyStorage == null) return 0;
-        int add = (int) Math.min(energy, energyStorage.getMaxEnergyStored() - energyStorage.getEnergyStored());
-        if (add > 0) energyStorage.setEnergyStored(energyStorage.getEnergyStored() + add);
-        return (int) energy;
-    }
-
-    private void resetStats() {
-        flow = 0;
-        bladeCount = 0;
-        activeCoils = 0;
-        coilEfficiency = 0;
-        realFlow = 0;
-        maxFlow = 0;
-        flowRatio = 0;
-        energyPerTick = 0;
-        maxEnergyGen = 0;
-    }
-
-    private void updateStats(TurbineCache tc, double realFlowVal, double maxFlowVal, int genPerTick, int maxGen) {
-        int rf = (int) Math.min(realFlowVal, maxFlowVal);
-        int mf = (int) maxFlowVal;
-        int ratio = mf > 0 ? (int) ((float) rf / mf * 100) : 0;
-        boolean changed = flow != (int) tc.flow || bladeCount != tc.bladeCount || activeCoils != tc.activeCoils
-                || coilEfficiency != (int) tc.coilsEfficiency || realFlow != rf || maxFlow != mf
-                || flowRatio != ratio || energyPerTick != genPerTick || maxEnergyGen != maxGen;
+    public void updateRuntimeDisplay(TurbineCache tc, float speed, int real, int max, int genPerTick, int maxGen) {
+        int ratio = max > 0 ? (int) ((float) real / max * 100) : 0;
+        Direction newOrientation = tc.axis == null ? orientation
+                : Direction.fromAxisAndDirection(tc.axis, Direction.AxisDirection.POSITIVE);
+        boolean changed = Math.abs(rotationSpeed - speed) > 0.001f || (speed == 0f && rotationSpeed != 0f)
+                || flow != (int) tc.flow || bladeCount != tc.bladeCount || activeCoils != tc.activeCoils
+                || coilEfficiency != (int) tc.coilsEfficiency || realFlow != real || maxFlow != max
+                || flowRatio != ratio || energyPerTick != genPerTick || maxEnergyGen != maxGen
+                || orientation != newOrientation || !Objects.equals(bearingPos1, tc.bearingPos1)
+                || !Objects.equals(bearingPos2, tc.bearingPos2)
+                || width != tc.width || height != tc.height || depth != tc.depth;
+        rotationSpeed = speed;
         flow = (int) tc.flow;
         bladeCount = tc.bladeCount;
         activeCoils = tc.activeCoils;
         coilEfficiency = (int) tc.coilsEfficiency;
-        realFlow = rf;
-        maxFlow = mf;
+        realFlow = real;
+        maxFlow = max;
         flowRatio = ratio;
         energyPerTick = genPerTick;
         maxEnergyGen = maxGen;
+        orientation = newOrientation;
+        bearingPos1 = tc.bearingPos1;
+        bearingPos2 = tc.bearingPos2;
+        width = tc.width;
+        height = tc.height;
+        depth = tc.depth;
         if (changed) markDirty();
     }
 
-    private TurbineRecipe findRecipe(FluidStack in) {
-        if (!(level instanceof ServerLevel sl)) return null;
-        for (RecipeHolder<TurbineRecipe> holder : sl.getRecipeManager().getAllRecipesFor(TurbineRecipes.TURBINE_TYPE.get())) {
-            if (holder.value().input().test(in)) return holder.value();
-        }
-        return null;
-    }
-
-    private int availableOutput(FluidStackHandler tanks, FluidStack output) {
-        if (output.isEmpty() || output.getAmount() <= 0) return 0;
-        FluidStack current = tanks.getFluidInTank(1);
-        if (!current.isEmpty() && !FluidStack.isSameFluidSameComponents(current, output)) return 0;
-        int stored = current.isEmpty() ? 0 : current.getAmount();
-        return Math.max(0, tanks.getTankCapacity(1) - stored);
-    }
-
-    private FluidStackHandler fluidTanks() {
+    @Nullable
+    public FluidStackHandler fluidTanks() {
         FluidCapabilityHandler fh = contentHandler.getFluidHandler();
         return fh != null ? fh.getInternalHandler() : null;
     }
 
-    private void syncFromCache(TurbineCache tc) {
-        boolean changed = false;
-        if (tc.axis != null) {
-            Direction newOrientation = Direction.fromAxisAndDirection(tc.axis, Direction.AxisDirection.POSITIVE);
-            if (newOrientation != orientation) {
-                orientation = newOrientation;
-                changed = true;
-            }
-        }
-        BlockPos b1 = tc.bearingPos1;
-        BlockPos b2 = tc.bearingPos2;
-        if (!Objects.equals(b1, bearingPos1)) {
-            bearingPos1 = b1;
-            changed = true;
-        }
-        if (!Objects.equals(b2, bearingPos2)) {
-            bearingPos2 = b2;
-            changed = true;
-        }
-        if (width != tc.width) {
-            width = tc.width;
-            changed = true;
-        }
-        if (height != tc.height) {
-            height = tc.height;
-            changed = true;
-        }
-        if (depth != tc.depth) {
-            depth = tc.depth;
-            changed = true;
-        }
-        if (changed) markDirty();
+    @Override
+    protected CompoundTag legacyRuntime(CompoundTag tag) {
+        return tag.contains("rotationSpeed") ? tag : null;
     }
 
     @Override

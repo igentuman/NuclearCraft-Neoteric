@@ -11,6 +11,7 @@ import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.ValidationScheduler;
 import igentuman.nc.api.multiblock.part.BladeDef;
 import igentuman.nc.multiblock.turbine.TurbineCache;
+import igentuman.nc.multiblock.turbine.TurbineLogic;
 import igentuman.nc.api.multiblock.part.TurbineCoilDef;
 import igentuman.nc.multiblock.turbine.TurbineValidator;
 import igentuman.nc.registration.ModEntry;
@@ -127,6 +128,7 @@ public class Turbine extends ModEntries {
                         () -> ModEntries.get("turbine_bearing").block().get())
                 .interior(() -> ModEntries.get("turbine_rotor_shaft").block().get())
                 .validator(TurbineValidator::new)
+                .logic(TurbineLogic::new)
                 .cache(TurbineCache::new)
                 .build();
     }

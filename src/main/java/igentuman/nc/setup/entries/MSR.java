@@ -5,6 +5,7 @@ import igentuman.nc.container.MsrControllerContainer;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.fission.MoltenSaltReactorValidator;
 import igentuman.nc.multiblock.fission.MsrCache;
+import igentuman.nc.multiblock.fission.MsrLogic;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.SlotsLayout;
 import net.minecraft.world.level.block.SoundType;
@@ -49,6 +50,7 @@ public class MSR {
                         () -> ModEntries.get("fission_reactor_glass").block().get())
                 .interior(() -> ModEntries.get("msr_fuel_cell").block().get())
                 .validator(MoltenSaltReactorValidator::new)
+                .logic(MsrLogic::new)
                 .cache(MsrCache::new)
                 .build();
     }

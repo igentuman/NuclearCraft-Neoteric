@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
@@ -44,80 +45,74 @@ public class FusionReactorValidator extends AbstractMultiblockValidator<FusionRe
         }
         int reach = MAX_CONNECTOR_DISTANCE + 3;
         cache.prefetch(core.offset(-reach, 0, -reach), core.offset(reach, 2, reach));
-        size = resolveSize(cache, core.above());
+        BlockPos mid = core.above();
+        size = 1;
+        for (int dist = 2; dist <= MAX_CONNECTOR_DISTANCE; dist++) {
+            BlockPos missing = null;
+            int count = 0;
+            for (Direction side : SIDES) {
+                BlockPos pos = mid.relative(side, dist);
+                if (cache.getBlockState(pos).is(connector)) count++;
+                else if (missing == null) missing = pos;
+            }
+            if (count == 4) {
+                size = dist;
+                continue;
+            }
+            if (count > 0) {
+                return fail("multiblock.fusion.incomplete_connectors", missing, EXPECTED_CONNECTOR, cache.getBlockState(missing));
+            }
+            break;
+        }
         int radius = size + 3;
         cache.setWorkingBounds(core.offset(-radius, 0, -radius), core.offset(radius, 2, radius));
         step("fusion ring validation size={}", size);
         return true;
     }
 
-    private int resolveSize(FusionReactorCache cache, BlockPos mid) {
-        int resolved = 1;
-        for (int dist = 2; dist <= MAX_CONNECTOR_DISTANCE; dist++) {
-            int count = 0;
-            for (Direction side : SIDES) {
-                if (cache.getBlockState(mid.relative(side, dist)).is(connector)) count++;
-            }
-            if (count != 4) break;
-            resolved = dist;
+    private static List<BlockPos> ring(BlockPos center, int radius, boolean corners) {
+        List<BlockPos> cells = new ArrayList<>(radius * 8);
+        for (int i = -radius; i < radius; i++) {
+            cells.add(center.offset(i, 0, -radius));
+            cells.add(center.offset(radius, 0, i));
+            cells.add(center.offset(-i, 0, radius));
+            cells.add(center.offset(-radius, 0, -i));
         }
-        return resolved;
-    }
-
-    private static Direction offsetDir(Direction side) {
-        return side.getAxis() == Direction.Axis.Z ? side.getCounterClockWise() : side.getClockWise();
-    }
-
-    private static BlockPos corner(BlockPos origin, Direction side, int outward, int along) {
-        return origin.relative(side, outward).relative(offsetDir(side), along);
+        if (!corners) cells.removeIf(p -> Math.abs(p.getX() - center.getX()) == radius && Math.abs(p.getZ() - center.getZ()) == radius);
+        return cells;
     }
 
     @Override
     protected boolean validateShell(FusionReactorCache cache) {
         BlockPos mid = cache.controllerPos().above();
-        int shift = size + 1;
-        int wallLen = size * 2 + 3;
-        int outerWallLen = wallLen + 2;
-        for (Direction side : SIDES) {
-            Direction walk = offsetDir(side).getOpposite();
-            BlockPos innerStart = corner(mid, side, shift, shift);
-            BlockPos outerStart = corner(mid, side, shift + 2, shift + 1);
-            BlockPos bottomStart = corner(mid, side, shift + 1, shift + 1).below();
-            BlockPos topStart = corner(mid, side, shift + 1, shift + 1).above();
-            for (int i = 0; i < wallLen; i++) {
-                if (!casing(cache, innerStart.relative(walk, i), "multiblock.fusion.wrong_inner_wall")) return false;
-                cache.workingCasingCount++;
-            }
-            for (int i = 0; i < outerWallLen; i++) {
-                if (!casing(cache, outerStart.relative(walk, i), "multiblock.fusion.wrong_outer_wall")) return false;
-                if (!casing(cache, bottomStart.relative(walk, i), "multiblock.fusion.wrong_bottom_wall")) return false;
-                if (!casing(cache, topStart.relative(walk, i), "multiblock.fusion.wrong_top_wall")) return false;
-                cache.workingCasingCount += 3;
-            }
+        for (BlockPos pos : ring(mid, size + 1, true)) {
+            if (!casing(cache, pos, "multiblock.fusion.wrong_inner_wall")) return false;
+        }
+        for (BlockPos pos : ring(mid, size + 3, false)) {
+            if (!casing(cache, pos, "multiblock.fusion.wrong_outer_wall")) return false;
+        }
+        for (BlockPos pos : ring(mid.below(), size + 2, true)) {
+            if (!casing(cache, pos, "multiblock.fusion.wrong_bottom_wall")) return false;
+        }
+        for (BlockPos pos : ring(mid.above(), size + 2, true)) {
+            if (!casing(cache, pos, "multiblock.fusion.wrong_top_wall")) return false;
         }
         return true;
     }
 
     private boolean casing(FusionReactorCache cache, BlockPos pos, String errorKey) {
         BlockState state = cache.getBlockState(pos);
-        if (state.is(FusionTags.CASING)) return true;
-        return fail(errorKey, pos, EXPECTED_CASING, state);
+        if (!state.is(FusionTags.CASING)) return fail(errorKey, pos, EXPECTED_CASING, state);
+        cache.workingCasingCount++;
+        return true;
     }
 
     @Override
     protected boolean validateInterior(FusionReactorCache cache) {
         step("fusion ring passed; validating empty plasma interior");
-        BlockPos mid = cache.controllerPos().above();
-        int shift = size + 2;
-        int walkLen = size * 2 + 3;
-        for (Direction side : SIDES) {
-            Direction walk = offsetDir(side).getOpposite();
-            BlockPos start = corner(mid, side, shift, shift);
-            for (int i = 0; i < walkLen; i++) {
-                BlockPos pos = start.relative(walk, i);
-                BlockState state = cache.getBlockState(pos);
-                if (!state.isAir()) return fail("multiblock.fusion.interior_not_empty", pos, EXPECTED_AIR, state);
-            }
+        for (BlockPos pos : ring(cache.controllerPos().above(), size + 2, true)) {
+            BlockState state = cache.getBlockState(pos);
+            if (!state.isAir()) return fail("multiblock.fusion.interior_not_empty", pos, EXPECTED_AIR, state);
         }
         return true;
     }
@@ -125,22 +120,10 @@ public class FusionReactorValidator extends AbstractMultiblockValidator<FusionRe
     @Override
     protected void calculateStatistics(FusionReactorCache cache) {
         BlockPos core = cache.controllerPos();
-        int shift = size + 1;
-        int wallLen = size * 2 + 3;
-        int outerWallLen = wallLen + 2;
         Tally tally = new Tally();
-        for (Direction side : SIDES) {
-            Direction walk = offsetDir(side).getOpposite();
-            BlockPos innerStart = corner(core, side, shift, shift);
-            BlockPos outerStart = corner(core, side, shift + 2, shift + 1);
-            for (int i = 0; i < wallLen; i++) {
-                tally.add(cache, innerStart.relative(walk, i));
-                tally.add(cache, innerStart.relative(walk, i).above(2));
-            }
-            for (int i = 0; i < outerWallLen; i++) {
-                tally.add(cache, outerStart.relative(walk, i));
-                tally.add(cache, outerStart.relative(walk, i).above(2));
-            }
+        for (BlockPos layer : List.of(core, core.above(2))) {
+            for (BlockPos pos : ring(layer, size + 1, true)) tally.add(cache, pos);
+            for (BlockPos pos : ring(layer, size + 3, false)) tally.add(cache, pos);
         }
         cache.workingMagneticFieldStrength = tally.magneticField;
         cache.workingMagnetsEfficiency = tally.magnets > 0 ? (int) (tally.magnetEfficiency / tally.magnets) : 0;

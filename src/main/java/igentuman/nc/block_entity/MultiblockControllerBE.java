@@ -143,8 +143,7 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        pendingRuntimeNbt = tag.contains("runtime") ? tag.getCompound("runtime")
-                : tag.contains("particleRuntime") ? tag.getCompound("particleRuntime") : null;
+        pendingRuntimeNbt = tag.contains("runtime") ? tag.getCompound("runtime") : legacyRuntime(tag);
         if (tag.contains("cache")) {
             pendingCacheNbt = tag.getCompound("cache");
             pendingRegistries = registries;
@@ -152,6 +151,11 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
             pendingCacheNbt = null;
             pendingRegistries = pendingRuntimeNbt == null ? null : registries;
         }
+    }
+
+    @Nullable
+    protected CompoundTag legacyRuntime(CompoundTag tag) {
+        return tag.contains("particleRuntime") ? tag.getCompound("particleRuntime") : null;
     }
 
     @Override

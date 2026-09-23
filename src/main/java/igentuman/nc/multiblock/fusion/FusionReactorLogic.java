@@ -4,6 +4,7 @@ import igentuman.nc.api.multiblock.AbstractMultiblockLogic;
 import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
 import igentuman.nc.handler.energy.LargeEnergyStorage;
 import igentuman.nc.handler.fluid.FluidStackHandler;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.recipe.fusion.FusionCoolantRecipe;
 import igentuman.nc.recipe.fusion.FusionRecipe;
 import igentuman.nc.recipe.fusion.FusionRecipes;
@@ -30,6 +31,7 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
     private static final double EXPLOSION_RADIUS = 2.0;
     private static final long CHARGE_TARGET_FACTOR = 7;
     private static final long PLASMA_MELTDOWN_THRESHOLD = 10000;
+    private static final long PLASMA_BREAK_EXPLOSION_THRESHOLD = 100000;
     private static final long PLASMA_ENERGY_THRESHOLD = 1_000_000;
 
     private static final int TANK_FUEL_A = 0;
@@ -136,6 +138,18 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         reactorHeat = Math.max(0, reactorHeat - 1000);
         resetRuntime();
         be.updateReactionDisplay(reactorHeat, plasmaTemperature, chargeAmount);
+    }
+
+    @Override
+    public void onBroken(ServerLevel level, BlockPos controllerPos, FusionReactorCache cache) {
+        super.onBroken(level, controllerPos, cache);
+        if (plasmaTemperature <= PLASMA_BREAK_EXPLOSION_THRESHOLD) return;
+        MultiblockHandler.MultiblockInstance instance = MultiblockHandler.getInstance(level, controllerPos);
+        BlockPos pos = instance != null && instance.lastResult != null ? instance.lastResult.errorPos() : null;
+        if (pos == null) return;
+        plasmaTemperature = 0;
+        level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                (float) EXPLOSION_RADIUS, Level.ExplosionInteraction.TNT);
     }
 
     @Override

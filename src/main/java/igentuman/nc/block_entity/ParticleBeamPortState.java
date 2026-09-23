@@ -13,28 +13,28 @@ public final class ParticleBeamPortState {
     private int channel = -1;
     private boolean configured;
 
-    public void configure(Function<StructureRole, List<BlockPos>> roles, BlockPos position) {
+    public boolean configure(Function<StructureRole, List<BlockPos>> roles, BlockPos position) {
+        BeamPortMode previousMode = mode;
+        int previousChannel = channel;
+        boolean previousConfigured = configured;
         if (configured) {
             StructureRole role = mode == BeamPortMode.INPUT ? StructureRole.BEAM_INPUT
                     : mode == BeamPortMode.OUTPUT ? StructureRole.BEAM_OUTPUT : null;
             channel = role == null ? -1 : roles.apply(role).indexOf(position);
-            return;
+        } else {
+            int input = roles.apply(StructureRole.BEAM_INPUT).indexOf(position);
+            int output = input >= 0 ? -1 : roles.apply(StructureRole.BEAM_OUTPUT).indexOf(position);
+            if (input >= 0) set(BeamPortMode.INPUT, input);
+            else if (output >= 0) set(BeamPortMode.OUTPUT, output);
+            else set(BeamPortMode.DISABLED, -1);
         }
-        int input = roles.apply(StructureRole.BEAM_INPUT).indexOf(position);
-        if (input >= 0) {
-            set(BeamPortMode.INPUT, input);
-            return;
-        }
-        int output = roles.apply(StructureRole.BEAM_OUTPUT).indexOf(position);
-        if (output >= 0) {
-            set(BeamPortMode.OUTPUT, output);
-            return;
-        }
-        set(BeamPortMode.DISABLED, -1);
+        return mode != previousMode || channel != previousChannel || configured != previousConfigured;
     }
 
-    public void detach() {
+    public boolean detach() {
+        boolean changed = channel != -1;
         channel = -1;
+        return changed;
     }
 
     public void clear() {

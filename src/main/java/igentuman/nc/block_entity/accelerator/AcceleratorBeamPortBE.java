@@ -31,14 +31,14 @@ public class AcceleratorBeamPortBE extends AcceleratorPortBE implements IBeamPor
     @Override
     public void configureFromController(MultiblockControllerBE controller) {
         super.configureFromController(controller);
-        particlePort.configure(controller::rolePositions, worldPosition);
+        if (!particlePort.configure(controller::rolePositions, worldPosition)) return;
         updateModeBlockState();
         markDirty();
     }
 
     @Override
     public void clearStructureConfiguration() {
-        particlePort.detach();
+        if (!particlePort.detach()) return;
         updateModeBlockState();
         markDirty();
     }

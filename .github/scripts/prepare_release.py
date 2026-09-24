@@ -42,6 +42,7 @@ modrinth = {
     "game_versions": [minecraft_version],
     "version_type": release_type,
     "loaders": ["neoforge"],
+    "featured": False,
     "file_parts": ["file"],
     "primary_file": "file",
 }

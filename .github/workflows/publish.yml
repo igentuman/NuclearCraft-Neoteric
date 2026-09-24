@@ -3,6 +3,12 @@ name: Publish mod
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing GitHub release tag to publish
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -14,7 +20,13 @@ jobs:
       - name: Checkout release tag
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
+
+      - name: Checkout publish tooling
+        uses: actions/checkout@v6
+        with:
+          ref: 1.21
+          path: .publish-tooling
 
       - name: Checkout Nuclear Radiation build dependency
         uses: actions/checkout@v6
@@ -39,7 +51,15 @@ jobs:
 
       - name: Prepare upload metadata
         id: metadata
-        run: python3 .github/scripts/prepare_release.py
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            gh api "repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" > "$RUNNER_TEMP/release.json"
+            export GITHUB_EVENT_PATH="$RUNNER_TEMP/release.json"
+          fi
+          python3 .publish-tooling/.github/scripts/prepare_release.py
 
       - name: Publish to Modrinth
         env:

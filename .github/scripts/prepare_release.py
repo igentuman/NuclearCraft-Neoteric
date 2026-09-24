@@ -11,7 +11,8 @@ def gradle_property(name):
     raise ValueError(f"Missing {name} in gradle.properties")
 
 
-release = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text())["release"]
+event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text())
+release = event.get("release", event)
 version = gradle_property("mod_version")
 minecraft_version = gradle_property("minecraft_version")
 tag = release["tag_name"]

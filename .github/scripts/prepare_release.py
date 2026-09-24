@@ -51,7 +51,7 @@ curseforge = {
     "changelog": changelog,
     "changelogType": "markdown",
     "displayName": name,
-    "gameVersionNames": [minecraft_version, "NeoForge"],
+    "gameVersionNames": [minecraft_version, "NeoForge", "Client", "Server"],
     "releaseType": release_type,
     "relations": {"projects": [{"slug": "nuclear-radiation", "projectID": 1148833, "type": "requiredDependency"}]},
 }

@@ -20,7 +20,8 @@ if not tag.endswith(version):
     raise ValueError(f"Release tag {tag!r} does not match mod_version {version!r}")
 
 jar = Path("build/libs") / f"NuclearCraft-{minecraft_version}-{version}.jar"
-if not jar.is_file():
+curseforge_file_id = os.environ.get("CURSEFORGE_FILE_ID")
+if not curseforge_file_id and not jar.is_file():
     raise FileNotFoundError(f"Distributable JAR missing: {jar}")
 
 changelog = release.get("body") or ""
@@ -50,8 +51,8 @@ modrinth = {
 curseforge = {
     "changelog": changelog,
     "changelogType": "markdown",
-    "displayName": name,
-    "gameVersionNames": [minecraft_version, "NeoForge", "Client", "Server"],
+    "displayName": f"NuclearCraft-{minecraft_version}-{version}",
+    "gameVersionNames": [minecraft_version, "NeoForge", "Client", "Server", "Java 21"],
     "releaseType": release_type,
     "relations": {"projects": [{"slug": "nuclear-radiation", "projectID": 1148833, "type": "requiredDependency"}]},
 }
@@ -62,7 +63,18 @@ curseforge_path = temp / "curseforge-release.json"
 modrinth_path.write_text(json.dumps(modrinth), encoding="utf-8")
 curseforge_path.write_text(json.dumps(curseforge), encoding="utf-8")
 
+if curseforge_file_id:
+    update = {
+        "fileID": int(curseforge_file_id),
+        "displayName": curseforge["displayName"],
+        "gameVersionNames": curseforge["gameVersionNames"],
+    }
+    update_path = temp / "curseforge-update.json"
+    update_path.write_text(json.dumps(update), encoding="utf-8")
+
 with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
     output.write(f"jar={jar.resolve()}\n")
     output.write(f"modrinth_metadata={modrinth_path}\n")
     output.write(f"curseforge_metadata={curseforge_path}\n")
+    if curseforge_file_id:
+        output.write(f"curseforge_update_metadata={update_path}\n")

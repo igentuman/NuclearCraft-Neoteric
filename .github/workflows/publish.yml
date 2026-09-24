@@ -13,8 +13,12 @@ on:
         description: Upload destination
         required: true
         type: choice
-        options: [both, modrinth, curseforge]
+        options: [both, modrinth, curseforge, curseforge-update]
         default: both
+      curseforge_file_id:
+        description: Existing CurseForge file ID for metadata update
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -35,6 +39,7 @@ jobs:
           path: .publish-tooling
 
       - name: Checkout Nuclear Radiation build dependency
+        if: ${{ inputs.target != 'curseforge-update' }}
         uses: actions/checkout@v6
         with:
           repository: igentuman/Nuclear-Radiation
@@ -42,15 +47,18 @@ jobs:
           path: NuclearRadiation
 
       - name: Set up Java 21
+        if: ${{ inputs.target != 'curseforge-update' }}
         uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
 
       - name: Set up Gradle
+        if: ${{ inputs.target != 'curseforge-update' }}
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build distributable JAR
+        if: ${{ inputs.target != 'curseforge-update' }}
         run: |
           chmod +x ./gradlew
           ./gradlew clean build
@@ -60,10 +68,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.tag }}
+          CURSEFORGE_FILE_ID: ${{ inputs.target == 'curseforge-update' && inputs.curseforge_file_id || '' }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             gh api "repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" > "$RUNNER_TEMP/release.json"
             export GITHUB_EVENT_PATH="$RUNNER_TEMP/release.json"
+          fi
+          if [ "${{ inputs.target }}" = "curseforge-update" ] && [ -z "$CURSEFORGE_FILE_ID" ]; then
+            echo "curseforge_file_id is required for a metadata update" >&2
+            exit 1
           fi
           python3 .publish-tooling/.github/scripts/prepare_release.py
 
@@ -93,3 +106,14 @@ jobs:
             --header "X-Api-Token: $CF_TOKEN" \
             --form "metadata=<$METADATA;type=application/json" \
             --form "file=@$JAR;type=application/java-archive"
+
+      - name: Update CurseForge file metadata
+        if: ${{ inputs.target == 'curseforge-update' }}
+        env:
+          CF_TOKEN: ${{ secrets.CF_TOKEN }}
+          METADATA: ${{ steps.metadata.outputs.curseforge_update_metadata }}
+        run: |
+          curl --fail-with-body --silent --show-error \
+            --url https://minecraft.curseforge.com/api/projects/840010/update-file \
+            --header "X-Api-Token: $CF_TOKEN" \
+            --form "metadata=<$METADATA;type=application/json"

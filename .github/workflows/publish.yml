@@ -9,6 +9,12 @@ on:
         description: Existing GitHub release tag to publish
         required: true
         type: string
+      target:
+        description: Upload destination
+        required: true
+        type: choice
+        options: [both, modrinth, curseforge]
+        default: both
 
 permissions:
   contents: read
@@ -62,6 +68,7 @@ jobs:
           python3 .publish-tooling/.github/scripts/prepare_release.py
 
       - name: Publish to Modrinth
+        if: ${{ github.event_name == 'release' || inputs.target == 'both' || inputs.target == 'modrinth' }}
         env:
           MD_TOKEN: ${{ secrets.MD_TOKEN }}
           JAR: ${{ steps.metadata.outputs.jar }}
@@ -75,6 +82,7 @@ jobs:
             --form "file=@$JAR;type=application/java-archive"
 
       - name: Publish to CurseForge
+        if: ${{ github.event_name == 'release' || inputs.target == 'both' || inputs.target == 'curseforge' }}
         env:
           CF_TOKEN: ${{ secrets.CF_TOKEN }}
           JAR: ${{ steps.metadata.outputs.jar }}

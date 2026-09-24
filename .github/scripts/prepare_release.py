@@ -53,7 +53,7 @@ curseforge = {
     "displayName": name,
     "gameVersionNames": [minecraft_version, "NeoForge"],
     "releaseType": release_type,
-    "relations": {"projects": [{"projectID": "1148833", "type": "requiredDependency"}]},
+    "relations": {"projects": [{"slug": "nuclear-radiation", "projectID": 1148833, "type": "requiredDependency"}]},
 }
 
 temp = Path(os.environ["RUNNER_TEMP"])

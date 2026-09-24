@@ -8,6 +8,8 @@ import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.entries.FusionReactor;
 import igentuman.nc.setup.entries.HeatExchanger;
 import igentuman.nc.setup.entries.Kugelblitz;
+import igentuman.nc.setup.entries.Accelerator;
+import igentuman.nc.setup.entries.ParticleChamber;
 import igentuman.nc.setup.entries.Turbine;
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -88,6 +90,37 @@ public class PonderScenes {
         HELPER.forComponents(
                 turbineItems
         ).addStoryBoard(TURBINE, TurbinePonderScenes::create);
+
+        List<Item> targetItems = new ArrayList<>();
+        for (String name : ParticleChamber.STRUCTURAL_BLOCKS) {
+            targetItems.add(ModEntries.get(name).item().get());
+        }
+        for (String name : ParticleChamber.PORTS) {
+            targetItems.add(ModEntries.get(name).item().get());
+        }
+        for (String name : ParticleChamber.DETECTORS) {
+            targetItems.add(ModEntries.get(name).item().get());
+        }
+        targetItems.add(ModEntries.get("target_chamber_controller").item().get());
+        HELPER.forComponents(targetItems).addStoryBoard(TARGET_CHAMBER, TargetChamberPonderScenes::create);
+        HELPER.forComponents(ModEntries.get("decay_chamber_controller").item().get())
+                .addStoryBoard(DECAY_CHAMBER, DecayChamberPonderScenes::create);
+        HELPER.forComponents(ModEntries.get("collision_chamber_controller").item().get())
+                .addStoryBoard(COLLISION_CHAMBER, CollisionChamberPonderScenes::create);
+
+        List<Item> linearItems = new ArrayList<>();
+        for (String name : Accelerator.STRUCTURAL_BLOCKS) {
+            linearItems.add(ModEntries.get(name).item().get());
+        }
+        for (String name : Accelerator.PORTS) {
+            linearItems.add(ModEntries.get(name).item().get());
+        }
+        linearItems.add(ModEntries.get("linear_accelerator_controller").item().get());
+        HELPER.forComponents(linearItems).addStoryBoard(LINEAR_ACCELERATOR, LinearAcceleratorPonderScenes::create);
+        HELPER.forComponents(ModEntries.get("ring_accelerator_controller").item().get())
+                .addStoryBoard(RING_ACCELERATOR, RingAcceleratorPonderScenes::create);
+        HELPER.forComponents(ModEntries.get("beam_diverter_controller").item().get())
+                .addStoryBoard(BEAM_DIVERTER, BeamDiverterPonderScenes::create);
 
 
         List<Item> heatExchangerItems = new ArrayList<>();

@@ -17,13 +17,14 @@ public class BeamDiverterScreen extends MultiblockControllerScreen {
     @Override
     protected void init() {
         super.init();
+        progressBar.visible = false;
         outputButton = new BeamDiverterOutputButton(leftPos + 30, topPos + 80, menu);
         addRenderableWidget(outputButton);
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
         outputButton.visible = menu.isFormed();
     }
 }

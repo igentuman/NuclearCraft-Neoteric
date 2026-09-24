@@ -26,14 +26,7 @@ public class DecayChamberScreen extends MultiblockControllerScreen {
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
-        int x = progressBar.getX();
-        int y = progressBar.getY();
-        if (mouseX >= x && mouseX < x + progressBar.getWidth() && mouseY >= y && mouseY < y + progressBar.getHeight()) {
-            List<Component> tooltip = List.of(
-                    __("tooltip.nuclearcraft.decay_chamber.progress", menu.getProgress()).withStyle(ChatFormatting.GRAY));
-            guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
-        }
+        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
 
         int localMouseX = mouseX - leftPos;
         int localMouseY = mouseY - topPos;
@@ -41,5 +34,11 @@ public class DecayChamberScreen extends MultiblockControllerScreen {
         for (int i = 0; i < OUTPUT_POSITIONS.length; i++) {
             renderParticleChannel(guiGraphics, localMouseX, localMouseY, OUTPUT_POSITIONS[i][0], OUTPUT_POSITIONS[i][1], "output", i);
         }
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        progressBar.visible = false;
     }
 }

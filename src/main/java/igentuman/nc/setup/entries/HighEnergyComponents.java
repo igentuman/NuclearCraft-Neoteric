@@ -26,7 +26,7 @@ public final class HighEnergyComponents {
         initialized = true;
         for (String tier : TIERS) {
             add(tier + "_electromagnet").block(name -> new ElectromagnetBlock(properties())).build();
-            add(tier + "_electromagnet_slope").block(name -> new ElectromagnetSlopeBlock(properties())).build();
+            add(tier + "_electromagnet_slope").block(name -> new ElectromagnetSlopeBlock(properties().noOcclusion())).build();
             add(tier + "_rf_amplifier").block(name -> new RFAmplifierBlock(properties())).build();
         }
     }

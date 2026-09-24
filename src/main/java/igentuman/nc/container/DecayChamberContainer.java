@@ -15,4 +15,8 @@ public class DecayChamberContainer extends MultiblockControllerContainer {
                                  MultiblockControllerBE blockEntity, ContainerData data) {
         super(containerId, inventory, blockEntity, data);
     }
+
+    @Override
+    protected void layoutPlayerSlots(Inventory playerInventory) {
+    }
 }

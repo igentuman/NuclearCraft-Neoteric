@@ -179,9 +179,10 @@ public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAc
         if (u < 1 || u > HEIGHT - 2) return false;
         int br = bandCoordinate(r);
         int bf = bandCoordinate(f);
-        if (br >= 0 && (br < 1 || br > BAND - 2)) return false;
-        if (bf >= 0 && (bf < 1 || bf > BAND - 2)) return false;
-        return br >= 0 || bf >= 0;
+        if (br == 0 || bf == 0) return false;
+        if (br < 0) return bf > 0 && bf < BAND - 1;
+        if (bf < 0) return br < BAND - 1;
+        return true;
     }
 
     private int bandCoordinate(int value) {
@@ -193,17 +194,18 @@ public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAc
     @Override
     protected boolean validateInterior(RingAcceleratorCache cache) {
         for (int band = 0; band < 4; band++) {
-            for (int p = BAND; p <= last - BAND; p++) {
+            for (int p = BAND - 1; p <= last - BAND + 1; p++) {
                 if (!validateStraightSlice(cache, band, p)) return false;
             }
         }
         for (int corner = 0; corner < 4; corner++) {
-            for (int mr = 1; mr < BAND - 1; mr++) {
-                for (int mf = 1; mf < BAND - 1; mf++) {
-                    for (int u = 1; u < HEIGHT - 1; u++) {
+            for (int u = 1; u < HEIGHT - 1; u++) {
+                for (int mr = 1; mr < BAND - 1; mr++) {
+                    for (int mf = 1; mf < BAND - 1; mf++) {
                         if (!validateCornerCell(cache, corner, mr, mf, u)) return false;
                     }
                 }
+                if (!validateInnerCornerCell(cache, corner, u)) return false;
             }
         }
         return true;
@@ -291,10 +293,20 @@ public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAc
         return fail("multiblock.ring." + failure, center, EXPECTED_SLICE, EXPECTED_SLICE);
     }
 
+    private boolean validateInnerCornerCell(RingAcceleratorCache cache, int corner, int u) {
+        BlockPos pos = cornerPos(corner, BAND - 1, BAND - 1, u);
+        BlockState state = cache.getBlockState(pos);
+        CoolerDef cooler = AcceleratorComponents.cooler(state);
+        if (cooler != null) {
+            coolers.put(pos.immutable(), cooler);
+            return true;
+        }
+        if (state.isAir() || state.is(yoke)) return true;
+        return fail("multiblock.ring.wrong_corner_fill", pos, EXPECTED_YOKE, state);
+    }
+
     private boolean validateCornerCell(RingAcceleratorCache cache, int corner, int mr, int mf, int u) {
-        int r = (corner & 1) == 0 ? mr : last - mr;
-        int f = (corner & 2) == 0 ? mf : last - mf;
-        BlockPos pos = at(r, u, f);
+        BlockPos pos = cornerPos(corner, mr, mf, u);
         BlockState state = cache.getBlockState(pos);
 
         if (mr == 2 && mf == 2) {
@@ -326,6 +338,12 @@ public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAc
         if (beamFace && state.is(particleBeam)) return true;
         if (!state.is(yoke)) return fail("multiblock.ring.wrong_corner_fill", pos, EXPECTED_YOKE, state);
         return true;
+    }
+
+    private BlockPos cornerPos(int corner, int mr, int mf, int u) {
+        int r = (corner & 1) == 0 ? mr : last - mr;
+        int f = (corner & 2) == 0 ? mf : last - mf;
+        return at(r, u, f);
     }
 
     private int clockwiseOrder(int r, int f) {

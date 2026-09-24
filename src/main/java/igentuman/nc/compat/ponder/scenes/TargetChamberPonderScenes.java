@@ -7,6 +7,7 @@ import net.createmod.ponder.api.scene.SceneBuildingUtil;
 public class TargetChamberPonderScenes {
 
     public static void create(SceneBuilder scene, SceneBuildingUtil util) {
-        scene.title(PonderScenes.TARGET_CHAMBER.getPath(), "Creating a Target Chamber");
+        CubeChamberPonderScenes.create(scene, util, PonderScenes.TARGET_CHAMBER,
+                "Target Chamber", "target_chamber_controller");
     }
 }

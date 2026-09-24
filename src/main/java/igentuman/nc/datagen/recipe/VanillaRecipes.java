@@ -4,6 +4,7 @@ import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.entries.Accelerator;
 import igentuman.nc.setup.entries.Crafter;
 import igentuman.nc.setup.entries.Processors;
 import igentuman.nc.setup.entries.Turbine;
@@ -657,6 +658,42 @@ public class VanillaRecipes {
     }
 
     private static void acceleratorCraftingRecipes() {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("empty_cooler").block(), 8)
+                .pattern("STS")
+                .pattern("SHS")
+                .pattern("STS")
+                .define('S', ingotTag("steel"))
+                .define('T', ingotTag("tough_alloy"))
+                .define('H', ingotTag("thermoconducting"))
+                .group(MODID + "_accelerator")
+                .unlockedBy("item", has(ingotTag("steel")))
+                .save(recipeOutput);
+
+        Block emptyCooler = ModEntries.get("empty_cooler").block().get();
+        for (String cooler : Accelerator.COOLERS) {
+            if (cooler.equals("empty_cooler") || cooler.equals("water_cooler")
+                    || cooler.equals("liquid_helium_cooler") || cooler.equals("liquid_nitrogen_cooler")
+                    || cooler.equals("cryotheum_cooler") || cooler.equals("enderium_cooler")) {
+                continue;
+            }
+            String material = cooler.substring(0, cooler.length() - "_cooler".length());
+            TagKey<Item> ingredient = switch (material) {
+                case "slime" -> Tags.Items.SLIMEBALLS;
+                case "nether_brick" -> Tags.Items.BRICKS_NETHER;
+                case "prismarine" -> Tags.Items.GEMS_PRISMARINE;
+                default -> dustTag(material);
+            };
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(cooler).block())
+                    .pattern(" I ")
+                    .pattern("IBI")
+                    .pattern(" I ")
+                    .define('I', ingredient)
+                    .define('B', emptyCooler)
+                    .group(MODID + "_accelerator")
+                    .unlockedBy("item", has(emptyCooler))
+                    .save(recipeOutput);
+        }
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("accelerator_casing").block(), 4)
                 .pattern("STS")
                 .pattern("T T")

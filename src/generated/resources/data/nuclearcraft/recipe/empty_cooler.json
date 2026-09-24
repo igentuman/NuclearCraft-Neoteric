@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "H": {
+      "tag": "c:ingots/thermoconducting"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "T": {
+      "tag": "c:ingots/tough_alloy"
+    }
+  },
+  "pattern": [
+    "STS",
+    "SHS",
+    "STS"
+  ],
+  "result": {
+    "count": 8,
+    "id": "nuclearcraft:empty_cooler"
+  }
+}

@@ -169,6 +169,12 @@ public class ModLanguageProvider  extends LanguageProvider {
     private static String blockDisplayName(String name) {
         if (name.equals("expl")) return "EXPL";
         if (name.equals("multiblock_builder")) return "Fission Reactor Builder";
+        switch (name) {
+            case "target_chamber_casing": return "Particle Chamber Casing";
+            case "target_chamber_casing_glass": return "Particle Chamber Glass";
+            case "target_chamber_port": return "Particle Chamber Port";
+            case "target_chamber_beam_port": return "Particle Chamber Beam Port";
+        }
         if (name.startsWith("msr_")) {
             return "MSR " + convertToName(name.substring("msr_".length()));
         }
@@ -223,7 +229,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("nuclearcraft.ponder.target_chamber.text_4", "Structure needs at least 1 input beam port and 3 output beam ports.");
         add("nuclearcraft.ponder.target_chamber.text_5", "Use a Multitool to change the port mode.");
         add("nuclearcraft.ponder.target_chamber.text_6", "Detectors must be placed around the camera to collect data.");
-        add("nuclearcraft.ponder.target_chamber.text_7", "Add Target Chamber Ports for energy and item/fluid transport.");
+        add("nuclearcraft.ponder.target_chamber.text_7", "Add Particle Chamber Ports for energy and item/fluid transport.");
         add("nuclearcraft.ponder.target_chamber.text_8", "Place the Target Chamber Controller on the casing.");
         add("nuclearcraft.ponder.target_chamber.text_9", "When the structure is valid, start it with redstone signal to controller block.");
         add("nuclearcraft.ponder.decay_chamber.text_1", "Decay Chamber size can be from 5x5x5 up to 11x11x11.");
@@ -321,11 +327,20 @@ public class ModLanguageProvider  extends LanguageProvider {
         for (HeatSinkEntry entry : ModEntries.HEAT_SINKS.values()) {
             add(entry.block().get(), convertToName(entry.name + "_heat_sink"));
         }
+        add("tooltip.nuclearcraft.heat_sink.description", "Cooling for fission reactors");
+        add("tooltip.nuclearcraft.cooler.description", "Cooling for accelerators");
         add("tooltip.nuclearcraft.heat_sink.heat", "Cooling: %s H/t");
         add("tooltip.nuclearcraft.heat_sink.active", "Needs coolant fluid supply into reactor to work.");
+        add("tooltip.nuclearcraft.cooler.rf_amplifiers", "RF Amplifiers");
+        add("tooltip.nuclearcraft.cooler.electromagnets", "Electromagnets");
         add("tooltip.nuclearcraft.turbine_coil.efficiency", "Efficiency: %s%%");
         add("tooltip.nuclearcraft.shift", "Hold Shift for placement rule");
         add("heat_sink.placement.rule", "Must be placed %s");
+        add("heat_sink.heat.descr", "Cooling Rate: %s H/t");
+        add("jei.category.nuclearcraft.heat_sink_placement", "Heat Sink Placement");
+        add("jei.category.nuclearcraft.cooler_placement", "Cooler Placement");
+        add("emi.category.nuclearcraft.heat_sink_placement", "Heat Sink Placement");
+        add("emi.category.nuclearcraft.cooler_placement", "Cooler Placement");
         add("heat_sink.atleast", "next to at least %s %s");
         add("heat_sink.atleasts", "next to at least %s %s blocks");
         add("heat_sink.between", "between %s %s");

@@ -26,7 +26,7 @@ public class TargetChamberScreen extends MultiblockControllerScreen {
 
     public void init() {
         super.init();
-        progressBar.setY(progressBar.getY() - 10);
+        progressBar.setY(progressBar.getY() - 20);
     }
 
     @Override

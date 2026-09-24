@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "nuclearcraft_accelerator",
+  "key": {
+    "B": {
+      "item": "nuclearcraft:empty_cooler"
+    },
+    "I": {
+      "tag": "c:dusts/carobbiite"
+    }
+  },
+  "pattern": [
+    " I ",
+    "IBI",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "nuclearcraft:carobbiite_cooler"
+  }
+}

@@ -10,6 +10,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.compat.jei.FuelInfoRecipe;
 import igentuman.nc.compat.jei.IsotopeInfoRecipe;
+import igentuman.nc.compat.PlacementRuleRecipe;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
@@ -135,7 +136,30 @@ public class ModEmiPlugin implements EmiPlugin {
         registerFuelInfoCategory(registry);
         registerIsotopeInfoCategory(registry);
         registerParticleInfoCategory(registry);
+        registerPlacementRules(registry);
         hideFuelAndIsotopeVariants(registry);
+    }
+
+    private void registerPlacementRules(EmiRegistry registry) {
+        var emptySink = ModEntries.HEAT_SINKS.get("empty");
+        EmiStack sinkIcon = emptySink == null ? EmiStack.EMPTY : EmiStack.of(new ItemStack(emptySink.block().get()));
+        EmiRecipeCategory sinkCategory = new EmiRecipeCategory(NuclearCraft.rl("heat_sink_placement"), sinkIcon);
+        registry.addCategory(sinkCategory);
+        addPlacementWorkstation(registry, sinkCategory, "fission_reactor_controller");
+        PlacementRuleRecipe.heatSinks().forEach(rule -> registry.addRecipe(new PlacementRuleEmiRecipe(sinkCategory, rule)));
+
+        var emptyCooler = ModEntries.get("empty_cooler");
+        EmiStack coolerIcon = emptyCooler == null || !emptyCooler.hasItem()
+                ? EmiStack.EMPTY : EmiStack.of(new ItemStack(emptyCooler.item().get()));
+        EmiRecipeCategory coolerCategory = new EmiRecipeCategory(NuclearCraft.rl("cooler_placement"), coolerIcon);
+        registry.addCategory(coolerCategory);
+        addPlacementWorkstation(registry, coolerCategory, "ring_accelerator_controller");
+        PlacementRuleRecipe.coolers().forEach(rule -> registry.addRecipe(new PlacementRuleEmiRecipe(coolerCategory, rule)));
+    }
+
+    private void addPlacementWorkstation(EmiRegistry registry, EmiRecipeCategory category, String name) {
+        var entry = ModEntries.get(name);
+        if (entry != null && entry.hasItem()) registry.addWorkstation(category, EmiStack.of(new ItemStack(entry.item().get())));
     }
 
     private void registerFuelInfoCategory(EmiRegistry registry) {

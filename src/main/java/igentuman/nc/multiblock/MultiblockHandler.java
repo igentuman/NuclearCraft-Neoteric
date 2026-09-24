@@ -40,7 +40,9 @@ public final class MultiblockHandler {
     private static final Map<ResourceKey<Level>, Map<Long, MultiblockInstance>> INSTANCES = new ConcurrentHashMap<>();
     private static final Map<ResourceKey<Level>, Map<Long, Set<MultiblockInstance>>> WATCHERS = new ConcurrentHashMap<>();
 
-    private static final int IDLE_REVALIDATION_INTERVAL = 200;
+    private static final long IDLE_REVALIDATION_INTERVAL = 200;
+    private static final long MAX_IDLE_REVALIDATION_INTERVAL = 6000;
+    private static final long CELLS_PER_IDLE_INTERVAL = 32_768;
     private static final int INCOMPLETE_RETRY_INTERVAL = 40;
 
     private MultiblockHandler() {}
@@ -237,21 +239,20 @@ public final class MultiblockHandler {
         AbstractMultiblockCache cache = instance.cache;
         long gameTime = level.getGameTime();
         if (gameTime < instance.retryAfterTick) return;
-        long stagger = Math.floorMod(controllerPos.asLong(), IDLE_REVALIDATION_INTERVAL);
+        long stagger = controllerPos.asLong();
+        boolean integrity = false;
         if (!instance.formed) {
             if (gameTime % INCOMPLETE_RETRY_INTERVAL != Math.floorMod(stagger, INCOMPLETE_RETRY_INTERVAL)) return;
         } else if (!instance.dirty) {
-            if (gameTime % IDLE_REVALIDATION_INTERVAL == stagger) {
-                instance.forceRefresh = true;
-                instance.dirty = true;
-            } else {
-                runLogicTick(level, instance, controllerPos, cache);
-                return;
-            }
+            runLogicTick(level, instance, controllerPos, cache);
+            long interval = idleRevalidationInterval(cache);
+            if (gameTime % interval != Math.floorMod(stagger, interval)) return;
+            integrity = true;
         }
         if (!instance.busy.compareAndSet(false, true)) return;
         long generation = instance.generation;
-        boolean refresh = instance.forceRefresh;
+        boolean integrityCheck = integrity;
+        boolean refresh = integrityCheck || instance.forceRefresh;
         instance.forceRefresh = false;
         Set<Long> changes = Set.copyOf(instance.pendingChanges);
         instance.pendingChanges.removeAll(changes);
@@ -261,7 +262,7 @@ public final class MultiblockHandler {
         try {
             MultiblockExecutorManager.getExecutor().execute(() -> {
                 try {
-                    instance.validateOffThread(level, controllerPos, generation, changes, refresh);
+                    instance.validateOffThread(level, controllerPos, generation, changes, refresh, integrityCheck);
                 } catch (Throwable error) {
                     NuclearCraft.LOGGER.error("Multiblock validation error at {}", controllerPos, error);
                     level.getServer().execute(() -> {
@@ -271,11 +272,23 @@ public final class MultiblockHandler {
                 }
             });
         } catch (Throwable rejected) {
-            instance.dirty = true;
-            instance.pendingChanges.addAll(changes);
-            instance.forceRefresh |= refresh;
+            if (!integrityCheck) {
+                instance.dirty = true;
+                instance.pendingChanges.addAll(changes);
+                instance.forceRefresh |= refresh;
+            }
             instance.busy.set(false);
         }
+    }
+
+    private static long idleRevalidationInterval(AbstractMultiblockCache cache) {
+        BlockPos min = cache.min();
+        BlockPos max = cache.max();
+        if (min == null || max == null) return IDLE_REVALIDATION_INTERVAL;
+        long cells = (long) (max.getX() - min.getX() + 1) * (max.getY() - min.getY() + 1)
+                * (max.getZ() - min.getZ() + 1);
+        long multiplier = 1 + cells / CELLS_PER_IDLE_INTERVAL;
+        return Math.min(MAX_IDLE_REVALIDATION_INTERVAL, IDLE_REVALIDATION_INTERVAL * multiplier);
     }
 
     private static void runLogicTick(ServerLevel level, MultiblockInstance instance, BlockPos controllerPos,
@@ -400,6 +413,7 @@ public final class MultiblockHandler {
             AbstractMultiblockCache abstractCache = cache;
             if (formed && !abstractCache.containsExpanded(pos, 1)) return;
             BlockState known = abstractCache.knownState(pos);
+            if (known == null && formed && !busy.get()) return;
             if (known != null && level.hasChunkAt(pos)
                     && StructuralBlockState.equivalent(known, level.getBlockState(pos))) return;
             abstractCache.invalidate(pos);
@@ -409,7 +423,7 @@ public final class MultiblockHandler {
         }
 
         void validateOffThread(ServerLevel level, BlockPos controllerPos, long startedGeneration,
-                               Set<Long> changes, boolean refresh) {
+                               Set<Long> changes, boolean refresh, boolean integrity) {
             AbstractMultiblockCache abstractCache = cache;
             if (disposed) {
                 level.getServer().execute(() -> busy.set(false));
@@ -417,7 +431,7 @@ public final class MultiblockHandler {
             }
             if (refresh) abstractCache.refreshInputs();
             else for (long key : changes) abstractCache.invalidate(BlockPos.of(key));
-            MultiblockDebug.beginTrace(NuclearCraft.rl(entry.name()), controllerPos);
+            if (!integrity) MultiblockDebug.beginTrace(NuclearCraft.rl(entry.name()), controllerPos);
             long started = System.nanoTime();
             AbstractMultiblockValidator.Result result;
             try {
@@ -427,12 +441,12 @@ public final class MultiblockHandler {
             }
             long elapsed = System.nanoTime() - started;
             level.getServer().execute(() ->
-                    publish(level, controllerPos, startedGeneration, result, changes, refresh, elapsed));
+                    publish(level, controllerPos, startedGeneration, result, changes, refresh, integrity, elapsed));
         }
 
         private void publish(ServerLevel level, BlockPos controllerPos, long startedGeneration,
                              AbstractMultiblockValidator.Result result, Set<Long> changes, boolean refresh,
-                             long elapsed) {
+                             boolean integrity, long elapsed) {
             AbstractMultiblockCache abstractCache = cache;
             try {
                 if (disposed) return;
@@ -444,8 +458,10 @@ public final class MultiblockHandler {
                 }
                 switch (result.outcome()) {
                     case WAITING -> {
-                        dirty = true;
-                        retryAfterTick = level.getGameTime() + INCOMPLETE_RETRY_INTERVAL;
+                        if (!integrity) {
+                            dirty = true;
+                            retryAfterTick = level.getGameTime() + INCOMPLETE_RETRY_INTERVAL;
+                        }
                     }
                     case INVALID -> {
                         dirty = false;
@@ -476,8 +492,10 @@ public final class MultiblockHandler {
                         }
                     }
                 }
-                MultiblockDebug.finishValidation(level, NuclearCraft.rl(entry.name()), controllerPos,
-                        abstractCache, result, elapsed);
+                if (!integrity || !result.valid()) {
+                    MultiblockDebug.finishValidation(level, NuclearCraft.rl(entry.name()), controllerPos,
+                            abstractCache, result, elapsed);
+                }
             } finally {
                 busy.set(false);
             }

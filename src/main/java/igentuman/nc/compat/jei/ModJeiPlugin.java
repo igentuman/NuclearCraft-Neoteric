@@ -3,6 +3,7 @@ package igentuman.nc.compat.jei;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.compat.ae2.JEI2PatternEncoderTransfer;
+import igentuman.nc.compat.PlacementRuleRecipe;
 import igentuman.nc.compat.jei.particle.ParticleIngredientHelper;
 import igentuman.nc.compat.jei.particle.ParticleIngredientRenderer;
 import igentuman.nc.compat.jei.particle.ParticleType;
@@ -100,6 +101,8 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new FuelInfoCategory(guiHelper));
         registration.addRecipeCategories(new IsotopeInfoCategory(guiHelper));
         registration.addRecipeCategories(new ParticleInfoCategory(guiHelper));
+        registration.addRecipeCategories(new PlacementRuleCategory(guiHelper, PlacementRuleCategory.HEAT_SINK, "empty_heat_sink"));
+        registration.addRecipeCategories(new PlacementRuleCategory(guiHelper, PlacementRuleCategory.COOLER, "empty_cooler"));
     }
 
     @Override
@@ -128,6 +131,8 @@ public class ModJeiPlugin implements IModPlugin {
         addSpecialRecipeCatalyst(registration, "decay_chamber_controller", DecayChamberRecipeCategory.TYPE);
         addSpecialRecipeCatalyst(registration, "collision_chamber_controller", CollisionChamberRecipeCategory.TYPE);
         registration.addRecipeCatalyst(new ItemStack(Crafter.ENGINEERS_CRAFTING_TABLE_ITEM.get()), RecipeTypes.CRAFTING);
+        addSpecialRecipeCatalyst(registration, "fission_reactor_controller", PlacementRuleCategory.HEAT_SINK);
+        addSpecialRecipeCatalyst(registration, "ring_accelerator_controller", PlacementRuleCategory.COOLER);
     }
 
     @SafeVarargs
@@ -231,6 +236,8 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipes(FuelInfoCategory.TYPE, fuelInfoRecipes());
         registration.addRecipes(IsotopeInfoCategory.TYPE, isotopeInfoRecipes());
         registration.addRecipes(ParticleInfoCategory.TYPE, particleInfoRecipes());
+        registration.addRecipes(PlacementRuleCategory.HEAT_SINK, PlacementRuleRecipe.heatSinks());
+        registration.addRecipes(PlacementRuleCategory.COOLER, PlacementRuleRecipe.coolers());
     }
 
     private List<ParticleInfoRecipe> particleInfoRecipes() {

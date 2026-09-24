@@ -4,6 +4,9 @@ import igentuman.nc.api.particle.IParticleHandler;
 import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.block.accelerator.BeamPortMode;
 import igentuman.nc.block_entity.MultiblockControllerBE;
+import igentuman.nc.container.CollisionChamberContainer;
+import igentuman.nc.container.DecayChamberContainer;
+import igentuman.nc.container.TargetChamberContainer;
 import igentuman.nc.multiblock.StructureRole;
 import igentuman.nc.multiblock.particle_chamber.ParticleChamberCache;
 import igentuman.nc.multiblock.particle_chamber.ParticleChamberLogic;
@@ -13,6 +16,9 @@ import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.Registers;
 import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,6 +49,15 @@ public class ParticleChamberControllerBE extends MultiblockControllerBE {
 
     public ParticleChamberControllerBE(BlockPos pos, BlockState state, String name) {
         super(ModEntries.get(name).blockEntity().get(), pos, state, name);
+    }
+
+    @Override
+    public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+        return switch (name) {
+            case "decay_chamber_controller" -> new DecayChamberContainer(containerId, playerInventory, this, containerData);
+            case "collision_chamber_controller" -> new CollisionChamberContainer(containerId, playerInventory, this, containerData);
+            default -> new TargetChamberContainer(containerId, playerInventory, this, containerData);
+        };
     }
 
     private static int[] emptyChannelIds() {

@@ -1,0 +1,67 @@
+name: Publish mod
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Checkout Nuclear Radiation build dependency
+        uses: actions/checkout@v6
+        with:
+          repository: igentuman/Nuclear-Radiation
+          ref: 1.21.1
+          path: NuclearRadiation
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build distributable JAR
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build
+
+      - name: Prepare upload metadata
+        id: metadata
+        run: python3 .github/scripts/prepare_release.py
+
+      - name: Publish to Modrinth
+        env:
+          MD_TOKEN: ${{ secrets.MD_TOKEN }}
+          JAR: ${{ steps.metadata.outputs.jar }}
+          METADATA: ${{ steps.metadata.outputs.modrinth_metadata }}
+        run: |
+          curl --fail-with-body --silent --show-error \
+            --url https://api.modrinth.com/v2/version \
+            --header "Authorization: $MD_TOKEN" \
+            --header "User-Agent: igentuman/NuclearCraft-Neoteric (GitHub Actions)" \
+            --form "data=<$METADATA;type=application/json" \
+            --form "file=@$JAR;type=application/java-archive"
+
+      - name: Publish to CurseForge
+        env:
+          CF_TOKEN: ${{ secrets.CF_TOKEN }}
+          JAR: ${{ steps.metadata.outputs.jar }}
+          METADATA: ${{ steps.metadata.outputs.curseforge_metadata }}
+        run: |
+          curl --fail-with-body --silent --show-error \
+            --url https://minecraft.curseforge.com/api/projects/840010/upload-file \
+            --header "X-Api-Token: $CF_TOKEN" \
+            --form "metadata=<$METADATA;type=application/json" \
+            --form "file=@$JAR;type=application/java-archive"

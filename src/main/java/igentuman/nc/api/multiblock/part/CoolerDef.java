@@ -3,14 +3,17 @@ package igentuman.nc.api.multiblock.part;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.util.TextUtils.__;
 
 public record CoolerDef(ResourceLocation id, long coolingPerTick, List<String> placementRules) {
 
@@ -58,6 +61,31 @@ public record CoolerDef(ResourceLocation id, long coolingPerTick, List<String> p
 
     public static CoolerDef get(String blockName) {
         return BY_NAME.get(blockName);
+    }
+
+    public Component getPlacementRule() {
+        List<String> lines = new ArrayList<>();
+        for (String rule : placementRules) {
+            String[] parts = rule.split(">", 2);
+            int required = parts.length == 2 ? Integer.parseInt(parts[1]) : 1;
+            if (!lines.isEmpty()) lines.add(__("heat_sink.and").getString());
+            boolean tag = parts[0].startsWith("#");
+            String key = required == 1 || tag ? "heat_sink.atleast" : "heat_sink.atleasts";
+            lines.add(__(key, required, placementTarget(parts[0])).getString());
+        }
+        return __("heat_sink.placement.rule", String.join(" ", lines));
+    }
+
+    private static Component placementTarget(String target) {
+        if (target.startsWith("#")) {
+            return switch (target.substring(1)) {
+                case "nuclearcraft:rf_amplifiers" -> __("tooltip.nuclearcraft.cooler.rf_amplifiers");
+                case "nuclearcraft:electromagnets" -> __("tooltip.nuclearcraft.cooler.electromagnets");
+                default -> Component.literal(target);
+            };
+        }
+        ResourceLocation id = target.contains(":") ? ResourceLocation.parse(target) : rl(target);
+        return Component.translatable("block." + id.getNamespace() + "." + id.getPath());
     }
 
     public boolean satisfiesPlacementRules(List<BlockState> neighbors) {

@@ -41,6 +41,7 @@ public class HeatSinkBlock extends Block {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(__("tooltip.nuclearcraft.heat_sink.description").withStyle(ChatFormatting.GRAY));
         tooltip.add(__("tooltip.nuclearcraft.heat_sink.heat", TextUtils.numberFormat(def.heat))
                 .withStyle(ChatFormatting.GOLD));
         if(flag.hasShiftDown()) {

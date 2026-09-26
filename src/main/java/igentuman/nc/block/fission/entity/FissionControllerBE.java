@@ -689,12 +689,18 @@ public class FissionControllerBE extends MultiblockControllerBE implements Irrad
     }
 
     public double heatMultiplier() {
-        if(heatMultiplier == 0) {
+        if (heatMultiplier == 0) {
             double h = heatPerTick();
             double c = Math.max(1, coolingPerTick());
-            heatMultiplier = Math.log10(h / c) / (1 + Math.exp(h / c * FISSION_CONFIG.HEAT_MULTIPLIER.get())) + 1;
-            //round heatMultiplier to 2 digits
-            heatMultiplier = Math.round(heatMultiplier * 100.0) / 100.0;
+            double ratio = h / c;
+
+            if (!(ratio > 0) || !Double.isFinite(ratio)) {
+                return 0;
+            }
+
+            double value = Math.log10(ratio)
+                    / (1 + Math.exp(ratio * FISSION_CONFIG.HEAT_MULTIPLIER.get())) + 1;
+            heatMultiplier = Math.max(0, Math.round(value * 100.0) / 100.0);
         }
         return heatMultiplier;
     }

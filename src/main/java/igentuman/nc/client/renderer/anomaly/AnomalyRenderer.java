@@ -8,9 +8,11 @@ import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.entity.anomaly.AnomalyType;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -21,10 +23,22 @@ public class AnomalyRenderer<T extends AnomalyEntity> extends EntityRenderer<T> 
     private static final int TICKS_PER_FRAME = 2;
     private static final float SCALE = 2.2F;
     private static final double Y_OFFSET = 1.2D;
+    private static final double MAX_RENDER_DISTANCE = 128.0D;
 
     public AnomalyRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.shadowRadius = 0.0F;
+    }
+
+    @Override
+    public boolean shouldRender(T entity, Frustum frustum, double camX, double camY, double camZ) {
+        Vec3 center = entity.position().add(0.0D, Y_OFFSET, 0.0D);
+        if (center.distanceToSqr(camX, camY, camZ) > MAX_RENDER_DISTANCE * MAX_RENDER_DISTANCE) {
+            return false;
+        }
+        double radius = renderBoundsRadius(entity);
+        return frustum.isVisible(new AABB(center.x - radius, center.y - radius, center.z - radius,
+                center.x + radius, center.y + radius, center.z + radius));
     }
 
     @Override
@@ -85,6 +99,10 @@ public class AnomalyRenderer<T extends AnomalyEntity> extends EntityRenderer<T> 
 
     protected float renderScale(T entity) {
         return 1.0F;
+    }
+
+    protected double renderBoundsRadius(T entity) {
+        return SCALE * Math.sqrt(2.0D) * renderScale(entity);
     }
 
     @Override

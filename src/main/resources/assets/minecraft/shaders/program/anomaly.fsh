@@ -75,8 +75,6 @@ void main() {
         return;
     }
 
-    float originalDepth = texture(DepthSampler, texCoord).r;
-
     float aspectRatio = aspect();
     vec2 centeredCoord = vec2((texCoord.x - BlurPos.x) * aspectRatio, texCoord.y - BlurPos.y);
     float distToCenter = length(centeredCoord);
@@ -89,6 +87,7 @@ void main() {
         fragColor = originalColor;
         return;
     }
+    float originalDepth = texture(DepthSampler, texCoord).r;
     if (originalDepth < BlackHoleDepth) {
         fragColor = originalColor;
         return;

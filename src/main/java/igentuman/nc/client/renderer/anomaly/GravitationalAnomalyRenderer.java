@@ -33,6 +33,11 @@ public class GravitationalAnomalyRenderer extends AnomalyRenderer<GravitationalA
     }
 
     @Override
+    protected double renderBoundsRadius(GravitationalAnomalyEntity entity) {
+        return 3.5D * entity.massFactor();
+    }
+
+    @Override
     public void render(GravitationalAnomalyEntity entity, float entityYaw, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);

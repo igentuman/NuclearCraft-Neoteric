@@ -61,7 +61,7 @@ jobs:
         if: ${{ inputs.target != 'curseforge-update' }}
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build
+          ./gradlew build
 
       - name: Prepare upload metadata
         id: metadata

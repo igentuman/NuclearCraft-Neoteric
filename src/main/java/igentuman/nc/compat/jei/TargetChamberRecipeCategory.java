@@ -27,10 +27,12 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatParticleEnergy;
+import static igentuman.nc.util.TextUtils.numberFormat;
 
 @SuppressWarnings("removal")
 public class TargetChamberRecipeCategory implements IRecipeCategory<TargetChamberRecipe> {
@@ -136,6 +138,16 @@ public class TargetChamberRecipeCategory implements IRecipeCategory<TargetChambe
     @Override
     public void draw(TargetChamberRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
         var font = Minecraft.getInstance().font;
-        graphics.drawString(font, __("jei.nuclearcraft.particle.energy", formatParticleEnergy(recipe.releasedEnergyKeV())), 4, 49, 0x404040, false);
+        var input = recipe.particleInput();
+        graphics.drawString(font, __("tooltip.nuclearcraft.particlestack.focus", numberFormat(input.minimumFocus())),
+                0, 77, 0x404040, false);
+        graphics.drawString(font, __("label.nuclearcraft.cross_section",
+                String.format(Locale.ROOT, "%.1f", recipe.crossSection() * 100)),
+                0, 87, 0x404040, false);
+        var energyLabel = input.minimumEnergyKeV() == input.maximumEnergyKeV()
+                ? __("label.nuclearcraft.energy", formatParticleEnergy(input.minimumEnergyKeV()))
+                : __("label.nuclearcraft.energy_range", formatParticleEnergy(input.minimumEnergyKeV()),
+                        formatParticleEnergy(input.maximumEnergyKeV()));
+        graphics.drawString(font, energyLabel, 0, 97, 0x404040, false);
     }
 }

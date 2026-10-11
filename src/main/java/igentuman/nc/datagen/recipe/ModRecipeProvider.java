@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.recipe;
 
 import igentuman.nc.datagen.recipe.processors.KugelblitzChamberRecipes;
+import igentuman.nc.recipe.ResetNbtRecipe;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.IsotopeEntry;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
@@ -25,6 +27,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
 
+import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.datagen.recipe.VanillaRecipes.craftingRecipes;
 import static igentuman.nc.datagen.recipe.processors.AlloySmelterRecipes.alloySmelter;
 import static igentuman.nc.datagen.recipe.processors.AnalyzerRecipes.analyzer;
@@ -117,6 +120,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         leacher(recipeOutput);
         analyzer(recipeOutput);
         oreVeins(recipeOutput);
+        SpecialRecipeBuilder.special(ResetNbtRecipe::new).save(recipeOutput, rl("reset_nbt"));
     }
 
     // --- record helpers ---

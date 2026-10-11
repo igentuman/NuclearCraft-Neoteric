@@ -129,6 +129,10 @@ public class GlobalBlockEntity extends BlockEntity {
         return energyStorage != null && energyStorage.getMaxEnergyStored() > 0;
     }
 
+    public boolean generatesRecipeEnergy() {
+        return false;
+    }
+
     public void markDirty() {
         wasChanged = true;
     }

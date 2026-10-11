@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-18T10:15:33.678137844	Loot Tables
+// 1.21.1	2026-10-11T12:20:16.158446735	Loot Tables
 60fa17f5a9b2ab5663a540d8683f7c10756c7c77 data/nuclearcraft/loot_table/blocks/accelerator_beam_port.json
 670d8a73a5d98be5eabcbdeba4f2f52ad2300d5d data/nuclearcraft/loot_table/blocks/accelerator_casing.json
 9a540bb8106deecff506e1d122ede5918bd21f22 data/nuclearcraft/loot_table/blocks/accelerator_casing_glass.json
@@ -200,6 +200,7 @@ c58ad208a151ac1da8a44ff90804f6ec48b479ab data/nuclearcraft/loot_table/blocks/qua
 bda27bfa44c692250519ae11437e4a750eaf37a8 data/nuclearcraft/loot_table/blocks/quartz_cooler.json
 37649afc7d245c2902b560d7a21a4d780387297e data/nuclearcraft/loot_table/blocks/quartz_heat_sink.json
 22e5e1205412908735fbdf4adb723d41bbc96887 data/nuclearcraft/loot_table/blocks/redstone_cooler.json
+26d278ec371476138c60197409a4e694a1d7191b data/nuclearcraft/loot_table/blocks/redstone_dimmer.json
 b2389856d08b8993fb31035fb58c7167f56560b7 data/nuclearcraft/loot_table/blocks/redstone_heat_sink.json
 67c2536d9c3470d75df02a8a7b361c0b8e2f9c11 data/nuclearcraft/loot_table/blocks/ring_accelerator_controller.json
 0ca275a4c44674fce888be8230799964f65f57e8 data/nuclearcraft/loot_table/blocks/rock_crusher.json

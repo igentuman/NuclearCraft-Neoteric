@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static igentuman.nc.registration.ModEntryBuilder.add;
+import static igentuman.nc.registration.ModEntryBuilder.addItem;
 import static igentuman.nc.registration.ModEntryBuilder.addMetalOreMaterial;
 import static igentuman.nc.registration.ModEntryBuilder.addMetalOreWithDeepslateMaterial;
 import static igentuman.nc.registration.ModEntryBuilder.addDeepslateOnlyMetalOreMaterial;
@@ -76,6 +77,7 @@ public class ModEntries {
         fluids();
         fissionFuel();
         parts();
+        addItem("unknown_ingredient").build();
         waste();
         records();
         blocks();

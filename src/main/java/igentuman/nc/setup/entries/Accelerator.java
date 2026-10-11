@@ -169,11 +169,10 @@ public class Accelerator extends ModEntries {
     }
 
     private static void registerParticleSources() {
-        ParticleSourceCatalog catalog = ParticleSourceCatalog.builtin();
         for (String name : Particles.ITEM_SOURCES) {
             ResourceLocation id = igentuman.nc.NuclearCraft.rl(name);
             addItem(name, () -> new ParticleSourceItem(new Item.Properties().stacksTo(1)
-                    .component(Registers.PARTICLE_SOURCE.get(), catalog.itemSources().get(id))))
+                    .component(Registers.PARTICLE_SOURCE.get(), ParticleSourceCatalog.itemSources().get(id))))
                     .withoutRecipes()
                     .build();
         }

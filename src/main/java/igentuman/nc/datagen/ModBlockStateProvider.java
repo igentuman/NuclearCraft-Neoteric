@@ -1,5 +1,6 @@
 package igentuman.nc.datagen;
 
+import igentuman.nc.block.RedstoneDimmerBlock;
 import igentuman.nc.block.UniversalProcessorBlock;
 import igentuman.nc.block.accelerator.BeamPortMode;
 import igentuman.nc.block.energy.EnergyBlock;
@@ -88,6 +89,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     ModelFile proxy = models().getExistingFile(rl("block/fusion/core_proxy"));
                     simpleBlock(entry.block().get(), proxy);
                     itemModels().getBuilder("item/" + path).parent(proxy);
+                } else if (path.equals("redstone_dimmer")) {
+                    redstoneDimmerBlock(entry.block(), path);
                 } else if (path.equals("pipe")) {
                     pipes(entry.block());
                 } else if (path.equals("pipe_connector")) {
@@ -343,6 +346,23 @@ public class ModBlockStateProvider extends BlockStateProvider {
             path = "particle_chamber/hadron_calorimeter";
         }
         return path;
+    }
+
+    private void redstoneDimmerBlock(DeferredBlock<Block> deferredBlock, String path) {
+        ResourceLocation side = rl("block/processor/side");
+        ResourceLocation top = rl("block/processor/top");
+        ResourceLocation bottom = rl("block/processor/bottom");
+        ResourceLocation back = rl("block/processor/back");
+        ModelFile[] levels = new ModelFile[16];
+        for (int i = 0; i < levels.length; i++) {
+            levels[i] = models().cube(ModelProvider.BLOCK_FOLDER + "/" + path + "/" + i,
+                    bottom, top, rl("block/" + path + "/" + i), back, side, side).texture("particle", side);
+        }
+        getVariantBuilder(deferredBlock.get()).forAllStatesExcept(state -> ConfiguredModel.builder()
+                .modelFile(levels[state.getValue(RedstoneDimmerBlock.LEVEL)])
+                .rotationY(((int) state.getValue(RedstoneDimmerBlock.FACING).toYRot() + 180) % 360)
+                .build(), RedstoneDimmerBlock.LEFT, RedstoneDimmerBlock.RIGHT);
+        itemModels().getBuilder("item/" + path).parent(levels[0]);
     }
 
     private void processorBlock(DeferredBlock<Block> deferredBlock) {

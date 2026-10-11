@@ -22,10 +22,12 @@ import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatParticleEnergy;
+import static igentuman.nc.util.TextUtils.numberFormat;
 
 @SuppressWarnings("removal")
 public class DecayChamberRecipeCategory implements IRecipeCategory<DecayChamberRecipe> {
@@ -96,6 +98,23 @@ public class DecayChamberRecipeCategory implements IRecipeCategory<DecayChamberR
     @Override
     public void draw(DecayChamberRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
         var font = Minecraft.getInstance().font;
-        graphics.drawString(font, __("jei.nuclearcraft.particle.energy", formatParticleEnergy(recipe.releasedEnergyKeV())), 4, 65, 0x404040, false);
+        var input = recipe.particleInput();
+        graphics.drawString(font, __("tooltip.nuclearcraft.particlestack.focus", numberFormat(input.minimumFocus())),
+                0, 65, 0x404040, false);
+        graphics.drawString(font, __("label.nuclearcraft.cross_section",
+                String.format(Locale.ROOT, "%.1f", recipe.crossSection() * 100)),
+                0, 75, 0x404040, false);
+        Component energyLabel;
+        if (input.maximumEnergyKeV() == Long.MAX_VALUE) {
+            energyLabel = input.minimumEnergyKeV() == 0
+                    ? __("label.nuclearcraft.energy_any")
+                    : __("label.nuclearcraft.energy_minimum", formatParticleEnergy(input.minimumEnergyKeV()));
+        } else if (input.minimumEnergyKeV() == input.maximumEnergyKeV()) {
+            energyLabel = __("label.nuclearcraft.energy", formatParticleEnergy(input.minimumEnergyKeV()));
+        } else {
+            energyLabel = __("label.nuclearcraft.energy_range", formatParticleEnergy(input.minimumEnergyKeV()),
+                    formatParticleEnergy(input.maximumEnergyKeV()));
+        }
+        graphics.drawString(font, energyLabel, 0, 85, 0x404040, false);
     }
 }

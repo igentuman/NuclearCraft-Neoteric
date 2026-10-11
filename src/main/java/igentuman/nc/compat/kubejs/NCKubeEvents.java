@@ -15,4 +15,7 @@ public class NCKubeEvents {
     /** Startup event for adding / removing / overriding fission heat sinks. */
     public static final EventHandler REGISTER_HEAT_SINK =
             GROUP.startup("registerHeatSink", () -> RegisterHeatSinkKubeEvent.class);
+
+    public static final EventHandler REGISTER_PARTICLE_SOURCE =
+            GROUP.startup("registerParticleSource", () -> RegisterParticleSourceKubeEvent.class);
 }

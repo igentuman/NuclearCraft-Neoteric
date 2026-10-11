@@ -37,10 +37,10 @@ public class UniversalProcessorRecipeSerializer implements RecipeSerializer<Univ
                         .forGetter(UniversalProcessorRecipe::getFluidOutputs),
                 Codec.INT
                         .fieldOf("process_time")
-                        .forGetter(UniversalProcessorRecipe::getProcessTime),
+                        .forGetter(UniversalProcessorRecipe::getBaseProcessTime),
                 Codec.INT
                         .fieldOf("energy_per_tick")
-                        .forGetter(UniversalProcessorRecipe::getEnergyPerTick)
+                        .forGetter(UniversalProcessorRecipe::getBaseEnergyPerTick)
         ).apply(inst, (itemIn, fluidIn, itemOut, fluidOut, time, energy) ->
                 new UniversalProcessorRecipe(processorName, itemIn, fluidIn, itemOut, fluidOut, time, energy)
         ));
@@ -74,8 +74,8 @@ public class UniversalProcessorRecipeSerializer implements RecipeSerializer<Univ
                 FLUID_INPUT_LIST.encode(buf, recipe.getFluidInputs());
                 ITEM_OUTPUT_LIST.encode(buf, recipe.getItemOutputs());
                 FLUID_OUTPUT_LIST.encode(buf, recipe.getFluidOutputs());
-                buf.writeVarInt(recipe.getProcessTime());
-                buf.writeVarInt(recipe.getEnergyPerTick());
+                buf.writeVarInt(recipe.getBaseProcessTime());
+                buf.writeVarInt(recipe.getBaseEnergyPerTick());
             }
         };
     }

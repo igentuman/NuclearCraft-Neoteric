@@ -97,7 +97,11 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
     }
 
     public void toggleRadiators() {
-        radiatorsEnabled = !radiatorsEnabled;
+        setRadiatorsEnabled(!radiatorsEnabled);
+    }
+
+    public void setRadiatorsEnabled(boolean enabled) {
+        radiatorsEnabled = enabled;
         setChanged();
     }
 

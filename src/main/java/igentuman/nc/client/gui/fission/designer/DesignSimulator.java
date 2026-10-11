@@ -1,5 +1,6 @@
 package igentuman.nc.client.gui.fission.designer;
 
+import igentuman.nc.config.Common;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.content.fuel.FuelDef;
@@ -258,7 +259,8 @@ public class DesignSimulator {
         double collected = collectedHeatMultiplier();
         energyPerTick = fuelEnergy * (cellsEnergyMult + moderatorsFE())
                 * (heatMultiplier + collected - 1)
-                * Multiblocks.fissionFeGenerationMultiplier / 10D;
+                * Multiblocks.fissionFeGenerationMultiplier / 10D
+                * Common.generationMultiplier();
         energyPerTick = Math.max(0, energyPerTick);
 
         steamPerTick = computeSteamPerTick();

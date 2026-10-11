@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-24T15:57:24.592483937	Recipes
+// 1.21.1	2026-10-11T12:20:16.159415499	Recipes
 3b8a8f729f4b0a8aa99d1b7771fa8705e5c45f43 data/nuclearcraft/advancement/recipes/combat/hev_boots.json
 0d6337dff6f847eb9e9888bd9bbfa37e406ea920 data/nuclearcraft/advancement/recipes/combat/hev_chestplate.json
 34e337573ea52a1e57cec9a29e3180f82699428d data/nuclearcraft/advancement/recipes/combat/hev_helmet.json
@@ -899,6 +899,7 @@ f1a1194fdcc3cb020f0b17d3e4be41c1b35b89cf data/nuclearcraft/advancement/recipes/m
 fa3a487a317a94f8e2ddb6aa4d2791ec7714e6cb data/nuclearcraft/advancement/recipes/misc/zirconium_ingot_from_block.json
 a297d3d3f2d3204c2a66ef900b4f2c3cc84545ff data/nuclearcraft/advancement/recipes/misc/zirconium_ingot_from_nugget.json
 8e93743d01fa636a7ee2762206c17f8be723199b data/nuclearcraft/advancement/recipes/misc/zirconium_nugget_from_ingot.json
+15dabae64b6a51c54b033aa27fdd5e2e316f05a1 data/nuclearcraft/advancement/recipes/redstone/redstone_dimmer.json
 601eb116ef9ec2f55e15a6a67e4c16cc05e0a6fe data/nuclearcraft/recipe/accelerator_beam_port.json
 5429f91154bf25bc7af14ac31747a641b402ed9b data/nuclearcraft/recipe/accelerator_casing.json
 9ab80a7b7420a7ddb69f12cb7674b166e6fd267d data/nuclearcraft/recipe/accelerator_casing_from_glass.json
@@ -3531,7 +3532,9 @@ dd4246847e98ee65074a851f75b1b5bb57b28c86 data/nuclearcraft/recipe/quantum_flux_r
 8e0ed41723c9b60757672c73c67b9b7086f45110 data/nuclearcraft/recipe/quartz_cooler.json
 85f537e096047665277c0920a5ec42c67192126d data/nuclearcraft/recipe/quartz_heat_sink.json
 4b3cc7639f8c48f4ef518835cd35c49c5a8d59a8 data/nuclearcraft/recipe/redstone_cooler.json
+3681e19df8c096d355e66d7c8f2646954d05f07f data/nuclearcraft/recipe/redstone_dimmer.json
 cef11be13e973101d3f67de7809188672fddbf9f data/nuclearcraft/recipe/redstone_heat_sink.json
+a0451f14f3ece4569a57b12cc577bc859de7d90b data/nuclearcraft/recipe/reset_nbt.json
 b9cd0f80a8748cae0affc3c901c01a177e12bacc data/nuclearcraft/recipe/resonite_crystal.json
 7a6cde00843e16ae4c8cc5c9a3908bc5daebe65e data/nuclearcraft/recipe/ring_accelerator_controller.json
 211fbc8022458da1a1a8670bc7240a8aadd42a3e data/nuclearcraft/recipe/rock_crusher.json

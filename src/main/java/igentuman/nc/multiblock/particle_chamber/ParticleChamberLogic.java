@@ -57,7 +57,7 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
             changed = true;
         }
         controller.updateParticleDisplay(inputs, pendingOutputs);
-        if (enabled) process(level, controller, cache);
+        if (enabled && !controller.forceShutdown) process(level, controller, cache);
         if (changed) {
             changed = false;
             controller.setChanged();

@@ -3,6 +3,7 @@ package igentuman.nc.compat.jei;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.compat.ae2.JEI2PatternEncoderTransfer;
+import igentuman.nc.compat.refinedstorage.RSJeiPatternTransfer;
 import igentuman.nc.compat.PlacementRuleRecipe;
 import igentuman.nc.compat.jei.particle.ParticleIngredientHelper;
 import igentuman.nc.compat.jei.particle.ParticleIngredientRenderer;
@@ -46,7 +47,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-/** JEI plugin registering processor, multiblock, and specialized recipe categories plus AE2 recipe transfer. */
+/** JEI plugin registering processor, multiblock, and specialized recipe categories plus AE2 and Refined Storage recipe transfer. */
 @JeiPlugin
 public class ModJeiPlugin implements IModPlugin {
 
@@ -150,11 +151,14 @@ public class ModJeiPlugin implements IModPlugin {
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
         registration.addRecipeTransferHandler(new EngineersCrafterRecipeTransferHandler(registration.getTransferHelper()), RecipeTypes.CRAFTING);
         registration.addRecipeTransferHandler(new EngineersEncoderRecipeTransferHandler(), RecipeTypes.CRAFTING);
-        if (!ModList.get().isLoaded("ae2")) return;
+        boolean ae2 = ModList.get().isLoaded("ae2");
+        boolean refinedStorage = ModList.get().isLoaded("refinedstorage");
+        if (!ae2 && !refinedStorage) return;
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (!isProcessorEntry(entry)) continue;
             RecipeType<UniversalProcessorRecipe> jeiType = getOrCreateRecipeType(entry);
-            registration.addRecipeTransferHandler(new JEI2PatternEncoderTransfer(jeiType), jeiType);
+            if (ae2) registration.addRecipeTransferHandler(new JEI2PatternEncoderTransfer(jeiType), jeiType);
+            if (refinedStorage) registration.addRecipeTransferHandler(new RSJeiPatternTransfer(jeiType), jeiType);
         }
     }
 

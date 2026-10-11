@@ -1,6 +1,7 @@
 package igentuman.nc.block_entity.fission;
 
 import igentuman.nc.block_entity.MultiblockControllerBE;
+import igentuman.nc.block_entity.OutputLevelSource;
 import igentuman.nc.block_entity.RedstoneModeController;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.handler.fluid.FluidStackHandler;
@@ -30,7 +31,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 /** Controller block entity for the fission reactor; runs the reaction each tick and manages heat, energy/steam, and redstone modes. */
-public class FissionReactorControllerBE extends MultiblockControllerBE implements RedstoneModeController {
+public class FissionReactorControllerBE extends MultiblockControllerBE implements RedstoneModeController, OutputLevelSource {
 
     private static final int TOGGLE_ARM_TICKS = 200;
     private static final int TOGGLE_IDLE_TICKS = 2000;
@@ -250,7 +251,7 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
     public int getIrradiativeFlux() {
         if (!(level instanceof ServerLevel sl)) return 0;
         if (mbInstance == null || !mbInstance.formed || !(mbInstance.cache instanceof FissionReactorCache fc)) return 0;
-        int lines = fc.irradiationLines;
+        int lines = fc.effectiveIrradiation;
         FissionReactorLogic reaction = reaction();
         if (reaction == null || reaction.currentRecipe == null) return 0;
         int heat = reaction.currentRecipe.heat();
@@ -264,6 +265,20 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
         return reactivity / 100.0;
     }
 
+    public void setModerationLevel(int percent) {
+        double factor = Math.clamp(percent, 0, 100) / 100.0;
+        if (factor == moderationFactor) return;
+        moderationFactor = factor;
+        setChanged();
+    }
+
+    public void voidFuel() {
+        FissionReactorLogic reaction = reaction();
+        if (reaction != null) reaction.voidFuel();
+        if (contentHandler.hasItemCapability()) contentHandler.getItemHandler().setStackInSlot(0, ItemStack.EMPTY);
+        setChanged();
+    }
+
     /** Output throttle (0..1) set by MODERATOR-mode ports; 1.0 when none drive it. */
     public double moderationFactor() {
         return moderationFactor;
@@ -271,15 +286,20 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
 
     @Override
     public int comparatorSignal(int mode) {
+        return OutputLevelSource.comparatorSignal(outputLevel(mode));
+    }
+
+    @Override
+    public double outputLevel(int mode) {
         return switch (mode) {
             case FissionPortBE.MODE_ENERGY ->
-                    energyStorage != null ? scale(energyStorage.getEnergyStored(), energyStorage.getMaxEnergyStored()) : 0;
-            case FissionPortBE.MODE_HEAT -> scale((int) heatBuffer.currentHeat, (int) heatBuffer.capacity);
-            case FissionPortBE.MODE_PROGRESS -> scale(progress, 100);
+                    energyStorage != null ? OutputLevelSource.fraction(energyStorage.getEnergyStored(), energyStorage.getMaxEnergyStored()) : 0;
+            case FissionPortBE.MODE_HEAT -> OutputLevelSource.fraction(heatBuffer.currentHeat, heatBuffer.capacity);
+            case FissionPortBE.MODE_PROGRESS -> OutputLevelSource.fraction(progress, 100);
             case FissionPortBE.MODE_ITEMS -> {
                 IItemHandler items = getItemHandler(null);
                 ItemStack fuel = items != null ? items.getStackInSlot(0) : ItemStack.EMPTY;
-                yield fuel.isEmpty() ? 0 : scale(fuel.getCount(), fuel.getMaxStackSize());
+                yield fuel.isEmpty() ? 0 : OutputLevelSource.fraction(fuel.getCount(), fuel.getMaxStackSize());
             }
             default -> 0;
         };
@@ -300,11 +320,6 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
                 markDirty();
             }
         }
-    }
-
-    private static int scale(int value, int max) {
-        if (max <= 0) return 0;
-        return Math.max(0, Math.min(15, (int) ((long) value * 15 / max)));
     }
 
     @Nullable

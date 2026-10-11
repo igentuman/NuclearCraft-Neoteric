@@ -107,13 +107,16 @@ dependencies {
     compileOnly("cc.tweaked:cc-tweaked-1.21.1-common-api:1.118.0")
     runtimeOnly("cc.tweaked:cc-tweaked-1.21.1-forge:1.118.0")
 
+    implementation "curse.maven:oc2-437654:9091466"
+    implementation "curse.maven:markdownmanual-502485:8960338"
+
     compileOnly "curse.maven:emi-580555:8081408"
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     implementation("igentuman.nr:NuclearRadiation:1.0.0-beta8") { transitive = false }
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     implementation "curse.maven:multi-builder-tool-827020:8797925"
-    compileOnly "curse.maven:immersive-engineering-231951:6733669"
+    implementation "curse.maven:immersive-engineering-231951:6733669"
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
     compileOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE:api")
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
@@ -150,11 +153,13 @@ dependencies {
         }
     }
 
-    compileOnly("curse.maven:create-328085:7178761")
+    compileOnly("curse.maven:create-328085:7963363")
 
     compileOnly("top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1")
+    implementation "curse.maven:architectury-api-419699:8492726"
 
-    
+    implementation "curse.maven:refined-storage-243076:8211701"
+    implementation "curse.maven:tis-3d-238603:8737736"
     //compileOnly "curse.maven:gregtechceu-modern-890405:6766269"
 }
 

@@ -22,10 +22,12 @@ import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatParticleEnergy;
+import static igentuman.nc.util.TextUtils.numberFormat;
 
 @SuppressWarnings("removal")
 public class CollisionChamberRecipeCategory implements IRecipeCategory<CollisionChamberRecipe> {
@@ -98,6 +100,16 @@ public class CollisionChamberRecipeCategory implements IRecipeCategory<Collision
     @Override
     public void draw(CollisionChamberRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
         var font = Minecraft.getInstance().font;
-        graphics.drawString(font, __("jei.nuclearcraft.particle.energy", formatParticleEnergy(recipe.releasedEnergyKeV())), 4, 85, 0x404040, false);
+        var input = recipe.particleInputs().getFirst();
+        graphics.drawString(font, __("tooltip.nuclearcraft.particlestack.focus", numberFormat(input.minimumFocus())),
+                0, 85, 0x404040, false);
+        graphics.drawString(font, __("label.nuclearcraft.cross_section",
+                String.format(Locale.ROOT, "%.1f", recipe.crossSection() * 100)),
+                0, 95, 0x404040, false);
+        var energyLabel = input.minimumEnergyKeV() == input.maximumEnergyKeV()
+                ? __("label.nuclearcraft.energy", formatParticleEnergy(input.minimumEnergyKeV()))
+                : __("label.nuclearcraft.energy_range", formatParticleEnergy(input.minimumEnergyKeV()),
+                        formatParticleEnergy(input.maximumEnergyKeV()));
+        graphics.drawString(font, energyLabel, 0, 105, 0x404040, false);
     }
 }

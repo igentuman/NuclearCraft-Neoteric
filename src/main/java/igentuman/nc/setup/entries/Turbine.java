@@ -7,6 +7,7 @@ import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.block_entity.turbine.TurbineControllerBE;
 import igentuman.nc.block_entity.turbine.TurbinePortBE;
 import igentuman.nc.block_entity.turbine.TurbineRotorBE;
+import igentuman.nc.compat.create.CreateTurbine;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.ValidationScheduler;
 import igentuman.nc.api.multiblock.part.BladeDef;
@@ -22,6 +23,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
@@ -86,7 +88,11 @@ public class Turbine extends ModEntries {
         addMultiblockBlock("turbine_casing");
         addMultiblockBlock("turbine_glass", glassProps());
         addMultiblockPart("turbine_port", TurbinePortBE::new);
-        addMultiblockBlock("turbine_bearing");
+        if (ModList.get().isLoaded("create")) {
+            CreateTurbine.registerBearing("turbine_bearing");
+        } else {
+            addMultiblockBlock("turbine_bearing");
+        }
 
         add("turbine_rotor_shaft")
                 .block(name -> new TurbineRotorBlock(rotorProps(), name))

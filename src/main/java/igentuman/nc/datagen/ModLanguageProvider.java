@@ -32,6 +32,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         ponders();
         fissionDesigner();
         fuelInfo();
+        compat();
 
         for (String particle : Particles.SPECIES) {
             add("nuclearcraft.particle." + particle + ".name", convertToName(particle));
@@ -321,6 +322,8 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("block.nuclearcraft.solar_panel_elite.desc", "Generates 1792 FE/t while exposed to daytime sky.");
         add("block.nuclearcraft.decay_generator.desc", "Generates energy from adjacent radioactive blocks. Emits radiation and decays those blocks to lead over time.");
         add("tooltip.nuclearcraft.decay_generator_allowed", "Can be used with Decay Generator");
+        add("block.nuclearcraft.redstone_dimmer.desc", "Outputs a redstone signal from the back. Each pulse on the right side raises it by one, each pulse on the left side lowers it by one.");
+        add("entity.minecraft.villager.nuclearcraft.nuclear_scientist", "Nuclear Scientist");
     }
 
     private void heatSinks() {
@@ -804,6 +807,12 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("nuclearcraft.particle.antidelta_minus.desc", "Anti-Delta - is a baryon containing three Anti-Down Quarks. It quickly decays via the strong force.");
     }
 
+    private void compat() {
+        add("tis3d.manual.serial_protocols.nuclearcraft_fission", "NuclearCraft Fission Reactor");
+        add("tis3d.manual.serial_protocols.nuclearcraft_fusion", "NuclearCraft Fusion Reactor");
+        add("tooltip.nc.bearing.create", "Supports Create kinetic energy.");
+    }
+
     private void fuelInfo() {
         add("jei.category." + MODID + ".fuel_info", "Fuel Variants");
         add("jei.category." + MODID + ".isotope_info", "Isotope Forms");
@@ -817,6 +826,11 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("gui.nuclearcraft.jei.particle.colour", "Feels Strong Force: %s");
         add("gui.nuclearcraft.jei.particle.weak", "Feels Weak Force: %s");
         add("jei.nuclearcraft.particle.energy", "Energy: %s");
+        add("label.nuclearcraft.energy", "Energy: %s");
+        add("label.nuclearcraft.energy_any", "Energy: Any");
+        add("label.nuclearcraft.energy_minimum", "Energy: %s or more");
+        add("label.nuclearcraft.energy_range", "Energy: %s - %s");
+        add("label.nuclearcraft.cross_section", "Cross-section: %s%%");
         add("emi.category." + MODID + ".target_chamber", "Target Chamber");
         add("emi.category." + MODID + ".decay_chamber", "Decay Chamber");
         add("emi.category." + MODID + ".collision_chamber", "Collision Chamber");

@@ -1,10 +1,14 @@
 package igentuman.nc.config;
 
+import igentuman.nc.content.energy.EnergyGenDefs;
+import igentuman.nc.content.storage.StorageDefs;
 import igentuman.nc.recipe.TagOutputResolver;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Common {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -35,6 +39,17 @@ public class Common {
 
     public static final ModConfigSpec.BooleanValue HUB_ENABLED;
     public static final ModConfigSpec.ConfigValue<String> HUB_BASE_URL;
+
+    public static final ModConfigSpec.DoubleValue GENERATION_MULTIPLIER;
+    public static final Map<String, ModConfigSpec.IntValue> RTG_GENERATION = new LinkedHashMap<>();
+    public static final Map<String, ModConfigSpec.IntValue> SOLAR_GENERATION = new LinkedHashMap<>();
+    public static final ModConfigSpec.IntValue DECAY_GENERATOR_BASE_FE;
+
+    public static final Map<String, ModConfigSpec.IntValue> BATTERY_CAPACITY = new LinkedHashMap<>();
+    public static final Map<String, ModConfigSpec.IntValue> BARREL_CAPACITY = new LinkedHashMap<>();
+
+    public static final ModConfigSpec.BooleanValue SCIENTIST_HOUSE;
+    public static final ModConfigSpec.BooleanValue WANDERING_TRADER_TRADES;
 
     public static final ModConfigSpec SPEC;
 
@@ -112,6 +127,46 @@ public class Common {
                 .define("allow_to_leach_ie_veins", true);
         BUILDER.pop();
 
+        BUILDER.push("energy_generation");
+        GENERATION_MULTIPLIER = BUILDER
+                .comment("Multiplier for all FE generation in the mod")
+                .defineInRange("generation_multiplier", 1.0D, 0.001D, 1000.0D);
+        BUILDER.push("rtg");
+        EnergyGenDefs.RTGS.forEach((name, def) -> RTG_GENERATION.put(name, BUILDER
+                .comment("FE per tick")
+                .defineInRange(name, def[0], 0, Integer.MAX_VALUE)));
+        BUILDER.pop();
+        BUILDER.push("solar_panel");
+        EnergyGenDefs.SOLAR_PANELS.forEach((name, def) -> SOLAR_GENERATION.put(name, BUILDER
+                .comment("FE per tick in direct sunlight")
+                .defineInRange(name, def[0], 0, Integer.MAX_VALUE)));
+        BUILDER.pop();
+        DECAY_GENERATOR_BASE_FE = BUILDER
+                .comment("Decay generator FE per tick for each adjacent decaying block without radiation data")
+                .defineInRange("decay_generator_base_fe", EnergyGenDefs.DECAY_GENERATOR_BASE_FE, 0, Integer.MAX_VALUE);
+        BUILDER.pop();
+
+        BUILDER.push("energy_storage");
+        StorageDefs.BATTERIES.forEach((name, def) -> BATTERY_CAPACITY.put(name, BUILDER
+                .comment("FE capacity")
+                .defineInRange(name, def[0], 1, Integer.MAX_VALUE)));
+        BUILDER.pop();
+
+        BUILDER.push("barrels");
+        StorageDefs.BARRELS.forEach((name, buckets) -> BARREL_CAPACITY.put(name, BUILDER
+                .comment("Capacity in buckets")
+                .defineInRange(name, buckets, 1, Integer.MAX_VALUE / 1000)));
+        BUILDER.pop();
+
+        BUILDER.push("villages");
+        SCIENTIST_HOUSE = BUILDER
+                .comment("Generate nuclear scientist houses in vanilla villages")
+                .define("scientist_house", true);
+        WANDERING_TRADER_TRADES = BUILDER
+                .comment("Add NuclearCraft trades to the wandering trader")
+                .define("wandering_trader_trades", true);
+        BUILDER.pop();
+
         BUILDER.push("designs_hub");
         HUB_ENABLED = BUILDER
                 .comment("Enable the Designs Hub browse/upload screens (online, sends data to an external server)")
@@ -127,6 +182,19 @@ public class Common {
     /** Pushes the configured priority order into the resolver cache. Call on config load/reload. */
     public static void refreshTagPriority() {
         TagOutputResolver.setPriority(MOD_TAG_PRIORITY.get());
+    }
+
+    public static double generationMultiplier() {
+        return SPEC.isLoaded() ? GENERATION_MULTIPLIER.get() : 1.0D;
+    }
+
+    public static int configured(Map<String, ModConfigSpec.IntValue> values, String name, int fallback) {
+        ModConfigSpec.IntValue value = values.get(name);
+        return value == null || !SPEC.isLoaded() ? fallback : value.get();
+    }
+
+    public static int generated(double base) {
+        return (int) Math.min(Integer.MAX_VALUE, Math.round(base * generationMultiplier()));
     }
 
     public static class AnomalyConfig {

@@ -4,14 +4,15 @@ import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Per-face view of a FluidCapabilityHandler that gates fill/drain by that side's tank modes. */
 public class FluidHandlerWrapper implements IFluidHandler {
 
     private final FluidCapabilityHandler handler;
-    private final Direction side;
+    private final @Nullable Direction side;
 
-    public FluidHandlerWrapper(FluidCapabilityHandler handler, Direction side) {
+    public FluidHandlerWrapper(FluidCapabilityHandler handler, @Nullable Direction side) {
         this.handler = handler;
         this.side = side;
     }
@@ -42,7 +43,7 @@ public class FluidHandlerWrapper implements IFluidHandler {
         int remaining = resource.getAmount();
         int totalFilled = 0;
         for (int tank = 0; tank < handler.getTanks(); tank++) {
-            if (!handler.canInsertFromSide(tank, resource, side)) continue;
+            if (side != null && !handler.canInsertFromSide(tank, resource, side)) continue;
             if (!handler.isFluidValid(tank, resource)) continue;
             int filled = handler.fillTank(tank, resource.copyWithAmount(remaining), action);
             totalFilled += filled;
@@ -56,7 +57,7 @@ public class FluidHandlerWrapper implements IFluidHandler {
     public @NotNull FluidStack drain(@NotNull FluidStack resource, FluidAction action) {
         if (resource.isEmpty()) return FluidStack.EMPTY;
         for (int tank = 0; tank < handler.getTanks(); tank++) {
-            if (!handler.canExtractFromSide(tank, side)) continue;
+            if (side != null && !handler.canExtractFromSide(tank, side)) continue;
             FluidStack inTank = handler.getFluidInTank(tank);
             if (!inTank.isEmpty() && FluidStack.isSameFluidSameComponents(resource, inTank)) {
                 return handler.drainTank(tank, resource.getAmount(), action);
@@ -68,7 +69,7 @@ public class FluidHandlerWrapper implements IFluidHandler {
     @Override
     public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
         for (int tank = 0; tank < handler.getTanks(); tank++) {
-            if (!handler.canExtractFromSide(tank, side)) continue;
+            if (side != null && !handler.canExtractFromSide(tank, side)) continue;
             FluidStack inTank = handler.getFluidInTank(tank);
             if (!inTank.isEmpty()) {
                 return handler.drainTank(tank, maxDrain, action);

@@ -39,9 +39,18 @@ public abstract class AbstractAcceleratorControllerBE extends MultiblockControll
     public int particleTypeId = -1;
     @NBTField(syncToClient = true)
     public int particleFocusScaled = 0;
+    @NBTField
+    public int computerSignal = -1;
 
     protected AbstractAcceleratorControllerBE(BlockPos pos, BlockState state, String name) {
         super(ModEntries.get(name).blockEntity().get(), pos, state, name);
+    }
+
+    public void setComputerSignal(int signal) {
+        int clamped = signal < 0 ? -1 : Math.min(15, signal);
+        if (clamped == computerSignal) return;
+        computerSignal = clamped;
+        setChanged();
     }
 
     public void updateControlSignalDisplay(int signal) {

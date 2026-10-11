@@ -2215,6 +2215,7 @@
   "item.nuclearcraft.tungsten_ingot": "Слиток вольфрама",
   "item.nuclearcraft.tungsten_spallation_waste": "Вольфрам",
   "item.nuclearcraft.unknown_ingredient": "Неизвестный ингредиент",
+  "item.nuclearcraft.unknown_ingredient": "Неизвестный ингредиент",
   "item.nuclearcraft.unsweetened_chocolate": "Горький шоколад",
   "item.nuclearcraft.unsweetened_chocolate_bucket": "Ведро горького шоколада",
   "item.nuclearcraft.upgrade_energy": "Улучшение энергии",
@@ -3168,5 +3169,6 @@
   "tooltip.particle_chamber.connected_ports": "Подключённые порты: %s",
   "tooltip.particle_chamber.detectors": "Детекторы: %s",
   "tooltip.particle_chamber.efficiency": "Эффективность: %s%%",
-  "tootip.nc.charging_station": "Позволяет заряжать предметы с помощью FE и энергии Quantite"
+  "tootip.nc.charging_station": "Позволяет заряжать предметы с помощью FE и энергии Quantite",
+  "block.nuclearcraft.redstone_dimmer.desc": "Выдаёт сигнал красного камня сзади. Каждый импульс справа повышает его на единицу, каждый импульс слева понижает на единицу."
 }

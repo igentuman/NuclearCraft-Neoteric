@@ -1,23 +1,30 @@
 package igentuman.nc.multiblock.turbine;
 
+import igentuman.nc.config.Common;
 import igentuman.nc.api.multiblock.AbstractMultiblockLogic;
 import igentuman.nc.block_entity.turbine.TurbineControllerBE;
+import igentuman.nc.compat.create.CreateTurbine;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.handler.energy.LargeEnergyStorage;
 import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.recipe.turbine.TurbineRecipe;
 import igentuman.nc.recipe.turbine.TurbineRecipes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 public class TurbineLogic extends AbstractMultiblockLogic<TurbineCache> {
+
+    private static final boolean CREATE_LOADED = ModList.get().isLoaded("create");
+    private static final float MAX_KINETIC_SPEED = 256;
 
     private float rotationSpeed;
 
@@ -35,12 +42,10 @@ public class TurbineLogic extends AbstractMultiblockLogic<TurbineCache> {
         if (tc.flow > 0 && tc.bladeCount > 0) {
             double flowD = Math.max(1, tc.flow);
             maxFlow = flowD * Multiblocks.turbineBladeFlow * Math.pow(Math.log10(flowD), 2.8);
-            double coilsDrag = tc.coilsEfficiency > 0
-                    ? Math.max(1, 100.0 / tc.coilsEfficiency * Math.log(Math.log10(tc.activeCoils + 4) + 2))
-                    : 1;
+            double coilsDrag = coilsDrag(tc);
 
             FluidStack in = tanks != null ? tanks.getFluidInTank(0) : FluidStack.EMPTY;
-            TurbineRecipe recipe = in.isEmpty() ? null : findRecipe(level, in);
+            TurbineRecipe recipe = in.isEmpty() || be.forceShutdown ? null : findRecipe(level, in);
             if (recipe != null) {
                 powerMod = recipe.powerModifier();
                 int requestedInput = (int) (Math.min(maxFlow, in.getAmount()) / coilsDrag);
@@ -64,7 +69,25 @@ public class TurbineLogic extends AbstractMultiblockLogic<TurbineCache> {
 
         float newSpeed = (float) ((rotationSpeed * 4 + realFlow / (Math.max(1, tc.flow) * Multiblocks.turbineBladeFlow)) / 5f);
         rotationSpeed = newSpeed < 0.001f ? 0f : newSpeed;
+        if (CREATE_LOADED) driveBearings(level, tc, maxFlow, realFlow);
         be.updateRuntimeDisplay(tc, rotationSpeed, (int) Math.min(realFlow, maxFlow), (int) maxFlow, genPerTick, maxGen);
+    }
+
+    private static double coilsDrag(TurbineCache tc) {
+        return tc.coilsEfficiency > 0
+                ? Math.max(1, 100.0 / tc.coilsEfficiency * Math.log(Math.log10(tc.activeCoils + 4) + 2))
+                : 1;
+    }
+
+    private void driveBearings(ServerLevel level, TurbineCache tc, double maxFlow, double realFlow) {
+        Direction.Axis axis = tc.axis;
+        if (axis == null) return;
+        double divisor = Math.max(1, Math.log(Math.max(1, tc.activeCoils) / coilsDrag(tc)) + 1);
+        float speed = (float) Math.min(MAX_KINETIC_SPEED, rotationSpeed * 5000 / divisor * Multiblocks.turbineKineticConversion);
+        float capacity = (float) ((Math.log1p(maxFlow) + Math.log1p(realFlow)) * 5);
+        for (BlockPos bearing : new BlockPos[]{tc.bearingPos1, tc.bearingPos2}) {
+            if (bearing != null) CreateTurbine.driveBearing(level, bearing, axis, speed, capacity);
+        }
     }
 
     private static double computeEnergy(TurbineCache tc, double flowValue, double powerModifier) {
@@ -73,7 +96,7 @@ public class TurbineLogic extends AbstractMultiblockLogic<TurbineCache> {
         double efficiencyRate = Math.log10(tc.activeCoils) * tc.coilsEfficiency * bladesEfficiency / 1000.0;
         if (efficiencyRate <= 0) return 0;
         return Math.sqrt((flowValue + 1) * (flowValue + 2) / 2.0)
-                * Multiblocks.turbineEnergyGen * efficiencyRate * powerModifier * 4;
+                * Multiblocks.turbineEnergyGen * efficiencyRate * powerModifier * 4 * Common.generationMultiplier();
     }
 
     private static int generateEnergy(LargeEnergyStorage storage, TurbineCache tc, double realFlow, double powerModifier) {

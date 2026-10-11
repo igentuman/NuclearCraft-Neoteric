@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.kugelblitz;
 
+import igentuman.nc.config.Common;
 import igentuman.nc.api.multiblock.AbstractMultiblockLogic;
 import igentuman.nc.block_entity.kugelblitz.BlackHoleBE;
 import igentuman.nc.block_entity.kugelblitz.ChamberTerminalBE;
@@ -167,7 +168,7 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
         double generated = massRatio * 1000
                 * (Math.log(terminal.energyConvertionRate * 50000.0) + 1)
                 * (Math.log(Math.max(1, cache.fluxRegulators) * 5000.0) + 1);
-        generated *= Multiblocks.kugelblitzGenerationMultiplier;
+        generated *= Multiblocks.kugelblitzGenerationMultiplier * Common.generationMultiplier();
         energyPerTick = (int) Math.max(0, Math.min(Integer.MAX_VALUE, generated));
         LargeEnergyStorage storage = terminal.energyStorage;
         if (storage != null && energyPerTick > 0) {

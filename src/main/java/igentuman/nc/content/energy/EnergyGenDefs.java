@@ -1,5 +1,6 @@
 package igentuman.nc.content.energy;
 
+import igentuman.nc.config.Common;
 import igentuman.nr.registry.Isotopes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -41,7 +42,7 @@ public class EnergyGenDefs {
     }
 
     public static int rtgGeneration(String name) {
-        return RTGS.getOrDefault(name, new int[]{0, 0})[0];
+        return Common.generated(Common.configured(Common.RTG_GENERATION, name, RTGS.getOrDefault(name, new int[]{0, 0})[0]));
     }
 
     public static int rtgRadiation(String name) {
@@ -53,6 +54,10 @@ public class EnergyGenDefs {
     }
 
     public static int solarGeneration(String name) {
-        return SOLAR_PANELS.getOrDefault(name, new int[]{0})[0];
+        return Common.generated(Common.configured(Common.SOLAR_GENERATION, name, SOLAR_PANELS.getOrDefault(name, new int[]{0})[0]));
+    }
+
+    public static int decayGeneratorBaseFe() {
+        return Common.SPEC.isLoaded() ? Common.DECAY_GENERATOR_BASE_FE.get() : DECAY_GENERATOR_BASE_FE;
     }
 }

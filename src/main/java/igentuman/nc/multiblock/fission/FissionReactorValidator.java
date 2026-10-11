@@ -156,6 +156,7 @@ public class FissionReactorValidator extends AbstractCuboidValidator<FissionReac
     private void computeIrradiators(FissionReactorCache cache) {
         for (long key : cache.workingIrradiators) {
             BlockPos pos = BlockPos.of(key);
+            boolean pileDriver = cache.getBlockState(pos).getBlock() == pileDriverChamber;
             for (Direction dir : Direction.values()) {
                 BlockPos first = pos.relative(dir);
                 BlockPos second = first.relative(dir);
@@ -163,6 +164,7 @@ public class FissionReactorValidator extends AbstractCuboidValidator<FissionReac
                         && cache.workingActiveModerators.contains(first.asLong())
                         && cache.getBlockState(second).getBlock() == fuelCell) {
                     cache.workingIrradiationLines++;
+                    cache.workingEffectiveIrradiation += pileDriver ? 5 : 1;
                 }
             }
         }

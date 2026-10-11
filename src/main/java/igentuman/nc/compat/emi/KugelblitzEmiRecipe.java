@@ -6,6 +6,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.recipe.kugelblitz.KugelblitzRecipe;
+import igentuman.nc.setup.ModEntries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -33,9 +34,11 @@ public class KugelblitzEmiRecipe implements EmiRecipe {
         this.category = category;
         this.id = id;
         this.recipe = recipe;
-        this.input = EmiIngredient.of(Arrays.stream(recipe.input().ingredient().getItems())
-                .map(stack -> (EmiIngredient) EmiStack.of(stack.copyWithCount(recipe.input().count())))
-                .toList());
+        this.input = recipe.input().ingredient().test(recipe.getResultStack())
+                ? EmiStack.of(ModEntries.get("unknown_ingredient").item().get())
+                : EmiIngredient.of(Arrays.stream(recipe.input().ingredient().getItems())
+                        .map(stack -> (EmiIngredient) EmiStack.of(stack.copyWithCount(recipe.input().count())))
+                        .toList());
         List<ItemStack> members = recipe.output().members();
         this.outputIngredient = EmiIngredient.of(members.stream()
                 .map(stack -> (EmiIngredient) EmiStack.of(stack))

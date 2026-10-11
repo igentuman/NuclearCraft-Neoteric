@@ -1,5 +1,7 @@
 package igentuman.nc.content.storage;
 
+import igentuman.nc.config.Common;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,7 +35,7 @@ public class StorageDefs {
     }
 
     public static int barrelCapacityMb(String name) {
-        return BARRELS.getOrDefault(name, 1) * 1000;
+        return Common.configured(Common.BARREL_CAPACITY, name, BARRELS.getOrDefault(name, 1)) * 1000;
     }
 
     public static int containerRows(String name) {
@@ -49,6 +51,6 @@ public class StorageDefs {
     }
 
     public static int batteryStorage(String name) {
-        return BATTERIES.getOrDefault(name, new int[]{1, 0})[0];
+        return Common.configured(Common.BATTERY_CAPACITY, name, BATTERIES.getOrDefault(name, new int[]{1, 0})[0]);
     }
 }

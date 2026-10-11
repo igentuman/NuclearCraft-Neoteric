@@ -12,7 +12,6 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -21,8 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
-import static igentuman.nc.util.TextUtils.scaledFormat;
-
 /** JEI category for Kugelblitz transmutation recipes. */
 public class KugelblitzRecipeCategory implements IRecipeCategory<KugelblitzRecipe> {
 
@@ -30,7 +27,7 @@ public class KugelblitzRecipeCategory implements IRecipeCategory<KugelblitzRecip
             RecipeType.create(NuclearCraft.MODID, "kugelblitz_chamber", KugelblitzRecipe.class);
 
     private static final int WIDTH = 124;
-    private static final int HEIGHT = 46;
+    private static final int HEIGHT = 26;
 
     private final IDrawable background;
     private final IDrawableStatic slot;
@@ -70,10 +67,14 @@ public class KugelblitzRecipeCategory implements IRecipeCategory<KugelblitzRecip
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, KugelblitzRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 7, 5)
-                .addItemStacks(Arrays.stream(recipe.input().ingredient().getItems())
-                        .map(stack -> stack.copyWithCount(recipe.input().count()))
-                        .toList());
+        var inputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 7, 5);
+        if (recipe.input().ingredient().test(recipe.getResultStack())) {
+            inputSlot.addItemStack(new ItemStack(ModEntries.get("unknown_ingredient").item().get()));
+        } else {
+            inputSlot.addItemStacks(Arrays.stream(recipe.input().ingredient().getItems())
+                    .map(stack -> stack.copyWithCount(recipe.input().count()))
+                    .toList());
+        }
         builder.addSlot(RecipeIngredientRole.OUTPUT, WIDTH - 23, 5)
                 .addItemStacks(recipe.output().members());
     }
@@ -85,8 +86,5 @@ public class KugelblitzRecipeCategory implements IRecipeCategory<KugelblitzRecip
         slot.draw(graphics, WIDTH - 24, 4);
         graphics.drawString(Minecraft.getInstance().font, Component.literal("→"), WIDTH / 2 - 3, 8,
                 0x404040, false);
-        graphics.drawString(Minecraft.getInstance().font,
-                Component.translatable("gui.nuclearcraft.kugelblitz.energy", scaledFormat(recipe.getEnergy()))
-                        .withStyle(ChatFormatting.DARK_GRAY), 4, 27, 0x404040, false);
     }
 }

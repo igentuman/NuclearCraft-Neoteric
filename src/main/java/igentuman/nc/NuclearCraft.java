@@ -13,6 +13,8 @@ import igentuman.nc.setup.entries.Ghouls;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.config.*;
 import igentuman.nc.compat.cc.CCCompatHandler;
+import igentuman.nc.compat.oc2.OC2CompatHandler;
+import igentuman.nc.compat.tis3d.TIS3DCompatHandler;
 import igentuman.nc.handler.event.PipeEvents;
 import igentuman.nc.handler.event.ServerEvents;
 import igentuman.nc.multiblock.MultiblockEntry;
@@ -29,6 +31,7 @@ import igentuman.nc.item.HEVItem;
 import igentuman.nc.recipe.RecipeDeserializationLogger;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCSounds;
+import igentuman.nc.setup.NCVillagers;
 import igentuman.nc.setup.NcParticles;
 import igentuman.nc.setup.Registers;
 import igentuman.nc.setup.entries.Crafter;
@@ -91,6 +94,7 @@ public class NuclearCraft {
         NcParticles.init();
         NCSounds.init();
         ModEntries.init();
+        NCVillagers.init();
         NeoForge.EVENT_BUS.register(new ServerEvents());
         NeoForge.EVENT_BUS.register(new PipeEvents());
         WorldGen.init(
@@ -115,10 +119,17 @@ public class NuclearCraft {
         if (ModList.get().isLoaded("computercraft")) {
             CCCompatHandler.register(modEventBus);
         }
+        if (ModList.get().isLoaded("oc2")) {
+            OC2CompatHandler.register(modEventBus);
+        }
+        if (ModList.get().isLoaded("tis3d")) {
+            TIS3DCompatHandler.register(modEventBus);
+        }
         modContainer.registerConfig(ModConfig.Type.COMMON, Common.SPEC, MODID + "/common.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, WorldGen.SPEC, MODID + "/worldgen.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, Materials.SPEC, MODID + "/materials.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, Entries.SPEC, MODID + "/entries.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, igentuman.nc.config.Processors.SPEC, MODID + "/processors.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, Multiblocks.SPEC, MODID + "/multiblocks.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, igentuman.nc.config.Bomb.SPEC, MODID + "/bomb.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, igentuman.nc.config.Q36.SPEC, MODID + "/q36.toml");
@@ -353,7 +364,7 @@ public class NuclearCraft {
             if(entry.hasBlockEntity()) {
                 if (entry.hasBlock()) {
                     var block = entry.block().get();
-                    if (block instanceof MultiblockControllerBlock || block instanceof MultiblockPartBlock) {
+                    if (block instanceof MultiblockControllerBlock || block instanceof MultiblockPartBlock || block instanceof MultiblockBlock) {
                         continue;
                     }
                 }

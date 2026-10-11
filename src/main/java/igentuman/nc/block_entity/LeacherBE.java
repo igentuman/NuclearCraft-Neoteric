@@ -16,7 +16,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
@@ -29,8 +28,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /** Leacher processor BE; extracts ore from virtual veins or physical blocks using aqua regia acid and a catalyst. */
 public class LeacherBE extends UniversalProcessorBE {
@@ -234,40 +231,28 @@ public class LeacherBE extends UniversalProcessorBE {
         if (!ModList.get().isLoaded("immersiveengineering")) return ItemStack.EMPTY;
         if (!(level instanceof ServerLevel serverLevel)) return ItemStack.EMPTY;
         ChunkPos sampleChunk = IEMineralVein.getChunkPos(catalyst);
-        if (sampleChunk == null) return ItemStack.EMPTY;
+        if (sampleChunk == null) {
+            leacherState = NO_SOURCE;
+            return ItemStack.EMPTY;
+        }
         if (!sampleChunk.equals(new ChunkPos(getBlockPos()))) {
             leacherState = WRONG_POSITION;
             return ItemStack.EMPTY;
         }
         var sampleDim = IEMineralVein.getDimension(catalyst);
-        if (sampleDim != null && !level.dimension().equals(sampleDim)) {
+        if (sampleDim == null || !level.dimension().equals(sampleDim)) {
             leacherState = WRONG_POSITION;
             return ItemStack.EMPTY;
         }
-        return IEMineralVein.getNextVeinItem(serverLevel, catalyst, allowedInputItems());
+        ItemStack ore = IEMineralVein.getNextVeinItem(serverLevel, catalyst, this::isMinable);
+        if (ore.isEmpty()) leacherState = NO_SOURCE;
+        return ore;
     }
 
     private boolean isIECoreSample(ItemStack stack) {
         if (!Common.IN_SITU_ALLOW_IE_VEINS.get()) return false;
         if (!ModList.get().isLoaded("immersiveengineering")) return false;
         return BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals("immersiveengineering:coresample");
-    }
-
-    /** Returns the list of item stacks that the leacher can accept as catalysts. */
-    protected List<ItemStack> allowedInputItems() {
-        List<ItemStack> items = new ArrayList<>();
-        ModEntry rpEntry = ModEntries.get("research_paper");
-        if (rpEntry != null && rpEntry.hasItem()) {
-            items.add(new ItemStack(rpEntry.item().get()));
-        }
-        items.add(new ItemStack(Items.FILLED_MAP));
-        if (ModList.get().isLoaded("immersiveengineering")) {
-            Item ieCoreSample = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("immersiveengineering", "coresample"));
-            if (ieCoreSample != Items.AIR) {
-                items.add(new ItemStack(ieCoreSample));
-            }
-        }
-        return items;
     }
 
     @Override

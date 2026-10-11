@@ -1,43 +1,71 @@
 package igentuman.nc.compat.ie;
 
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
+import blusunrize.immersiveengineering.api.crafting.StackWithChance;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.common.items.CoresampleItem;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
 
-/** Immersive Engineering mineral vein compat utility; reads core sample NBT and extracts ore from IE's vein system. */
 public class IEMineralVein {
 
-    /** Reads the chunk position from an IE core sample item's NBT. */
     public static ChunkPos getChunkPos(ItemStack coreSample) {
-        CompoundTag tag = coreSample.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        if (tag.contains("x") && tag.contains("z")) {
-            return new ChunkPos(tag.getInt("x"), tag.getInt("z"));
-        }
-        if (tag.contains("chunkX") && tag.contains("chunkZ")) {
-            return new ChunkPos(tag.getInt("chunkX"), tag.getInt("chunkZ"));
-        }
-        return null;
+        CoresampleItem.ItemData data = coreSample.get(IEDataComponents.CORESAMPLE);
+        if (data == null || data.position().dimension() == null) return null;
+        return data.position().position().toChunkPos();
     }
 
-    /** Reads the dimension key from an IE core sample item's NBT. */
-    public static ResourceKey<Level> getDimension(ItemStack stack) {
-        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        if (tag.contains("dimension")) {
-            String dim = tag.getString("dimension");
-            return ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION, ResourceLocation.parse(dim));
-        }
-        return null;
+    public static ResourceKey<Level> getDimension(ItemStack coreSample) {
+        CoresampleItem.ItemData data = coreSample.get(IEDataComponents.CORESAMPLE);
+        return data == null ? null : data.position().dimension();
     }
 
-    /** Gets the next ore item from IE's mineral vein system for the given core sample. */
-    public static ItemStack getNextVeinItem(Level level, ItemStack stack, List<ItemStack> allowed) {
-        return ItemStack.EMPTY;
+    public static ItemStack getNextVeinItem(Level level, ItemStack coreSample, Predicate<ItemStack> acceptsOre) {
+        CoresampleItem.ItemData data = coreSample.get(IEDataComponents.CORESAMPLE);
+        if (data == null || data.veins().isEmpty()) return ItemStack.EMPTY;
+
+        List<MineralMix> eligibleMixes = new ArrayList<>();
+        List<List<StackWithChance>> eligibleOutputs = new ArrayList<>();
+        int totalWeight = 0;
+        for (var holder : CoresampleItem.getMineralMixes(level, coreSample)) {
+            MineralMix mix = holder.value();
+            List<StackWithChance> outputs = mix.outputs.stream()
+                    .filter(output -> output.chance() > 0 && acceptsOre.test(output.stack().get()))
+                    .toList();
+            if (outputs.isEmpty()) continue;
+            eligibleMixes.add(mix);
+            eligibleOutputs.add(outputs);
+            totalWeight += Math.max(0, mix.weight);
+        }
+        if (eligibleMixes.isEmpty()) return ItemStack.EMPTY;
+
+        int selected = ThreadLocalRandom.current().nextInt(eligibleMixes.size());
+        if (totalWeight > 0) {
+            int roll = ThreadLocalRandom.current().nextInt(totalWeight);
+            for (int i = 0; i < eligibleMixes.size(); i++) {
+                roll -= Math.max(0, eligibleMixes.get(i).weight);
+                if (roll < 0) {
+                    selected = i;
+                    break;
+                }
+            }
+        }
+
+        List<StackWithChance> outputs = eligibleOutputs.get(selected);
+        float totalChance = 0;
+        for (StackWithChance output : outputs) totalChance += output.chance();
+        float roll = ThreadLocalRandom.current().nextFloat() * totalChance;
+        for (StackWithChance output : outputs) {
+            roll -= output.chance();
+            if (roll < 0) return output.stack().get().copyWithCount(1);
+        }
+        return outputs.getLast().stack().get().copyWithCount(1);
     }
 }

@@ -1,6 +1,7 @@
 package igentuman.nc.recipe;
 
 import igentuman.nc.block_entity.GlobalBlockEntity;
+import igentuman.nc.config.Common;
 import igentuman.nc.util.ClientUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -85,7 +86,13 @@ public class RecipeInfo {
             return; // no energy storage, cannot process
         }
         long required = (long) energyPerTick * multiplier;
-        if(required > 0) {
+        if (required > 0 && be.generatesRecipeEnergy()) {
+            long generated = Common.generated(required);
+            if (generated > be.energyStorage.getMaxEnergyStored() - be.energyStorage.getEnergyStored()) {
+                return;
+            }
+            be.energyStorage.addEnergy(generated);
+        } else if(required > 0) {
             long extracted = be.energyStorage.getEnergyStored() >= required ? required : 0;
             if (extracted < required) {
                 return; // not enough energy, stall

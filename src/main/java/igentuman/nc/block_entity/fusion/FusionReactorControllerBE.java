@@ -2,6 +2,7 @@ package igentuman.nc.block_entity.fusion;
 
 import igentuman.nc.block_entity.MultiblockControllerBE;
 import igentuman.nc.block_entity.MultiblockPortBE;
+import igentuman.nc.block_entity.OutputLevelSource;
 import igentuman.nc.client.particle.FusionBeamParticleData;
 import igentuman.nc.container.FusionReactorContainer;
 import igentuman.nc.handler.fluid.FluidStackHandler;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Controller block entity for the fusion reactor; manages the core cage, runs the reaction, and emits beam particles. */
-public class FusionReactorControllerBE extends MultiblockControllerBE {
+public class FusionReactorControllerBE extends MultiblockControllerBE implements OutputLevelSource {
 
     public static final int MODE_ENERGY = 0;
     public static final int MODE_HEAT = 1;
@@ -122,6 +123,14 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
 
     public double rfAmplifierRatio() {
         return Math.clamp((rfAmplificationRatio / 100.0) * (amplificationAdjustment / 100.0), 0, 1.0);
+    }
+
+    public void voidFuel() {
+        FluidStackHandler tanks = fluidTanks();
+        if (tanks == null) return;
+        tanks.voidTank(0);
+        tanks.voidTank(1);
+        setChanged();
     }
 
     /** GUI slider (1..100) tuning the amplification ratio. */
@@ -250,18 +259,18 @@ public class FusionReactorControllerBE extends MultiblockControllerBE {
 
     /** Comparator strength (0-15) for the given output mode. */
     public int comparatorSignal(int mode) {
-        return switch (mode) {
-            case MODE_ENERGY ->
-                    energyStorage != null ? scale(energyStorage.getEnergyStored(), energyStorage.getMaxEnergyStored()) : 0;
-            case MODE_HEAT -> scale((int) reactorHeat, (int) maxHeat);
-            case MODE_EFFICIENCY -> Math.clamp((int) (efficiency * 15), 0, 15);
-            default -> 0;
-        };
+        return OutputLevelSource.comparatorSignal(outputLevel(mode));
     }
 
-    private static int scale(int value, int max) {
-        if (max <= 0) return 0;
-        return Math.clamp((int) ((long) value * 15 / max), 0, 15);
+    @Override
+    public double outputLevel(int mode) {
+        return switch (mode) {
+            case MODE_ENERGY ->
+                    energyStorage != null ? OutputLevelSource.fraction(energyStorage.getEnergyStored(), energyStorage.getMaxEnergyStored()) : 0;
+            case MODE_HEAT -> OutputLevelSource.fraction(reactorHeat, maxHeat);
+            case MODE_EFFICIENCY -> Math.clamp(efficiency, 0, 1);
+            default -> 0;
+        };
     }
 
     @Override

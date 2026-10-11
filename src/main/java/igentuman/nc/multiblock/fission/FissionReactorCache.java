@@ -17,6 +17,7 @@ public class FissionReactorCache extends AbstractMultiblockCache {
     final Set<Long> workingValidHeatSinks = new HashSet<>();
     final Set<Long> workingIrradiators = new HashSet<>();
     int workingIrradiationLines;
+    int workingEffectiveIrradiation;
     double workingCellsHeatMult;
     double workingCellsEnergyMult;
     double workingModeratorsHeatMult;
@@ -29,6 +30,7 @@ public class FissionReactorCache extends AbstractMultiblockCache {
     public volatile int heatSinkCount;
     public volatile int moderatorCount;
     public volatile int irradiationLines;
+    public volatile int effectiveIrradiation;
     public volatile double cellsHeatMult;
     public volatile double cellsEnergyMult;
     public volatile double moderatorsHeatMult;
@@ -48,6 +50,7 @@ public class FissionReactorCache extends AbstractMultiblockCache {
         workingValidHeatSinks.clear();
         workingIrradiators.clear();
         workingIrradiationLines = 0;
+        workingEffectiveIrradiation = 0;
         workingCellsHeatMult = 0;
         workingCellsEnergyMult = 0;
         workingModeratorsHeatMult = 0;
@@ -63,6 +66,7 @@ public class FissionReactorCache extends AbstractMultiblockCache {
         heatSinkCount = workingValidHeatSinks.size();
         moderatorCount = workingModerators.size();
         irradiationLines = workingIrradiationLines;
+        effectiveIrradiation = workingEffectiveIrradiation;
         cellsHeatMult = workingCellsHeatMult;
         cellsEnergyMult = workingCellsEnergyMult;
         moderatorsHeatMult = workingModeratorsHeatMult;

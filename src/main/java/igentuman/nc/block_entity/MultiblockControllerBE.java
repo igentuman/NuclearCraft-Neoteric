@@ -39,6 +39,8 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     protected MultiblockHandler.MultiblockInstance mbInstance;
     @NBTField(syncToClient = true)
     public boolean formed = false;
+    @NBTField
+    public boolean forceShutdown = false;
 
     public MultiblockControllerBE(BlockEntityType<?> type, BlockPos pos, BlockState state, String multiblockName) {
         super(type, pos, state, multiblockName);
@@ -54,6 +56,12 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
             mbInstance = MultiblockHandler.getInstance(serverLevel, worldPosition);
         }
         return mbInstance;
+    }
+
+    public void setForceShutdown(boolean value) {
+        if (forceShutdown == value) return;
+        forceShutdown = value;
+        setChanged();
     }
 
     /** Whether this controller currently owns an accepted structure; ports read capabilities through it. */

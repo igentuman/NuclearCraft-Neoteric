@@ -73,7 +73,7 @@ public class Processors extends ModEntries {
         proc(MELTER, 0, 1, 1, 0, 0);
         proc(PRESSURIZER, 0, 1, 0, 1, 9);
         proc(ROCK_CRUSHER, 0, 1, 0, 3, 12);
-        proc(STEAM_TURBINE, 1, 0, 1, 0, 4);
+        steamTurbine();
         proc(SUPERCOOLER, 1, 0, 1, 0, 11);
         proc(SUBATOMIC_LIQUIFIER, 1, 1, 1, 0, 0);
         leacher();
@@ -108,6 +108,16 @@ public class Processors extends ModEntries {
         b.catalysts(CatalystType.ENERGY);
         b.withLayout(SlotsLayout.forProcessor(0, 1, 0, 1))
                 .progressBar(0)
+                .build();
+    }
+
+    private static void steamTurbine() {
+        ModEntryBuilder b = addProcessor(STEAM_TURBINE)
+                .blockEntity(SteamTurbineBE::new)
+                .withEnergyOutput(100000);
+        b.fluidCap(1, 1, 0);
+        b.withLayout(SlotsLayout.forProcessor(0, 1, 0, 1))
+                .progressBar(4)
                 .build();
     }
 
@@ -159,7 +169,6 @@ public class Processors extends ModEntries {
                 .blockEntity(IrradiatorBE::new);
         b.itemCap(1, 1);
         b.fluidCap(1, 1, 0);
-        b.catalysts(CatalystType.ENERGY, CatalystType.SPEED);
         b.withLayout(SlotsLayout.forProcessor(1, 1, 1, 1))
                 .progressBar(0)
                 .build();

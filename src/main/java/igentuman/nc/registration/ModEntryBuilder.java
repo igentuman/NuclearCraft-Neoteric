@@ -443,7 +443,7 @@ public class ModEntryBuilder {
         return entry;
     }
 
-    private static BlockBehaviour.Properties defaultMultiblockProps() {
+    public static BlockBehaviour.Properties defaultMultiblockProps() {
         return BlockBehaviour.Properties.of()
                 .mapColor(MapColor.METAL)
                 .strength(3.5f, 6.0f)

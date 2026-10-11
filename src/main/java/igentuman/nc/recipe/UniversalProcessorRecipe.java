@@ -1,5 +1,6 @@
 package igentuman.nc.recipe;
 
+import igentuman.nc.config.Processors;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -151,12 +152,20 @@ public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput> {
         return fluidOutputs.get(i).resolve();
     }
 
-    public int getProcessTime() {
+    public int getBaseProcessTime() {
         return processTime;
     }
 
-    public int getEnergyPerTick() {
+    public int getBaseEnergyPerTick() {
         return energyPerTick;
+    }
+
+    public int getProcessTime() {
+        return Processors.processTime(processorName, processTime);
+    }
+
+    public int getEnergyPerTick() {
+        return Processors.energyPerTick(processorName, energyPerTick);
     }
 
     public boolean isComplete() {

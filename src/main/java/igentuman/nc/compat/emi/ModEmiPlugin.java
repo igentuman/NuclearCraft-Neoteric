@@ -11,6 +11,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.compat.jei.FuelInfoRecipe;
 import igentuman.nc.compat.jei.IsotopeInfoRecipe;
 import igentuman.nc.compat.PlacementRuleRecipe;
+import igentuman.nc.compat.refinedstorage.RSEmiPatternHandler;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
@@ -40,6 +41,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.fml.ModList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,6 +87,9 @@ public class ModEmiPlugin implements EmiPlugin {
 
         registry.addRecipeHandler(Crafter.ENGINEERS_CRAFTING_TABLE_MENU.get(), new EngineersCrafterEmiRecipeHandler());
         registry.addRecipeHandler(Crafter.ENGINEERS_ENCODER_MENU.get(), new EngineersEncoderEmiRecipeHandler());
+        if (ModList.get().isLoaded("refinedstorage")) {
+            RSEmiPatternHandler.register(registry);
+        }
         registry.addWorkstation(VanillaEmiRecipeCategories.CRAFTING, EmiStack.of(new ItemStack(Crafter.ENGINEERS_CRAFTING_TABLE_ITEM.get())));
 
         RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();

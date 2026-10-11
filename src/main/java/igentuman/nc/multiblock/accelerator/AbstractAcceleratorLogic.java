@@ -118,6 +118,7 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
                 signal = Math.max(signal, port.controlSignalSample());
             }
         }
+        if (controller.computerSignal >= 0) signal = controller.computerSignal;
         signal = Math.clamp(signal, 0, 15);
         controlSignal = signal;
         controller.updateControlSignalDisplay(signal);

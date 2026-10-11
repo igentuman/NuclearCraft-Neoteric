@@ -1,6 +1,7 @@
 package igentuman.nc.setup.entries;
 
 import igentuman.nc.block.PortalBlock;
+import igentuman.nc.block.RedstoneDimmerBlock;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -17,6 +18,7 @@ public class Blocks extends ModEntries {
                 .strength(1.5f)
                 .requiresCorrectToolForDrops());
         add("wasteland_portal").block(() -> new PortalBlock()).build();
+        add("redstone_dimmer").block(() -> new RedstoneDimmerBlock()).build();
         deco("glowing_mushroom", BlockBehaviour.Properties.of()
                 .mapColor(MapColor.COLOR_LIGHT_GRAY)
                 .sound(SoundType.GRASS)

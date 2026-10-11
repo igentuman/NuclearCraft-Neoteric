@@ -1,5 +1,6 @@
 package igentuman.nc.multiblock.fission;
 
+import igentuman.nc.config.Common;
 import igentuman.nc.api.multiblock.AbstractMultiblockLogic;
 import igentuman.nc.block_entity.fission.FissionReactorControllerBE;
 import igentuman.nc.config.Multiblocks;
@@ -38,7 +39,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 /** Runs the fission reactor's per-tick reaction: heat, energy/steam generation, cooling, fuel burn, and meltdown. */
 public class FissionReactorLogic extends AbstractMultiblockLogic<FissionReactorCache> {
 
-    private static final double GENERATION_MULTIPLIER = 1;
     private static final int IRRADIATION_HEAT_PER_LINE = 15;
 
     private double reactivityLevel;
@@ -57,7 +57,7 @@ public class FissionReactorLogic extends AbstractMultiblockLogic<FissionReactorC
         BlockEntity blockEntity = level.getBlockEntity(controllerPos);
         if (!(blockEntity instanceof FissionReactorControllerBE be)) return;
         seedHeat(be);
-        if (be.isRedstoneActivated()) tick(be, cache);
+        if (be.isRedstoneActivated() && !be.forceShutdown) tick(be, cache);
         else idle(be);
         be.updateHeatDisplay(heat);
     }
@@ -127,7 +127,7 @@ public class FissionReactorLogic extends AbstractMultiblockLogic<FissionReactorC
             be.steamPerTick = boil(be, level, cooling, heatMult, mod);
         } else {
             int gen = (int) (recipe.power() * cellsEnergy * factor
-                    * Multiblocks.fissionFeGenerationMultiplier / 10.0 * GENERATION_MULTIPLIER * reactivityLevel / 100.0 * mod);
+                    * Multiblocks.fissionFeGenerationMultiplier / 10.0 * Common.generationMultiplier() * reactivityLevel / 100.0 * mod);
             addEnergy(be.energyStorage, gen);
             be.energyPerTick = Math.max(0, gen);
             be.steamPerTick = 0;
@@ -172,6 +172,11 @@ public class FissionReactorLogic extends AbstractMultiblockLogic<FissionReactorC
         syncDisplay(be, heat, fuelConsumed ? currentRecipe : null);
         be.updateHeatDisplay(heat);
         be.markDirty();
+    }
+
+    public void voidFuel() {
+        consumedFuelStack = ItemStack.EMPTY;
+        returnFuel(null);
     }
 
     private void returnFuel(IItemHandler items) {

@@ -61,7 +61,7 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         seedRuntime(be);
         be.updateStructureDisplay(cache);
         be.updateRedstoneInput(level);
-        if (be.hasRedstoneSignal()) {
+        if (be.hasRedstoneSignal() && !be.forceShutdown) {
             tick(be, cache);
             if (be.running && be.energyPerTick > 0) be.renderBeam(level, cache.size);
         } else {

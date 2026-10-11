@@ -33,6 +33,7 @@ public class ProcessorEmiRecipe implements EmiRecipe {
 
     private final EmiRecipeCategory category;
     private final ResourceLocation id;
+    private final UniversalProcessorRecipe recipe;
     private final ProcessorCategoryLayout layout;
     private final int processTime;
     private final List<EmiIngredient> inputs = new ArrayList<>();
@@ -42,6 +43,7 @@ public class ProcessorEmiRecipe implements EmiRecipe {
     public ProcessorEmiRecipe(EmiRecipeCategory category, ResourceLocation id, UniversalProcessorRecipe recipe, ModEntry entry) {
         this.category = category;
         this.id = id;
+        this.recipe = recipe;
         this.layout = new ProcessorCategoryLayout(entry);
         this.processTime = recipe.getProcessTime();
 
@@ -106,6 +108,10 @@ public class ProcessorEmiRecipe implements EmiRecipe {
                 outputIngredients.add(EmiStack.EMPTY);
             }
         }
+    }
+
+    public UniversalProcessorRecipe recipe() {
+        return recipe;
     }
 
     @Override

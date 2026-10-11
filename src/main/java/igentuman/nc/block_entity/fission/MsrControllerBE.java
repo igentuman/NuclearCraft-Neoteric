@@ -54,6 +54,23 @@ public class MsrControllerBE extends MultiblockControllerBE {
 
     public MsrControllerBE(BlockPos pos, BlockState state, String name) {
         super(ModEntries.get(name).blockEntity().get(), pos, state, name);
+        FluidCapabilityHandler fluids = contentHandler.getFluidHandler();
+        if (fluids != null) {
+            fluids.setTransferLimits(0, () -> rateInMb(saltInputRate), this::freeSaltVolume,
+                    1, () -> rateInMb(saltOutputRate));
+        }
+    }
+
+    private static int rateInMb(int bucketsPerTick) {
+        return (int) Math.min(Integer.MAX_VALUE, Math.max(0L, bucketsPerTick * 1000L));
+    }
+
+    private int freeSaltVolume() {
+        FluidStackHandler tanks = fluidTanks();
+        if (tanks == null) return 0;
+        long volume = (long) fuelCellsCount * Multiblocks.msrVolumePerFuelCell;
+        long used = (long) tanks.getFluidInTank(0).getAmount() + tanks.getFluidInTank(1).getAmount();
+        return (int) Math.max(0, Math.min(Integer.MAX_VALUE, volume - used));
     }
 
     @Override
@@ -159,8 +176,8 @@ public class MsrControllerBE extends MultiblockControllerBE {
 
     public void handleSliderUpdate(int buttonId, int value) {
         switch (buttonId) {
-            case 0 -> saltInputRate = Math.max(0, value);
-            case 1 -> saltOutputRate = Math.max(0, value);
+            case 0 -> saltInputRate = Math.min(Integer.MAX_VALUE / 1000, Math.max(0, value));
+            case 1 -> saltOutputRate = Math.min(Integer.MAX_VALUE / 1000, Math.max(0, value));
         }
         setChanged();
     }

@@ -103,8 +103,23 @@ public class SidedContentHandler {
                 fluidHandler != null ? fluidHandler.getFacing() : Direction.NORTH;
         RelativeDirection relDir = RelativeDirection.toRelative(absoluteDir, facing);
         if (relDir == null) return;
-        int side = relDir.ordinal();
+        toggleSideConfig(slot, relDir);
+    }
 
+    public SlotModePair.SlotMode getSideMode(int slot, RelativeDirection relDir) {
+        int side = relDir.ordinal();
+        if (itemHandler != null && slot < itemHandler.getSlots()) {
+            return itemHandler.getMode(slot, side);
+        }
+        int fluidSlot = slot - (itemHandler != null ? itemHandler.getSlots() : 0);
+        if (fluidHandler != null && fluidSlot >= 0 && fluidSlot < fluidHandler.getTanks()) {
+            return fluidHandler.getMode(fluidSlot, side);
+        }
+        return SlotModePair.SlotMode.DISABLED;
+    }
+
+    public void toggleSideConfig(int slot, RelativeDirection relDir) {
+        int side = relDir.ordinal();
         if (itemHandler != null && slot < itemHandler.getSlots()) {
             itemHandler.toggleMode(slot, side);
             itemHandler.invalidateWrappers();

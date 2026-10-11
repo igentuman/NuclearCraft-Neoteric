@@ -1,5 +1,6 @@
 package igentuman.nc.block_entity.energy;
 
+import igentuman.nc.config.Common;
 import igentuman.nc.content.energy.EnergyGenDefs;
 import igentuman.nc.util.NBTField;
 import igentuman.nr.api.RadiationProfile;
@@ -51,7 +52,7 @@ public class DecayGeneratorBE extends AbstractEnergyBE {
             if (!profile.isEmpty()) {
                 accumulated.mergeAtoms(profile, 1.0, now);
             }
-            energy += activity > 0 ? Math.log1p(activity) * 20 : EnergyGenDefs.DECAY_GENERATOR_BASE_FE;
+            energy += activity > 0 ? Math.log1p(activity) * 20 : EnergyGenDefs.decayGeneratorBaseFe();
             ticks[side.ordinal()]++;
             if (ticks[side.ordinal()] > EnergyGenDefs.DECAY_GENERATOR_DURATION) {
                 ticks[side.ordinal()] = 0;
@@ -59,7 +60,7 @@ public class DecayGeneratorBE extends AbstractEnergyBE {
             }
         }
         pendingRadiation = accumulated;
-        return (int) energy;
+        return Common.generated(energy);
     }
 
     private void decayBlock(BlockPos pos) {

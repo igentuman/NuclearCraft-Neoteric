@@ -2,14 +2,12 @@ package igentuman.nc.block_entity.accelerator;
 
 import igentuman.nc.api.particle.IParticleHandler;
 import igentuman.nc.block.accelerator.BeamPortMode;
-import igentuman.nc.item.ParticleSourceItem;
 import igentuman.nc.multiblock.accelerator.LinearAcceleratorCache;
 import igentuman.nc.multiblock.accelerator.LinearAcceleratorLogic;
 import igentuman.nc.multiblock.StructureRole;
 import igentuman.nc.particle.ParticlePortView;
 import igentuman.nc.particle.ParticleSourceCatalog;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,15 +60,12 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
 
     public void installSourceValidators() {
         if (sourceValidatorsInstalled) return;
-        ParticleSourceCatalog catalog = ParticleSourceCatalog.builtin();
         if (contentHandler.getItemHandler() != null) {
-            contentHandler.getItemHandler().setSlotValidator(0, stack -> stack.getItem() instanceof ParticleSourceItem
-                    && catalog.itemSources().containsKey(BuiltInRegistries.ITEM.getKey(stack.getItem()))
-                    && ParticleSourceItem.data(stack) != null);
+            contentHandler.getItemHandler().setSlotValidator(0, stack -> ParticleSourceCatalog.sourceData(stack) != null);
         }
         if (contentHandler.getFluidHandler() != null) {
             contentHandler.getFluidHandler().getInternalHandler().setTankValidator(TANK_SOURCE,
-                    stack -> catalog.fluidSources().containsKey(BuiltInRegistries.FLUID.getKey(stack.getFluid())));
+                    stack -> ParticleSourceCatalog.fluidSource(stack) != null);
         }
         sourceValidatorsInstalled = true;
     }

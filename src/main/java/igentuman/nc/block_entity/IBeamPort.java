@@ -26,8 +26,10 @@ public interface IBeamPort {
         for (int i = 0; i < order.length; i++) {
             if (order[i] == beamPortMode()) start = i;
         }
-        BeamPortMode next = order[(start + 1) % order.length];
+        return applyBeamPortMode(order[(start + 1) % order.length], debug);
+    }
 
+    default BeamPortMode applyBeamPortMode(BeamPortMode next, Consumer<String> debug) {
         if (next == BeamPortMode.DISABLED) {
             configureMode(BeamPortMode.DISABLED, -1);
             return BeamPortMode.DISABLED;

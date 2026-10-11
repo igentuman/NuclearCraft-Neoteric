@@ -119,6 +119,7 @@ public class VanillaRecipes {
         bomb();
         pipes();
         designerBlocks();
+        redstoneDimmer();
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("charging_station"), 1)
                 .pattern("SBS")
                 .pattern("S S")
@@ -230,6 +231,20 @@ public class VanillaRecipes {
 
     private static ItemLike item(String name) {
         return ModEntries.get(name).item();
+    }
+
+    private static void redstoneDimmer() {
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, item("redstone_dimmer"))
+                .pattern("LPL")
+                .pattern("CMC")
+                .pattern("LPL")
+                .define('C', COMPARATOR)
+                .define('M', item("chassis"))
+                .define('P', REPEATER)
+                .define('L', item("plate_basic"))
+                .group(MODID + "_dimmer")
+                .unlockedBy("item", has(item("chassis")))
+                .save(recipeOutput);
     }
 
     private static void pipes() {

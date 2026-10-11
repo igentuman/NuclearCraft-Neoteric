@@ -11,7 +11,6 @@ import igentuman.nc.particle.ParticleSourceCatalog;
 import igentuman.nc.particle.ParticleSourceData;
 import igentuman.nc.setup.Registers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -50,8 +49,7 @@ public class LinearAcceleratorLogic
         var handler = controller.contentHandler.getItemHandler();
         if (handler == null) return false;
         ItemStack sourceStack = handler.getStackInSlot(0);
-        if (!(sourceStack.getItem() instanceof ParticleSourceItem)) return false;
-        ParticleSourceData source = ParticleSourceItem.data(sourceStack);
+        ParticleSourceData source = ParticleSourceCatalog.sourceData(sourceStack);
         if (source == null || source.isDepleted()) return false;
 
         ParticleSourceData.EmitResult proposed = source.emit(SOURCE_BATCH);
@@ -65,9 +63,15 @@ public class LinearAcceleratorLogic
         long committed = accepted - commitRemainder.amount();
         if (committed <= 0) return false;
 
-        ParticleSourceData.EmitResult committedEmission = source.emit(committed);
-        ParticleSourceItem.setData(sourceStack, committedEmission.remaining());
-        handler.setStackInSlot(0, sourceStack);
+        ParticleSourceData remaining = source.emit(committed).remaining();
+        ItemStack updated = sourceStack.copy();
+        if (remaining.isDepleted() && !(updated.getItem() instanceof ParticleSourceItem)) {
+            updated.shrink(1);
+            updated.remove(Registers.PARTICLE_SOURCE.get());
+        } else {
+            ParticleSourceItem.setData(updated, remaining);
+        }
+        handler.setStackInSlot(0, updated);
         return true;
     }
 
@@ -77,8 +81,7 @@ public class LinearAcceleratorLogic
         int sourceTank = LinearAcceleratorControllerBE.TANK_SOURCE;
         FluidStack stored = handler.getFluidInTank(sourceTank);
         if (stored.isEmpty()) return false;
-        ParticleSourceData source = ParticleSourceCatalog.builtin().fluidSources()
-                .get(BuiltInRegistries.FLUID.getKey(stored.getFluid()));
+        ParticleSourceData source = ParticleSourceCatalog.fluidSource(stored);
         if (source == null) return false;
 
         ParticleStack candidate = source.emit(source.capacity()).stack();

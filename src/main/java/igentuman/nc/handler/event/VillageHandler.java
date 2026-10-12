@@ -23,13 +23,16 @@ import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
 import static igentuman.nc.NuclearCraft.MODID;
@@ -42,14 +45,15 @@ import static igentuman.nc.util.TagUtil.plateTag;
 public class VillageHandler {
 
     private static final String[] VILLAGE_TYPES = {"plains", "snowy", "savanna", "desert", "taiga"};
-    private static final int SCIENTIST_HOUSE_WEIGHT = 1;
+    private static final int SCIENTIST_HOUSE_WEIGHT = 4;
+    private static final Set<StructureTemplatePool> MODIFIED_POOLS = Collections.newSetFromMap(new WeakHashMap<>());
     private static final float VILLAGER_PRICE_MULTIPLIER = 0.02f;
     private static final float WANDERER_PRICE_MULTIPLIER = 0.2f;
 
     @SubscribeEvent
-    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
-        if (!Common.SCIENTIST_HOUSE.get()) return;
-        Registry<StructureTemplatePool> pools = event.getServer().registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
+    public static void onTagsUpdated(TagsUpdatedEvent event) {
+        if (event.getUpdateCause() != TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD || !Common.SCIENTIST_HOUSE.get()) return;
+        Registry<StructureTemplatePool> pools = event.getRegistryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
         for (String type : VILLAGE_TYPES) {
             pools.getOptional(ResourceLocation.withDefaultNamespace("village/" + type + "/houses"))
                     .ifPresent(pool -> addToPool(pool, rl("scientist_house/" + type)));
@@ -57,6 +61,7 @@ public class VillageHandler {
     }
 
     private static void addToPool(StructureTemplatePool pool, ResourceLocation template) {
+        if (!MODIFIED_POOLS.add(pool)) return;
         StructureTemplatePoolAccessor accessor = (StructureTemplatePoolAccessor) pool;
         StructurePoolElement element = StructurePoolElement.single(template.toString())
                 .apply(StructureTemplatePool.Projection.RIGID);

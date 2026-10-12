@@ -6,6 +6,7 @@ import igentuman.nc.datagen.recipe.ModRecipeProvider;
 import igentuman.nc.datagen.tag.ModBlockTagProvider;
 import igentuman.nc.datagen.tag.ModFluidTagProvider;
 import igentuman.nc.datagen.tag.ModItemTagProvider;
+import igentuman.nc.datagen.tag.ModPoiTypeTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -38,6 +39,7 @@ public class ModDataGenerators {
         generator.addProvider(event.includeServer(), blockTagProvider);
         generator.addProvider(event.includeServer(), new ModItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter(), existingFileHelper));
         generator.addProvider(event.includeServer(), new ModFluidTagProvider(packOutput, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new ModPoiTypeTagProvider(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new ModDatapackProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeClient(), new ModLanguageProvider(generator, "en_us"));

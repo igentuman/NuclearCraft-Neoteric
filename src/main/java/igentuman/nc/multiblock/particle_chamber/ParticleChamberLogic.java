@@ -1,12 +1,18 @@
 package igentuman.nc.multiblock.particle_chamber;
 
+import igentuman.nc.api.multiblock.AbstractMultiblockLogic;
+import igentuman.nc.api.particle.IParticleHandler;
 import igentuman.nc.api.particle.ParticleAction;
 import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.block_entity.MultiblockPortBE;
 import igentuman.nc.block_entity.particle.ParticleChamberControllerBE;
-import igentuman.nc.api.multiblock.AbstractMultiblockLogic;
+import igentuman.nc.config.Multiblocks;
+import igentuman.nc.particle.BeamConnection;
+import igentuman.nc.particle.BeamConnectionResolver;
 import igentuman.nc.particle.ParticleStorage;
+import igentuman.nc.particle.ParticleTransfer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
@@ -18,6 +24,8 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -51,17 +59,65 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
     public final void tickServer(ServerLevel level, BlockPos controllerPos, ParticleChamberCache cache) {
         if (!(level.getBlockEntity(controllerPos) instanceof ParticleChamberControllerBE controller)) return;
         ensureChannels(cache.beamInputs.size(), cache.beamOutputs.size());
+        clearParticles(pendingOutputs);
         boolean signal = redstoneEnabled(level, controllerPos, cache);
         if (signal != enabled) {
             enabled = signal;
             changed = true;
         }
-        controller.updateParticleDisplay(inputs, pendingOutputs);
-        if (enabled && !controller.forceShutdown) process(level, controller, cache);
-        if (changed) {
-            changed = false;
-            controller.setChanged();
+        List<ParticleStack> inputDisplay = snapshots(inputs);
+        List<ParticleStack> outputDisplay = List.of();
+        try {
+            if (enabled && !controller.forceShutdown) process(level, controller, cache);
+            outputDisplay = snapshots(pendingOutputs);
+            transferOutputs(level, controllerPos, cache);
+        } finally {
+            clearParticles(inputs);
+            clearParticles(pendingOutputs);
+            controller.updateParticleDisplay(inputDisplay, outputDisplay);
+            if (changed) {
+                changed = false;
+                controller.setChanged();
+            }
         }
+    }
+
+    private void transferOutputs(ServerLevel level, BlockPos controllerPos, ParticleChamberCache cache) {
+        for (int i = 0; i < cache.beamOutputs.size(); i++) {
+            ParticleStorage output = pendingOutputs.get(i);
+            if (output.snapshot(0).isEmpty()) continue;
+            BlockPos portPos = cache.beamOutputs.get(i);
+            if (!level.hasChunkAt(portPos)) continue;
+            BlockState state = level.getBlockState(portPos);
+            if (!state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) continue;
+            Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+            BeamConnection connection = BeamConnectionResolver.resolve(level, portPos, direction,
+                    Multiblocks.particleMachines().accelerator().beamConnectionReach());
+            if (connection == null) continue;
+            IParticleHandler destination = BeamConnectionResolver.destination(level, connection);
+            if (destination == null) continue;
+            try {
+                ParticleTransfer.Result result = ParticleTransfer.execute(new ParticleTransfer.Request(
+                        output, 0, destination, 0, List.of(level.dimension().location(), controllerPos, portPos)));
+                if (result.transferred().isEmpty()) continue;
+                if (level.getBlockEntity(portPos) instanceof MultiblockPortBE sourcePort) {
+                    sourcePort.recordParticleTransfer(result.transferred(), level.getGameTime(), direction);
+                }
+                if (level.getBlockEntity(connection.destination()) instanceof MultiblockPortBE destinationPort) {
+                    destinationPort.recordParticleTransfer(result.transferred(), level.getGameTime(), direction);
+                }
+            } catch (ArithmeticException | IllegalArgumentException ignored) {
+                // Invalid beam data is discarded with the rest of this tick's particles.
+            }
+        }
+    }
+
+    private static void clearParticles(List<ParticleStorage> storages) {
+        for (ParticleStorage storage : storages) storage.extract(0, Long.MAX_VALUE, ParticleAction.EXECUTE);
+    }
+
+    private static List<ParticleStack> snapshots(List<ParticleStorage> storages) {
+        return storages.stream().map(storage -> storage.snapshot(0)).toList();
     }
 
     public final void ensureChannels(int inputCount, int outputCount) {
@@ -145,8 +201,6 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
 
     @Override
     public void saveRuntime(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.put("inputs", saveStorages(inputs, registries));
-        tag.put("pendingOutputs", saveStorages(pendingOutputs, registries));
         tag.putDouble("fractionalWork", fractionalWork);
         tag.putBoolean("enabled", enabled);
         if (activeReactionId != null) tag.putString("activeReaction", activeReactionId.toString());
@@ -157,8 +211,8 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
 
     @Override
     public void loadRuntime(CompoundTag tag, HolderLookup.Provider registries) {
-        inputs = loadStorages(tag.getList("inputs", Tag.TAG_COMPOUND), registries);
-        pendingOutputs = loadStorages(tag.getList("pendingOutputs", Tag.TAG_COMPOUND), registries);
+        inputs = List.of();
+        pendingOutputs = List.of();
         double work = tag.getDouble("fractionalWork");
         fractionalWork = Double.isFinite(work) && work >= 0 ? work : 0D;
         enabled = tag.getBoolean("enabled");
@@ -168,21 +222,5 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
         ListTag yieldsTag = tag.getList("fractionalYields", Tag.TAG_DOUBLE);
         for (int i = 0; i < yieldsTag.size(); i++) yields.add(yieldsTag.getDouble(i));
         fractionalYields = List.copyOf(yields);
-    }
-
-    private static ListTag saveStorages(List<ParticleStorage> storages, HolderLookup.Provider registries) {
-        ListTag list = new ListTag();
-        for (ParticleStorage storage : storages) list.add(storage.serializeNBT(registries));
-        return list;
-    }
-
-    private List<ParticleStorage> loadStorages(ListTag list, HolderLookup.Provider registries) {
-        List<ParticleStorage> storages = new ArrayList<>(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            ParticleStorage storage = storage();
-            storage.deserializeNBT(registries, list.getCompound(i));
-            storages.add(storage);
-        }
-        return List.copyOf(storages);
     }
 }

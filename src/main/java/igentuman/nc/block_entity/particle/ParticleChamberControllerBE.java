@@ -99,16 +99,16 @@ public class ParticleChamberControllerBE extends MultiblockControllerBE {
                 mode == BeamPortMode.INPUT ? ParticlePortView.Access.INPUT : ParticlePortView.Access.OUTPUT);
     }
 
-    public void updateParticleDisplay(List<ParticleStorage> inputs, List<ParticleStorage> outputs) {
+    public void updateParticleDisplay(List<ParticleStack> inputs, List<ParticleStack> outputs) {
         writeChannelDisplay(inputs, inputParticleRegId, inputParticleAmount, inputParticleEnergy, inputParticleFocus);
         writeChannelDisplay(outputs, outputParticleRegId, outputParticleAmount, outputParticleEnergy,
                 outputParticleFocus);
     }
 
-    private static void writeChannelDisplay(List<ParticleStorage> storages,
+    private static void writeChannelDisplay(List<ParticleStack> stacks,
                                             int[] regId, int[] amount, int[] energy, int[] focus) {
         for (int i = 0; i < regId.length; i++) {
-            ParticleStack stack = i < storages.size() ? storages.get(i).snapshot(0) : ParticleStack.EMPTY;
+            ParticleStack stack = i < stacks.size() ? stacks.get(i) : ParticleStack.EMPTY;
             if (stack.isEmpty()) {
                 regId[i] = -1;
                 amount[i] = 0;

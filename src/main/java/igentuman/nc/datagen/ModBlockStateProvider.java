@@ -463,6 +463,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
             return;
         }
 
+        if (path.equals("fusion_reactor_core")) {
+            simpleBlock(block, models().getExistingFile(rl("block/fusion/core_center")));
+            return;
+        }
+
         ResourceLocation texture;
         boolean glass = path.equals("fusion_reactor_glass");
         if (path.equals("fusion_reactor_casing")) {
@@ -471,8 +476,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
             texture = rl("block/fusion/fusion_reactor_casing_glass");
         } else if (path.equals("fusion_reactor_connector")) {
             texture = rl("block/fusion/fusion_reactor_connector");
-        } else if (path.equals("fusion_reactor_core")) {
-            texture = rl("block/fusion/fusion_core/core_centre");
         } else if (path.endsWith("_electromagnet")) {
             texture = rl("block/electromagnet/" + path);
         } else if (path.endsWith("_rf_amplifier")) {

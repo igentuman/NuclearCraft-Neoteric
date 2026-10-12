@@ -536,7 +536,7 @@ public class GlobalBlockEntity extends BlockEntity {
         } catch (IllegalAccessException ignore) { }
     }
 
-    /** Writes only explicitly client-synchronized scalar fields for bounded block update packets. */
+    /** Writes explicitly client-synchronized fields for block update packets. */
     protected void saveClientTagData(CompoundTag tag) {
         try {
             for (Field field : collectAllNBTFields()) {
@@ -556,6 +556,10 @@ public class GlobalBlockEntity extends BlockEntity {
                     tag.putLong(field.getName(), value.asLong());
                 } else if (type == Direction.class && field.get(this) instanceof Direction value) {
                     tag.putString(field.getName(), value.getName());
+                } else if (field.get(this) instanceof NBTSerializable value) {
+                    CompoundTag bufferTag = new CompoundTag();
+                    value.save(bufferTag);
+                    tag.put(field.getName(), bufferTag);
                 }
             }
         } catch (IllegalAccessException ignored) { }

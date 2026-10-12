@@ -3,6 +3,7 @@ package igentuman.nc.setup.entries;
 import igentuman.nc.block.fusion.ElectromagnetBlock;
 import igentuman.nc.block.fusion.ElectromagnetSlopeBlock;
 import igentuman.nc.block.fusion.FusionCoreProxyBlock;
+import igentuman.nc.block.fusion.FusionReactorCoreBlock;
 import igentuman.nc.block.fusion.RFAmplifierBlock;
 import igentuman.nc.block_entity.fusion.FusionCoreProxyBE;
 import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
@@ -69,7 +70,7 @@ public class FusionReactor extends ModEntries {
         initialized = true;
         HighEnergyComponents.highEnergyComponents();
 
-        addMultiblockController("fusion_reactor_core")
+        addMultiblockController("fusion_reactor_core", FusionReactorCoreBlock::new)
                 .blockEntity(FusionReactorControllerBE::new)
                 .fluidCap(3, 5, 0)
                 .withEnergy(1_000_000, 100_000_000, ENERGY_BUFFER)

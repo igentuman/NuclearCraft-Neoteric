@@ -40,17 +40,14 @@ public class FluidHandlerWrapper implements IFluidHandler {
     @Override
     public int fill(@NotNull FluidStack resource, FluidAction action) {
         if (resource.isEmpty()) return 0;
-        int remaining = resource.getAmount();
-        int totalFilled = 0;
         for (int tank = 0; tank < handler.getTanks(); tank++) {
             if (side != null && !handler.canInsertFromSide(tank, resource, side)) continue;
             if (!handler.isFluidValid(tank, resource)) continue;
-            int filled = handler.fillTank(tank, resource.copyWithAmount(remaining), action);
-            totalFilled += filled;
-            remaining -= filled;
-            if (remaining <= 0) break;
+            int filled = handler.fillTank(tank, resource, action);
+            // A simulated fill must not assume later tanks still see the same contents.
+            if (filled > 0) return filled;
         }
-        return totalFilled;
+        return 0;
     }
 
     @Override

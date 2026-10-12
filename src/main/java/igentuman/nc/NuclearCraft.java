@@ -11,6 +11,7 @@ import igentuman.nc.item.ResoniteCrystalItem;
 import igentuman.nc.setup.entries.Anomalies;
 import igentuman.nc.setup.entries.Ghouls;
 import igentuman.nc.block_entity.GlobalBlockEntity;
+import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
 import igentuman.nc.config.*;
 import igentuman.nc.compat.cc.CCCompatHandler;
 import igentuman.nc.compat.oc2.OC2CompatHandler;
@@ -327,6 +328,7 @@ public class NuclearCraft {
 
     private void onDatapackSync(OnDatapackSyncEvent event) {
         if (event.getPlayer() == null) {
+            FusionReactorControllerBE.invalidateFuelRecipes();
             RecipeDeserializationLogger.logProcessorRecipes(event.getPlayerList().getServer().getRecipeManager());
         }
     }

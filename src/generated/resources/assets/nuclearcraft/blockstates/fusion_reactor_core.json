@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "nuclearcraft:block/fusion_reactor_core"
+      "model": "nuclearcraft:block/fusion/core_center"
     }
   }
 }

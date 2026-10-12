@@ -11,6 +11,7 @@ import igentuman.nc.recipe.fusion.FusionRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -42,10 +43,12 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
 
     private final Random random = new Random();
 
-    private FusionRecipe currentRecipe;
+    private FuelMatch currentMatch;
     private FusionCoolantRecipe coolantRecipe;
     private double ticksProcessed;
     private boolean fuelConsumed;
+    private ResourceLocation pendingRecipeId;
+    private boolean ignitionComplete;
     private long prevAmplification;
     private double lastHeatDeviationMult = 1;
     private double lastKnownOptimalTemp = 1_000_000;
@@ -79,30 +82,32 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
 
     private void tick(FusionReactorControllerBE be, FusionReactorCache fc) {
         Level level = be.getLevel();
-        double ratio = be.rfAmplifierRatio();
+        double ratio = ignitionComplete ? be.rfAmplifierRatio() : 1.0;
         int effRfPower = (int) (fc.rfAmplifiersPower * ratio);
-        int effRfAmplification = (int) (fc.rfAmplification * ratio);
         int magnetsPower = fc.magnetsPower;
         be.maxHeat = Math.max(fc.minRFAmplifiersTemp * 2.0, fc.maxMagnetsTemp * 2.0);
 
         updateCharge(be, effRfPower, magnetsPower);
 
         if (be.functionalBlocksCharge >= 100) {
-            FusionRecipe recipe = (fuelConsumed && currentRecipe != null) ? currentRecipe : matchRecipe(be, level);
-            if (recipe != null) {
-                currentRecipe = recipe;
+            restoreActiveRecipe(be);
+            FuelMatch match = (fuelConsumed && currentMatch != null) ? currentMatch : matchRecipe(be, level);
+            if (match != null) {
+                FusionRecipe recipe = match.recipe();
+                currentMatch = match;
                 double optimalTemp = recipe.optimalTemperature() > 0 ? recipe.optimalTemperature() : lastKnownOptimalTemp;
                 lastKnownOptimalTemp = optimalTemp;
 
                 if (!fuelConsumed) {
-                    fuelConsumed = consumeInputs(be, recipe);
+                    fuelConsumed = consumeInputs(be, match);
                 }
 
                 if (fuelConsumed) {
                     double cpe = controlPartsEfficiency(be, fc, optimalTemp);
-                    amplifyPlasma(be, fc, effRfAmplification, ratio, optimalTemp, cpe);
+                    amplifyPlasma(be, fc, ratio, optimalTemp, cpe);
                     plasmaToEnergyExchange(be, fc, recipe, optimalTemp, cpe);
                     heatLossExchange(be, fc, cpe);
+                    if (plasmaTemperature >= optimalTemp) ignitionComplete = true;
                     be.efficiency = calculateEfficiency(be, optimalTemp);
                     be.maxPlasmaTemperature = (long) optimalTemp * 2;
                     be.running = be.energyPerTick > 0 && plasmaTemperature > 0 && be.efficiency > 0;
@@ -113,13 +118,13 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
                         produceOutputs(be, recipe);
                         ticksProcessed = 0;
                         fuelConsumed = false;
-                        currentRecipe = null;
+                        currentMatch = null;
                     }
                 } else {
                     idlePlasma(be);
                 }
             } else {
-                currentRecipe = null;
+                currentMatch = null;
                 idlePlasma(be);
             }
         } else {
@@ -129,7 +134,7 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         coolDown(be, fc);
         meltdown(be, fc, level);
         be.updateReactionDisplay(reactorHeat, plasmaTemperature, chargeAmount);
-        be.markDirty();
+        be.captureReactionRuntime(this);
     }
 
     public void idle(FusionReactorControllerBE be) {
@@ -138,6 +143,7 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         reactorHeat = Math.max(0, reactorHeat - 1000);
         resetRuntime();
         be.updateReactionDisplay(reactorHeat, plasmaTemperature, chargeAmount);
+        be.captureReactionRuntime(this);
     }
 
     @Override
@@ -155,7 +161,8 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
     @Override
     public void resetRuntime() {
         fuelConsumed = false;
-        currentRecipe = null;
+        currentMatch = null;
+        pendingRecipeId = null;
         ticksProcessed = 0;
     }
 
@@ -165,6 +172,7 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         }
         be.energyPerTick = 0;
         be.running = false;
+        if (plasmaTemperature < PLASMA_ENERGY_THRESHOLD) ignitionComplete = false;
     }
 
     private void updateCharge(FusionReactorControllerBE be, int effRfPower, int magnetsPower) {
@@ -221,12 +229,12 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
     }
 
     private void amplifyPlasma(FusionReactorControllerBE be, FusionReactorCache fc,
-                               int effRfAmplification, double ratio, double optimalTemp, double cpe) {
+                               double ratio, double optimalTemp, double cpe) {
         double sizeFactor = Math.log(Math.pow(fc.size + 1, 5)) / 10.0;
         double pRatio = Math.log(optimalTemp / 150_000_000.0);
         double sq = pRatio > 0 ? Math.sqrt(pRatio) : 0;
         double plasmaHeatScale = (pRatio - sq + 5) / 7.0;
-        double amplificationVolume = (double) effRfAmplification * sizeFactor;
+        double amplificationVolume = (double) fc.rfAmplification * sizeFactor;
         double amplification = amplificationVolume
                 * plasmaHeatScale
                 * ratio
@@ -318,8 +326,36 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         return be.getBlockPos().offset(x, 1, z);
     }
 
-    private FusionRecipe matchRecipe(FusionReactorControllerBE be, Level level) {
-        if (!(level instanceof ServerLevel sl)) return currentRecipe;
+    private record FuelMatch(FusionRecipe recipe, boolean swapped, ResourceLocation id) {}
+
+    private void restoreActiveRecipe(FusionReactorControllerBE be) {
+        if (!fuelConsumed || currentMatch != null) return;
+        if (be.getLevel() instanceof ServerLevel level) {
+            // Older saves only recorded the active recipe's optimal temperature.
+            RecipeHolder<FusionRecipe> legacyMatch = null;
+            for (RecipeHolder<FusionRecipe> holder : level.getRecipeManager().getAllRecipesFor(FusionRecipes.FUSION_TYPE.get())) {
+                if (pendingRecipeId != null && holder.id().equals(pendingRecipeId)) {
+                    currentMatch = new FuelMatch(holder.value(), false, holder.id());
+                    break;
+                }
+                if (pendingRecipeId == null && holder.value().optimalTemperature() == lastKnownOptimalTemp) {
+                    if (legacyMatch != null) {
+                        legacyMatch = null;
+                        break;
+                    }
+                    legacyMatch = holder;
+                }
+            }
+            if (currentMatch == null && legacyMatch != null) {
+                currentMatch = new FuelMatch(legacyMatch.value(), false, legacyMatch.id());
+            }
+        }
+        pendingRecipeId = null;
+        if (currentMatch == null) fuelConsumed = false;
+    }
+
+    private FuelMatch matchRecipe(FusionReactorControllerBE be, Level level) {
+        if (!(level instanceof ServerLevel sl)) return currentMatch;
         FluidStackHandler tanks = be.fluidTanks();
         if (tanks == null) return null;
         FluidStack a = tanks.getFluidInTank(TANK_FUEL_A);
@@ -327,16 +363,21 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         if (a.isEmpty() || b.isEmpty()) return null;
         for (RecipeHolder<FusionRecipe> holder : sl.getRecipeManager().getAllRecipesFor(FusionRecipes.FUSION_TYPE.get())) {
             FusionRecipe r = holder.value();
-            if (r.inputA().test(a) && r.inputB().test(b) && canFitOutputs(be, r)) return r;
+            if (r.inputA().test(a) && r.inputB().test(b)) {
+                if (canFitOutputs(be, r)) return new FuelMatch(r, false, holder.id());
+            } else if (r.inputA().test(b) && r.inputB().test(a) && canFitOutputs(be, r)) {
+                return new FuelMatch(r, true, holder.id());
+            }
         }
         return null;
     }
 
-    private boolean consumeInputs(FusionReactorControllerBE be, FusionRecipe recipe) {
+    private boolean consumeInputs(FusionReactorControllerBE be, FuelMatch match) {
         FluidStackHandler tanks = be.fluidTanks();
         if (tanks == null) return false;
-        int aAmt = recipe.inputA().amount();
-        int bAmt = recipe.inputB().amount();
+        FusionRecipe recipe = match.recipe();
+        int aAmt = match.swapped() ? recipe.inputB().amount() : recipe.inputA().amount();
+        int bAmt = match.swapped() ? recipe.inputA().amount() : recipe.inputB().amount();
         if (tanks.getFluidInTank(TANK_FUEL_A).getAmount() < aAmt) return false;
         if (tanks.getFluidInTank(TANK_FUEL_B).getAmount() < bAmt) return false;
         tanks.drainTank(TANK_FUEL_A, aAmt, EXECUTE);
@@ -412,6 +453,9 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         tag.putLong("chargeAmount", chargeAmount);
         tag.putDouble("ticksProcessed", ticksProcessed);
         tag.putBoolean("fuelConsumed", fuelConsumed);
+        ResourceLocation activeRecipeId = currentMatch != null ? currentMatch.id() : pendingRecipeId;
+        if (fuelConsumed && activeRecipeId != null) tag.putString("activeRecipe", activeRecipeId.toString());
+        tag.putBoolean("ignitionComplete", ignitionComplete);
         tag.putLong("prevAmplification", prevAmplification);
         tag.putDouble("lastKnownOptimalTemp", lastKnownOptimalTemp);
         tag.putDouble("lastHeatDeviationMult", lastHeatDeviationMult);
@@ -427,8 +471,11 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         }
         ticksProcessed = tag.getDouble("ticksProcessed");
         fuelConsumed = tag.getBoolean("fuelConsumed");
-        prevAmplification = tag.getLong("prevAmplification");
+        pendingRecipeId = tag.contains("activeRecipe") ? ResourceLocation.tryParse(tag.getString("activeRecipe")) : null;
         if (tag.contains("lastKnownOptimalTemp")) lastKnownOptimalTemp = tag.getDouble("lastKnownOptimalTemp");
+        ignitionComplete = tag.contains("ignitionComplete") ? tag.getBoolean("ignitionComplete")
+                : plasmaTemperature >= lastKnownOptimalTemp;
+        prevAmplification = tag.getLong("prevAmplification");
         if (tag.contains("lastHeatDeviationMult")) lastHeatDeviationMult = tag.getDouble("lastHeatDeviationMult");
     }
 }

@@ -27,12 +27,16 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** Controller block entity for the fusion reactor; manages the core cage, runs the reaction, and emits beam particles. */
 public class FusionReactorControllerBE extends MultiblockControllerBE implements OutputLevelSource {
@@ -43,7 +47,10 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
     public static final int MODE_COUNT = 3;
     public static final String[] MODE_KEYS = {"energy", "heat", "efficiency"};
 
-    private boolean fluidValidatorsReady = false;
+    private static int fuelRecipeVersion;
+    private int installedFuelRecipeVersion = -1;
+    private final Map<Fluid, List<FusionRecipe>> fuelRecipesByFluid = new HashMap<>();
+    private CompoundTag reactionRuntime;
 
     @NBTField(syncToClient = true) public int functionalBlocksCharge;
     @NBTField(syncToClient = true) public int energyPerTick;
@@ -51,14 +58,14 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
     @NBTField(syncToClient = true) public boolean running;
     @NBTField(syncToClient = true) public int redstoneMode = MODE_HEAT;
 
-    @NBTField public double reactorHeat;
-    @NBTField public long plasmaTemperature;
-    @NBTField public long maxPlasmaTemperature;
+    @NBTField(syncToClient = true) public double reactorHeat;
+    @NBTField(syncToClient = true) public long plasmaTemperature;
+    @NBTField(syncToClient = true) public long maxPlasmaTemperature;
     @NBTField public long chargeAmount;
-    @NBTField public double efficiency;
-    @NBTField public double maxHeat;
+    @NBTField(syncToClient = true) public double efficiency;
+    @NBTField(syncToClient = true) public double maxHeat;
     @NBTField public int inputRedstoneSignal;
-    @NBTField public int rfAmplificationRatio;
+    @NBTField(syncToClient = true) public int rfAmplificationRatio;
 
     @NBTField(syncToClient = true) public double magneticFieldStrength;
     @NBTField(syncToClient = true) public int magnetsPower;
@@ -79,27 +86,47 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
         return fh != null ? fh.getInternalHandler() : null;
     }
 
-    /** Restricts fuel input tanks to fluids known to fusion recipes: tank 0 accepts any recipe's
-     *  first input fluid, tank 1 any recipe's second input fluid. */
-    private void ensureFluidValidators(ServerLevel level) {
-        if (fluidValidatorsReady) return;
-        FluidStackHandler tanks = fluidTanks();
-        if (tanks == null) return;
-        List<FluidIngredient> inputA = new ArrayList<>();
-        List<FluidIngredient> inputB = new ArrayList<>();
-        for (RecipeHolder<FusionRecipe> holder : level.getRecipeManager().getAllRecipesFor(FusionRecipes.FUSION_TYPE.get())) {
-            FusionRecipe r = holder.value();
-            inputA.add(r.inputA().ingredient());
-            inputB.add(r.inputB().ingredient());
-        }
-        tanks.setTankValidator(0, fs -> anyMatch(inputA, fs));
-        tanks.setTankValidator(1, fs -> anyMatch(inputB, fs));
-        fluidValidatorsReady = true;
+    @Nullable
+    @Override
+    public IFluidHandler getFluidHandler(@Nullable Direction side) {
+        if (level instanceof ServerLevel serverLevel) ensureFluidValidators(serverLevel);
+        return super.getFluidHandler(side);
     }
 
-    private static boolean anyMatch(List<FluidIngredient> ingredients, FluidStack fs) {
-        for (FluidIngredient ing : ingredients) {
-            if (ing.test(fs)) return true;
+    public static void invalidateFuelRecipes() {
+        fuelRecipeVersion++;
+    }
+
+    private void ensureFluidValidators(ServerLevel level) {
+        if (installedFuelRecipeVersion == fuelRecipeVersion) return;
+        FluidStackHandler tanks = fluidTanks();
+        if (tanks == null) return;
+        fuelRecipesByFluid.clear();
+        for (RecipeHolder<FusionRecipe> holder : level.getRecipeManager().getAllRecipesFor(FusionRecipes.FUSION_TYPE.get())) {
+            FusionRecipe recipe = holder.value();
+            indexFuel(recipe.inputA().ingredient(), recipe);
+            indexFuel(recipe.inputB().ingredient(), recipe);
+        }
+        tanks.setTankValidator(0, fs -> acceptsFuel(0, fs));
+        tanks.setTankValidator(1, fs -> acceptsFuel(1, fs));
+        installedFuelRecipeVersion = fuelRecipeVersion;
+    }
+
+    private void indexFuel(FluidIngredient ingredient, FusionRecipe recipe) {
+        for (FluidStack stack : ingredient.getStacks()) {
+            fuelRecipesByFluid.computeIfAbsent(stack.getFluid(), fluid -> new ArrayList<>()).add(recipe);
+        }
+    }
+
+    private boolean acceptsFuel(int tank, FluidStack incoming) {
+        List<FusionRecipe> candidates = fuelRecipesByFluid.get(incoming.getFluid());
+        if (candidates == null) return false;
+        FluidStack other = fluidTanks().getFluidInTank(1 - tank);
+        for (FusionRecipe recipe : candidates) {
+            FluidIngredient a = recipe.inputA().ingredient();
+            FluidIngredient b = recipe.inputB().ingredient();
+            if ((a.test(incoming) && (other.isEmpty() || b.test(other)))
+                    || (b.test(incoming) && (other.isEmpty() || a.test(other)))) return true;
         }
         return false;
     }
@@ -138,7 +165,25 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
         int clamped = Math.clamp(value, 1, 100);
         if (clamped != amplificationAdjustment) {
             amplificationAdjustment = clamped;
-            markDirty();
+            setChanged();
+        }
+    }
+
+    public void captureReactionRuntime(FusionReactorLogic reaction) {
+        if (level == null) return;
+        CompoundTag snapshot = new CompoundTag();
+        reaction.saveRuntime(snapshot, level.registryAccess());
+        reactionRuntime = snapshot;
+        setChanged();
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        if (tag.contains("runtime")) {
+            reactionRuntime = tag.getCompound("runtime").copy();
+        } else if (reactionRuntime != null) {
+            tag.put("runtime", reactionRuntime.copy());
         }
     }
 
@@ -175,7 +220,7 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
             formed = newFormed;
             wasChanged = true;
         }
-        if (!formed) {
+        if (!formed && (mbInstance == null || !mbInstance.dirty)) {
             FusionReactorLogic reaction = reaction();
             if (reaction != null) reaction.idle(this);
         }
@@ -336,5 +381,6 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         if (!tag.contains("runtime") && tag.contains("Reaction")) tag.put("runtime", tag.getCompound("Reaction"));
         super.loadAdditional(tag, registries);
+        reactionRuntime = tag.contains("runtime") ? tag.getCompound("runtime").copy() : null;
     }
 }

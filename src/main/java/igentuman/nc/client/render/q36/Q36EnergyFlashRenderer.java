@@ -2,6 +2,7 @@ package igentuman.nc.client.render.q36;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import igentuman.nc.client.renderer.BillboardingEffectRenderer;
 import igentuman.nc.client.renderer.DelayedRenderHandler;
 import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.client.renderer.ModRenderType;
@@ -12,9 +13,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 import static igentuman.nc.NuclearCraft.rl;
 
@@ -90,25 +88,7 @@ public class Q36EnergyFlashRenderer extends EntityRenderer<Q36EnergyFlash> {
                 new DelayedRenderHandler.LazyRender() {
                     @Override
                     public void render(Camera camera, VertexConsumer vb, PoseStack ps, int renderTick, float pt) {
-                        Quaternionf rot = camera.rotation();
-                        Vector3f[] verts = {
-                            new Vector3f(-1, 1, 0),
-                            new Vector3f(1, 1, 0),
-                            new Vector3f(1, -1, 0),
-                            new Vector3f(-1, -1, 0)
-                        };
-                        for (Vector3f v : verts) {
-                            rot.transform(v);
-                            v.mul(finalScale);
-                            v.add((float) pos.x, (float) pos.y, (float) pos.z);
-                        }
-                        ps.pushPose();
-                        Matrix4f m = ps.last().pose();
-                        vb.addVertex(m, verts[0].x, verts[0].y, verts[0].z).setUv(minU, maxV).setColor(200, 220, 255, finalAlpha);
-                        vb.addVertex(m, verts[1].x, verts[1].y, verts[1].z).setUv(maxU, maxV).setColor(200, 220, 255, finalAlpha);
-                        vb.addVertex(m, verts[2].x, verts[2].y, verts[2].z).setUv(maxU, minV).setColor(200, 220, 255, finalAlpha);
-                        vb.addVertex(m, verts[3].x, verts[3].y, verts[3].z).setUv(minU, minV).setColor(200, 220, 255, finalAlpha);
-                        ps.popPose();
+                        BillboardingEffectRenderer.quad(camera, vb, ps, pos, finalScale, minU, maxU, minV, maxV, 200, 220, 255, finalAlpha);
                     }
 
                     @Override

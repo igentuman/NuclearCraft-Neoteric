@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.PostPass;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
@@ -25,8 +24,18 @@ public class AnomalyShader {
     private static int currentSize = 0;
     private static Field passesField;
 
-    public static void register() {
-        NeoForge.EVENT_BUS.register(AnomalyShader.class);
+    public static boolean hasWork() {
+        Minecraft mc = Minecraft.getInstance();
+        if (ModShaders.anomalyPostEffect == null || mc.level == null || mc.player == null
+                || !Common.ANOMALY_CONFIG.SHADER.get()) {
+            return false;
+        }
+        for (Entity e : mc.level.entitiesForRendering()) {
+            if (e instanceof AnomalyEntity && e.distanceToSqr(mc.player) <= MAX_DISTANCE * MAX_DISTANCE) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void clear() {
@@ -48,11 +57,7 @@ public class AnomalyShader {
         return type == AnomalyType.GRAVITATIONAL ? 10.025F : 1.0F;
     }
 
-    @net.neoforged.bus.api.SubscribeEvent
-    public static void onRenderLevelStage(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
-            return;
-        }
+    static void render(RenderLevelStageEvent event) {
         Minecraft mc = Minecraft.getInstance();
         PostChain chain = ModShaders.anomalyPostEffect;
         if (chain == null || mc.level == null) {
@@ -103,7 +108,7 @@ public class AnomalyShader {
         }
 
         Matrix4f viewMatrix = event.getModelViewMatrix();
-        Matrix4f projMatrix = RenderSystem.getProjectionMatrix();
+        Matrix4f projMatrix = event.getProjectionMatrix();
         Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
 
         Vector4f p = new Vector4f((float)(pos.x - camPos.x), (float)(pos.y - camPos.y), (float)(pos.z - camPos.z), 1.0f);

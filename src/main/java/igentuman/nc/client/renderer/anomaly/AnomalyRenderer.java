@@ -2,6 +2,7 @@ package igentuman.nc.client.renderer.anomaly;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import igentuman.nc.client.renderer.BillboardingEffectRenderer;
 import igentuman.nc.client.renderer.DelayedRenderHandler;
 import igentuman.nc.client.renderer.ModRenderType;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
@@ -14,9 +15,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 public class AnomalyRenderer<T extends AnomalyEntity> extends EntityRenderer<T> {
 
@@ -66,26 +64,7 @@ public class AnomalyRenderer<T extends AnomalyEntity> extends EntityRenderer<T> 
                 float minV = yIndex * ssV;
                 float maxV = minV + ssV;
 
-                Quaternionf q = camera.rotation();
-                Vector3f[] verts = {
-                        new Vector3f(-1.0F, 1.0F, 0.0F),
-                        new Vector3f(1.0F, 1.0F, 0.0F),
-                        new Vector3f(1.0F, -1.0F, 0.0F),
-                        new Vector3f(-1.0F, -1.0F, 0.0F)
-                };
-                for (Vector3f v : verts) {
-                    q.transform(v);
-                    v.mul(scale);
-                    v.add((float) center.x, (float) center.y, (float) center.z);
-                }
-
-                stack.pushPose();
-                Matrix4f m = stack.last().pose();
-                vc.addVertex(m, verts[0].x(), verts[0].y(), verts[0].z()).setColor(255, 255, 255, 255).setUv(minU, maxV);
-                vc.addVertex(m, verts[1].x(), verts[1].y(), verts[1].z()).setColor(255, 255, 255, 255).setUv(maxU, maxV);
-                vc.addVertex(m, verts[2].x(), verts[2].y(), verts[2].z()).setColor(255, 255, 255, 255).setUv(maxU, minV);
-                vc.addVertex(m, verts[3].x(), verts[3].y(), verts[3].z()).setColor(255, 255, 255, 255).setUv(minU, minV);
-                stack.popPose();
+                BillboardingEffectRenderer.quad(camera, vc, stack, center, scale, minU, maxU, minV, maxV, 255, 255, 255, 255);
             }
 
             @Override

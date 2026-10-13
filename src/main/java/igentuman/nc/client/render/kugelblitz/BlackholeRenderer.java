@@ -15,7 +15,6 @@ import static igentuman.nc.NuclearCraft.rl;
 public class BlackholeRenderer implements BlockEntityRenderer<BlackHoleBE> {
 
     private static final CustomEffect CORE = new CustomEffect(rl("textures/particle/blackhole_glow.png"));
-    private static final float MIN_SCALE = 1.0F, MAX_SCALE = 5F;
 
     public BlackholeRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -25,7 +24,8 @@ public class BlackholeRenderer implements BlockEntityRenderer<BlackHoleBE> {
                        int packedLight, int combinedOverlay) {
         if (BlackHoleShader.submit(be)) return;
 
-        float scale = MIN_SCALE + be.getBlackholeScale() * (MAX_SCALE - MIN_SCALE);
+        BlackHoleGeometryRenderer.render(be, partialTick, poseStack, buffer);
+        float scale = BlackHoleGeometryRenderer.bodyRadius(be, partialTick) * 4F;
         BillboardingEffectRenderer.submit(CORE.getTexture(), () -> {
             CORE.setPos(Vec3.atCenterOf(be.getBlockPos()));
             CORE.setScale(scale);

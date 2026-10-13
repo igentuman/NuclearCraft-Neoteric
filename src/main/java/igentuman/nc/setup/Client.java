@@ -5,7 +5,6 @@ import igentuman.nc.compat.ponder.PonderUtil;
 import igentuman.nc.client.render.bomb.PrimedFissionBombRenderer;
 import igentuman.nc.client.render.q36.Q36EnergyFlashRenderer;
 import igentuman.nc.client.render.q36.Q36PulseProjectileRenderer;
-import igentuman.nc.client.renderer.AnomalyShader;
 import igentuman.nc.client.model.ModelFeralGhoul;
 import igentuman.nc.client.model.ModelWastelandBoss;
 import igentuman.nc.client.renderer.FeralGhoulRenderer;
@@ -22,8 +21,7 @@ import igentuman.nc.handler.crafter.CraftingPattern;
 import igentuman.nc.item.ResoniteCrystalItem;
 import igentuman.nc.setup.entries.*;
 import igentuman.nc.client.renderer.DelayedRenderHandler;
-import igentuman.nc.client.renderer.DistortShader;
-import igentuman.nc.client.renderer.BlackHoleShader;
+import igentuman.nc.client.renderer.ScenePostEffects;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.container.PipeConnectorContainer;
@@ -88,9 +86,7 @@ public class Client {
         event.enqueueWork(() -> {
             // Register the game-bus render handlers (level-stage events).
             DelayedRenderHandler.register();
-            DistortShader.register();
-            BlackHoleShader.register();
-            AnomalyShader.register();
+            ScenePostEffects.register();
             registerFluidRenderLayers();
             ItemProperties.register(
                     Crafter.CRAFTING_PATTERN.get(),

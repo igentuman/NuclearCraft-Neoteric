@@ -10,9 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostPass;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -30,18 +28,18 @@ public final class BlackHoleShader {
 
     private BlackHoleShader() {}
 
-    public static void register() {
-        NeoForge.EVENT_BUS.register(BlackHoleShader.class);
-    }
-
     public static void clear() {
         SOURCES.clear();
+    }
+
+    public static boolean hasWork() {
+        return pass != null && Multiblocks.kugelblitzBlackholeShader && !SOURCES.isEmpty();
     }
 
     public static boolean submit(BlackHoleBE be) {
         if (!Multiblocks.kugelblitzBlackholeShader || pass == null
                 || be.getLevel() != Minecraft.getInstance().level) return false;
-        SOURCES.add(be);
+        if (!SOURCES.contains(be)) SOURCES.add(be);
         return true;
     }
 
@@ -74,13 +72,12 @@ public final class BlackHoleShader {
         if (output.width != main.width || output.height != main.height) {
             output.resize(main.width, main.height, Minecraft.ON_OSX);
         }
+        ScenePostEffects.matchDepthFormat(output, main);
         pass.setOrthoMatrix(new Matrix4f().setOrtho(0, main.width, 0, main.height, 0.1F, 1000F));
     }
 
-    @SubscribeEvent
-    public static void onRenderLevelStage(RenderLevelStageEvent event) {
+    static void render(RenderLevelStageEvent event) {
         // Preserve opaque occlusion, then let chamber glass blend over the completed effect.
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) return;
         Minecraft mc = Minecraft.getInstance();
         if (pass == null || mc.level == null || !Multiblocks.kugelblitzBlackholeShader) {
             clear();

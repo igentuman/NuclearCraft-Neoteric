@@ -39,6 +39,7 @@ public class BlackHoleBE extends GlobalBlockEntity {
 
     @Override
     public void serverTick() {
+        if(true) return;
         if (isRemoved() || level == null) return;
         if (lastTickTime == level.getGameTime()) return;
         lastTickTime = level.getGameTime();

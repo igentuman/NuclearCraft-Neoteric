@@ -7,9 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.client.renderer.PostPass;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
@@ -39,8 +37,10 @@ public class DistortShader {
     private static int currentSize = 0;
     private static Field passesField;
 
-    public static void register() {
-        NeoForge.EVENT_BUS.register(DistortShader.class);
+    public static boolean hasWork() {
+        if (!enabled || SOURCES.isEmpty() || ModShaders.distortPostEffect == null) return false;
+        SOURCES.entrySet().removeIf(e -> !e.getValue().isActive());
+        return !SOURCES.isEmpty();
     }
 
     public static void add(Object key, DistortionSource source) {
@@ -89,10 +89,8 @@ public class DistortShader {
         }
     }
 
-    @SubscribeEvent
-    public static void onRenderLevelStage(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
-        if (!enabled || SOURCES.isEmpty()) return;
+    static void render(RenderLevelStageEvent event) {
+        if (!hasWork()) return;
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) return;
@@ -115,7 +113,6 @@ public class DistortShader {
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(false);
 
-        SOURCES.entrySet().removeIf(e -> !e.getValue().isActive());
         for (DistortionSource source : SOURCES.values()) {
             if (processSource(mc, event, pass, source, partialTick)) {
                 chain.process(partialTick);
@@ -137,7 +134,7 @@ public class DistortShader {
         if (distance > source.maxDistance()) return false;
 
         Matrix4f viewMatrix = event.getModelViewMatrix();
-        Matrix4f projectionMatrix = RenderSystem.getProjectionMatrix();
+        Matrix4f projectionMatrix = event.getProjectionMatrix();
         Camera camera = mc.gameRenderer.getMainCamera();
         Vec3 camPos = camera.getPosition();
 

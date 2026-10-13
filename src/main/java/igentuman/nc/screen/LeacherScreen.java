@@ -43,7 +43,7 @@ public class LeacherScreen extends UniversalProcessorScreen {
 
     private void renderPumpIndicators(GuiGraphics graphics, int mouseX, int mouseY) {
         PumpBE[] pumps = getPumps();
-        graphics.drawString(font, Component.literal("Pumps:"), PUMP_X0, PUMP_Y - 10, 0x404040, false);
+        graphics.drawString(font, __("nc.label.leacher_pumps"), PUMP_X0, PUMP_Y - 10, 0x404040, false);
         int relX = mouseX - leftPos;
         int relY = mouseY - topPos;
         for (int i = 0; i < 4; i++) {

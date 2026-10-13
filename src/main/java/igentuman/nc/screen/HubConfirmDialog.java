@@ -75,7 +75,7 @@ public class HubConfirmDialog extends Screen {
         }
 
         if (cancellable) {
-            addRenderableWidget(Button.builder(Component.literal("Yes"), b -> {
+            addRenderableWidget(Button.builder(Component.translatable("screen.nuclearcraft.hub.yes"), b -> {
                         String name = withNameInput ? nameInput.getValue().trim() : null;
                         if (withNameInput && name.isEmpty()) {
                             return;
@@ -88,10 +88,10 @@ public class HubConfirmDialog extends Screen {
                         }
                     })
                     .bounds(left + 20, top + panelH - 26, 80, 20).build());
-            addRenderableWidget(Button.builder(Component.literal("No"), b -> onClose())
+            addRenderableWidget(Button.builder(Component.translatable("screen.nuclearcraft.hub.no"), b -> onClose())
                     .bounds(left + PANEL_W - 100, top + panelH - 26, 80, 20).build());
         } else {
-            addRenderableWidget(Button.builder(Component.literal("OK"), b -> onClose())
+            addRenderableWidget(Button.builder(Component.translatable("screen.nuclearcraft.hub.ok"), b -> onClose())
                     .bounds(left + PANEL_W / 2 - 40, top + panelH - 26, 80, 20).build());
         }
     }

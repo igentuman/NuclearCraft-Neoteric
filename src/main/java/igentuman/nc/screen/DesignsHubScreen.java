@@ -6,6 +6,7 @@ import igentuman.nc.client.gui.fission.designer.DesignSimulator;
 import igentuman.nc.hub.HubApiClient;
 import igentuman.nc.hub.HubConfig;
 import igentuman.nc.hub.HubResult;
+import igentuman.nc.hub.dto.DeleteDesignResponseDto;
 import igentuman.nc.hub.dto.DesignDto;
 import igentuman.nc.hub.dto.DesignListItemDto;
 import igentuman.nc.hub.dto.DesignListResponseDto;
@@ -47,7 +48,7 @@ public class DesignsHubScreen extends Screen {
     private int total = 0;
     private String sortBy = "new";
     private boolean loading = false;
-    private String errorMessage;
+    private Component errorMessage;
     private int scroll = 0;
     private boolean fuelSelected = false;
 
@@ -56,7 +57,8 @@ public class DesignsHubScreen extends Screen {
     private final Map<String, DesignSimulator> simulators = new HashMap<>();
     private final Set<String> hydrating = new HashSet<>();
     private final Set<String> voting = new HashSet<>();
-    private final Map<String, String> rowMessages = new HashMap<>();
+    private final Set<String> deleting = new HashSet<>();
+    private final Map<String, Component> rowMessages = new HashMap<>();
 
     private FuelDropdown fuelDropdown;
 
@@ -66,7 +68,7 @@ public class DesignsHubScreen extends Screen {
     private int fuelY;
 
     public DesignsHubScreen(FissionDesignerScreen parent) {
-        super(Component.literal("Designs Hub"));
+        super(Component.translatable("screen.nuclearcraft.hub.title"));
         this.parent = parent;
     }
 
@@ -106,18 +108,24 @@ public class DesignsHubScreen extends Screen {
     private void onListResult(HubResult<DesignListResponseDto> result) {
         loading = false;
         if (result instanceof HubResult.Success<DesignListResponseDto> s) {
+            total = s.value().total;
+            int maxPage = Math.max(1, (int) Math.ceil(total / (double) PAGE_SIZE));
+            if (page > maxPage) {
+                page = maxPage;
+                fetchPage();
+                return;
+            }
             items.clear();
             items.addAll(s.value().designs);
-            total = s.value().total;
             grids.clear();
             simulators.clear();
             hydrating.clear();
             scroll = 0;
             hydrateVisible();
         } else if (result instanceof HubResult.NetworkError<DesignListResponseDto> e) {
-            errorMessage = "Couldn't reach Designs Hub: " + e.message();
+            errorMessage = Component.translatable("screen.nuclearcraft.hub.list_network_error", e.message());
         } else {
-            errorMessage = "Failed to load designs.";
+            errorMessage = Component.translatable("screen.nuclearcraft.hub.list_failed");
         }
     }
 
@@ -193,11 +201,11 @@ public class DesignsHubScreen extends Screen {
         drawOutline(g, winX, winY, WIN_W, WIN_H, 0xFF5A5A5A);
         g.drawCenteredString(font, title, winX + WIN_W / 2, winY + 6, 0xFFFFFF);
 
-        drawButton(g, sortBtnX, controlsY, 90, "Sort: " + sortLabel(), mouseX, mouseY);
+        drawButton(g, sortBtnX, controlsY, 90, Component.translatable("screen.nuclearcraft.hub.sort", sortLabel()), mouseX, mouseY);
         int maxPage = Math.max(1, (int) Math.ceil(total / (double) PAGE_SIZE));
-        drawButton(g, pagerPrevX, controlsY, 16, "<", mouseX, mouseY);
-        g.drawCenteredString(font, "Page " + page + "/" + maxPage, pagerPrevX - 55, controlsY + 4, 0xC0C0C0);
-        drawButton(g, pagerNextX, controlsY, 16, ">", mouseX, mouseY);
+        drawButton(g, pagerPrevX, controlsY, 16, Component.literal("<"), mouseX, mouseY);
+        g.drawCenteredString(font, Component.translatable("screen.nuclearcraft.hub.page", page, maxPage), pagerPrevX - 55, controlsY + 4, 0xC0C0C0);
+        drawButton(g, pagerNextX, controlsY, 16, Component.literal(">"), mouseX, mouseY);
 
         fuelDropdown.draw(g, mouseX, mouseY, partialTicks);
 
@@ -213,11 +221,11 @@ public class DesignsHubScreen extends Screen {
         g.disableScissor();
 
         if (loading) {
-            g.drawCenteredString(font, "Loading...", winX + WIN_W / 2, listY + listH / 2, 0xFFFFFF);
+            g.drawCenteredString(font, Component.translatable("screen.nuclearcraft.hub.loading"), winX + WIN_W / 2, listY + listH / 2, 0xFFFFFF);
         } else if (errorMessage != null) {
             g.drawCenteredString(font, errorMessage, winX + WIN_W / 2, listY + listH / 2, 0xFF6060);
         } else if (items.isEmpty()) {
-            g.drawCenteredString(font, "No designs match this filter.", winX + WIN_W / 2, listY + listH / 2, 0xC0C0C0);
+            g.drawCenteredString(font, Component.translatable("screen.nuclearcraft.hub.no_designs"), winX + WIN_W / 2, listY + listH / 2, 0xC0C0C0);
         }
 
         fuelDropdown.drawOverlay(g, mouseX, mouseY, partialTicks);
@@ -226,11 +234,11 @@ public class DesignsHubScreen extends Screen {
         }
     }
 
-    private String sortLabel() {
+    private Component sortLabel() {
         return switch (sortBy) {
-            case "votes" -> "Top Votes";
-            case "size" -> "Largest";
-            default -> "New";
+            case "votes" -> Component.translatable("screen.nuclearcraft.hub.sort.votes");
+            case "size" -> Component.translatable("screen.nuclearcraft.hub.sort.size");
+            default -> Component.translatable("screen.nuclearcraft.hub.sort.new");
         };
     }
 
@@ -245,47 +253,59 @@ public class DesignsHubScreen extends Screen {
 
         int textX = x + PREVIEW_SIZE + 14;
         g.drawString(font, item.name, textX, y + 6, 0xFFFFFF, false);
-        g.drawString(font, "by " + item.author, textX, y + 20, 0x909090, false);
+        g.drawString(font, Component.translatable("screen.nuclearcraft.hub.author", item.author), textX, y + 20, 0x909090, false);
 
         DesignSimulator sim = simulators.get(item.id);
-        String statsLine;
+        Component statsLine;
         if (!fuelSelected) {
-            statsLine = "Select a fuel above to see stats";
+            statsLine = Component.translatable("screen.nuclearcraft.hub.select_fuel");
         } else if (sim == null) {
-            statsLine = "Loading stats...";
+            statsLine = Component.translatable("screen.nuclearcraft.hub.loading_stats");
         } else {
-            statsLine = "FE/t: " + TextUtils.scaledFormat(sim.energyPerTick)
-                    + "  Steam/t: " + sim.steamPerTick
-                    + "  Net heat: " + TextUtils.numberFormat(sim.netHeat);
+            statsLine = Component.translatable("screen.nuclearcraft.hub.stats",
+                    TextUtils.scaledFormat(sim.energyPerTick), sim.steamPerTick, TextUtils.numberFormat(sim.netHeat));
         }
         g.drawString(font, statsLine, textX, y + 36, 0xC0C0C0, false);
 
-        String msg = rowMessages.get(item.id);
+        Component msg = rowMessages.get(item.id);
         if (msg != null) {
             g.drawString(font, msg, textX, y + 50, 0xFF6060, false);
         } else {
-            g.drawString(font, String.format("%+d / %+d  score %.2f", item.upvotes, -item.downvotes, item.score),
+            g.drawString(font, Component.translatable("screen.nuclearcraft.hub.score",
+                            String.format("%+d", item.upvotes), String.format("%+d", -item.downvotes), String.format("%.2f", item.score)),
                     textX, y + 50, 0x909090, false);
         }
 
         int btnY = y + ROW_H - 20;
-        drawSmallButton(g, x + WIN_W - 16 - 110, btnY, 26, "Up", mouseX, mouseY);
-        drawSmallButton(g, x + WIN_W - 16 - 80, btnY, 26, "Dn", mouseX, mouseY);
-        drawSmallButton(g, x + WIN_W - 16 - 54, btnY, 54, "Load", mouseX, mouseY);
+        if (!HubConfig.adminSecret().isBlank()) {
+            drawSmallButton(g, x + WIN_W - 16 - 166, btnY, 54, Component.translatable("screen.nuclearcraft.hub.delete"), mouseX, mouseY);
+        }
+        drawSmallButton(g, x + WIN_W - 16 - 110, btnY, 26, Component.translatable("screen.nuclearcraft.hub.upvote"), mouseX, mouseY);
+        drawSmallButton(g, x + WIN_W - 16 - 80, btnY, 26, Component.translatable("screen.nuclearcraft.hub.downvote"), mouseX, mouseY);
+        drawSmallButton(g, x + WIN_W - 16 - 54, btnY, 54, Component.translatable("screen.nuclearcraft.designer.load"), mouseX, mouseY);
     }
 
-    private void drawButton(GuiGraphics g, int x, int y, int w, String text, int mouseX, int mouseY) {
+    private void drawButton(GuiGraphics g, int x, int y, int w, Component text, int mouseX, int mouseY) {
         boolean hover = mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + 14;
         g.fill(x, y, x + w, y + 14, hover ? 0xFF505050 : 0xFF303030);
         drawOutline(g, x, y, w, 14, 0xFF5A5A5A);
-        g.drawCenteredString(font, text, x + w / 2, y + 3, 0xFFFFFF);
+        drawFittedButtonText(g, x, y, w, text);
     }
 
-    private void drawSmallButton(GuiGraphics g, int x, int y, int w, String text, int mouseX, int mouseY) {
+    private void drawSmallButton(GuiGraphics g, int x, int y, int w, Component text, int mouseX, int mouseY) {
         boolean hover = mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + 14;
         g.fill(x, y, x + w, y + 14, hover ? 0xFF505050 : 0xFF303030);
         drawOutline(g, x, y, w, 14, 0xFF5A5A5A);
-        g.drawCenteredString(font, text, x + w / 2, y + 3, 0xFFFFFF);
+        drawFittedButtonText(g, x, y, w, text);
+    }
+
+    private void drawFittedButtonText(GuiGraphics g, int x, int y, int w, Component text) {
+        float scale = Math.min(1f, (w - 4f) / Math.max(1, font.width(text)));
+        g.pose().pushPose();
+        g.pose().translate(x + w / 2f, y + 7, 0);
+        g.pose().scale(scale, scale, 1);
+        g.drawCenteredString(font, text, 0, -4, 0xFFFFFF);
+        g.pose().popPose();
     }
 
     private void drawOutline(GuiGraphics g, int x, int y, int w, int h, int color) {
@@ -323,6 +343,11 @@ public class DesignsHubScreen extends Screen {
                 int rowY = listY - scroll + rowIndex * ROW_H;
                 int btnY = rowY + ROW_H - 20;
                 int rowX = winX + 8;
+                if (!HubConfig.adminSecret().isBlank()
+                        && hit(rowX + WIN_W - 16 - 166, btnY, 54, 14, mx, my)) {
+                    deleteDesign(item);
+                    return true;
+                }
                 if (hit(rowX + WIN_W - 16 - 110, btnY, 26, 14, mx, my)) {
                     castVote(item, 1);
                     return true;
@@ -366,11 +391,35 @@ public class DesignsHubScreen extends Screen {
             item.downvotes = s.value().downvotes;
             item.score = s.value().score;
         } else if (result instanceof HubResult.Forbidden<VoteResultDto>) {
-            rowMessages.put(item.id, "You can't vote on your own design.");
+            rowMessages.put(item.id, Component.translatable("screen.nuclearcraft.hub.own_vote"));
         } else if (result instanceof HubResult.RateLimited<VoteResultDto> r) {
-            rowMessages.put(item.id, "Vote rate-limited, retry in " + r.retryAfterSeconds() + "s.");
+            rowMessages.put(item.id, Component.translatable("screen.nuclearcraft.hub.vote_rate_limited", r.retryAfterSeconds()));
         } else {
-            rowMessages.put(item.id, "Vote failed.");
+            rowMessages.put(item.id, Component.translatable("screen.nuclearcraft.hub.vote_failed"));
+        }
+    }
+
+    private void deleteDesign(DesignListItemDto item) {
+        String secret = HubConfig.adminSecret();
+        if (secret.isBlank() || !deleting.add(item.id)) {
+            return;
+        }
+        rowMessages.remove(item.id);
+        HubApiClient.deleteDesign(item.id, secret)
+                .thenAccept(result -> Minecraft.getInstance().execute(() -> onDeleteResult(item.id, result)));
+    }
+
+    private void onDeleteResult(String id, HubResult<DeleteDesignResponseDto> result) {
+        deleting.remove(id);
+        if (result instanceof HubResult.Success<DeleteDesignResponseDto> s && s.value().ok) {
+            rowMessages.remove(id);
+            fetchPage();
+        } else if (result instanceof HubResult.Forbidden<DeleteDesignResponseDto>) {
+            rowMessages.put(id, Component.translatable("screen.nuclearcraft.hub.delete_forbidden"));
+        } else if (result instanceof HubResult.NotFound<DeleteDesignResponseDto>) {
+            rowMessages.put(id, Component.translatable("screen.nuclearcraft.hub.delete_not_found"));
+        } else {
+            rowMessages.put(id, Component.translatable("screen.nuclearcraft.hub.delete_failed"));
         }
     }
 

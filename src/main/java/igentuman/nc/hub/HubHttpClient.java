@@ -32,6 +32,15 @@ public final class HubHttpClient {
         return send(request);
     }
 
+    public static CompletableFuture<HttpResponse<String>> delete(String url, String json) {
+        HttpRequest request = HttpRequest.newBuilder(URI.create(url))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .method("DELETE", HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        return send(request);
+    }
+
     private static CompletableFuture<HttpResponse<String>> send(HttpRequest request) {
         return CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApplyAsync(response -> response, HubExecutor.get());

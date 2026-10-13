@@ -5,6 +5,7 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.hub.dto.ChallengeDto;
 import igentuman.nc.hub.dto.CreateDesignRequestDto;
 import igentuman.nc.hub.dto.CreateDesignResponseDto;
+import igentuman.nc.hub.dto.DeleteDesignResponseDto;
 import igentuman.nc.hub.dto.DesignDto;
 import igentuman.nc.hub.dto.DesignListResponseDto;
 import igentuman.nc.hub.dto.VoteResultDto;
@@ -56,6 +57,12 @@ public final class HubApiClient {
         String body = GSON.toJson(Map.of("vote", vote, "playerUuid", playerUuid));
         return HubHttpClient.post(HubConfig.baseUrl() + "/api/v1/designs/" + encode(id) + "/vote", body)
                 .handle((response, error) -> parse(response, error, VoteResultDto.class));
+    }
+
+    public static CompletableFuture<HubResult<DeleteDesignResponseDto>> deleteDesign(String id, String adminSecret) {
+        String body = GSON.toJson(Map.of("adminSecret", adminSecret));
+        return HubHttpClient.delete(HubConfig.baseUrl() + "/api/v1/designs/" + encode(id), body)
+                .handle((response, error) -> parse(response, error, DeleteDesignResponseDto.class));
     }
 
     private static <T> HubResult<T> parse(HttpResponse<String> response, Throwable error, Class<T> type) {

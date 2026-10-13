@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-11T12:20:16.159415499	Recipes
+// 1.21.1	2026-10-13T20:45:48.71479813	Recipes
 3b8a8f729f4b0a8aa99d1b7771fa8705e5c45f43 data/nuclearcraft/advancement/recipes/combat/hev_boots.json
 0d6337dff6f847eb9e9888bd9bbfa37e406ea920 data/nuclearcraft/advancement/recipes/combat/hev_chestplate.json
 34e337573ea52a1e57cec9a29e3180f82699428d data/nuclearcraft/advancement/recipes/combat/hev_helmet.json
@@ -1450,7 +1450,6 @@ f3b250b54be63f7412db8a8d9cdd155189c0241a data/nuclearcraft/recipe/crystallizer/l
 9b771d3d088a849198c66a291f7e822e5aaefc42 data/nuclearcraft/recipe/crystallizer/magnesium_clean_slurry.json
 0a223048d0a0a3026869a366665af403f43e494d data/nuclearcraft/recipe/crystallizer/nickel_clean_slurry.json
 1276c6d08c2e42f4787684e1e415e91320523491 data/nuclearcraft/recipe/crystallizer/platinum_clean_slurry.json
-4fb9749011b0caf1be4ace288c26207ce6138ea1 data/nuclearcraft/recipe/crystallizer/polonium.json
 e665e186b422d0b5a917098edd25de9d7f2761d1 data/nuclearcraft/recipe/crystallizer/potassium_iodide.json
 f2ef425d1c2c865cd3eec5f51cb0c264d4a6ba8b data/nuclearcraft/recipe/crystallizer/redstone.json
 4f711a7df39968a223fee8b17e35f50e12fb85db data/nuclearcraft/recipe/crystallizer/silver_clean_slurry.json

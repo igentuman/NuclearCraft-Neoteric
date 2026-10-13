@@ -259,12 +259,12 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         simulator.simulateIfDirty();
         renderBackground(g, mouseX, mouseY, partial);
         g.drawCenteredString(font, title, width / 2, topBarY + 2, 0xFFFFFF);
-        drawButton(g, newBtnX, topBarY, "New", mouseX, mouseY);
-        drawButton(g, saveBtnX, topBarY, "Save", mouseX, mouseY);
-        drawButton(g, loadBtnX, topBarY, "Load", mouseX, mouseY);
+        drawButton(g, newBtnX, topBarY, __("screen.nuclearcraft.designer.new"), mouseX, mouseY);
+        drawButton(g, saveBtnX, topBarY, __("screen.nuclearcraft.designer.save"), mouseX, mouseY);
+        drawButton(g, loadBtnX, topBarY, __("screen.nuclearcraft.designer.load"), mouseX, mouseY);
         if (HubConfig.isEnabled()) {
-            drawButton(g, hubBtnX, topBarY, "Hub", mouseX, mouseY);
-            drawButton(g, uploadBtnX, topBarY, uploading ? "..." : "Upload", mouseX, mouseY);
+            drawButton(g, hubBtnX, topBarY, __("screen.nuclearcraft.designer.hub"), mouseX, mouseY);
+            drawButton(g, uploadBtnX, topBarY, uploading ? Component.literal("...") : __("screen.nuclearcraft.designer.upload"), mouseX, mouseY);
         }
         if (ModUtil.isMbtoolLoaded()) {
             drawIconButton(g, mbtoolBtnX, topBarY, MbtoolHelper.toolIcon(), mouseX, mouseY);
@@ -294,7 +294,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             }
             int gx = o[0];
             int gy = o[1];
-            g.drawString(font, "Layer " + (layer + 1), gx, gy - LABEL_H + 2, 0xCCE0E0E0);
+            g.drawString(font, __("screen.nuclearcraft.designer.layer", layer + 1), gx, gy - LABEL_H + 2, 0xCCE0E0E0);
             int[] br = layerButtonRects(layer);
             if (br != null) {
                 drawSmallButton(g, br[0], br[1], "C", mouseX, mouseY);
@@ -353,20 +353,20 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     protected void drawStats(GuiGraphics g) {
         int y = statsY;
         int color = 0xC0C0C0;
-        g.drawString(font, "Heat/t: " + fmt(simulator.heatPerTick), statsX, y, color);
-        g.drawString(font, "Cooling/t: " + fmt(simulator.coolingPerTick), statsX, y += 11, color);
-        g.drawString(font, "Net heat: " + fmt(simulator.netHeat), statsX, y += 11, color);
-        g.drawString(font, "FE/t: " + fmt(simulator.energyPerTick), statsX, y += 11, color);
-        g.drawString(font, "Steam/t: " + simulator.steamPerTick, statsX, y += 11, color);
-        g.drawString(font, "Irradiation: " + simulator.irradiation, statsX, y += 11, color);
+        g.drawString(font, __("screen.nuclearcraft.designer.heat", fmt(simulator.heatPerTick)), statsX, y, color);
+        g.drawString(font, __("screen.nuclearcraft.designer.cooling", fmt(simulator.coolingPerTick)), statsX, y += 11, color);
+        g.drawString(font, __("screen.nuclearcraft.designer.net_heat", fmt(simulator.netHeat)), statsX, y += 11, color);
+        g.drawString(font, __("screen.nuclearcraft.designer.energy", fmt(simulator.energyPerTick)), statsX, y += 11, color);
+        g.drawString(font, __("screen.nuclearcraft.designer.steam", simulator.steamPerTick), statsX, y += 11, color);
+        g.drawString(font, __("screen.nuclearcraft.designer.irradiation", simulator.irradiation), statsX, y += 11, color);
         String meltdown = Double.isInfinite(simulator.meltdownTimeSeconds)
-                ? "∞" : fmt(simulator.meltdownTimeSeconds) + "s";
-        g.drawString(font, "Meltdown: " + meltdown, statsX, y += 11, color);
+                ? "∞" : __("screen.nuclearcraft.designer.seconds", fmt(simulator.meltdownTimeSeconds)).getString();
+        g.drawString(font, __("screen.nuclearcraft.designer.meltdown", meltdown), statsX, y += 11, color);
     }
 
     protected void drawTooltips(GuiGraphics g, int mouseX, int mouseY) {
         if (ModUtil.isMbtoolLoaded() && hit(mbtoolBtnX, topBarY, BTN_H, BTN_H, mouseX, mouseY)) {
-            g.renderTooltip(font, Component.literal("Load into multitool"), mouseX, mouseY);
+            g.renderTooltip(font, __("screen.nuclearcraft.designer.load_multitool"), mouseX, mouseY);
             return;
         }
         for (int layer = 0; layer < grid.sizeY; layer++) {
@@ -375,11 +375,11 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
                 continue;
             }
             if (hit(br[0], br[1], LAYER_BTN, LAYER_BTN, mouseX, mouseY)) {
-                g.renderTooltip(font, Component.literal("Copy layer"), mouseX, mouseY);
+                g.renderTooltip(font, __("screen.nuclearcraft.designer.copy_layer"), mouseX, mouseY);
                 return;
             }
             if (hit(br[2], br[3], LAYER_BTN, LAYER_BTN, mouseX, mouseY)) {
-                g.renderTooltip(font, Component.literal("Paste layer"), mouseX, mouseY);
+                g.renderTooltip(font, __("screen.nuclearcraft.designer.paste_layer"), mouseX, mouseY);
                 return;
             }
         }
@@ -401,12 +401,12 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         g.fill(0, 0, width, height, 0xA0000000);
         g.fill(mx, my, mx + mw, mh + my, 0xFF202020);
         drawOutline(g, mx, my, mw, mh, 0xFF5A5A5A);
-        g.drawCenteredString(font, "New Design", mx + mw / 2, my + 8, 0xFFFFFF);
+        g.drawCenteredString(font, __("screen.nuclearcraft.designer.new_design"), mx + mw / 2, my + 8, 0xFFFFFF);
         drawStepper(g, "X", pendingX, mx + 20, my + 30);
         drawStepper(g, "Y", pendingY, mx + 20, my + 52);
         drawStepper(g, "Z", pendingZ, mx + 20, my + 74);
-        drawButton(g, mx + 20, my + mh - 24, "Create", mouseX, mouseY);
-        drawButton(g, mx + mw - 20 - BTN_W, my + mh - 24, "Cancel", mouseX, mouseY);
+        drawButton(g, mx + 20, my + mh - 24, __("screen.nuclearcraft.designer.create"), mouseX, mouseY);
+        drawButton(g, mx + mw - 20 - BTN_W, my + mh - 24, __("screen.nuclearcraft.designer.cancel"), mouseX, mouseY);
     }
 
     protected void drawStepper(GuiGraphics g, String label, int value, int x, int y) {
@@ -418,11 +418,16 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         g.drawCenteredString(font, "+", x + 83, y + 3, 0xFFFFFF);
     }
 
-    protected void drawButton(GuiGraphics g, int x, int y, String text, int mouseX, int mouseY) {
+    protected void drawButton(GuiGraphics g, int x, int y, Component text, int mouseX, int mouseY) {
         boolean hover = mouseX >= x && mouseX < x + BTN_W && mouseY >= y && mouseY < y + BTN_H;
         g.fill(x, y, x + BTN_W, y + BTN_H, hover ? 0xFF505050 : 0xFF303030);
         drawOutline(g, x, y, BTN_W, BTN_H, 0xFF5A5A5A);
-        g.drawCenteredString(font, text, x + BTN_W / 2, y + (BTN_H - 8) / 2, 0xFFFFFF);
+        float scale = Math.min(1f, (BTN_W - 4f) / Math.max(1, font.width(text)));
+        g.pose().pushPose();
+        g.pose().translate(x + BTN_W / 2f, y + BTN_H / 2f, 0);
+        g.pose().scale(scale, scale, 1);
+        g.drawCenteredString(font, text, 0, -4, 0xFFFFFF);
+        g.pose().popPose();
     }
 
     protected void drawIconButton(GuiGraphics g, int x, int y, ItemStack icon, int mouseX, int mouseY) {
@@ -699,10 +704,8 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             return;
         }
         Minecraft.getInstance().setScreen(HubConfirmDialog.confirm(this,
-                Component.literal("Designs Hub Network Notice"),
-                Component.literal("The Designs Hub connects to an external server not run by the mod author. "
-                        + "Browsing designs is anonymous. Uploading a design or voting also sends your Minecraft "
-                        + "username and player UUID. Shown once. Continue?"),
+                __("screen.nuclearcraft.hub.network_notice"),
+                __("screen.nuclearcraft.hub.network_notice.body"),
                 () -> {
                     FirstUseNotice.acknowledge();
                     action.run();
@@ -717,29 +720,29 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         if (uploading) {
             return;
         }
-        String error = validateDesignForUpload();
+        Component error = validateDesignForUpload();
         if (error != null) {
             Minecraft.getInstance().setScreen(HubConfirmDialog.result(this,
-                    Component.literal("Designs Hub"), Component.literal(error)));
+                    __("screen.nuclearcraft.hub.title"), error));
             return;
         }
         withHubAck(() -> Minecraft.getInstance().setScreen(HubConfirmDialog.confirmWithName(this,
-                Component.literal("Upload to Designs Hub"),
-                Component.literal("Upload this design to the public Designs Hub?"),
+                __("screen.nuclearcraft.hub.upload_title"),
+                __("screen.nuclearcraft.hub.upload_confirm"),
                 defaultUploadName(),
                 this::doUpload)));
     }
 
-    protected String validateDesignForUpload() {
+    protected Component validateDesignForUpload() {
         if (grid.cells.isEmpty()) {
-            return "Design is empty. Add blocks before uploading.";
+            return __("screen.nuclearcraft.hub.empty_design");
         }
         if (grid.sizeX < 5 || grid.sizeY < 5 || grid.sizeZ < 5) {
-            return "Design must be at least 5x5x5.";
+            return __("screen.nuclearcraft.hub.minimum_size");
         }
         simulator.simulateIfDirty();
         if (!simulator.invalidCells.isEmpty()) {
-            return "Design contains invalid block placements.";
+            return __("screen.nuclearcraft.hub.invalid_design");
         }
         return null;
     }
@@ -788,22 +791,22 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
 
     protected void onUploadResult(HubResult<CreateDesignResponseDto> result) {
         uploading = false;
-        String message;
+        Component message;
         if (result instanceof HubResult.Success<CreateDesignResponseDto>) {
-            message = "Design uploaded!";
+            message = __("screen.nuclearcraft.hub.upload_success");
         } else if (result instanceof HubResult.RateLimited<CreateDesignResponseDto> r) {
-            message = "You can upload again in " + Math.max(1, r.retryAfterSeconds() / 60) + " minutes.";
+            message = __("screen.nuclearcraft.hub.upload_rate_limited", Math.max(1, r.retryAfterSeconds() / 60));
         } else if (result instanceof HubResult.Conflict<CreateDesignResponseDto>) {
-            message = "This exact design was already uploaded.";
+            message = __("screen.nuclearcraft.hub.upload_conflict");
         } else if (result instanceof HubResult.ValidationError<CreateDesignResponseDto> v) {
-            message = "Upload rejected: " + v.code();
+            message = __("screen.nuclearcraft.hub.upload_rejected", v.code());
         } else if (result instanceof HubResult.NetworkError<CreateDesignResponseDto>) {
-            message = "Couldn't reach Designs Hub, try again later.";
+            message = __("screen.nuclearcraft.hub.network_error");
         } else {
-            message = "Upload failed.";
+            message = __("screen.nuclearcraft.hub.upload_failed");
         }
         Minecraft.getInstance().setScreen(HubConfirmDialog.result(this,
-                Component.literal("Designs Hub"), Component.literal(message)));
+                __("screen.nuclearcraft.hub.title"), message));
     }
 
     public void applyLoadedDesign(DesignGrid loaded, String fuelKey, String variant) {

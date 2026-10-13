@@ -9,6 +9,8 @@ import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 
+import static igentuman.nc.util.TextUtils.__;
+
 /** Dropdown for selecting the active editing layer of the design grid. */
 public class LayerDropdown extends AbstractWidget {
 
@@ -44,8 +46,8 @@ public class LayerDropdown extends AbstractWidget {
         return this;
     }
 
-    protected String label(int index) {
-        return "Layer " + (index + 1) + " / " + layerCount;
+    protected Component label(int index) {
+        return __("screen.nuclearcraft.designer.layer_of", index + 1, layerCount);
     }
 
     public boolean isOpen() {

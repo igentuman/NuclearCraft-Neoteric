@@ -39,6 +39,7 @@ public class Common {
 
     public static final ModConfigSpec.BooleanValue HUB_ENABLED;
     public static final ModConfigSpec.ConfigValue<String> HUB_BASE_URL;
+    public static final ModConfigSpec.ConfigValue<String> HUB_ADMIN_SECRET;
 
     public static final ModConfigSpec.DoubleValue GENERATION_MULTIPLIER;
     public static final Map<String, ModConfigSpec.IntValue> RTG_GENERATION = new LinkedHashMap<>();
@@ -174,6 +175,9 @@ public class Common {
         HUB_BASE_URL = BUILDER
                 .comment("Designs Hub API base URL")
                 .define("base_url", "https://nc-fission-designs-api.itman.website");
+        HUB_ADMIN_SECRET = BUILDER
+                .comment("Designs Hub admin secret for deleting designs; leave empty to hide delete controls")
+                .define("admin_secret", "");
         BUILDER.pop();
 
         SPEC = BUILDER.build();

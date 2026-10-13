@@ -18,6 +18,10 @@ public final class HubConfig {
         return Common.HUB_BASE_URL.get();
     }
 
+    public static String adminSecret() {
+        return Common.HUB_ADMIN_SECRET.get();
+    }
+
     public static String modVersion() {
         return ModList.get().getModContainerById(NuclearCraft.MODID)
                 .map(mc -> mc.getModInfo().getVersion().toString())

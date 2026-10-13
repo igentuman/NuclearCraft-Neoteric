@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -121,6 +122,12 @@ public class EXPLBlock extends BaseEntityBlock {
             }
         }
         return list;
+    }
+
+    public static AABB bodyBounds(BlockPos core, Direction facing) {
+        int[] b = footprint(facing);
+        return new AABB(core.getX() + b[0], core.getY() + b[1], core.getZ() + b[2],
+                core.getX() + b[3], core.getY() + b[4], core.getZ() + b[5]);
     }
 
     /** Returns {minX, minY, minZ, maxX, maxY, maxZ} for the emitter body relative to the core. */

@@ -1,7 +1,6 @@
 package igentuman.nc.block_entity.kugelblitz;
 
 import igentuman.nc.block_entity.GlobalBlockEntity;
-import igentuman.nc.client.renderer.DistortShader;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCSounds;
@@ -17,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -30,6 +28,8 @@ public class BlackHoleBE extends GlobalBlockEntity {
     @NBTField
     public boolean isInitialized = false;
     public int spawnDelay = 0;
+    @NBTField(syncToClient = true)
+    public long formationStartTime = Long.MIN_VALUE;
     private boolean hasEntities = false;
     private long lastTickTime = -1;
 
@@ -42,9 +42,12 @@ public class BlackHoleBE extends GlobalBlockEntity {
         if (isRemoved() || level == null) return;
         if (lastTickTime == level.getGameTime()) return;
         lastTickTime = level.getGameTime();
-        if (!isInitialized) {
+        if (formationStartTime == Long.MIN_VALUE) {
+            // Existing saves start settled; newly formed holes animate for 50 ticks.
+            formationStartTime = level.getGameTime() - (isInitialized ? 50 : 0);
             isInitialized = true;
             setChanged();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
         }
         handleClosestEntities();
         evaporateClosestBlocks();
@@ -54,7 +57,6 @@ public class BlackHoleBE extends GlobalBlockEntity {
     @Override
     public void clientTick() {
         if (level == null) return;
-        updateDistortion();
         scale = 0.3f + spawnDelay / 100f;
         if (spawnDelay < 1) {
             playSound(NCSounds.BLACKHOLE_IDLE.get(), 0.7f);
@@ -90,50 +92,9 @@ public class BlackHoleBE extends GlobalBlockEntity {
         return level.random.nextFloat() + level.random.nextInt(8) - 4;
     }
 
-    private void updateDistortion() {
-        if (!Multiblocks.kugelblitzBlackholeShader || isRemoved()) {
-            DistortShader.remove(worldPosition);
-            return;
-        }
-        if (!DistortShader.contains(worldPosition)) {
-            DistortShader.add(worldPosition, new DistortShader.DistortionSource() {
-                @Override
-                public Vec3 position(float partialTick) {
-                    return Vec3.atCenterOf(worldPosition);
-                }
-
-                @Override
-                public float radius() {
-                    return 150f * scaleMult();
-                }
-
-                @Override
-                public float magnification() {
-                    return 5.8f / scaleMult();
-                }
-
-                @Override
-                public boolean isActive() {
-                    return !isRemoved();
-                }
-            });
-        }
-    }
-
-    private float scaleMult() {
-        float m = 0.3f / scale;
-        if (m != 1f) {
-            m = (float) Math.pow(m + 0.375f, 5);
-        }
-        return m <= 0 ? 0.0001f : m;
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        if (level != null && level.isClientSide()) {
-            DistortShader.remove(worldPosition);
-        }
+    public float getFormationAge(float partialTick) {
+        if (level == null || formationStartTime == Long.MIN_VALUE) return 2.5F;
+        return Math.max(0F, (level.getGameTime() - formationStartTime + partialTick) / 20F);
     }
 
     private void evaporateIfNotInsideChamber() {

@@ -24,17 +24,17 @@ import static igentuman.nc.block_entity.kugelblitz.BlackHoleBE.MAX_MASS;
 
 public class ChamberTerminalBE extends MultiblockControllerBE implements RedstoneModeController {
 
-    @NBTField public long feeding = 0;
-    @NBTField public long mass = 0;
-    @NBTField public int evaporation = 0;
-    @NBTField public byte frequency = 0;
-    @NBTField public int energyConvertionRate = 7;
+    @NBTField(syncToClient = true) public long feeding = 0;
+    @NBTField(syncToClient = true) public long mass = 0;
+    @NBTField(syncToClient = true) public int evaporation = 0;
+    @NBTField(syncToClient = true) public byte frequency = 0;
+    @NBTField(syncToClient = true) public int energyConvertionRate = 7;
     @NBTField public boolean controllerEnabled = false;
     @NBTField public int transformers = 0;
     @NBTField public int fluxRegulators = 0;
     @NBTField public int stabilizers = 0;
-    @NBTField public int blackholeStability = 100;
-    @NBTField public int energyPerTick = 0;
+    @NBTField(syncToClient = true) public int blackholeStability = 100;
+    @NBTField(syncToClient = true) public int energyPerTick = 0;
     @NBTField public BlockPos blackholePos = BlockPos.ZERO;
 
     @NBTField public int ticksProcessed = 0;
@@ -109,7 +109,7 @@ public class ChamberTerminalBE extends MultiblockControllerBE implements Redston
     public void updateRuntimeDisplay(long newMass, long newFeeding, int newEvaporation, int newStability,
                                      int newEnergyPerTick, int newTicksProcessed, int newTicksNeeded,
                                      int newProcessEnergy, int newProgress) {
-        boolean enabled = newMass > 0;
+        boolean enabled = mbInstance != null && mbInstance.formed && newMass > 0;
         if (mass == newMass && feeding == newFeeding && evaporation == newEvaporation
                 && blackholeStability == newStability && energyPerTick == newEnergyPerTick
                 && ticksProcessed == newTicksProcessed && ticksNeeded == newTicksNeeded

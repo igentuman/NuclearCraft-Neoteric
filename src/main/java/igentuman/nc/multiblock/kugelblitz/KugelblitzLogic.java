@@ -59,6 +59,22 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
     private final List<ItemStack> allowedRandomInputs = new ArrayList<>();
 
     @Override
+    public void onBroken(ServerLevel level, BlockPos controllerPos, KugelblitzCache cache) {
+        super.onBroken(level, controllerPos, cache);
+        ChamberTerminalBE terminal = level.getBlockEntity(controllerPos) instanceof ChamberTerminalBE be ? be : null;
+        BlockPos center = cache.center != null ? cache.center : terminal != null ? terminal.blackholePos : null;
+        if (center != null && level.hasChunkAt(center)
+                && level.getBlockEntity(center) instanceof BlackHoleBE blackHole) {
+            blackHole.evaporate();
+        }
+        resetBlackhole();
+        stability = 100;
+        gotLaserBurst = false;
+        pulses.clear();
+        if (terminal != null) publish(terminal);
+    }
+
+    @Override
     public void tickServer(ServerLevel level, BlockPos controllerPos, KugelblitzCache cache) {
         if (!(level.getBlockEntity(controllerPos) instanceof ChamberTerminalBE terminal)) return;
         seedRuntime(terminal);
@@ -85,7 +101,9 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
 
     public void idle(ChamberTerminalBE terminal) {
         seedRuntime(terminal);
-        if (mass > 0) resetBlackhole();
+        feeding = 0;
+        evaporation = 0;
+        energyPerTick = 0;
         publish(terminal);
     }
 

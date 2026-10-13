@@ -5,6 +5,7 @@ import igentuman.nc.client.bomb.BombFxManager;
 import igentuman.nc.client.multiblock.MultiblockDebugClient;
 import igentuman.nc.client.renderer.AnomalyShader;
 import igentuman.nc.client.renderer.DistortShader;
+import igentuman.nc.client.renderer.BlackHoleShader;
 import igentuman.nc.client.storage.ClientContainerInventory;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -19,6 +20,7 @@ public final class ClientWorldCleanup {
     @SubscribeEvent
     public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         DistortShader.clear();
+        BlackHoleShader.clear();
         AnomalyShader.clear();
         Q36BeamRenderer.clear();
         BombFxManager.clear();

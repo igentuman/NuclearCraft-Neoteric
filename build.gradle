@@ -129,6 +129,7 @@ dependencies {
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:tools")// Mekanism: Tools
 
+    runtimeOnly "curse.maven:spark-361579:6225208"
     //runtimeOnly "curse.maven:large-ore-deposits-318833:8595420"
     //runtimeOnly "curse.maven:forgeendertech-244844:8714321"
 

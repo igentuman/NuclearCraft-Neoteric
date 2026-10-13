@@ -23,6 +23,7 @@ import igentuman.nc.item.ResoniteCrystalItem;
 import igentuman.nc.setup.entries.*;
 import igentuman.nc.client.renderer.DelayedRenderHandler;
 import igentuman.nc.client.renderer.DistortShader;
+import igentuman.nc.client.renderer.BlackHoleShader;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.container.PipeConnectorContainer;
@@ -88,6 +89,7 @@ public class Client {
             // Register the game-bus render handlers (level-stage events).
             DelayedRenderHandler.register();
             DistortShader.register();
+            BlackHoleShader.register();
             AnomalyShader.register();
             registerFluidRenderLayers();
             ItemProperties.register(

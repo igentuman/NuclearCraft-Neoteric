@@ -50,6 +50,8 @@ public class ModShaders {
                 NUKE_SMOKE::setInstance
         );
 
+        BlackHoleShader.reload(event.getResourceProvider());
+
         Minecraft mc = Minecraft.getInstance();
         distortPostEffect = new PostChain(
                 mc.getTextureManager(),

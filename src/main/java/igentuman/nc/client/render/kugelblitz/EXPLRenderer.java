@@ -2,6 +2,7 @@ package igentuman.nc.client.render.kugelblitz;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import igentuman.nc.block.kugelblitz.EXPLBlock;
 import igentuman.nc.block_entity.kugelblitz.EXPLBE;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 
@@ -59,6 +61,11 @@ public class EXPLRenderer implements BlockEntityRenderer<EXPLBE> {
     @Override
     public boolean shouldRenderOffScreen(EXPLBE be) {
         return true;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(EXPLBE be) {
+        return EXPLBlock.bodyBounds(be.getBlockPos(), be.getBlockState().getValue(FACING));
     }
 
     @Override

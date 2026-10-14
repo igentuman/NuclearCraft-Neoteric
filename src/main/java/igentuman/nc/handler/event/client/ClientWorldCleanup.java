@@ -2,6 +2,9 @@ package igentuman.nc.handler.event.client;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.bomb.BombFxManager;
+import igentuman.nc.client.bomb.DebrisFireEmitter;
+import igentuman.nc.client.bomb.GroundSmokeEmitter;
+import igentuman.nc.client.bomb.ShockwaveDebrisEmitter;
 import igentuman.nc.client.multiblock.MultiblockDebugClient;
 import igentuman.nc.client.renderer.ScenePostEffects;
 import igentuman.nc.client.storage.ClientContainerInventory;
@@ -20,6 +23,9 @@ public final class ClientWorldCleanup {
         ScenePostEffects.clear();
         Q36BeamRenderer.clear();
         BombFxManager.clear();
+        GroundSmokeEmitter.clear();
+        DebrisFireEmitter.clear();
+        ShockwaveDebrisEmitter.clear();
         MultiblockDebugClient.clear();
         ClientContainerInventory.clear();
     }

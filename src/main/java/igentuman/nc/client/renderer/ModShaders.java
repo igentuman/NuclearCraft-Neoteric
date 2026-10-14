@@ -28,11 +28,8 @@ import static igentuman.nc.NuclearCraft.rl;
 public class ModShaders {
 
     public static final ShaderTracker BILLBOARD = new ShaderTracker();
-    public static final ShaderTracker NUKE_CORE = new ShaderTracker();
-    public static final ShaderTracker NUKE_SMOKE = new ShaderTracker();
 
     public static PostChain distortPostEffect;
-    public static PostChain nukePostEffect;
     public static PostChain anomalyPostEffect;
 
     @SubscribeEvent
@@ -41,16 +38,9 @@ public class ModShaders {
                 new ShaderInstance(event.getResourceProvider(), rl("rendertype_billboard"), DefaultVertexFormat.POSITION_TEX_COLOR),
                 BILLBOARD::setInstance
         );
-        event.registerShader(
-                new ShaderInstance(event.getResourceProvider(), rl("rendertype_nuke"), DefaultVertexFormat.POSITION_TEX_COLOR),
-                NUKE_CORE::setInstance
-        );
-        event.registerShader(
-                new ShaderInstance(event.getResourceProvider(), rl("rendertype_nuke_smoke"), DefaultVertexFormat.POSITION_TEX_COLOR),
-                NUKE_SMOKE::setInstance
-        );
 
         BlackHoleShader.reload(event.getResourceProvider());
+        NukeVolumeRenderer.reload(event.getResourceProvider());
 
         Minecraft mc = Minecraft.getInstance();
         distortPostEffect = new PostChain(
@@ -60,14 +50,6 @@ public class ModShaders {
                 rl("shaders/post/distort.json")
         );
         distortPostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
-
-        nukePostEffect = new PostChain(
-                mc.getTextureManager(),
-                mc.getResourceManager(),
-                mc.getMainRenderTarget(),
-                rl("shaders/post/nuke.json")
-        );
-        nukePostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
 
         anomalyPostEffect = new PostChain(
                 mc.getTextureManager(),

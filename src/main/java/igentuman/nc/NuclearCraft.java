@@ -134,6 +134,7 @@ public class NuclearCraft {
         modContainer.registerConfig(ModConfig.Type.COMMON, Multiblocks.SPEC, MODID + "/multiblocks.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, igentuman.nc.config.Bomb.SPEC, MODID + "/bomb.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, igentuman.nc.config.Q36.SPEC, MODID + "/q36.toml");
+        modContainer.registerConfig(ModConfig.Type.CLIENT, igentuman.nc.config.Client.SPEC, MODID + "/client.toml");
     }
 
 
@@ -311,11 +312,13 @@ public class NuclearCraft {
     private void onConfigLoad(ModConfigEvent.Loading event) {
         if (event.getConfig().getSpec() == Common.SPEC) Common.refreshTagPriority();
         if (event.getConfig().getSpec() == Multiblocks.SPEC) Multiblocks.refresh();
+        if (event.getConfig().getSpec() == igentuman.nc.config.Client.SPEC) igentuman.nc.config.Client.refresh();
     }
 
     private void onConfigReload(ModConfigEvent.Reloading event) {
         if (event.getConfig().getSpec() == Common.SPEC) Common.refreshTagPriority();
         if (event.getConfig().getSpec() == Multiblocks.SPEC) Multiblocks.refresh();
+        if (event.getConfig().getSpec() == igentuman.nc.config.Client.SPEC) igentuman.nc.config.Client.refresh();
     }
 
     private void onAddReloadListener(AddReloadListenerEvent event) {

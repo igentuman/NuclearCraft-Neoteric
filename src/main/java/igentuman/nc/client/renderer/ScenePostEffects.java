@@ -28,6 +28,7 @@ public final class ScenePostEffects {
         DistortShader.clear();
         AnomalyShader.clear();
         BlackHoleShader.clear();
+        NukeVolumeRenderer.clear();
     }
 
     @SubscribeEvent
@@ -37,19 +38,24 @@ public final class ScenePostEffects {
         if (mc.level == null) return;
 
         if (!IrisCompat.shaderPackInUse()) {
-            captured = false;
             if (stage == RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
+                captured = false;
                 DistortShader.render(event);
                 AnomalyShader.render(event);
             } else if (stage == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
                 BlackHoleShader.render(event);
+                captured = NukeVolumeRenderer.hasWork() && captureDepth(mc.getMainRenderTarget());
+            } else if (stage == RenderLevelStageEvent.Stage.AFTER_LEVEL && captured) {
+                captured = false;
+                NukeVolumeRenderer.render(event, sceneDepth.getDepthTextureId());
             }
             return;
         }
 
         if (stage == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
             captured = false;
-            if (DistortShader.hasWork() || AnomalyShader.hasWork() || BlackHoleShader.hasWork()) {
+            if (DistortShader.hasWork() || AnomalyShader.hasWork() || BlackHoleShader.hasWork()
+                    || NukeVolumeRenderer.hasWork()) {
                 captured = captureDepth(mc.getMainRenderTarget());
             }
         } else if (stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
@@ -62,6 +68,7 @@ public final class ScenePostEffects {
                 AnomalyShader.render(event);
                 BlackHoleShader.render(event);
                 main.bindWrite(true);
+                NukeVolumeRenderer.render(event, main.getDepthTextureId());
             }
             BlackHoleShader.clear();
         }

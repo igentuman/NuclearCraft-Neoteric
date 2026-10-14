@@ -6,10 +6,10 @@ public class ActiveBomb {
 
     public static final int FLASH_MAX_DISTANCE = 1500;
     public static final int SHAKE_MAX_DISTANCE = 800;
-    public static final int FIREBALL_DURATION = 120;
-    public static final int MUSHROOM_DURATION = 680;
-    public static final int GROUND_CLOUD_DURATION = 900;
-    public static final int FADE_TICKS = 80;
+    public static final int SHAKE_DECAY_TICKS = 60;
+    public static final float HUD_FLASH_PEAK = 0.05f;
+    public static final float HUD_FLASH_DECAY = 0.25f;
+    public static final float HUD_FLASH_STRENGTH = 0.85f;
 
     public final int id;
     public final BlockPos epicenter;
@@ -17,11 +17,16 @@ public class ActiveBomb {
     public final double distance;
     public final float distanceFactor;
     public final float shakeFactor;
-    public final int flashDuration;
+    public final int shakeHoldTicks;
+
+    public final long seed;
+    public final NukeVisualState visual = new NukeVisualState();
+    public final SurfaceHeightCache surface;
 
     public int tickCounter;
     public int soundDelayTicks;
     public boolean soundPlayed;
+    public float debrisSweep;
 
     public ActiveBomb(int id, BlockPos epicenter, float yield, int soundDelayTicks, double distance) {
         this.id = id;
@@ -33,58 +38,38 @@ public class ActiveBomb {
         this.distance = distance;
         this.distanceFactor = (float) Math.sqrt(Math.max(0.0, Math.min(1.0, 1.0 - distance / FLASH_MAX_DISTANCE)));
         this.shakeFactor = (float) Math.max(0.0, Math.min(1.0, 1.0 - distance / SHAKE_MAX_DISTANCE));
-        this.flashDuration = (int) (3 * (13 + 14 * distanceFactor));
+        this.shakeHoldTicks = (int) (1.5f * (13 + 14 * distanceFactor));
+        this.seed = epicenter.asLong() * 31L + id;
+        this.surface = new SurfaceHeightCache(epicenter,
+                NukeTimeline.GROUND_MAX_RADIUS * NukeTimeline.scale(yield) * NukeTimeline.BOUNDS_MARGIN);
     }
 
-    public static final int GROUND_CLOUD_OFFSET = 1;
-    public static final int STEM_OFFSET = 5;
-    public static final int CAP_OFFSET = 30;
+    public float ageSeconds(float partialTick) {
+        return (tickCounter + partialTick) / 20f;
+    }
 
-    public int fireballStart() { return flashDuration; }
-    public int fireballEnd() { return flashDuration + FIREBALL_DURATION; }
-    public int groundCloudStart() { return flashDuration + GROUND_CLOUD_OFFSET; }
-    public int stemStart() { return flashDuration + STEM_OFFSET; }
-    public int capStart() { return flashDuration + CAP_OFFSET; }
-    public int mushroomStart() { return stemStart(); }
-    public int mushroomEnd() { return stemStart() + MUSHROOM_DURATION; }
-    public int groundCloudEnd() { return groundCloudStart() + GROUND_CLOUD_DURATION; }
-    public int lifeEnd() { return Math.max(Math.max(fireballEnd(), mushroomEnd()), groundCloudEnd()) + FADE_TICKS; }
-
-    public Phase currentPhase() {
-        if (tickCounter < flashDuration) return Phase.FLASH;
-        if (tickCounter < mushroomStart()) return Phase.FIREBALL;
-        if (tickCounter < mushroomEnd()) return Phase.MUSHROOM;
-        return Phase.FADE;
+    public boolean expired() {
+        return tickCounter > NukeTimeline.lifeEndTicks();
     }
 
     public float flashAlpha(float partialTick) {
-        float t = tickCounter + partialTick;
-        if (t >= flashDuration || distanceFactor <= 0f) return 0f;
-        float peak = Math.max(1f, flashDuration * 0.25f);
+        if (distanceFactor <= 0f) return 0f;
+        float age = ageSeconds(partialTick);
         float a;
-        if (t < peak) a = t / peak;
-        else a = 1f - (t - peak) / Math.max(0.5f, flashDuration - peak);
-        return Math.max(0f, Math.min(1f, a)) * distanceFactor;
+        if (age < HUD_FLASH_PEAK) a = age / HUD_FLASH_PEAK;
+        else a = (float) Math.exp(-(age - HUD_FLASH_PEAK) / HUD_FLASH_DECAY);
+        return Math.max(0f, Math.min(1f, a)) * HUD_FLASH_STRENGTH * distanceFactor;
     }
 
     public float cameraShakeAmount(float partialTick) {
         if (shakeFactor <= 0f) return 0f;
         float t = tickCounter + partialTick;
-        float halfFlash = flashDuration * 0.5f;
-        float halfFireball = FIREBALL_DURATION * 0.5f;
         float envelope;
-        if (t < halfFlash) {
+        if (t < shakeHoldTicks) {
             envelope = 1.0f;
         } else {
-            float local = t - halfFlash;
-            if (local < halfFireball) {
-                envelope = 1.0f - 1.0f * (local / halfFireball);
-            } else {
-                envelope = 0f;
-            }
+            envelope = 1.0f - (t - shakeHoldTicks) / SHAKE_DECAY_TICKS;
         }
         return Math.max(0f, envelope) * shakeFactor;
     }
-
-    public enum Phase { FLASH, FIREBALL, MUSHROOM, FADE }
 }

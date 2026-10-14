@@ -71,9 +71,10 @@ public final class NukeVolumeRenderer {
         close();
         Minecraft mc = Minecraft.getInstance();
         RenderTarget main = mc.getMainRenderTarget();
+        Client.NukeQuality quality = Client.effectiveNukeQuality();
         try {
             thermalOut = new TextureTarget(main.width, main.height, false, Minecraft.ON_OSX);
-            volumeOut = new HdrTextureTarget(scaled(main.width), scaled(main.height), false, Minecraft.ON_OSX);
+            volumeOut = new HdrTextureTarget(scaled(main.width, quality), scaled(main.height, quality), false, Minecraft.ON_OSX);
             compositeOut = new TextureTarget(main.width, main.height, false, Minecraft.ON_OSX);
 
             thermalPass = new PostPass(resources, "nuclearcraft:nuke_thermal", main, thermalOut, false);
@@ -87,7 +88,7 @@ public final class NukeVolumeRenderer {
             compositePass.addAuxAsset("VolumeSampler", () -> volumeOut.getColorTextureId(), volumeOut.width, volumeOut.height);
             compositePass.addAuxAsset("DepthSampler", NukeVolumeRenderer::depthTexture, main.width, main.height);
 
-            resize(main);
+            resize(main, quality);
         } catch (IOException | RuntimeException e) {
             close();
             NuclearCraft.LOGGER.error("Unable to load nuke volume shaders; volumetric explosions disabled", e);
@@ -104,19 +105,19 @@ public final class NukeVolumeRenderer {
         return Minecraft.getInstance().getTextureManager().getTexture(NOISE_ATLAS).getId();
     }
 
-    private static int scaled(int size) {
-        return Math.max(1, Math.round(size * Client.nukeQuality.volumeScale));
+    private static int scaled(int size, Client.NukeQuality quality) {
+        return Math.max(1, Math.round(size * quality.volumeScale));
     }
 
-    private static void resize(RenderTarget main) {
+    private static void resize(RenderTarget main, Client.NukeQuality quality) {
         if (thermalOut.width != main.width || thermalOut.height != main.height) {
             thermalOut.resize(main.width, main.height, Minecraft.ON_OSX);
         }
         if (compositeOut.width != main.width || compositeOut.height != main.height) {
             compositeOut.resize(main.width, main.height, Minecraft.ON_OSX);
         }
-        int volumeWidth = scaled(main.width);
-        int volumeHeight = scaled(main.height);
+        int volumeWidth = scaled(main.width, quality);
+        int volumeHeight = scaled(main.height, quality);
         if (volumeOut.width != volumeWidth || volumeOut.height != volumeHeight) {
             volumeOut.resize(volumeWidth, volumeHeight, Minecraft.ON_OSX);
         }
@@ -167,7 +168,8 @@ public final class NukeVolumeRenderer {
 
         depthTexture = sceneDepthTexture;
         RenderTarget main = mc.getMainRenderTarget();
-        resize(main);
+        Client.NukeQuality quality = Client.effectiveNukeQuality();
+        resize(main, quality);
         Matrix4f projection = event.getProjectionMatrix();
         Matrix4f view = event.getModelViewMatrix();
         Matrix4f inverseProjection = new Matrix4f(projection).invert();
@@ -181,7 +183,7 @@ public final class NukeVolumeRenderer {
         thermal.safeGetUniform("Projection").set(projection);
         thermal.safeGetUniform("ViewMat").set(view);
         uploadThermal(thermal, camera);
-        uploadVolumes(volume, camera);
+        uploadVolumes(volume, camera, quality);
         uploadLighting(volume, mc.level, camera, partialTick);
 
         try {
@@ -234,8 +236,8 @@ public final class NukeVolumeRenderer {
         effect.safeGetUniform("ThermalCount").set(count);
     }
 
-    private static void uploadVolumes(EffectInstance effect, Vec3 camera) {
-        float detail = Client.nukeQuality.detail;
+    private static void uploadVolumes(EffectInstance effect, Vec3 camera, Client.NukeQuality quality) {
+        float detail = quality.detail;
         for (int i = 0; i < MAX_DETAILED; i++) {
             if (i < SELECTED.size()) {
                 ActiveBomb bomb = SELECTED.get(i);
@@ -248,8 +250,8 @@ public final class NukeVolumeRenderer {
             }
         }
         effect.safeGetUniform("VolumeCount").set(SELECTED.size());
-        effect.safeGetUniform("MaxSamples").set(Client.nukeQuality.maxSamples);
-        effect.safeGetUniform("LightProbes").set(Client.nukeQuality.lightProbes);
+        effect.safeGetUniform("MaxSamples").set(quality.maxSamples);
+        effect.safeGetUniform("LightProbes").set(quality.lightProbes);
     }
 
     private static void uploadLighting(EffectInstance effect, ClientLevel level, Vec3 camera, float partialTick) {

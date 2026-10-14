@@ -130,7 +130,7 @@ public final class ShockwaveDebrisEmitter {
 
         ParticleStatus status = Minecraft.getInstance().options.particles().get();
         if (status == ParticleStatus.MINIMAL) return;
-        int budget = Math.min(SPAWNS_GLOBAL, Client.nukeQuality.shockDebrisLiveCap - PIECES.size());
+        int budget = Math.min(SPAWNS_GLOBAL, Client.effectiveNukeQuality().shockDebrisLiveCap - PIECES.size());
         if (status == ParticleStatus.DECREASED) budget /= 2;
         if (budget <= 0) return;
 

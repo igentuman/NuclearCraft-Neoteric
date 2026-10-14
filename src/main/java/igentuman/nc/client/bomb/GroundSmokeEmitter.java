@@ -31,7 +31,7 @@ public final class GroundSmokeEmitter {
         ParticleStatus status = mc.options.particles().get();
         if (status == ParticleStatus.MINIMAL) return;
 
-        int budget = Math.min(SPAWNS_GLOBAL, Client.nukeQuality.smokeLiveCap - LIVE.size());
+        int budget = Math.min(SPAWNS_GLOBAL, Client.effectiveNukeQuality().smokeLiveCap - LIVE.size());
         if (status == ParticleStatus.DECREASED) budget /= 2;
         if (budget <= 0) return;
 

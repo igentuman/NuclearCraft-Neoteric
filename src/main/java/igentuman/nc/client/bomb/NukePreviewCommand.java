@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.config.Client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -78,7 +79,9 @@ public final class NukePreviewCommand {
     }
 
     private static int stats() {
-        StringBuilder text = new StringBuilder("Nuke smoke live: ").append(GroundSmokeEmitter.liveCount())
+        StringBuilder text = new StringBuilder("Nuke quality: ").append(Client.nukeQuality)
+                .append(" → ").append(Client.effectiveNukeQuality())
+                .append(" | smoke live: ").append(GroundSmokeEmitter.liveCount())
                 .append(" | debris fires: ").append(DebrisFireEmitter.fireCount())
                 .append(" live: ").append(DebrisFireEmitter.liveCount())
                 .append(" | shock debris: ").append(ShockwaveDebrisEmitter.liveCount());

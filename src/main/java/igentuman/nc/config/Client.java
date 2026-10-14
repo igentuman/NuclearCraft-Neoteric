@@ -1,5 +1,7 @@
 package igentuman.nc.config;
 
+import net.minecraft.client.GraphicsStatus;
+import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class Client {
@@ -12,7 +14,7 @@ public class Client {
 
     public static final ModConfigSpec SPEC;
 
-    public static NukeQuality nukeQuality = NukeQuality.BALANCED;
+    public static NukeQuality nukeQuality = NukeQuality.AUTO;
     public static int nukeMatureHoldSeconds = 300;
     public static boolean nukeThermalRefraction = true;
     public static boolean nukeHudFlash = true;
@@ -20,8 +22,8 @@ public class Client {
     static {
         BUILDER.push("nuke");
         NUKE_QUALITY = BUILDER
-                .comment("Volumetric explosion quality preset: LOW, BALANCED or HIGH.")
-                .defineEnum("quality", NukeQuality.BALANCED);
+                .comment("AUTO follows Minecraft graphics: FAST uses LOW, FANCY and FABULOUS use HIGH. LOW, BALANCED and HIGH override it.")
+                .defineEnum("quality", NukeQuality.AUTO);
         NUKE_MATURE_HOLD_SECONDS = BUILDER
                 .comment("Seconds the fully formed mushroom cloud stays before its one-minute fade.")
                 .defineInRange("mature_hold_seconds", 300, 300, 3600);
@@ -43,7 +45,14 @@ public class Client {
         nukeHudFlash = NUKE_HUD_FLASH.get();
     }
 
+    public static NukeQuality effectiveNukeQuality() {
+        if (nukeQuality != NukeQuality.AUTO) return nukeQuality;
+        GraphicsStatus graphics = Minecraft.getInstance().options.graphicsMode().get();
+        return graphics == GraphicsStatus.FAST ? NukeQuality.LOW : NukeQuality.HIGH;
+    }
+
     public enum NukeQuality {
+        AUTO(0.75f, 96, 6, 512, 1f, 96, 2560, 256),
         LOW(0.5f, 32, 2, 128, 0f, 16, 384, 48),
         BALANCED(0.5f, 64, 4, 384, 1f, 48, 1280, 128),
         HIGH(0.75f, 96, 6, 512, 1f, 96, 2560, 256);

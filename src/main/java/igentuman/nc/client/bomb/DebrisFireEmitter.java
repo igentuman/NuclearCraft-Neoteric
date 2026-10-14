@@ -59,13 +59,14 @@ public final class DebrisFireEmitter {
         LIVE.removeIf(p -> !p.isAlive());
         FIRES.removeIf(f -> f.burnedOut() || !bombs.contains(f.bomb));
 
-        int maxFires = Client.nukeQuality.debrisFires;
+        Client.NukeQuality quality = Client.effectiveNukeQuality();
+        int maxFires = quality.debrisFires;
         for (ActiveBomb bomb : bombs) ignite(bomb, level, camera, maxFires);
 
         Minecraft mc = Minecraft.getInstance();
         ParticleStatus status = mc.options.particles().get();
         if (status == ParticleStatus.MINIMAL || FIRES.isEmpty()) return;
-        int budget = Math.min(SPAWNS_PER_TICK, Client.nukeQuality.debrisLiveCap - LIVE.size());
+        int budget = Math.min(SPAWNS_PER_TICK, quality.debrisLiveCap - LIVE.size());
         if (budget <= 0) return;
         float rate = status == ParticleStatus.DECREASED ? 0.5f : 1f;
 

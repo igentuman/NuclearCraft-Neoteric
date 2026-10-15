@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "nuclearcraft:block/fission/controller/bottom",
+    "front": "nuclearcraft:block/fission/controller/fission_reactor_controller_powered",
+    "side": "nuclearcraft:block/fission/controller/side",
+    "top": "nuclearcraft:block/fission/controller/top"
+  }
+}

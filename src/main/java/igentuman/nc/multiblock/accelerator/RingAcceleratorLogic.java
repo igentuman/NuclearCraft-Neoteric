@@ -76,6 +76,7 @@ public class RingAcceleratorLogic
         ParticleStack commitRemainder = pendingOutput.insert(0, acceptedStack, ParticleAction.EXECUTE);
         long committed = accepted - commitRemainder.amount();
         if (committed <= 0) return;
+        processedThisTick = true;
 
         input.extract(0, committed, ParticleAction.EXECUTE);
         controller.energyStorage.drainEnergy(required);
@@ -86,13 +87,14 @@ public class RingAcceleratorLogic
     }
 
     private void transferOutput(ServerLevel level, BlockPos controllerPos, RingAcceleratorCache cache) {
-        if (cache.beamOutputs.isEmpty()) return;
+        BlockPos outputPort = activeOutputPort(level, cache);
+        if (outputPort == null) return;
         ParticleStack pending = pendingOutput.snapshot(0);
         ParticleDefinition definition = pending.isEmpty() ? null
                 : Registers.PARTICLE_DEFINITION_REGISTRY.get(pending.particleId());
         if (definition == null) return;
         ParticleMachinesConfig.Accelerator config = Multiblocks.particleMachines().accelerator();
-        transferPendingOutput(level, controllerPos, cache.beamOutputs.getFirst(),
+        transferPendingOutput(level, controllerPos, outputPort,
                 (stack, distance) -> LinearParticleProcessor.attenuateConnection(stack, definition, config, distance));
     }
 }

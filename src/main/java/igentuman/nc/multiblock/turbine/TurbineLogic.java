@@ -69,6 +69,7 @@ public class TurbineLogic extends AbstractMultiblockLogic<TurbineCache> {
 
         float newSpeed = (float) ((rotationSpeed * 4 + realFlow / (Math.max(1, tc.flow) * Multiblocks.turbineBladeFlow)) / 5f);
         rotationSpeed = newSpeed < 0.001f ? 0f : newSpeed;
+        be.setPowered(realFlow > 0);
         if (CREATE_LOADED) driveBearings(level, tc, maxFlow, realFlow);
         be.updateRuntimeDisplay(tc, rotationSpeed, (int) Math.min(realFlow, maxFlow), (int) maxFlow, genPerTick, maxGen);
     }

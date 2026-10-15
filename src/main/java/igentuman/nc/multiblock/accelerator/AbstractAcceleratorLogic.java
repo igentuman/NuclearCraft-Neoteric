@@ -5,6 +5,8 @@ import igentuman.nc.api.particle.ParticleAction;
 import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.block_entity.MultiblockPortBE;
 import igentuman.nc.block_entity.accelerator.AbstractAcceleratorControllerBE;
+import igentuman.nc.block_entity.accelerator.AcceleratorBeamPortBE;
+import igentuman.nc.block.accelerator.BeamPortMode;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.api.multiblock.AbstractMultiblockLogic;
@@ -12,6 +14,7 @@ import igentuman.nc.particle.BeamConnection;
 import igentuman.nc.particle.BeamConnectionResolver;
 import igentuman.nc.particle.ParticleStorage;
 import igentuman.nc.particle.ParticleTransfer;
+import igentuman.nc.particle.SinglePacketParticleStorage;
 import igentuman.nc.recipe.particle.AcceleratorCoolantRecipe;
 import igentuman.nc.recipe.particle.ParticleRecipes;
 import net.minecraft.core.BlockPos;
@@ -37,7 +40,7 @@ import java.util.function.BiFunction;
 public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
         B extends AbstractAcceleratorControllerBE> extends AbstractMultiblockLogic<C> {
 
-    protected final ParticleStorage input = new ParticleStorage(1, Integer.MAX_VALUE);
+    protected final ParticleStorage input = new SinglePacketParticleStorage(Integer.MAX_VALUE);
     protected final ParticleStorage pendingOutput = new ParticleStorage(1, Integer.MAX_VALUE);
     private RecipeHolder<AcceleratorCoolantRecipe> cachedCoolantRecipe;
     private boolean coolantValidatorInstalled;
@@ -45,6 +48,7 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
     protected int controlSignal;
     protected int overheatCooldown;
     protected ResourceLocation activeCoolantRecipeId;
+    protected boolean processedThisTick;
 
     public ParticleStorage input() {
         return input;
@@ -63,10 +67,12 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
         BlockEntity be = level.getBlockEntity(controllerPos);
         if (!controllerClass().isInstance(be)) return;
         B controller = controllerClass().cast(be);
+        processedThisTick = false;
         pendingOutput.extract(0, Long.MAX_VALUE, ParticleAction.EXECUTE);
         try {
             tickBeam(level, controllerPos, cache, controller);
         } finally {
+            controller.setPowered(processedThisTick);
             clearBeams();
         }
     }
@@ -108,6 +114,19 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
     protected final void clearBeams() {
         input.extract(0, Long.MAX_VALUE, ParticleAction.EXECUTE);
         pendingOutput.extract(0, Long.MAX_VALUE, ParticleAction.EXECUTE);
+    }
+
+    @Nullable
+    protected final BlockPos activeOutputPort(ServerLevel level, C cache) {
+        for (BlockPos pos : cache.beamOutputs) {
+            if (level.hasChunkAt(pos) && level.getBlockEntity(pos) instanceof AcceleratorBeamPortBE port
+                    && port.beamPortMode() == BeamPortMode.OUTPUT) return pos;
+        }
+        for (BlockPos pos : cache.beamInputs) {
+            if (level.hasChunkAt(pos) && level.getBlockEntity(pos) instanceof AcceleratorBeamPortBE port
+                    && port.beamPortMode() == BeamPortMode.OUTPUT) return pos;
+        }
+        return null;
     }
 
     protected final int updateControlSignal(ServerLevel level, BlockPos controllerPos, C cache, B controller) {

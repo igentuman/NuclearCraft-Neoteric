@@ -125,6 +125,7 @@ public class MsrControllerBE extends MultiblockControllerBE {
 
     public void updateRuntimeDisplay(double reactivity, double temperature, double depletion, int pebbles,
                                      int overheatTimer, boolean critical) {
+        setPowered(critical);
         int r = (int) Math.round(reactivity * 100);
         int t = (int) Math.round(temperature);
         int d = (int) Math.round(depletion * 100);

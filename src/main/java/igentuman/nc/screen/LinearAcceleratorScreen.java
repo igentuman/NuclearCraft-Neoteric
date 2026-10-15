@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class LinearAcceleratorScreen extends AbstractAcceleratorControllerScreen {
 
     public LinearAcceleratorScreen(MultiblockControllerContainer menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, false);
+        super(menu, inventory, title, true);
     }
 
     @Override

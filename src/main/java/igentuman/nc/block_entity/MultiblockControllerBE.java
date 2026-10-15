@@ -1,6 +1,7 @@
 package igentuman.nc.block_entity;
 
 import igentuman.nc.api.particle.IParticleHandler;
+import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.accelerator.BeamPortMode;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.multiblock.MultiblockEntry;
@@ -21,6 +22,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -93,10 +95,19 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     }
 
     public void tickMultiblock(ServerLevel level) {
+        if (mbInstance == null || !mbInstance.formed || mbInstance.dirty) setPowered(false);
         MultiblockHandler.submitTick(level, mbInstance, worldPosition);
         if (mbInstance == null) {
             mbInstance = MultiblockHandler.getInstance(level, worldPosition);
         }
+    }
+
+    public void setPowered(boolean powered) {
+        if (!(level instanceof ServerLevel serverLevel)) return;
+        BlockState state = getBlockState();
+        if (!state.hasProperty(MultiblockControllerBlock.POWERED)
+                || state.getValue(MultiblockControllerBlock.POWERED) == powered) return;
+        serverLevel.setBlock(worldPosition, state.setValue(MultiblockControllerBlock.POWERED, powered), Block.UPDATE_CLIENTS);
     }
 
     @Override

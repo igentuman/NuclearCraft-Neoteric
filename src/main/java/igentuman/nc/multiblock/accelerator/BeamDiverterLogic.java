@@ -76,6 +76,7 @@ public class BeamDiverterLogic
         ParticleStack commitRemainder = pendingOutput.insert(0, acceptedStack, ParticleAction.EXECUTE);
         long committed = accepted - commitRemainder.amount();
         if (committed <= 0) return;
+        processedThisTick = true;
 
         input.extract(0, committed, ParticleAction.EXECUTE);
         controller.energyStorage.drainEnergy(required);

@@ -16,4 +16,12 @@ public class LinearAcceleratorContainer extends MultiblockControllerContainer {
         super(containerId, inventory, blockEntity, data);
     }
 
+    @Override
+    protected boolean showControllerSlots() {
+        return false;
+    }
+
+    @Override
+    protected void layoutPlayerSlots(Inventory playerInventory) {
+    }
 }

@@ -54,6 +54,7 @@ public class TargetChamberLogic extends ParticleChamberLogic {
 
         ParticleStack extracted = inputStorage.extract(0, incoming.amount(), ParticleAction.EXECUTE);
         if (extracted.isEmpty()) return;
+        processedThisTick = true;
         if (controller.energyStorage != null && required > 0) controller.energyStorage.drainEnergy(required);
 
         double p = TargetChamberProcessor.yieldFactor(recipe.crossSection(), stats.efficiency());

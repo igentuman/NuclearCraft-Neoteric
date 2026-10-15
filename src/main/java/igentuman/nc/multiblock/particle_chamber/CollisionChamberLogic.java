@@ -75,6 +75,7 @@ public class CollisionChamberLogic extends ParticleChamberLogic {
         ParticleStack extractedA = inputA.extract(0, maxReactions * requiredA, ParticleAction.EXECUTE);
         ParticleStack extractedB = inputB.extract(0, maxReactions * requiredB, ParticleAction.EXECUTE);
         if (extractedA.isEmpty() || extractedB.isEmpty()) return;
+        processedThisTick = true;
         if (controller.energyStorage != null && requiredFe > 0) controller.energyStorage.drainEnergy(requiredFe);
         commitOutputs(candidates);
         finishCycle(null, 0D, List.of(reactionBatch.carry()));

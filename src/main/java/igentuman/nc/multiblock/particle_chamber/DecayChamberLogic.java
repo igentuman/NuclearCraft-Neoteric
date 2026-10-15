@@ -49,6 +49,7 @@ public class DecayChamberLogic extends ParticleChamberLogic {
 
         ParticleStack extracted = inputStorage.extract(0, maxReactions * required, ParticleAction.EXECUTE);
         if (extracted.isEmpty()) return;
+        processedThisTick = true;
         if (controller.energyStorage != null && requiredFe > 0) controller.energyStorage.drainEnergy(requiredFe);
 
         List<ParticleStack> templates = recipe.particleOutputs();

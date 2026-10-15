@@ -57,13 +57,9 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
     @Override
     public IParticleHandler getParticleHandler(BlockPos portPos, BeamPortMode mode, int channel) {
         RingAcceleratorLogic logic = logic();
-        if (logic == null || !formed || channel < 0) return null;
-        StructureRole role = mode == BeamPortMode.INPUT ? StructureRole.BEAM_INPUT
-                : mode == BeamPortMode.OUTPUT ? StructureRole.BEAM_OUTPUT : null;
-        if (role == null) return null;
-        List<BlockPos> positions = rolePositions(role);
-        if (channel >= positions.size() || !positions.get(channel).equals(portPos)) return null;
-        if (mode == BeamPortMode.OUTPUT && channel != 0) return null;
+        if (logic == null || !formed || mode == BeamPortMode.DISABLED) return null;
+        if (!rolePositions(StructureRole.BEAM_INPUT).contains(portPos)
+                && !rolePositions(StructureRole.BEAM_OUTPUT).contains(portPos)) return null;
         return mode == BeamPortMode.INPUT
                 ? new ParticlePortView(logic.input(), 0, ParticlePortView.Access.INPUT)
                 : new ParticlePortView(logic.pendingOutput(), 0, ParticlePortView.Access.OUTPUT);

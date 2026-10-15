@@ -138,8 +138,9 @@ public abstract class AbstractAcceleratorControllerScreen extends MultiblockCont
     }
 
     private void renderParticle(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (synced("particleAmount") <= 0) return;
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.byId(synced("particleTypeId"));
+        AbstractAcceleratorControllerBE controller = (AbstractAcceleratorControllerBE) menu.getBlockEntity();
+        if (controller.particleAmount <= 0) return;
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.byId(controller.particleTypeId);
         if (definition == null) return;
         guiGraphics.blit(definition.textureId(), 40, 21, 0, 0, 16, 16, 16, 16);
         int localMouseX = mouseX - leftPos;
@@ -147,12 +148,12 @@ public abstract class AbstractAcceleratorControllerScreen extends MultiblockCont
         if (localMouseX >= 40 && localMouseX < 56 && localMouseY >= 21 && localMouseY < 37) {
             guiGraphics.renderComponentTooltip(font, List.of(
                     Component.translatable(definition.translationKey()),
-                    __("tooltip.nuclearcraft.particlestack.amount", synced("particleAmount"))
+                    __("tooltip.nuclearcraft.particlestack.amount", controller.particleAmount)
                             .withStyle(ChatFormatting.GRAY),
-                    __("tooltip.nuclearcraft.particlestack.energy", formatParticleEnergy(particleEnergyKeV()))
+                    __("tooltip.nuclearcraft.particlestack.energy", formatParticleEnergy(controller.particleEnergyKeV))
                             .withStyle(ChatFormatting.GRAY),
                     __("tooltip.nuclearcraft.particlestack.focus",
-                            numberFormat(synced("particleFocusScaled") / 10_000D))
+                            numberFormat(controller.particleFocusScaled / 10_000D))
                             .withStyle(ChatFormatting.GRAY)
             ), localMouseX, localMouseY);
         }
@@ -163,19 +164,16 @@ public abstract class AbstractAcceleratorControllerScreen extends MultiblockCont
         lines.add(__("screen.nuclearcraft.accelerator.voltage", synced("voltage")));
         lines.add(__("screen.nuclearcraft.accelerator.beam_length", synced("beamLength")));
         lines.add(__("screen.nuclearcraft.accelerator.quadrupole_field", synced("quadrupoleField")));
-        if (synced("particleAmount") != 0) {
+        AbstractAcceleratorControllerBE controller = (AbstractAcceleratorControllerBE) menu.getBlockEntity();
+        if (controller.particleAmount > 0) {
             lines.add(__("screen.nuclearcraft.accelerator.particle_beam",
-                    synced("particleAmount"), formatParticleEnergy(particleEnergyKeV())));
+                    controller.particleAmount, formatParticleEnergy(controller.particleEnergyKeV)));
         }
         if (synced("overheated") != 0) {
             lines.add(__("screen.nuclearcraft.accelerator.overheated", synced("overheatCooldownTicks"))
                     .copy().withStyle(ChatFormatting.RED));
         }
         return lines;
-    }
-
-    private long particleEnergyKeV() {
-        return ((AbstractAcceleratorControllerBE) menu.getBlockEntity()).particleEnergyKeV;
     }
 
     @Override

@@ -73,6 +73,7 @@ public class HeatExchangerLogic extends AbstractMultiblockLogic<HeatExchangerCac
             hotCycleOps = 0;
             coldCycleOps = 0;
         }
+        controller.setPowered(hotCycleOps > 0 || coldCycleOps > 0);
         controller.updateRuntimeDisplay(heat, hotCycleOps, coldCycleOps);
     }
 

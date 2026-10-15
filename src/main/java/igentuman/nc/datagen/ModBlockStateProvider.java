@@ -1,5 +1,6 @@
 package igentuman.nc.datagen;
 
+import igentuman.nc.block.MultiblockControllerBlock;
 import igentuman.nc.block.RedstoneDimmerBlock;
 import igentuman.nc.block.UniversalProcessorBlock;
 import igentuman.nc.block.accelerator.BeamPortMode;
@@ -285,26 +286,34 @@ public class ModBlockStateProvider extends BlockStateProvider {
         boolean hasSingleTexture = textureExists("block/" + path);
 
         ModelFile model;
+        ModelFile poweredModel;
         if (hasSubfolderTextures) {
             // use available subfolder textures, falling back to side for missing ones
             ResourceLocation side = rl("block/" + path + "/" + (hasSide ? "side" : "front"));
             ResourceLocation front = rl("block/" + path + "/" + (hasFront ? "front" : "side"));
             ResourceLocation top = hasTop ? rl("block/" + path + "/top") : side;
             ResourceLocation bottom = hasBottom ? rl("block/" + path + "/bottom") : top;
-            model = models().orientableWithBottom(modelName, side, front, top, bottom);
+            model = models().orientableWithBottom(modelName, side, front, bottom, top);
+            String poweredFrontPath = "block/" + path + "/" + BuiltInRegistries.BLOCK.getKey(block).getPath() + "_powered";
+            ResourceLocation poweredFront = textureExists(poweredFrontPath) ? rl(poweredFrontPath) : front;
+            poweredModel = block instanceof MultiblockControllerBlock
+                    ? models().orientableWithBottom(modelName + "_powered", side, poweredFront, bottom, top) : model;
         } else if (hasSingleTexture) {
             // single texture for all faces, use orientable with same texture everywhere
             ResourceLocation texture = rl("block/" + path);
             model = models().orientable(modelName, texture, texture, texture);
+            poweredModel = model;
         } else {
             // Placeholder until textures exist; keeps datagen and rendering valid.
             ResourceLocation placeholder = ResourceLocation.withDefaultNamespace("block/iron_block");
             model = models().orientable(modelName, placeholder, placeholder, placeholder);
+            poweredModel = model;
         }
         if(path.matches(".*glass|.*cell.*|.*photon.*|.*event_horizon_stabilizer.*|.*quantum_transformer.*")) {
             ((BlockModelBuilder) model).renderType(ResourceLocation.tryBuild("minecraft","cutout"));
         }
-        horizontalBlock(block, model);
+        if (block instanceof MultiblockControllerBlock) controllerVariants(block, model, poweredModel);
+        else horizontalBlock(block, model);
         itemModels().getBuilder("item/" + BuiltInRegistries.BLOCK.getKey(block).getPath()).parent(model);
     }
 
@@ -464,7 +473,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         }
 
         if (path.equals("fusion_reactor_core")) {
-            simpleBlock(block, models().getExistingFile(rl("block/fusion/core_center")));
+            ModelFile core = models().getExistingFile(rl("block/fusion/core_center"));
+            controllerVariants(block, core, core);
             return;
         }
 
@@ -511,7 +521,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         rl("block/turbine/controller/turbine_controller"),
                         rl("block/turbine/controller/bottom"),
                         rl("block/turbine/controller/top"));
-                horizontalBlock(block, model);
+                ModelFile powered = models().orientableWithBottom("turbine_controller_powered",
+                        rl("block/turbine/controller/side"),
+                        rl("block/turbine/controller/turbine_controller_powered"),
+                        rl("block/turbine/controller/bottom"),
+                        rl("block/turbine/controller/top"));
+                controllerVariants(block, model, powered);
                 itemModels().getBuilder("item/turbine_controller").parent(model);
                 return;
             }
@@ -567,7 +582,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         rl("block/heat_exchanger/controller/front"),
                         rl("block/heat_exchanger/controller/bottom"),
                         rl("block/heat_exchanger/controller/top"));
-                horizontalBlock(block, model);
+                ModelFile powered = models().orientableWithBottom("heat_exchanger_controller_powered",
+                        rl("block/heat_exchanger/controller/side"),
+                        rl("block/heat_exchanger/controller/heat_exchanger_controller_powered"),
+                        rl("block/heat_exchanger/controller/bottom"),
+                        rl("block/heat_exchanger/controller/top"));
+                controllerVariants(block, model, powered);
                 itemModels().getBuilder("item/heat_exchanger_controller").parent(model);
                 return;
             }
@@ -618,7 +638,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         rl("block/fission/controller/msr_controller"),
                         rl("block/fission/msr_controller/bottom"),
                         rl("block/fission/msr_controller/top"));
-                horizontalBlock(block, model);
+                ModelFile powered = models().orientableWithBottom("msr_controller_powered",
+                        rl("block/fission/msr_controller/side"),
+                        rl("block/fission/controller/msr_controller_powered"),
+                        rl("block/fission/msr_controller/bottom"),
+                        rl("block/fission/msr_controller/top"));
+                controllerVariants(block, model, powered);
                 itemModels().getBuilder("item/msr_controller").parent(model);
             }
             case "msr_fuel_cell" -> {
@@ -673,8 +698,28 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 rl("block/" + family + "/" + path),
                 rl("block/" + family + "/bottom"),
                 rl("block/" + family + "/top"));
-        horizontalBlock(block, model);
+        ResourceLocation poweredFront = textureExists("block/" + family + "/" + path + "_powered")
+                ? rl("block/" + family + "/" + path + "_powered")
+                : rl("block/" + family + "/" + path);
+        ModelFile powered = models().orientableWithBottom(path + "_powered",
+                rl("block/" + family + "/side"), poweredFront,
+                rl("block/" + family + "/bottom"), rl("block/" + family + "/top"));
+        controllerVariants(block, model, powered);
         itemModels().getBuilder("item/" + path).parent(model);
+    }
+
+    private void controllerVariants(Block block, ModelFile idle, ModelFile powered) {
+        getVariantBuilder(block).forAllStates(state -> {
+            int yRot = switch (state.getValue(MultiblockControllerBlock.FACING)) {
+                case EAST -> 90;
+                case SOUTH -> 180;
+                case WEST -> 270;
+                default -> 0;
+            };
+            return ConfiguredModel.builder()
+                    .modelFile(state.getValue(MultiblockControllerBlock.POWERED) ? powered : idle)
+                    .rotationY(yRot).build();
+        });
     }
 
     /** Plain service port with no mode texture: single representative texture on every face. */

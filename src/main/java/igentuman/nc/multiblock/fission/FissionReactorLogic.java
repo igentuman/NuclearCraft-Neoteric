@@ -85,6 +85,7 @@ public class FissionReactorLogic extends AbstractMultiblockLogic<FissionReactorC
         }
         int fuelCells = fc.fuelCellCount;
         boolean processing = recipe != null && fuelCells > 0;
+        be.setPowered(processing);
 
         double activeCooling = applyActiveCooling(be, fc, heat.currentHeat > 0 || processing);
         double cooling = fc.totalCooling + activeCooling;
@@ -150,6 +151,7 @@ public class FissionReactorLogic extends AbstractMultiblockLogic<FissionReactorC
 
         be.markDirty();
         if (heat.isOverMax()) {
+            be.setPowered(false);
             meltdown(be, fc);
             return;
         }
@@ -159,6 +161,7 @@ public class FissionReactorLogic extends AbstractMultiblockLogic<FissionReactorC
     /** Called when the structure is not formed: bleed off reactivity and clear display values.
      *  Preserves fuel and burn progress so the reaction resumes when the structure is reformed. */
     public void idle(FissionReactorControllerBE be) {
+        be.setPowered(false);
         seedHeat(be);
         reactivityLevel = Math.max(0, reactivityLevel - 1);
         if (fuelConsumed && currentRecipe == null) {

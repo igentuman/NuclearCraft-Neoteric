@@ -2,12 +2,16 @@ package igentuman.nc.block_entity.accelerator;
 
 import igentuman.nc.api.particle.IParticleHandler;
 import igentuman.nc.block.accelerator.BeamPortMode;
+import igentuman.nc.container.LinearAcceleratorContainer;
 import igentuman.nc.multiblock.accelerator.LinearAcceleratorCache;
 import igentuman.nc.multiblock.accelerator.LinearAcceleratorLogic;
 import igentuman.nc.multiblock.StructureRole;
 import igentuman.nc.particle.ParticlePortView;
 import igentuman.nc.particle.ParticleSourceCatalog;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,14 +49,17 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
 
     @Nullable
     @Override
+    public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+        return new LinearAcceleratorContainer(containerId, playerInventory, this, containerData);
+    }
+
+    @Nullable
+    @Override
     public IParticleHandler getParticleHandler(BlockPos portPos, BeamPortMode mode, int channel) {
         LinearAcceleratorLogic logic = logic();
-        if (logic == null || !formed || channel < 0) return null;
-        StructureRole role = mode == BeamPortMode.INPUT ? StructureRole.BEAM_INPUT
-                : mode == BeamPortMode.OUTPUT ? StructureRole.BEAM_OUTPUT : null;
-        if (role == null) return null;
-        List<BlockPos> positions = rolePositions(role);
-        if (channel >= positions.size() || !positions.get(channel).equals(portPos)) return null;
+        if (logic == null || !formed || mode == BeamPortMode.DISABLED) return null;
+        if (!rolePositions(StructureRole.BEAM_INPUT).contains(portPos)
+                && !rolePositions(StructureRole.BEAM_OUTPUT).contains(portPos)) return null;
         return mode == BeamPortMode.INPUT
                 ? new ParticlePortView(logic.input(), 0, ParticlePortView.Access.INPUT)
                 : new ParticlePortView(logic.pendingOutput(), 0, ParticlePortView.Access.OUTPUT);

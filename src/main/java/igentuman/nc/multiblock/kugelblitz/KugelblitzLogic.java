@@ -96,6 +96,7 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
             handleMeltdown(level, center);
             processTransmutation(level, terminal, cache);
         }
+        terminal.setPowered(mass > 0 && energyPerTick > 0);
         publish(terminal);
     }
 

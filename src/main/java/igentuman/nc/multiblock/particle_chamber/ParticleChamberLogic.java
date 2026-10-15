@@ -43,6 +43,7 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
     protected List<Double> fractionalYields = List.of();
     protected boolean enabled;
     private boolean changed;
+    protected boolean processedThisTick;
 
     protected abstract void process(ServerLevel level, ParticleChamberControllerBE controller,
                                     ParticleChamberCache cache);
@@ -67,11 +68,13 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
         }
         List<ParticleStack> inputDisplay = snapshots(inputs);
         List<ParticleStack> outputDisplay = List.of();
+        processedThisTick = false;
         try {
             if (enabled && !controller.forceShutdown) process(level, controller, cache);
             outputDisplay = snapshots(pendingOutputs);
             transferOutputs(level, controllerPos, cache);
         } finally {
+            controller.setPowered(processedThisTick);
             clearParticles(inputs);
             clearParticles(pendingOutputs);
             controller.updateParticleDisplay(inputDisplay, outputDisplay);

@@ -70,6 +70,7 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         } else {
             idle(be);
         }
+        be.setPowered(be.running);
     }
 
     private void seedRuntime(FusionReactorControllerBE be) {

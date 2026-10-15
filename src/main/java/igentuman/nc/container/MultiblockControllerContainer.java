@@ -48,7 +48,7 @@ public class MultiblockControllerContainer extends AbstractContainerMenu {
         ModEntry entry = ModEntries.get(blockEntity.name);
         this.slotsLayout = entry.slotsLayout();
 
-        if (blockEntity.hasInventory() && slotsLayout != null) {
+        if (showControllerSlots() && blockEntity.hasInventory() && slotsLayout != null) {
             IItemHandler inv = blockEntity.getItemHandler(null);
 
             int inputItemCount  = entry.itemCap()  != null ? entry.itemCap().inputSlots          : 0;
@@ -66,7 +66,7 @@ public class MultiblockControllerContainer extends AbstractContainerMenu {
                 SlotDef def = slotsLayout.slots.get(outputItemOffset + i);
                 addSlot(new SlotItemHandler(inv, inputItemCount + i, def.x, def.y));
             }
-        } else if (blockEntity.hasInventory()) {
+        } else if (showControllerSlots() && blockEntity.hasInventory()) {
             IItemHandler inv = blockEntity.getItemHandler(null);
             for (int row = 0; row < 3; row++) {
                 for (int col = 0; col < 3; col++) {
@@ -79,6 +79,10 @@ public class MultiblockControllerContainer extends AbstractContainerMenu {
         }
 
         layoutPlayerSlots(playerInventory);
+    }
+
+    protected boolean showControllerSlots() {
+        return true;
     }
 
     protected void layoutPlayerSlots(Inventory playerInventory) {

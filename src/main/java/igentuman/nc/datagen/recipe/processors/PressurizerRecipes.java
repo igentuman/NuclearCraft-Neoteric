@@ -15,6 +15,8 @@ public class PressurizerRecipes {
         String id = PRESSURIZER;
         for (MaterialEntry mat : materials()) {
             if (!mat.hasPlate()) continue;
+            // graphite ingot is reserved for pyrolitic carbon; graphite plate comes from dust below
+            if (mat.name.equals("graphite")) continue;
             Item input = mat.hasIngot() ? mat.ingot().get() : (mat.hasDust() ? mat.dust().get() : null);
             if (input == null) continue;
             rec(out, id, mat.name, new I[]{i(input, 1)}, NF, new I[]{i(mat.plate().get(), 1)}, NF);

@@ -8,12 +8,15 @@
     },
     "S": {
       "tag": "c:plates/hsla_steel"
+    },
+    "T": {
+      "tag": "c:plates/thermoconducting"
     }
   },
   "pattern": [
-    "SSS",
-    "SLS",
-    "SSS"
+    "STS",
+    "TLT",
+    "STS"
   ],
   "result": {
     "count": 4,

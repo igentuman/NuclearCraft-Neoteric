@@ -407,14 +407,6 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ingot("lead")))
                 .save(recipeOutput, rl("plate_basic"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("plate_basic").item(), 2)
-                .pattern("GL")
-                .pattern("LG")
-                .define('L', ingotTag("lead"))
-                .define('G', dustTag("graphite"))
-                .unlockedBy("item", has(ingot("lead")))
-                .save(recipeOutput, rl("plate_basic2"));
-
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("plate_advanced").item(), 2)
                 .pattern(" P ")
                 .pattern("TRT")
@@ -1166,10 +1158,11 @@ public class VanillaRecipes {
 
     private static void hxBlocks() {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_casing").item(), 4)
-                .pattern("SSS")
-                .pattern("SLS")
-                .pattern("SSS")
+                .pattern("STS")
+                .pattern("TLT")
+                .pattern("STS")
                 .define('S', plateTag("hsla_steel"))
+                .define('T', plateTag("thermoconducting"))
                 .define('L', ModEntries.get("chassis").item())
                 .group(MODID+"_heat_exchanger")
                 .unlockedBy("item", has(ModEntries.get("chassis").item()))
@@ -1223,7 +1216,7 @@ public class VanillaRecipes {
                 .pattern("SBS")
                 .pattern("TST")
                 .define('S', ingotTag("hsla_steel"))
-                .define('T', ingotTag("zinc"))
+                .define('T', ingotTag("copper"))
                 .define('B', CAULDRON)
                 .group(MODID+"_heat_exchanger")
                 .unlockedBy("item", has(ModEntries.get("heat_exchanger_casing").item()))
@@ -1478,7 +1471,7 @@ public class VanillaRecipes {
                 .pattern("P P")
                 .pattern("LPL")
                 .define('P', ModEntries.get("plate_advanced").item())
-                .define('L', plateTag("lead"))
+                .define('L', plateTag("cobalt"))
                 .group(MODID + "_fusion")
                 .unlockedBy("item", has(ModEntries.get("plate_advanced").item()))
                 .save(out);

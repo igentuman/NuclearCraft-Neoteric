@@ -4,7 +4,7 @@
   "group": "nuclearcraft_fusion",
   "key": {
     "L": {
-      "tag": "c:plates/lead"
+      "tag": "c:plates/cobalt"
     },
     "P": {
       "item": "nuclearcraft:plate_advanced"

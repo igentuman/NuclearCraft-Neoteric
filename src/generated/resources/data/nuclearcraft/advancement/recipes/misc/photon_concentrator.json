@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": "nuclearcraft:tough_alloy_ingot"
+            "items": "nuclearcraft:basic_electric_circuit"
           }
         ]
       },

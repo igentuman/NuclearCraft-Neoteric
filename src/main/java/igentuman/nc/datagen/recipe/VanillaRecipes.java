@@ -103,6 +103,11 @@ public class VanillaRecipes {
                 }
             }
         }
+        smelting(ModEntries.get("iron").materialEntry().dust(), Ingredient.of(dustTag("iron")), IRON_INGOT);
+        smelting(ModEntries.get("copper").materialEntry().dust(), Ingredient.of(dustTag("copper")), COPPER_INGOT);
+        smelting(ModEntries.get("gold").materialEntry().dust(), Ingredient.of(dustTag("gold")), GOLD_INGOT);
+        smelting(ModEntries.get("iron").materialEntry().plate(), Ingredient.of(plateTag("iron")), IRON_INGOT);
+        smelting(ModEntries.get("copper").materialEntry().plate(), Ingredient.of(plateTag("copper")), COPPER_INGOT);
         processors();
         parts();
         collectors();
@@ -335,7 +340,7 @@ public class VanillaRecipes {
                 .pattern("CCC").pattern("FLF").pattern("DDD")
                 .define('C', plateTag("hard_carbon")).define('D', plateTag("lithium_manganese_dioxide"))
                 .define('F', plateTag("ferroboron")).define('L', plateTag("lithium"))
-                .unlockedBy("item", has(item("plate_basic")))
+                .unlockedBy("item", has(plateTag("lithium_manganese_dioxide")))
                 .save(recipeOutput, rl("lithium_ion_cell"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("basic_lithium_ion_battery"))
                 .pattern("PCP").pattern("CSC").pattern("PCP")
@@ -384,7 +389,7 @@ public class VanillaRecipes {
                 .define('O', dustTag("obsidian"))
                 .define('R', dustTag("quartz"))
                 .define('P', LIGHT_WEIGHTED_PRESSURE_PLATE)
-                .unlockedBy("item", has(HEAVY_WEIGHTED_PRESSURE_PLATE))
+                .unlockedBy("item", has(LIGHT_WEIGHTED_PRESSURE_PLATE))
                 .save(recipeOutput, rl("upgrade_energy"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("spaxelhoe_thorium").item())
@@ -1054,7 +1059,7 @@ public class VanillaRecipes {
                 .define('S', plateTag("hsla_steel"))
                 .define('L', ModEntries.get("chassis").item())
                 .group(MODID+"_turbine")
-                .unlockedBy("item", has(ModEntries.get("coil_copper").item()))
+                .unlockedBy("item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_bearing").item(), 2)
@@ -1075,7 +1080,7 @@ public class VanillaRecipes {
                 .define('G', ModEntries.get("basic_electric_circuit").item())
                 .define('B', BUCKET)
                 .group(MODID+"_turbine")
-                .unlockedBy("item", has(ingotTag("hsla_steel")))
+                .unlockedBy("item", has(ModEntries.get("turbine_casing").item()))
                 .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_rotor_shaft").item(), 4)
@@ -1385,7 +1390,7 @@ public class VanillaRecipes {
                 .define('P', Tags.Items.GLASS_BLOCKS)
                 .define('T', ModEntries.get("fission_reactor_casing").block())
                 .group(MODID+"_fission")
-                .unlockedBy("item", has(ModEntries.get("plate_advanced").item()))
+                .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").block()))
                 .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_solid_fuel_cell").block())
@@ -1620,7 +1625,7 @@ public class VanillaRecipes {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("photon_concentrator").block())
                 .pattern("GQG").pattern("QCQ").pattern("GQG")
                 .define('G', GLASS).define('Q', QUARTZ).define('C', circuit)
-                .group(g).unlockedBy("item", has(toughAlloy)).save(out);
+                .group(g).unlockedBy("item", has(circuit)).save(out);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("chamber_port").block())
                 .pattern("NCN").pattern("N N").pattern("NCN")
@@ -1828,7 +1833,7 @@ public class VanillaRecipes {
                 .define('L', ModEntries.get("plate_basic").item())
                 .define('X', Tags.Items.BRICKS)
                 .group(MODID+"_processors")
-                .unlockedBy("item", has(ModEntries.get("chassis").item()))
+                .unlockedBy("item", has(ModEntries.get("plate_basic").item()))
                 .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(MELTER).block())

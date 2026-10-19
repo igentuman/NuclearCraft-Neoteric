@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": "nuclearcraft:plate_basic"
+            "items": "#c:plates/lithium_manganese_dioxide"
           }
         ]
       },

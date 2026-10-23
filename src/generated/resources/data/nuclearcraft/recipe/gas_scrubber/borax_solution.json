@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:gas_scrubber",
+  "energy_per_tick": 250,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:borax_solution"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 250,
+      "tag": "c:irradiated_borax_solution"
+    }
+  ],
+  "process_time": 200
+}

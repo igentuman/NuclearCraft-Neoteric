@@ -10,7 +10,7 @@ public class Materials extends ModEntries {
         oreMetalWithDeepslate("thorium", 0xFF2E2E2E);
         oreMetalWithDeepslate("boron", 0xFF999999);
         oreMetalWithDeepslate("silver", 0xFFA49CA6);
-        oreMetal("lead", 0xFF778887);
+        oreMetal("lead", 0xFF778887, 6, 12);
         oreMetal("tin", 0xFFDFDFE8);
         oreMetal("zinc", 0xFFAFB0A6);
         oreMetalWithDeepslate("magnesium", 0xFFF0D0ED);

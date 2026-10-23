@@ -12,7 +12,7 @@ public class PaxelItem extends PickaxeItem {
     private final Tier tier;
 
     public PaxelItem(Tier tier, Item.Properties properties) {
-        super(tier, properties);
+        super(tier, properties.attributes(PickaxeItem.createAttributes(tier, 3.0F, -2.4F)));
         this.tier = tier;
     }
 

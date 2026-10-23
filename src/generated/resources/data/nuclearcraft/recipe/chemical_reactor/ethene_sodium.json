@@ -1,0 +1,25 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:fluoromethane"
+    },
+    {
+      "amount": 45,
+      "fluid": "nuclearcraft:sodium_hydroxide_solution"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 250,
+      "tag": "c:ethene"
+    },
+    {
+      "amount": 250,
+      "tag": "c:sodium_fluoride_solution"
+    }
+  ],
+  "process_time": 100
+}

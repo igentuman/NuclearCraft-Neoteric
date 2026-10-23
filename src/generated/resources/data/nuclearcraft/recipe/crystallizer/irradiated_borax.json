@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/irradiated_borax"
+      }
+    }
+  ],
+  "type": "nuclearcraft:crystallizer",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:irradiated_borax_solution"
+    }
+  ],
+  "item_outputs": [
+    {
+      "tag": "c:dusts/irradiated_borax"
+    }
+  ],
+  "process_time": 100
+}

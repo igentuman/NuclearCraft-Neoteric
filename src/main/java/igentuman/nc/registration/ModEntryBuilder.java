@@ -301,6 +301,14 @@ public class ModEntryBuilder {
         return this;
     }
 
+    public ModEntryBuilder worldgenConfig(int veinsPerChunk, int veinSize) {
+        if(material == null) {
+            material(0);
+        }
+        material.worldgenConfig(veinsPerChunk, veinSize);
+        return this;
+    }
+
     public ModEntryBuilder withLayout(SlotsLayout layout) {
         this.slotsLayout = layout;
         return this;

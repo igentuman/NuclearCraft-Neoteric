@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 180,
+      "fluid": "nuclearcraft:molten_boron_arsenide"
+    },
+    {
+      "amount": 100,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 360,
+      "tag": "c:boron_arsenide_solution"
+    }
+  ],
+  "process_time": 200
+}

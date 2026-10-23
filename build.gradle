@@ -116,7 +116,7 @@ dependencies {
     implementation("igentuman.nr:NuclearRadiation:1.0.0-beta8") { transitive = false }
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     implementation "curse.maven:multi-builder-tool-827020:8797925"
-    implementation "curse.maven:immersive-engineering-231951:6733669"
+    compileOnly "curse.maven:immersive-engineering-231951:6733669"
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
     compileOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE:api")
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
@@ -124,7 +124,7 @@ dependencies {
     runtimeOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cct_version}")
     implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
-    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
+    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:additions")// Mekanism: Additions
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:tools")// Mekanism: Tools
@@ -135,7 +135,7 @@ dependencies {
 
     implementation "curse.maven:sodium-394468:6382651"
 
-    implementation "curse.maven:applied-energistics-2-223794:7027323"
+    compileOnly "curse.maven:applied-energistics-2-223794:7027323"
     implementation "curse.maven:guideme-1173950:7127444"
 
     implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}")
@@ -159,13 +159,16 @@ dependencies {
     compileOnly("top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1")
     implementation "curse.maven:architectury-api-419699:8492726"
 
-    implementation "curse.maven:refined-storage-243076:8211701"
+    compileOnly "curse.maven:refined-storage-243076:8211701"
     implementation "curse.maven:tis-3d-238603:8737736"
 
     implementation ("curse.maven:irisshaders-455508:6661598") {
         transitive = false
     }
 
+    implementation "curse.maven:ftb-teams-forge-404468:8724782"
+    implementation "curse.maven:ftb-quests-forge-289412:8885017"
+    implementation "curse.maven:ftb-library-forge-404465:9008089"
     //compileOnly "curse.maven:gregtechceu-modern-890405:6766269"
 }
 

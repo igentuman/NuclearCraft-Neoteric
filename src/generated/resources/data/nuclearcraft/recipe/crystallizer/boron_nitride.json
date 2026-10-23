@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/boron_nitride"
+      }
+    }
+  ],
+  "type": "nuclearcraft:crystallizer",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:boron_nitride_solution"
+    }
+  ],
+  "item_outputs": [
+    {
+      "tag": "c:dusts/boron_nitride"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,0 +1,25 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 45,
+      "fluid": "nuclearcraft:sodium_fluoride_solution"
+    },
+    {
+      "amount": 500,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 45,
+      "tag": "c:sodium_hydroxide_solution"
+    },
+    {
+      "amount": 500,
+      "tag": "c:hydrofluoric_acid"
+    }
+  ],
+  "process_time": 200
+}

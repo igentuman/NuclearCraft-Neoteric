@@ -29,7 +29,7 @@ public class WorldGen {
                 .defineInRange("vein_size", mat.worldgenQty, 1, 64);
             ModConfigSpec.IntValue veinsPerChunk = builder
                 .comment("Number of ore veins attempted per chunk")
-                .defineInRange("veins_per_chunk", 4, 0, 32);
+                .defineInRange("veins_per_chunk", mat.worldgenVeinsPerChunk, 0, 32);
             builder.pop();
             ORE_CONFIGS.put(mat.name, new OreGenConfig(minHeight, maxHeight, veinSize, veinsPerChunk));
         }

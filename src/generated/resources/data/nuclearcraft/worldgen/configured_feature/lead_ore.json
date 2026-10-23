@@ -1,7 +1,7 @@
 {
   "type": "nuclearcraft:configurable_ore",
   "config": {
-    "fallback_size": 9,
+    "fallback_size": 12,
     "material": "lead",
     "targets": [
       {

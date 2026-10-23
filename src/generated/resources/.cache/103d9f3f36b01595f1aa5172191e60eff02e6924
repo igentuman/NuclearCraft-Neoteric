@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-12T15:07:45.88388825	Registries
+// 1.21.1	2026-10-21T20:40:35.897331654	Registries
 fd7a52df299c66fcc476e4abd071c844e6c9afe7 data/nuclearcraft/damage_type/acid.json
 9b1935687d9ccbce873c5803c6695e28a4559546 data/nuclearcraft/damage_type/q36.json
 102f90f23ebd746200e2fb66ddcc4124b2f46255 data/nuclearcraft/damage_type/radiation.json
@@ -26,7 +26,7 @@ f08616a10ddb9881821b716ed49c5cb315ecb0d7 data/nuclearcraft/neoforge/biome_modifi
 bb8686d27906bfe9db882c7f41017547a02ab614 data/nuclearcraft/worldgen/biome/wasteland.json
 8fc60fb77fbf05d4e616dcce87f63a22e732204d data/nuclearcraft/worldgen/configured_feature/boron_ore.json
 73c838fc6c3d65cd680409ada688e0ca5c6c7741 data/nuclearcraft/worldgen/configured_feature/cobalt_ore.json
-12896c390a4577fb09d23fe9672ea14ecf1f6748 data/nuclearcraft/worldgen/configured_feature/lead_ore.json
+7d749d4edf77888d274673c5a1b91906978db41d data/nuclearcraft/worldgen/configured_feature/lead_ore.json
 001a3fa6b035488164bac8a4357d508d82aa6229 data/nuclearcraft/worldgen/configured_feature/lithium_ore.json
 012236d8414e2a8e70d3b5af0968c4e5e7506689 data/nuclearcraft/worldgen/configured_feature/magnesium_ore.json
 b06424af4a4df86131bd976afc8fbc7942fc7fdc data/nuclearcraft/worldgen/configured_feature/platinum_ore.json

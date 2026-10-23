@@ -124,12 +124,24 @@ public class ModEntries {
         addMetalOreMaterial(name, color).build();
     }
 
+    public static void oreMetal(String name, int color, int veinsPerChunk, int veinSize) {
+        addMetalOreMaterial(name, color).worldgenConfig(veinsPerChunk, veinSize).build();
+    }
+
     public static void oreMetalWithDeepslate(String name, int color) {
         addMetalOreWithDeepslateMaterial(name, color).build();
     }
 
+    public static void oreMetalWithDeepslate(String name, int color, int veinsPerChunk, int veinSize) {
+        addMetalOreWithDeepslateMaterial(name, color).worldgenConfig(veinsPerChunk, veinSize).build();
+    }
+
     public static void deepslateOreMetal(String name, int color) {
         addDeepslateOnlyMetalOreMaterial(name, color).build();
+    }
+
+    public static void deepslateOreMetal(String name, int color, int veinsPerChunk, int veinSize) {
+        addDeepslateOnlyMetalOreMaterial(name, color).worldgenConfig(veinsPerChunk, veinSize).build();
     }
 
     public static void blockOnly(String name) {

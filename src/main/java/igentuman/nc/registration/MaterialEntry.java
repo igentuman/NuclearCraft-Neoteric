@@ -46,6 +46,7 @@ public class MaterialEntry {
     public int worldgenMinHeight = 0;
     public int worldgenMaxHeight = 0;
     public int worldgenQty = 0;
+    public int worldgenVeinsPerChunk = 4;
 
     private RegisteredEntry entry;
 
@@ -143,6 +144,12 @@ public class MaterialEntry {
         this.worldgenMinHeight = minHeight;
         this.worldgenMaxHeight = maxHeight;
         this.worldgenQty = qty;
+        return this;
+    }
+
+    public MaterialEntry worldgenConfig(int veinsPerChunk, int veinSize) {
+        this.worldgenVeinsPerChunk = veinsPerChunk;
+        this.worldgenQty = veinSize;
         return this;
     }
 

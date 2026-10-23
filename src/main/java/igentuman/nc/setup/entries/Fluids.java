@@ -96,6 +96,14 @@ public class Fluids extends ModEntries {
         liquid("boron_clean_slurry", 0xDD999999, 300);
         liquid("sodium_clean_slurry", DEFAULT_COLOR, 300);
 
+        liquid("boron_nitride_solution", 0x506F8E5C, 300);
+        liquid("boron_arsenide_solution", 0x506F8E5C, 300);
         liquid("calcium_sulfate_solution", 0x50B8B0A6, 300);
+        liquid("sodium_fluoride_solution", 0x50C2B1A1, 300);
+        liquid("potassium_fluoride_solution", 0x50C1C99D, 300);
+        liquid("sodium_hydroxide_solution", 0x50C2B7BB, 300);
+        liquid("potassium_hydroxide_solution", 0x50B8C6B0, 300);
+        liquid("borax_solution", 0x50EEEEEE, 300);
+        liquid("irradiated_borax_solution", 0x90FFD0A3, 300);
     }
 }

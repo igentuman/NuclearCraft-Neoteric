@@ -60,7 +60,9 @@ public class SideConfigSlotSelectionScreen extends Screen {
         int outputItemCount  = entry.itemCap()  != null ? entry.itemCap().outputSlots         : 0;
         int inputFluidCount  = entry.fluidCap() != null ? entry.fluidCap().inputTanks.size()  : 0;
         int outputFluidCount = entry.fluidCap() != null ? entry.fluidCap().outputTanks.size() : 0;
-        int totalItemSlots   = inputItemCount + outputItemCount;
+        var itemHandler = menu.getBlockEntity().contentHandler.getItemHandler();
+        // Fluid config IDs follow all item slots, including catalysts and hidden slots.
+        int totalItemSlots = itemHandler != null ? itemHandler.getSlots() : 0;
 
         int layoutIndex = 0;
         for (int i = 0; i < inputItemCount; i++, layoutIndex++) {

@@ -108,6 +108,16 @@ public class VanillaRecipes {
         smelting(ModEntries.get("gold").materialEntry().dust(), Ingredient.of(dustTag("gold")), GOLD_INGOT);
         smelting(ModEntries.get("iron").materialEntry().plate(), Ingredient.of(plateTag("iron")), IRON_INGOT);
         smelting(ModEntries.get("copper").materialEntry().plate(), Ingredient.of(plateTag("copper")), COPPER_INGOT);
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(dust("rhodochrosite")),
+                        RecipeCategory.MISC,
+                        ModEntries.get("manganese_oxide").materialEntry().dust(), 1.0f, 100)
+                .unlockedBy("has_dust", has(ModEntries.get("rhodochrosite").materialEntry().dust().get()))
+                .save(out, MODID+"_"+"manganese_oxide_sm1");
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(ingot("manganese_oxide")),
+                        RecipeCategory.MISC,
+                        ModEntries.get("manganese").materialEntry().ingot(), 1.0f, 100)
+                .unlockedBy("has_dust", has(ModEntries.get("manganese_oxide").materialEntry().dust().get()))
+                .save(out, MODID+"_"+"manganese_sm1");
         processors();
         parts();
         collectors();
@@ -993,18 +1003,28 @@ public class VanillaRecipes {
     }
 
     private static void bomb() {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, part("compression_charge"))
+                .pattern("STB").pattern("TB ").pattern("STB")
+                .define('S', ingotTag("lead"))
+                .define('T', TNT)
+                .define('B', ingotTag("baratol"))
+                .unlockedBy("item", has(ingotTag("baratol")))
+                .save(recipeOutput, rl("compression_charge"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, part("pu_239_pit"))
                 .pattern("FFF").pattern("FNF").pattern("FFF")
                 .define('F', isotope("plutonium/239"))
                 .define('N', part("neutron_initiator"))
                 .unlockedBy("item", has(part("neutron_initiator")))
                 .save(recipeOutput, rl("pu_239_pit"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, part("pu_239_core"))
                 .pattern("FFF").pattern("FNF").pattern("FFF")
                 .define('F', isotope("uranium/238"))
                 .define('N', part("pu_239_pit"))
                 .unlockedBy("item", has(part("pu_239_pit")))
                 .save(recipeOutput, rl("pu_239_core"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("pu_239_bomb"))
                 .pattern("CCC").pattern("CNC").pattern("CCC")
                 .define('C', part("compression_charge"))

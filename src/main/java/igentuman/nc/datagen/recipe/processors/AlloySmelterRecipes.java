@@ -21,6 +21,7 @@ public class AlloySmelterRecipes {
         alloy(out, id, "stainless_steel",       ingot("stainless_steel"),  2, dust("steel"),         1, dust("chromium"),  1, 600);
         alloy(out, id, "thermoconducting",      ingot("thermoconducting"), 2, dust("extreme"),       1, dust("boron_arsenide"), 1, 400);
         alloy(out, id, "steel",                 ingot("steel"),            1, dust("coal"),          3, dust("iron"),      1);
+        alloy(out, id, "steel_charcoal",        ingot("steel"),            1, dust("charcoal"),          3, dust("iron"),      1);
         alloy(out, id, "bronze",                ingot("bronze"),           4, dust("copper"),        3, dust("tin"),       1);
         alloy(out, id, "ferroboron",            ingot("ferroboron"),       2, dust("boron"),         1, dust("steel"),     1);
         alloy(out, id, "hard_carbon",           ingot("hard_carbon"),      2, dust("graphite"),      1, dust("diamond"),   1, 200, 75);

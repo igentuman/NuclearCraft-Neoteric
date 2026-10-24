@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/steel"
+      }
+    }
+  ],
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 3,
+      "tag": "c:dusts/charcoal"
+    },
+    {
+      "count": 1,
+      "tag": "c:dusts/iron"
+    }
+  ],
+  "item_outputs": [
+    {
+      "tag": "c:ingots/steel"
+    }
+  ],
+  "process_time": 200
+}

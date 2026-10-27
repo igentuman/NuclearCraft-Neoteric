@@ -47,6 +47,7 @@ public class Common {
     public static final ModConfigSpec.IntValue DECAY_GENERATOR_BASE_FE;
 
     public static final Map<String, ModConfigSpec.IntValue> BATTERY_CAPACITY = new LinkedHashMap<>();
+    public static final ModConfigSpec.IntValue LIGHTNING_ROD_CHARGE;
     public static final Map<String, ModConfigSpec.IntValue> BARREL_CAPACITY = new LinkedHashMap<>();
 
     public static final ModConfigSpec.BooleanValue SCIENTIST_HOUSE;
@@ -148,6 +149,9 @@ public class Common {
         BUILDER.pop();
 
         BUILDER.push("energy_storage");
+        LIGHTNING_ROD_CHARGE = BUILDER
+                .comment("FE added to a battery block when lightning strikes a lightning rod attached to it. 0 disables")
+                .defineInRange("lightning_rod_charge", 1048576, 0, Integer.MAX_VALUE);
         StorageDefs.BATTERIES.forEach((name, def) -> BATTERY_CAPACITY.put(name, BUILDER
                 .comment("FE capacity")
                 .defineInRange(name, def[0], 1, Integer.MAX_VALUE)));

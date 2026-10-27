@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-27T14:59:10.157118051	Recipes
+// 1.21.1	2026-10-27T23:26:20.581049849	Recipes
 bb32e36fdf4cd7f3713d46c298171fc756280922 data/minecraft/advancement/recipes/misc/nuclearcraft_manganese_oxide_sm1.json
 374b2903a65040771ef9f15ba9a33535a6d9f620 data/minecraft/advancement/recipes/misc/nuclearcraft_manganese_sm1.json
 f5d940d2e47a380adf1709710cf8bbd689d3df56 data/minecraft/recipe/nuclearcraft_manganese_oxide_sm1.json
@@ -41,6 +41,7 @@ de670ff58852afa0ab2798261d84582e31f907fe data/nuclearcraft/advancement/recipes/m
 c084816f888c03c00d6bf70fbe188a51fcc04fce data/nuclearcraft/advancement/recipes/misc/americium_243_ox_sml.json
 b76f4e146e732ec5477048742a896548bf631304 data/nuclearcraft/advancement/recipes/misc/americium_243_za_sml.json
 96a5b10acc402f442a4a89114a348e0e82aafe95 data/nuclearcraft/advancement/recipes/misc/americium_rtg.json
+34d6aeb3c9029cfc02c7e1de9c0b36df74ecacbb data/nuclearcraft/advancement/recipes/misc/analyzer.json
 5d07bc71b5be50c1fdff77d6f3c330422c2fe3ea data/nuclearcraft/advancement/recipes/misc/arsenic_cooler.json
 f70788d8ffad9c9ab36d0df1c6023c04fa5db03e data/nuclearcraft/advancement/recipes/misc/arsenic_heat_sink.json
 70e2e8d6c433892a5643ae2f389246a8609b1ed6 data/nuclearcraft/advancement/recipes/misc/assembler.json
@@ -1000,6 +1001,7 @@ d25ff775bae3f2314a7b871836686e0a0d2c459f data/nuclearcraft/recipe/americium_242_
 5babfbde190785e4cfc8eef04562b3cbf6bf8abc data/nuclearcraft/recipe/americium_243_ox_sml.json
 4d49451f1fa157bade7c7d980e20901ada2d5c33 data/nuclearcraft/recipe/americium_243_za_sml.json
 e49e05f66cd8302eb7febd1116f82421da829374 data/nuclearcraft/recipe/americium_rtg.json
+7ac2a34c555ee9de45c5afc45d36528f9381c495 data/nuclearcraft/recipe/analyzer.json
 ae8f49722559da787f894865b2340d65493e8816 data/nuclearcraft/recipe/analyzer/map_analysis.json
 b5622710542c21e7dabf36419a433eac2925a0d6 data/nuclearcraft/recipe/analyzer/paper_to_research_paper.json
 1ad26041f5a04e37f0343d1b1b7799a574cad802 data/nuclearcraft/recipe/analyzer/resonite_crystal_analysis.json

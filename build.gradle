@@ -59,6 +59,12 @@ repositories {
     maven {
         url = "https://maven.theillusivec4.top/"
     }
+    maven {
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 base {
@@ -113,7 +119,9 @@ dependencies {
     compileOnly "curse.maven:emi-580555:8081408"
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-    implementation("igentuman.nr:NuclearRadiation:1.0.0-beta8") { transitive = false }
+    // Local NuclearRadiation checkout is substituted via includeBuild (settings.gradle), otherwise pull release from Modrinth
+    def nrLocal = file('../NuclearRadiation').exists() || file('NuclearRadiation').exists()
+    implementation(nrLocal ? "igentuman.nr:NuclearRadiation:1.0.18" : "maven.modrinth:nuclear-radiation:1.0.18") { transitive = false }
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     implementation "curse.maven:multi-builder-tool-827020:8797925"
     compileOnly "curse.maven:immersive-engineering-231951:6733669"
@@ -122,7 +130,7 @@ dependencies {
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
     compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cct_version}")
     runtimeOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cct_version}")
-    implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
+    compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:additions")// Mekanism: Additions

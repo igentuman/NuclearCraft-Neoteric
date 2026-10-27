@@ -322,6 +322,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("block.nuclearcraft.solar_panel_elite.desc", "Generates 1792 FE/t while exposed to daytime sky.");
         add("block.nuclearcraft.decay_generator.desc", "Generates energy from adjacent radioactive blocks. Emits radiation and decays those blocks to lead over time.");
         add("tooltip.nuclearcraft.decay_generator_allowed", "Can be used with Decay Generator");
+        add("tooltip.nuclearcraft.lightning_rod_charge", "Charges attached NC battery blocks by %s on lightning strike");
         add("block.nuclearcraft.redstone_dimmer.desc", "Outputs a redstone signal from the back. Each pulse on the right side raises it by one, each pulse on the left side lowers it by one.");
         add("entity.minecraft.villager.nuclearcraft.nuclear_scientist", "Nuclear Scientist");
     }

@@ -2793,6 +2793,7 @@
   "tooltip.nuclearcraft.heat_sink.heat": "Cooling: %s H/t",
   "tooltip.nuclearcraft.hev.desc": "Grants extra protection and passive effects while charged",
   "tooltip.nuclearcraft.hev.qe_charge": "QE Charge: %s / %s",
+  "tooltip.nuclearcraft.lightning_rod_charge": "Charges attached NC battery blocks by %s on lightning strike",
   "tooltip.nuclearcraft.liquid_capacity": "Capacity: %s",
   "tooltip.nuclearcraft.liquid_empty": "Empty (capacity %s)",
   "tooltip.nuclearcraft.liquid_stored": "%s: %s / %s",

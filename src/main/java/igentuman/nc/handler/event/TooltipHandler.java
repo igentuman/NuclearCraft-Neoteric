@@ -1,10 +1,12 @@
 package igentuman.nc.handler.event;
 
+import igentuman.nc.config.Common;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.util.TagUtil;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -13,6 +15,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.__;
+import static igentuman.nc.util.TextUtils.formatEnergy;
 
 /** Client event subscriber that appends moderator stat tooltips to moderator-tagged item stacks. */
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
@@ -25,6 +28,13 @@ public class TooltipHandler {
         processedEvent = event;
         addModeratorTooltip(event, event.getItemStack());
         addDecayGeneratorTooltip(event, event.getItemStack());
+        addLightningRodTooltip(event, event.getItemStack());
+    }
+
+    private static void addLightningRodTooltip(ItemTooltipEvent event, ItemStack itemStack) {
+        if(itemStack.is(Items.LIGHTNING_ROD) && Common.LIGHTNING_ROD_CHARGE.get() > 0) {
+            event.getToolTip().add(__("tooltip.nuclearcraft.lightning_rod_charge", formatEnergy(Common.LIGHTNING_ROD_CHARGE.get())).withStyle(ChatFormatting.GOLD));
+        }
     }
 
     private static void addDecayGeneratorTooltip(ItemTooltipEvent event, ItemStack itemStack) {

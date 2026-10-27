@@ -1755,7 +1755,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get(CENTRIFUGE).block()))
                 .save(recipeOutput);
 
-/*        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(ANALYZER).block())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(ANALYZER).block())
                 .pattern("PYP")
                 .pattern("PCP")
                 .pattern("PMP")
@@ -1764,8 +1764,8 @@ public class VanillaRecipes {
                 .define('P', ModEntries.get("plate_basic").item())
                 .define('M', ModEntries.get("motor").item())
                 .group(MODID+"_machines")
-                .unlockedBy("item", has(CAULDRON))
-                .save(recipeOutput);*/
+                .unlockedBy("item", has(CARTOGRAPHY_TABLE))
+                .save(recipeOutput);
 
 
 

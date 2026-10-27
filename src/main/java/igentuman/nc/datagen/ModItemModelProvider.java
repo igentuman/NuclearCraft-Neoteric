@@ -33,6 +33,7 @@ public class ModItemModelProvider  extends ItemModelProvider {
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             // Block item models come from ModBlockStateProvider, which knows the special-ruled
             // model path (e.g. fission/controller); only standalone items are built here.
+            if(entry.name().contains("chassis") || entry.name().contains("compression_charge")) continue;
             if (entry.hasItem() && !entry.hasBlock()) {
                 if (entry.name().endsWith("_spawn_egg")) {
                     withExistingParent(entry.name(), mcLoc("item/template_spawn_egg"));

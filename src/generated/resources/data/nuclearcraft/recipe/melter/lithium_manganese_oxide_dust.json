@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "energy_per_tick": 50,
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "tag": "c:molten_lithium_manganese_oxide"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/lithium_manganese_oxide"
+    }
+  ],
+  "process_time": 200
+}

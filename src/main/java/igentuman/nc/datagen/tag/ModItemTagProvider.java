@@ -1,6 +1,7 @@
 package igentuman.nc.datagen.tag;
 
 import igentuman.nc.item.PaxelItem;
+import igentuman.nc.item.QNPItem;
 import igentuman.nc.multiblock.fission.FissionTags;
 import igentuman.nc.registration.*;
 import igentuman.nc.setup.ModEntries;
@@ -35,7 +36,7 @@ public class ModItemTagProvider extends ItemTagsProvider {
         copy(FissionTags.MODERATORS, FissionTags.MODERATORS_ITEM);
 
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
-            if (entry.item() != null && entry.item().get() instanceof PaxelItem) {
+            if (entry.item() != null && (entry.item().get() instanceof PaxelItem || entry.item().get() instanceof QNPItem)) {
                 tag(ItemTags.PICKAXES).add(entry.item().get());
             }
             if (entry.toolSetEntry() instanceof ToolSetEntry toolSet) {

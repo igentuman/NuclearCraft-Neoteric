@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/lithium_manganese_oxide"
+      }
+    }
+  ],
+  "type": "nuclearcraft:ingot_former",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_lithium_manganese_oxide"
+    }
+  ],
+  "item_outputs": [
+    {
+      "tag": "c:ingots/lithium_manganese_oxide"
+    }
+  ],
+  "process_time": 200
+}

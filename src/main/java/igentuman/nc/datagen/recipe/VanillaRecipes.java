@@ -348,9 +348,9 @@ public class VanillaRecipes {
         // Lithium-ion cell + batteries
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("lithium_ion_cell"))
                 .pattern("CCC").pattern("FLF").pattern("DDD")
-                .define('C', plateTag("hard_carbon")).define('D', plateTag("lithium_manganese_dioxide"))
+                .define('C', plateTag("hard_carbon")).define('D', plateTag("lithium_manganese_oxide"))
                 .define('F', plateTag("ferroboron")).define('L', plateTag("lithium"))
-                .unlockedBy("item", has(plateTag("lithium_manganese_dioxide")))
+                .unlockedBy("item", has(plateTag("lithium_manganese_oxide")))
                 .save(recipeOutput, rl("lithium_ion_cell"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("basic_lithium_ion_battery"))
                 .pattern("PCP").pattern("CSC").pattern("PCP")

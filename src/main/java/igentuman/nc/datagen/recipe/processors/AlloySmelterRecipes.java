@@ -28,6 +28,7 @@ public class AlloySmelterRecipes {
         alloy(out, id, "tough_alloy",           ingot("tough_alloy"),      2, dust("ferroboron"),    1, dust("lithium"),   1, 300, 75);
         alloy(out, id, "magnesium_diboride",    ingot("magnesium_diboride"), 3, dust("magnesium"),   1, dust("boron"),     2);
         alloy(out, id, "lithium_manganese_dioxide", ingot("lithium_manganese_dioxide"), 2, dust("lithium"), 1, dust("manganese_dioxide"), 1, 300);
+        alloy(out, id, "lithium_manganese_oxide", ingot("lithium_manganese_oxide"), 2, dust("lithium"), 1, dust("manganese_oxide"), 1, 300);
         alloy(out, id, "shibuichi",             ingot("shibuichi"),        4, dust("copper"),        3, dust("silver"),    1, 300);
         alloy(out, id, "tin_silver",            ingot("tin_silver"),       4, dust("tin"),           3, dust("silver"),    1);
         alloy(out, id, "lead_platinum",         ingot("lead_platinum"),    4, dust("lead"),          3, dust("platinum"),  1, 300);
@@ -52,6 +53,7 @@ public class AlloySmelterRecipes {
         alloy(out, id, "tough_alloy_ingots",       ingot("tough_alloy"),       2, ingot("ferroboron"),      1, ingot("lithium"),   1, 340, 75);
         alloy(out, id, "magnesium_diboride_ingots", ingot("magnesium_diboride"), 3, ingot("magnesium"),     1, ingot("boron"),     2, 300);
         alloy(out, id, "lithium_manganese_dioxide_ingots", ingot("lithium_manganese_dioxide"), 2, ingot("lithium"), 1, ingot("manganese_dioxide"), 1, 360);
+        alloy(out, id, "lithium_manganese_oxide_ingots", ingot("lithium_manganese_oxide"), 2, ingot("lithium"), 1, ingot("manganese_oxide"), 1, 360);
         alloy(out, id, "shibuichi_ingots",         ingot("shibuichi"),         4, Items.COPPER_INGOT,       3, ingot("silver"),    1, 360);
         alloy(out, id, "tin_silver_ingots",        ingot("tin_silver"),        4, ingot("tin"),             3, ingot("silver"),    1, 300);
         alloy(out, id, "lead_platinum_ingots",     ingot("lead_platinum"),     4, ingot("lead"),            3, ingot("platinum"),  1, 300);

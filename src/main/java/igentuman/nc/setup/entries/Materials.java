@@ -60,6 +60,7 @@ public class Materials extends ModEntries {
         mat("ferroboron", 0xFF543636).dust().ingot().fluid().plate().build();
         mat("magnesium_diboride", 0xFF26303D).ingot().fluid().build();
         mat("lithium_manganese_dioxide", 0xFF696969).ingot().dust().fluid().plate().build();
+        mat("lithium_manganese_oxide", 0xFF7E9D7E).ingot().dust().fluid().plate().build();
         mat("graphite", 0xFF292929).ingot().dust().storageBlock().plate().build();
         mat("pyrolitic_carbon", 0xFF292929).ingot().dust().build();
         mat("baratol", 0xFFB8B0A0).ingot().dust().fluid(molten(800)).build();

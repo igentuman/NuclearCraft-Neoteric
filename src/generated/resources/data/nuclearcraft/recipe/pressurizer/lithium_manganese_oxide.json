@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/lithium_manganese_oxide"
+      }
+    }
+  ],
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/lithium_manganese_oxide"
+    }
+  ],
+  "item_outputs": [
+    {
+      "tag": "c:plates/lithium_manganese_oxide"
+    }
+  ],
+  "process_time": 200
+}

@@ -2,7 +2,7 @@ package igentuman.nc.block_entity.catalyst;
 
 import igentuman.nc.block_entity.GlobalBlockEntity;
 
-/** Mid-tier speed upgrade that batches one operation per four installed items, up to 32. */
+/** Mid-tier speed upgrade that adds one parallel operation per four installed items, up to 32. */
 public class StackCatalyst extends SpeedCatalyst {
 
     public StackCatalyst(GlobalBlockEntity host) {
@@ -15,6 +15,6 @@ public class StackCatalyst extends SpeedCatalyst {
     }
 
     public static int parallelLimit(int power) {
-        return Math.min(32, (power + 3) / 4);
+        return Math.min(32, 1 + power / 4);
     }
 }

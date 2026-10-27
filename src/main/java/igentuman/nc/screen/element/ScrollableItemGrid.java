@@ -87,14 +87,14 @@ public class ScrollableItemGrid extends AbstractWidget {
     }
 
     private void drawScrollbar(GuiGraphics g) {
-        int barX = getX() + cols * 18 + 2;
-        int barY = getY();
-        int barH = rows * 18;
+        drawScrollbar(g, getX() + cols * 18 + 2, getY(), rows * 18, scrollRow, maxScroll());
+    }
+
+    public static void drawScrollbar(GuiGraphics g, int barX, int barY, int barH, int scroll, int max) {
         int barW = SCROLLBAR_WIDTH - 2;
         g.fill(barX, barY, barX + barW, barY + barH, 0xFF373737);
-        int max = maxScroll();
         int thumbH = max == 0 ? barH : Math.max(12, barH - max * 6);
-        int thumbY = max == 0 ? barY : barY + (barH - thumbH) * scrollRow / max;
+        int thumbY = max == 0 ? barY : barY + (barH - thumbH) * scroll / max;
         g.fill(barX + 1, thumbY + 1, barX + barW - 1, thumbY + thumbH - 1, 0xFFC6C6C6);
     }
 

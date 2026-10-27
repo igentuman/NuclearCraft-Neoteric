@@ -13,6 +13,7 @@ import igentuman.nc.screen.element.EnergyBar;
 import igentuman.nc.screen.element.NcPanel;
 import igentuman.nc.screen.element.ScrollableItemGrid;
 import igentuman.nc.screen.element.ScrollableItemGrid.Cell;
+import igentuman.nc.screen.element.SlotMover;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -31,7 +32,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -56,18 +56,6 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
     private static final int VERTICAL_MARGIN = 20;
     private static final int SECTION_MARGIN = 6;
 
-    private static final Field SLOT_Y = resolveSlotY();
-
-    private static Field resolveSlotY() {
-        try {
-            Field f = Slot.class.getField("y");
-            f.setAccessible(true);
-            return f;
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            return null;
-        }
-    }
-
     private ScrollableItemGrid grid;
     private EditBox searchBox;
     private Button modeButton;
@@ -85,7 +73,7 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
 
     @Override
     protected void init() {
-        int extraRows = SLOT_Y == null ? 0
+        int extraRows = !SlotMover.available() ? 0
                 : Mth.clamp((height - BASE_IMAGE_HEIGHT - SECTION_MARGIN - VERTICAL_MARGIN * 2) / 18, 0, MAX_EXTRA_ROWS);
         gridRows = GRID_ROWS + extraRows;
         contentShift = extraRows * 18 + SECTION_MARGIN;
@@ -131,11 +119,8 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
     }
 
     private void shiftSlots(int dy) {
-        if (dy == 0 || SLOT_Y == null) return;
-        try {
-            for (Slot s : menu.slots) SLOT_Y.setInt(s, s.y + dy);
-        } catch (IllegalAccessException ignored) {
-        }
+        if (dy == 0) return;
+        for (Slot s : menu.slots) SlotMover.setY(s, s.y + dy);
     }
 
     private List<Cell> buildCells() {
@@ -236,6 +221,7 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
 
     @Override
     public boolean mouseClicked(double mx, double my, int button) {
+        if (!searchBox.isMouseOver(mx, my)) setFocused(null);
         if (grid.isInBounds(mx, my)) {
             handleGridClick(mx, my, button);
             return true;
@@ -261,7 +247,11 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
     @Override
     public boolean keyPressed(int key, int scan, int mods) {
         if (key == 256) return super.keyPressed(key, scan, mods);
-        if (searchBox.isFocused() && searchBox.keyPressed(key, scan, mods)) return true;
+        if (searchBox.isFocused()) {
+            searchBox.keyPressed(key, scan, mods);
+            // swallow everything else so inventory/hotbar keybinds don't fire while typing
+            return true;
+        }
         return super.keyPressed(key, scan, mods);
     }
 

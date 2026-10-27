@@ -221,7 +221,8 @@ public class ParticleSelector extends AbstractWidget {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (!search.isFocused() || keyCode == GLFW.GLFW_KEY_ESCAPE) return false;
-        return search.keyPressed(keyCode, scanCode, modifiers);
+        search.keyPressed(keyCode, scanCode, modifiers);
+        return true;
     }
 
     @Override

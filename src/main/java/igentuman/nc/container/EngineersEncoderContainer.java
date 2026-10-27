@@ -22,6 +22,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,13 +34,18 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
 
     public static final int ENCODE_BTN = 0;
 
+    public static final int PATTERN_COLS = 9;
+    public static final int PATTERN_ROWS = EngineersCrafterBE.PATTERNS_SIZE / PATTERN_COLS;
+    public static final int PATTERN_Y = 90;
+    public static final int PLAYER_Y = PATTERN_Y + PATTERN_ROWS * 18 + 6;
+
     private static final int RESULT_SLOT = 0;
     private static final int CRAFT_START = 1;
     private static final int CRAFT_END = 10;
-    private static final int PATTERN_START = 10;
-    private static final int PATTERN_END = PATTERN_START + EngineersCrafterBE.PATTERNS_SIZE;
-    private static final int PLAYER_START = PATTERN_END;
-    private static final int PLAYER_END = PLAYER_START + 36;
+    public static final int PATTERN_START = 10;
+    public static final int PATTERN_END = PATTERN_START + EngineersCrafterBE.PATTERNS_SIZE;
+    public static final int PLAYER_START = PATTERN_END;
+    public static final int PLAYER_END = PLAYER_START + 36;
     private static final int BLANK_SLOT = PLAYER_END;
 
     public final EngineersCrafterBE blockEntity;
@@ -72,18 +78,18 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
                 addSlot(new GhostSlot(craftSlots, col + row * 3, 30 + col * 18, 18 + row * 18));
             }
         }
-        for (int row = 0; row < 4; row++) {
-            for (int col = 0; col < 9; col++) {
-                addSlot(new SlotItemHandler(blockEntity.patterns, col + row * 9, 8 + col * 18, 90 + row * 18));
+        for (int row = 0; row < PATTERN_ROWS; row++) {
+            for (int col = 0; col < PATTERN_COLS; col++) {
+                addSlot(new PatternSlot(blockEntity.patterns, col + row * PATTERN_COLS, 8 + col * 18, PATTERN_Y + row * 18));
             }
         }
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
-                addSlot(new Slot(inv, col + row * 9 + 9, 8 + col * 18, 168 + row * 18));
+                addSlot(new Slot(inv, col + row * 9 + 9, 8 + col * 18, PLAYER_Y + row * 18));
             }
         }
         for (int col = 0; col < 9; col++) {
-            addSlot(new Slot(inv, col, 8 + col * 18, 226));
+            addSlot(new Slot(inv, col, 8 + col * 18, PLAYER_Y + 58));
         }
         addSlot(new SlotItemHandler(blockEntity.encoderBlanks, 0, 8, 36));
     }
@@ -229,6 +235,20 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
 
     public BlockPos getBlockPos() {
         return blockEntity.getBlockPos();
+    }
+
+    // Visibility is toggled client-side by the screen when the pattern grid is scrolled
+    public static class PatternSlot extends SlotItemHandler {
+        public boolean visible = true;
+
+        PatternSlot(IItemHandler handler, int index, int x, int y) {
+            super(handler, index, x, y);
+        }
+
+        @Override
+        public boolean isActive() {
+            return visible;
+        }
     }
 
     private static class GhostSlot extends Slot {

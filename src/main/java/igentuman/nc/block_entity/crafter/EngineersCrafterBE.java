@@ -48,7 +48,7 @@ public class EngineersCrafterBE extends BlockEntity {
     public static final int ENERGY_MAX_RECEIVE = 1_000;
     public static final int PASSIVE_FE = 100;
     public static final int CRAFT_FE = 200;
-    public static final int PATTERNS_SIZE = 36;
+    public static final int PATTERNS_SIZE = 72;
     public static final int CONTAINER_SLOTS = 6;
     public static final int OPEN_ENCODER_BTN = 191;
 
@@ -297,12 +297,21 @@ public class EngineersCrafterBE extends BlockEntity {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (tag.contains("ContainerSlots")) containerSlots.deserializeNBT(registries, tag.getCompound("ContainerSlots"));
-        if (tag.contains("Patterns")) patterns.deserializeNBT(registries, tag.getCompound("Patterns"));
+        if (tag.contains("Patterns")) loadKeepingSize(patterns, tag.getCompound("Patterns"), registries);
         if (tag.contains("EncoderBlanks")) encoderBlanks.deserializeNBT(registries, tag.getCompound("EncoderBlanks"));
         if (tag.contains("Energy")) energy.deserializeNBT(registries, tag.get("Energy"));
         job = tag.contains("Job") ? CraftingJob.load(tag.getCompound("Job"), registries) : null;
         craftOpIndex = tag.getInt("CraftOpIndex");
         craftOpTotal = tag.getInt("CraftOpTotal");
+    }
+
+    // deserializeNBT resizes the handler to the saved size; copy instead so older saves keep the current capacity
+    private static void loadKeepingSize(ItemStackHandler target, CompoundTag tag, HolderLookup.Provider registries) {
+        ItemStackHandler saved = new ItemStackHandler();
+        saved.deserializeNBT(registries, tag);
+        for (int i = 0; i < target.getSlots(); i++) {
+            target.setStackInSlot(i, i < saved.getSlots() ? saved.getStackInSlot(i) : ItemStack.EMPTY);
+        }
     }
 
     @Override

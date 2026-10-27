@@ -263,7 +263,7 @@ public class VanillaRecipes {
     }
 
     private static void pipes() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("pipe"), 8)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("pipe"), 16)
                 .pattern("BSB")
                 .pattern("S S")
                 .pattern("BSB")
@@ -272,7 +272,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(item("bioplastic")))
                 .save(recipeOutput, rl("pipe_block"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("pipe_connector"), 2)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("pipe_connector"), 4)
                 .pattern("BSB")
                 .pattern("SAS")
                 .pattern("BSB")
@@ -1000,6 +1000,12 @@ public class VanillaRecipes {
                 .requires(Ingredient.of(dustTag("coal")))
                 .unlockedBy("item", has(dustTag("coal")))
                 .save(recipeOutput, rl("crafting_pattern"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Crafter.CRAFTING_PATTERN.get())
+                .requires(PAPER)
+                .requires(Ingredient.of(dustTag("charcoal")))
+                .unlockedBy("item", has(dustTag("charcoal")))
+                .save(recipeOutput, rl("crafting_pattern_alt"));
     }
 
     private static void bomb() {

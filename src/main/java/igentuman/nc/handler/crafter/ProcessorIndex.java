@@ -5,6 +5,7 @@ import igentuman.nc.api.pipe.PipeNetwork;
 import igentuman.nc.api.pipe.PipeNetworkManager;
 import igentuman.nc.block_entity.UniversalProcessorBE;
 import igentuman.nc.block_entity.pipe.PipeConnectorBE;
+import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -22,13 +23,12 @@ public final class ProcessorIndex {
     public record Link(BlockPos pos, String type, boolean items, boolean fluids) {
 
         public boolean supports(CraftingPattern pattern) {
-            if (!type.equals(pattern.processor())) return false;
-            if (pattern.usesItems() && !items) return false;
-            return !pattern.usesFluids() || fluids;
+            return supports(pattern.processor(), pattern.usesItems(), pattern.usesFluids());
         }
 
         public boolean supports(String processor, boolean needItems, boolean needFluids) {
-            return type.equals(processor) && (!needItems || items) && (!needFluids || fluids);
+            return ProcessorRecipes.isAllowed(processor) && type.equals(processor)
+                    && (!needItems || items) && (!needFluids || fluids);
         }
     }
 
@@ -59,6 +59,7 @@ public final class ProcessorIndex {
                     if (pp.equals(crafterPos) || !level.isLoaded(pp)) continue;
                     BlockEntity be = level.getBlockEntity(pp);
                     if (!(be instanceof UniversalProcessorBE proc) || proc.name == null) continue;
+                    if (!ProcessorRecipes.isProcessorEntry(ModEntries.get(proc.name))) continue;
                     long key = pp.asLong();
                     Link prev = found.get(key);
                     if (prev == null) {

@@ -1,6 +1,7 @@
 package igentuman.nc.handler.crafter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -10,15 +11,19 @@ import java.util.Set;
 
 public class AutoCraftSolver<K> {
 
-    public record PatternDef<K>(K output, int outputCount, Map<K, Integer> inputs,
-                                String processor, Map<K, Integer> extraOutputs, Map<K, List<Integer>> ingredientAmounts) {
+    public record PatternDef<K>(Map<K, Integer> outputs, Map<K, Integer> inputs,
+                                String processor, String recipeId, Map<K, List<Integer>> ingredientAmounts) {
 
-        public PatternDef(K output, int outputCount, Map<K, Integer> inputs) {
-            this(output, outputCount, inputs, "", Map.of(), Map.of());
+        public PatternDef {
+            outputs = Collections.unmodifiableMap(new LinkedHashMap<>(outputs));
+            inputs = Collections.unmodifiableMap(new LinkedHashMap<>(inputs));
+            Map<K, List<Integer>> parts = new LinkedHashMap<>();
+            ingredientAmounts.forEach((key, amounts) -> parts.put(key, List.copyOf(amounts)));
+            ingredientAmounts = Collections.unmodifiableMap(parts);
         }
 
-        public PatternDef(K output, int outputCount, Map<K, Integer> inputs, String processor, Map<K, Integer> extraOutputs) {
-            this(output, outputCount, inputs, processor, extraOutputs, Map.of());
+        public PatternDef(K output, int outputCount, Map<K, Integer> inputs) {
+            this(Map.of(output, outputCount), inputs, "", "", Map.of());
         }
 
         public List<Integer> amounts(K key) {
@@ -58,8 +63,9 @@ public class AutoCraftSolver<K> {
 
     public AutoCraftSolver(List<PatternDef<K>> patterns) {
         for (PatternDef<K> p : patterns) {
-            if (p.outputCount() > 0 && !p.inputs().isEmpty()) {
-                outputIndex.putIfAbsent(p.output(), p);
+            if (!p.inputs().isEmpty() && p.inputs().values().stream().allMatch(n -> n > 0)
+                    && p.outputs().values().stream().allMatch(n -> n > 0)) {
+                for (K output : p.outputs().keySet()) outputIndex.putIfAbsent(output, p);
             }
         }
     }
@@ -69,7 +75,7 @@ public class AutoCraftSolver<K> {
     private Map<K, Integer> baseCost;
     private Map<K, Integer> shortages;
     private List<PatternDef<K>> operations;
-    private Set<K> active;
+    private Set<PatternDef<K>> active;
     private int opCount;
     private boolean aborted;
 
@@ -118,33 +124,47 @@ public class AutoCraftSolver<K> {
         }
 
         PatternDef<K> pattern = outputIndex.get(item);
-        if (pattern == null || !active.add(item)) {
+        if (pattern == null || !active.add(pattern)) {
             shortages.merge(item, need, Integer::sum);
             return false;
         }
 
-        int outputCount = pattern.outputCount();
-        int times = (need + outputCount - 1) / outputCount;
+        int outputCount = pattern.outputs().get(item);
+        int times = (int) (((long) need + outputCount - 1) / outputCount);
+        if (times > MAX_OPS - opCount) {
+            aborted = true;
+            return false;
+        }
 
         boolean allOk = true;
         for (Map.Entry<K, Integer> input : pattern.inputs().entrySet()) {
             long amount = (long) input.getValue() * times;
-            int clamped = amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
-            if (!produce(input.getKey(), clamped, depth + 1)) {
+            if (amount > Integer.MAX_VALUE) {
+                aborted = true;
+                return false;
+            }
+            if (!produce(input.getKey(), (int) amount, depth + 1)) {
                 allOk = false;
                 if (aborted) {
-                    active.remove(item);
+                    active.remove(pattern);
                     return false;
                 }
             }
         }
-        active.remove(item);
+        active.remove(pattern);
         if (!allOk) {
             return false;
         }
 
-        int produced = outputCount * times;
-        pool.merge(item, produced - need, Integer::sum);
+        for (Map.Entry<K, Integer> output : pattern.outputs().entrySet()) {
+            long available = (long) pool.getOrDefault(output.getKey(), 0) + (long) output.getValue() * times;
+            if (output.getKey().equals(item)) available -= need;
+            if (available > Integer.MAX_VALUE) {
+                aborted = true;
+                return false;
+            }
+            pool.put(output.getKey(), (int) available);
+        }
         for (int i = 0; i < times; i++) {
             operations.add(pattern);
             if (++opCount > MAX_OPS) {

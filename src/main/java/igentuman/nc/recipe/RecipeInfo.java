@@ -1,8 +1,11 @@
 package igentuman.nc.recipe;
 
 import igentuman.nc.block_entity.GlobalBlockEntity;
+import igentuman.nc.block_entity.crafter.EngineersCrafterBE;
 import igentuman.nc.config.Common;
+import igentuman.nc.handler.crafter.ProcessorRecipes;
 import igentuman.nc.util.ClientUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -25,6 +28,7 @@ import igentuman.nc.util.caps.FluidCapDefinition;
 import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import static igentuman.nc.NuclearCraft.rlFromString;
 
@@ -47,6 +51,7 @@ public class RecipeInfo {
     public Recipe<?> recipe;
     public Recipe<?> lastRecipe;
     private HashMap<String, Recipe<?>> allRecipes = new HashMap<>();
+    private ProcessingOrder craftingOrder;
 
     public RecipeInfo(GlobalBlockEntity be) {
         this.be = be;
@@ -63,6 +68,7 @@ public class RecipeInfo {
         if (!be.supportRecipes()) {
             return;
         }
+        if (!validateCraftingOwner()) return;
 
         if (stuck) {
             if (!produceOutputs()) {
@@ -71,6 +77,7 @@ public class RecipeInfo {
             changed = true;
             stuck = false;
             justProduced = true;
+            completeCraftingBatch();
         }
 
         if (!hasRecipe()) {
@@ -116,6 +123,7 @@ public class RecipeInfo {
                 stuck = true;
             } else {
                 justProduced = true;
+                completeCraftingBatch();
             }
         }
     }
@@ -217,6 +225,14 @@ public class RecipeInfo {
     }
 
     private void findRecipe() {
+        if (craftingOrder != null) {
+            Recipe<?> selected = getRecipes().get(craftingOrder.recipeId());
+            int limit = craftingOrder.batchLimit(parallelLimit);
+            if (limit > 0 && tryStartRecipe(selected, limit)) {
+                craftingOrder.started(parallelProcessing);
+            }
+            return;
+        }
         if(lastRecipe != null) {
             if (tryStartRecipe(lastRecipe)) {
                 return;
@@ -230,8 +246,12 @@ public class RecipeInfo {
     }
 
     private boolean tryStartRecipe(Recipe<?> recipe) {
+        return tryStartRecipe(recipe, parallelLimit);
+    }
+
+    private boolean tryStartRecipe(Recipe<?> recipe, int limit) {
         if (!(recipe instanceof UniversalProcessorRecipe upr)) return false;
-        int batchSize = findMaximumParallelism(upr, parallelLimit);
+        int batchSize = findMaximumParallelism(upr, limit);
         if (batchSize == 0) return false;
 
         int[] itemAssignment = itemInputAssignment(upr, batchSize);
@@ -253,6 +273,48 @@ public class RecipeInfo {
         this.ticksNeeded = upr.getProcessTime();
         this.energyPerTick = upr.getEnergyPerTick();
         consumeInputs(upr, batchSize, itemAssignment, fluidAssignment);
+        return true;
+    }
+
+    public boolean canAcceptCraftingOrder() {
+        return craftingOrder == null && recipe == null && !stuck;
+    }
+
+    public boolean reserveCrafting(UUID jobId, BlockPos crafter, String selectedRecipe, int operations) {
+        if (!canAcceptCraftingOrder() || operations <= 0 || !ProcessorRecipes.isAllowed(be.name)) return false;
+        if (!(getRecipes().get(selectedRecipe) instanceof UniversalProcessorRecipe)) return false;
+        craftingOrder = new ProcessingOrder(jobId, crafter, selectedRecipe, operations);
+        be.setChanged();
+        return true;
+    }
+
+    public boolean isReservedBy(UUID jobId) {
+        return craftingOrder != null && craftingOrder.jobId().equals(jobId);
+    }
+
+    public boolean isCraftingComplete(UUID jobId) {
+        return isReservedBy(jobId) && craftingOrder.isComplete();
+    }
+
+    public void releaseCrafting(UUID jobId) {
+        if (!isReservedBy(jobId)) return;
+        craftingOrder = null;
+        be.setChanged();
+    }
+
+    private void completeCraftingBatch() {
+        if (craftingOrder != null) craftingOrder.completed();
+    }
+
+    private boolean validateCraftingOwner() {
+        if (craftingOrder == null) return true;
+        Level level = getLevel();
+        if (level == null || !level.isLoaded(craftingOrder.crafter())) return false;
+        if (!ProcessorRecipes.isAllowed(be.name)
+                || !(level.getBlockEntity(craftingOrder.crafter()) instanceof EngineersCrafterBE crafter)
+                || !crafter.ownsProcessor(craftingOrder.jobId(), be.getBlockPos())) {
+            releaseCrafting(craftingOrder.jobId());
+        }
         return true;
     }
 
@@ -495,6 +557,7 @@ public class RecipeInfo {
         data.putInt("energyPerTick", energyPerTick);
         data.putInt("parallelProcessing", parallelProcessing);
         data.putBoolean("stuck", stuck);
+        if (craftingOrder != null) data.put("CraftingOrder", craftingOrder.save());
         if((recipe != null || stuck) && recipeId != null) {
             data.putString("recipe", recipeId);
         }
@@ -503,6 +566,8 @@ public class RecipeInfo {
 
     public void load(Tag nbt) {
         if(nbt instanceof CompoundTag) {
+            craftingOrder = ((CompoundTag) nbt).contains("CraftingOrder")
+                    ? ProcessingOrder.load(((CompoundTag) nbt).getCompound("CraftingOrder")) : null;
             ticks = ((CompoundTag) nbt).getInt("ticks");
             ticksNeeded = ((CompoundTag) nbt).getInt("ticksNeeded");
             energyPerTick = ((CompoundTag) nbt).getInt("energyPerTick");

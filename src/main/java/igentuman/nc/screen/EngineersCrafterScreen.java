@@ -29,7 +29,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -158,7 +157,9 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
         for (int i = 0; i < patterns.getSlots(); i++) {
             CraftingPattern p = CraftingPattern.from(patterns.getStackInSlot(i));
             if (p == null || !p.isProcessing()) continue;
-            if (ItemStack.isSameItemSameComponents(p.output(), stack)) return p.processor();
+            for (ItemStack output : p.itemOutputs()) {
+                if (ItemStack.isSameItemSameComponents(output, stack)) return p.processor();
+            }
         }
         return null;
     }
@@ -169,27 +170,19 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
         for (int i = 0; i < patterns.getSlots(); i++) {
             CraftingPattern p = CraftingPattern.from(patterns.getStackInSlot(i));
             if (p == null) continue;
-            ItemStack output = p.output();
-            if (output.isEmpty()) continue;
-            map.computeIfAbsent(ItemKey.of(output), k -> {
-                ItemStack icon = output.copy();
-                icon.setCount(1);
-                return icon;
-            });
+            for (ItemStack output : p.itemOutputs()) {
+                if (output.isEmpty()) continue;
+                map.putIfAbsent(ItemKey.of(output), output.copyWithCount(1));
+            }
         }
         return map;
     }
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
-        if (PendingCraftDenied.pending) {
-            List<ItemStack> items = new ArrayList<>(PendingCraftDenied.items);
-            List<Integer> amounts = new ArrayList<>(PendingCraftDenied.amounts);
-            List<FluidStack> fluids = new ArrayList<>(PendingCraftDenied.fluids);
-            List<Integer> fluidAmounts = new ArrayList<>(PendingCraftDenied.fluidAmounts);
-            boolean tooComplex = PendingCraftDenied.tooComplex;
-            PendingCraftDenied.clear();
-            minecraft.setScreen(new CraftDeniedScreen(this, items, amounts, fluids, fluidAmounts, tooComplex));
+        var denied = PendingCraftDenied.take();
+        if (denied != null) {
+            minecraft.setScreen(new CraftDeniedScreen(this, denied.items(), denied.fluids(), denied.tooComplex()));
             return;
         }
         super.render(g, mouseX, mouseY, partialTicks);

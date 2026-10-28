@@ -1,35 +1,20 @@
 package igentuman.nc.client.crafter;
 
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-
-import java.util.List;
+import igentuman.nc.network.PacketCraftDenied;
+import org.jetbrains.annotations.Nullable;
 
 public class PendingCraftDenied {
 
-    public static List<ItemStack> items = List.of();
-    public static List<Integer> amounts = List.of();
-    public static List<FluidStack> fluids = List.of();
-    public static List<Integer> fluidAmounts = List.of();
-    public static boolean tooComplex = false;
-    public static boolean pending = false;
+    private static PacketCraftDenied pending;
 
-    public static void set(List<ItemStack> items, List<Integer> amounts,
-                           List<FluidStack> fluids, List<Integer> fluidAmounts, boolean tooComplex) {
-        PendingCraftDenied.items = items;
-        PendingCraftDenied.amounts = amounts;
-        PendingCraftDenied.fluids = fluids;
-        PendingCraftDenied.fluidAmounts = fluidAmounts;
-        PendingCraftDenied.tooComplex = tooComplex;
-        PendingCraftDenied.pending = true;
+    public static void set(PacketCraftDenied result) {
+        pending = result;
     }
 
-    public static void clear() {
-        items = List.of();
-        amounts = List.of();
-        fluids = List.of();
-        fluidAmounts = List.of();
-        tooComplex = false;
-        pending = false;
+    @Nullable
+    public static PacketCraftDenied take() {
+        PacketCraftDenied result = pending;
+        pending = null;
+        return result;
     }
 }

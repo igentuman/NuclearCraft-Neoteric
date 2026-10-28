@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class EngineersCrafterBE extends BlockEntity {
 
@@ -175,6 +176,10 @@ public class EngineersCrafterBE extends BlockEntity {
         return job != null && !job.isFinished();
     }
 
+    public boolean ownsProcessor(UUID jobId, BlockPos processor) {
+        return hasActiveJob() && job.ownsProcessor(jobId, processor);
+    }
+
     public boolean startJob(ItemStack target, int qty, Plan<CraftKey> plan) {
         if (hasActiveJob() || plan.operations().isEmpty()) return false;
         job = new CraftingJob(target, qty, plan);
@@ -278,25 +283,13 @@ public class EngineersCrafterBE extends BlockEntity {
         }
         if (inputs.isEmpty()) return null;
 
-        CraftKey output;
-        int outputCount;
-        Map<CraftKey, Integer> extra = new LinkedHashMap<>();
-        List<ItemStack> items = p.itemOutputs();
-        List<FluidStack> fluids = p.fluidOutputs();
-        if (!items.isEmpty()) {
-            output = CraftKey.of(items.getFirst());
-            outputCount = items.getFirst().getCount();
-            for (int i = 1; i < items.size(); i++) extra.merge(CraftKey.of(items.get(i)), items.get(i).getCount(), Integer::sum);
-            for (FluidStack f : fluids) extra.merge(CraftKey.of(f), f.getAmount(), Integer::sum);
-        } else if (!fluids.isEmpty()) {
-            output = CraftKey.of(fluids.getFirst());
-            outputCount = fluids.getFirst().getAmount();
-            for (int i = 1; i < fluids.size(); i++) extra.merge(CraftKey.of(fluids.get(i)), fluids.get(i).getAmount(), Integer::sum);
-        } else {
-            return null;
-        }
-        if (outputCount <= 0) return null;
-        return new PatternDef<>(output, outputCount, inputs, p.processor(), extra, parts);
+        Map<CraftKey, Integer> outputs = new LinkedHashMap<>();
+        for (ItemStack item : p.itemOutputs()) outputs.merge(CraftKey.of(item), item.getCount(), Integer::sum);
+        for (FluidStack fluid : p.fluidOutputs()) outputs.merge(CraftKey.of(fluid), fluid.getAmount(), Integer::sum);
+        if (outputs.isEmpty()) return null;
+        if (p.isProcessing() && p.recipeId() == null) return null;
+        return new PatternDef<>(outputs, inputs, p.processor(),
+                p.recipeId() == null ? "" : p.recipeId().toString(), parts);
     }
 
     public String getName() {

@@ -43,6 +43,9 @@ The connector's **Direction** and the processor's own side configuration do not 
 
 Keep in mind:
 
+- A processor needs empty inputs and must finish its current recipe before accepting a job. Once assigned, it is reserved for that crafter until its batch finishes. Existing outputs and catalyst bonuses are returned to the crafter's storage.
+- Every output of a processing pattern can supply downstream recipes, including secondary items and fluids.
+
 - If a processor has **Push** configured on an output and ships the result elsewhere, the table never sees it and the job cancels after a timeout.
 - Fluid outputs need a barrel with room. Until one is available the job stays open and holds the fluid.
 - Removing a processor mid-job cancels the job; whatever it held is lost with the block.

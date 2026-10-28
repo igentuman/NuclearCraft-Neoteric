@@ -5,6 +5,7 @@ import igentuman.nc.block_entity.crafter.EngineersCrafterBE;
 import igentuman.nc.container.EngineersCrafterContainer;
 import igentuman.nc.handler.crafter.AutoCraftSolver;
 import igentuman.nc.handler.crafter.CraftKey;
+import igentuman.nc.handler.crafter.CraftShortage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -55,20 +56,16 @@ public record PacketTerminalCraft(BlockPos pos, ItemStack target, int qty) imple
                 return;
             }
 
-            List<ItemStack> items = new ArrayList<>();
-            List<Integer> amounts = new ArrayList<>();
-            List<FluidStack> fluids = new ArrayList<>();
-            List<Integer> fluidAmounts = new ArrayList<>();
+            List<CraftShortage<ItemStack>> items = new ArrayList<>();
+            List<CraftShortage<FluidStack>> fluids = new ArrayList<>();
             for (Map.Entry<CraftKey, Integer> e : result.shortages().entrySet()) {
                 if (e.getKey().isFluid()) {
-                    fluids.add(e.getKey().sampleFluid(e.getValue()));
-                    fluidAmounts.add(e.getValue());
+                    fluids.add(new CraftShortage<>(e.getKey().sampleFluid(), e.getValue()));
                 } else {
-                    items.add(e.getKey().sampleItem());
-                    amounts.add(e.getValue());
+                    items.add(new CraftShortage<>(e.getKey().sampleItem(), e.getValue()));
                 }
             }
-            PacketDistributor.sendToPlayer(player, new PacketCraftDenied(items, amounts, fluids, fluidAmounts, result.tooComplex()));
+            PacketDistributor.sendToPlayer(player, new PacketCraftDenied(items, fluids, result.tooComplex()));
         });
     }
 }

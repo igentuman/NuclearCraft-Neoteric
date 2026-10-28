@@ -1,6 +1,7 @@
 package igentuman.nc.screen;
 
 import igentuman.nc.screen.element.NcPanel;
+import igentuman.nc.handler.crafter.CraftShortage;
 import igentuman.nc.util.GuiFluidRenderer;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,28 +20,20 @@ public class CraftDeniedScreen extends Screen {
     private static final int ROW_H = 18;
 
     private final Screen parent;
-    private final List<ItemStack> items;
-    private final List<Integer> amounts;
-    private final List<FluidStack> fluids;
-    private final List<Integer> fluidAmounts;
+    private final List<CraftShortage<ItemStack>> items;
+    private final List<CraftShortage<FluidStack>> fluids;
     private final boolean tooComplex;
     private int rows;
     private int panelH;
     private int left;
     private int top;
 
-    public CraftDeniedScreen(Screen parent, List<ItemStack> items, List<Integer> amounts, boolean tooComplex) {
-        this(parent, items, amounts, List.of(), List.of(), tooComplex);
-    }
-
-    public CraftDeniedScreen(Screen parent, List<ItemStack> items, List<Integer> amounts,
-                             List<FluidStack> fluids, List<Integer> fluidAmounts, boolean tooComplex) {
+    public CraftDeniedScreen(Screen parent, List<CraftShortage<ItemStack>> items,
+                             List<CraftShortage<FluidStack>> fluids, boolean tooComplex) {
         super(Component.translatable("screen.nuclearcraft.crafter.denied_title"));
         this.parent = parent;
         this.items = items;
-        this.amounts = amounts;
         this.fluids = fluids;
-        this.fluidAmounts = fluidAmounts;
         this.tooComplex = tooComplex;
     }
 
@@ -84,16 +77,16 @@ public class CraftDeniedScreen extends Screen {
         int shown = Math.min(total(), MAX_ROWS);
         for (int i = 0; i < shown; i++) {
             if (i < items.size()) {
-                ItemStack stack = items.get(i);
+                ItemStack stack = items.get(i).stack();
                 g.renderItem(stack, left + 12, rowY);
                 g.drawString(font, Component.translatable("screen.nuclearcraft.crafter.denied.entry",
-                        amounts.get(i), stack.getHoverName()), left + 34, rowY + 4, 0x404040, false);
+                        items.get(i).amount(), stack.getHoverName()), left + 34, rowY + 4, 0x404040, false);
             } else {
                 int f = i - items.size();
-                FluidStack fluid = fluids.get(f);
+                FluidStack fluid = fluids.get(f).stack();
                 GuiFluidRenderer.renderFluidTank(g, left + 12, rowY, 16, 16, fluid, Math.max(1, fluid.getAmount()));
                 g.drawString(font, Component.translatable("screen.nuclearcraft.crafter.denied.fluid_entry",
-                        TextUtils.formatLiquid(fluidAmounts.get(f)), fluid.getHoverName()), left + 34, rowY + 4, 0x404040, false);
+                        TextUtils.formatLiquid(fluids.get(f).amount()), fluid.getHoverName()), left + 34, rowY + 4, 0x404040, false);
             }
             rowY += ROW_H;
         }

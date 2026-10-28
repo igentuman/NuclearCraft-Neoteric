@@ -5,6 +5,7 @@ import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.recipe.UniversalProcessorRecipeSerializer;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.entries.Processors;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -17,14 +18,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /** Lookup helpers for universal processor recipes shared by the encoder, EMI/JEI bridges and the crafter. */
 public final class ProcessorRecipes {
 
+    private static final Set<String> IGNORED_PROCESSORS = Set.of(Processors.PUMP);
+
     private ProcessorRecipes() {}
 
+    public static boolean isAllowed(String processor) {
+        return processor != null && !IGNORED_PROCESSORS.contains(processor);
+    }
+
     public static boolean isProcessorEntry(ModEntry entry) {
-        return entry != null && entry.hasRecipes() && entry.isEnabled()
+        return entry != null && isAllowed(entry.name()) && entry.hasRecipes() && entry.isEnabled()
                 && entry.recipeType() != null && entry.recipeSerializer() != null
                 && entry.recipeSerializer().get() instanceof UniversalProcessorRecipeSerializer;
     }
@@ -40,7 +48,8 @@ public final class ProcessorRecipes {
     @Nullable
     public static UniversalProcessorRecipe byId(RecipeManager manager, ResourceLocation id) {
         Recipe<?> r = manager.byKey(id).map(RecipeHolder::value).orElse(null);
-        return r instanceof UniversalProcessorRecipe upr && upr.isComplete() ? upr : null;
+        return r instanceof UniversalProcessorRecipe upr && upr.isComplete()
+                && isProcessorEntry(ModEntries.get(upr.getProcessorName())) ? upr : null;
     }
 
     /**

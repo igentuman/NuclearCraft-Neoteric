@@ -357,6 +357,7 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     }
 
     public void setProcessingRecipe(RecipeHolder<UniversalProcessorRecipe> holder) {
+        if (!ProcessorRecipes.isAllowed(holder.value().getProcessorName())) return;
         mode = MODE_PROCESSING;
         selected = holder;
         suppressSearch = true;

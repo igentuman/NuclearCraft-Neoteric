@@ -132,6 +132,7 @@ public class CraftingPattern {
 
     /** Encodes a processor recipe: representative item inputs with counts, fluids and every output. */
     public static ItemStack encodeProcessing(UniversalProcessorRecipe recipe, ResourceLocation recipeId) {
+        if (!ProcessorRecipes.isAllowed(recipe.getProcessorName())) return ItemStack.EMPTY;
         ProcessorRecipeStacks stacks = ProcessorRecipeStacks.of(recipe);
         List<ItemStack> inputs = new ArrayList<>();
         for (ItemStack s : stacks.primaryItemInputs()) inputs.add(s.copy());
@@ -155,6 +156,7 @@ public class CraftingPattern {
         if (!isPatternItem(stack) || data == null) return null;
 
         if (data.isProcessing()) {
+            if (!ProcessorRecipes.isAllowed(data.processor())) return null;
             NonNullList<ItemStack> inputs = NonNullList.create();
             for (ItemStack s : data.inputs()) {
                 if (!s.isEmpty()) inputs.add(s.copy());

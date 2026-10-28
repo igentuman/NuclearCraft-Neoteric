@@ -5,10 +5,6 @@ import igentuman.nc.block_entity.crafter.EngineersCrafterBE;
 import igentuman.nc.handler.crafter.AutoCraftSolver.PatternDef;
 import igentuman.nc.handler.crafter.AutoCraftSolver.Plan;
 import igentuman.nc.handler.crafter.ProcessorIndex.Link;
-import igentuman.nc.handler.sided.FluidCapabilityHandler;
-import igentuman.nc.handler.sided.ItemCapabilityHandler;
-import igentuman.nc.registration.ModEntry;
-import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -20,12 +16,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 public class CraftingJob {
@@ -36,6 +32,7 @@ public class CraftingJob {
     private static final int IDLE_LIMIT = 2400;
     private static final int ACTIVE_IDLE_LIMIT = 12000;
 
+    private UUID id = UUID.randomUUID();
     private Phase phase;
     private ItemStack target;
     private int qty;
@@ -94,7 +91,17 @@ public class CraftingJob {
         }
     }
 
+    public boolean ownsProcessor(UUID jobId, BlockPos processor) {
+        return id.equals(jobId) && isBusy(processor);
+    }
+
     public void cancel(EngineersCrafterBE be) {
+        for (ProcTask task : tasks) {
+            if (be.getLevel().isLoaded(task.pos)
+                    && be.getLevel().getBlockEntity(task.pos) instanceof UniversalProcessorBE proc) {
+                proc.recipeInfo.releaseCrafting(id);
+            }
+        }
         tasks.clear();
         phase = Phase.DONE;
         finish(be);
@@ -171,10 +178,7 @@ public class CraftingJob {
         for (Map.Entry<CraftKey, Integer> in : op.inputs().entrySet()) {
             bufferRemove(in.getKey(), in.getValue());
         }
-        bufferAdd(op.output(), op.outputCount());
-        for (Map.Entry<CraftKey, Integer> extra : op.extraOutputs().entrySet()) {
-            bufferAdd(extra.getKey(), extra.getValue());
-        }
+        op.outputs().forEach(this::bufferAdd);
         opIndex++;
         if (opIndex >= operations.size() && tasks.isEmpty()) {
             phase = Phase.DONE;
@@ -198,9 +202,7 @@ public class CraftingJob {
             if (k.isFluid()) needFluids = true;
             else needItems = true;
         }
-        if (op.output().isFluid()) needFluids = true;
-        else needItems = true;
-        for (CraftKey k : op.extraOutputs().keySet()) {
+        for (CraftKey k : op.outputs().keySet()) {
             if (k.isFluid()) needFluids = true;
             else needItems = true;
         }
@@ -211,18 +213,25 @@ public class CraftingJob {
             if (!link.supports(op.processor(), needItems, needFluids) || isBusy(link.pos())) continue;
             if (!be.getLevel().isLoaded(link.pos())) continue;
             if (!(be.getLevel().getBlockEntity(link.pos()) instanceof UniversalProcessorBE proc)) continue;
-            int n = Math.min(run, fit(proc, op, run));
-            if (n <= 0) continue;
-            insertInputs(proc, op, n);
+            if (!proc.name.equals(op.processor()) || !proc.recipeInfo.canAcceptCraftingOrder()) continue;
+            ProcessorTransfer transfer = ProcessorTransfer.of(proc);
+            ProcessorTransfer.InputPlan placement = transfer.plan(op, run);
+            if (placement == null) continue;
+            int n = placement.operations();
+            if (!proc.recipeInfo.reserveCrafting(id, be.getBlockPos(), op.recipeId(), n)) continue;
+            // Existing stock is returned separately; it cannot satisfy the newly submitted work.
+            transfer.collectOutputs().forEach(this::bufferAdd);
+            if (!transfer.insert(placement)) {
+                proc.recipeInfo.releaseCrafting(id);
+                continue;
+            }
             for (Map.Entry<CraftKey, Integer> in : op.inputs().entrySet()) {
                 bufferRemove(in.getKey(), in.getValue() * n);
             }
             ProcTask task = new ProcTask();
             task.pos = link.pos().immutable();
-            task.expected.merge(op.output(), op.outputCount() * n, Integer::sum);
-            for (Map.Entry<CraftKey, Integer> extra : op.extraOutputs().entrySet()) {
-                task.expected.merge(extra.getKey(), extra.getValue() * n, Integer::sum);
-            }
+            op.outputs().forEach((key, amount) -> task.expected.put(key, amount * n));
+            proc.setChanged();
             tasks.add(task);
             opIndex += n;
             run -= n;
@@ -236,186 +245,28 @@ public class CraftingJob {
         return false;
     }
 
-    private static int inputSlots(UniversalProcessorBE proc) {
-        ModEntry entry = ModEntries.get(proc.name);
-        return entry != null && entry.itemCap() != null ? entry.itemCap().inputSlots : 0;
-    }
-
-    private static int outputSlots(UniversalProcessorBE proc) {
-        ModEntry entry = ModEntries.get(proc.name);
-        return entry != null && entry.itemCap() != null ? entry.itemCap().outputSlots : 0;
-    }
-
-    private static int inputTanks(UniversalProcessorBE proc) {
-        ModEntry entry = ModEntries.get(proc.name);
-        return entry != null && entry.fluidCap() != null ? entry.fluidCap().inputTanks.size() : 0;
-    }
-
-    private static int outputTanks(UniversalProcessorBE proc) {
-        ModEntry entry = ModEntries.get(proc.name);
-        return entry != null && entry.fluidCap() != null ? entry.fluidCap().outputTanks.size() : 0;
-    }
-
-    private int fit(UniversalProcessorBE proc, PatternDef<CraftKey> op, int max) {
-        int n = max;
-        boolean[] usedSlots = new boolean[Math.max(0, inputSlots(proc))];
-        boolean[] usedTanks = new boolean[Math.max(0, inputTanks(proc))];
-        for (Map.Entry<CraftKey, Integer> in : op.inputs().entrySet()) {
-            CraftKey key = in.getKey();
-            for (int per : op.amounts(key)) {
-                if (per <= 0) continue;
-                int accepted;
-                if (key.isFluid()) {
-                    FluidCapabilityHandler fh = proc.contentHandler.getFluidHandler();
-                    if (fh == null) return 0;
-                    int tank = pickTank(fh, key.sampleFluid(), usedTanks);
-                    if (tank < 0) return 0;
-                    usedTanks[tank] = true;
-                    accepted = fh.fillTank(tank, key.sampleFluid(per * n), FluidAction.SIMULATE);
-                } else {
-                    ItemCapabilityHandler ih = proc.contentHandler.getItemHandler();
-                    if (ih == null) return 0;
-                    ItemStack sample = key.sampleItem();
-                    int slot = pickSlot(ih, sample, usedSlots);
-                    if (slot < 0) return 0;
-                    usedSlots[slot] = true;
-                    long want = Math.min((long) per * n, sample.getMaxStackSize());
-                    ItemStack left = ih.insertItem(slot, sample.copyWithCount((int) want), true);
-                    accepted = (int) want - left.getCount();
-                }
-                n = Math.min(n, accepted / per);
-                if (n <= 0) return 0;
-            }
-        }
-        return n;
-    }
-
-    private static int pickSlot(ItemCapabilityHandler ih, ItemStack sample, boolean[] used) {
-        int empty = -1;
-        for (int s = 0; s < used.length; s++) {
-            if (used[s]) continue;
-            ItemStack cur = ih.getStackInSlot(s);
-            if (!cur.isEmpty() && ItemStack.isSameItemSameComponents(cur, sample)) {
-                int limit = Math.min(cur.getMaxStackSize(), ih.getSlotLimit(s));
-                if (cur.getCount() < limit) return s;
-            } else if (cur.isEmpty() && empty < 0 && ih.isItemValid(s, sample)) {
-                empty = s;
-            }
-        }
-        return empty;
-    }
-
-    private static int pickTank(FluidCapabilityHandler fh, FluidStack sample, boolean[] used) {
-        int empty = -1;
-        for (int t = 0; t < used.length; t++) {
-            if (used[t]) continue;
-            FluidStack cur = fh.getFluidInTank(t);
-            if (!cur.isEmpty() && FluidStack.isSameFluidSameComponents(cur, sample)) {
-                if (cur.getAmount() < fh.getTankCapacity(t)) return t;
-            } else if (cur.isEmpty() && empty < 0 && fh.isFluidValid(t, sample)) {
-                empty = t;
-            }
-        }
-        return empty;
-    }
-
-    private void insertInputs(UniversalProcessorBE proc, PatternDef<CraftKey> op, int n) {
-        boolean[] usedSlots = new boolean[Math.max(0, inputSlots(proc))];
-        boolean[] usedTanks = new boolean[Math.max(0, inputTanks(proc))];
-        for (Map.Entry<CraftKey, Integer> in : op.inputs().entrySet()) {
-            CraftKey key = in.getKey();
-            for (int per : op.amounts(key)) {
-                int amount = per * n;
-                if (amount <= 0) continue;
-                if (key.isFluid()) {
-                    FluidCapabilityHandler fh = proc.contentHandler.getFluidHandler();
-                    int tank = pickTank(fh, key.sampleFluid(), usedTanks);
-                    if (tank < 0) {
-                        bufferAdd(key, amount);
-                        continue;
-                    }
-                    usedTanks[tank] = true;
-                    int filled = fh.fillTank(tank, key.sampleFluid(amount), FluidAction.EXECUTE);
-                    if (filled < amount) bufferAdd(key, amount - filled);
-                } else {
-                    ItemCapabilityHandler ih = proc.contentHandler.getItemHandler();
-                    ItemStack sample = key.sampleItem();
-                    int slot = pickSlot(ih, sample, usedSlots);
-                    if (slot < 0) {
-                        bufferAdd(key, amount);
-                        continue;
-                    }
-                    usedSlots[slot] = true;
-                    ItemStack left = ih.insertItem(slot, sample.copyWithCount(amount), false);
-                    // anything the slot refused after the simulate pass goes back to the buffer
-                    if (!left.isEmpty()) bufferAdd(key, left.getCount());
-                }
-            }
-        }
-        proc.setChanged();
-    }
-
     private boolean collectTasks(EngineersCrafterBE be) {
         Level level = be.getLevel();
         for (int i = tasks.size() - 1; i >= 0; i--) {
             ProcTask task = tasks.get(i);
-            if (!level.isLoaded(task.pos)) continue; // wait for the chunk; never force-load it
+            if (!level.isLoaded(task.pos)) continue;
             BlockEntity raw = level.getBlockEntity(task.pos);
-            if (!(raw instanceof UniversalProcessorBE proc)) return false; // machine is gone, plan cannot complete
-            boolean progressed = false;
-            int inSlots = inputSlots(proc);
-            int outSlots = outputSlots(proc);
-            int inTanks = inputTanks(proc);
-            int outTanks = outputTanks(proc);
-            for (Map.Entry<CraftKey, Integer> e : new ArrayList<>(task.expected.entrySet())) {
-                CraftKey key = e.getKey();
-                int want = e.getValue();
-                if (want <= 0) {
-                    task.expected.remove(key);
-                    continue;
-                }
-                int got = 0;
-                if (key.isFluid()) {
-                    FluidCapabilityHandler fh = proc.contentHandler.getFluidHandler();
-                    if (fh != null) {
-                        FluidStack sample = key.sampleFluid();
-                        for (int t = inTanks; t < inTanks + outTanks && want > 0; t++) {
-                            FluidStack cur = fh.getFluidInTank(t);
-                            if (cur.isEmpty() || !FluidStack.isSameFluidSameComponents(cur, sample)) continue;
-                            FluidStack drained = fh.drainTank(t, want, FluidAction.EXECUTE);
-                            if (drained.isEmpty()) continue;
-                            got += drained.getAmount();
-                            want -= drained.getAmount();
-                        }
-                    }
-                } else {
-                    ItemCapabilityHandler ih = proc.contentHandler.getItemHandler();
-                    if (ih != null) {
-                        ItemStack sample = key.sampleItem();
-                        for (int s = inSlots; s < inSlots + outSlots && want > 0; s++) {
-                            ItemStack cur = ih.getStackInSlot(s);
-                            if (cur.isEmpty() || !ItemStack.isSameItemSameComponents(cur, sample)) continue;
-                            ItemStack taken = ih.extractItem(s, want, false);
-                            if (taken.isEmpty()) continue;
-                            got += taken.getCount();
-                            want -= taken.getCount();
-                        }
-                    }
-                }
-                if (got > 0) {
-                    progressed = true;
-                    bufferAdd(key, got);
-                    if (want <= 0) task.expected.remove(key);
-                    else task.expected.put(key, want);
-                }
-            }
-            if (progressed) {
+            if (!(raw instanceof UniversalProcessorBE proc) || !proc.recipeInfo.isReservedBy(id)) return false;
+            Map<CraftKey, Integer> collected = ProcessorTransfer.of(proc).collectOutputs();
+            collected.forEach((key, amount) -> {
+                bufferAdd(key, amount);
+                task.expected.computeIfPresent(key, (k, remaining) -> remaining > amount ? remaining - amount : null);
+            });
+            if (!collected.isEmpty()) {
                 task.idle = 0;
                 proc.setChanged();
             } else if (++task.idle > (proc.recipeInfo.active ? ACTIVE_IDLE_LIMIT : IDLE_LIMIT)) {
                 return false;
             }
-            if (task.expected.isEmpty()) tasks.remove(i);
+            if (task.expected.isEmpty() && proc.recipeInfo.isCraftingComplete(id)) {
+                proc.recipeInfo.releaseCrafting(id);
+                tasks.remove(i);
+            }
         }
         return true;
     }
@@ -481,6 +332,7 @@ public class CraftingJob {
     // --- NBT ---
 
     public void save(CompoundTag tag, HolderLookup.Provider provider) {
+        tag.putUUID("Id", id);
         tag.putString("Phase", phase.name());
         tag.put("Target", target.save(provider));
         tag.putInt("Qty", qty);
@@ -503,6 +355,7 @@ public class CraftingJob {
 
     public static CraftingJob load(CompoundTag tag, HolderLookup.Provider provider) {
         CraftingJob job = new CraftingJob();
+        if (tag.hasUUID("Id")) job.id = tag.getUUID("Id");
         job.phase = Phase.valueOf(tag.getString("Phase"));
         job.target = ItemStack.parseOptional(provider, tag.getCompound("Target"));
         job.qty = tag.getInt("Qty");
@@ -518,7 +371,7 @@ public class CraftingJob {
         readMap(tag.getList("BaseCost", Tag.TAG_COMPOUND), job.baseCost, provider);
         readMap(tag.getList("Buffer", Tag.TAG_COMPOUND), job.buffer, provider);
         ListTag taskList = tag.getList("Tasks", Tag.TAG_COMPOUND);
-        for (int i = 0; i < taskList.size(); i++) {
+        for (int i = 0; job.phase == Phase.CRAFTING && i < taskList.size(); i++) {
             CompoundTag c = taskList.getCompound(i);
             ProcTask t = new ProcTask();
             t.pos = NbtUtils.readBlockPos(c, "Pos").orElse(BlockPos.ZERO);
@@ -533,12 +386,11 @@ public class CraftingJob {
         ListTag list = new ListTag();
         for (PatternDef<CraftKey> op : operations) {
             CompoundTag c = new CompoundTag();
-            writeKey(c, "Out", op.output(), provider);
-            c.putInt("OutN", op.outputCount());
+            c.put("Outputs", writeMap(op.outputs(), provider));
             c.put("In", writeMap(op.inputs(), provider));
             if (op.isProcessing()) {
                 c.putString("Proc", op.processor());
-                c.put("Extra", writeMap(op.extraOutputs(), provider));
+                c.putString("Recipe", op.recipeId());
                 c.put("Parts", writeAmounts(op.ingredientAmounts(), provider));
             }
             list.add(c);
@@ -549,14 +401,25 @@ public class CraftingJob {
     private static boolean readOps(ListTag list, List<PatternDef<CraftKey>> out, HolderLookup.Provider provider) {
         for (int i = 0; i < list.size(); i++) {
             CompoundTag c = list.getCompound(i);
-            CraftKey outKey = readKey(c, "Out", provider);
-            if (outKey == null) return false;
+            Map<CraftKey, Integer> outputs = new LinkedHashMap<>();
+            if (c.contains("Outputs")) {
+                readMap(c.getList("Outputs", Tag.TAG_COMPOUND), outputs, provider);
+            } else {
+                CraftKey outKey = readKey(c, "Out", provider);
+                if (outKey == null) return false;
+                outputs.put(outKey, c.getInt("OutN"));
+                readMap(c.getList("Extra", Tag.TAG_COMPOUND), outputs, provider);
+            }
             Map<CraftKey, Integer> inputs = new LinkedHashMap<>();
             readMap(c.getList("In", Tag.TAG_COMPOUND), inputs, provider);
-            Map<CraftKey, Integer> extra = new LinkedHashMap<>();
-            readMap(c.getList("Extra", Tag.TAG_COMPOUND), extra, provider);
+            String processor = c.getString("Proc");
+            String recipe = c.getString("Recipe");
+            // Legacy processing jobs cannot safely resume without a pinned recipe; keep their buffer for return.
+            if (!processor.isEmpty() && (recipe.isEmpty() || !ProcessorRecipes.isAllowed(processor))) return false;
+            if (outputs.isEmpty() || outputs.values().stream().anyMatch(n -> n <= 0)
+                    || inputs.isEmpty() || inputs.values().stream().anyMatch(n -> n <= 0)) return false;
             Map<CraftKey, List<Integer>> parts = readAmounts(c.getList("Parts", Tag.TAG_COMPOUND), provider);
-            out.add(new PatternDef<>(outKey, c.getInt("OutN"), inputs, c.getString("Proc"), extra, parts));
+            out.add(new PatternDef<>(outputs, inputs, processor, recipe, parts));
         }
         return true;
     }

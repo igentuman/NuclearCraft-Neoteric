@@ -153,10 +153,11 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(new EngineersEncoderRecipeTransferHandler(), RecipeTypes.CRAFTING);
         boolean ae2 = ModList.get().isLoaded("ae2");
         boolean refinedStorage = ModList.get().isLoaded("refinedstorage");
-        if (!ae2 && !refinedStorage) return;
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (!isProcessorEntry(entry)) continue;
             RecipeType<UniversalProcessorRecipe> jeiType = getOrCreateRecipeType(entry);
+            registration.addRecipeTransferHandler(
+                    new EngineersEncoderProcessorTransferHandler(jeiType, registration.getTransferHelper()), jeiType);
             if (ae2) registration.addRecipeTransferHandler(new JEI2PatternEncoderTransfer(jeiType), jeiType);
             if (refinedStorage) registration.addRecipeTransferHandler(new RSJeiPatternTransfer(jeiType), jeiType);
         }

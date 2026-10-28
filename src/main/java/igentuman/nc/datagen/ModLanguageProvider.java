@@ -644,7 +644,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("block.nuclearcraft.heat_exchanger_radiator.desc", "Vents %s H/t from the heat buffer. Passive: cools whenever the multiblock is formed.");
         add("container.nuclearcraft.engineers_encoder", "Pattern Encoder");
         add("tooltip.nuclearcraft.crafting_pattern.blank", "Blank");
-        add("block.nuclearcraft.engineers_crafting_table.desc", "AE2-terminal-style auto-crafter that stores container-block items and aggregates their inventories.");
+        add("block.nuclearcraft.engineers_crafting_table.desc", "AE2-terminal-style auto-crafter that stores container and barrel items, aggregates their contents and runs processing patterns on machines reachable through connected pipe networks.");
         add("screen.nuclearcraft.crafter.search", "Search...");
         add("screen.nuclearcraft.crafter.view", "View: %s");
         add("screen.nuclearcraft.crafter.mode.stored", "Stored");
@@ -663,6 +663,14 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.crafter.denied.entry", "%sx %s");
         add("screen.nuclearcraft.crafter.denied.more", "...and %s more");
         add("screen.nuclearcraft.crafter.denied.too_complex", "Bill of materials exceeds planner limits.");
+        add("screen.nuclearcraft.crafter.denied.fluid_entry", "%s %s");
+        add("screen.nuclearcraft.crafter.mode.crafting_patterns", "Crafting mode: encode 3x3 grid recipes. Click to switch to processing mode.");
+        add("screen.nuclearcraft.crafter.mode.processing_patterns", "Processing mode: encode machine recipes (use JEI/EMI + or place inputs). Click to switch to crafting mode.");
+        add("screen.nuclearcraft.crafter.processor", "Processor: %s");
+        add("screen.nuclearcraft.crafter.no_recipe", "No recipe selected");
+        add("tooltip.nuclearcraft.crafting_pattern.crafting", "Crafting pattern");
+        add("tooltip.nuclearcraft.crafting_pattern.processing", "Processing pattern: %s");
+        add("tooltip.nuclearcraft.crafting_pattern.output", "Output: %s");
         add("message.nuclearcraft.redstone_mode", "Redstone mode: %s");
         add("message.nuclearcraft.redstone_mode.none", "Off");
         add("message.nuclearcraft.redstone_mode.energy", "Energy level");

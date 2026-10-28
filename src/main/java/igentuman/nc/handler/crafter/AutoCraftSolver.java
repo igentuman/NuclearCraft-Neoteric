@@ -10,7 +10,26 @@ import java.util.Set;
 
 public class AutoCraftSolver<K> {
 
-    public record PatternDef<K>(K output, int outputCount, Map<K, Integer> inputs) {}
+    public record PatternDef<K>(K output, int outputCount, Map<K, Integer> inputs,
+                                String processor, Map<K, Integer> extraOutputs, Map<K, List<Integer>> ingredientAmounts) {
+
+        public PatternDef(K output, int outputCount, Map<K, Integer> inputs) {
+            this(output, outputCount, inputs, "", Map.of(), Map.of());
+        }
+
+        public PatternDef(K output, int outputCount, Map<K, Integer> inputs, String processor, Map<K, Integer> extraOutputs) {
+            this(output, outputCount, inputs, processor, extraOutputs, Map.of());
+        }
+
+        public List<Integer> amounts(K key) {
+            List<Integer> list = ingredientAmounts.get(key);
+            return list == null || list.isEmpty() ? List.of(inputs.getOrDefault(key, 0)) : list;
+        }
+
+        public boolean isProcessing() {
+            return processor != null && !processor.isEmpty();
+        }
+    }
 
     public record Plan<K>(List<PatternDef<K>> operations, Map<K, Integer> baseCost) {}
 

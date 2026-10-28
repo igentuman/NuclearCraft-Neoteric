@@ -39,6 +39,12 @@ public class EngineersCrafterApi extends ComputerApi<EngineersCrafterBE> {
 
     @LuaFunction(mainThread = true)
     @Callback
+    public final Object[] getFluids() {
+        return be.getFluidsInfo();
+    }
+
+    @LuaFunction(mainThread = true)
+    @Callback
     public final Object[] getPatterns() {
         return be.getPatternsInfo();
     }

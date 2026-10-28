@@ -50,6 +50,16 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
 
     private static final int MAIN_INV_SIZE = 36;
 
+    public static final int CONTAINER_COLS = 3;
+    public static final int CONTAINER_ROWS = EngineersCrafterBE.CONTAINER_SLOTS / CONTAINER_COLS;
+    public static final int CONTAINER_X = 8;
+    public static final int CONTAINER_Y = 90;
+    public static final int ENCODER_BTN_X = CONTAINER_X + CONTAINER_COLS * 18 + 4;
+    public static final int ENERGY_X = ENCODER_BTN_X + 24;
+    public static final int CRAFT_X = ENERGY_X + 16;
+    public static final int CRAFT_Y = 92;
+    public static final int RESULT_X = CRAFT_X + 3 * 18 + 10;
+
     public final EngineersCrafterBE blockEntity;
     private final Player player;
     private final Level level;
@@ -65,17 +75,18 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
         this.blockEntity = (EngineersCrafterBE) level.getBlockEntity(pos);
         this.access = ContainerLevelAccess.create(level, pos);
 
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 2; col++) {
-                addSlot(new SlotItemHandler(blockEntity.containerSlots, col + row * 2, 16 + col * 18, 90 + row * 18));
+        for (int row = 0; row < CONTAINER_ROWS; row++) {
+            for (int col = 0; col < CONTAINER_COLS; col++) {
+                addSlot(new SlotItemHandler(blockEntity.containerSlots, col + row * CONTAINER_COLS,
+                        CONTAINER_X + col * 18, CONTAINER_Y + row * 18));
             }
         }
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                addSlot(new Slot(craftSlots, col + row * 3, 100 + col * 18, 92 + row * 18));
+                addSlot(new Slot(craftSlots, col + row * 3, CRAFT_X + col * 18, CRAFT_Y + row * 18));
             }
         }
-        addSlot(new ResultSlot(player, craftSlots, resultSlots, 0, 168, 110));
+        addSlot(new ResultSlot(player, craftSlots, resultSlots, 0, RESULT_X, CRAFT_Y + 18));
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
@@ -120,7 +131,7 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
                 if (!moveItemStackTo(stack, PLAYER_START, PLAYER_END, true)) return ItemStack.EMPTY;
                 slot.onQuickCraft(stack, result);
             } else if (index >= PLAYER_START && index < PLAYER_END) {
-                if (stack.getItem() instanceof ContainerBlockItem) {
+                if (AggregatedInventory.isStorageItem(stack)) {
                     if (!moveItemStackTo(stack, CONTAINER_START, CONTAINER_END, false)) return ItemStack.EMPTY;
                 } else {
                     AggregatedInventory agg = new AggregatedInventory(blockEntity.containerSlots);

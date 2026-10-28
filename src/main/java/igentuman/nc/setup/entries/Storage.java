@@ -11,6 +11,7 @@ import igentuman.nc.block_entity.storage.ContainerBE;
 import igentuman.nc.container.StorageContainerItemMenu;
 import igentuman.nc.container.StorageContainerMenu;
 import igentuman.nc.content.storage.StorageDefs;
+import igentuman.nc.handler.storage.BarrelItemFluidHandler;
 import igentuman.nc.handler.storage.UuidBackedItemHandler;
 import igentuman.nc.item.BarrelBlockItem;
 import igentuman.nc.item.BatteryBlockItem;
@@ -112,6 +113,10 @@ public class Storage {
             if (block instanceof BarrelBlock) {
                 event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, type,
                         (be, side) -> be instanceof BarrelBE barrel ? barrel.getFluidHandler(side) : null);
+                int capacity = StorageDefs.barrelCapacityMb(entry.name());
+                event.registerItem(Capabilities.FluidHandler.ITEM,
+                        (stack, ctx) -> new BarrelItemFluidHandler(stack, capacity, () -> entry.blockEntity().get()),
+                        entry.item().get());
             } else if (block instanceof ContainerBlock) {
                 event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type,
                         (be, side) -> be instanceof ContainerBE container ? container.getItemHandler(side) : null);

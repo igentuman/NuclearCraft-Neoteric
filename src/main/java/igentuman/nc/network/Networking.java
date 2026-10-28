@@ -120,6 +120,11 @@ public class Networking {
             );
         }
         registrar.playToClient(
+                PacketEncoderSync.TYPE,
+                PacketEncoderSync.STREAM_CODEC,
+                PacketEncoderSync::handle
+        );
+        registrar.playToClient(
                 PacketMultiblockFormed.TYPE,
                 PacketMultiblockFormed.STREAM_CODEC,
                 PacketMultiblockFormed::handle

@@ -2,10 +2,15 @@ package igentuman.nc.container;
 
 import igentuman.nc.block_entity.crafter.EngineersCrafterBE;
 import igentuman.nc.handler.crafter.CraftingPattern;
+import igentuman.nc.handler.crafter.ProcessorRecipes;
 import igentuman.nc.handler.crafter.RecipeGridLayout;
+import igentuman.nc.network.PacketEncoderSync;
+import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.setup.entries.Crafter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -24,7 +29,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +40,22 @@ import java.util.Optional;
 public class EngineersEncoderContainer extends AbstractContainerMenu {
 
     public static final int ENCODE_BTN = 0;
+    public static final int MODE_BTN = 1;
+
+    public static final int MODE_CRAFTING = 0;
+    public static final int MODE_PROCESSING = 1;
 
     public static final int PATTERN_COLS = 9;
     public static final int PATTERN_ROWS = EngineersCrafterBE.PATTERNS_SIZE / PATTERN_COLS;
-    public static final int PATTERN_Y = 90;
+    public static final int PATTERN_Y = 100;
     public static final int PLAYER_Y = PATTERN_Y + PATTERN_ROWS * 18 + 6;
+
+    public static final int GHOST_X = 30;
+    public static final int GHOST_Y = 18;
+    public static final int RESULT_X = 126;
+    public static final int RESULT_Y = 36;
+    public static final int BLANK_X = 8;
+    public static final int BLANK_Y = 36;
 
     private static final int RESULT_SLOT = 0;
     private static final int CRAFT_START = 1;
@@ -55,6 +73,15 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     private final TransientCraftingContainer craftSlots = new TransientCraftingContainer(this, 3, 3);
     private final ResultContainer resultSlots = new ResultContainer();
 
+    private int mode = MODE_CRAFTING;
+    @Nullable
+    private RecipeHolder<UniversalProcessorRecipe> selected;
+    private boolean suppressSearch;
+    private boolean synced;
+
+    @Nullable
+    private ResourceLocation clientRecipeId;
+
     public EngineersEncoderContainer(int windowId, BlockPos pos, Inventory inv) {
         super(Crafter.ENGINEERS_ENCODER_MENU.get(), windowId);
         this.player = inv.player;
@@ -62,7 +89,7 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
         this.blockEntity = (EngineersCrafterBE) level.getBlockEntity(pos);
         this.access = ContainerLevelAccess.create(level, pos);
 
-        addSlot(new Slot(resultSlots, 0, 126, 36) {
+        addSlot(new Slot(resultSlots, 0, RESULT_X, RESULT_Y) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 return false;
@@ -75,7 +102,7 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
         });
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                addSlot(new GhostSlot(craftSlots, col + row * 3, 30 + col * 18, 18 + row * 18));
+                addSlot(new GhostSlot(craftSlots, col + row * 3, GHOST_X + col * 18, GHOST_Y + row * 18));
             }
         }
         for (int row = 0; row < PATTERN_ROWS; row++) {
@@ -91,24 +118,91 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
         for (int col = 0; col < 9; col++) {
             addSlot(new Slot(inv, col, 8 + col * 18, PLAYER_Y + 58));
         }
-        addSlot(new SlotItemHandler(blockEntity.encoderBlanks, 0, 8, 36));
+        addSlot(new SlotItemHandler(blockEntity.encoderBlanks, 0, BLANK_X, BLANK_Y));
     }
+
+    // --- state ---
+
+    public int mode() {
+        return mode;
+    }
+
+    public boolean isProcessingMode() {
+        return mode == MODE_PROCESSING;
+    }
+
+    @Nullable
+    public ResourceLocation selectedRecipeId() {
+        if (level.isClientSide) return clientRecipeId;
+        return selected == null ? null : selected.id();
+    }
+
+    @Nullable
+    public UniversalProcessorRecipe selectedRecipe() {
+        if (level.isClientSide) {
+            return clientRecipeId == null ? null : ProcessorRecipes.byId(level.getRecipeManager(), clientRecipeId);
+        }
+        return selected == null ? null : selected.value();
+    }
+
+    public void applySync(int mode, @Nullable ResourceLocation recipeId) {
+        this.mode = mode;
+        this.clientRecipeId = recipeId;
+    }
+
+    private void sync() {
+        if (player instanceof ServerPlayer sp) {
+            PacketDistributor.sendToPlayer(sp, new PacketEncoderSync(mode, selected == null ? null : selected.id()));
+        }
+    }
+
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        if (!synced && !level.isClientSide) {
+            synced = true;
+            sync();
+        }
+    }
+
+    // --- recipe resolution ---
 
     @Override
     public void slotsChanged(@NotNull Container container) {
         super.slotsChanged(container);
         if (!level.isClientSide && container == craftSlots) {
+            if (mode == MODE_PROCESSING && !suppressSearch) {
+                searchProcessingRecipe();
+            }
             updateResult();
         }
     }
 
-    private void updateResult() {
+    private void searchProcessingRecipe() {
+        List<ItemStack> ghosts = new ArrayList<>(9);
+        for (int i = 0; i < 9; i++) ghosts.add(craftSlots.getItem(i));
+        RecipeHolder<UniversalProcessorRecipe> found = ProcessorRecipes.matchByItems(level.getRecipeManager(), ghosts);
+        if (found != selected) {
+            selected = found;
+            sync();
+        }
+    }
+
+    private Optional<RecipeHolder<CraftingRecipe>> craftingRecipe() {
         CraftingInput input = craftSlots.asCraftInput();
-        Optional<RecipeHolder<CraftingRecipe>> recipe =
-                level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level);
-        ItemStack result = recipe
-                .map(r -> r.value().assemble(input, level.registryAccess()))
-                .orElse(ItemStack.EMPTY);
+        return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level);
+    }
+
+    private void updateResult() {
+        ItemStack result;
+        if (mode == MODE_PROCESSING) {
+            result = selected == null ? ItemStack.EMPTY : selected.value().getResultItem(level.registryAccess());
+        } else {
+            CraftingInput input = craftSlots.asCraftInput();
+            result = craftingRecipe()
+                    .map(r -> r.value().assemble(input, level.registryAccess()))
+                    .orElse(ItemStack.EMPTY);
+        }
         resultSlots.setItem(0, result);
     }
 
@@ -118,25 +212,43 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
             if (!level.isClientSide) encode();
             return true;
         }
+        if (id == MODE_BTN) {
+            if (!level.isClientSide) toggleMode();
+            return true;
+        }
         return false;
     }
 
-    private void encode() {
-        CraftingInput input = craftSlots.asCraftInput();
-        Optional<RecipeHolder<CraftingRecipe>> recipe =
-                level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level);
-        if (recipe.isEmpty()) return;
-        ItemStack output = recipe.get().value().assemble(input, level.registryAccess());
-        if (output.isEmpty()) return;
+    private void toggleMode() {
+        mode = mode == MODE_CRAFTING ? MODE_PROCESSING : MODE_CRAFTING;
+        selected = null;
+        if (mode == MODE_PROCESSING) searchProcessingRecipe();
+        updateResult();
+        sync();
+        broadcastChanges();
+    }
 
+    private void encode() {
+        ItemStack encoded;
+        if (mode == MODE_PROCESSING) {
+            if (selected == null) return;
+            encoded = CraftingPattern.encodeProcessing(selected.value(), selected.id());
+        } else {
+            CraftingInput input = craftSlots.asCraftInput();
+            Optional<RecipeHolder<CraftingRecipe>> recipe = craftingRecipe();
+            if (recipe.isEmpty()) return;
+            ItemStack output = recipe.get().value().assemble(input, level.registryAccess());
+            if (output.isEmpty()) return;
+            encoded = CraftingPattern.encode(craftSlots, output);
+        }
+        if (CraftingPattern.from(encoded) == null) return;
         if (!CraftingPattern.isBlank(blockEntity.encoderBlanks.getStackInSlot(0))) return;
 
-        ItemStack encoded = CraftingPattern.encode(craftSlots, output);
         blockEntity.encoderBlanks.extractItem(0, 1, false);
         for (int i = 0; i < blockEntity.patterns.getSlots(); i++) {
             if (blockEntity.patterns.getStackInSlot(i).isEmpty()) {
                 blockEntity.patterns.setStackInSlot(i, encoded);
-                craftSlots.clearContent();
+                clearSelection();
                 broadcastChanges();
                 return;
             }
@@ -144,8 +256,17 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
         if (!player.getInventory().add(encoded)) {
             player.drop(encoded, false);
         }
-        craftSlots.clearContent();
+        clearSelection();
         broadcastChanges();
+    }
+
+    private void clearSelection() {
+        suppressSearch = true;
+        craftSlots.clearContent();
+        suppressSearch = false;
+        selected = null;
+        updateResult();
+        sync();
     }
 
     @Override
@@ -215,6 +336,9 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     }
 
     public void fillGhostGrid(CraftingRecipe recipe) {
+        mode = MODE_CRAFTING;
+        selected = null;
+        suppressSearch = true;
         Ingredient[] layout = RecipeGridLayout.layout(recipe);
         for (int i = 0; i < 9; i++) {
             Ingredient ing = layout[i];
@@ -227,6 +351,28 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
             if (!rep.isEmpty()) rep.setCount(1);
             craftSlots.setItem(i, rep);
         }
+        suppressSearch = false;
+        updateResult();
+        sync();
+    }
+
+    public void setProcessingRecipe(RecipeHolder<UniversalProcessorRecipe> holder) {
+        mode = MODE_PROCESSING;
+        selected = holder;
+        suppressSearch = true;
+        craftSlots.clearContent();
+        int i = 0;
+        for (var si : holder.value().getItemInputs()) {
+            if (i >= 9) break;
+            ItemStack[] items = si.ingredient().getItems();
+            if (items.length == 0) continue;
+            ItemStack rep = items[0].copy();
+            rep.setCount(1);
+            craftSlots.setItem(i++, rep);
+        }
+        suppressSearch = false;
+        updateResult();
+        sync();
     }
 
     public Component getTitle() {

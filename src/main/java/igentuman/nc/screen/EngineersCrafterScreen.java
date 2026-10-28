@@ -29,6 +29,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -107,13 +108,14 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
         WidgetSprites encoderSprites = new WidgetSprites(
                 ResourceLocation.withDefaultNamespace("recipe_book/button"),
                 ResourceLocation.withDefaultNamespace("recipe_book/button_highlighted"));
-        ImageButton encoderButton = new ImageButton(leftPos + 55, topPos + 92 + contentShift, 20, 18, encoderSprites,
+        ImageButton encoderButton = new ImageButton(leftPos + EngineersCrafterContainer.ENCODER_BTN_X,
+                topPos + 92 + contentShift, 20, 18, encoderSprites,
                 b -> PacketDistributor.sendToServer(new PacketCrafterOpenEncoder(menu.getBlockPos())),
                 Component.translatable("screen.nuclearcraft.crafter.encoder"));
         encoderButton.setTooltip(Tooltip.create(Component.translatable("screen.nuclearcraft.crafter.encoder")));
         addRenderableWidget(encoderButton);
 
-        EnergyBar energyBar = new EnergyBar(leftPos + 80, topPos + 92 + contentShift, 12, 52,
+        EnergyBar energyBar = new EnergyBar(leftPos + EngineersCrafterContainer.ENERGY_X, topPos + 92 + contentShift, 12, 52,
                 () -> menu.blockEntity.energy);
         addRenderableWidget(energyBar);
     }
@@ -150,6 +152,17 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
         return out;
     }
 
+    /** Processor name of the first processing pattern producing this item, or null for grid patterns. */
+    private String processorFor(ItemStack stack) {
+        ItemStackHandler patterns = menu.blockEntity.patterns;
+        for (int i = 0; i < patterns.getSlots(); i++) {
+            CraftingPattern p = CraftingPattern.from(patterns.getStackInSlot(i));
+            if (p == null || !p.isProcessing()) continue;
+            if (ItemStack.isSameItemSameComponents(p.output(), stack)) return p.processor();
+        }
+        return null;
+    }
+
     private LinkedHashMap<ItemKey, ItemStack> craftableOutputs() {
         LinkedHashMap<ItemKey, ItemStack> map = new LinkedHashMap<>();
         ItemStackHandler patterns = menu.blockEntity.patterns;
@@ -172,9 +185,11 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
         if (PendingCraftDenied.pending) {
             List<ItemStack> items = new ArrayList<>(PendingCraftDenied.items);
             List<Integer> amounts = new ArrayList<>(PendingCraftDenied.amounts);
+            List<FluidStack> fluids = new ArrayList<>(PendingCraftDenied.fluids);
+            List<Integer> fluidAmounts = new ArrayList<>(PendingCraftDenied.fluidAmounts);
             boolean tooComplex = PendingCraftDenied.tooComplex;
             PendingCraftDenied.clear();
-            minecraft.setScreen(new CraftDeniedScreen(this, items, amounts, tooComplex));
+            minecraft.setScreen(new CraftDeniedScreen(this, items, amounts, fluids, fluidAmounts, tooComplex));
             return;
         }
         super.render(g, mouseX, mouseY, partialTicks);
@@ -188,6 +203,11 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
                 }
                 if (cell.craftable()) {
                     tip.add(Component.translatable("screen.nuclearcraft.crafter.craftable_tt"));
+                    String proc = processorFor(cell.stack());
+                    if (proc != null) {
+                        tip.add(Component.translatable("screen.nuclearcraft.crafter.processor",
+                                Component.translatable("block.nuclearcraft." + proc)));
+                    }
                 }
                 g.renderComponentTooltip(font, tip, mouseX, mouseY);
             }

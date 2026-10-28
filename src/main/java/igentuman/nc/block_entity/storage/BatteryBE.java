@@ -21,7 +21,7 @@ public class BatteryBE extends AbstractStorageBE {
     private static final int LIGHTNING_COOLDOWN = 600;
 
     public final LargeEnergyStorage energyStorage;
-    private long lastLightningStrike = Long.MIN_VALUE;
+    private long lastLightningStrike = -LIGHTNING_COOLDOWN;
 
     public BatteryBE(BlockEntityType<?> type, BlockPos pos, BlockState state, String name) {
         super(type, pos, state, name);

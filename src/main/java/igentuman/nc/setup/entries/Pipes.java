@@ -33,12 +33,12 @@ public class Pipes {
         BlockEntityType<?> beType = ModEntries.get("pipe_connector").blockEntity().get();
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, beType, (be, side) ->
                 be instanceof PipeConnectorBE c && c.getMode() == ConnectorMode.DEFAULT && c.isEnabled(PipeCapabilityType.ITEM)
-                        ? new NetworkItemHandler(c) : null);
+                        ? new NetworkItemHandler(c, side) : null);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, beType, (be, side) ->
                 be instanceof PipeConnectorBE c && c.getMode() == ConnectorMode.DEFAULT && c.isEnabled(PipeCapabilityType.FLUID)
-                        ? new NetworkFluidHandler(c) : null);
+                        ? new NetworkFluidHandler(c, side) : null);
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, beType, (be, side) ->
                 be instanceof PipeConnectorBE c && c.getMode() == ConnectorMode.DEFAULT && c.isEnabled(PipeCapabilityType.ENERGY)
-                        ? new NetworkEnergyStorage(c) : null);
+                        ? new NetworkEnergyStorage(c, side) : null);
     }
 }

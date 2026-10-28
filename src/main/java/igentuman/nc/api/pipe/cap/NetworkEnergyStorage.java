@@ -11,8 +11,8 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class NetworkEnergyStorage extends NetworkHandler implements IEnergyStorage {
 
-    public NetworkEnergyStorage(PipeConnectorBE connector) {
-        super(connector);
+    public NetworkEnergyStorage(PipeConnectorBE connector, Direction side) {
+        super(connector, side);
     }
 
     @Override
@@ -29,14 +29,14 @@ public class NetworkEnergyStorage extends NetworkHandler implements IEnergyStora
         int remaining = maxReceive;
         int total = 0;
         for (long packed : net.getDestinations(PipeCapabilityType.ENERGY, manager)) {
-            if (packed == self()) {
-                continue;
-            }
             PipeConnectorBE dest = manager.getConnectorBE(packed);
             if (dest == null) {
                 continue;
             }
             for (Direction face : Direction.values()) {
+                if (isRequester(packed, face)) {
+                    continue;
+                }
                 IEnergyStorage h = dest.getExternalCapability(face, Capabilities.EnergyStorage.BLOCK);
                 if (h == null || !h.canReceive()) {
                     continue;
@@ -68,14 +68,14 @@ public class NetworkEnergyStorage extends NetworkHandler implements IEnergyStora
         int remaining = maxExtract;
         int total = 0;
         for (long packed : net.getSources(PipeCapabilityType.ENERGY, manager)) {
-            if (packed == self()) {
-                continue;
-            }
             PipeConnectorBE src = manager.getConnectorBE(packed);
             if (src == null) {
                 continue;
             }
             for (Direction face : Direction.values()) {
+                if (isRequester(packed, face)) {
+                    continue;
+                }
                 IEnergyStorage h = src.getExternalCapability(face, Capabilities.EnergyStorage.BLOCK);
                 if (h == null || !h.canExtract()) {
                     continue;

@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class NetworkFluidHandler extends NetworkHandler implements IFluidHandler {
 
-    public NetworkFluidHandler(PipeConnectorBE connector) {
-        super(connector);
+    public NetworkFluidHandler(PipeConnectorBE connector, Direction side) {
+        super(connector, side);
     }
 
     @Override
@@ -52,14 +52,14 @@ public class NetworkFluidHandler extends NetworkHandler implements IFluidHandler
         FluidStack remaining = resource.copy();
         int filled = 0;
         for (long packed : net.getDestinations(PipeCapabilityType.FLUID, manager)) {
-            if (packed == self()) {
-                continue;
-            }
             PipeConnectorBE dest = manager.getConnectorBE(packed);
             if (dest == null) {
                 continue;
             }
             for (Direction face : Direction.values()) {
+                if (isRequester(packed, face)) {
+                    continue;
+                }
                 IFluidHandler h = dest.getExternalCapability(face, Capabilities.FluidHandler.BLOCK);
                 if (h == null) {
                     continue;
@@ -106,14 +106,14 @@ public class NetworkFluidHandler extends NetworkHandler implements IFluidHandler
             return FluidStack.EMPTY;
         }
         for (long packed : net.getSources(PipeCapabilityType.FLUID, manager)) {
-            if (packed == self()) {
-                continue;
-            }
             PipeConnectorBE src = manager.getConnectorBE(packed);
             if (src == null) {
                 continue;
             }
             for (Direction face : Direction.values()) {
+                if (isRequester(packed, face)) {
+                    continue;
+                }
                 IFluidHandler h = src.getExternalCapability(face, Capabilities.FluidHandler.BLOCK);
                 if (h == null) {
                     continue;

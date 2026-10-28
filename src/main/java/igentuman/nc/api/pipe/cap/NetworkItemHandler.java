@@ -14,8 +14,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class NetworkItemHandler extends NetworkHandler implements IItemHandler {
 
-    public NetworkItemHandler(PipeConnectorBE connector) {
-        super(connector);
+    public NetworkItemHandler(PipeConnectorBE connector, Direction side) {
+        super(connector, side);
     }
 
     @Override
@@ -43,14 +43,14 @@ public class NetworkItemHandler extends NetworkHandler implements IItemHandler {
         }
         ItemStack remaining = stack;
         for (long packed : net.getDestinations(PipeCapabilityType.ITEM, manager)) {
-            if (packed == self()) {
-                continue;
-            }
             PipeConnectorBE dest = manager.getConnectorBE(packed);
             if (dest == null) {
                 continue;
             }
             for (Direction face : Direction.values()) {
+                if (isRequester(packed, face)) {
+                    continue;
+                }
                 IItemHandler h = dest.getExternalCapability(face, Capabilities.ItemHandler.BLOCK);
                 if (h == null) {
                     continue;
@@ -77,14 +77,14 @@ public class NetworkItemHandler extends NetworkHandler implements IItemHandler {
             return ItemStack.EMPTY;
         }
         for (long packed : net.getSources(PipeCapabilityType.ITEM, manager)) {
-            if (packed == self()) {
-                continue;
-            }
             PipeConnectorBE src = manager.getConnectorBE(packed);
             if (src == null) {
                 continue;
             }
             for (Direction face : Direction.values()) {
+                if (isRequester(packed, face)) {
+                    continue;
+                }
                 IItemHandler h = src.getExternalCapability(face, Capabilities.ItemHandler.BLOCK);
                 if (h == null) {
                     continue;

@@ -505,6 +505,7 @@ public class ModLanguageProvider  extends LanguageProvider {
     }
 
     private void labels() {
+        add("jei.tooltip.transfer.no.ingredients", "Missing Ingredients");
         add("nc.label.leacher_wrong_position", "Wrong Position");
         add("nc.label.leacher_no_source", "No Source");
         add("nc.label.leacher_no_acid", "No Acid");

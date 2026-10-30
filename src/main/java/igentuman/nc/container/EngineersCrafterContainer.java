@@ -216,13 +216,25 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
 
     public boolean canAssemble(CraftingRecipe recipe) {
         StackedContents contents = new StackedContents();
+        for (ItemStack s : availableItems()) contents.accountStack(s);
+        return contents.canCraft(recipe, null);
+    }
+
+    public List<ItemStack> availableItems() {
+        List<ItemStack> out = new ArrayList<>();
         Inventory inv = player.getInventory();
         for (int i = 0; i < MAIN_INV_SIZE; i++) {
             ItemStack s = inv.getItem(i);
-            if (!s.isEmpty()) contents.accountStack(s);
+            if (!s.isEmpty()) out.add(s.copy());
         }
-        new AggregatedInventory(blockEntity.containerSlots).accountInto(contents);
-        return contents.canCraft(recipe, null);
+        for (int i = 0; i < craftSlots.getContainerSize(); i++) {
+            ItemStack s = craftSlots.getItem(i);
+            if (!s.isEmpty()) out.add(s.copy());
+        }
+        for (ItemStack s : new AggregatedInventory(blockEntity.containerSlots).allSlots()) {
+            if (!s.isEmpty()) out.add(s.copy());
+        }
+        return out;
     }
 
     public void fillCraftGrid(CraftingRecipe recipe, Player p) {

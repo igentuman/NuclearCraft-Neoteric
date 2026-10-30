@@ -20,6 +20,16 @@ public record PacketSyncContainerInventory(UUID uuid, int size, StoredInventory 
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketSyncContainerInventory> STREAM_CODEC =
             StreamCodec.of(PacketSyncContainerInventory::encode, PacketSyncContainerInventory::decode);
 
+    public PacketSyncContainerInventory {
+        if (inventory != null) {
+            StoredInventory snapshot = new StoredInventory(size);
+            for (int slot = 0; slot < size; slot++) {
+                snapshot.set(slot, inventory.get(slot).copy());
+            }
+            inventory = snapshot;
+        }
+    }
+
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;

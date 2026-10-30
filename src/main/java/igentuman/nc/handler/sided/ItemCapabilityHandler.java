@@ -25,12 +25,14 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     private final Predicate<ItemStack>[] validators;
     private IntConsumer slotChangeListener;
     private boolean sideInsertLocked = false;
+    private final boolean[] guiOnlySlots;
 
     @SuppressWarnings("unchecked")
     public ItemCapabilityHandler(int inputSlots, int outputSlots, int extraSlots) {
         super(inputSlots, outputSlots, extraSlots);
         int total = getTotalSlots();
         this.validators = new Predicate[total];
+        this.guiOnlySlots = new boolean[total];
         for (int i = 0; i < total; i++) {
             this.validators[i] = s -> true;
         }
@@ -54,6 +56,16 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         if (slot >= 0 && slot < validators.length) {
             validators[slot] = validator == null ? s -> true : validator;
         }
+    }
+
+    public void setGuiOnlySlot(int slot, boolean guiOnly) {
+        if (slot >= 0 && slot < guiOnlySlots.length) {
+            guiOnlySlots[slot] = guiOnly;
+        }
+    }
+
+    public boolean isGuiOnlySlot(int slot) {
+        return slot >= 0 && slot < guiOnlySlots.length && guiOnlySlots[slot];
     }
 
     public void setSlotChangeListener(IntConsumer listener) {
@@ -82,6 +94,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public boolean canInsertFromSide(int slot, ItemStack stack, Direction side) {
+        if (isGuiOnlySlot(slot)) return false;
         SlotModePair.SlotMode mode = getModeForAbsoluteSide(side, slot);
         return mode == SlotModePair.SlotMode.INPUT
                 || mode == SlotModePair.SlotMode.PULL
@@ -89,6 +102,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public boolean canExtractFromSide(int slot, Direction side) {
+        if (isGuiOnlySlot(slot)) return false;
         SlotModePair.SlotMode mode = getModeForAbsoluteSide(side, slot);
         return mode == SlotModePair.SlotMode.OUTPUT
                 || mode == SlotModePair.SlotMode.PUSH

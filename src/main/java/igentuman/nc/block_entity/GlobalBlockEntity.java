@@ -183,6 +183,10 @@ public class GlobalBlockEntity extends BlockEntity {
             int outputSlots = capDef.outputSlots;
             int extraSlots = capDef.globalSlots + capDef.catalystSlots + capDef.hiddenSlots;
             ItemCapabilityHandler itemCapHandler = new ItemCapabilityHandler(inputSlots, outputSlots, extraSlots);
+            int catalystBase = inputSlots + outputSlots + capDef.globalSlots;
+            for (int i = 0; i < capDef.catalystSlots; i++) {
+                itemCapHandler.setGuiOnlySlot(catalystBase + i, true);
+            }
             contentHandler.setItemHandler(itemCapHandler);
             this.slotCount = itemCapHandler.getTotalSlots();
         } else {

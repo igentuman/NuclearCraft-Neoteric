@@ -23,7 +23,7 @@ import java.util.Set;
 /** Lookup helpers for universal processor recipes shared by the encoder, EMI/JEI bridges and the crafter. */
 public final class ProcessorRecipes {
 
-    private static final Set<String> IGNORED_PROCESSORS = Set.of(Processors.PUMP);
+    private static final Set<String> IGNORED_PROCESSORS = Set.of(Processors.PUMP, Processors.LEACHER);
 
     private ProcessorRecipes() {}
 

@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:ethanol"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 250,
+      "tag": "c:redstone_ethanol"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/redstone"
+    }
+  ],
+  "process_time": 200
+}

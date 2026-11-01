@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "energy_per_tick": 25,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:roasted_cocoa_beans"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:ground_cocoa_nibs"
+    }
+  ],
+  "process_time": 100
+}

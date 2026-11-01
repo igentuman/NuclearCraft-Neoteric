@@ -86,12 +86,10 @@ runs {
     }
 
     client {
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         arguments.addAll '--width', '1920', '--height', '1080'
     }
 
     server {
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
     }
 
     data {
@@ -106,9 +104,6 @@ configurations {
 
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
-
-    testImplementation "org.junit.jupiter:junit-jupiter:5.10.2"
-    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.10.2"
 
     compileOnly("cc.tweaked:cc-tweaked-1.21.1-common-api:1.118.0")
     runtimeOnly("cc.tweaked:cc-tweaked-1.21.1-forge:1.118.0")
@@ -178,10 +173,6 @@ dependencies {
     implementation "curse.maven:ftb-quests-forge-289412:8885017"
     implementation "curse.maven:ftb-library-forge-404465:9008089"
     //compileOnly "curse.maven:gregtechceu-modern-890405:6766269"
-}
-
-tasks.named('test', Test).configure {
-    useJUnitPlatform()
 }
 
 jarJar.enable()

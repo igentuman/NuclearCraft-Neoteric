@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:dark_chocolate"
+    },
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:pasteurized_milk"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 180,
+      "tag": "c:milk_chocolate"
+    }
+  ],
+  "process_time": 100
+}

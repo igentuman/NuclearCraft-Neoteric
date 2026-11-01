@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:electrolyzer",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:heavy_water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 500,
+      "tag": "c:deuterium"
+    },
+    {
+      "amount": 250,
+      "tag": "c:oxygen"
+    }
+  ],
+  "process_time": 100
+}

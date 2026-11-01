@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/nichrome"
+      }
+    }
+  ],
+  "type": "nuclearcraft:ingot_former",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_nichrome"
+    }
+  ],
+  "item_outputs": [
+    {
+      "tag": "c:ingots/nichrome"
+    }
+  ],
+  "process_time": 200
+}

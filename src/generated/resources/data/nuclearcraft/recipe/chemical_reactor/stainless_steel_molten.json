@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_steel"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_chromium"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 180,
+      "tag": "c:molten_stainless_steel"
+    }
+  ],
+  "process_time": 100
+}

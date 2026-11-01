@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/niobium_tin"
+      }
+    }
+  ],
+  "type": "nuclearcraft:ingot_former",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_niobium_tin"
+    }
+  ],
+  "item_outputs": [
+    {
+      "tag": "c:ingots/niobium_tin"
+    }
+  ],
+  "process_time": 200
+}

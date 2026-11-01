@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_niobium"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_titanium"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "tag": "c:molten_niobium_titanium"
+    }
+  ],
+  "process_time": 100
+}

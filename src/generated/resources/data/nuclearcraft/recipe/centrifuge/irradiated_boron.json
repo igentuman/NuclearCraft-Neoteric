@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:irradiated_boron"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 500,
+      "tag": "c:molten_boron_10"
+    },
+    {
+      "amount": 500,
+      "tag": "c:molten_boron_11"
+    }
+  ],
+  "process_time": 300
+}

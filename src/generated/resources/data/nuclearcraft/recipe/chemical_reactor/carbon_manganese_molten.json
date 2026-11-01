@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 75,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_manganese"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_graphite"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 180,
+      "tag": "c:molten_carbon_manganese"
+    }
+  ],
+  "process_time": 300
+}

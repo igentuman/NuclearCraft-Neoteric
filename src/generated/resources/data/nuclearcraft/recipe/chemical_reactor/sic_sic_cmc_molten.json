@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_carbon_manganese"
+    },
+    {
+      "amount": 990,
+      "fluid": "nuclearcraft:molten_titanium"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 1080,
+      "tag": "c:molten_sic_sic_cmc"
+    }
+  ],
+  "process_time": 100
+}

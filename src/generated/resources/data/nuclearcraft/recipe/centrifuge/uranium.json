@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 160,
+      "fluid": "nuclearcraft:molten_uranium"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "tag": "c:molten_uranium_238"
+    },
+    {
+      "amount": 10,
+      "tag": "c:molten_uranium_235"
+    }
+  ],
+  "process_time": 180
+}

@@ -1,0 +1,25 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:irradiated_lithium"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 250,
+      "tag": "c:molten_lithium_6"
+    },
+    {
+      "amount": 250,
+      "tag": "c:molten_lithium_7"
+    },
+    {
+      "amount": 500,
+      "tag": "c:tritium"
+    }
+  ],
+  "process_time": 200
+}

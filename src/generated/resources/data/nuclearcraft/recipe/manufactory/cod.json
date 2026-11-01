@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:manufactory",
+  "energy_per_tick": 25,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:cod"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:gelatin"
+    }
+  ],
+  "process_time": 100
+}

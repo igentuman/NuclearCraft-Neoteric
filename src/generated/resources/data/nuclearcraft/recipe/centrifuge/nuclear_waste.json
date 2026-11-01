@@ -1,0 +1,33 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 50,
+      "fluid": "nuclearcraft:nuclear_waste"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 5,
+      "tag": "c:molten_polonium"
+    },
+    {
+      "amount": 5,
+      "tag": "c:molten_plutonium_238"
+    },
+    {
+      "amount": 5,
+      "tag": "c:molten_plutonium_242"
+    },
+    {
+      "amount": 5,
+      "tag": "c:molten_plutonium_241"
+    },
+    {
+      "amount": 1,
+      "tag": "c:spent_nuclear_waste"
+    }
+  ],
+  "process_time": 3000
+}

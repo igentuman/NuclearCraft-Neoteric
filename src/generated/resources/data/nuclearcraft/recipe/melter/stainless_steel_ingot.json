@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "energy_per_tick": 50,
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "tag": "c:molten_stainless_steel"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:ingots/stainless_steel"
+    }
+  ],
+  "process_time": 200
+}

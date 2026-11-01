@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_graphite"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_diamond"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 180,
+      "tag": "c:molten_hard_carbon"
+    }
+  ],
+  "process_time": 100
+}

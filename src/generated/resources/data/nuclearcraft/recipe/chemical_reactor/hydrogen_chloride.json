@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "fluid": "nuclearcraft:hydrogen"
+    },
+    {
+      "amount": 150,
+      "fluid": "nuclearcraft:chlorine"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 250,
+      "tag": "c:hydrogen_chloride"
+    }
+  ],
+  "process_time": 100
+}

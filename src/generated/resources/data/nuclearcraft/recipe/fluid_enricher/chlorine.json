@@ -1,0 +1,23 @@
+{
+  "type": "nuclearcraft:fluid_enricher",
+  "energy_per_tick": 100,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 500,
+      "tag": "c:chlorine"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "nuclearcraft:salt"
+    }
+  ],
+  "process_time": 400
+}

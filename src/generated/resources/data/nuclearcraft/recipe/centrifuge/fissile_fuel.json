@@ -1,0 +1,33 @@
+{
+  "type": "nuclearcraft:centrifuge",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "fluid": "nuclearcraft:fissile_fuel"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 300,
+      "tag": "c:molten_uranium_238"
+    },
+    {
+      "amount": 80,
+      "tag": "c:molten_uranium_235"
+    },
+    {
+      "amount": 80,
+      "tag": "c:molten_uranium_233"
+    },
+    {
+      "amount": 10,
+      "tag": "c:hydrofluoric_acid"
+    },
+    {
+      "amount": 10,
+      "tag": "c:sulfuric_acid"
+    }
+  ],
+  "process_time": 380
+}

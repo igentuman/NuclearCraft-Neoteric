@@ -1,0 +1,22 @@
+{
+  "type": "nuclearcraft:extractor",
+  "energy_per_tick": 50,
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "tag": "c:cocoa_butter"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:ground_cocoa_nibs"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:cocoa_solids"
+    }
+  ],
+  "process_time": 200
+}

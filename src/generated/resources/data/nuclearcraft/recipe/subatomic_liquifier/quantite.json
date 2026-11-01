@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:subatomic_liquifier",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_quantite"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 10000,
+      "tag": "c:subliquid_matter"
+    }
+  ],
+  "process_time": 1000
+}

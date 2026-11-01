@@ -1,0 +1,21 @@
+{
+  "type": "nuclearcraft:chemical_reactor",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_silicon"
+    },
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:molten_graphite"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 180,
+      "tag": "c:molten_silicon_carbide"
+    }
+  ],
+  "process_time": 100
+}

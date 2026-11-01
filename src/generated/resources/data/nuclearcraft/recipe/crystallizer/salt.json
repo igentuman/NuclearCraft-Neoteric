@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "energy_per_tick": 125,
+  "fluid_inputs": [
+    {
+      "amount": 10000,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:salt"
+    }
+  ],
+  "process_time": 500
+}

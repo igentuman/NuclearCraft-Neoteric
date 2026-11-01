@@ -2,6 +2,7 @@ package igentuman.nc.screen.element;
 
 import igentuman.nc.util.BoilingBuffer;
 import igentuman.nc.util.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -71,7 +72,8 @@ public class BoilingBar extends AbstractWidget {
                             __("screen.nuclearcraft.boiling.capacity").append(": ").append(TextUtils.formatLiquid((int) boilingBuffer.capacity)),
                             __("screen.nuclearcraft.boiling.coolant").append(": ").append(TextUtils.formatLiquid((int) boilingBuffer.coolantAmount)),
                             __("screen.nuclearcraft.boiling.hot_coolant").append(": ").append(TextUtils.formatLiquid((int) boilingBuffer.hotCoolantAmount)),
-                            __("screen.nuclearcraft.boiling.rate").append(": ").append(TextUtils.formatLiquid((int) boilingBuffer.boilingRate) + " / " + TextUtils.formatLiquid((int) boilingBuffer.maxBoilingRate))
+                            __("screen.nuclearcraft.boiling.rate").append(": ").append(TextUtils.formatLiquid((int) boilingBuffer.boilingRate) + " / " + TextUtils.formatLiquid((int) boilingBuffer.maxBoilingRate)),
+                            __("tooltip.fluid.flush").withStyle(ChatFormatting.GRAY)
                     ),
                     mouseX, mouseY
             );

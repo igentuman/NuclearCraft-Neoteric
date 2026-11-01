@@ -49,8 +49,8 @@ public class ChemicalReactorRecipes {
         chem(out, "lithium_fluoride",      fluidOf("lithium"), MOLTEN_INGOT * 2, fluidOf("fluorite_water"), 250, new F[]{fl("lithium_fluoride", 360)}, 100, 25);
         chem(out, "beryllium_fluoride",    fluidOf("beryllium"), MOLTEN_INGOT * 2, fluidOf("fluorite_water"), 250, new F[]{fl("beryllium_fluoride", 360)}, 100, 25);
         chem(out, "flibe_molten_salt",     fluidOf("lithium_fluoride"), MOLTEN_INGOT * 4, fluidOf("beryllium_fluoride"), MOLTEN_INGOT * 2, new F[]{fl("flibe_molten_salt", MOLTEN_INGOT * 6)}, 100, 60);
-        chem(out, "sulfur_dioxide",        fluidOf("sulfur"), MOLTEN_INGOT / 2, fluidOf("liquid_oxygen"), 500, new F[]{fl("sulfur_dioxide", 500)}, 100, 25);
-        chem(out, "sulfur_trioxide",       fluidOf("sulfur_dioxide"), 500, fluidOf("liquid_oxygen"), 250, new F[]{fl("sulfur_trioxide", 500)}, 100, 25);
+        chem(out, "sulfur_dioxide",        fluidOf("sulfur"), MOLTEN_INGOT / 2, fluidOf("oxygen"), 500, new F[]{fl("sulfur_dioxide", 500)}, 100, 25);
+        chem(out, "sulfur_trioxide",       fluidOf("sulfur_dioxide"), 500, fluidOf("oxygen"), 250, new F[]{fl("sulfur_trioxide", 500)}, 100, 25);
         chem(out, "sulfuric_acid",         fluidOf("sulfur_trioxide"), 250, Fluids.WATER, 250, new F[]{fl("sulfuric_acid", 250)}, 100, 25);
         chem(out, "hydrofluoric_acid",     fluidOf("fluorite_water"), 500, fluidOf("sulfuric_acid"), 500, new F[]{fl("hydrofluoric_acid", 1000), fl("calcium_sulfate_solution", 50)}, 200, 25);
         chem(out, "sodium_hydroxide_solution", fluidOf("sodium_fluoride_solution"), MOLTEN_INGOT / 2, Fluids.WATER, 500, new F[]{fl("sodium_hydroxide_solution", MOLTEN_INGOT / 2), fl("hydrofluoric_acid", 500)}, 200, 25);
@@ -58,7 +58,7 @@ public class ChemicalReactorRecipes {
         chem(out, "borax_solution",        fluidOf("sodium_fluoride_solution"), MOLTEN_INGOT, fluidOf("boric_acid"), 2000, new F[]{fl("borax_solution", MOLTEN_INGOT / 2), fl("hydrofluoric_acid", 1500)}, 200, 25);
         chem(out, "oxygen_difluoride_hydrolysis", fluidOf("oxygen_difluoride"), 250, Fluids.WATER, 250, new F[]{fl("liquid_oxygen", 250), fl("hydrofluoric_acid", 250)}, 200, 25);
         chem(out, "oxygen_difluoride_sulfur", fluidOf("oxygen_difluoride"), 250, fluidOf("sulfur_dioxide"), 250, new F[]{fl("sulfur_trioxide", 250), fl("fluorite_water", 250)}, 200, 25);
-        chem(out, "oxygen_difluoride",     fluidOf("liquid_oxygen"), 250, fluidOf("fluorite_water"), 500, new F[]{fl("oxygen_difluoride", 250)}, 100, 25);
+        chem(out, "oxygen_difluoride",     fluidOf("oxygen"), 250, fluidOf("fluorite_water"), 500, new F[]{fl("oxygen_difluoride", 250)}, 100, 25);
         chem(out, "manganese_reduction",   fluidOf("manganese_dioxide"), MOLTEN_INGOT / 2, fluidOf("carbon"), MOLTEN_INGOT, new F[]{fl("manganese", MOLTEN_INGOT / 2), fl("carbon_monoxide", 750)}, 100, 25);
         chem(out, "ethanol",               fluidOf("sugar"), MOLTEN_INGOT / 2, Fluids.WATER, 500, new F[]{fl("ethanol", 2000), fl("carbon_dioxide", 1000)}, 100, 25);
         chem(out, "carbon_shift",          fluidOf("carbon_dioxide"), 250, fluidOf("hydrogen"), 250, new F[]{fl("carbon_monoxide", 250), fl("water", 250)}, 100, 25);

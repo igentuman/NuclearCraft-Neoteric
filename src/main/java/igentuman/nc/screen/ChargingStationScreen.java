@@ -66,7 +66,7 @@ public class ChargingStationScreen extends AbstractContainerScreen<UniversalProc
                         FluidCapabilityHandler h = be.contentHandler.getFluidHandler();
                         return h != null ? h.getTankCapacity(0) : 0;
                     }
-            ));
+            ).interactive(menu, 0));
         }
 
         addRenderableWidget(new ProcessorImageButton(

@@ -713,6 +713,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("tooltip.nuclearcraft.switch_to_boiling", "Switch to Boiling Mode");
         add("tooltip.nuclearcraft.switch_to_energy", "Switch to Energy Mode");
         add("tooltip.fluid.empty", "Empty");
+        add("tooltip.fluid.flush", "SHIFT+M1 to flush fluid");
         add("death.attack.acid", "%1$s dissolved in acid");
         add("tooltip.nuclearcraft.fuel.forge_energy", "Power: %s");
         add("tooltip.nuclearcraft.fuel.criticality", "Criticality: %s N/t");

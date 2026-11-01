@@ -2,6 +2,7 @@ package igentuman.nc.screen;
 
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.network.PacketFissionToggleMode;
+import igentuman.nc.multiblock.fission.ActiveCoolant;
 import igentuman.nc.screen.element.BoilingBar;
 import igentuman.nc.screen.element.HeatBar;
 import igentuman.nc.screen.element.ProcessorImageButton;
@@ -45,6 +46,8 @@ public class FissionReactorScreen extends MultiblockControllerScreen {
         boilingBar = new BoilingBar(leftPos + 8, topPos + 10, 8, 70, () -> menu.getBlockEntity().boilingBuffer());
         addRenderableWidget(boilingBar);
         addRenderableWidget(modeButton);
+        addFluidTankInteraction(8, 10, 4, 70, ActiveCoolant.BOILING_INPUT_TANK);
+        addFluidTankInteraction(12, 10, 4, 70, ActiveCoolant.STEAM_OUTPUT_TANK);
     }
 
     @Override

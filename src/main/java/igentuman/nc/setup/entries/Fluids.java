@@ -47,6 +47,7 @@ public class Fluids extends ModEntries {
         coolant("redstone", 0xFFD40000);
         coolant("cryotheum", 0xCC5BC8F5);
         coolant("liquid_nitrogen", 0xCCAEE3FF);
+        coolant("liquid_oxygen", 0x507E8CC8);
         coolant("liquid_helium", 0xCCCFF3FF);
         coolant("irradiated_lithium", 0XFFBCC661);
         coolant("irradiated_boron", 0XFF6F896C);

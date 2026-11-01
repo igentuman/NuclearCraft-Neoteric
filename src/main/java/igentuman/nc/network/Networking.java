@@ -13,6 +13,11 @@ public class Networking {
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(MODID).versioned("1");
         registrar.playToServer(
+                PacketFluidTankClick.TYPE,
+                PacketFluidTankClick.STREAM_CODEC,
+                PacketFluidTankClick::handle
+        );
+        registrar.playToServer(
                 PacketSideConfigToggle.TYPE,
                 PacketSideConfigToggle.STREAM_CODEC,
                 PacketSideConfigToggle::handle

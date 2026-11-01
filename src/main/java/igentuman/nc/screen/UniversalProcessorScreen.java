@@ -12,6 +12,7 @@ import igentuman.nc.screen.element.ProcessorEnergyBar;
 import igentuman.nc.screen.element.ProcessorImageButton;
 import igentuman.nc.screen.element.ProgressBar;
 import igentuman.nc.screen.element.SlotWidget;
+import igentuman.nc.screen.element.FluidSlotWidget;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.GuiFluidRenderer;
 import igentuman.nc.util.SlotDef;
@@ -88,7 +89,8 @@ public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalP
                 boolean isOutputFluid = i >= inputItemCount + inputFluidCount + outputItemCount && i < catalystStart;
 
                 if (isInputFluid || isOutputFluid) {
-                    widget.fluid();
+                    int tank = isInputFluid ? i - inputItemCount : i - inputItemCount - outputItemCount;
+                    widget = new FluidSlotWidget(slotDef.x, slotDef.y, menu, tank);
                 }
                 if (slotDef.output) {
                     widget.output();

@@ -7,6 +7,7 @@ import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.element.RedstoneModeButton;
 import igentuman.nc.screen.element.SlotWidget;
+import igentuman.nc.screen.element.FluidSlotWidget;
 import igentuman.nc.util.GuiFluidRenderer;
 import igentuman.nc.util.SlotDef;
 import igentuman.nc.util.SlotsLayout;
@@ -50,13 +51,16 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
             int inputItemCount = entry.itemCap() != null ? entry.itemCap().inputSlots : 0;
             int inputFluidCount = entry.fluidCap() != null ? entry.fluidCap().inputTanks.size() : 0;
             int outputItemCount = entry.itemCap() != null ? entry.itemCap().outputSlots : 0;
+            int outputFluidCount = entry.fluidCap() != null ? entry.fluidCap().outputTanks.size() : 0;
             for (int i = 0; i < layout.slots.size(); i++) {
                 SlotDef slotDef = layout.slots.get(i);
                 SlotWidget widget = new SlotWidget(slotDef.x, slotDef.y, 18, 18, Component.empty());
                 boolean isInputFluid = i >= inputItemCount && i < inputItemCount + inputFluidCount;
-                boolean isOutputFluid = i >= inputItemCount + inputFluidCount + outputItemCount;
+                int outputFluidOffset = inputItemCount + inputFluidCount + outputItemCount;
+                boolean isOutputFluid = i >= outputFluidOffset && i < outputFluidOffset + outputFluidCount;
                 if (isInputFluid || isOutputFluid) {
-                    widget.fluid();
+                    int tank = isInputFluid ? i - inputItemCount : i - inputItemCount - outputItemCount;
+                    widget = new FluidSlotWidget(slotDef.x, slotDef.y, menu, tank);
                 }
                 if (slotDef.output) {
                     widget.output();
@@ -82,14 +86,12 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
             int inputFluidCount = entry.fluidCap().inputTanks.size();
             int outputFluidCount = entry.fluidCap().outputTanks.size();
             for (int i = 0; i < inputFluidCount; i++) {
-                SlotWidget widget = new SlotWidget(30 + i * 20, 30, 18, 18, Component.empty());
-                widget.fluid();
+                SlotWidget widget = new FluidSlotWidget(30 + i * 20, 30, menu, i);
                 slotWidgets.add(widget);
                 this.addRenderableWidget(widget);
             }
             for (int i = 0; i < outputFluidCount; i++) {
-                SlotWidget widget = new SlotWidget(115 + i * 20, 30, 18, 18, Component.empty());
-                widget.fluid();
+                SlotWidget widget = new FluidSlotWidget(115 + i * 20, 30, menu, inputFluidCount + i);
                 widget.output();
                 slotWidgets.add(widget);
                 this.addRenderableWidget(widget);

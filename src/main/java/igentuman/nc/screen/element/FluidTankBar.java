@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.function.IntSupplier;
@@ -18,11 +19,25 @@ public class FluidTankBar extends AbstractWidget {
 
     private final Supplier<FluidStack> fluidSupplier;
     private final IntSupplier capacitySupplier;
+    private AbstractContainerMenu menu;
+    private int tank;
 
     public FluidTankBar(int x, int y, int w, int h, Supplier<FluidStack> fluidSupplier, IntSupplier capacitySupplier) {
         super(x, y, w, h, Component.empty());
         this.fluidSupplier = fluidSupplier;
         this.capacitySupplier = capacitySupplier;
+    }
+
+    public FluidTankBar interactive(AbstractContainerMenu menu, int tank) {
+        this.menu = menu;
+        this.tank = tank;
+        return this;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return menu != null && active && visible && isMouseOver(mouseX, mouseY)
+                && FluidTankInteraction.click(menu, tank, button);
     }
 
     @Override

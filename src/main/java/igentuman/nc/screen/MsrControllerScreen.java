@@ -66,6 +66,8 @@ public class MsrControllerScreen extends MultiblockControllerScreen {
 
         MsrControllerContainer c = msr();
 
+        addFluidTankInteraction(WINDOW_X + 3, WINDOW_Y + 3, 36, 36, MsrControllerContainer.TANK_COLD);
+
         addRenderableWidget(new TemperatureBar(leftPos + 8, topPos + 16, 8, 70,
                 c::getTemperature, () -> MsrControllerBE.MAX_TEMPERATURE));
 

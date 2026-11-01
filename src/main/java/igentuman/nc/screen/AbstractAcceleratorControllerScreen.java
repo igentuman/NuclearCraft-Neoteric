@@ -57,7 +57,7 @@ public abstract class AbstractAcceleratorControllerScreen extends MultiblockCont
                     () -> synced("temperatureK"), () -> synced("maximumTemperatureK"),
                     () -> synced("overheated") != 0, () -> synced("overheatCooldownTicks"));
             addRenderableWidget(thermalBar);
-            coolantBar = new FluidTankBar(leftPos + 28, topPos + 10, 8, 70, this::coolant, this::coolantCapacity);
+            coolantBar = new FluidTankBar(leftPos + 28, topPos + 10, 8, 70, this::coolant, this::coolantCapacity).interactive(menu, coolantInputTank());
             addRenderableWidget(coolantBar);
             progressBar.visible = false;
             return;
@@ -70,7 +70,7 @@ public abstract class AbstractAcceleratorControllerScreen extends MultiblockCont
                 () -> synced("temperatureK"), () -> synced("maximumTemperatureK"),
                 () -> synced("overheated") != 0, () -> synced("overheatCooldownTicks")));
         addRenderableWidget(new FluidTankBar(leftPos + 27, topPos + 20, 8, 82,
-                this::coolant, this::coolantCapacity));
+                this::coolant, this::coolantCapacity).interactive(menu, coolantInputTank()));
 
         statusCheckbox = new Checkbox(leftPos + imageWidth - 19, topPos + 80, 11,
                 menu.isFormed(), this::infoCheckboxTooltip);

@@ -219,6 +219,7 @@ public class GuiFluidRenderer {
             } else {
                 tooltip.add(__("tooltip.fluid.empty").withStyle(ChatFormatting.GRAY));
             }
+            tooltip.add(__("tooltip.fluid.flush").withStyle(ChatFormatting.GRAY));
             guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, Optional.empty(), mouseX, mouseY);
         }
     }

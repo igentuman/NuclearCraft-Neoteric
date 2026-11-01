@@ -50,6 +50,8 @@ public class TurbineControllerScreen extends MultiblockControllerScreen {
         infoCheckbox.setY(infoCheckbox.getY() + 10);
         infoCheckbox.setX(infoCheckbox.getX() - 3);
         progressBar.visible = false;
+        addFluidTankInteraction(INPUT_TANK_X, TANK_Y, TANK_W, TANK_H, 0);
+        addFluidTankInteraction(OUTPUT_TANK_X, TANK_Y, TANK_W, TANK_H, 1);
     }
 
     private void renderFluidTanks(GuiGraphics guiGraphics, int mouseX, int mouseY) {

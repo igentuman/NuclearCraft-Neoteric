@@ -9,6 +9,8 @@ import igentuman.nc.screen.element.Checkbox;
 import igentuman.nc.screen.element.EnergyBar;
 import igentuman.nc.screen.element.ProgressBar;
 import igentuman.nc.screen.element.SlotWidget;
+import igentuman.nc.screen.element.FluidSlotWidget;
+import igentuman.nc.screen.element.FluidTankInteraction;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.Registers;
 import igentuman.nc.util.GuiFluidRenderer;
@@ -36,6 +38,7 @@ public class MultiblockControllerScreen extends AbstractContainerScreen<Multiblo
 
     private static final ResourceLocation TEXTURE = rl("textures/gui/processor.png");
     protected final List<SlotWidget> slotWidgets = new ArrayList<>();
+    private final List<FluidTankInteraction> fluidTankInteractions = new ArrayList<>();
     protected ResourceLocation backgroundTexture = TEXTURE;
     protected ProgressBar progressBar;
     protected Checkbox infoCheckbox;
@@ -59,6 +62,7 @@ public class MultiblockControllerScreen extends AbstractContainerScreen<Multiblo
         this.titleLabelX = (this.imageWidth - this.font.width(this.title)) / 2;
 
         slotWidgets.clear();
+        fluidTankInteractions.clear();
         SlotsLayout layout = menu.getLayout();
         if (layout != null) {
             SlotWidget.RELATIVE_X = leftPos;
@@ -71,12 +75,15 @@ public class MultiblockControllerScreen extends AbstractContainerScreen<Multiblo
                 int inputItemCount = entry.itemCap() != null ? entry.itemCap().inputSlots : 0;
                 int inputFluidCount = entry.fluidCap() != null ? entry.fluidCap().inputTanks.size() : 0;
                 int outputItemCount = entry.itemCap() != null ? entry.itemCap().outputSlots : 0;
+                int outputFluidCount = entry.fluidCap() != null ? entry.fluidCap().outputTanks.size() : 0;
 
                 boolean isInputFluid = i >= inputItemCount && i < inputItemCount + inputFluidCount;
-                boolean isOutputFluid = i >= inputItemCount + inputFluidCount + outputItemCount;
+                int outputFluidOffset = inputItemCount + inputFluidCount + outputItemCount;
+                boolean isOutputFluid = i >= outputFluidOffset && i < outputFluidOffset + outputFluidCount;
 
                 if (isInputFluid || isOutputFluid) {
-                    widget.fluid();
+                    int tank = isInputFluid ? i - inputItemCount : i - inputItemCount - outputItemCount;
+                    widget = new FluidSlotWidget(slotDef.x, slotDef.y, menu, tank);
                 }
                 if (slotDef.output) {
                     widget.output();
@@ -96,6 +103,18 @@ public class MultiblockControllerScreen extends AbstractContainerScreen<Multiblo
             energyBar = new EnergyBar(leftPos + 8, topPos + 10, 8, 70, () -> menu.getBlockEntity().energyStorage);
             addRenderableWidget(energyBar);
         }
+    }
+
+    protected void addFluidTankInteraction(int x, int y, int width, int height, int tank) {
+        fluidTankInteractions.add(new FluidTankInteraction(leftPos + x, topPos + y, width, height, menu, tank));
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (FluidTankInteraction interaction : fluidTankInteractions) {
+            if (interaction.mouseClicked(mouseX, mouseY, button)) return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     protected int synced(String field) {

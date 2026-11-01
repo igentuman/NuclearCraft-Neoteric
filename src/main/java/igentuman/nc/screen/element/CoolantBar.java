@@ -1,6 +1,7 @@
 package igentuman.nc.screen.element;
 
 import igentuman.nc.util.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -68,7 +69,8 @@ public class CoolantBar extends AbstractWidget {
                             __("screen.nuclearcraft.boiling.coolant").append(": ")
                                     .append(TextUtils.formatLiquid(coolant == null ? 0 : coolant.getAmount())),
                             __("screen.nuclearcraft.boiling.hot_coolant").append(": ")
-                                    .append(TextUtils.formatLiquid(hot == null ? 0 : hot.getAmount()))
+                                    .append(TextUtils.formatLiquid(hot == null ? 0 : hot.getAmount())),
+                            __("tooltip.fluid.flush").withStyle(ChatFormatting.GRAY)
                     ),
                     mouseX, mouseY
             );

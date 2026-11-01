@@ -59,6 +59,8 @@ public class FusionReactorScreen extends MultiblockControllerScreen {
         FusionReactorContainer c = fusionMenu();
         int w = BAR_WIDTH;
         int top = topPos + BAR_TOP;
+        addFluidTankInteraction(18, BAR_TOP, w / 2, BAR_HEIGHT, FusionReactorContainer.TANK_COOLANT);
+        addFluidTankInteraction(18 + w / 2, BAR_TOP, w - w / 2, BAR_HEIGHT, FusionReactorContainer.TANK_HOT_COOLANT);
 
         // Full-height bars next to the energy bar (energy sits at leftPos + 8).
         addRenderableWidget(new CoolantBar(leftPos + 18, top, w, BAR_HEIGHT,
@@ -71,10 +73,10 @@ public class FusionReactorScreen extends MultiblockControllerScreen {
         // Input fuel bars: same width, half height.
         addRenderableWidget(new FluidTankBar(leftPos + 38, top, w, BAR_HEIGHT,
                 () -> c.fluid(FusionReactorContainer.TANK_FUEL_A),
-                () -> c.capacity(FusionReactorContainer.TANK_FUEL_A)));
+                () -> c.capacity(FusionReactorContainer.TANK_FUEL_A)).interactive(menu, FusionReactorContainer.TANK_FUEL_A));
         addRenderableWidget(new FluidTankBar(leftPos + 48, top, w, BAR_HEIGHT,
                 () -> c.fluid(FusionReactorContainer.TANK_FUEL_B),
-                () -> c.capacity(FusionReactorContainer.TANK_FUEL_B)));
+                () -> c.capacity(FusionReactorContainer.TANK_FUEL_B)).interactive(menu, FusionReactorContainer.TANK_FUEL_B));
 
         // Output product bars on the right: same width, half height.
         int outY = topPos + BAR_TOP;
@@ -87,7 +89,7 @@ public class FusionReactorScreen extends MultiblockControllerScreen {
             }
             addRenderableWidget(new FluidTankBar(leftPos + OUTPUT_LEFT + left, outY, w, BAR_HALF_HEIGHT,
                     () -> c.fluid(tank),
-                    () -> c.capacity(tank)));
+                    () -> c.capacity(tank)).interactive(menu, tank));
         }
     }
 

@@ -20,6 +20,6 @@ public class SubatomicLiquifierRecipes {
             melt(out, id, type + "_ingot", ingot(type),      1, fluidOf("subliquid_matter"), MOLTEN_INGOT * 5, 240);
             melt(out, id, type + "_block", blockItem(type),  1, fluidOf("subliquid_matter"), MOLTEN_INGOT * 45, 800);
         }
-        f2f(out, id, "quantite", fluidOf("quantite"), MOLTEN_INGOT, fluidOf("subliquid_matter"), 10000, 1000);
+        f2f(out, id, "quantite", isotopeFluid("quantite", ""), MOLTEN_INGOT, fluidOf("subliquid_matter"), 10000, 1000);
     }
 }

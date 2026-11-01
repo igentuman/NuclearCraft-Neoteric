@@ -81,7 +81,7 @@ public class ModLanguageProvider  extends LanguageProvider {
             }
             if(ModEntries.get(name).hasItem()) {
                 add(ModEntries.get(name).item().get(), convertToName(name));
-                continue;
+                if (ModEntries.get(name).materialEntry() == null) continue;
             }
             if (ModEntries.get(name).toolSetEntry() instanceof ToolSetEntry toolSet) {
                 add(toolSet.sword().get(),   convertToName(toolSet.name + "_sword"));

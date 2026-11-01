@@ -11,7 +11,7 @@ public class IsotopeSeparatorRecipes {
 
     public static void isotopeSeparator(RecipeOutput out) {
         sep(out, "lithium",    dust("lithium"),    10, isotope("lithium/7"),    9, isotope("lithium/6"),    1, 1000);
-        sep(out, "yellowcake", dust("yellowcake"), 10, isotope("uranium/238"),  7, isotope("uranium/235"),  2, 1000);
+        sep(out, "yellowcake", dust("yellowcake"), 10, isotope("uranium/238"),  7, isotope("uranium/235"),  3, 1000);
         sep(out, "uranium",    dust("uranium"),    10, isotope("uranium/238"),  9, isotope("uranium/235"),  1, 800);
         sep(out, "thorium",    dust("thorium"),    10, isotope("thorium/232"),  9, isotope("thorium/230"),  1, 800);
         for (var e : ModEntries.FISSION_FUEL.entrySet()) {

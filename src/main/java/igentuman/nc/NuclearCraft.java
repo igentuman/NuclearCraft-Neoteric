@@ -363,7 +363,7 @@ public class NuclearCraft {
                 if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
                     if (mat.hasFluid() && Materials.isTypeEnabled(matName, "fluid")) event.accept(mat.bucket());
                 }
-                continue;
+                if (!entry.hasItem()) continue;
             }
             if (!entry.isEnabled()) continue;
             if(entry.hasBlockEntity()) {

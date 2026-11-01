@@ -16,19 +16,19 @@ public class CentrifugeRecipes {
         split(out, id, "carbon_dioxide", fluidOf("carbon_dioxide"), 1000,
                 new F[]{fl("carbon_dioxide", 125), fl("carbon_monoxide", 125), fl("carbon", 375), fl("oxygen", 375)});
         split(out, id, "irradiated_boron", fluidOf("irradiated_boron"), 1000,
-                new F[]{fl("boron10", 500), fl("boron11", 500)}, 300);
+                new F[]{f(isotopeFluid("boron/10", ""), 500), f(isotopeFluid("boron/11", ""), 500)}, 300);
         split(out, id, "irradiated_lithium", fluidOf("irradiated_lithium"), 1000,
-                new F[]{fl("lithium6", 250), fl("lithium7", 250), fl("tritium", 500)});
+                new F[]{f(isotopeFluid("lithium/6", ""), 250), f(isotopeFluid("lithium/7", ""), 250), fl("tritium", 500)});
         split(out, id, "technical_water", fluidOf("technical_water"), 1000,
                 new F[]{fl("deuterium", 750), fl("oxygen", 250)}, 380);
         split(out, id, "uranium", fluidOf("uranium"), 160,
-                new F[]{fl("uranium238", MOLTEN_INGOT), fl("uranium235", 10)}, 180);
+                new F[]{f(isotopeFluid("uranium/238", ""), MOLTEN_INGOT), f(isotopeFluid("uranium/235", ""), 10)}, 180);
         split(out, id, "fissile_fuel", fluidOf("fissile_fuel"), 500,
-                new F[]{fl("uranium238", 300), fl("uranium235", 80), fl("uranium233", 80),
+                new F[]{f(isotopeFluid("uranium/238", ""), 300), f(isotopeFluid("uranium/235", ""), 80), f(isotopeFluid("uranium/233", ""), 80),
                 fl("hydrofluoric_acid", 10), fl("sulfuric_acid", 10)}, 380);
         split(out, id, "nuclear_waste", fluidOf("nuclear_waste"), 50,
-                new F[]{fl("polonium", 5), fl("plutonium238", 5), fl("plutonium242", 5),
-                fl("plutonium241", 5), fl("spent_nuclear_waste", 1)}, 3000);
+                new F[]{fl("polonium", 5), f(isotopeFluid("plutonium/238", ""), 5), f(isotopeFluid("plutonium/242", ""), 5),
+                f(isotopeFluid("plutonium/241", ""), 5), fl("spent_nuclear_waste", 1)}, 3000);
 
         for (var e : FuelReprocessorRecipes.TABLE.entrySet()) {
             LinkedHashMap<Fluid, Integer> merged = new LinkedHashMap<>();

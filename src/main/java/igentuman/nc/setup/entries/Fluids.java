@@ -1,6 +1,8 @@
 package igentuman.nc.setup.entries;
 
+import igentuman.nc.registration.FluidDefinition;
 import igentuman.nc.setup.ModEntries;
+import net.minecraft.world.item.Item;
 
 /** Declares all fluid materials: acids, gases, coolants, and liquids. */
 public class Fluids extends ModEntries {
@@ -53,7 +55,39 @@ public class Fluids extends ModEntries {
         coolant("irradiated_boron", 0XFF6F896C);
         coolant("subliquid_matter", 0x50C90076);
 
+        liquid("liquid_hydrogen", 0x50B37AC4, 90);
+        liquid("uranium_oxide", 0x90A9B544, 300);
+        liquid("ethanol", 0x50B37AC4, 300);
+        liquid("methanol", 0x50B37AC4, 300);
+        liquid("glowstone", 0x50D6E11F, 300);
+        liquid("hydrogen_chloride", 0x50B37AC4, 300);
+        liquid("redstone_ethanol", 0x507E8CC8, 300);
+        liquid("ice", 0x90AFF1FF, 100);
+        liquid("slurry_ice", 0x907EAEB7, 100);
+        liquid("heavy_water", 0x807EAEB7, 300);
         liquid("technical_water", 0x902F43F4, 310);
+        liquid("condensate_water", 0x902F43F4, 300);
+        liquid("emergency_coolant", 0x906DD0E7, 50);
+        liquid("emergency_coolant_heated", 0x90CDBEE7, 300);
+
+        liquid("chocolate_liquor", 0xFF41241C, 400);
+        mat("cocoa_butter", 0xFFF6EEBF)
+                .item(() -> new Item(new Item.Properties()))
+                .fluid(FluidDefinition.liquid().setName("cocoa_butter").setTemperature(400)).build();
+        liquid("unsweetened_chocolate", 0xFF2C0A08, 400);
+        liquid("dark_chocolate", 0xFF2C0B06, 400);
+        liquid("milk_chocolate", 0xFF884121, 400);
+        liquid("sugar", 0x50FFD59A, 400);
+        mat("gelatin", 0x50DDD09C)
+                .item(() -> new Item(new Item.Properties()))
+                .fluid(FluidDefinition.liquid().setName("gelatin")).build();
+        liquid("hydrated_gelatin", 0x50DDD09C, 300);
+        liquid("marshmallow", 0x90E1E1E3, 300);
+        liquid("pasteurized_milk", 0xFFFFF2F2, 300);
+
+        liquid("spent_nuclear_waste", 0x901F1B14, 300);
+        liquid("nuclear_waste", 0x903D3323, 300);
+        liquid("fissile_fuel", 0x903D3323, 300);
 
         liquid("fluorite_water", 0x508AB492, 300);
         liquid("lithium_fluoride", 0x50B37AC4, 300);

@@ -61,31 +61,31 @@ public class Materials extends ModEntries {
         mat("magnesium_diboride", 0xFF26303D).ingot().fluid().build();
         mat("lithium_manganese_dioxide", 0xFF696969).ingot().dust().fluid().plate().build();
         mat("lithium_manganese_oxide", 0xFF7E9D7E).ingot().dust().fluid().plate().build();
-        mat("graphite", 0xFF292929).ingot().dust().storageBlock().plate().build();
+        mat("graphite", 0xFF292929).ingot().dust().storageBlock().plate().fluid().build();
         mat("pyrolitic_carbon", 0xFF292929).ingot().dust().build();
         mat("baratol", 0xFFB8B0A0).ingot().dust().fluid(molten(800)).build();
         mat("tnt", 0xFFCC2A1F).fluid(molten(600)).build();
         mat("netherite", DEFAULT_COLOR).dust().plate().build();
 
-        ingotOnly("osmiridium", DEFAULT_COLOR);
-        ingotOnly("nichrome", DEFAULT_COLOR);
-        ingotOnly("niobium_tin", DEFAULT_COLOR);
-        ingotOnly("niobium_titanium", DEFAULT_COLOR);
-        ingotOnly("stainless_steel", DEFAULT_COLOR);
+        mat("osmiridium", DEFAULT_COLOR).ingot().fluid().build();
+        mat("nichrome", DEFAULT_COLOR).ingot().fluid().build();
+        mat("niobium_tin", DEFAULT_COLOR).ingot().fluid().build();
+        mat("niobium_titanium", DEFAULT_COLOR).ingot().fluid().build();
+        mat("stainless_steel", DEFAULT_COLOR).ingot().fluid().build();
         ingotOnly("super_alloy", DEFAULT_COLOR);
         ingotOnly("tungsten_carbide", DEFAULT_COLOR);
         ingotOnly("neutronium", 0xFF181322);
 
         dustIngot("calcium");
-        dustIngot("chromium");
+        ingotDustFluid("chromium", DEFAULT_COLOR);
         dustIngot("hafnium");
-        dustIngot("iridium");
-        dustIngot("niobium");
-        dustIngot("osmium");
+        ingotDustFluid("iridium", DEFAULT_COLOR);
+        ingotDustFluid("niobium", DEFAULT_COLOR);
+        ingotDustFluid("osmium", DEFAULT_COLOR);
         dustIngot("potassium");
         dustIngot("sodium");
         dustIngot("strontium");
-        dustIngot("titanium");
+        ingotDustFluid("titanium", DEFAULT_COLOR);
         dustIngot("tungsten");
         dustIngot("yttrium");
         dustIngot("nickel");
@@ -114,7 +114,7 @@ public class Materials extends ModEntries {
         dustGem("villiaumite");
         mat("boron_arsenide", 0xFFDEDE7A).dust().gem().fluid(molten(500)).build();
 
-        mat("silicon", DEFAULT_COLOR).gem().build();
+        mat("silicon", DEFAULT_COLOR).gem().fluid().build();
 
         dustOnly("bscco");
         dustOnly("erbium");
@@ -132,9 +132,9 @@ public class Materials extends ModEntries {
         dustOnly("protactinium_233");
         dustOnly("radium");
         dustOnly("tbp");
-        dustOnly("coal");
+        dustFluid("coal", DEFAULT_COLOR, 600);
         dustOnly("charcoal");
-        dustOnly("diamond");
+        dustFluid("diamond", DEFAULT_COLOR, 600);
         dustOnly("emerald");
         dustOnly("end_stone");
         dustOnly("quartz");

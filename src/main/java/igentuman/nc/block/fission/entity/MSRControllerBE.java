@@ -65,8 +65,11 @@ import static net.minecraft.world.item.Items.AIR;
 public class MSRControllerBE extends MultiblockControllerBE implements IrradiationSupport {
 
     public static final String NAME = "msr_controller";
-    private static final int MIN_PEBBLES_FOR_CRITICALITY = 10;
-    private static final double MIN_SALT_FOR_CRITICALITY = 100;
+    private static final double SALT_FILL_FOR_FULL_MODERATION = 0.3;
+    private static final double REACTIVITY_RESPONSE = 0.05;
+    private static final double CRITICAL_START = 0.05;
+    private static final double CRITICAL_STOP = 0.025;
+    private static final double THERMAL_CAPACITY_PER_MB = 0.01;
     public final SidedContentHandler contentHandler;
 
     @NBTField
@@ -99,18 +102,16 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
     @NBTField public double depletion = 0;
     public static final double T_AMBIENT = 20.0;
     public static final double MAX_TEMPERATURE = 2000.0;
-    public static final double SELF_PRIME_CRITICALITY = 50.0;   // criticality below this self-primes (emits full irradiation)
-    public static final double IRRADIATION_THRESHOLD = 50.0;    // avg effective irradiation yielding baseReactivity = 1.0 (TUNE)
-    public static final double OPTIMAL_MODERATION = 3000.0;   // mB salt (cold+hot) per pebble sweet spot
-    public static final double MAX_REACTIVITY = 10.0;          // reactivity clamp
-    public static final double TEMP_REACTIVITY_THRESHOLD = 2000.0; // temp above which reactivity is penalised
-    public static final double TEMP_MAX = 5000.0;             // temperature scale top (penalty + clamp)
-    public static final double HEAT_PER_MB = 0.10;            // heat removed per mB cold→hot conversion
+    public static final double CRITICALITY_SCALE = 50.0;
+    public static final double IRRADIATION_SCALE = 50.0;
+    public static final double TEMP_REACTIVITY_THRESHOLD = 1200.0;
+    public static final double TEMP_REACTIVITY_END = 2500.0;
+    public static final double TEMP_MAX = 5000.0;
+    public static final double HEAT_PER_MB = 2.0;
     public static final double GAMMA_HE = 2.0;               // high-enriched criticality decay
     public static final double GAMMA_LE = 0.5;               // low-enriched criticality decay
-    public static final double AMBIENT_LOSS = 0.001;         // passive heat bleed so an idle core cools
+    public static final double AMBIENT_LOSS = 0.001;
     public static final double IMPURITY_RATE_PER_PEBBLE = 0.001;
-    public static final double VOLUME_PER_PEBBLE = 100.0;
 
     private final HashSet<ReactorPebble> pebbles = new HashSet<>();
     private final List<ItemStack> depletedPebbles = new ArrayList<>();
@@ -138,8 +139,10 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
         }
         contentHandler().setAllowedInputFluids(0, () -> List.of(new FluidStack(NC_MATERIALS.get("flibe_molten_salt").getStill(), 1000)));
         contentHandler().setAllowedInputItems(this::getAllowedInputItems);
-        ((MSRContentHandler) contentHandler).setVolumeGate(this::freeVolume, VOLUME_PER_PEBBLE);
-        ((MSRContentHandler) contentHandler).setRateGate(() -> saltInputRate * 1000, () -> saltOutputRate * 1000);
+        ((MSRContentHandler) contentHandler).setVolumeGate(this::freeVolume);
+        ((MSRContentHandler) contentHandler).setRateGate(
+                () -> Math.min(Integer.MAX_VALUE / 1000, Math.max(0, saltInputRate)) * 1000,
+                () -> Math.min(Integer.MAX_VALUE / 1000, Math.max(0, saltOutputRate)) * 1000);
 
         // Kept for base-class compatibility (updateEnergyTier); the MSR produces no FE.
         energyStorage = createEnergy();
@@ -219,18 +222,21 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
             initializePorts();
             ((MSRContentHandler) contentHandler()).resetRateCounters();
             contentHandler().tick();
-            if(hasRedstoneSignal()) {
-                syncInternalState();
-                updateSimulation();
-                handleIO();
-            }
+            boolean running = hasRedstoneSignal();
+            if (running) consumeInputs();
+            syncInternalState();
+            updateSimulation(running);
+            outputDepleted();
             updateBlockState();
         } else {
-            powered = false;
             isCritical = false;
+            reactivity = 0;
+            heatPerTick = 0;
+            updateBlockState();
         }
 
-        if(changed || currentTick % 40 == 0) {
+        if(changed) setChanged();
+        if(currentTick % 10 == 0) {
             updateState();
         }
     }
@@ -247,82 +253,93 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
         return isCritical && !isRemoved() && isInternalValid && pebbleCount > 0 && hasRedstoneSignal();
     }
 
-    private void updateSimulation() {
-        if(fuelCellsCount < 1) return;
-
-        double totalIrradiation = 0;
-        for (ReactorPebble pebble : pebbles) {
-            double effIrr = (pebble.irradiation + pebble.effectiveIrradiation()*2)/3;
-            if (pebble.criticality < SELF_PRIME_CRITICALITY) {
-                totalIrradiation += effIrr;
-            } else {
-                totalIrradiation += 100.0 / (pebble.irradiation * 2 + 50) * effIrr;
-            }
-        }
-
-        double saltPerPebble = (saltVolume + hotSaltVolume) / Math.max(1, pebbleCount);
-        double moderation = Math.pow(OPTIMAL_MODERATION / Math.max(1.0, saltPerPebble), 0.2);
-        if(depletion == 0 && saltVolume == 0) {
-            moderation = 0;
-        }
-        avgIrradiation = (totalIrradiation / Math.max(1, pebbleCount)) * moderation;
-
-        double baseReactivity = avgIrradiation / IRRADIATION_THRESHOLD;
-        double tempPenalty = temperature > TEMP_REACTIVITY_THRESHOLD
-                ? (temperature - TEMP_REACTIVITY_THRESHOLD) / (TEMP_MAX - TEMP_REACTIVITY_THRESHOLD)
-                : 0.0;
-        double tempFactor = Math.max(0.0, 1.0 - tempPenalty);
-        double targetReactivity = Math.max(0.0, Math.min(MAX_REACTIVITY, baseReactivity * tempFactor));
-        reactivity = (reactivity + targetReactivity) / 2.0;
-
-        isCritical = (reactivity >= 0.3) &&
-                     (pebbleCount >= MIN_PEBBLES_FOR_CRITICALITY) &&
-                     (saltVolume >= MIN_SALT_FOR_CRITICALITY);
-
-        double initialHeat = T_AMBIENT
-                + (hotSaltVolume / globalVolume()) * 600.0
-                + (saltVolume / globalVolume()) * 300.0;
-
-        if (!isCritical && reactivity < 0.3) {
-            temperature = (temperature + initialHeat) / 2.0;
+    private void updateSimulation(boolean running) {
+        if (fuelCellsCount < 1) {
+            reactivity = 0;
+            heatPerTick = 0;
+            avgIrradiation = 0;
+            depletion = 0;
+            isCritical = false;
             return;
         }
 
-        double heatProduced = 0;
+        double totalIrradiation = 0;
+        double totalFuelHeat = 0;
+        double weightedQuality = 0;
+        for (ReactorPebble pebble : pebbles) {
+            double irradiation = pebble.effectiveIrradiation();
+            irradiation = Double.isNaN(irradiation) ? 0 : Math.min(1_000_000, Math.max(0, irradiation));
+            totalIrradiation += irradiation;
+            double fuelHeat = Math.max(0, pebble.getHeat());
+            totalFuelHeat += fuelHeat;
+            weightedQuality += fuelHeat * irradiation / (irradiation + IRRADIATION_SCALE)
+                    * CRITICALITY_SCALE / (CRITICALITY_SCALE + Math.max(0, pebble.criticality));
+        }
+        avgIrradiation = pebbles.isEmpty() ? 0 : totalIrradiation / pebbles.size();
+
+        double saltFactor = Math.min(1, (saltVolume + hotSaltVolume)
+                / (globalVolume() * SALT_FILL_FOR_FULL_MODERATION));
+        double tempFactor = Math.max(0, Math.min(1,
+                (TEMP_REACTIVITY_END - temperature) / (TEMP_REACTIVITY_END - TEMP_REACTIVITY_THRESHOLD)));
+        double targetReactivity = totalFuelHeat == 0 ? 0
+                : weightedQuality / totalFuelHeat * saltFactor * tempFactor;
+        reactivity = running && !pebbles.isEmpty() && saltVolume + hotSaltVolume > 0
+                ? reactivity + REACTIVITY_RESPONSE * (targetReactivity - reactivity)
+                : 0;
+        isCritical = running && !pebbles.isEmpty() &&
+                (isCritical ? reactivity >= CRITICAL_STOP : reactivity >= CRITICAL_START);
+
+        double heatProduced = running ? totalFuelHeat * reactivity : 0;
         depletion = 0;
-        for (ReactorPebble pebble : new HashSet<>(pebbles)) {
-            double effReactivity = reactivity + level.getRandom().nextDouble();
-            heatProduced += pebble.getHeat() * effReactivity;
-            pebble.tick(effReactivity);
-            depletion += pebble.ticksProcessed/pebble.ticks;
-            if (pebble.isDepleted()) {
-                pebbles.remove(pebble);
-                if (!pebble.outputStack.isEmpty()) {
-                    depletedPebbles.add(pebble.outputStack.copy());
+        int processedCount = pebbles.size();
+        if (running && reactivity > 0) {
+            Iterator<ReactorPebble> it = pebbles.iterator();
+            while (it.hasNext()) {
+                ReactorPebble pebble = it.next();
+                pebble.tick(reactivity);
+                depletion += pebble.burnup();
+                if (pebble.isDepleted()) {
+                    it.remove();
+                    if (!pebble.outputStack.isEmpty()) {
+                        depletedPebbles.add(pebble.outputStack.copy());
+                    }
+                    impurity = Math.min(1.0, impurity + IMPURITY_RATE_PER_PEBBLE);
+                    changed = true;
                 }
-                impurity = Math.min(1.0, impurity + IMPURITY_RATE_PER_PEBBLE);
-                changed = true;
+            }
+        } else {
+            for (ReactorPebble pebble : pebbles) {
+                depletion += pebble.burnup();
             }
         }
-        depletion = depletion/pebbles.size();
-        heatPerTick = (heatPerTick * 9 + heatProduced) / 10.0;
+        depletion = processedCount == 0 ? 0 : depletion / processedCount;
+        pebbleCount = pebbles.size();
+        if (pebbles.isEmpty()) {
+            reactivity = 0;
+            isCritical = false;
+        }
+        heatPerTick = heatProduced;
 
-        double hotRoom = contentHandler().fluidHandler.tanks.get(1).getCapacity() - hotSaltVolume;
-        double maxConversion = heatPerTick / HEAT_PER_MB;
-        double converted = Math.min(Math.min(maxConversion, saltVolume), hotRoom);
+        double availableHeat = Math.max(0, extraHeat) + heatProduced;
+        var coldTank = contentHandler().fluidHandler.tanks.get(0);
+        var hotTank = contentHandler().fluidHandler.tanks.get(1);
+        int hotRoom = Math.max(0, hotTank.getCapacity() - hotTank.getFluidAmount());
+        int converted = (int) Math.min(Math.min(Math.floor(availableHeat / HEAT_PER_MB),
+                coldTank.getFluidAmount()), hotRoom);
         if (converted > 0) {
-            contentHandler().fluidHandler.tanks.get(0).drain((int) converted, IFluidHandler.FluidAction.EXECUTE);
-            FluidStack hot = new FluidStack(NC_MATERIALS.get("flibe_hot_molten_salt").getStill(), (int) converted);
-            contentHandler().fluidHandler.tanks.get(1).fill(hot, IFluidHandler.FluidAction.EXECUTE);
-            saltVolume -= converted;
-            hotSaltVolume += converted;
+            coldTank.drain(converted, IFluidHandler.FluidAction.EXECUTE);
+            FluidStack hot = new FluidStack(NC_MATERIALS.get("flibe_hot_molten_salt").getStill(), converted);
+            hotTank.fill(hot, IFluidHandler.FluidAction.EXECUTE);
+            saltVolume = coldTank.getFluidAmount();
+            hotSaltVolume = hotTank.getFluidAmount();
             changed = true;
         }
 
-        double conversionEfficiency = maxConversion > 0 ? converted / maxConversion : 1.0;
-        double backlog = (1.0 - conversionEfficiency) * heatPerTick;
-        temperature = Math.max(0.0, Math.min(TEMP_MAX, (temperature*49 + initialHeat + backlog) / 50.0));
-        efficiency = conversionEfficiency;
+        extraHeat = Math.max(0, availableHeat - converted * HEAT_PER_MB) * (1 - AMBIENT_LOSS);
+        double thermalCapacity = Math.max(1, globalVolume() * THERMAL_CAPACITY_PER_MB);
+        temperature = Math.min(TEMP_MAX,
+                T_AMBIENT + hotSaltVolume / globalVolume() * 600 + extraHeat / thermalCapacity);
+        efficiency = heatProduced > 0 ? Math.min(1, converted * HEAT_PER_MB / heatProduced) : 1;
         if (temperature >= MAX_TEMPERATURE) {
             overheatTimer++;
             if (overheatTimer > 600) {
@@ -344,13 +361,12 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
         contentHandler().voidFluidSlot(0);
         isInternalValid = false;
         reactivity = 0;
+        heatPerTick = 0;
+        extraHeat = 0;
+        pebbleCount = 0;
         fuelCellsCount = 0;
         isCritical = false;
-    }
-
-    private void handleIO() {
-        consumeInputs();
-        outputDepleted();
+        changed = true;
     }
 
     private void outputDepleted() {
@@ -427,20 +443,18 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
      * @return maximum pebble capacity
      */
     public int getMaxPebbleCapacity() {
-        return fuelCellsCount;
+        return fuelCellsCount * MSR_CONFIG.PEBBLES_PER_FUEL_CELL.get();
     }
 
     /**
-     * Total shared internal volume (mB), derived from reactor size.
+     * Total salt volume (mB), derived from reactor size.
      */
     public double globalVolume() {
         return fuelCellsCount * (double) MSR_CONFIG.VOLUME_PER_FUEL_CELL.get();
     }
 
     /**
-     * Remaining shared internal volume (mB). Salt, coolant, live pebbles, buffered pebble items
-     * and accumulated depleted material all draw from {@link #globalVolume()}. Reads live handler
-     * state so multiple inserts in the same tick stay consistent.
+     * Remaining salt volume (mB). Reads live handler state so multiple inserts in the same tick stay consistent.
      */
     public double freeVolume() {
         double cold = contentHandler().fluidHandler.tanks.get(0).getFluidAmount();
@@ -461,6 +475,9 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
         pebbles.clear();
         depletedPebbles.clear();
         pebbleCount = 0;
+        reactivity = 0;
+        heatPerTick = 0;
+        isCritical = false;
         changed = true;
         setChanged();
     }
@@ -509,6 +526,7 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
+        reactivity = Double.isFinite(reactivity) ? Math.max(0, Math.min(1, reactivity)) : 0;
         if (tag.contains("pebbles")) {
             pebbles.clear();
             CompoundTag pebblesTag = tag.getCompound("pebbles");
@@ -571,9 +589,7 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
     }
 
     public boolean hasRedstoneSignal() {
-        if(currentTick % 10 == 0) {
-            hasRedstoneSignal = getLevel().hasNeighborSignal(getBlockPos());
-        }
+        hasRedstoneSignal = getLevel().hasNeighborSignal(getBlockPos());
         return enabledByController || hasRedstoneSignal;
     }
 
@@ -587,19 +603,19 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
     @Override
     public void handleSliderUpdate(int buttonId, int ratio) {
         switch (buttonId) {
-            case 0 -> saltInputRate = Math.max(0, ratio);
-            case 1 -> saltOutputRate = Math.max(0, ratio);
+            case 0 -> saltInputRate = Math.min(Integer.MAX_VALUE / 1000, Math.max(0, ratio));
+            case 1 -> saltOutputRate = Math.min(Integer.MAX_VALUE / 1000, Math.max(0, ratio));
         }
         setChanged();
     }
 
     public void setSaltInputRate(int val) {
-        saltInputRate = Math.max(0, val);
+        saltInputRate = Math.min(Integer.MAX_VALUE / 1000, Math.max(0, val));
         setChanged();
     }
 
     public void setSaltOutputRate(int val) {
-        saltOutputRate = Math.max(0, val);
+        saltOutputRate = Math.min(Integer.MAX_VALUE / 1000, Math.max(0, val));
         setChanged();
     }
 
@@ -615,7 +631,7 @@ public class MSRControllerBE extends MultiblockControllerBE implements Irradiati
 
     @Override
     public void addIrradiationHeat() {
-        heatPerTick *= 1.01;
+        extraHeat += heatPerTick * 0.01;
     }
 
     public static class Recipe extends NcRecipe {

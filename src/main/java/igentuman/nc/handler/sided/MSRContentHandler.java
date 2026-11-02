@@ -9,11 +9,6 @@ import igentuman.nc.handler.sided.capability.NcFluidTank;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 
-/**
- * Content handler for the MSR controller. Routes fluid and item inputs through the reactor's
- * shared internal volume: salt and coolant input tanks plus the pebble input slot all draw from
- * one budget, so once the chamber is full no more can be inserted until something is extracted.
- */
 public class MSRContentHandler extends SidedContentHandler {
 
     public MSRContentHandler(int inputItemSlots, int outputItemSlots, int inputFluidSlots, int outputFluidSlots, int... tankCapacities) {
@@ -25,13 +20,7 @@ public class MSRContentHandler extends SidedContentHandler {
         return new MSRFluidCapabilityHandler(inputFluidSlots, outputFluidSlots, inputTankSize, outputTankSize);
     }
 
-    /**
-     * Wires the reactor's free-volume query into the cold-salt input tank (0) and the pebble input
-     * slot. The hot-salt output tank (1) is NOT gated — it is filled internally by the cold→hot
-     * conversion (volume-conserving) and drained out by pipes. Called once by the controller after
-     * construction.
-     */
-    public void setVolumeGate(DoubleSupplier freeVolume, double volumePerPebble) {
+    public void setVolumeGate(DoubleSupplier freeVolume) {
         if (fluidHandler != null && !fluidHandler.tanks.isEmpty()
                 && fluidHandler.tanks.get(0) instanceof MSRVolumeTank tank) {
             tank.setFreeVolume(freeVolume);

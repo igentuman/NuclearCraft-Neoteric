@@ -110,9 +110,10 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
     private void sendRate(String value, int buttonId) {
         int rate;
         try {
-            rate = value.isEmpty() ? 0 : (int) Double.parseDouble(value);
+            if (value.isEmpty()) return;
+            rate = (int) Double.parseDouble(value);
         } catch (NumberFormatException e) {
-            rate = 0;
+            return;
         }
         NuclearCraft.packetHandler().sendToServer(new PacketSliderChanged(container().getPosition(), Math.max(0, rate), buttonId));
     }
@@ -158,6 +159,8 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         if(menu.getOverheatTimer() > 0) {
             graphics.drawString(font, __("msr.overheat", roundFormat((600-menu.getOverheatTimer())/20)), 10, y + 42, 0xff0000);
         }
+        graphics.drawString(font, Component.literal("TRISO: " + menu.getPebblesQty() + "/" + menu.getMaxPebbleCapacity()),
+                10, y + 54, 0x00ff00);
         graphics.pose().popPose();
     }
 
@@ -201,7 +204,7 @@ public class MSRControllerScreen extends AbstractContainerScreen<MSRControllerCo
         graphics.pose().scale(0.5f, 0.5f, 0.5f);
         double cx = 17.0, cy = 17.0, r = 17.0;
         int placed = 0;
-        while (placed < getPebblesQty()) {
+        while (placed < Math.min(100, getPebblesQty())) {
             int x = rnd.nextInt(33);
             int y = rnd.nextInt(33);
             double dx = x - cx, dy = y - cy;

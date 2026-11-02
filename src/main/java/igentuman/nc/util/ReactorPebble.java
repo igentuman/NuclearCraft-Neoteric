@@ -8,13 +8,13 @@ import net.minecraftforge.common.util.INBTSerializable;
 /**
  * One TRISO pebble inside an MSR. Emitted irradiation (neutron flux) decays non-linearly with
  * burnup; the exponent (`gamma`) is set by enrichment class (HE drops fast, LE holds longer).
- * Criticality is a static ignition threshold. All pebbles in a reactor tick together each reactor tick.
+ * Criticality continuously reduces fuel quality. All pebbles in a reactor tick together each reactor tick.
  */
 public class ReactorPebble implements INBTSerializable<Tag> {
 
     public int ticks = 1;             // ticks to full depletion
     public double ticksProcessed = 0; // accumulated burn (advances with reactivity)
-    public double criticality = 0;    // ignition threshold (lower = easier; < SELF_PRIME_CRITICALITY self-primes)
+    public double criticality = 0;    // lower values increase reactivity
     public double heat = 0;           // heat/tick at nominal reactivity
     public double irradiation = 0;    // neutron flux emitted at nominal reactivity (decays with burnup)
     public double gamma = 2.0;        // irradiation-decay exponent (HE high, LE low)

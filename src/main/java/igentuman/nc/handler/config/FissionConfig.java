@@ -159,7 +159,7 @@ public class FissionConfig {
                     .defineInRange("pebbles_per_fuel_cell", 10, 2, 100);
 
             VOLUME_PER_FUEL_CELL = builder
-                    .comment("mB of shared internal volume contributed per fuel cell block. Salt, coolant and pebbles all draw from this budget.")
+                    .comment("mB of molten salt volume contributed per fuel cell block.")
                     .defineInRange("volume_per_fuel_cell", 10000, 1, 1000000);
 
             builder.pop();

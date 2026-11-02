@@ -210,6 +210,10 @@ public class MSRControllerContainer extends AbstractContainerMenu {
         return blockEntity.pebbleCount;
     }
 
+    public int getMaxPebbleCapacity() {
+        return blockEntity.getMaxPebbleCapacity();
+    }
+
     public double getDepletion() {
         return blockEntity.depletion*100;
     }

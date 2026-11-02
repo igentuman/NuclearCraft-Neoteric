@@ -1,5 +1,6 @@
 package igentuman.nc.item;
 
+import igentuman.nc.client.gui.fission.FissionReactorPlanScreen;
 import igentuman.nc.util.ItemDataUtils;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -8,10 +9,15 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -28,6 +34,15 @@ public class FissionReactorPlanItem extends Item {
 
     public FissionReactorPlanItem(Properties props) {
         super(props);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (level.isClientSide()) {
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FissionReactorPlanScreen.open(stack));
+        }
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 
     @Override
@@ -54,6 +69,8 @@ public class FissionReactorPlanItem extends Item {
             list.add(__(TextUtils.energyGenLine(), TextUtils.numberFormat(TextUtils.energy2Display(fe)))
                     .withStyle(ChatFormatting.GREEN));
         }
+        list.add(Component.translatableWithFallback("tooltip.nc.fission_reactor_plan.view",
+                "Right-click in the air to inspect the layout.").withStyle(ChatFormatting.GRAY));
     }
 
     public static ListTag fuelKeyToTag(List<String> key) {

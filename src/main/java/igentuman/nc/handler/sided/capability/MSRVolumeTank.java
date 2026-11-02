@@ -9,8 +9,7 @@ import java.util.function.IntSupplier;
 /**
  * Fluid tank for the MSR. Beyond its own capacity it enforces two reactor constraints:
  * <ul>
- *   <li>the shared internal volume ({@code freeVolume}) — fill is clamped so salt + pebbles never
- *       exceed the reactor's global volume;</li>
+ *   <li>the salt volume ({@code freeVolume}) — fill is clamped to the reactor's global volume;</li>
  *   <li>an optional per-tick throughput cap ({@code maxFillPerTick} / {@code maxDrainPerTick}, mB)
  *       set by the player as the molten-salt input / output rate.</li>
  * </ul>

@@ -147,11 +147,15 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler implements
             for(SlotModePair pair : sideMap.get(relativeDirection.ordinal())) {
                 if(pair.getMode() == SlotMode.PUSH || forceFlag) {
                     NcFluidTank tank = tanks.get(pair.getSlot());
-                    if(tank.getFluidAmount() > 0) {
-                        int amount = handler.fill(tank.getFluid(), EXECUTE);
-                        tank.drain(amount, EXECUTE);
-                        return true;
-                    }
+                    FluidStack offered = tank.drain(tank.getFluidAmount(), SIMULATE);
+                    if (offered.isEmpty()) continue;
+                    int accepted = handler.fill(offered.copy(), SIMULATE);
+                    if (accepted <= 0) continue;
+                    offered.setAmount(Math.min(offered.getAmount(), accepted));
+                    int inserted = handler.fill(offered.copy(), EXECUTE);
+                    if (inserted <= 0) continue;
+                    tank.drain(inserted, EXECUTE);
+                    return true;
                 }
             }
         }

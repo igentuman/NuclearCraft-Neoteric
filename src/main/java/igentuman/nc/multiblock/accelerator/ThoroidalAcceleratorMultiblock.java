@@ -374,7 +374,7 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
             errorBlockPos = new BlockPos(center.below());
             return false;
         }
-        if (upState.getBlock() != downState.getBlock()) {
+        if (((ElectromagnetBlock) upState.getBlock()).prefab() != ((ElectromagnetBlock) downState.getBlock()).prefab()) {
             validationResult = ValidationResult.WRONG_INNER;
             errorBlockPos = new BlockPos(center.below());
             return false;

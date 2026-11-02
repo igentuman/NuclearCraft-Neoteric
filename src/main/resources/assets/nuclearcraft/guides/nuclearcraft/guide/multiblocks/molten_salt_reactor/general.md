@@ -15,7 +15,7 @@ item_ids:
   <ImportStructure src="/structures/molten_salt_reactor.nbt" />
 </GameScene>
 
-The **Molten Salt Reactor** runs on **liquid fuel**. Instead of arranging heat sinks and moderators, you pump **carrier salt** through a chamber packed with **fuel pebbles** and manage two coupled stats - **temperature** and **reactivity**. It does **not** make power directly: it turns cold salt into **hot salt**, which you pipe to a Heat Exchanger and on to a Turbine. Pumping the hot salt out is also the core's **only cooling**.
+The **Molten Salt Reactor** burns **TRISO fuel pebbles**. **FLiBe molten salt** carries heat away from the fuel cells; you manage both **temperature** and **reactivity**. The reactor does **not** make power directly: it heats cold salt, which you pipe to a Heat Exchanger and then a Turbine. Keep cold salt flowing in and hot salt flowing out to cool the core.
 
 ## MSR Controller
 
@@ -23,7 +23,7 @@ The **Molten Salt Reactor** runs on **liquid fuel**. Instead of arranging heat s
   <BlockImage id="msr_controller" />
 </Column>
 
-Place exactly one **Controller** in the shell to form the reactor. It runs the simulation and owns the salt tanks and pebble slots. Its GUI reports temperature, reactivity, depletion and the salt input/output rates, and it only runs with a **redstone signal** (or computer enable).
+Place exactly one **Controller** in the shell to form the reactor. It runs the simulation and owns the salt tanks and pebble slots. Its GUI shows temperature, reactivity, depletion, the loaded TRISO count and capacity, and separate salt input/output limits in buckets per tick. A **redstone signal** (or computer enable) starts the reaction; cooling can continue after it is switched off.
 
 ## Shell
 
@@ -31,7 +31,7 @@ Place exactly one **Controller** in the shell to form the reactor. It runs the s
   <BlockImage id="fission_reactor_casing" />
 </Column>
 
-The MSR reuses the fission shell. Edges and corners are **Reactor Casing**; walls can be Casing, **Reactor Glass**, or both. The shell is a cube, from **5x5x5** up to **26x26x26**.
+The MSR reuses the fission shell. Edges and corners are **Reactor Casing**; walls can be Casing, **Reactor Glass**, or both. By default, each outer dimension must be **7 to 11 blocks**; the server configuration can change these limits.
 
 ## Fuel Cell
 
@@ -39,7 +39,7 @@ The MSR reuses the fission shell. Edges and corners are **Reactor Casing**; wall
   <BlockImage id="msr_fuel_cell" />
 </Column>
 
-Fill the **entire interior** with **MSR Fuel Cells** - no other interior block is allowed. The fuel-cell count sets the reactor's salt volume and heat budget, so a bigger core holds more salt and runs harder.
+Fill the **entire interior** with **MSR Fuel Cells** - no other interior block is allowed. Each cell adds salt capacity and room for **10 TRISO pebbles** by default. The Controller shows the total pebble capacity; both capacities can be changed in the server configuration.
 
 ## MSR Port
 
@@ -56,9 +56,10 @@ Fuel is loaded as **TRISO pebbles** - the `_tr` fuel variants (Thorium, LEU-235,
 ## Running It
 
 1. Build the shell, fill the interior with Fuel Cells, add one Controller and at least one Port.
-2. Pipe **cold FLiBe** in and load **pebbles**.
-3. Apply redstone. With enough fuel and salt the core goes **critical** and heats up.
-4. Reactivity has a **negative temperature coefficient**, so it falls as the core warms and self-stabilizes. Raise the **salt output rate** to keep temperature off the 2000 K ceiling.
-5. Send the **hot salt** to a Heat Exchanger -> Turbine for power, and pull **depleted pebbles** from the output.
+2. Pipe **cold FLiBe** in, provide a route for **hot FLiBe** out, and load **TRISO pebbles**.
+3. Apply redstone. Fuel and salt can start producing heat without a fixed minimum load. Reactivity approaches its new level gradually after startup or changes to fuel or salt; the **critical** status appears only after reactivity builds up.
+4. Watch the temperature and adjust both salt limits. More salt increases reactivity smoothly until the combined cold and hot salt reaches roughly **30%** of capacity. The input limit admits cold salt; the output limit lets hot salt leave. If the hot tank fills or cold salt runs out, cooling slows and heat accumulates.
+5. Heating begins to reduce reactivity above a displayed temperature of **1200**, but it does not guarantee safety. Keep the reading below **2000**: sustained overheating melts down the core. Switching off redstone stops the reaction immediately while available cold salt can still carry away stored heat.
+6. Send the **hot salt** to a Heat Exchanger -> Turbine for power, and pull **depleted pebbles** from the output.
 
 The reactor can also be read and driven from **ComputerCraft / OpenComputers** (type `nc_msr_reactor`).

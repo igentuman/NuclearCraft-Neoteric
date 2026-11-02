@@ -905,6 +905,8 @@ public class NCLanguageProvider extends LanguageProvider {
         add("tooltip.nc.fission_reactor_plan.size", "Layout: %sx%sx%s");
         add("tooltip.nc.fission_reactor_plan.fuel", "Fuel: %s");
         add("tooltip.nc.fission_reactor_plan.net_heat", "Net Heat: %s H/t");
+        add("tooltip.nc.fission_reactor_plan.view", "Right-click in the air to inspect the layout.");
+        add("gui.nc.fission_reactor_plan.layer", "Layer %s");
         add("tooltip.nc.decay_generator_allowed.desc", "Can be used with Decay Generator");
         add("tooltip.nc.energy_eu_tier.depends_on_terminal", "EU Tier inherits Tier from Terminal");
         add("tooltip.nc.energy_eu_tier.depends_on_controller", "EU Tier inherits Tier from Controller");

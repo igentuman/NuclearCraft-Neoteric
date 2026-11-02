@@ -1,4 +1,6 @@
 {
+  "tooltip.nc.fission_reactor_plan.view": "Нажмите ПКМ по воздуху, чтобы просмотреть схему.",
+  "gui.nc.fission_reactor_plan.layer": "Слой %s",
   "block.nuclearcraft.msr_controller": "Контроллер ЖСР",
   "block.nuclearcraft.msr_port": "Порт ЖСР",
   "block.nuclearcraft.msr_fuel_cell": "Топливная ячейка ЖСР",

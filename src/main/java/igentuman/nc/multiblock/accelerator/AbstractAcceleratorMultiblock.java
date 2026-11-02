@@ -327,6 +327,8 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
         boolean nextMustBeAmplifier = false;
         double magnetStrength = 0;
         double amplification = 0;
+        ElectromagnetBlock magnet = null;
+        RFAmplifierBlock amplifier = null;
         for(int i = 0; i < xCoords.length; i++ ) {
             int x = xCoords[i];
             int y = yCoords[i];
@@ -339,14 +341,15 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
                 return false;
             }
             if(isMagnet(bs)) {
-                if((i > 4 || nextMustBeAmplifier)) {
+                ElectromagnetBlock block = (ElectromagnetBlock) bs.getBlock();
+                if(i >= 4 || nextMustBeAmplifier || (magnet != null && magnet.prefab() != block.prefab())) {
                     validationResult = ValidationResult.WRONG_INNER;
                     errorBlockPos = new BlockPos(toCheck);
                     return false;
                 }
+                magnet = block;
                 electromagnets.put(toCheck.asLong(), (ElectromagnetBlock) bs.getBlock());
                 maxTemperature = Math.min(maxTemperature, ((ElectromagnetBlock) bs.getBlock()).getMaxTemperature());
-                heatRate+= ((ElectromagnetBlock) bs.getBlock()).getHeatRate();
                 energyRequired+= ((ElectromagnetBlock) bs.getBlock()).getPower();
                 efficiency+= ((ElectromagnetBlock) bs.getBlock()).getEfficiency();
                 magnetStrength+= ((ElectromagnetBlock) bs.getBlock()).getStrength();
@@ -354,14 +357,15 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
                 nextMustBeMagnet = magnetCount % 2 != 0 && (i == 0 || i == 2);
             }
             if(isAmplifier(bs)) {
-                if(nextMustBeMagnet) {
+                RFAmplifierBlock block = (RFAmplifierBlock) bs.getBlock();
+                if(nextMustBeMagnet || (amplifier == null && i != 0) || (amplifier != null && amplifier != block)) {
                     validationResult = ValidationResult.WRONG_INNER;
                     errorBlockPos = new BlockPos(toCheck);
                     return false;
                 }
+                amplifier = block;
                 amplification+= ((RFAmplifierBlock) bs.getBlock()).getAmplification();
                 energyRequired+= ((RFAmplifierBlock) bs.getBlock()).getPower();
-                heatRate+= ((RFAmplifierBlock) bs.getBlock()).getHeatRate();
                 efficiency+= ((RFAmplifierBlock) bs.getBlock()).getEfficiency();
                 maxTemperature = Math.min(maxTemperature, ((RFAmplifierBlock) bs.getBlock()).getMaxTemperature());
                 nextMustBeAmplifier = true;
@@ -400,11 +404,16 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
             case 4 -> {
                 quadrupolesCount++;
                 quadStrength += magnetStrength/4D;
+                heatRate += magnet.getHeatRate();
             }
             case 2 -> {
                 dipolesCount++;
                 dipoleStrength += magnetStrength/2D;
+                heatRate += magnet.getHeatRate();
             }
+        }
+        if(amplifier != null) {
+            heatRate += amplifier.getHeatRate();
         }
         acceleratingVoltage += amplification/8D;
         return true;

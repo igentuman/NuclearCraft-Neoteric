@@ -55,7 +55,7 @@ Dipoles can have multiple beam blocks coming in and out of them, replacing the y
 
 ## Coolers
 
-Each RF amplifier block and electromagnet produces heat while operating. To get rid of this heat, coolers are placed inside the accelerator. They only work if their required rules are met. These rules are shown on the tooltips of each cooler. You can check if coolers are in valid positions by sneak right-clicking the controller of a formed accelerator with the multitool.
+Each complete RF amplifier ring, dipole, or quadrupole produces heat while operating. All blocks within one component structure must be the same tier. The heat value on the block's tooltip applies once to the whole structure: a tier rated at 200 H/t produces 200 H/t for a complete structure, including an eight-block RF amplifier ring. To get rid of this heat, coolers are placed inside the accelerator. They only work if their required rules are met. These rules are shown on the tooltips of each cooler. You can check if coolers are in valid positions by sneak right-clicking the controller of a formed accelerator with the multitool.
 
 Shown above is a [Linear Accelerator](linear_accelerator.md) with a quadrupole and RF amplifier with coolers placed around them.
 
@@ -73,7 +73,7 @@ There are 2 sources of heating in an accelerator. External heating from the warm
 
 Hovering over the heat bar (middle) of the GUI will show you the heat stored in the accelerator, the Cooling: the amount of cooling the coolers provide, the Current Heating: the amount of heat currently generated, the Maximum Heating: the max amount of heat the accelerator can possibly generate (if your cooling is greater than this and the accelerator has a constant supply of coolant, then it will never overheat), and the Maximum External Heating: the max amount of external heat from the environment (this is already included in Maximum Heating).
 
-To calculate the maximum heating, take the sum of the internal and external heating. The external heating is `Hₑ = κA(Tₑ - Tₐ)` where `Tₑ` is the environment temperature (usually around 300 K), `Tₐ` is the accelerator's temperature, `κ` is thermal conductivity (default config is 0.0025), and `A` is the surface area of the accelerator. The maximum external heating is therefore when `Tₐ = 0 K`. The Internal Heating is the sum of all the component blocks' heat generation values.
+To calculate the maximum heating, take the sum of the internal and external heating. The external heating is `Hₑ = κA(Tₑ - Tₐ)` where `Tₑ` is the environment temperature (usually around 300 K), `Tₐ` is the accelerator's temperature, `κ` is thermal conductivity (default config is 0.0025), and `A` is the surface area of the accelerator. The maximum external heating is therefore when `Tₐ = 0 K`. The Internal Heating is the sum of the heat generation values of all complete component structures, counting each dipole, quadrupole, and RF amplifier ring once.
 
 ## Coolant
 

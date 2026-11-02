@@ -319,7 +319,6 @@ public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAc
                 return fail("multiblock.ring.wrong_corner_dipole", pos, EXPECTED_SLICE, state);
             }
             cache.addEnergyPerTick(magnet.power);
-            cache.addHeatPerTick(magnet.heat);
             cache.includeMaximumTemperatureK(magnet.maxTemp / 1_000L);
             cache.addComponentEfficiency(magnet.efficiency / 100D);
             CornerDipole dipole = corners[corner];
@@ -330,6 +329,7 @@ public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAc
                     return fail("multiblock.ring.mixed_dipole_tier", pos, EXPECTED_SLICE, EXPECTED_SLICE);
                 }
                 cache.addDipoleField((dipole.up.magneticField + dipole.down.magneticField) / 2D);
+                cache.addHeatPerTick(dipole.up.heat);
             }
             return true;
         }

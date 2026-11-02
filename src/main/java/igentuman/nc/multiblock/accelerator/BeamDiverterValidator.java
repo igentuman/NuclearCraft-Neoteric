@@ -157,6 +157,7 @@ public class BeamDiverterValidator extends AbstractMultiblockValidator<BeamDiver
             return fail("multiblock.diverter.incomplete_magnet_pair", cache.controllerPos(), EXPECTED_YOKE,
                     (ResourceLocation) null);
         }
+        cache.addHeatPerTick(upMagnet.heat);
         cache.addBeamInput(beamPorts[0]);
         for (int index = 1; index < beamPorts.length; index++) cache.addBeamOutput(beamPorts[index]);
         return true;
@@ -217,7 +218,6 @@ public class BeamDiverterValidator extends AbstractMultiblockValidator<BeamDiver
             ElectromagnetDef magnet = AcceleratorComponents.electromagnet(state);
             if (magnet == null) return fail("multiblock.diverter.wrong_magnet", pos, EXPECTED_YOKE, state);
             cache.addEnergyPerTick(magnet.power);
-            cache.addHeatPerTick(magnet.heat);
             cache.addDipoleField(magnet.magneticField / 2D);
             cache.includeMaximumTemperatureK(magnet.maxTemp / 1_000L);
             if (u == CENTER - 1) downMagnet = magnet;

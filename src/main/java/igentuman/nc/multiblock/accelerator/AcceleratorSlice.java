@@ -22,7 +22,7 @@ public final class AcceleratorSlice {
 
     public enum Kind { MAGNET, AMPLIFIER, FILLER }
 
-    public record Component(Kind kind, String tier, double value) {
+    public record Component(Kind kind, String tier, double value, int heat) {
     }
 
     private AcceleratorSlice() {
@@ -38,29 +38,27 @@ public final class AcceleratorSlice {
     @Nullable
     public static Component classify(AcceleratorCache cache, BlockPos pos, BlockState state, Block yoke,
                                      Map<BlockPos, CoolerDef> coolers) {
-        if (state.isAir()) return new Component(Kind.FILLER, "air", 0);
+        if (state.isAir()) return new Component(Kind.FILLER, "air", 0, 0);
         ElectromagnetDef magnet = AcceleratorComponents.electromagnet(state);
         if (magnet != null) {
             cache.addEnergyPerTick(magnet.power);
-            cache.addHeatPerTick(magnet.heat);
             cache.includeMaximumTemperatureK(magnet.maxTemp / 1_000L);
             cache.addComponentEfficiency(magnet.efficiency / 100D);
-            return new Component(Kind.MAGNET, magnet.name, magnet.magneticField);
+            return new Component(Kind.MAGNET, magnet.name, magnet.magneticField, magnet.heat);
         }
         RFAmplifierDef amplifier = AcceleratorComponents.rfAmplifier(state);
         if (amplifier != null) {
             cache.addEnergyPerTick(amplifier.power);
-            cache.addHeatPerTick(amplifier.heat);
             cache.includeMaximumTemperatureK(amplifier.maxTemp / 1_000L);
             cache.addComponentEfficiency(amplifier.efficiency / 100D);
-            return new Component(Kind.AMPLIFIER, amplifier.name, amplifier.voltage);
+            return new Component(Kind.AMPLIFIER, amplifier.name, amplifier.voltage, amplifier.heat);
         }
         CoolerDef cooler = AcceleratorComponents.cooler(state);
         if (cooler != null) {
             coolers.put(pos.immutable(), cooler);
-            return new Component(Kind.FILLER, cooler.id().toString(), 0);
+            return new Component(Kind.FILLER, cooler.id().toString(), 0, 0);
         }
-        return state.is(yoke) ? new Component(Kind.FILLER, "yoke", 0) : null;
+        return state.is(yoke) ? new Component(Kind.FILLER, "yoke", 0, 0) : null;
     }
 
     @Nullable
@@ -76,7 +74,9 @@ public final class AcceleratorSlice {
         if (magnets > 0 && amplifiers > 0) return "mixed_optics";
         if (amplifiers > 0) {
             if (amplifiers != slice.length) return "incomplete_rf_slice";
+            if (!sameTier(slice, slice[0])) return "mixed_rf_tier";
             cache.addVoltage(Math.round(amplifierSum / slice.length));
+            cache.addHeatPerTick(slice[0].heat());
             return null;
         }
         if (magnets == 0) return null;
@@ -85,7 +85,9 @@ public final class AcceleratorSlice {
         boolean diagonalMagnet = isMagnet(slice, 4) || isMagnet(slice, 5)
                 || isMagnet(slice, 6) || isMagnet(slice, 7);
         if (magnets == 4 && verticalPair && horizontalPair && !diagonalMagnet) {
+            if (!sameTier(slice, slice[0])) return "mixed_quadrupole_tier";
             cache.addQuadrupoleField((slice[0].value() + slice[1].value() + slice[2].value() + slice[3].value()) / 4D);
+            cache.addHeatPerTick(slice[0].heat());
             return null;
         }
         if (magnets == 2 && !diagonalMagnet && (verticalPair ^ horizontalPair)) {
@@ -93,6 +95,7 @@ public final class AcceleratorSlice {
             Component second = verticalPair ? slice[1] : slice[3];
             if (!first.tier().equals(second.tier())) return "mixed_dipole_tier";
             cache.addDipoleField((first.value() + second.value()) / 2D);
+            cache.addHeatPerTick(first.heat());
             return null;
         }
         return "invalid_magnet_slice";
@@ -115,5 +118,12 @@ public final class AcceleratorSlice {
 
     private static boolean isMagnet(Component[] slice, int index) {
         return slice[index].kind() == Kind.MAGNET;
+    }
+
+    private static boolean sameTier(Component[] slice, Component reference) {
+        for (Component component : slice) {
+            if (component.kind() == reference.kind() && !component.tier().equals(reference.tier())) return false;
+        }
+        return true;
     }
 }

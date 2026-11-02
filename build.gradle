@@ -118,7 +118,7 @@ dependencies {
     def nrLocal = file('../NuclearRadiation').exists() || file('NuclearRadiation').exists()
     implementation(nrLocal ? "igentuman.nr:NuclearRadiation:1.0.18" : "maven.modrinth:nuclear-radiation:1.0.18") { transitive = false }
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
-    implementation "curse.maven:multi-builder-tool-827020:8797925"
+    implementation "curse.maven:multi-builder-tool-827020:9330890"
     compileOnly "curse.maven:immersive-engineering-231951:6733669"
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
     compileOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE:api")

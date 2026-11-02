@@ -444,6 +444,10 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("tooltip.nc.fission_reactor_plan.fuel", "Fuel: %s");
         add("tooltip.nc.fission_reactor_plan.net_heat", "Net Heat: %s H/t");
         add("tooltip.nc.fission_reactor_plan.fe_gen", "Power: %s FE/t");
+        add("tooltip.nc.fission_reactor_plan.view", "Use (%s) to view the reactor layout.");
+        add("screen.nuclearcraft.reactor_plan.read_only", "Read-only layout - Interior: %s x %s x %s");
+        add("screen.nuclearcraft.reactor_plan.layers", "Layers %s-%s / %s");
+        add("screen.nuclearcraft.reactor_plan.position", "X: %s, Y: %s, Z: %s");
         add("nc.multiblock_builder.description", "Loads a Fission Reactor Plan and builds it, pulling blocks from adjacent containers.");
         add("nc.multiblock_builder.load_plan", "Load Plan");
         add("nc.multiblock_builder.build", "Build");

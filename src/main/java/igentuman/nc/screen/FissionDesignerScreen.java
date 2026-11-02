@@ -4,6 +4,7 @@ import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.client.gui.fission.designer.ClientFissionDesignCache;
 import igentuman.nc.client.gui.fission.designer.DesignBlocks;
 import igentuman.nc.client.gui.fission.designer.DesignGrid;
+import igentuman.nc.client.gui.fission.designer.DesignGridRenderer;
 import igentuman.nc.client.gui.fission.designer.DesignSimulator;
 import igentuman.nc.compat.mbtool.MbtoolHelper;
 import igentuman.nc.config.Multiblocks;
@@ -285,8 +286,6 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     }
 
     protected void drawLayers(GuiGraphics g, int mouseX, int mouseY) {
-        int cols = grid.sizeX;
-        int rows = grid.sizeZ;
         for (int layer = 0; layer < grid.sizeY; layer++) {
             int[] o = layerGridOrigin(layer);
             if (o == null) {
@@ -300,23 +299,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
                 drawSmallButton(g, br[0], br[1], "C", mouseX, mouseY);
                 drawSmallButton(g, br[2], br[3], "P", mouseX, mouseY);
             }
-            int w = cell * cols;
-            int h = cell * rows;
-            g.fill(gx - 1, gy - 1, gx + w + 1, gy + h + 1, 0xCC3A3A3A);
-            for (int cx = 0; cx < cols; cx++) {
-                for (int cz = 0; cz < rows; cz++) {
-                    int px = gx + cx * cell;
-                    int py = gy + cz * cell;
-                    g.fill(px, py, px + cell - 1, py + cell - 1, 0xCC13545d);
-                    Block b = grid.get(cx, layer, cz);
-                    if (b != null) {
-                        renderScaledItem(g, new ItemStack(b), px + (cell - 16) / 2, py + (cell - 16) / 2, cell / 16f);
-                    }
-                    if (grid.invalidCells.contains(new BlockPos(cx, layer, cz))) {
-                        drawOutline(g, px, py, cell - 1, cell - 1, 0xCCFF3030);
-                    }
-                }
-            }
+            DesignGridRenderer.drawLayer(g, grid, layer, gx, gy, cell);
         }
         int[] hc = cellAt(mouseX, mouseY);
         if (hc != null) {
@@ -449,18 +432,6 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         g.fill(x, y + h - 1, x + w, y + h, color);
         g.fill(x, y, x + 1, y + h, color);
         g.fill(x + w - 1, y, x + w, y + h, color);
-    }
-
-    protected void renderScaledItem(GuiGraphics g, ItemStack stack, int x, int y, float scale) {
-        if (scale >= 1f) {
-            g.renderItem(stack, x, y);
-            return;
-        }
-        g.pose().pushPose();
-        g.pose().translate(x + 8 - 8 * scale, y + 8 - 8 * scale, 0);
-        g.pose().scale(scale, scale, 1f);
-        g.renderItem(stack, 0, 0);
-        g.pose().popPose();
     }
 
     protected String fmt(double v) {

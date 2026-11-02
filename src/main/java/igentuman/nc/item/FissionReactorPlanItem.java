@@ -1,20 +1,24 @@
 package igentuman.nc.item;
 
 import igentuman.nc.util.TextUtils;
+import igentuman.nc.screen.FissionReactorPlanScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
 import static igentuman.nc.util.TextUtils.__;
 
-/** Item that stores a fission reactor design (grid, fuel, simulated stats) in its NBT and shows a summary tooltip. */
 public class FissionReactorPlanItem extends Item {
 
     public static final String DESIGN_KEY = "FissionDesign";
@@ -25,6 +29,18 @@ public class FissionReactorPlanItem extends Item {
 
     public FissionReactorPlanItem(Properties props) {
         super(props);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (getDesign(stack).isEmpty()) {
+            return InteractionResultHolder.pass(stack);
+        }
+        if (level.isClientSide) {
+            FissionReactorPlanScreen.open(stack);
+        }
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }
 
     public static CompoundTag getDesign(ItemStack stack) {
@@ -76,5 +92,7 @@ public class FissionReactorPlanItem extends Item {
             list.add(__("tooltip.nc.fission_reactor_plan.fe_gen",
                     TextUtils.numberFormat(design.getInt(FE_GEN_KEY))).withStyle(ChatFormatting.GREEN));
         }
+        list.add(__("tooltip.nc.fission_reactor_plan.view", Component.keybind("key.use"))
+                .withStyle(ChatFormatting.GRAY));
     }
 }

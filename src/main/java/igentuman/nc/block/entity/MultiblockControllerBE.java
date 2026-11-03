@@ -101,6 +101,9 @@ public class MultiblockControllerBE extends NuclearCraftBE implements Multiblock
 
     @Override
     public void setMultiblock(AbstractMultiblock multiblock) {
+        if (multiblock != null && multiblock.controller().controllerBE() != this) {
+            return;
+        }
         this.multiblock = multiblock;
     }
 

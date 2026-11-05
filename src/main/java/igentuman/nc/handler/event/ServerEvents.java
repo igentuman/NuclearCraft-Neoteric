@@ -8,6 +8,7 @@ import igentuman.nc.item.ContainerBlockItem;
 import igentuman.nc.item.MultitoolItem;
 import igentuman.nc.item.ResoniteCrystalItem;
 import igentuman.nc.particle.ParticleTransfer;
+import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.ModUtil;
 import igentuman.nc.world.anomaly.AnomalySpawnManager;
 import net.minecraft.core.Holder;
@@ -17,8 +18,14 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -34,6 +41,19 @@ import static igentuman.nc.NuclearCraft.TICK_COUNTER;
 /** Server event subscriber: advances the global tick counter, runs multitool BombTask ticks,
  *  registers /nc_detonate, and routes magnet-mode item pickups. */
 public class ServerEvents {
+
+    @SubscribeEvent
+    public void onLootTableLoad(LootTableLoadEvent event) {
+        if (!event.getName().getNamespace().equals("minecraft")
+                || !event.getName().getPath().startsWith("chests/")) return;
+
+        event.getTable().addPool(LootPool.lootPool()
+                .name("nuclearcraft_resonite_shard")
+                .setRolls(ConstantValue.exactly(1))
+                .add(LootItem.lootTableItem(ModEntries.get("resonite_shard").item().get())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1))))
+                .build());
+    }
 
     @SubscribeEvent
     public void onServerTick(ServerTickEvent.Post event) {

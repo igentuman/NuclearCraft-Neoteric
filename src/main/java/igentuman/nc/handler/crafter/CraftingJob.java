@@ -1,48 +1,53 @@
 package igentuman.nc.handler.crafter;
 
 import igentuman.nc.block.crafter.entity.EngineersCrafterBE;
-import igentuman.nc.handler.crafter.AggregatedInventory.ItemKey;
+import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.handler.crafter.AutoCraftSolver.PatternDef;
 import igentuman.nc.handler.crafter.AutoCraftSolver.Plan;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.Containers;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-
+import igentuman.nc.handler.crafter.ProcessorIndex.Link;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.Containers;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fluids.FluidStack;
 
-/**
- * Stateful, multi-tick autocraft job. Persisted in the crafter BE's NBT so it survives unload/restart.
- * <p>
- * Lifecycle: {@code COLLECTING} pulls the whole {@code baseCost} out of the container inventory into an
- * internal buffer ("consume all first, then craft"); {@code CRAFTING} executes exactly one plan
- * operation per tick, consuming inputs from and adding outputs to the buffer; {@code DONE} flushes the
- * buffer (target plus surplus intermediates) back to the containers, dropping any overflow in world.
- * <p>
- * Energy gating is the caller's job (the BE decides affordability and drains). The buffer is a plain
- * count map rather than an {@code ItemStackHandler} because a plan can reserve far more than 64 of an
- * item, which no fixed-slot handler could hold.
- */
 public class CraftingJob {
 
     public enum Phase { COLLECTING, CRAFTING, DONE }
 
+    private static final int STALL_LIMIT = 1200;
+    private static final int IDLE_LIMIT = 2400;
+    private static final int ACTIVE_IDLE_LIMIT = 12000;
+
+    private UUID id = UUID.randomUUID();
     private Phase phase;
     private ItemStack target;
     private int qty;
-    private final List<PatternDef<ItemKey>> operations;
+    private final List<PatternDef<CraftKey>> operations;
     private int opIndex;
-    private final Map<ItemKey, Integer> baseCost;
-    private final Map<ItemKey, Integer> buffer;
+    private final Map<CraftKey, Integer> baseCost;
+    private final Map<CraftKey, Integer> buffer;
+    private final List<ProcTask> tasks = new ArrayList<>();
+    private int stallTicks;
     private boolean finished;
 
-    public CraftingJob(ItemStack target, int qty, Plan<ItemKey> plan) {
+    private static class ProcTask {
+        BlockPos pos;
+        Map<CraftKey, Integer> expected = new LinkedHashMap<>();
+        int idle;
+    }
+
+    public CraftingJob(ItemStack target, int qty, Plan<CraftKey> plan) {
         this.phase = Phase.COLLECTING;
         this.target = target.copy();
         this.target.setCount(1);
@@ -75,34 +80,51 @@ public class CraftingJob {
         return operations.size();
     }
 
-    /** One tick of work. The caller must have already checked/charged energy for the active phases. */
     public void step(EngineersCrafterBE be) {
         switch (phase) {
             case COLLECTING -> collect(be);
-            case CRAFTING -> craftOne();
+            case CRAFTING -> craft(be);
             case DONE -> finish(be);
         }
     }
 
-    /** Aborts the job and returns whatever is already reserved back to the containers. */
+    public boolean ownsProcessor(UUID jobId, BlockPos processor) {
+        return id.equals(jobId) && isBusy(processor);
+    }
+
     public void cancel(EngineersCrafterBE be) {
-        flushBuffer(be);
-        finished = true;
+        for (ProcTask task : tasks) {
+            if (be.getLevel().isLoaded(task.pos)
+                    && be.getLevel().getBlockEntity(task.pos) instanceof NCProcessorBE proc) {
+                proc.recipeInfo().releaseCrafting(id);
+            }
+        }
+        tasks.clear();
+        phase = Phase.DONE;
+        finish(be);
     }
 
     private void collect(EngineersCrafterBE be) {
         AggregatedInventory agg = new AggregatedInventory(be.containerSlots);
-        for (Map.Entry<ItemKey, Integer> e : baseCost.entrySet()) {
-            if (agg.count(sample(e.getKey())) < e.getValue()) {
-                // an ingredient went missing since planning -> return what we have and give up
+        for (Map.Entry<CraftKey, Integer> e : baseCost.entrySet()) {
+            int have = e.getKey().isFluid()
+                    ? agg.countFluid(e.getKey().sampleFluid())
+                    : agg.count(e.getKey().sampleItem());
+            if (have < e.getValue()) {
                 cancel(be);
                 return;
             }
         }
-        for (Map.Entry<ItemKey, Integer> e : baseCost.entrySet()) {
-            ItemStack got = agg.extract(sample(e.getKey()), e.getValue(), false);
-            bufferAdd(e.getKey(), got.getCount());
-            if (got.getCount() < e.getValue()) {
+        for (Map.Entry<CraftKey, Integer> e : baseCost.entrySet()) {
+            CraftKey key = e.getKey();
+            int got;
+            if (key.isFluid()) {
+                got = agg.extractFluid(key.sampleFluid(), e.getValue(), false).getAmount();
+            } else {
+                got = agg.extract(key.sampleItem(), e.getValue(), false).getCount();
+            }
+            bufferAdd(key, got);
+            if (got < e.getValue()) {
                 cancel(be);
                 return;
             }
@@ -111,42 +133,172 @@ public class CraftingJob {
         phase = operations.isEmpty() ? Phase.DONE : Phase.CRAFTING;
     }
 
-    private void craftOne() {
-        PatternDef<ItemKey> op = operations.get(opIndex);
-        for (Map.Entry<ItemKey, Integer> in : op.inputs().entrySet()) {
+    private void craft(EngineersCrafterBE be) {
+        if (!tasks.isEmpty() && !collectTasks(be)) {
+            cancel(be);
+            return;
+        }
+        if (opIndex >= operations.size()) {
+            if (tasks.isEmpty()) phase = Phase.DONE;
+            return;
+        }
+        PatternDef<CraftKey> op = operations.get(opIndex);
+        if (!op.isProcessing()) {
+            if (hasInputs(op, 1)) {
+                craftOne(op);
+                stallTicks = 0;
+            } else if (tasks.isEmpty()) {
+
+                cancel(be);
+            }
+            return;
+        }
+        if (dispatch(be, op)) {
+            stallTicks = 0;
+        } else if (tasks.isEmpty() && ++stallTicks > STALL_LIMIT) {
+            cancel(be);
+        }
+    }
+
+    private boolean hasInputs(PatternDef<CraftKey> op, int times) {
+        for (Map.Entry<CraftKey, Integer> in : op.inputs().entrySet()) {
+            if ((long) buffer.getOrDefault(in.getKey(), 0) < (long) in.getValue() * times) return false;
+        }
+        return true;
+    }
+
+    private void craftOne(PatternDef<CraftKey> op) {
+        for (Map.Entry<CraftKey, Integer> in : op.inputs().entrySet()) {
             bufferRemove(in.getKey(), in.getValue());
         }
-        bufferAdd(op.output(), op.outputCount());
+        op.outputs().forEach(this::bufferAdd);
         opIndex++;
-        if (opIndex >= operations.size()) {
+        if (opIndex >= operations.size() && tasks.isEmpty()) {
             phase = Phase.DONE;
         }
     }
 
+    private boolean dispatch(EngineersCrafterBE be, PatternDef<CraftKey> op) {
+        int run = 1;
+        while (opIndex + run < operations.size() && operations.get(opIndex + run).equals(op)) run++;
+        int byBuffer = Integer.MAX_VALUE;
+        for (Map.Entry<CraftKey, Integer> in : op.inputs().entrySet()) {
+            if (in.getValue() <= 0) continue;
+            byBuffer = Math.min(byBuffer, buffer.getOrDefault(in.getKey(), 0) / in.getValue());
+        }
+        run = Math.min(run, byBuffer);
+        if (run <= 0) return false;
+
+        boolean needItems = false;
+        boolean needFluids = false;
+        for (CraftKey k : op.inputs().keySet()) {
+            if (k.isFluid()) needFluids = true;
+            else needItems = true;
+        }
+        for (CraftKey k : op.outputs().keySet()) {
+            if (k.isFluid()) needFluids = true;
+            else needItems = true;
+        }
+
+        boolean any = false;
+        for (Link link : be.processorLinks()) {
+            if (run <= 0) break;
+            if (!link.supports(op.processor(), needItems, needFluids) || isBusy(link.pos())) continue;
+            if (!be.getLevel().isLoaded(link.pos())) continue;
+            if (!(be.getLevel().getBlockEntity(link.pos()) instanceof NCProcessorBE proc)) continue;
+            if (!proc.NAME.equals(op.processor()) || !proc.recipeInfo().canAcceptCraftingOrder()) continue;
+            ProcessorTransfer transfer = ProcessorTransfer.of(proc);
+            ProcessorTransfer.InputPlan placement = transfer.plan(op, run);
+            if (placement == null) continue;
+            int n = placement.operations();
+            if (!proc.recipeInfo().reserveCrafting(id, be.getBlockPos(), op.recipeId(), n)) continue;
+
+            transfer.collectOutputs().forEach(this::bufferAdd);
+            if (!transfer.insert(placement)) {
+                proc.recipeInfo().releaseCrafting(id);
+                continue;
+            }
+            for (Map.Entry<CraftKey, Integer> in : op.inputs().entrySet()) {
+                bufferRemove(in.getKey(), in.getValue() * n);
+            }
+            ProcTask task = new ProcTask();
+            task.pos = link.pos().immutable();
+            op.outputs().forEach((key, amount) -> task.expected.put(key, amount * n));
+            proc.setChanged();
+            tasks.add(task);
+            opIndex += n;
+            run -= n;
+            any = true;
+        }
+        return any;
+    }
+
+    private boolean isBusy(BlockPos pos) {
+        for (ProcTask t : tasks) if (t.pos.equals(pos)) return true;
+        return false;
+    }
+
+    private boolean collectTasks(EngineersCrafterBE be) {
+        Level level = be.getLevel();
+        for (int i = tasks.size() - 1; i >= 0; i--) {
+            ProcTask task = tasks.get(i);
+            if (!level.isLoaded(task.pos)) continue;
+            BlockEntity raw = level.getBlockEntity(task.pos);
+            if (!(raw instanceof NCProcessorBE proc) || !proc.recipeInfo().isReservedBy(id)) return false;
+            Map<CraftKey, Integer> collected = ProcessorTransfer.of(proc).collectOutputs();
+            collected.forEach((key, amount) -> {
+                bufferAdd(key, amount);
+                task.expected.computeIfPresent(key, (k, remaining) -> remaining > amount ? remaining - amount : null);
+            });
+            if (!collected.isEmpty()) {
+                task.idle = 0;
+                proc.setChanged();
+            } else if (++task.idle > (proc.isActive ? ACTIVE_IDLE_LIMIT : IDLE_LIMIT)) {
+                return false;
+            }
+            if (task.expected.isEmpty() && proc.recipeInfo().isCraftingComplete(id)) {
+                proc.recipeInfo().releaseCrafting(id);
+                tasks.remove(i);
+            }
+        }
+        return true;
+    }
+
     private void finish(EngineersCrafterBE be) {
         flushBuffer(be);
-        finished = true;
+        finished = buffer.isEmpty();
     }
 
     private void flushBuffer(EngineersCrafterBE be) {
         AggregatedInventory agg = new AggregatedInventory(be.containerSlots);
         boolean changed = false;
-        for (Map.Entry<ItemKey, Integer> e : buffer.entrySet()) {
-            ItemStack sample = sample(e.getKey());
+        Map<CraftKey, Integer> keep = new LinkedHashMap<>();
+        for (Map.Entry<CraftKey, Integer> e : buffer.entrySet()) {
+            CraftKey key = e.getKey();
+            int count = e.getValue();
+            if (count <= 0) continue;
+            if (key.isFluid()) {
+                FluidStack fluid = key.sampleFluid(count);
+                if (fluid.isEmpty()) continue;
+                int filled = agg.insertFluid(fluid, false);
+                if (filled > 0) changed = true;
+                if (filled < count) keep.put(key, count - filled);
+                continue;
+            }
+            ItemStack sample = key.sampleItem();
             if (sample.isEmpty()) continue;
             int max = Math.max(1, sample.getMaxStackSize());
-            int count = e.getValue();
             while (count > 0) {
                 int chunk = Math.min(count, max);
                 count -= chunk;
-                ItemStack s = sample.copy();
-                s.setCount(chunk);
+                ItemStack s = sample.copyWithCount(chunk);
                 ItemStack leftover = agg.insert(s, false);
                 if (leftover.getCount() < chunk) changed = true;
                 if (!leftover.isEmpty()) dropInWorld(be, leftover);
             }
         }
         buffer.clear();
+        buffer.putAll(keep);
         if (changed) be.markUpdated();
     }
 
@@ -157,87 +309,167 @@ public class CraftingJob {
         Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
     }
 
-    private void bufferAdd(ItemKey key, int n) {
+    private void bufferAdd(CraftKey key, int n) {
         if (n > 0) buffer.merge(key, n, Integer::sum);
     }
 
-    private void bufferRemove(ItemKey key, int n) {
+    private void bufferRemove(CraftKey key, int n) {
         if (n <= 0) return;
         int left = buffer.getOrDefault(key, 0) - n;
         if (left > 0) buffer.put(key, left);
         else buffer.remove(key);
     }
 
-    private static ItemStack sample(ItemKey key) {
-        ItemStack s = new ItemStack(key.item());
-        if (key.tag() != null) s.setTag(key.tag().copy());
-        return s;
-    }
-
-    // --- NBT ---
-
     public void save(CompoundTag tag) {
+        tag.putUUID("Id", id);
         tag.putString("Phase", phase.name());
         tag.put("Target", target.save(new CompoundTag()));
         tag.putInt("Qty", qty);
         tag.putInt("OpIndex", opIndex);
+        tag.putInt("Stall", stallTicks);
         tag.putBoolean("Finished", finished);
         tag.put("Ops", writeOps());
         tag.put("BaseCost", writeMap(baseCost));
         tag.put("Buffer", writeMap(buffer));
+        ListTag taskList = new ListTag();
+        for (ProcTask t : tasks) {
+            CompoundTag c = new CompoundTag();
+            c.put("Pos", NbtUtils.writeBlockPos(t.pos));
+            c.putInt("Idle", t.idle);
+            c.put("Expected", writeMap(t.expected));
+            taskList.add(c);
+        }
+        tag.put("Tasks", taskList);
     }
 
     public static CraftingJob load(CompoundTag tag) {
         CraftingJob job = new CraftingJob();
+        if (tag.hasUUID("Id")) job.id = tag.getUUID("Id");
         job.phase = Phase.valueOf(tag.getString("Phase"));
         job.target = ItemStack.of(tag.getCompound("Target"));
         job.qty = tag.getInt("Qty");
         job.opIndex = tag.getInt("OpIndex");
+        job.stallTicks = tag.getInt("Stall");
         job.finished = tag.getBoolean("Finished");
-        readOps(tag.getList("Ops", Tag.TAG_COMPOUND), job.operations);
+        if (!readOps(tag.getList("Ops", Tag.TAG_COMPOUND), job.operations)) {
+
+            job.operations.clear();
+            job.tasks.clear();
+            job.phase = Phase.DONE;
+        }
         readMap(tag.getList("BaseCost", Tag.TAG_COMPOUND), job.baseCost);
         readMap(tag.getList("Buffer", Tag.TAG_COMPOUND), job.buffer);
+        ListTag taskList = tag.getList("Tasks", Tag.TAG_COMPOUND);
+        for (int i = 0; job.phase == Phase.CRAFTING && i < taskList.size(); i++) {
+            CompoundTag c = taskList.getCompound(i);
+            ProcTask t = new ProcTask();
+            t.pos = NbtUtils.readBlockPos(c.getCompound("Pos"));
+            t.idle = c.getInt("Idle");
+            readMap(c.getList("Expected", Tag.TAG_COMPOUND), t.expected);
+            job.tasks.add(t);
+        }
         return job;
     }
 
     private ListTag writeOps() {
         ListTag list = new ListTag();
-        for (PatternDef<ItemKey> op : operations) {
+        for (PatternDef<CraftKey> op : operations) {
             CompoundTag c = new CompoundTag();
-            c.put("Out", sample(op.output()).save(new CompoundTag()));
-            c.putInt("OutN", op.outputCount());
+            c.put("Outputs", writeMap(op.outputs()));
             c.put("In", writeMap(op.inputs()));
+            if (op.isProcessing()) {
+                c.putString("Proc", op.processor());
+                c.putString("Recipe", op.recipeId());
+                c.put("Parts", writeAmounts(op.ingredientAmounts()));
+            }
             list.add(c);
         }
         return list;
     }
 
-    private static void readOps(ListTag list, List<PatternDef<ItemKey>> out) {
+    private static boolean readOps(ListTag list, List<PatternDef<CraftKey>> out) {
         for (int i = 0; i < list.size(); i++) {
             CompoundTag c = list.getCompound(i);
-            ItemKey outKey = ItemKey.of(ItemStack.of(c.getCompound("Out")));
-            Map<ItemKey, Integer> inputs = new LinkedHashMap<>();
+            Map<CraftKey, Integer> outputs = new LinkedHashMap<>();
+            if (c.contains("Outputs")) {
+                readMap(c.getList("Outputs", Tag.TAG_COMPOUND), outputs);
+            } else {
+                CraftKey outKey = readKey(c, "Out");
+                if (outKey == null) return false;
+                outputs.put(outKey, c.getInt("OutN"));
+                readMap(c.getList("Extra", Tag.TAG_COMPOUND), outputs);
+            }
+            Map<CraftKey, Integer> inputs = new LinkedHashMap<>();
             readMap(c.getList("In", Tag.TAG_COMPOUND), inputs);
-            out.add(new PatternDef<>(outKey, c.getInt("OutN"), inputs));
+            String processor = c.getString("Proc");
+            String recipe = c.getString("Recipe");
+
+            if (!processor.isEmpty() && (recipe.isEmpty() || !ProcessorRecipes.isAllowed(processor))) return false;
+            if (outputs.isEmpty() || outputs.values().stream().anyMatch(n -> n <= 0)
+                    || inputs.isEmpty() || inputs.values().stream().anyMatch(n -> n <= 0)) return false;
+            Map<CraftKey, List<Integer>> parts = readAmounts(c.getList("Parts", Tag.TAG_COMPOUND));
+            out.add(new PatternDef<>(outputs, inputs, processor, recipe, parts));
         }
+        return true;
     }
 
-    private static ListTag writeMap(Map<ItemKey, Integer> map) {
+    private static ListTag writeAmounts(Map<CraftKey, List<Integer>> map) {
         ListTag list = new ListTag();
-        for (Map.Entry<ItemKey, Integer> e : map.entrySet()) {
+        for (Map.Entry<CraftKey, List<Integer>> e : map.entrySet()) {
             CompoundTag c = new CompoundTag();
-            c.put("Item", sample(e.getKey()).save(new CompoundTag()));
+            writeKey(c, "Item", e.getKey());
+            c.putIntArray("Amounts", e.getValue().stream().mapToInt(Integer::intValue).toArray());
+            list.add(c);
+        }
+        return list;
+    }
+
+    private static Map<CraftKey, List<Integer>> readAmounts(ListTag list) {
+        Map<CraftKey, List<Integer>> out = new LinkedHashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            CompoundTag c = list.getCompound(i);
+            CraftKey key = readKey(c, "Item");
+            if (key == null) continue;
+            List<Integer> amounts = new ArrayList<>();
+            for (int a : c.getIntArray("Amounts")) amounts.add(a);
+            out.put(key, amounts);
+        }
+        return out;
+    }
+
+    private static ListTag writeMap(Map<CraftKey, Integer> map) {
+        ListTag list = new ListTag();
+        for (Map.Entry<CraftKey, Integer> e : map.entrySet()) {
+            CompoundTag c = new CompoundTag();
+            writeKey(c, "Item", e.getKey());
             c.putInt("N", e.getValue());
             list.add(c);
         }
         return list;
     }
 
-    private static void readMap(ListTag list, Map<ItemKey, Integer> out) {
+    private static void readMap(ListTag list, Map<CraftKey, Integer> out) {
         for (int i = 0; i < list.size(); i++) {
             CompoundTag c = list.getCompound(i);
-            ItemKey key = ItemKey.of(ItemStack.of(c.getCompound("Item")));
-            out.merge(key, c.getInt("N"), Integer::sum);
+            CraftKey key = readKey(c, "Item");
+            if (key != null) out.merge(key, c.getInt("N"), Integer::sum);
         }
+    }
+
+    private static void writeKey(CompoundTag c, String name, CraftKey key) {
+        if (key.isFluid()) {
+            c.put(name + "Fluid", key.sampleFluid().writeToNBT(new CompoundTag()));
+        } else {
+            c.put(name, key.sampleItem().save(new CompoundTag()));
+        }
+    }
+
+    private static CraftKey readKey(CompoundTag c, String name) {
+        if (c.contains(name + "Fluid")) {
+            FluidStack f = FluidStack.loadFluidStackFromNBT(c.getCompound(name + "Fluid"));
+            return f.isEmpty() ? null : CraftKey.of(f);
+        }
+        ItemStack s = ItemStack.of(c.getCompound(name));
+        return s.isEmpty() ? null : CraftKey.of(s);
     }
 }

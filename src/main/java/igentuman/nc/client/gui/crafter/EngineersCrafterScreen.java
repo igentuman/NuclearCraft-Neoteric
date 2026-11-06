@@ -7,13 +7,20 @@ import igentuman.nc.client.gui.element.button.Checkbox;
 import igentuman.nc.client.gui.element.button.NCImageButton;
 import igentuman.nc.client.gui.element.slot.NormalSlot;
 import igentuman.nc.container.EngineersCrafterContainer;
-import igentuman.nc.handler.crafter.AggregatedInventory;
 import igentuman.nc.handler.crafter.AggregatedInventory.Entry;
 import igentuman.nc.handler.crafter.AggregatedInventory.ItemKey;
+import igentuman.nc.handler.crafter.AggregatedInventory;
 import igentuman.nc.handler.crafter.CraftingPattern;
 import igentuman.nc.network.toServer.PacketCrafterExtract;
 import igentuman.nc.network.toServer.PacketCrafterInsert;
 import igentuman.nc.network.toServer.PacketGuiButtonPress;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -27,14 +34,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.numberFormat;
@@ -87,7 +86,7 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
 
         widgets.clear();
         for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 2; col++) {
+            for (int col = 0; col < 3; col++) {
                 widgets.add(new NormalSlot(16 + col * 18, 90 + contentShift + row * 18, "item"));
             }
         }
@@ -191,13 +190,14 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
         for (int i = 0; i < patterns.getSlots(); i++) {
             CraftingPattern pattern = CraftingPattern.from(patterns.getStackInSlot(i));
             if (pattern == null) continue;
-            ItemStack output = pattern.output();
-            if (output.isEmpty()) continue;
-            ItemKey key = ItemKey.of(output);
-            if (map.containsKey(key)) continue;
-            ItemStack icon = output.copy();
-            icon.setCount(1);
-            map.put(key, icon);
+            for (ItemStack output : pattern.itemOutputs()) {
+                if (output.isEmpty()) continue;
+                ItemKey key = ItemKey.of(output);
+                if (map.containsKey(key)) continue;
+                ItemStack icon = output.copy();
+                icon.setCount(1);
+                map.put(key, icon);
+            }
         }
         return map;
     }

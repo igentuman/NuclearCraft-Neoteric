@@ -3,6 +3,7 @@ package igentuman.nc.network;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.network.toClient.PacketBombDetonationStart;
 import igentuman.nc.network.toClient.PacketCraftDenied;
+import igentuman.nc.network.toClient.PacketEncoderSync;
 import igentuman.nc.network.toClient.PacketFissionDesignData;
 import igentuman.nc.network.toClient.PacketPlayerRadiationData;
 import igentuman.nc.network.toClient.PacketQ36BeamFx;
@@ -54,6 +55,7 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketQ36BeamFx.class, PacketQ36BeamFx::decode);
         registerServerToClient(PacketBombDetonationStart.class, PacketBombDetonationStart::decode);
         registerServerToClient(PacketCraftDenied.class, PacketCraftDenied::decode);
+        registerServerToClient(PacketEncoderSync.class, PacketEncoderSync::decode);
         registerServerToClient(PacketSyncContainerInventory.class, PacketSyncContainerInventory::decode);
         registerServerToClient(PacketFissionDesignData.class, PacketFissionDesignData::decode);
     }

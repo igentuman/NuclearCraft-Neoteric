@@ -3,13 +3,13 @@ package igentuman.nc.compat.jei;
 import igentuman.nc.block.accelerator.entity.LinearAcceleratorControllerBE;
 import igentuman.nc.block.collision_chamber.entity.CollisionChamberControllerBE;
 import igentuman.nc.block.decay_chamber.entity.DecayChamberControllerBE;
-import igentuman.nc.block.fission.entity.MSRControllerBE;
-import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
 import igentuman.nc.block.fission.entity.FissionControllerBE;
+import igentuman.nc.block.fission.entity.MSRControllerBE;
 import igentuman.nc.block.fusion.entity.FusionCoreBE;
-import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
-import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.block.heat_exchanger.entity.HeatExchangerControllerBE;
+import igentuman.nc.block.kugelblitz.entity.ChamberTerminalBE;
+import igentuman.nc.block.target_chamber.entity.TargetChamberControllerBE;
+import igentuman.nc.block.turbine.entity.TurbineControllerBE;
 import igentuman.nc.client.NcClient;
 import igentuman.nc.client.gui.fission.FissionControllerScreen;
 import igentuman.nc.client.gui.fission.MSRControllerScreen;
@@ -19,14 +19,18 @@ import igentuman.nc.compat.jei.ingredient.ParticleStackHelper;
 import igentuman.nc.compat.jei.ingredient.ParticleStackListFactory;
 import igentuman.nc.compat.jei.ingredient.ParticleStackRenderer;
 import igentuman.nc.compat.jei.ingredient.ParticleType;
+import igentuman.nc.content.fuel.FuelManager;
+import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.particles.Particle;
 import igentuman.nc.content.particles.ParticleSources;
 import igentuman.nc.content.particles.ParticleStack;
 import igentuman.nc.content.particles.Particles;
-import igentuman.nc.content.fuel.FuelManager;
-import igentuman.nc.content.materials.Materials;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.config.ClientConfig;
+import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
+import igentuman.nc.multiblock.accelerator.CoolerDef;
+import igentuman.nc.multiblock.fission.FissionReactorRegistration;
+import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
 import igentuman.nc.recipes.ingredient.creator.IngredientCreatorAccess;
@@ -34,16 +38,14 @@ import igentuman.nc.recipes.type.MekChemicalConversionRecipe;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.recipes.type.NuclearBlastRecipe;
 import igentuman.nc.recipes.type.OreVeinRecipe;
-import igentuman.nc.multiblock.accelerator.AcceleratorRegistration;
-import igentuman.nc.multiblock.accelerator.CoolerDef;
-import igentuman.nc.multiblock.fission.FissionReactorRegistration;
-import igentuman.nc.multiblock.fission.HeatSinkDef;
 import igentuman.nc.setup.registration.FissionFuel;
 import igentuman.nc.setup.registration.NCFluids;
+import java.io.IOException;
+import java.util.*;
 import mezz.jei.api.IModPlugin;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IRecipeManager;
@@ -62,9 +64,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.util.*;
 
 import static igentuman.nc.NuclearCraft.*;
 import static igentuman.nc.compat.GlobalVars.*;
@@ -112,7 +111,6 @@ public  class JEIPlugin implements IModPlugin {
         return recipeTypes;
     }
 
-
     public ResourceLocation getPluginUid() {
         return rl("jei_plugin");
     }
@@ -138,7 +136,7 @@ public  class JEIPlugin implements IModPlugin {
                 recipeManager.hideRecipeCategory(recipeManager.getRecipeType(categoryToHide).get());
             }
         }
-        
+
         if (ClientConfig.MISC_CONFIG.HIDE_PARTICLES.get()) {
             List<ParticleStack> particleStacks = ParticleStackListFactory.create();
             jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(ParticleType.Particle, particleStacks);
@@ -263,7 +261,6 @@ public  class JEIPlugin implements IModPlugin {
         return (RecipeType<TYPE>) in;
     }
 
-
     public void registerRecipes(IRecipeRegistration registration) {
         try {
             for (String name : getRecipeTypes().keySet()) {
@@ -333,7 +330,7 @@ public  class JEIPlugin implements IModPlugin {
             registration.addRecipes(CoolerPlacementCategory.TYPE, coolerPlacementRecipes());
             registration.addRecipes(FuelInfoCategory.TYPE, fuelInfoRecipes());
             registration.addRecipes(IsotopeInfoCategory.TYPE, isotopeInfoRecipes());
-            
+
             // Add ingredient info for chamber controller
             registration.addIngredientInfo(
                 List.of(new ItemStack(KUGELBLITZ_BLOCKS.get("chamber_terminal").get()), new ItemStack(UNKNOWN_INGREDIENT.get())),
@@ -408,16 +405,16 @@ public  class JEIPlugin implements IModPlugin {
 
     private List<HeatSinkPlacementRecipe> heatSinkPlacementRecipes() {
         List<HeatSinkPlacementRecipe> recipes = new ArrayList<>();
-        
+
         for (Map.Entry<String, HeatSinkDef> entry : FissionReactorRegistration.heatsinks.entrySet()) {
             String heatSinkName = entry.getKey();
             HeatSinkDef heatSinkDef = entry.getValue();
-            
+
             // Skip empty and active heat sinks as they don't have placement rules
             if (heatSinkName.equals("empty") || heatSinkName.equals("active")) {
                 continue;
             }
-            
+
             // Get the heat sink item
             String blockKey = heatSinkName + "_heat_sink";
             if (FissionReactorRegistration.FISSION_BLOCKS.containsKey(blockKey)) {
@@ -425,22 +422,22 @@ public  class JEIPlugin implements IModPlugin {
                 recipes.add(new HeatSinkPlacementRecipe(rl(blockKey), heatSinkDef, heatSinkItem));
             }
         }
-        
+
         return recipes;
     }
 
     private List<CoolerPlacementRecipe> coolerPlacementRecipes() {
         List<CoolerPlacementRecipe> recipes = new ArrayList<>();
-        
+
         for (Map.Entry<String, CoolerDef> entry : AcceleratorRegistration.COOLERS.entrySet()) {
             String coolerName = entry.getKey();
             CoolerDef coolerDef = entry.getValue();
-            
+
             // Skip empty coolers as they don't have placement rules
             if (coolerName.equals("empty")) {
                 continue;
             }
-            
+
             // Get the cooler item
             String blockKey = coolerName + "_cooler";
             if (AcceleratorRegistration.ACCELERATOR_BLOCKS.containsKey(blockKey)) {
@@ -448,7 +445,7 @@ public  class JEIPlugin implements IModPlugin {
                 recipes.add(new CoolerPlacementRecipe(rl(blockKey), coolerDef, coolerItem));
             }
         }
-        
+
         return recipes;
     }
 
@@ -512,6 +509,9 @@ public  class JEIPlugin implements IModPlugin {
         for (String name : getRecipeTypes().keySet()) {
             if (!Processors.all().containsKey(name)) continue;
             registration.addRecipeTransferHandler(new ProcessorRecipeTransferHandler<>(getRecipeType(name)), getRecipeType(name));
+            if (igentuman.nc.handler.crafter.ProcessorRecipes.isAllowed(name)) {
+                registration.addRecipeTransferHandler(new EngineersEncoderProcessorTransferHandler<>(getRecipeType(name), registration.getTransferHelper()), getRecipeType(name));
+            }
         }
         registration.addRecipeTransferHandler(new EngineersCrafterRecipeTransferHandler(registration.getTransferHelper()), mezz.jei.api.constants.RecipeTypes.CRAFTING);
         registration.addRecipeTransferHandler(new EngineersEncoderRecipeTransferHandler(), mezz.jei.api.constants.RecipeTypes.CRAFTING);

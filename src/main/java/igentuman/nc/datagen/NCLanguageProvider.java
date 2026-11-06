@@ -1,10 +1,9 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.setup.registration.*;
+import java.util.List;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
-
-import java.util.List;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.multiblock.accelerator.AcceleratorRegistration.ACCELERATOR_BLOCKS;
@@ -527,7 +526,7 @@ public class NCLanguageProvider extends LanguageProvider {
         // Wasteland advancements
         add("advancement.nc.wasteland", "Wasteland");
         add("advancement.nc.wasteland.desc", "Enter the desolate Wasteland biome");
-        
+
         add("advancement.nc.wasteland_boss", "Wasteland Conqueror");
         add("advancement.nc.wasteland_boss.desc", "Defeat the Boss of the Wasteland");
 
@@ -1357,7 +1356,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add(TOUGH_PANTS.get(), "Tough Pants");
         add(TOUGH_BOOTS.get(), "Tough Boots");
         add(TOUGH_CHEST.get(), "Tough Chest");
-        
+
         add(HEV_HELMET.get(), "HEV Helmet");
         add(HEV_PANTS.get(), "HEV Pants");
         add(HEV_BOOTS.get(), "HEV Boots");
@@ -1368,7 +1367,7 @@ public class NCLanguageProvider extends LanguageProvider {
         add(HAZMAT_BOOTS.get(), "Hazmat Boots");
         add(HAZMAT_CHEST.get(), "Hazmat Chest");
     }
-    
+
     private void food() {
         for(String name: NCItems.NC_FOOD.keySet()) {
             add(NCItems.NC_FOOD.get(name).get(), convertToName(name));
@@ -1439,6 +1438,14 @@ public class NCLanguageProvider extends LanguageProvider {
         add("container."+MODID+".engineers_encoder", "Pattern Encoder");
         add("gui.nc.crafter.encoder", "Encoder");
         add("gui.nc.encoder.encode", "Encode recipe onto a blank pattern");
+        add("gui.nc.crafter.mode.crafting_patterns", "Crafting mode: encode grid recipes. Click to authorize processing duty.");
+        add("gui.nc.crafter.mode.processing_patterns", "Processing mode: encode machine recipes with JEI/EMI + or item inputs. Click for crafting duty.");
+        add("gui.nc.crafter.processor", "Assigned processor: %s");
+        add("gui.nc.crafter.no_recipe", "No approved recipe");
+        add("gui.nc.crafter.denied.fluid_entry", "%s mB %s");
+        add("tooltip.nc.crafting_pattern.crafting", "Crafting work order");
+        add("tooltip.nc.crafting_pattern.processing", "Processing work order: %s");
+        add("tooltip.nc.crafting_pattern.output", "Authorized output: %s");
         add("item."+MODID+".crafting_pattern", "Crafting Pattern");
         add("tooltip.nc.crafting_pattern.blank", "Blank stock. Feed it to a Pattern Encoder to imprint a recipe. (Ink not included; graphite works fine.)");
         add("gui.nc.crafter.view", "View: %s");

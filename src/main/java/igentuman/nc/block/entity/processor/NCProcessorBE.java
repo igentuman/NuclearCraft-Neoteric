@@ -5,21 +5,27 @@ import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.compat.cc.ProcessorPeripheral;
 import igentuman.nc.compat.oc2.ProcessorDevice;
+import igentuman.nc.content.processors.ProcessorPrefab;
+import igentuman.nc.content.processors.Processors;
 import igentuman.nc.handler.CatalystHandler;
 import igentuman.nc.handler.UpgradesHandler;
+import igentuman.nc.handler.sided.SidedContentHandler;
+import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.handler.sided.capability.ItemCapabilityHandler;
 import igentuman.nc.radiation.data.RadiationManager;
 import igentuman.nc.recipes.AbstractRecipe;
 import igentuman.nc.recipes.NcRecipeType;
-import igentuman.nc.content.processors.ProcessorPrefab;
-import igentuman.nc.content.processors.Processors;
 import igentuman.nc.recipes.ingredient.FluidStackIngredient;
 import igentuman.nc.recipes.type.NcRecipe;
 import igentuman.nc.setup.registration.NCProcessors;
-import igentuman.nc.util.capability.CustomEnergyStorage;
-import igentuman.nc.handler.sided.SidedContentHandler;
-import igentuman.nc.handler.sided.SlotModePair;
 import igentuman.nc.util.annotation.NBTField;
+import igentuman.nc.util.capability.CustomEnergyStorage;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -41,13 +47,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 
 import static igentuman.nc.NuclearCraft.currentTick;
 import static igentuman.nc.block.ProcessorBlock.ACTIVE;
@@ -96,6 +95,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     public NCProcessorBE(BlockPos pPos, BlockState pBlockState, String name) {
         super(NCProcessors.PROCESSORS_BE.get(name).get(), pPos, pBlockState);
         NAME = name;
+        recipeInfo().be = this;
         prefab = Processors.all().get(name);
         contentHandler = new SidedContentHandler(
                 prefab().getSlotsConfig().getInputItems(), prefab().getSlotsConfig().getOutputItems(),
@@ -166,6 +166,34 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     }
 
     public void updateRecipe() {
+        recipeInfo().be = this;
+        if (recipeInfo().hasCraftingOrder()) {
+            var order = recipeInfo().craftingOrder();
+            if (recipeInfo().ticks > 0 && !recipeInfo().isCompleted()) {
+                recipe = getRecipeById(recipeInfo().recipeId);
+                recipeInfo().recipe = recipe;
+                return;
+            }
+            recipe = null;
+            recipeInfo().clear();
+            int limit = order.batchLimit(parallelRecipes());
+            if (limit <= 0) return;
+            NcRecipe selected = getRecipeById(order.recipeId());
+            if (selected == null || !selected.test(contentHandler())) return;
+            recipe = selected;
+            recipeInfo().setRecipe(selected);
+            recipeInfo().ticks = Math.max(1, (int) (getBaseProcessTime() * selected.getTimeModifier()));
+            recipeInfo().energy = getBasePower() * selected.getEnergy();
+            recipeInfo().radiation = selected.getRadiation();
+            recipeInfo().setParallelProcessing(limit);
+            if (recipeInfo().consumeInputs(contentHandler())) order.started(recipeInfo().parallelProcessing);
+            else {
+                recipe = null;
+                recipeInfo().clear();
+            }
+            setChanged();
+            return;
+        }
         //check if last recipe is still valid
         if(recipe != null) {
             if(recipe.test(contentHandler())) {
@@ -273,6 +301,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         if (hasRecipe() && (recipeInfo().isCompleted() || recipeInfo().isStuck())) {
             if (recipeInfo().handleOutputs(contentHandler())) {
                 recipeInfo().stuck = false;
+                if (recipeInfo().hasCraftingOrder()) recipeInfo().craftingOrder().completed();
                 updateRecipe();
             } else {
                 recipeInfo().stuck = true;
@@ -354,6 +383,8 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (side != null && recipeInfo().hasCraftingOrder()
+                && (cap == ForgeCapabilities.ITEM_HANDLER || cap == ForgeCapabilities.FLUID_HANDLER)) return LazyOptional.empty();
         if (cap == ForgeCapabilities.ENERGY && PROCESSOR_CONFIG.GT_SUPPORT.get() != 2) {
             if(prefab().config().getPower() > 0) {
                 return getEnergy().cast();
@@ -421,6 +452,8 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
 
     public void tickServer() {
         if(NuclearCraft.instance.isNcBeStopped || isRemoved()) return;
+        recipeInfo().be = this;
+        if (!recipeInfo().validateCraftingOwner()) return;
         if(redstoneMode == 1 && currentTick % 5 == 0 && !hasRedstoneSignal()) return;
         if(howMuchICanSkip() >= skippedTicks) {
             skippedTicks++;
@@ -440,7 +473,7 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
         }
         lastTickTime = currentTick;
         handleRecipeOutput();
-        updated = updated || contentHandler().tick();
+        if (!recipeInfo().hasCraftingOrder()) updated = contentHandler().tick() || updated;
         if(updated || wasUpdated) {
             energyStorage().setMaxCapacity(getEnergyCapacity() * Math.max(1, getEnergyUpgrades()/10));
             if (wasActive != isActive) {
@@ -660,6 +693,5 @@ public class NCProcessorBE extends NuclearCraftBE implements Processor {
     public int getTier() {
         return GTCEU_CONFIG.PROCESSOR_ENERGY_TIER.get().ordinal()+(getEnergyUpgrades()-1)/GTCEU_CONFIG.ENERGY_UPGRADES_NEEDED_TO_NEXT_TIER.get();
     }
-
 
 }

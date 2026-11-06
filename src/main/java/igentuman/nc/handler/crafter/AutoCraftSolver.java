@@ -1,6 +1,7 @@
 package igentuman.nc.handler.crafter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -8,23 +9,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Recursive autocraft planner. Pure logic, no Minecraft dependencies, so it is unit-testable with
- * plain key types under {@code src/test/java}. It plans but never executes: on success it yields a
- * dependency-ordered {@link Plan}; on failure a shortage report of base items that cannot be sourced.
- *
- * @param <K> the item-identity type (production uses {@code AggregatedInventory.ItemKey}).
- */
 public class AutoCraftSolver<K> {
 
-    /** One crafting recipe: {@code inputs} consumed to produce {@code outputCount} of {@code output}. */
-    public record PatternDef<K>(K output, int outputCount, Map<K, Integer> inputs) {}
+    public record PatternDef<K>(Map<K, Integer> outputs, Map<K, Integer> inputs,
+                                String processor, String recipeId, Map<K, List<Integer>> ingredientAmounts) {
 
-    /**
-     * A feasible plan. {@code operations} is dependency-first; each entry is a single application of
-     * one pattern (a step needing N applications appears N times). {@code baseCost} is everything to
-     * pull from the source inventory up front (leaves plus any intermediates drawn from stock).
-     */
+        public PatternDef {
+            outputs = Collections.unmodifiableMap(new LinkedHashMap<>(outputs));
+            inputs = Collections.unmodifiableMap(new LinkedHashMap<>(inputs));
+            Map<K, List<Integer>> parts = new LinkedHashMap<>();
+            ingredientAmounts.forEach((key, amounts) -> parts.put(key, List.copyOf(amounts)));
+            ingredientAmounts = Collections.unmodifiableMap(parts);
+        }
+
+        public PatternDef(K output, int outputCount, Map<K, Integer> inputs) {
+            this(Map.of(output, outputCount), inputs, "", "", Map.of());
+        }
+
+        public List<Integer> amounts(K key) {
+            List<Integer> list = ingredientAmounts.get(key);
+            return list == null || list.isEmpty() ? List.of(inputs.getOrDefault(key, 0)) : list;
+        }
+
+        public boolean isProcessing() {
+            return processor != null && !processor.isEmpty();
+        }
+    }
+
     public record Plan<K>(List<PatternDef<K>> operations, Map<K, Integer> baseCost) {}
 
     public record Result<K>(Plan<K> plan, Map<K, Integer> shortages, boolean tooComplex) {
@@ -50,22 +61,21 @@ public class AutoCraftSolver<K> {
 
     private final Map<K, PatternDef<K>> outputIndex = new LinkedHashMap<>();
 
-    /** First pattern per output wins (MVP matches by output identity, ignores count). */
     public AutoCraftSolver(List<PatternDef<K>> patterns) {
         for (PatternDef<K> p : patterns) {
-            if (p.outputCount() > 0 && !p.inputs().isEmpty()) {
-                outputIndex.putIfAbsent(p.output(), p);
+            if (!p.inputs().isEmpty() && p.inputs().values().stream().allMatch(n -> n > 0)
+                    && p.outputs().values().stream().allMatch(n -> n > 0)) {
+                for (K output : p.outputs().keySet()) outputIndex.putIfAbsent(output, p);
             }
         }
     }
 
-    // Per-solve mutable state.
-    private Map<K, Integer> pool;               // available: source stock + produced leftovers
-    private Map<K, Integer> stockRemaining;     // untouched source stock, drives baseCost
+    private Map<K, Integer> pool;
+    private Map<K, Integer> stockRemaining;
     private Map<K, Integer> baseCost;
     private Map<K, Integer> shortages;
     private List<PatternDef<K>> operations;
-    private Set<K> active;                       // cycle guard
+    private Set<PatternDef<K>> active;
     private int opCount;
     private boolean aborted;
 
@@ -114,34 +124,47 @@ public class AutoCraftSolver<K> {
         }
 
         PatternDef<K> pattern = outputIndex.get(item);
-        if (pattern == null || !active.add(item)) {
-            // No recipe, or a cyclic dependency we cannot break: report the remaining need as missing.
+        if (pattern == null || !active.add(pattern)) {
             shortages.merge(item, need, Integer::sum);
             return false;
         }
 
-        int outputCount = pattern.outputCount();
-        int times = (need + outputCount - 1) / outputCount;
+        int outputCount = pattern.outputs().get(item);
+        int times = (int) (((long) need + outputCount - 1) / outputCount);
+        if (times > MAX_OPS - opCount) {
+            aborted = true;
+            return false;
+        }
 
         boolean allOk = true;
         for (Map.Entry<K, Integer> input : pattern.inputs().entrySet()) {
             long amount = (long) input.getValue() * times;
-            int clamped = amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
-            if (!produce(input.getKey(), clamped, depth + 1)) {
+            if (amount > Integer.MAX_VALUE) {
+                aborted = true;
+                return false;
+            }
+            if (!produce(input.getKey(), (int) amount, depth + 1)) {
                 allOk = false;
                 if (aborted) {
-                    active.remove(item);
+                    active.remove(pattern);
                     return false;
                 }
             }
         }
-        active.remove(item);
+        active.remove(pattern);
         if (!allOk) {
             return false;
         }
 
-        int produced = outputCount * times;
-        pool.merge(item, produced - need, Integer::sum); // surplus batch stays available for reuse
+        for (Map.Entry<K, Integer> output : pattern.outputs().entrySet()) {
+            long available = (long) pool.getOrDefault(output.getKey(), 0) + (long) output.getValue() * times;
+            if (output.getKey().equals(item)) available -= need;
+            if (available > Integer.MAX_VALUE) {
+                aborted = true;
+                return false;
+            }
+            pool.put(output.getKey(), (int) available);
+        }
         for (int i = 0; i < times; i++) {
             operations.add(pattern);
             if (++opCount > MAX_OPS) {

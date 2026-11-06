@@ -2,14 +2,13 @@ package igentuman.nc.network.toClient;
 
 import igentuman.nc.client.gui.crafter.CraftDeniedScreen;
 import igentuman.nc.network.INcPacket;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Server reply when an autocraft request cannot be satisfied. Carries the missing base items (with
@@ -18,6 +17,8 @@ import java.util.List;
  */
 public class PacketCraftDenied implements INcPacket {
 
+    private List<net.minecraftforge.fluids.FluidStack> fluids = List.of();
+    private List<Integer> fluidAmounts = List.of();
     private List<ItemStack> items;
     private List<Integer> amounts;
     private boolean tooComplex;
@@ -31,10 +32,17 @@ public class PacketCraftDenied implements INcPacket {
         this.tooComplex = tooComplex;
     }
 
+    public PacketCraftDenied(List<ItemStack> items, List<Integer> amounts,
+                             List<net.minecraftforge.fluids.FluidStack> fluids, List<Integer> fluidAmounts, boolean tooComplex) {
+        this(items, amounts, tooComplex);
+        this.fluids = fluids;
+        this.fluidAmounts = fluidAmounts;
+    }
+
     @Override
     public void handle(NetworkEvent.Context context) {
         context.enqueueWork(() ->
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> CraftDeniedScreen.open(items, amounts, tooComplex)));
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> CraftDeniedScreen.open(items, amounts, fluids, fluidAmounts, tooComplex)));
     }
 
     @Override
@@ -44,6 +52,11 @@ public class PacketCraftDenied implements INcPacket {
         for (int i = 0; i < items.size(); i++) {
             buffer.writeItem(items.get(i));
             buffer.writeVarInt(amounts.get(i));
+        }
+        buffer.writeVarInt(fluids.size());
+        for (int i = 0; i < fluids.size(); i++) {
+            buffer.writeFluidStack(fluids.get(i));
+            buffer.writeVarInt(fluidAmounts.get(i));
         }
     }
 
@@ -56,6 +69,13 @@ public class PacketCraftDenied implements INcPacket {
         for (int i = 0; i < n; i++) {
             packet.items.add(buffer.readItem());
             packet.amounts.add(buffer.readVarInt());
+        }
+        int fluidCount = buffer.readVarInt();
+        packet.fluids = new ArrayList<>(fluidCount);
+        packet.fluidAmounts = new ArrayList<>(fluidCount);
+        for (int i = 0; i < fluidCount; i++) {
+            packet.fluids.add(buffer.readFluidStack());
+            packet.fluidAmounts.add(buffer.readVarInt());
         }
         return packet;
     }

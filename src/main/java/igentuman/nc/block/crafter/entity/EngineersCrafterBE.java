@@ -1,23 +1,31 @@
 package igentuman.nc.block.crafter.entity;
 
+import igentuman.nc.compat.cc.EngineersCrafterPeripheral;
+import igentuman.nc.compat.oc2.EngineersCrafterDevice;
 import igentuman.nc.container.EngineersEncoderContainer;
 import igentuman.nc.handler.crafter.AggregatedInventory;
-import igentuman.nc.handler.crafter.AggregatedInventory.ItemKey;
 import igentuman.nc.handler.crafter.AggregatedItemHandler;
-import igentuman.nc.handler.crafter.AutoCraftSolver;
 import igentuman.nc.handler.crafter.AutoCraftSolver.PatternDef;
 import igentuman.nc.handler.crafter.AutoCraftSolver.Plan;
+import igentuman.nc.handler.crafter.AutoCraftSolver;
+import igentuman.nc.handler.crafter.CraftKey;
 import igentuman.nc.handler.crafter.CraftingJob;
 import igentuman.nc.handler.crafter.CraftingPattern;
-import igentuman.nc.item.ContainerBlockItem;
+import igentuman.nc.handler.crafter.ProcessorIndex.Link;
+import igentuman.nc.handler.crafter.ProcessorIndex;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -31,20 +39,13 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
-import igentuman.nc.compat.cc.EngineersCrafterPeripheral;
-import igentuman.nc.compat.oc2.EngineersCrafterDevice;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import static igentuman.nc.compat.oc2.EngineersCrafterDevice.DEVICE_CAPABILITY;
 import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_BE;
@@ -60,8 +61,8 @@ public class EngineersCrafterBE extends BlockEntity {
     public static final int PASSIVE_FE = 100;
     public static final int CRAFT_FE = 200;
 
-    public static final int PATTERNS_SIZE = 36;
-    public static final int CONTAINER_SLOTS = 6;
+    public static final int PATTERNS_SIZE = 72;
+    public static final int CONTAINER_SLOTS = 9;
     public static final int OPEN_ENCODER_BTN = 191;
 
     public final ItemStackHandler containerSlots = new ItemStackHandler(CONTAINER_SLOTS) {
@@ -72,7 +73,12 @@ public class EngineersCrafterBE extends BlockEntity {
 
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            return stack.getItem() instanceof ContainerBlockItem;
+            return AggregatedInventory.isStorageItem(stack);
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 1;
         }
     };
 
@@ -101,14 +107,7 @@ public class EngineersCrafterBE extends BlockEntity {
 
         @Override
         public void deserializeNBT(CompoundTag nbt) {
-            ListTag items = nbt.getList("Items", Tag.TAG_COMPOUND);
-            for (int i = 0; i < items.size(); i++) {
-                CompoundTag itemTags = items.getCompound(i);
-                int slot = itemTags.getInt("Slot");
-                if (slot >= 0 && slot < getSlots()) {
-                    setStackInSlot(slot, ItemStack.of(itemTags));
-                }
-            }
+            loadKeepingSize(this, nbt);
             onLoad();
         }
     };
@@ -139,6 +138,11 @@ public class EngineersCrafterBE extends BlockEntity {
 
     private LazyOptional<EngineersCrafterPeripheral> peripheralCap;
 
+    private List<Link> linkCache = List.of();
+    private int linkStamp = Integer.MIN_VALUE;
+    private long linkTime = Long.MIN_VALUE;
+    private static final int LINK_REFRESH = 40;
+    private boolean wasChanged;
     private CraftingJob job;
     public int craftOpIndex = 0;
     public int craftOpTotal = 0;
@@ -148,8 +152,13 @@ public class EngineersCrafterBE extends BlockEntity {
     }
 
     public void markUpdated() {
+        wasChanged = true;
         setChanged();
-        if (level != null && !level.isClientSide) {
+    }
+
+    private void flushUpdate() {
+        if (wasChanged && level != null && !level.isClientSide) {
+            wasChanged = false;
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
         }
     }
@@ -172,13 +181,11 @@ public class EngineersCrafterBE extends BlockEntity {
                 job = null;
                 markUpdated();
             }
-            return;
-        }
-
-        if (energy.getEnergyStored() >= PASSIVE_FE) {
+        } else if (energy.getEnergyStored() >= PASSIVE_FE) {
             energy.consume(PASSIVE_FE);
             setChanged();
         }
+        flushUpdate();
     }
 
     public void tickClient() {
@@ -188,17 +195,21 @@ public class EngineersCrafterBE extends BlockEntity {
         return job != null && !job.isFinished();
     }
 
-    public boolean startJob(ItemStack target, int qty, Plan<ItemKey> plan) {
+    public boolean startJob(ItemStack target, int qty, Plan<CraftKey> plan) {
         if (hasActiveJob() || plan.operations().isEmpty()) return false;
         job = new CraftingJob(target, qty, plan);
         markUpdated();
         return true;
     }
 
+    public boolean ownsProcessor(UUID jobId, BlockPos processor) {
+        return hasActiveJob() && job.ownsProcessor(jobId, processor);
+    }
+
     public void cancelJob() {
         if (hasActiveJob()) {
             job.cancel(this);
-            job = null;
+            if (job.isFinished()) job = null;
             markUpdated();
         }
     }
@@ -218,27 +229,78 @@ public class EngineersCrafterBE extends BlockEntity {
         NetworkHooks.openScreen(player, provider, getBlockPos());
     }
 
-    public AutoCraftSolver.Result<ItemKey> planCraft(ItemStack target, int qty) {
-        AggregatedInventory agg = new AggregatedInventory(containerSlots);
-        Map<ItemKey, Integer> available = new LinkedHashMap<>();
-        for (AggregatedInventory.Entry e : agg.entries()) {
-            available.merge(e.key(), e.count(), Integer::sum);
+    public List<Link> processorLinks() {
+        if (!(level instanceof ServerLevel sl)) return List.of();
+        int stamp = ProcessorIndex.topologyStamp(sl, worldPosition);
+        long now = sl.getGameTime();
+        if (stamp != linkStamp || now - linkTime >= LINK_REFRESH) {
+            linkCache = ProcessorIndex.scan(sl, worldPosition);
+            linkStamp = stamp;
+            linkTime = now;
         }
-        List<PatternDef<ItemKey>> defs = new ArrayList<>();
+        return linkCache;
+    }
+
+    private static boolean supported(List<Link> links, CraftingPattern p) {
+        for (Link l : links) if (l.supports(p)) return true;
+        return false;
+    }
+
+    public AutoCraftSolver.Result<CraftKey> planCraft(ItemStack target, int qty) {
+        return planCraft(CraftKey.of(target), qty);
+    }
+
+    public AutoCraftSolver.Result<CraftKey> planCraft(CraftKey target, int qty) {
+        AggregatedInventory agg = new AggregatedInventory(containerSlots);
+        Map<CraftKey, Integer> available = new LinkedHashMap<>();
+        for (AggregatedInventory.Entry e : agg.entries()) {
+            available.merge(CraftKey.of(e.key()), e.count(), Integer::sum);
+        }
+        for (AggregatedInventory.FluidEntry e : agg.fluidEntries()) {
+            available.merge(e.key(), e.amount(), Integer::sum);
+        }
+        return new AutoCraftSolver<>(patternDefs()).solve(target, qty, available);
+    }
+
+    public List<PatternDef<CraftKey>> patternDefs() {
+        List<Link> links = processorLinks();
+        List<PatternDef<CraftKey>> defs = new ArrayList<>();
         for (int i = 0; i < patterns.getSlots(); i++) {
             CraftingPattern p = CraftingPattern.from(patterns.getStackInSlot(i));
             if (p == null) continue;
-            ItemStack out = p.output();
-            if (out.isEmpty()) continue;
-            Map<ItemKey, Integer> inputs = new LinkedHashMap<>();
-            for (ItemStack in : p.inputs()) {
-                if (in.isEmpty()) continue;
-                inputs.merge(ItemKey.of(in), 1, Integer::sum);
-            }
-            if (inputs.isEmpty()) continue;
-            defs.add(new PatternDef<>(ItemKey.of(out), out.getCount(), inputs));
+            PatternDef<CraftKey> def = toDef(p, links);
+            if (def != null) defs.add(def);
         }
-        return new AutoCraftSolver<>(defs).solve(ItemKey.of(target), qty, available);
+        return defs;
+    }
+
+    @Nullable
+    private static PatternDef<CraftKey> toDef(CraftingPattern p, List<Link> links) {
+        if (p.isProcessing() && !supported(links, p)) return null;
+        Map<CraftKey, Integer> inputs = new LinkedHashMap<>();
+
+        Map<CraftKey, List<Integer>> parts = new LinkedHashMap<>();
+        for (ItemStack in : p.inputs()) {
+            if (in.isEmpty()) continue;
+            CraftKey key = CraftKey.of(in);
+            inputs.merge(key, in.getCount(), Integer::sum);
+            if (p.isProcessing()) parts.computeIfAbsent(key, k -> new ArrayList<>()).add(in.getCount());
+        }
+        for (FluidStack in : p.fluidInputs()) {
+            if (in.isEmpty()) continue;
+            CraftKey key = CraftKey.of(in);
+            inputs.merge(key, in.getAmount(), Integer::sum);
+            if (p.isProcessing()) parts.computeIfAbsent(key, k -> new ArrayList<>()).add(in.getAmount());
+        }
+        if (inputs.isEmpty()) return null;
+
+        Map<CraftKey, Integer> outputs = new LinkedHashMap<>();
+        for (ItemStack item : p.itemOutputs()) outputs.merge(CraftKey.of(item), item.getCount(), Integer::sum);
+        for (FluidStack fluid : p.fluidOutputs()) outputs.merge(CraftKey.of(fluid), fluid.getAmount(), Integer::sum);
+        if (outputs.isEmpty()) return null;
+        if (p.isProcessing() && p.recipeId() == null) return null;
+        return new PatternDef<>(outputs, inputs, p.processor(),
+                p.recipeId() == null ? "" : p.recipeId().toString(), parts);
     }
 
     public String getName() {
@@ -247,6 +309,18 @@ public class EngineersCrafterBE extends BlockEntity {
 
     private static String itemKey(ItemStack stack) {
         return ForgeRegistries.ITEMS.getKey(stack.getItem()).toString();
+    }
+
+    private static String fluidKey(FluidStack stack) {
+        return ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString();
+    }
+
+    private static void loadKeepingSize(ItemStackHandler target, CompoundTag tag) {
+        ItemStackHandler saved = new ItemStackHandler();
+        saved.deserializeNBT(tag);
+        for (int i = 0; i < target.getSlots(); i++) {
+            target.setStackInSlot(i, i < saved.getSlots() ? saved.getStackInSlot(i) : ItemStack.EMPTY);
+        }
     }
 
     /** Number of flat slots across every inserted container item. */
@@ -266,6 +340,17 @@ public class EngineersCrafterBE extends BlockEntity {
         return m;
     }
 
+    public Object[] getFluidsInfo() {
+        List<Object> out = new ArrayList<>();
+        for (AggregatedInventory.FluidEntry e : new AggregatedInventory(containerSlots).fluidEntries()) {
+            Map<String, Object> m = new HashMap<>();
+            m.put("fluid", fluidKey(e.stack()));
+            m.put("amount", e.amount());
+            out.add(m);
+        }
+        return out.toArray();
+    }
+
     /** One entry per encoded pattern: {@code {id, output, outputQty, input=[{item, qty}]}}. */
     public Object[] getPatternsInfo() {
         List<Object> out = new ArrayList<>();
@@ -274,10 +359,11 @@ public class EngineersCrafterBE extends BlockEntity {
             if (p == null) continue;
             Map<String, Object> m = new HashMap<>();
             m.put("id", i);
+            m.put("processor", p.processor());
             Map<String, Integer> agg = new LinkedHashMap<>();
             for (ItemStack in : p.inputs()) {
                 if (in.isEmpty()) continue;
-                agg.merge(itemKey(in), 1, Integer::sum);
+                agg.merge(itemKey(in), in.getCount(), Integer::sum);
             }
             List<Object> inputs = new ArrayList<>();
             for (Map.Entry<String, Integer> e : agg.entrySet()) {
@@ -287,14 +373,38 @@ public class EngineersCrafterBE extends BlockEntity {
                 inputs.add(im);
             }
             m.put("input", inputs.toArray());
-            m.put("output", itemKey(p.output()));
-            m.put("outputQty", p.output().getCount());
+            List<Object> fluidInputs = new ArrayList<>();
+            for (FluidStack f : p.fluidInputs()) {
+                Map<String, Object> fm = new HashMap<>();
+                fm.put("fluid", fluidKey(f));
+                fm.put("amount", f.getAmount());
+                fluidInputs.add(fm);
+            }
+            m.put("fluidInput", fluidInputs.toArray());
+            ItemStack primary = p.output();
+            m.put("output", primary.isEmpty() ? "" : itemKey(primary));
+            m.put("outputQty", primary.getCount());
+            List<Object> outputs = new ArrayList<>();
+            for (ItemStack s : p.itemOutputs()) {
+                Map<String, Object> om = new HashMap<>();
+                om.put("item", itemKey(s));
+                om.put("qty", s.getCount());
+                outputs.add(om);
+            }
+            m.put("outputs", outputs.toArray());
+            List<Object> fluidOutputs = new ArrayList<>();
+            for (FluidStack f : p.fluidOutputs()) {
+                Map<String, Object> fm = new HashMap<>();
+                fm.put("fluid", fluidKey(f));
+                fm.put("amount", f.getAmount());
+                fluidOutputs.add(fm);
+            }
+            m.put("fluidOutput", fluidOutputs.toArray());
             out.add(m);
         }
         return out.toArray();
     }
 
-    /** Plans and starts a craft for the pattern in slot {@code patternId}. True when a job was queued. */
     public boolean startCraft(int patternId, int qty) {
         if (level == null || level.isClientSide) return false;
         if (qty <= 0 || hasActiveJob()) return false;
@@ -303,7 +413,7 @@ public class EngineersCrafterBE extends BlockEntity {
         if (p == null) return false;
         ItemStack target = p.output().copy();
         if (target.isEmpty()) return false;
-        AutoCraftSolver.Result<ItemKey> res = planCraft(target, qty);
+        AutoCraftSolver.Result<CraftKey> res = planCraft(target, qty);
         if (!res.feasible()) return false;
         return startJob(target, qty, res.plan());
     }
@@ -346,8 +456,8 @@ public class EngineersCrafterBE extends BlockEntity {
         if (tag.contains("Energy")) energy.deserializeNBT(tag.get("Energy"));
         if (tag.contains("Patterns")) patterns.deserializeNBT(tag.getCompound("Patterns"));
         if (tag.contains("EncoderBlanks")) encoderBlanks.deserializeNBT(tag.getCompound("EncoderBlanks"));
-        if (tag.contains("Containers")) containerSlots.deserializeNBT(tag.getCompound("Containers"));
-        if (tag.contains("Job")) job = CraftingJob.load(tag.getCompound("Job"));
+        if (tag.contains("Containers")) loadKeepingSize(containerSlots, tag.getCompound("Containers"));
+        job = tag.contains("Job") ? CraftingJob.load(tag.getCompound("Job")) : null;
         craftOpIndex = tag.getInt("CraftOpIndex");
         craftOpTotal = tag.getInt("CraftOpTotal");
     }

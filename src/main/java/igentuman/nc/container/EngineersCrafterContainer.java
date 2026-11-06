@@ -5,6 +5,12 @@ import igentuman.nc.handler.crafter.AggregatedInventory;
 import igentuman.nc.handler.crafter.RecipeGridLayout;
 import igentuman.nc.handler.storage.ContainerSyncDispatcher;
 import igentuman.nc.item.ContainerBlockItem;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
@@ -27,13 +33,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.setup.registration.NCCrafter.ENGINEERS_CRAFTING_TABLE_BLOCK;
@@ -71,8 +70,8 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
         this.access = ContainerLevelAccess.create(level, pos);
 
         for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 2; col++) {
-                addSlot(new SlotItemHandler(blockEntity.containerSlots, col + row * 2, 16 + col * 18, 90 + row * 18));
+            for (int col = 0; col < 3; col++) {
+                addSlot(new SlotItemHandler(blockEntity.containerSlots, col + row * 3, 16 + col * 18, 90 + row * 18));
             }
         }
         for (int row = 0; row < 3; row++) {
@@ -123,7 +122,7 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
                 if (!moveItemStackTo(stack, PLAYER_START, PLAYER_END, true)) return ItemStack.EMPTY;
                 slot.onQuickCraft(stack, result);
             } else if (index >= PLAYER_START && index < PLAYER_END) {
-                if (stack.getItem() instanceof ContainerBlockItem) {
+                if (AggregatedInventory.isStorageItem(stack)) {
                     if (!moveItemStackTo(stack, CONTAINER_START, CONTAINER_END, false)) return ItemStack.EMPTY;
                 } else {
                     AggregatedInventory agg = new AggregatedInventory(blockEntity.containerSlots);

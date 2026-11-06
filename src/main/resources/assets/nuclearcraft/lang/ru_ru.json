@@ -3162,5 +3162,13 @@
   "tooltip.particle_chamber.connected_ports": "Подключённые порты: %s",
   "tooltip.particle_chamber.detectors": "Детекторы: %s",
   "tooltip.particle_chamber.efficiency": "Эффективность: %s%%",
-  "tootip.nc.charging_station": "Позволяет заряжать предметы с помощью FE и энергии Quantite"
+  "tootip.nc.charging_station": "Позволяет заряжать предметы с помощью FE и энергии Quantite",
+  "gui.nc.crafter.mode.crafting_patterns": "Режим крафта: запись рецептов верстака. Нажмите для допуска к машинным работам.",
+  "gui.nc.crafter.mode.processing_patterns": "Режим обработки: запись машинных рецептов через JEI/EMI + или образцы предметов. Нажмите для крафта.",
+  "gui.nc.crafter.processor": "Назначенный процессор: %s",
+  "gui.nc.crafter.no_recipe": "Утверждённый рецепт не найден",
+  "gui.nc.crafter.denied.fluid_entry": "%s мВ %s",
+  "tooltip.nc.crafting_pattern.crafting": "Наряд на крафт",
+  "tooltip.nc.crafting_pattern.processing": "Наряд на обработку: %s",
+  "tooltip.nc.crafting_pattern.output": "Разрешённый выпуск: %s"
 }

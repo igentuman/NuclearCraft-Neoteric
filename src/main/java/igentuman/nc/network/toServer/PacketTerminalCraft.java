@@ -3,19 +3,19 @@ package igentuman.nc.network.toServer;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block.crafter.entity.EngineersCrafterBE;
 import igentuman.nc.container.EngineersCrafterContainer;
-import igentuman.nc.handler.crafter.AggregatedInventory.ItemKey;
 import igentuman.nc.handler.crafter.AutoCraftSolver;
+import igentuman.nc.handler.crafter.CraftKey;
 import igentuman.nc.network.INcPacket;
 import igentuman.nc.network.toClient.PacketCraftDenied;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Requests an autocraft of {@code qty} of the item identified by {@code target}. The server plans
@@ -52,7 +52,7 @@ public class PacketTerminalCraft implements INcPacket {
 
         int amount = Math.max(1, Math.min(qty, MAX_QTY));
         EngineersCrafterBE be = menu.blockEntity;
-        AutoCraftSolver.Result<ItemKey> result = be.planCraft(target, amount);
+        AutoCraftSolver.Result<CraftKey> result = be.planCraft(target, amount);
         if (result.feasible()) {
             // Hand the plan to the crafting-job state machine (rejected silently if one already runs).
             be.startJob(target, amount, result.plan());
@@ -61,13 +61,18 @@ public class PacketTerminalCraft implements INcPacket {
 
         List<ItemStack> items = new ArrayList<>();
         List<Integer> amounts = new ArrayList<>();
-        for (Map.Entry<ItemKey, Integer> e : result.shortages().entrySet()) {
-            ItemStack sample = new ItemStack(e.getKey().item());
-            if (e.getKey().tag() != null) sample.setTag(e.getKey().tag().copy());
-            items.add(sample);
-            amounts.add(e.getValue());
+        List<FluidStack> fluids = new ArrayList<>();
+        List<Integer> fluidAmounts = new ArrayList<>();
+        for (Map.Entry<CraftKey, Integer> e : result.shortages().entrySet()) {
+            if (e.getKey().isFluid()) {
+                fluids.add(e.getKey().sampleFluid());
+                fluidAmounts.add(e.getValue());
+            } else {
+                items.add(e.getKey().sampleItem());
+                amounts.add(e.getValue());
+            }
         }
-        NuclearCraft.packetHandler().sendTo(new PacketCraftDenied(items, amounts, result.tooComplex()), player);
+        NuclearCraft.packetHandler().sendTo(new PacketCraftDenied(items, amounts, fluids, fluidAmounts, result.tooComplex()), player);
     }
 
     @Override

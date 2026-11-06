@@ -30,6 +30,13 @@ public class CraftingPatternRenderer extends BlockEntityWithoutLevelRenderer {
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext ctx, PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
         ItemStack out = CraftingPattern.output(stack);
+        if (out.isEmpty()) {
+            CraftingPattern pattern = CraftingPattern.from(stack);
+            if (pattern != null && pattern.isProcessing()) {
+                var processor = igentuman.nc.setup.registration.NCProcessors.PROCESSOR_BLOCKS_ITEMS.get(pattern.processor());
+                if (processor != null) out = new ItemStack(processor.get());
+            }
+        }
         if (out.isEmpty() || out.getItem() instanceof CraftingPatternItem) return;
         Minecraft mc = Minecraft.getInstance();
         pose.pushPose();

@@ -1,6 +1,9 @@
 package igentuman.nc.client.gui.crafter;
 
 import igentuman.nc.client.gui.element.NCGuiElement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -9,10 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 import static igentuman.nc.util.TextUtils.__;
 
@@ -99,13 +98,13 @@ public class ScrollableItemGrid extends NCGuiElement {
     }
 
     private void drawScrollbar(GuiGraphics g) {
-        int barX = gx() + cols * 18 + 2;
-        int barY = gy();
-        int barH = rows * 18;
+        drawScrollbar(g, gx() + cols * 18 + 2, gy(), rows * 18, scrollRow, maxScroll());
+    }
+
+    public static void drawScrollbar(GuiGraphics g, int barX, int barY, int barH, int scroll, int max) {
         g.fill(barX, barY, barX + SCROLLBAR_WIDTH - 2, barY + barH, 0xFF373737);
-        int max = maxScroll();
         int thumbH = max == 0 ? barH : Math.max(12, barH - max * 6);
-        int thumbY = barY + (max == 0 ? 0 : (barH - thumbH) * scrollRow / max);
+        int thumbY = barY + (max == 0 ? 0 : (barH - thumbH) * scroll / max);
         g.fill(barX + 1, thumbY, barX + SCROLLBAR_WIDTH - 3, thumbY + thumbH, 0xFFC6C6C6);
     }
 

@@ -2,6 +2,8 @@ package igentuman.nc.item;
 
 import igentuman.nc.content.storage.BarrelBlocks;
 import igentuman.nc.util.capability.CapabilityUtils;
+import java.util.List;
+import javax.annotation.Nonnull;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -18,9 +20,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
-import javax.annotation.Nonnull;
-import java.util.List;
-
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatLiquid;
 
@@ -32,13 +31,11 @@ public class BarrelBlockItem extends BlockItem
 		super(pBlock, new Properties().stacksTo(1));
 	}
 
-
 	@Override
 	public boolean isRepairable(@Nonnull ItemStack stack)
 	{
 		return false;
 	}
-
 
 	@Override
 	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
@@ -51,10 +48,9 @@ public class BarrelBlockItem extends BlockItem
 		return false;
 	}
 
-
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-		return new FluidHandlerItemStack(stack, getCapacity());
+		return new FluidHandlerItemStack(stack, getCapacity() * 1000);
 	}
 
 	public int getCapacity() {

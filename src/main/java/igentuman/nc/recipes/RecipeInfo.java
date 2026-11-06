@@ -1,10 +1,15 @@
 package igentuman.nc.recipes;
 
+import igentuman.nc.block.crafter.entity.EngineersCrafterBE;
 import igentuman.nc.block.entity.NuclearCraftBE;
 import igentuman.nc.block.entity.processor.NCProcessorBE;
 import igentuman.nc.client.NcClient;
+import igentuman.nc.handler.crafter.ProcessorRecipes;
 import igentuman.nc.handler.sided.SidedContentHandler;
 import igentuman.nc.recipes.type.NcRecipe;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -14,13 +19,11 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import java.util.NoSuchElementException;
-
 import static igentuman.nc.util.NcUtils.rlFromString;
-
 
 public class RecipeInfo implements INBTSerializable<Tag> {
 
+    private ProcessingOrder craftingOrder;
     public int ticks = 0;
     public int parallelProcessing = 1;
     public double ticksProcessed = 0;
@@ -32,6 +35,39 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     public BlockEntity be;
     public String recipeId;
     private SidedContentHandler contentHandler;
+
+    public boolean canAcceptCraftingOrder() {
+        return craftingOrder == null && recipe == null && !stuck && ticks == 0;
+    }
+
+    public boolean reserveCrafting(UUID id, BlockPos crafter, String selectedRecipe, int operations) {
+        if (!canAcceptCraftingOrder() || operations <= 0 || !(be instanceof NCProcessorBE proc)
+                || !ProcessorRecipes.isAllowed(proc.getName())) return false;
+        NcRecipe selected = ProcessorRecipes.byId(be.getLevel().getRecipeManager(), ResourceLocation.tryParse(selectedRecipe));
+        if (selected == null || !selected.getCodeId().equals(proc.getName())) return false;
+        craftingOrder = new ProcessingOrder(id, crafter, selectedRecipe, operations);
+        be.setChanged();
+        return true;
+    }
+
+    public boolean hasCraftingOrder() { return craftingOrder != null; }
+    public ProcessingOrder craftingOrder() { return craftingOrder; }
+    public boolean isReservedBy(UUID id) { return craftingOrder != null && craftingOrder.jobId().equals(id); }
+    public boolean isCraftingComplete(UUID id) { return isReservedBy(id) && craftingOrder.isComplete(); }
+    public void releaseCrafting(UUID id) {
+        if (isReservedBy(id)) {
+            craftingOrder = null;
+            if (be != null) be.setChanged();
+        }
+    }
+
+    public boolean validateCraftingOwner() {
+        if (craftingOrder == null) return true;
+        if (be == null || be.getLevel() == null || !be.getLevel().isLoaded(craftingOrder.crafter())) return false;
+        if (!(be.getLevel().getBlockEntity(craftingOrder.crafter()) instanceof EngineersCrafterBE crafter)
+                || !crafter.ownsProcessor(craftingOrder.jobId(), be.getBlockPos())) releaseCrafting(craftingOrder.jobId());
+        return true;
+    }
 
     public void setRecipe(NcRecipe recipe) {
         this.recipe = recipe;
@@ -51,6 +87,8 @@ public class RecipeInfo implements INBTSerializable<Tag> {
         data.putDouble("heat", heat);
         data.putDouble("radiation", radiation);
         data.putBoolean("stuck", stuck);
+        data.putInt("parallelProcessing", parallelProcessing);
+        if (craftingOrder != null) data.put("CraftingOrder", craftingOrder.save());
         if(recipe != null) {
             data.putString("recipe", recipeId);
         }
@@ -60,6 +98,8 @@ public class RecipeInfo implements INBTSerializable<Tag> {
     @Override
     public void deserializeNBT(Tag nbt) {
         if(nbt instanceof CompoundTag) {
+            craftingOrder = ((CompoundTag) nbt).contains("CraftingOrder") ? ProcessingOrder.load(((CompoundTag) nbt).getCompound("CraftingOrder")) : null;
+            parallelProcessing = Math.max(1, ((CompoundTag) nbt).getInt("parallelProcessing"));
             ticks = ((CompoundTag) nbt).getInt("ticks");
             ticksProcessed = ((CompoundTag) nbt).getDouble("ticksProcessed");
             energy = ((CompoundTag) nbt).getDouble("energy");
@@ -152,7 +192,7 @@ public class RecipeInfo implements INBTSerializable<Tag> {
         }
         return Math.min(actualAmount, i);
     }
-    
+
     private SidedContentHandler getContentHandler() {
         if(be instanceof NuclearCraftBE ncbe) {
             return ncbe.contentHandler();

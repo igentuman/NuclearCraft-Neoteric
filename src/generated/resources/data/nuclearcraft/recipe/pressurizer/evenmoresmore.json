@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:foursmore"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:evenmoresmore"
+    }
+  ],
+  "process_time": 200
+}

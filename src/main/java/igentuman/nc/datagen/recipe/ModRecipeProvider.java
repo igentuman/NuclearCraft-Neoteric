@@ -82,6 +82,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     @Override
     public void buildRecipes(@NonNull RecipeOutput recipeOutput) {
         craftingRecipes(recipeOutput);
+        FoodRecipes.food(recipeOutput);
         manufactory(recipeOutput);
         alloySmelter(recipeOutput);
         pressurizer(recipeOutput);

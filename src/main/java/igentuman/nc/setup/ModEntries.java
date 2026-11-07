@@ -14,6 +14,8 @@ import igentuman.nc.recipe.turbine.TurbineRecipes;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.registration.ModEntryBuilder;
 import igentuman.nc.registration.ParticleEntry;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -75,6 +77,7 @@ public class ModEntries {
         materials();
         isotopes();
         fluids();
+        food();
         fissionFuel();
         parts();
         addItem("unknown_ingredient").build();
@@ -114,6 +117,29 @@ public class ModEntries {
 
     public static void deco(String name, BlockBehaviour.Properties props) {
         add(name).block(() -> new Block(props)).build();
+    }
+
+    private static void food() {
+        mat("unsweetened_chocolate", 0xFF2C0A08)
+                .item(() -> new Item(new Item.Properties()))
+                .fluid(FluidDefinition.liquid().setName("unsweetened_chocolate").setTemperature(400)).build();
+        foodItem("dark_chocolate", 1).material(0xFF2C0B06)
+                .fluid(FluidDefinition.liquid().setName("dark_chocolate").setTemperature(400)).build();
+        foodItem("milk_chocolate", 1).material(0xFF884121)
+                .fluid(FluidDefinition.liquid().setName("milk_chocolate").setTemperature(400)).build();
+        foodItem("marshmallow", 1).material(0x90E1E1E3)
+                .fluid(FluidDefinition.liquid().setName("marshmallow").setTemperature(300)).build();
+        foodItem("graham_cracker", 1).build();
+        foodItem("smore", 2).customModel().build();
+        foodItem("moresmore", 6).customModel().build();
+        foodItem("foursmore", 10).customModel().build();
+        foodItem("evenmoresmore", 18).customModel().build();
+        foodItem("dominos", 14).build();
+    }
+
+    private static ModEntryBuilder foodItem(String name, int nutrition) {
+        return addItem(name, () -> new Item(new Item.Properties().food(
+                new FoodProperties.Builder().nutrition(nutrition).saturationModifier(nutrition).build())));
     }
 
     public static ModEntryBuilder mat(String name, int color) {

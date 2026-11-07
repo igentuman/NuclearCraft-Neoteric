@@ -36,6 +36,15 @@ public class MelterRecipes {
         melt(out, id, "redstone",     Items.REDSTONE,     1, fluidOf("redstone"),  MOLTEN_INGOT);
         melt(out, id, "glowstone",    Items.GLOWSTONE_DUST, 1, fluidOf("glowstone"), MOLTEN_INGOT);
 
+        melt(out, id, "ground_cocoa_nibs", part("ground_cocoa_nibs"), 1, fluidOf("chocolate_liquor"), MOLTEN_INGOT, 50, 25);
+        for (String food : new String[]{"cocoa_butter", "unsweetened_chocolate", "dark_chocolate", "milk_chocolate"}) {
+            melt(out, id, food, part(food), 1, fluidOf(food), MOLTEN_INGOT, 50, 25);
+        }
+        melt(out, id, "sugar", Items.SUGAR, 1, fluidOf("sugar"), MOLTEN_INGOT, 100, 25);
+        for (String food : new String[]{"gelatin", "marshmallow"}) {
+            melt(out, id, food, part(food), 1, fluidOf(food), MOLTEN_INGOT, 100, 25);
+        }
+
         for (IsotopeEntry iso : ModEntries.ISOTOPES.values()) {
             for (String v : iso.variants().keySet()) {
                 melt(out, id, "isotope_" + iso.itemId + v, iso.variants().get(v).get(), 1, iso.fluid(v), MOLTEN_INGOT);

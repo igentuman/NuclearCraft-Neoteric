@@ -74,15 +74,11 @@ public class Fluids extends ModEntries {
         mat("cocoa_butter", 0xFFF6EEBF)
                 .item(() -> new Item(new Item.Properties()))
                 .fluid(FluidDefinition.liquid().setName("cocoa_butter").setTemperature(400)).build();
-        liquid("unsweetened_chocolate", 0xFF2C0A08, 400);
-        liquid("dark_chocolate", 0xFF2C0B06, 400);
-        liquid("milk_chocolate", 0xFF884121, 400);
         liquid("sugar", 0x50FFD59A, 400);
         mat("gelatin", 0x50DDD09C)
                 .item(() -> new Item(new Item.Properties()))
                 .fluid(FluidDefinition.liquid().setName("gelatin")).build();
         liquid("hydrated_gelatin", 0x50DDD09C, 300);
-        liquid("marshmallow", 0x90E1E1E3, 300);
         liquid("pasteurized_milk", 0xFFFFF2F2, 300);
 
         liquid("spent_nuclear_waste", 0x901F1B14, 300);

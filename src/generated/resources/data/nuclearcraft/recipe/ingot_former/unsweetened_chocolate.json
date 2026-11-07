@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:ingot_former",
+  "energy_per_tick": 25,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "nuclearcraft:unsweetened_chocolate"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:unsweetened_chocolate"
+    }
+  ],
+  "process_time": 50
+}

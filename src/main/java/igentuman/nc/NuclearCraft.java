@@ -41,6 +41,7 @@ import igentuman.nc.setup.entries.Pipes;
 import igentuman.nc.setup.entries.Storage;
 import igentuman.nc.setup.level.ModFeatures;
 import igentuman.nc.util.MultiblocksProvider;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
@@ -421,7 +422,9 @@ public class NuclearCraft {
                     }
                     continue;
                 }
-                if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+                var tab = entry.item().get().components().has(DataComponents.FOOD)
+                        ? CreativeModeTabs.FOOD_AND_DRINKS : CreativeModeTabs.INGREDIENTS;
+                if (event.getTabKey() == tab) {
                     event.accept(entry.item());
                 }
                 continue;

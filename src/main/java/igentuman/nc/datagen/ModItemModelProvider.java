@@ -7,6 +7,7 @@ import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ToolSetEntry;
 import igentuman.nc.item.ParticleSourceItem;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -35,6 +36,9 @@ public class ModItemModelProvider  extends ItemModelProvider {
             // model path (e.g. fission/controller); only standalone items are built here.
             if(entry.name().contains("chassis") || entry.name().contains("compression_charge")) continue;
             if (entry.hasItem() && !entry.hasBlock()) {
+                if (entry.customModel()) {
+                    continue;
+                }
                 if (entry.name().endsWith("_spawn_egg")) {
                     withExistingParent(entry.name(), mcLoc("item/template_spawn_egg"));
                     continue;
@@ -57,7 +61,9 @@ public class ModItemModelProvider  extends ItemModelProvider {
                     collectorItem(entry.item(), entry.name());
                     continue;
                 }
-                simpleItem(entry.item(), entry.name());
+                String texture = entry.item().get().components().has(DataComponents.FOOD)
+                        ? "food/" + entry.name() : entry.name();
+                simpleItem(entry.item(), texture);
             }
             if (entry.toolSetEntry() instanceof ToolSetEntry toolSet) {
                 buildItem(toolSet.sword(),   "tools/" + toolSet.name + "_sword",   "item/handheld");

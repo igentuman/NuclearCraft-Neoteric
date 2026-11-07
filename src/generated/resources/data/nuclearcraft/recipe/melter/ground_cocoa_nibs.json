@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "energy_per_tick": 25,
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "tag": "c:chocolate_liquor"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:ground_cocoa_nibs"
+    }
+  ],
+  "process_time": 50
+}

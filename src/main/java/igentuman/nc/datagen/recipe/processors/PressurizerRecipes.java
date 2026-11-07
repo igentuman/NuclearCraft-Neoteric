@@ -40,6 +40,8 @@ public class PressurizerRecipes {
 
         rec(out, id, "obsidian", new I[]{i(dust("obsidian"), 4)}, NF, new I[]{van(Items.OBSIDIAN, 1)}, NF);
         rec(out, id, "silicon_boule", new I[]{i(ingot("silicon_carbide"), 3)}, NF, new I[]{prt("silicon_boule", 1)}, NF);
+        rec(out, id, "graham_cracker", new I[]{prt("flour", 2)}, NF, new I[]{prt("graham_cracker", 1)}, NF);
+        rec(out, id, "evenmoresmore", new I[]{prt("foursmore", 2)}, NF, new I[]{prt("evenmoresmore", 1)}, NF);
 
         rec(out, id, "wasteland_earth_to_portal", new I[]{i(part("wasteland_earth"), 32)}, NF, new I[]{i(part("wasteland_portal"), 1)}, NF, TIME * 2);
 

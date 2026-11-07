@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "energy_per_tick": 25,
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "tag": "c:cocoa_butter"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:cocoa_butter"
+    }
+  ],
+  "process_time": 50
+}

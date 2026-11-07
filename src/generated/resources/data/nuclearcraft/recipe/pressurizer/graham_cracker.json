@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 2,
+      "item": "nuclearcraft:flour"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "nuclearcraft:graham_cracker"
+    }
+  ],
+  "process_time": 200
+}

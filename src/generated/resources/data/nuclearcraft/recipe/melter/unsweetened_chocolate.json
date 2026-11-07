@@ -1,0 +1,17 @@
+{
+  "type": "nuclearcraft:melter",
+  "energy_per_tick": 25,
+  "fluid_outputs": [
+    {
+      "amount": 90,
+      "tag": "c:unsweetened_chocolate"
+    }
+  ],
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "nuclearcraft:unsweetened_chocolate"
+    }
+  ],
+  "process_time": 50
+}

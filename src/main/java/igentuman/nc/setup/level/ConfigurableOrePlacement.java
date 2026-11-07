@@ -39,6 +39,9 @@ public class ConfigurableOrePlacement extends PlacementModifier {
         if (config == null) return Stream.empty();
         int veins = config.veinsPerChunk().get();
         if (veins <= 0) return Stream.empty();
+        if (ctx.getLevel().getLevel().dimension().equals(ModDimensions.WASTELAND)) {
+            veins += config.wastelandExtraVeinsPerChunk().get();
+        }
         int minH = config.minHeight().get();
         int maxH = Math.max(minH, config.maxHeight().get());
         return Stream.generate(() -> {

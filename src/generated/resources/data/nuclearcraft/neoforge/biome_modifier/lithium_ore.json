@@ -1,6 +1,12 @@
 {
   "type": "neoforge:add_features",
-  "biomes": "#minecraft:is_overworld",
+  "biomes": {
+    "type": "neoforge:or",
+    "values": [
+      "#minecraft:is_overworld",
+      "#nuclearcraft:wasteland"
+    ]
+  },
   "features": "nuclearcraft:lithium_ore",
   "step": "underground_ores"
 }

@@ -30,8 +30,11 @@ public class WorldGen {
             ModConfigSpec.IntValue veinsPerChunk = builder
                 .comment("Number of ore veins attempted per chunk")
                 .defineInRange("veins_per_chunk", mat.worldgenVeinsPerChunk, 0, 32);
+            ModConfigSpec.IntValue wastelandExtraVeinsPerChunk = builder
+                .comment("Additional ore veins attempted per chunk in the wasteland dimension. Requires veins_per_chunk > 0.")
+                .defineInRange("wasteland_extra_veins_per_chunk", mat.name.equals("uranium") || mat.name.equals("thorium") ? 4 : 0, 0, 32);
             builder.pop();
-            ORE_CONFIGS.put(mat.name, new OreGenConfig(minHeight, maxHeight, veinSize, veinsPerChunk));
+            ORE_CONFIGS.put(mat.name, new OreGenConfig(minHeight, maxHeight, veinSize, veinsPerChunk, wastelandExtraVeinsPerChunk));
         }
         SPEC = builder.build();
     }
@@ -40,6 +43,7 @@ public class WorldGen {
         ModConfigSpec.IntValue minHeight,
         ModConfigSpec.IntValue maxHeight,
         ModConfigSpec.IntValue veinSize,
-        ModConfigSpec.IntValue veinsPerChunk
+        ModConfigSpec.IntValue veinsPerChunk,
+        ModConfigSpec.IntValue wastelandExtraVeinsPerChunk
     ) {}
 }

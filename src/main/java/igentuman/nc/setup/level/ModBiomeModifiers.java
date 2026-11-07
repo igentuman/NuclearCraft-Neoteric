@@ -14,10 +14,11 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
 import static igentuman.nc.NuclearCraft.rl;
 
-/** Datapack bootstrap that adds each material's ore placed feature to overworld biomes. */
+/** Datapack bootstrap that adds each material's ore placed feature to overworld and wasteland biomes. */
 public class ModBiomeModifiers {
 
     public static ResourceKey<BiomeModifier> registerKey(String name) {
@@ -27,13 +28,16 @@ public class ModBiomeModifiers {
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
         HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
+        HolderSet<Biome> oreBiomes = new OrHolderSet<>(
+                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
+                biomes.getOrThrow(ModBiomes.WASTELAND_TAG));
 
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.materialEntry() == null || !entry.materialEntry().hasWorldgenConfig()) continue;
             String name = entry.materialEntry().name;
             ResourceKey<PlacedFeature> pfKey = ResourceKey.create(Registries.PLACED_FEATURE, rl(name + "_ore"));
             context.register(registerKey(name + "_ore"), new BiomeModifiers.AddFeaturesBiomeModifier(
-                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
+                oreBiomes,
                 HolderSet.direct(placedFeatures.getOrThrow(pfKey)),
                 GenerationStep.Decoration.UNDERGROUND_ORES
             ));

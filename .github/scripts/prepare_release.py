@@ -54,7 +54,6 @@ curseforge = {
     "displayName": f"NuclearCraft-{minecraft_version}-{version}",
     "gameVersionNames": [minecraft_version, "Forge", "NeoForge", "Client", "Server", "Java 17"],
     "releaseType": release_type,
-    "relations": {"projects": []},
 }
 
 temp = Path(os.environ["RUNNER_TEMP"])
@@ -68,7 +67,6 @@ if curseforge_file_id:
         "fileID": int(curseforge_file_id),
         "displayName": curseforge["displayName"],
         "gameVersionNames": curseforge["gameVersionNames"],
-        "relations": curseforge["relations"],
     }
     update_path = temp / "curseforge-update.json"
     update_path.write_text(json.dumps(update), encoding="utf-8")

@@ -218,7 +218,7 @@ public class EngineersCrafterBE extends BlockEntity {
         MenuProvider provider = new MenuProvider() {
             @Override
             public Component getDisplayName() {
-                return __("container.nc.engineers_encoder");
+                return __("container.nuclearcraft.engineers_encoder");
             }
 
             @Override

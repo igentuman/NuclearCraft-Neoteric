@@ -9,7 +9,7 @@ import static igentuman.nc.NuclearCraft.rl;
 
 public final class NcPanel {
 
-    private static final ResourceLocation SLOTS = rl("textures/gui/slots.png");
+    private static final ResourceLocation SLOTS = rl("textures/gui/widgets.png");
 
     private NcPanel() {}
 

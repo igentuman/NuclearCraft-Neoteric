@@ -35,7 +35,7 @@ jobs:
       - name: Checkout publish tooling
         uses: actions/checkout@v7
         with:
-          ref: 1.20
+          ref: '1.20'
           path: .publish-tooling
 
       - name: Set up Java 17

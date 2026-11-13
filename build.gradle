@@ -77,12 +77,33 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 //minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
 //minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
 
+subsystems.conventions.sourceSets.shouldMainSourceSetBeAutomaticallyAddedToRuns = false
+
+sourceSets {
+    datagen {
+        output.classesDirs.setFrom(main.output.classesDirs)
+        output.resourcesDir = main.output.resourcesDir
+        output.builtBy tasks.named('classes')
+    }
+}
+
+configurations.datagenCompileClasspath.extendsFrom configurations.compileClasspath
+
+configurations.datagenRuntimeClasspath {
+    extendsFrom configurations.runtimeClasspath
+    // These optional mods fail registry initialization or require their own datagen libraries.
+    exclude group: 'curse.maven', module: 'applied-energistics-2-223794'
+    exclude group: 'curse.maven', module: 'create-328085'
+    exclude group: 'curse.maven', module: 'tis-3d-238603'
+    exclude group: 'curse.maven', module: 'ex-deorum-901420'
+}
+
 runs {
     configureEach {
         systemProperty 'forge.logging.markers', 'REGISTRIES'
         systemProperty 'forge.logging.console.level', 'debug'
         workingDirectory project.layout.projectDirectory.dir('run').dir(name)
-        modSource project.sourceSets.main
+        modSource name == 'data' ? project.sourceSets.datagen : project.sourceSets.main
     }
 
     client {
@@ -119,18 +140,20 @@ dependencies {
     implementation(nrLocal ? "igentuman.nr:NuclearRadiation:1.0.18" : "maven.modrinth:nuclear-radiation:1.0.18") { transitive = false }
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     implementation "curse.maven:multi-builder-tool-827020:9330890"
-    compileOnly "curse.maven:immersive-engineering-231951:6733669"
+    implementation "curse.maven:immersive-engineering-231951:6733669"
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
     compileOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE:api")
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
     compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cct_version}")
     runtimeOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cct_version}")
-    compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
+    implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
-    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
+    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:additions")// Mekanism: Additions
-    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
+    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:tools")// Mekanism: Tools
+
+    implementation "curse.maven:ex-deorum-901420:8384464"
 
     runtimeOnly "curse.maven:spark-361579:6225208"
     //runtimeOnly "curse.maven:large-ore-deposits-318833:8595420"
@@ -138,7 +161,7 @@ dependencies {
 
     implementation "curse.maven:sodium-394468:6382651"
 
-    compileOnly "curse.maven:applied-energistics-2-223794:7027323"
+    implementation "curse.maven:applied-energistics-2-223794:7027323"
     implementation "curse.maven:guideme-1173950:7127444"
 
     implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}")
@@ -157,7 +180,7 @@ dependencies {
         }
     }
 
-    compileOnly("curse.maven:create-328085:7963363")
+    implementation("curse.maven:create-328085:7963363")
 
     compileOnly("top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1")
     implementation "curse.maven:architectury-api-419699:8492726"

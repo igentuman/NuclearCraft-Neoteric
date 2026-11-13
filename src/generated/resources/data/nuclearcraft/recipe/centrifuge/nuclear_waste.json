@@ -1,6 +1,6 @@
 {
   "type": "nuclearcraft:centrifuge",
-  "energy_per_tick": 50,
+  "energy_per_tick": 90,
   "fluid_inputs": [
     {
       "amount": 50,

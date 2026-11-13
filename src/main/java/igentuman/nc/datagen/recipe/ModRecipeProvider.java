@@ -135,14 +135,14 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     public static I i(Item it, int n) { return it == null ? null : new I(it, n); }
     public static F f(Fluid fl, int n) { return fl == null ? null : new F(fl, n); }
 
-    public static I iso(String name, int n) { return i(isotope(name), n); }
-    public static I dst(String name, int n) { return i(dust(name), n); }
-    public static I ing(String name, int n) { return i(ingot(name), n); }
-    public static I gm(String name, int n)  { return i(gem(name), n); }
-    public static I prt(String name, int n) { return i(part(name), n); }
-    public static I plt(String name, int n) { return i(plate(name), n); }
+    public static I isotope(String name, int n) { return i(isotope(name), n); }
+    public static I dust(String name, int n) { return i(dust(name), n); }
+    public static I ingot(String name, int n) { return i(ingot(name), n); }
+    public static I gem(String name, int n)  { return i(gem(name), n); }
+    public static I part(String name, int n) { return i(part(name), n); }
+    public static I plate(String name, int n) { return i(plate(name), n); }
     public static I van(Item it, int n)     { return i(it, n); }
-    public static F fl(String name, int n)  { return f(fluidOf(name), n); }
+    public static F fluid(String name, int n)  { return f(fluidOf(name), n); }
 
     public static void rec(RecipeOutput out, String proc, String name, I[] ii, F[] fi, I[] io, F[] fo, int... modifiers) {
         for (I x : ii) if (x == null) return;
@@ -161,7 +161,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
 
 
-    public static void i2i(RecipeOutput out, String proc, String name, Item in, Item o, int on, int... modifiers) {
+    public static void item2item(RecipeOutput out, String proc, String name, Item in, Item o, int on, int... modifiers) {
         rec(out, proc, name, new I[]{i(in, 1)}, NF, new I[]{i(o, on)}, NF, modifiers);
     }
 
@@ -174,7 +174,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     }
 
     public static void crush(RecipeOutput out, String name, Item in, int inN, I[] outs, int... modifiers) {
-        rec(out, "rock_crusher", name, new I[]{i(in, inN)}, NF, outs, NF, modifiers);
+        int time = modifiers.length>0 ? modifiers[0] : TIME;
+        int power = modifiers.length>1 ? modifiers[1] : ENERGY + 55;
+        rec(out, "rock_crusher", name, new I[]{i(in, inN)}, NF, outs, NF, time, power);
     }
 
     public static void reproc(RecipeOutput out, String key, I[] outs, int... modifiers) {
@@ -185,7 +187,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     }
 
     public static void assemble(RecipeOutput out, String name, Item o, int on, I[] ins, int... modifiers) {
-        rec(out, "assembler", name, ins, NF, new I[]{i(o, on)}, NF, modifiers);
+        int time = modifiers.length>0 ? modifiers[0] : TIME;
+        int power = modifiers.length>1 ? modifiers[1] : ENERGY + 25;
+        rec(out, "assembler", name, ins, NF, new I[]{i(o, on)}, NF, time, power);
     }
 
     public static void chem(RecipeOutput out, String name, Fluid a, int an, Fluid b, int bn, F[] outs, int... modifiers) {
@@ -197,18 +201,24 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     }
 
     public static void enrich(RecipeOutput out, String name, Fluid fluid, int fn, I in, Fluid o, int on, int... modifiers) {
-        rec(out, "fluid_enricher", name, new I[]{in}, new F[]{f(fluid, fn)}, NI, new F[]{f(o, on)}, modifiers);
+        int time = modifiers.length>0 ? modifiers[0] : TIME;
+        int power = modifiers.length>1 ? modifiers[1] : ENERGY + 30;
+        rec(out, "fluid_enricher", name, new I[]{in}, new F[]{f(fluid, fn)}, NI, new F[]{f(o, on)}, time, power);
     }
 
     public static void infuse(RecipeOutput out, String name, Fluid fluid, int fn, Item in, int inN, Item o, int on, int... modifiers) {
-        rec(out, "fluid_infuser", name, new I[]{i(in, inN)}, new F[]{f(fluid, fn)}, new I[]{i(o, on)}, NF, modifiers);
+        int time = modifiers.length>0 ? modifiers[0] : TIME;
+        int power = modifiers.length>1 ? modifiers[1] : ENERGY + 10;
+        rec(out, "fluid_infuser", name, new I[]{i(in, inN)}, new F[]{f(fluid, fn)}, new I[]{i(o, on)}, NF, time, power);
     }
 
     public static void split(RecipeOutput out, String proc, String name, Fluid in, int inN, F[] outs, int... modifiers) {
-        rec(out, proc, name, NI, new F[]{f(in, inN)}, NI, outs, modifiers);
+        int time = modifiers.length>0 ? modifiers[0] : TIME;
+        int power = modifiers.length>1 ? modifiers[1] : ENERGY + 40;
+        rec(out, proc, name, NI, new F[]{f(in, inN)}, NI, outs, time, power);
     }
 
-    public static void f2f(RecipeOutput out, String proc, String name, Fluid in, int inN, Fluid o, int on, int... modifiers) {
+    public static void fluid2fluid(RecipeOutput out, String proc, String name, Fluid in, int inN, Fluid o, int on, int... modifiers) {
         rec(out, proc, name, NI, new F[]{f(in, inN)}, NI, new F[]{f(o, on)}, modifiers);
     }
 
@@ -224,7 +234,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                        ItemLike output, int outCount, ItemLike a, int aCount, ItemLike b, int bCount, int...modifiers) {
         if (output == null || a == null || b == null) return;
         int time = modifiers.length>0 ? modifiers[0] : TIME;
-        int power = modifiers.length>1 ? modifiers[1] : ENERGY;
+        int power = modifiers.length>1 ? modifiers[1] : ENERGY + 5;
         UniversalProcessorRecipeBuilder.processor(processor)
                 .itemInput(a, aCount)
                 .itemInput(b, bCount)

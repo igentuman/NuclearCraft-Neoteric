@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.recipe.processors;
 
+import igentuman.nc.datagen.recipe.ModRecipeProvider;
 import igentuman.nc.registration.MaterialEntry;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
@@ -57,10 +58,10 @@ public class ManufactoryRecipes {
         grind(out, id, "roasted_cocoa_beans", part("roasted_cocoa_beans"), part("ground_cocoa_nibs"), 1, 100, 25);
 
         rec(out, id, "rotten_flesh", new I[]{van(Items.ROTTEN_FLESH, 4)}, NF, new I[]{van(Items.LEATHER, 1)}, NF, 100);
-        rec(out, id, "sugar_cane",   new I[]{van(Items.SUGAR_CANE, 2)},   NF, new I[]{prt("bioplastic", 1)}, NF, 200, 25);
-        rec(out, id, "porkchop",     new I[]{van(Items.PORKCHOP, 1)},     NF, new I[]{prt("gelatin", 8)},    NF, 100, 25);
-        rec(out, id, "salmon",       new I[]{van(Items.SALMON, 1)},       NF, new I[]{prt("gelatin", 2)},    NF, 100, 25);
-        rec(out, id, "cod",          new I[]{van(Items.COD, 1)},          NF, new I[]{prt("gelatin", 2)},    NF, 100, 25);
-        rec(out, id, "wheat_seeds",  new I[]{van(Items.WHEAT_SEEDS, 1)},  NF, new I[]{prt("flour", 2)},      NF, 100, 25);
+        rec(out, id, "sugar_cane",   new I[]{van(Items.SUGAR_CANE, 2)},   NF, new I[]{ModRecipeProvider.part("bioplastic", 1)}, NF, 200, 25);
+        rec(out, id, "porkchop",     new I[]{van(Items.PORKCHOP, 1)},     NF, new I[]{ModRecipeProvider.part("gelatin", 8)},    NF, 100, 25);
+        rec(out, id, "salmon",       new I[]{van(Items.SALMON, 1)},       NF, new I[]{ModRecipeProvider.part("gelatin", 2)},    NF, 100, 25);
+        rec(out, id, "cod",          new I[]{van(Items.COD, 1)},          NF, new I[]{ModRecipeProvider.part("gelatin", 2)},    NF, 100, 25);
+        rec(out, id, "wheat_seeds",  new I[]{van(Items.WHEAT_SEEDS, 1)},  NF, new I[]{ModRecipeProvider.part("flour", 2)},      NF, 100, 25);
     }
 }

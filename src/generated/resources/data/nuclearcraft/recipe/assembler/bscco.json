@@ -9,7 +9,7 @@
     }
   ],
   "type": "nuclearcraft:assembler",
-  "energy_per_tick": 50,
+  "energy_per_tick": 75,
   "item_inputs": [
     {
       "count": 2,

@@ -1,6 +1,6 @@
 {
   "type": "nuclearcraft:pump",
-  "energy_per_tick": 150,
+  "energy_per_tick": 500,
   "fluid_outputs": [
     {
       "fluid": "minecraft:lava"

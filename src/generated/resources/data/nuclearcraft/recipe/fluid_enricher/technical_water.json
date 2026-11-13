@@ -1,6 +1,6 @@
 {
   "type": "nuclearcraft:fluid_enricher",
-  "energy_per_tick": 50,
+  "energy_per_tick": 80,
   "fluid_inputs": [
     {
       "amount": 5000,

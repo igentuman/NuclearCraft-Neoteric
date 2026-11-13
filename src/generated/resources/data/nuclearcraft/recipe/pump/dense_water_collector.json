@@ -1,6 +1,6 @@
 {
   "type": "nuclearcraft:pump",
-  "energy_per_tick": 50,
+  "energy_per_tick": 125,
   "fluid_outputs": [
     {
       "amount": 10000,

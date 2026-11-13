@@ -36,7 +36,7 @@ public class VanillaRecipes {
 
     public static void craftingRecipes(RecipeOutput out) {
         recipeOutput = out;
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, dst("barium_nitrate", 1).item())
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModRecipeProvider.dust("barium_nitrate", 1).item())
                 .requires(dustTag("barium"))
                 .requires(GUNPOWDER)
                 .unlockedBy("item", has(dustTag("barium")))

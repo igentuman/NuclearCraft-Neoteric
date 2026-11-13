@@ -9,7 +9,7 @@
     }
   ],
   "type": "nuclearcraft:alloy_smelter",
-  "energy_per_tick": 50,
+  "energy_per_tick": 55,
   "item_inputs": [
     {
       "count": 3,

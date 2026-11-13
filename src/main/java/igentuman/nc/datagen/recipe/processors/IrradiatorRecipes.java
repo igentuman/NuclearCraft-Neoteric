@@ -15,7 +15,7 @@ public class IrradiatorRecipes {
     public static void irradiator(RecipeOutput out) {
         String id = IRRADIATOR;
 
-        i2i(out, id, "thorium_to_tbp", dust("thorium"), dust("tbp"), 1, (int)(TIME * 1.5));
+        item2item(out, id, "thorium_to_tbp", dust("thorium"), dust("tbp"), 1, (int)(TIME * 1.5));
 
         UniversalProcessorRecipeBuilder.processor(id)
                 .itemInput(Items.COBBLESTONE)
@@ -30,15 +30,15 @@ public class IrradiatorRecipes {
                 .processTime(TIME * 3)
                 .save(out, "sand_to_glowstone");
 
-        i2i(out, id, "coarse_dirt_to_wasteland_earth", Items.COARSE_DIRT, part("wasteland_earth"), 1, TIME * 3);
-        i2i(out, id, "silicon_wafer_to_n_doped", part("silicon_wafer"), part("silicon_n_doped"), 1, (int)(TIME * 0.75));
-        i2i(out, id, "tbp_to_protactinium_233", dust("tbp"), dust("protactinium_233"), 1, (int)(TIME * 2.5));
-        i2i(out, id, "bismuth_to_polonium", dust("bismuth"), dust("polonium"), 1, TIME * 2);
-        i2i(out, id, "platinum_to_neutronium", ingot("platinum"), ingot("neutronium"), 1, TIME * 10);
+        item2item(out, id, "coarse_dirt_to_wasteland_earth", Items.COARSE_DIRT, part("wasteland_earth"), 1, TIME * 3);
+        item2item(out, id, "silicon_wafer_to_n_doped", part("silicon_wafer"), part("silicon_n_doped"), 1, (int)(TIME * 0.75));
+        item2item(out, id, "tbp_to_protactinium_233", dust("tbp"), dust("protactinium_233"), 1, (int)(TIME * 2.5));
+        item2item(out, id, "bismuth_to_polonium", dust("bismuth"), dust("polonium"), 1, TIME * 2);
+        item2item(out, id, "platinum_to_neutronium", ingot("platinum"), ingot("neutronium"), 1, TIME * 10);
 
-        f2f(out, id, "lithium_to_irradiated_lithium", fluidOf("lithium"), 500, fluidOf("irradiated_lithium"), 500, (int)(TIME * 1.5));
-        f2f(out, id, "boron_to_irradiated_boron", fluidOf("boron"), 500, fluidOf("irradiated_boron"), 500, (int)(TIME * 2.5));
-        f2f(out, id, "uranium_238_to_235", isotopeFluid("uranium/238", ""), 100, isotopeFluid("uranium/235", ""), 100, (int)(TIME * 5.5));
+        fluid2fluid(out, id, "lithium_to_irradiated_lithium", fluidOf("lithium"), 500, fluidOf("irradiated_lithium"), 500, (int)(TIME * 1.5));
+        fluid2fluid(out, id, "boron_to_irradiated_boron", fluidOf("boron"), 500, fluidOf("irradiated_boron"), 500, (int)(TIME * 2.5));
+        fluid2fluid(out, id, "uranium_238_to_235", isotopeFluid("uranium/238", ""), 100, isotopeFluid("uranium/235", ""), 100, (int)(TIME * 5.5));
 
         UniversalProcessorRecipeBuilder.processor(id)
                 .itemInput(isotope("quantite"))

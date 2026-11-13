@@ -9,7 +9,7 @@
     }
   ],
   "type": "nuclearcraft:rock_crusher",
-  "energy_per_tick": 50,
+  "energy_per_tick": 105,
   "item_inputs": [
     {
       "count": 4,

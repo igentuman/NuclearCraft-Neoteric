@@ -96,7 +96,7 @@ public class Common {
                 .defineInRange("energy_storage", 2097152, 1, Integer.MAX_VALUE);
         QNP_ENERGY_PER_BLOCK = BUILDER
                 .comment("FE consumed per block mined")
-                .defineInRange("energy_per_block", 200, 1, Integer.MAX_VALUE);
+                .defineInRange("energy_per_block", 400, 1, Integer.MAX_VALUE);
         BUILDER.pop();
 
         BUILDER.push("hev");

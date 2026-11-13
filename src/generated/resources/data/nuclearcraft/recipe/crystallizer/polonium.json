@@ -1,0 +1,16 @@
+{
+  "type": "nuclearcraft:crystallizer",
+  "energy_per_tick": 50,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "nuclearcraft:molten_polonium"
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "mekanism:pellet_polonium"
+    }
+  ],
+  "process_time": 600
+}

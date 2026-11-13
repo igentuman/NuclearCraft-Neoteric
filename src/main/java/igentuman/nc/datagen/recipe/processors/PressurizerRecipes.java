@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.recipe.processors;
 
+import igentuman.nc.datagen.recipe.ModRecipeProvider;
 import igentuman.nc.registration.MaterialEntry;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
@@ -22,26 +23,26 @@ public class PressurizerRecipes {
             rec(out, id, mat.name, new I[]{i(input, 1)}, NF, new I[]{i(mat.plate().get(), 1)}, NF);
         }
 
-        i2i(out, id, "iron_ingot",   Items.IRON_INGOT,   plate("iron"),   1);
-        i2i(out, id, "copper_ingot", Items.COPPER_INGOT, plate("copper"), 1);
-        i2i(out, id, "netherite_ingot", Items.NETHERITE_INGOT, plate("netherite"), 1);
-        i2i(out, id, "graphite_dust", dust("graphite"), plate("graphite"), 1);
-        i2i(out, id, "pyrolitic_carbon", ingot("graphite"), ingot("pyrolitic_carbon"), 1);
+        item2item(out, id, "iron_ingot",   Items.IRON_INGOT,   plate("iron"),   1);
+        item2item(out, id, "copper_ingot", Items.COPPER_INGOT, plate("copper"), 1);
+        item2item(out, id, "netherite_ingot", Items.NETHERITE_INGOT, plate("netherite"), 1);
+        item2item(out, id, "graphite_dust", dust("graphite"), plate("graphite"), 1);
+        item2item(out, id, "pyrolitic_carbon", ingot("graphite"), ingot("pyrolitic_carbon"), 1);
 
-        i2i(out, id, "diamond",       dust("diamond"),       Items.DIAMOND,      1);
-        i2i(out, id, "quartz",        dust("quartz"),        Items.QUARTZ,       1);
-        i2i(out, id, "lapis",         dust("lapis"),         Items.LAPIS_LAZULI, 1);
-        i2i(out, id, "emerald",       dust("emerald"),       Items.EMERALD,      1);
-        i2i(out, id, "rhodochrosite", dust("rhodochrosite"), gem("rhodochrosite"), 1);
-        i2i(out, id, "boron_nitride", dust("boron_nitride"), gem("boron_nitride"), 1);
-        i2i(out, id, "fluorite",      dust("fluorite"),      gem("fluorite"),    1);
-        i2i(out, id, "villiaumite",   dust("villiaumite"),   gem("villiaumite"), 1);
-        i2i(out, id, "carobbiite",    dust("carobbiite"),    gem("carobbiite"),  1);
+        item2item(out, id, "diamond",       dust("diamond"),       Items.DIAMOND,      1);
+        item2item(out, id, "quartz",        dust("quartz"),        Items.QUARTZ,       1);
+        item2item(out, id, "lapis",         dust("lapis"),         Items.LAPIS_LAZULI, 1);
+        item2item(out, id, "emerald",       dust("emerald"),       Items.EMERALD,      1);
+        item2item(out, id, "rhodochrosite", dust("rhodochrosite"), gem("rhodochrosite"), 1);
+        item2item(out, id, "boron_nitride", dust("boron_nitride"), gem("boron_nitride"), 1);
+        item2item(out, id, "fluorite",      dust("fluorite"),      gem("fluorite"),    1);
+        item2item(out, id, "villiaumite",   dust("villiaumite"),   gem("villiaumite"), 1);
+        item2item(out, id, "carobbiite",    dust("carobbiite"),    gem("carobbiite"),  1);
 
         rec(out, id, "obsidian", new I[]{i(dust("obsidian"), 4)}, NF, new I[]{van(Items.OBSIDIAN, 1)}, NF);
-        rec(out, id, "silicon_boule", new I[]{i(ingot("silicon_carbide"), 3)}, NF, new I[]{prt("silicon_boule", 1)}, NF);
-        rec(out, id, "graham_cracker", new I[]{prt("flour", 2)}, NF, new I[]{prt("graham_cracker", 1)}, NF);
-        rec(out, id, "evenmoresmore", new I[]{prt("foursmore", 2)}, NF, new I[]{prt("evenmoresmore", 1)}, NF);
+        rec(out, id, "silicon_boule", new I[]{i(ingot("silicon_carbide"), 3)}, NF, new I[]{ModRecipeProvider.part("silicon_boule", 1)}, NF);
+        rec(out, id, "graham_cracker", new I[]{ModRecipeProvider.part("flour", 2)}, NF, new I[]{ModRecipeProvider.part("graham_cracker", 1)}, NF);
+        rec(out, id, "evenmoresmore", new I[]{ModRecipeProvider.part("foursmore", 2)}, NF, new I[]{ModRecipeProvider.part("evenmoresmore", 1)}, NF);
 
         rec(out, id, "wasteland_earth_to_portal", new I[]{i(part("wasteland_earth"), 32)}, NF, new I[]{i(part("wasteland_portal"), 1)}, NF, TIME * 2);
 

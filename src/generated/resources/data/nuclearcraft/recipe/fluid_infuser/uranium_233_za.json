@@ -1,6 +1,6 @@
 {
   "type": "nuclearcraft:fluid_infuser",
-  "energy_per_tick": 50,
+  "energy_per_tick": 60,
   "fluid_inputs": [
     {
       "amount": 100,

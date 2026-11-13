@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.recipe.processors;
 
+import igentuman.nc.datagen.recipe.ModRecipeProvider;
 import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.LinkedHashMap;
@@ -57,7 +58,7 @@ public class FuelReprocessorRecipes {
             RpOut[] o = e.getValue().outs();
             I[] items = new I[o.length];
             for (int i = 0; i < o.length; i++) {
-                items[i] = o[i].isotope() ? iso(o[i].name(), o[i].count()) : dst(o[i].name(), o[i].count());
+                items[i] = o[i].isotope() ? ModRecipeProvider.isotope(o[i].name(), o[i].count()) : ModRecipeProvider.dust(o[i].name(), o[i].count());
             }
             reproc(out, e.getKey(), items, e.getValue().time());
         }

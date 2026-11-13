@@ -3,6 +3,7 @@ package igentuman.nc.datagen;
 import igentuman.nc.datagen.loot.ModBlockLootTableProvider;
 import igentuman.nc.datagen.loot.ModEntityLootTableProvider;
 import igentuman.nc.datagen.recipe.ModRecipeProvider;
+import igentuman.nc.datagen.recipe.CompatProcessorRecipeProvider;
 import igentuman.nc.datagen.tag.ModBlockTagProvider;
 import igentuman.nc.datagen.tag.ModFluidTagProvider;
 import igentuman.nc.datagen.tag.ModItemTagProvider;
@@ -42,6 +43,7 @@ public class ModDataGenerators {
         generator.addProvider(event.includeServer(), new ModPoiTypeTagProvider(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new ModDatapackProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new CompatProcessorRecipeProvider(packOutput));
         generator.addProvider(event.includeClient(), new ModLanguageProvider(generator, "en_us"));
         generator.addProvider(event.includeClient(), new ModBlockStateProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));

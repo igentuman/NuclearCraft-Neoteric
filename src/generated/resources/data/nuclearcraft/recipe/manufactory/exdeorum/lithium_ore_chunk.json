@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "exdeorum:lithium_ore_chunk"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/lithium"
+      }
+    }
+  ],
+  "type": "nuclearcraft:manufactory",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "exdeorum:lithium_ore_chunk"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/lithium"
+    }
+  ],
+  "process_time": 200
+}

@@ -1,6 +1,10 @@
 {
   "neoforge:conditions": [
     {
+      "type": "neoforge:mod_loaded",
+      "modid": "exdeorum"
+    },
+    {
       "type": "neoforge:item_exists",
       "item": "exdeorum:osmium_ore_chunk"
     },

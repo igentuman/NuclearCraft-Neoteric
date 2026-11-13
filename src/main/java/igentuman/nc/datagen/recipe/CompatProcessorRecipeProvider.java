@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.setup.entries.Processors.ASSEMBLER;
 import static igentuman.nc.setup.entries.Processors.MANUFACTORY;
 
 public class CompatProcessorRecipeProvider implements DataProvider {
@@ -29,50 +30,86 @@ public class CompatProcessorRecipeProvider implements DataProvider {
                 "iron", "copper", "gold", "aluminum", "cobalt", "silver", "lead", "platinum",
                 "nickel", "uranium", "osmium", "tin", "zinc", "iridium", "thorium",
                 "magnesium", "lithium", "boron")) {
-            saves.add(save(output, MANUFACTORY, "exdeorum/" + material + "_ore_chunk",
-                    "exdeorum:" + material + "_ore_chunk", "c:dusts/" + material));
+            saves.add(save(output, "exdeorum", MANUFACTORY, material + "_ore_chunk",
+                    List.of(item("exdeorum:" + material + "_ore_chunk", 1)), tag("c:dusts/" + material, 1)));
         }
+        saves.add(save(output, "ae2", MANUFACTORY, "certus_quartz_dust",
+                List.of(tag("c:gems/certus_quartz", 1)), tag("c:dusts/certus_quartz", 1)));
+        saves.add(save(output, "ae2", MANUFACTORY, "fluix_dust",
+                List.of(tag("c:gems/fluix", 1)), tag("c:dusts/fluix", 1)));
+        for (String processor : List.of("logic", "calculation", "engineering")) {
+            saves.add(save(output, "ae2", ASSEMBLER, processor + "_processor",
+                    List.of(item("ae2:printed_" + processor + "_processor", 1),
+                            item("ae2:printed_silicon", 1), item("minecraft:redstone", 1)),
+                    item("ae2:" + processor + "_processor", 1)));
+        }
+        saves.add(save(output, "ae2", ASSEMBLER, "formation_core",
+                List.of(tag("ae2:all_certus_quartz", 1), tag("c:dusts/fluix", 1),
+                        item("ae2:logic_processor", 1)), item("ae2:formation_core", 2)));
+        saves.add(save(output, "ae2", ASSEMBLER, "annihilation_core",
+                List.of(tag("ae2:all_nether_quartz", 1), tag("c:dusts/fluix", 1),
+                        item("ae2:logic_processor", 1)), item("ae2:annihilation_core", 2)));
         return CompletableFuture.allOf(saves.toArray(CompletableFuture[]::new));
     }
 
-    private CompletableFuture<?> save(CachedOutput output, String processor, String name,
-                                      String inputId, String outputTag) {
-        ResourceLocation.parse(inputId);
-        ResourceLocation.parse(outputTag);
+    private static JsonObject item(String id, int count) {
+        return reference("item", id, count);
+    }
+
+    private static JsonObject tag(String id, int count) {
+        return reference("tag", id, count);
+    }
+
+    private static JsonObject reference(String key, String id, int count) {
+        ResourceLocation.parse(id);
+        JsonObject reference = new JsonObject();
+        reference.addProperty(key, id);
+        reference.addProperty("count", count);
+        return reference;
+    }
+
+    private CompletableFuture<?> save(CachedOutput output, String modId, String processor, String name,
+                                      List<JsonObject> itemInputs, JsonObject result) {
         JsonObject recipe = new JsonObject();
         recipe.addProperty("type", rl(processor).toString());
         recipe.addProperty("process_time", ModRecipeProvider.TIME);
-        recipe.addProperty("energy_per_tick", ModRecipeProvider.ENERGY);
+        recipe.addProperty("energy_per_tick", ModRecipeProvider.ENERGY + (processor.equals(ASSEMBLER) ? 25 : 0));
 
-        JsonObject input = new JsonObject();
-        input.addProperty("item", inputId);
-        input.addProperty("count", 1);
+        JsonObject modLoaded = new JsonObject();
+        modLoaded.addProperty("type", "neoforge:mod_loaded");
+        modLoaded.addProperty("modid", modId);
+        JsonArray conditions = new JsonArray();
+        conditions.add(modLoaded);
         JsonArray inputs = new JsonArray();
-        inputs.add(input);
+        for (JsonObject input : itemInputs) {
+            inputs.add(input);
+            conditions.add(contentCondition(input));
+        }
         recipe.add("item_inputs", inputs);
 
-        JsonObject result = new JsonObject();
-        result.addProperty("tag", outputTag);
-        result.addProperty("count", 1);
         JsonArray results = new JsonArray();
         results.add(result);
         recipe.add("item_outputs", results);
+        conditions.add(contentCondition(result));
+        recipe.add("neoforge:conditions", conditions);
 
-        JsonObject itemExists = new JsonObject();
-        itemExists.addProperty("type", "neoforge:item_exists");
-        itemExists.addProperty("item", inputId);
+        return DataProvider.saveStable(output, recipe, recipes.json(rl(processor + "/" + modId + "/" + name)));
+    }
+
+    private static JsonObject contentCondition(JsonObject reference) {
+        if (reference.has("item")) {
+            JsonObject itemExists = new JsonObject();
+            itemExists.addProperty("type", "neoforge:item_exists");
+            itemExists.addProperty("item", reference.get("item").getAsString());
+            return itemExists;
+        }
         JsonObject tagEmpty = new JsonObject();
         tagEmpty.addProperty("type", "neoforge:tag_empty");
-        tagEmpty.addProperty("tag", outputTag);
+        tagEmpty.addProperty("tag", reference.get("tag").getAsString());
         JsonObject tagPresent = new JsonObject();
         tagPresent.addProperty("type", "neoforge:not");
         tagPresent.add("value", tagEmpty);
-        JsonArray conditions = new JsonArray();
-        conditions.add(itemExists);
-        conditions.add(tagPresent);
-        recipe.add("neoforge:conditions", conditions);
-
-        return DataProvider.saveStable(output, recipe, recipes.json(rl(processor + "/" + name)));
+        return tagPresent;
     }
 
     @Override

@@ -1,0 +1,53 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "ae2:all_nether_quartz"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/fluix"
+      }
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "ae2:logic_processor"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "ae2:annihilation_core"
+    }
+  ],
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 75,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "ae2:all_nether_quartz"
+    },
+    {
+      "count": 1,
+      "tag": "c:dusts/fluix"
+    },
+    {
+      "count": 1,
+      "item": "ae2:logic_processor"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "item": "ae2:annihilation_core"
+    }
+  ],
+  "process_time": 200
+}

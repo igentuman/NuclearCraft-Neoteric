@@ -1,0 +1,47 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "ae2:printed_logic_processor"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "ae2:printed_silicon"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "minecraft:redstone"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "ae2:logic_processor"
+    }
+  ],
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 75,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "ae2:printed_logic_processor"
+    },
+    {
+      "count": 1,
+      "item": "ae2:printed_silicon"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:redstone"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 1,
+      "item": "ae2:logic_processor"
+    }
+  ],
+  "process_time": 200
+}

@@ -12,8 +12,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.rl;
+import static igentuman.nc.setup.entries.Processors.ALLOY_SMELTER;
 import static igentuman.nc.setup.entries.Processors.ASSEMBLER;
 import static igentuman.nc.setup.entries.Processors.MANUFACTORY;
+import static igentuman.nc.setup.entries.Processors.PRESSURIZER;
 
 public class CompatProcessorRecipeProvider implements DataProvider {
 
@@ -49,6 +51,18 @@ public class CompatProcessorRecipeProvider implements DataProvider {
         saves.add(save(output, "ae2", ASSEMBLER, "annihilation_core",
                 List.of(tag("ae2:all_nether_quartz", 1), tag("c:dusts/fluix", 1),
                         item("ae2:logic_processor", 1)), item("ae2:annihilation_core", 2)));
+        saves.add(save(output, "create", ALLOY_SMELTER, "brass_ingot",
+                List.of(tag("c:ingots/copper", 1), tag("c:ingots/zinc", 1)), tag("c:ingots/brass", 2),
+                300, ModRecipeProvider.ENERGY + 5));
+        saves.add(save(output, "create", ALLOY_SMELTER, "andesite_alloy",
+                List.of(item("minecraft:andesite", 1), tag("c:nuggets/iron", 1)), item("create:andesite_alloy", 1),
+                300, ModRecipeProvider.ENERGY + 5));
+        saves.add(save(output, "create", PRESSURIZER, "brass_sheet",
+                List.of(tag("c:ingots/brass", 1)), tag("c:plates/brass", 1)));
+        saves.add(save(output, "create", ASSEMBLER, "rose_quartz",
+                List.of(tag("c:gems/quartz", 1), tag("c:dusts/redstone", 8)), item("create:rose_quartz", 1)));
+        saves.add(save(output, "create", ASSEMBLER, "electron_tube",
+                List.of(item("create:polished_rose_quartz", 1), tag("c:plates/iron", 1)), item("create:electron_tube", 1)));
         return CompletableFuture.allOf(saves.toArray(CompletableFuture[]::new));
     }
 
@@ -70,10 +84,16 @@ public class CompatProcessorRecipeProvider implements DataProvider {
 
     private CompletableFuture<?> save(CachedOutput output, String modId, String processor, String name,
                                       List<JsonObject> itemInputs, JsonObject result) {
+        return save(output, modId, processor, name, itemInputs, result,
+                ModRecipeProvider.TIME, ModRecipeProvider.ENERGY + (processor.equals(ASSEMBLER) ? 25 : 0));
+    }
+
+    private CompletableFuture<?> save(CachedOutput output, String modId, String processor, String name,
+                                      List<JsonObject> itemInputs, JsonObject result, int processTime, int energyPerTick) {
         JsonObject recipe = new JsonObject();
         recipe.addProperty("type", rl(processor).toString());
-        recipe.addProperty("process_time", ModRecipeProvider.TIME);
-        recipe.addProperty("energy_per_tick", ModRecipeProvider.ENERGY + (processor.equals(ASSEMBLER) ? 25 : 0));
+        recipe.addProperty("process_time", processTime);
+        recipe.addProperty("energy_per_tick", energyPerTick);
 
         JsonObject modLoaded = new JsonObject();
         modLoaded.addProperty("type", "neoforge:mod_loaded");

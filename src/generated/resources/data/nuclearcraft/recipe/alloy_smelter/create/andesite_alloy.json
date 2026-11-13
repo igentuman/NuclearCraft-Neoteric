@@ -1,0 +1,42 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "minecraft:andesite"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:nuggets/iron"
+      }
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "create:andesite_alloy"
+    }
+  ],
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 55,
+  "item_inputs": [
+    {
+      "count": 1,
+      "item": "minecraft:andesite"
+    },
+    {
+      "count": 1,
+      "tag": "c:nuggets/iron"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 1,
+      "item": "create:andesite_alloy"
+    }
+  ],
+  "process_time": 300
+}

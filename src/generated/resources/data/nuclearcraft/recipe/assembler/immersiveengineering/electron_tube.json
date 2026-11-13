@@ -1,0 +1,67 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "immersiveengineering"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:glass_blocks"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/nickel"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:wires/copper"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/redstone"
+      }
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "immersiveengineering:electron_tube"
+    }
+  ],
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 200,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:glass_blocks"
+    },
+    {
+      "count": 1,
+      "tag": "c:plates/nickel"
+    },
+    {
+      "count": 1,
+      "tag": "c:wires/copper"
+    },
+    {
+      "count": 1,
+      "tag": "c:dusts/redstone"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 3,
+      "item": "immersiveengineering:electron_tube"
+    }
+  ],
+  "process_time": 250
+}

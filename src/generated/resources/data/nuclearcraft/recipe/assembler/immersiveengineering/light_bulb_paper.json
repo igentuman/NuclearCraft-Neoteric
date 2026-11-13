@@ -1,0 +1,56 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "immersiveengineering"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:glass_blocks"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:paper"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/copper"
+      }
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "immersiveengineering:light_bulb"
+    }
+  ],
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 200,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:glass_blocks"
+    },
+    {
+      "count": 3,
+      "tag": "c:paper"
+    },
+    {
+      "count": 1,
+      "tag": "c:ingots/copper"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 3,
+      "item": "immersiveengineering:light_bulb"
+    }
+  ],
+  "process_time": 250
+}

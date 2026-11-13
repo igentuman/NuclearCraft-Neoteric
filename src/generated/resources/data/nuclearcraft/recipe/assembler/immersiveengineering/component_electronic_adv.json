@@ -1,0 +1,53 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "immersiveengineering"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/plastic"
+      }
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "immersiveengineering:electron_tube"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:wires/aluminum"
+      }
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "immersiveengineering:component_electronic_adv"
+    }
+  ],
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 200,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:plates/plastic"
+    },
+    {
+      "count": 2,
+      "item": "immersiveengineering:electron_tube"
+    },
+    {
+      "count": 1,
+      "tag": "c:wires/aluminum"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 1,
+      "item": "immersiveengineering:component_electronic_adv"
+    }
+  ],
+  "process_time": 250
+}

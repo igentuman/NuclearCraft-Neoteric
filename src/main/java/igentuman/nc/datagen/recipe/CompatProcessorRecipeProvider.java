@@ -63,6 +63,41 @@ public class CompatProcessorRecipeProvider implements DataProvider {
                 List.of(tag("c:gems/quartz", 1), tag("c:dusts/redstone", 8)), item("create:rose_quartz", 1)));
         saves.add(save(output, "create", ASSEMBLER, "electron_tube",
                 List.of(item("create:polished_rose_quartz", 1), tag("c:plates/iron", 1)), item("create:electron_tube", 1)));
+        saves.add(save(output, "immersiveengineering", MANUFACTORY, "coke_dust",
+                List.of(tag("c:coal_coke", 1)), tag("c:dusts/coal_coke", 1)));
+        for (String material : List.of("gold", "nickel", "constantan")) {
+            saves.add(save(output, "immersiveengineering", PRESSURIZER, material + "_plate",
+                    List.of(tag("c:ingots/" + material, 1)), tag("c:plates/" + material, 1)));
+        }
+        saves.add(save(output, "immersiveengineering", ALLOY_SMELTER, "constantan_ingot",
+                List.of(tag("c:ingots/copper", 1), tag("c:ingots/nickel", 1)), tag("c:ingots/constantan", 2),
+                300, ModRecipeProvider.ENERGY + 5));
+        for (String material : List.of("iron", "steel")) {
+            saves.add(save(output, "immersiveengineering", ASSEMBLER, "component_" + material,
+                    List.of(tag("c:plates/" + material, 4), tag("c:ingots/copper", 1)),
+                    item("immersiveengineering:component_" + material, 1)));
+        }
+        saves.add(save(output, "immersiveengineering", ASSEMBLER, "electron_tube",
+                List.of(tag("c:glass_blocks", 1), tag("c:plates/nickel", 1),
+                        tag("c:wires/copper", 1), tag("c:dusts/redstone", 1)),
+                item("immersiveengineering:electron_tube", 3), 250, 200));
+        saves.add(save(output, "immersiveengineering", ASSEMBLER, "component_electronic",
+                List.of(tag("immersiveengineering:treated_wood_slab", 1), tag("c:gems/quartz", 1),
+                        tag("c:dusts/redstone", 1), tag("c:wires/electrum", 1)),
+                item("immersiveengineering:component_electronic", 1), 250, 200));
+        saves.add(save(output, "immersiveengineering", ASSEMBLER, "component_electronic_adv",
+                List.of(tag("c:plates/plastic", 1), item("immersiveengineering:electron_tube", 2),
+                        tag("c:wires/aluminum", 1)),
+                item("immersiveengineering:component_electronic_adv", 1), 250, 200));
+        saves.add(save(output, "immersiveengineering", ASSEMBLER, "circuit_board",
+                List.of(tag("c:plates/plastic", 1), tag("c:plates/copper", 1)),
+                item("immersiveengineering:circuit_board", 1), 250, 200));
+        saves.add(save(output, "immersiveengineering", ASSEMBLER, "light_bulb_paper",
+                List.of(tag("c:glass_blocks", 1), tag("c:paper", 3), tag("c:ingots/copper", 1)),
+                item("immersiveengineering:light_bulb", 3), 250, 200));
+        saves.add(save(output, "immersiveengineering", ASSEMBLER, "light_bulb_bamboo",
+                List.of(tag("c:glass_blocks", 1), item("minecraft:bamboo", 3), tag("c:ingots/copper", 1)),
+                item("immersiveengineering:light_bulb", 3), 250, 200));
         return CompletableFuture.allOf(saves.toArray(CompletableFuture[]::new));
     }
 

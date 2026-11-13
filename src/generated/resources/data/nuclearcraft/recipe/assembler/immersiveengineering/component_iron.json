@@ -1,0 +1,45 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "immersiveengineering"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:plates/iron"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/copper"
+      }
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "immersiveengineering:component_iron"
+    }
+  ],
+  "type": "nuclearcraft:assembler",
+  "energy_per_tick": 75,
+  "item_inputs": [
+    {
+      "count": 4,
+      "tag": "c:plates/iron"
+    },
+    {
+      "count": 1,
+      "tag": "c:ingots/copper"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 1,
+      "item": "immersiveengineering:component_iron"
+    }
+  ],
+  "process_time": 200
+}

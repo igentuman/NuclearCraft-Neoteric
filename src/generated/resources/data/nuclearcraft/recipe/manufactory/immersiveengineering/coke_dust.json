@@ -1,0 +1,37 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "immersiveengineering"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:coal_coke"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/coal_coke"
+      }
+    }
+  ],
+  "type": "nuclearcraft:manufactory",
+  "energy_per_tick": 50,
+  "item_inputs": [
+    {
+      "count": 1,
+      "tag": "c:coal_coke"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 1,
+      "tag": "c:dusts/coal_coke"
+    }
+  ],
+  "process_time": 200
+}

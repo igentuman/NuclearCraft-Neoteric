@@ -1,0 +1,48 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:alloys/elite"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "mekanism:enriched/obsidian"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:alloys/ultimate"
+      }
+    }
+  ],
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 200,
+  "item_inputs": [
+    {
+      "count": 2,
+      "tag": "c:alloys/elite"
+    },
+    {
+      "count": 1,
+      "tag": "mekanism:enriched/obsidian"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 2,
+      "tag": "c:alloys/ultimate"
+    }
+  ],
+  "process_time": 400
+}

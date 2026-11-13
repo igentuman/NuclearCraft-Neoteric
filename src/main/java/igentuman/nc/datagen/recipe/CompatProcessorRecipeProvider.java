@@ -35,6 +35,7 @@ public class CompatProcessorRecipeProvider implements DataProvider {
             saves.add(save(output, "exdeorum", MANUFACTORY, material + "_ore_chunk",
                     List.of(item("exdeorum:" + material + "_ore_chunk", 1)), tag("c:dusts/" + material, 1)));
         }
+
         saves.add(save(output, "ae2", MANUFACTORY, "certus_quartz_dust",
                 List.of(tag("c:gems/certus_quartz", 1)), tag("c:dusts/certus_quartz", 1)));
         saves.add(save(output, "ae2", MANUFACTORY, "fluix_dust",
@@ -51,6 +52,7 @@ public class CompatProcessorRecipeProvider implements DataProvider {
         saves.add(save(output, "ae2", ASSEMBLER, "annihilation_core",
                 List.of(tag("ae2:all_nether_quartz", 1), tag("c:dusts/fluix", 1),
                         item("ae2:logic_processor", 1)), item("ae2:annihilation_core", 2)));
+
         saves.add(save(output, "create", ALLOY_SMELTER, "brass_ingot",
                 List.of(tag("c:ingots/copper", 1), tag("c:ingots/zinc", 1)), tag("c:ingots/brass", 2),
                 300, ModRecipeProvider.ENERGY + 5));
@@ -63,6 +65,7 @@ public class CompatProcessorRecipeProvider implements DataProvider {
                 List.of(tag("c:gems/quartz", 1), tag("c:dusts/redstone", 8)), item("create:rose_quartz", 1)));
         saves.add(save(output, "create", ASSEMBLER, "electron_tube",
                 List.of(item("create:polished_rose_quartz", 1), tag("c:plates/iron", 1)), item("create:electron_tube", 1)));
+
         saves.add(save(output, "immersiveengineering", MANUFACTORY, "coke_dust",
                 List.of(tag("c:coal_coke", 1)), tag("c:dusts/coal_coke", 1)));
         for (String material : List.of("gold", "nickel", "constantan")) {
@@ -98,6 +101,27 @@ public class CompatProcessorRecipeProvider implements DataProvider {
         saves.add(save(output, "immersiveengineering", ASSEMBLER, "light_bulb_bamboo",
                 List.of(tag("c:glass_blocks", 1), item("minecraft:bamboo", 3), tag("c:ingots/copper", 1)),
                 item("immersiveengineering:light_bulb", 3), 250, 200));
+
+        saves.add(save(output, "mekanism", PRESSURIZER, "hdpe_sheet",
+                List.of(item("mekanism:hdpe_pellet", 3)), item("mekanism:hdpe_sheet", 1), 200, 200));
+        saves.add(save(output, "mekanism", ALLOY_SMELTER, "infused_alloy",
+                List.of(tag("c:ingots/copper", 8), tag("mekanism:enriched/redstone", 1)),
+                tag("c:alloys/advanced", 8), 1600, 200));
+        saves.add(save(output, "mekanism", ALLOY_SMELTER, "reinforced_alloy",
+                List.of(tag("c:alloys/advanced", 4), tag("mekanism:enriched/diamond", 1)),
+                tag("c:alloys/elite", 4), 800, 200));
+        saves.add(save(output, "mekanism", ALLOY_SMELTER, "atomic_alloy",
+                List.of(tag("c:alloys/elite", 2), tag("mekanism:enriched/obsidian", 1)),
+                tag("c:alloys/ultimate", 2), 400, 200));
+        saves.add(save(output, "mekanism", ALLOY_SMELTER, "refined_obsidian_dust",
+                List.of(tag("c:dusts/obsidian", 8), tag("mekanism:enriched/diamond", 1)),
+                tag("c:dusts/refined_obsidian", 8), 1600, 200));
+        saves.add(save(output, "mekanism", ALLOY_SMELTER, "basic_control_circuit",
+                List.of(tag("c:ingots/osmium", 4), tag("mekanism:enriched/redstone", 1)),
+                tag("c:circuits/basic", 4), 800, 200));
+        saves.add(save(output, "mekanismgenerators", ALLOY_SMELTER, "hohlraum",
+                List.of(tag("c:dusts/gold", 32), tag("mekanism:enriched/carbon", 1)),
+                item("mekanismgenerators:hohlraum", 8), 1600, 200, "mekanism"));
         return CompletableFuture.allOf(saves.toArray(CompletableFuture[]::new));
     }
 
@@ -124,17 +148,18 @@ public class CompatProcessorRecipeProvider implements DataProvider {
     }
 
     private CompletableFuture<?> save(CachedOutput output, String modId, String processor, String name,
-                                      List<JsonObject> itemInputs, JsonObject result, int processTime, int energyPerTick) {
+                                      List<JsonObject> itemInputs, JsonObject result, int processTime, int energyPerTick,
+                                      String... additionalMods) {
         JsonObject recipe = new JsonObject();
         recipe.addProperty("type", rl(processor).toString());
         recipe.addProperty("process_time", processTime);
         recipe.addProperty("energy_per_tick", energyPerTick);
 
-        JsonObject modLoaded = new JsonObject();
-        modLoaded.addProperty("type", "neoforge:mod_loaded");
-        modLoaded.addProperty("modid", modId);
         JsonArray conditions = new JsonArray();
-        conditions.add(modLoaded);
+        conditions.add(modLoadedCondition(modId));
+        for (String additionalMod : additionalMods) {
+            conditions.add(modLoadedCondition(additionalMod));
+        }
         JsonArray inputs = new JsonArray();
         for (JsonObject input : itemInputs) {
             inputs.add(input);
@@ -149,6 +174,13 @@ public class CompatProcessorRecipeProvider implements DataProvider {
         recipe.add("neoforge:conditions", conditions);
 
         return DataProvider.saveStable(output, recipe, recipes.json(rl(processor + "/" + modId + "/" + name)));
+    }
+
+    private static JsonObject modLoadedCondition(String modId) {
+        JsonObject modLoaded = new JsonObject();
+        modLoaded.addProperty("type", "neoforge:mod_loaded");
+        modLoaded.addProperty("modid", modId);
+        return modLoaded;
     }
 
     private static JsonObject contentCondition(JsonObject reference) {

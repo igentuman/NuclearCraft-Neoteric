@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "mekanism:hdpe_pellet"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "mekanism:hdpe_sheet"
+    }
+  ],
+  "type": "nuclearcraft:pressurizer",
+  "energy_per_tick": 200,
+  "item_inputs": [
+    {
+      "count": 3,
+      "item": "mekanism:hdpe_pellet"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 1,
+      "item": "mekanism:hdpe_sheet"
+    }
+  ],
+  "process_time": 200
+}

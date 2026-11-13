@@ -1,0 +1,48 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/copper"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "mekanism:enriched/redstone"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:alloys/advanced"
+      }
+    }
+  ],
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 200,
+  "item_inputs": [
+    {
+      "count": 8,
+      "tag": "c:ingots/copper"
+    },
+    {
+      "count": 1,
+      "tag": "mekanism:enriched/redstone"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 8,
+      "tag": "c:alloys/advanced"
+    }
+  ],
+  "process_time": 1600
+}

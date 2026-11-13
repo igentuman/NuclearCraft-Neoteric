@@ -1,0 +1,49 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanismgenerators"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/gold"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "mekanism:enriched/carbon"
+      }
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "mekanismgenerators:hohlraum"
+    }
+  ],
+  "type": "nuclearcraft:alloy_smelter",
+  "energy_per_tick": 200,
+  "item_inputs": [
+    {
+      "count": 32,
+      "tag": "c:dusts/gold"
+    },
+    {
+      "count": 1,
+      "tag": "mekanism:enriched/carbon"
+    }
+  ],
+  "item_outputs": [
+    {
+      "count": 8,
+      "item": "mekanismgenerators:hohlraum"
+    }
+  ],
+  "process_time": 1600
+}

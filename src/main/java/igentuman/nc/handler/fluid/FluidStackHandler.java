@@ -9,6 +9,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.function.Predicate;
 
 /** Multi-tank fluid handler with per-tank capacity, validators, restricted external views, and NBT. */
@@ -18,6 +19,7 @@ public class FluidStackHandler implements IFluidHandler, INBTSerializable<Compou
     protected FluidStack[] fluids;
     protected int[] capacities;
     protected Predicate<FluidStack>[] validators;
+    private boolean fixedCapacities;
 
     // External access restriction fields
     private FluidStackHandler inner;
@@ -83,15 +85,22 @@ public class FluidStackHandler implements IFluidHandler, INBTSerializable<Compou
 
     @SuppressWarnings("unchecked")
     public void setSize(int size) {
+        int[] previousCapacities = this.capacities;
+        Predicate<FluidStack>[] previousValidators = this.validators;
         this.tanks = size;
         this.fluids = new FluidStack[size];
         this.capacities = new int[size];
         this.validators = new Predicate[size];
         for (int i = 0; i < size; i++) {
             this.fluids[i] = FluidStack.EMPTY;
-            this.capacities[i] = 1000;
-            this.validators[i] = fs -> true;
+            this.capacities[i] = i < previousCapacities.length ? previousCapacities[i] : 1000;
+            this.validators[i] = i < previousValidators.length ? previousValidators[i] : fs -> true;
         }
+    }
+
+    /** Keeps capacities configured by the machine instead of restoring them from saved NBT. */
+    public void setFixedCapacities() {
+        fixedCapacities = true;
     }
 
     /**
@@ -290,14 +299,14 @@ public class FluidStackHandler implements IFluidHandler, INBTSerializable<Compou
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         ListTag tankList = new ListTag();
         for (int i = 0; i < tanks; i++) {
+            CompoundTag tankTag = new CompoundTag();
+            tankTag.putInt("Tank", i);
+            tankTag.putInt("Capacity", capacities[i]);
             if (!fluids[i].isEmpty()) {
-                CompoundTag tankTag = new CompoundTag();
-                tankTag.putInt("Tank", i);
-                tankTag.putInt("Capacity", capacities[i]);
                 Tag fluidTag = fluids[i].save(provider);
                 tankTag.put("Fluid", fluidTag);
-                tankList.add(tankTag);
             }
+            tankList.add(tankTag);
         }
         CompoundTag nbt = new CompoundTag();
         nbt.put("Tanks", tankList);
@@ -308,19 +317,23 @@ public class FluidStackHandler implements IFluidHandler, INBTSerializable<Compou
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         int size = nbt.contains("Size", Tag.TAG_INT) ? nbt.getInt("Size") : tanks;
-        setSize(size);
+        if (size != tanks) {
+            setSize(size);
+        } else {
+            Arrays.fill(fluids, FluidStack.EMPTY);
+        }
         ListTag tankList = nbt.getList("Tanks", Tag.TAG_COMPOUND);
         for (int i = 0; i < tankList.size(); i++) {
             CompoundTag tankTag = tankList.getCompound(i);
             int tank = tankTag.getInt("Tank");
             if (tank >= 0 && tank < tanks) {
-                if (tankTag.contains("Capacity", Tag.TAG_INT)) {
+                if (!fixedCapacities && tankTag.contains("Capacity", Tag.TAG_INT)) {
                     capacities[tank] = tankTag.getInt("Capacity");
                 }
                 // Support both new format (nested "Fluid" tag) and legacy format (inline)
                 if (tankTag.contains("Fluid")) {
                     FluidStack.parse(provider, tankTag.getCompound("Fluid")).ifPresent(stack -> fluids[tank] = stack);
-                } else {
+                } else if (tankTag.contains("id", Tag.TAG_STRING)) {
                     FluidStack.parse(provider, tankTag).ifPresent(stack -> fluids[tank] = stack);
                 }
             }

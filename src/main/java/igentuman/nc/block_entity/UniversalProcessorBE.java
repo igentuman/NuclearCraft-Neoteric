@@ -55,6 +55,9 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
 
     public UniversalProcessorBE(BlockPos pos, BlockState state, String name) {
         super(ModEntries.get(name).blockEntity().get(), pos, state, name);
+        if (contentHandler.hasFluidCapability()) {
+            contentHandler.getFluidHandler().getInternalHandler().setFixedCapacities();
+        }
         if (contentHandler.hasItemCapability()) {
             contentHandler.getItemHandler().setSideInsertLocked(true);
         }

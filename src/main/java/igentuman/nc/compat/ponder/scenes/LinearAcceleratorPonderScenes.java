@@ -7,6 +7,7 @@ import igentuman.nc.setup.ModEntries;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
+import net.createmod.ponder.foundation.instruction.RotateSceneInstruction;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -18,7 +19,6 @@ public class LinearAcceleratorPonderScenes {
         scene.title(PonderScenes.LINEAR_ACCELERATOR.getPath(), "Creating a Linear Accelerator");
         scene.configureBasePlate(0, -12, 25);
         scene.scaleSceneView(0.5f);
-
         BlockState beam = ModEntries.get("particle_beam").block().get().defaultBlockState();
         for (int x = 1; x < 24; x++) {
             scene.world().setBlock(util.grid().at(x, 2, 2), beam, false);
@@ -56,7 +56,7 @@ public class LinearAcceleratorPonderScenes {
             scene.world().showSection(util.select().fromTo(x, 1, 1, x, 3, 3), Direction.DOWN);
             scene.idle(4);
         }
-        scene.overlay().showText(65).pointAt(util.vector().centerOf(11, 2, 2))
+        scene.overlay().showText(65).pointAt(util.vector().centerOf(20, 2, 2))
                 .text("RF Amplifiers around a beam block raise particle energy.");
         scene.idle(70);
 
@@ -76,6 +76,7 @@ public class LinearAcceleratorPonderScenes {
         scene.idle(65);
 
         scene.addKeyframe();
+        scene.addInstruction(new RotateSceneInstruction(0, 180, true));
         scene.world().showSection(util.select().fromTo(0, 1, 0, 24, 4, 0), Direction.SOUTH);
         scene.world().showSection(util.select().fromTo(0, 1, 4, 24, 4, 4), Direction.NORTH);
         scene.world().showSection(util.select().fromTo(0, 1, 1, 0, 4, 3), Direction.EAST);

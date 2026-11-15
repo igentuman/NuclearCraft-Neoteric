@@ -19,7 +19,7 @@ public class KugelblitzChamberPonderScenes {
         // Chamber is 11x11x11 in center of 21x21x21
         // Structure bounds: 0,0,0 to 20,20,20
         // Chamber bounds: 5,5,5 to 15,15,15
-        scene.scaleSceneView(0.5f);
+        scene.scaleSceneView(0.25f);
         // Show walls
         scene.world().showSection(util.select().fromTo(5, 5, 5, 15, 15, 15), Direction.DOWN);
         scene.idle(10);

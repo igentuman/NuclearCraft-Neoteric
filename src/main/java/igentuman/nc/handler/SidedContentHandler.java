@@ -155,8 +155,8 @@ public class SidedContentHandler {
     public enum RelativeDirection {
         FRONT,
         BACK,
-        LEFT,
         RIGHT,
+        LEFT,
         UP,
         DOWN;
 
@@ -164,8 +164,8 @@ public class SidedContentHandler {
             return switch (relativeDirection) {
                 case FRONT -> facing;
                 case BACK -> facing.getOpposite();
-                case LEFT -> facing.getClockWise();
-                case RIGHT -> facing.getCounterClockWise();
+                case RIGHT -> facing.getClockWise();
+                case LEFT -> facing.getCounterClockWise();
                 case UP -> Direction.UP;
                 case DOWN -> Direction.DOWN;
             };
@@ -174,8 +174,8 @@ public class SidedContentHandler {
         public static RelativeDirection toRelative(Direction absoluteDirection, Direction facing) {
             if (absoluteDirection == facing) return FRONT;
             if (absoluteDirection == facing.getOpposite()) return BACK;
-            if (absoluteDirection == facing.getClockWise()) return LEFT;
-            if (absoluteDirection == facing.getCounterClockWise()) return RIGHT;
+            if (absoluteDirection == facing.getClockWise()) return RIGHT;
+            if (absoluteDirection == facing.getCounterClockWise()) return LEFT;
             if (absoluteDirection == Direction.UP) return UP;
             if (absoluteDirection == Direction.DOWN) return DOWN;
             return null;

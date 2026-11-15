@@ -343,6 +343,7 @@ public class NuclearCraft {
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         for (ModEntry entry: ModEntries.ENTRIES.values()) {
+            if (entry.name().startsWith("dummy_") || entry.name().endsWith("_proxy")) continue;
             if (entry.materialEntry() != null) {
                 var mat = entry.materialEntry();
                 String matName = mat.name;

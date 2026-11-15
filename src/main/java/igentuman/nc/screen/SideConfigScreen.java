@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
@@ -55,7 +56,8 @@ public class SideConfigScreen extends Screen {
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.blit(TEXTURE, winX, winY, 0, 0, WIN_W, WIN_H, 256, 256);
-        guiGraphics.drawCenteredString(font, this.title, winX + WIN_W / 2, winY + 6, 0x404040);
+        FormattedCharSequence formattedcharsequence = this.title.getVisualOrderText();
+        guiGraphics.drawString(font, formattedcharsequence, winX + WIN_W / 2 - font.width(formattedcharsequence) / 2 - 6, winY + 6, 0x404040, false);
     }
 
     @Override

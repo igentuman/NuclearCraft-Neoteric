@@ -145,6 +145,7 @@ public class TextUtils
 		val = val.replace("Rtg", "RTG");
 		val = val.replace("Msr", "MSR");
 		val = val.replace("Flibe", "FLiBe");
+		val = val.replace("Hsla", "HSLA");
 		if (!val.contains("Dust")) {
 			val = val.replace("Du", "DU");
 		}

@@ -1,8 +1,12 @@
 package igentuman.nc.screen.element;
 
+import igentuman.nc.client.model.SideConfigFaces;
+import igentuman.nc.handler.SidedContentHandler;
 import igentuman.nc.handler.SlotModePair;
 import igentuman.nc.network.PacketSideConfigToggle;
 import igentuman.nc.screen.SideConfigScreen;
+import igentuman.nc.setup.ModEntries;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -10,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
+import java.util.Optional;
 
 /** Clickable per-face square in the side-config screen; cycles a slot's I/O mode for one direction on click. */
 public class SideConfigButton extends AbstractWidget {
@@ -29,18 +34,21 @@ public class SideConfigButton extends AbstractWidget {
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         SlotModePair.SlotMode mode = screen.getSlotMode(direction, slotId);
+        var entry = ModEntries.get(screen.getMenu().getBlockEntity().name);
+        var face = SideConfigFaces.getFace(entry, SidedContentHandler.RelativeDirection.values()[direction]);
+        guiGraphics.blit(getX(), getY(), 0, getWidth(), getHeight(), face);
         guiGraphics.fill(getX(), getY(), getX() + 16, getY() + 16, mode.getColor());
 
         if (isHovered()) {
-            String dirName = igentuman.nc.handler.SidedContentHandler.RelativeDirection
+            String dirName = SidedContentHandler.RelativeDirection
                     .getDirectionName(direction);
             guiGraphics.renderTooltip(
-                    net.minecraft.client.Minecraft.getInstance().font,
+                    Minecraft.getInstance().font,
                     List.of(
                             Component.literal(dirName),
                             Component.literal(mode.name())
                     ),
-                    java.util.Optional.empty(),
+                    Optional.empty(),
                     mouseX,
                     mouseY
             );

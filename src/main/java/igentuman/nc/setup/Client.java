@@ -216,6 +216,11 @@ public class Client {
     }
 
     @SubscribeEvent
+    static void registerSideConfigModels(ModelEvent.RegisterAdditional event) {
+        igentuman.nc.client.model.SideConfigFaces.registerModels(event);
+    }
+
+    @SubscribeEvent
     static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register(igentuman.nc.client.model.BatteryModelLoader.ID, new igentuman.nc.client.model.BatteryModelLoader());
     }

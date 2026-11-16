@@ -220,6 +220,11 @@ public class SidedContentHandler implements INBTSerializable<Tag> {
         return updated;
     }
 
+    public void refreshTransferModes() {
+        hasPush = hasPush();
+        hasPull = hasPull();
+    }
+
     private boolean hasPush() {
         boolean result = false;
         if(fluidHandler != null) {

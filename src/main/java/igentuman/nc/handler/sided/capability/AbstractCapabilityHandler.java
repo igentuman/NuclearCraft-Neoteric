@@ -58,8 +58,7 @@ public abstract class AbstractCapabilityHandler {
                 case PUSH_EXCESS -> sideSlots[slot] = new SlotModePair(SlotModePair.SlotMode.DISABLED, slot);
             }
         }
-        sidedContentHandler.hasPush = hasPush();
-        sidedContentHandler.hasPull = hasPull();
+        sidedContentHandler.refreshTransferModes();
         return sideSlots[slot].getMode().ordinal();
     }
 
@@ -107,10 +106,11 @@ public abstract class AbstractCapabilityHandler {
         for(SidedContentHandler.RelativeDirection dir: SidedContentHandler.RelativeDirection.values()) {
             sideMap.get(dir.ordinal())[i].setMode(slotMode);
         }
+        sideMapUpdated = true;
+        sidedContentHandler.refreshTransferModes();
     }
 
     protected void onLoad() {
-        sidedContentHandler.hasPush = hasPush();
-        sidedContentHandler.hasPull = hasPull();
+        sidedContentHandler.refreshTransferModes();
     }
 }

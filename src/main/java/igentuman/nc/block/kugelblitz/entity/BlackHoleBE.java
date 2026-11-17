@@ -32,6 +32,12 @@ import static igentuman.nc.util.ModUtil.isKubeJsLoaded;
 import static net.minecraft.world.level.block.Blocks.AIR;
 
 public class BlackHoleBE extends NuclearCraftBE {
+    public static final float MAX_RENDER_SCALE = 4F;
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        return new AABB(getBlockPos()).inflate(MAX_RENDER_SCALE * Math.sqrt(2));
+    }
 
     public static String NAME = "black_hole";
     public float scale = 0.3f;

@@ -38,6 +38,9 @@ public class ElectrolyzerRecipes extends AbstractRecipeProvider {
     }
 
     protected static void add(FluidStackIngredient input, List<FluidStackIngredient> output, double...modifiers) {
-        fluidsAndFluids(List.of(input), output, modifiers);
+        double timeModifier = modifiers.length>0 ? modifiers[0] : 1.0;
+        double powerModifier = modifiers.length>1 ? modifiers[1] : 1.5; //increased power consumption
+        double radiation = modifiers.length>2 ? modifiers[2] : 1.0;
+        fluidsAndFluids(List.of(input), output, timeModifier, powerModifier, radiation);
     }
 }

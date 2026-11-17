@@ -2,62 +2,35 @@ package igentuman.nc.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.block.kugelblitz.entity.BlackHoleBE;
-import igentuman.nc.util.Color;
 import igentuman.nc.util.CustomEffect;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.Random;
 
 import static igentuman.nc.NuclearCraft.rl;
 
 public class BlackholeRenderer implements BlockEntityRenderer<BlockEntity> {
-    private static final CustomEffect CORE = new CustomEffect(rl( "textures/particle/blackhole_glow.png"));
-    private static final float MIN_SCALE = 0.1F, MAX_SCALE = 4F;
-    private final Minecraft minecraft = Minecraft.getInstance();
-    private static final Random rand = new Random();
-    private final BlockEntityRendererProvider.Context context;
-
-    static {
-        CORE.setColor(Color.rgbai(255, 255, 255, 255));
-    }
+    private static final ResourceLocation TEXTURE = rl("textures/particle/blackhole_glow.png");
+    private static final float MIN_SCALE = 0.1F;
 
     public BlackholeRenderer(BlockEntityRendererProvider.Context context) {
-        this.context = context;
     }
 
     @Override
-    public void render(BlockEntity tile, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int i1) {
-        float energyScale = ((BlackHoleBE)tile).getBlackholeScale();
-        float scale = getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE);
-        BillboardingEffectRenderer.render(CORE.getTexture(), "nc.blackhole", () -> {
-            Vec3 center = Vec3.atCenterOf(tile.getBlockPos());
-            CORE.setPos(center);
-            CORE.setScale(scale);
-            return CORE;
-        });
-    }
-
-    private static float getBoundedScale(float scale, float min, float max) {
-        return min + scale * (max - min);
+    public void render(BlockEntity tile, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int overlay) {
+        float energyScale = ((BlackHoleBE) tile).getBlackholeScale();
+        float boundedScale = Float.isFinite(energyScale) ? Math.max(0, Math.min(1, energyScale)) : 0;
+        CustomEffect effect = new CustomEffect(TEXTURE);
+        effect.setPos(Vec3.atCenterOf(tile.getBlockPos()));
+        effect.setScale(MIN_SCALE + boundedScale * (BlackHoleBE.MAX_RENDER_SCALE - MIN_SCALE));
+        BillboardingEffectRenderer.render(effect, "nc.blackhole");
     }
 
     @Override
-    public boolean shouldRenderOffScreen(BlockEntity pBlockEntity) {
-        return BlockEntityRenderer.super.shouldRenderOffScreen(pBlockEntity);
-    }
-
-    @Override
-    public int getViewDistance() {
-        return BlockEntityRenderer.super.getViewDistance();
-    }
-
-    @Override
-    public boolean shouldRender(BlockEntity pBlockEntity, Vec3 pCameraPos) {
-        return BlockEntityRenderer.super.shouldRender(pBlockEntity, pCameraPos);
+    public boolean shouldRenderOffScreen(BlockEntity blockEntity) {
+        return true;
     }
 }

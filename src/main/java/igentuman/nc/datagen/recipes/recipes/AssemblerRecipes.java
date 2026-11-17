@@ -3,6 +3,7 @@ package igentuman.nc.datagen.recipes.recipes;
 import igentuman.nc.content.fuel.FuelManager;
 import igentuman.nc.content.processors.Processors;
 import igentuman.nc.content.materials.Materials;
+import igentuman.nc.recipes.ingredient.NcIngredient;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.List;
@@ -85,7 +86,8 @@ public class AssemblerRecipes extends AbstractRecipeProvider {
                 List.of(
                         ingredient(NC_ITEMS.get("upgrade_speed").get(), 2),
                         plateIngredient(Materials.cobalt),
-                        dustIngredient(Materials.uranium)
+                        dustIngredient(Materials.uranium),
+                        NcIngredient.stack(stack(NC_PARTS.get("silicon_n_doped").get(), 1))
                 ),
                 List.of(ingredient(NC_ITEMS.get("upgrade_stack").get(), 1))
         );

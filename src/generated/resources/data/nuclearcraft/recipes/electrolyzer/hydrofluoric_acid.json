@@ -16,7 +16,7 @@
       "tag": "forge:fluorine"
     }
   ],
-  "powerModifier": 1.0,
+  "powerModifier": 1.5,
   "radiation": 1.0,
   "timeModifier": 0.5
 }

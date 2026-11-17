@@ -3,7 +3,6 @@ package igentuman.nc.client.block;
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.block.entity.ChargingStationBE;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -14,7 +13,10 @@ import org.joml.Quaternionf;
 
 public class ChargingStationRenderer implements net.minecraft.client.renderer.blockentity.BlockEntityRenderer<ChargingStationBE> {
 
+    private final ItemRenderer itemRenderer;
+
     public ChargingStationRenderer(net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context ctx) {
+        itemRenderer = ctx.getItemRenderer();
     }
 
     @Override
@@ -22,7 +24,6 @@ public class ChargingStationRenderer implements net.minecraft.client.renderer.bl
         ItemStack stack = be.items.getStackInSlot(0);
         if (stack.isEmpty()) return;
 
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         BakedModel model = itemRenderer.getModel(stack, be.getLevel(), null, 0);
 
         long time = Util.getMillis();
@@ -30,14 +31,16 @@ public class ChargingStationRenderer implements net.minecraft.client.renderer.bl
         float angle = (time % 3600L) / 10F;
 
         pose.pushPose();
-        pose.translate(0.5D, 0.5D + bob, 0.5D);
-        pose.mulPose(new Quaternionf().rotateY((float) Math.toRadians(angle)));
-        pose.scale(0.7F, 0.7F, 0.7F);
+        try {
+            pose.translate(0.5D, 0.5D + bob, 0.5D);
+            pose.mulPose(new Quaternionf().rotateY((float) Math.toRadians(angle)));
+            pose.scale(0.7F, 0.7F, 0.7F);
 
-        itemRenderer.render(stack, ItemDisplayContext.GROUND, false, pose, buffer,
-                light, OverlayTexture.NO_OVERLAY, model);
-
-        pose.popPose();
+            itemRenderer.render(stack, ItemDisplayContext.GROUND, false, pose, buffer,
+                    light, OverlayTexture.NO_OVERLAY, model);
+        } finally {
+            pose.popPose();
+        }
     }
 
     @Override

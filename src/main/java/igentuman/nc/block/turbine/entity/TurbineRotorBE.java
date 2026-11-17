@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 
@@ -18,6 +19,18 @@ import static igentuman.nc.block.fission.FissionControllerBlock.POWERED;
 import static igentuman.nc.util.ModUtil.isCreateLoaded;
 
 public class TurbineRotorBE extends TurbineBE {
+    private static final int MAX_BLADE_LENGTH = 31;
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        double radius = MAX_BLADE_LENGTH + 1;
+        return switch (getBlockState().getValue(TurbineRotorBlock.FACING).getAxis()) {
+            case X -> new AABB(getBlockPos()).inflate(0, radius, radius);
+            case Y -> new AABB(getBlockPos()).inflate(radius, 0, radius);
+            case Z -> new AABB(getBlockPos()).inflate(radius, radius, 0);
+        };
+    }
+
     @NBTField(syncAlways = true)
     public BlockPos controllerPos = BlockPos.ZERO;
 
@@ -124,7 +137,7 @@ public class TurbineRotorBE extends TurbineBE {
         if(rotorFacing.getAxis() != Direction.Axis.Y) {
             facing = rotorFacing.getClockWise();
         }
-        for(int i = 1; i < 32; i++) {
+        for(int i = 1; i <= MAX_BLADE_LENGTH; i++) {
             BlockEntity be = getLevel().getBlockEntity(getBlockPos().relative(facing, i));
             if(be instanceof TurbineBladeBE) {
                 blades++;

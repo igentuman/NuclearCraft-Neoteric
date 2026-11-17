@@ -1,6 +1,9 @@
 package igentuman.nc.compat.kubejs;
 
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
+import dev.latvian.mods.kubejs.client.LangKubeEvent;
+import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
+import igentuman.nc.registration.FissionFuelEntry;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.*;
@@ -9,12 +12,14 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.script.ScriptManager;
 import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.mods.kubejs.util.IntBounds;
 import igentuman.nc.api.particle.ParticleIngredient;
 import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.content.fuel.FuelDef;
 import igentuman.nc.api.multiblock.part.HeatSinkDef;
 import igentuman.nc.recipe.FluidOutput;
 import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.recipe.UniversalProcessorRecipeSerializer;
 import igentuman.nc.recipe.kugelblitz.KugelblitzRecipes;
 import igentuman.nc.recipe.particle.ParticleRecipes;
 import igentuman.nc.registration.ModEntry;
@@ -26,21 +31,24 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /** KubeJS plugin registering NuclearCraft's script events and processor recipe schemas. */
 public class ModKubeJSPlugin implements KubeJSPlugin {
 
+    private final List<FissionFuelEntry> scriptFuels = new ArrayList<>();
+
     private static final RecipeKey<List<SizedIngredient>> ITEM_INPUTS =
-            SizedIngredientComponent.FLAT.instance().asList().inputKey("item_inputs").optional(List.of());
+            SizedIngredientComponent.FLAT.instance().asList().withBounds(IntBounds.OPTIONAL).inputKey("item_inputs").optional(List.of());
 
     private static final RecipeKey<List<SizedFluidIngredient>> FLUID_INPUTS =
-            SizedFluidIngredientComponent.FLAT.instance().asList().inputKey("fluid_inputs").optional(List.of());
+            SizedFluidIngredientComponent.FLAT.instance().asList().withBounds(IntBounds.OPTIONAL).inputKey("fluid_inputs").optional(List.of());
 
     private static final RecipeKey<List<ItemOutput>> ITEM_OUTPUTS =
-            NcRecipeComponents.ITEM_OUTPUT.instance().asList().outputKey("item_outputs").optional(List.of());
+            NcRecipeComponents.ITEM_OUTPUT.instance().asList().withBounds(IntBounds.OPTIONAL).outputKey("item_outputs").optional(List.of());
 
     private static final RecipeKey<List<FluidOutput>> FLUID_OUTPUTS =
-            NcRecipeComponents.FLUID_OUTPUT.instance().asList().outputKey("fluid_outputs").optional(List.of());
+            NcRecipeComponents.FLUID_OUTPUT.instance().asList().withBounds(IntBounds.OPTIONAL).outputKey("fluid_outputs").optional(List.of());
 
     private static final RecipeKey<Integer> PROCESS_TIME =
             NumberComponent.INT.otherKey("process_time");
@@ -49,8 +57,8 @@ public class ModKubeJSPlugin implements KubeJSPlugin {
             NumberComponent.INT.otherKey("energy_per_tick");
 
     private static final RecipeSchema UNIVERSAL_PROCESSOR_SCHEMA = new RecipeSchema(
-            ITEM_INPUTS, FLUID_INPUTS, ITEM_OUTPUTS, FLUID_OUTPUTS, PROCESS_TIME, ENERGY_PER_TICK
-    );
+            PROCESS_TIME, ENERGY_PER_TICK, ITEM_INPUTS, FLUID_INPUTS, ITEM_OUTPUTS, FLUID_OUTPUTS
+    ).constructor(ITEM_INPUTS, FLUID_INPUTS, ITEM_OUTPUTS, FLUID_OUTPUTS, PROCESS_TIME, ENERGY_PER_TICK);
 
     private static final RecipeKey<ParticleIngredient> PARTICLE_INPUT =
             NcRecipeComponents.PARTICLE_INGREDIENT.inputKey("particle_input");
@@ -59,7 +67,7 @@ public class ModKubeJSPlugin implements KubeJSPlugin {
             NcRecipeComponents.PARTICLE_INGREDIENT.instance().asList().inputKey("particle_inputs");
 
     private static final RecipeKey<List<ParticleStack>> PARTICLE_OUTPUTS =
-            NcRecipeComponents.PARTICLE_STACK.instance().asList().outputKey("particle_outputs").optional(List.of());
+            NcRecipeComponents.PARTICLE_STACK.instance().asList().withBounds(IntBounds.OPTIONAL).outputKey("particle_outputs").optional(List.of());
 
     private static final RecipeKey<Double> CROSS_SECTION =
             NumberComponent.DOUBLE.otherKey("cross_section");
@@ -76,13 +84,20 @@ public class ModKubeJSPlugin implements KubeJSPlugin {
     );
 
     private static final RecipeSchema DECAY_CHAMBER_SCHEMA = new RecipeSchema(
-            PARTICLE_INPUT, PARTICLE_OUTPUTS, CROSS_SECTION, RELEASED_ENERGY, PRIORITY
-    );
+            PARTICLE_INPUT, CROSS_SECTION, PARTICLE_OUTPUTS, RELEASED_ENERGY, PRIORITY
+    ).constructor(PARTICLE_INPUT, PARTICLE_OUTPUTS, CROSS_SECTION)
+            .constructor(PARTICLE_INPUT, PARTICLE_OUTPUTS, CROSS_SECTION, RELEASED_ENERGY)
+            .constructor(PARTICLE_INPUT, PARTICLE_OUTPUTS, CROSS_SECTION, RELEASED_ENERGY, PRIORITY);
+
+    private static final RecipeKey<Boolean> ORDERED_INPUTS =
+            BooleanComponent.BOOLEAN.otherKey("ordered_inputs").optional(false);
 
     private static final RecipeSchema COLLISION_CHAMBER_SCHEMA = new RecipeSchema(
-            PARTICLE_INPUTS, PARTICLE_OUTPUTS, CROSS_SECTION, RELEASED_ENERGY,
-            BooleanComponent.BOOLEAN.otherKey("ordered_inputs").optional(false), PRIORITY
-    );
+            PARTICLE_INPUTS, CROSS_SECTION, PARTICLE_OUTPUTS, RELEASED_ENERGY, ORDERED_INPUTS, PRIORITY
+    ).constructor(PARTICLE_INPUTS, PARTICLE_OUTPUTS, CROSS_SECTION)
+            .constructor(PARTICLE_INPUTS, PARTICLE_OUTPUTS, CROSS_SECTION, RELEASED_ENERGY)
+            .constructor(PARTICLE_INPUTS, PARTICLE_OUTPUTS, CROSS_SECTION, RELEASED_ENERGY, ORDERED_INPUTS)
+            .constructor(PARTICLE_INPUTS, PARTICLE_OUTPUTS, CROSS_SECTION, RELEASED_ENERGY, ORDERED_INPUTS, PRIORITY);
 
     private static final RecipeSchema ACCELERATOR_COOLANT_SCHEMA = new RecipeSchema(
             SizedFluidIngredientComponent.FLAT.inputKey("input_fluid"),
@@ -117,7 +132,11 @@ public class ModKubeJSPlugin implements KubeJSPlugin {
         RegisterFissionFuelKubeEvent fuelEvent = new RegisterFissionFuelKubeEvent();
         NCKubeEvents.REGISTER_FISSION_FUEL.post(ScriptType.STARTUP, fuelEvent);
         for (FuelDef def : fuelEvent.getCollected()) {
-            FissionFuel.register(def);
+            boolean existing = ModEntries.FISSION_FUEL.containsKey(def.group + "/" + def.name);
+            FissionFuelEntry entry = FissionFuel.register(def);
+            if (!existing) {
+                scriptFuels.add(entry);
+            }
         }
 
         RegisterHeatSinkKubeEvent heatSinkEvent = new RegisterHeatSinkKubeEvent();
@@ -130,15 +149,24 @@ public class ModKubeJSPlugin implements KubeJSPlugin {
     }
 
     @Override
+    public void generateAssets(KubeAssetGenerator generator) {
+        scriptFuels.forEach(fuel -> KubeJSFuelAssets.generateAssets(generator, fuel));
+    }
+
+    @Override
+    public void generateLang(LangKubeEvent event) {
+        scriptFuels.forEach(fuel -> KubeJSFuelAssets.generateLang(event, fuel));
+    }
+
+    @Override
     public void registerRecipeComponents(RecipeComponentTypeRegistry registry) {
         NcRecipeComponents.register(registry);
     }
 
     @Override
     public void registerRecipeSchemas(RecipeSchemaRegistry registry) {
-        ModEntries.init();
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
-            if (entry.hasRecipes()) {
+            if (entry.hasRecipes() && entry.recipeSerializer().get() instanceof UniversalProcessorRecipeSerializer) {
                 ResourceLocation recipeTypeId = entry.recipeType().getId();
                 registry.register(recipeTypeId, UNIVERSAL_PROCESSOR_SCHEMA);
             }

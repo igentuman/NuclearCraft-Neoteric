@@ -12,6 +12,7 @@ import igentuman.nc.handler.sided.ItemCapabilityHandler;
 import igentuman.nc.recipe.kugelblitz.KugelblitzRecipe;
 import igentuman.nc.recipe.kugelblitz.KugelblitzRecipes;
 import igentuman.nc.setup.ModEntries;
+import igentuman.nc.setup.Registers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -95,6 +96,9 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
             updateBlackhole(level, terminal, cache, center);
             handleMeltdown(level, center);
             processTransmutation(level, terminal, cache);
+            if (mass > 0 && stability < 40 && center != null && hasBlackhole(level, center)) {
+                level.gameEvent(null, Registers.BLACKHOLE_VIBRATION, center);
+            }
         }
         terminal.setPowered(mass > 0 && energyPerTick > 0);
         publish(terminal);

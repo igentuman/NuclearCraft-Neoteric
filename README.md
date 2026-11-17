@@ -21,6 +21,28 @@ how you build.
 - **Downloads:** https://curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric
 - **Dev builds:** GitHub Actions tab → latest artifact
 
+## Documentation
+- [Mod configuration](docs/CONFIGURATION.md)
+- [KubeJS events and recipes](docs/KUBEJS.md)
+- [Engineer's Crafting Table and autocrafting](docs/ENGINEERS_CRAFTING_TABLE.md)
+- [Radiation](https://github.com/igentuman/Nuclear-Radiation/blob/1.21.1/README.md)
+- [Armor, tools, weapons and bomb](docs/ARMOR_TOOLS_WEAPONS_AND_BOMB.md)
+- [World generation](docs/WORLD_GENERATION.md)
+- [Processors](docs/PROCESSORS.md)
+- [Ore Leacher](docs/LEACHER.md)
+- [Fission reactors](docs/FISSION_REACTOR.md)
+- [Heat exchanger](docs/HEAT_EXCHANGER.md)
+- [Fusion reactor](docs/FUSION_REACTOR.md)
+- [Steam turbine](docs/TURBINE.md)
+- [Kugelblitz](docs/KUGELBLITZ.md)
+- [Linear accelerator](docs/LINEAR_ACCELERATOR.md)
+- [Ring accelerator](docs/RING_ACCELERATOR.md)
+- [Beam diverter](docs/BEAM_DIVERTER.md)
+- [Target chamber](docs/TARGET_CHAMBER.md)
+- [Collision chamber](docs/COLLISION_CHAMBER.md)
+- [Decay chamber](docs/DECAY_CHAMBER.md)
+
+
 ## Features
 
 - **Ore processing chain** - crushers, washers, centrifuges, electrolyzers, infusers, melters and assemblers feeding a deep materials tree (uranium, thorium, plutonium, americium, curium, californium and beyond).
@@ -29,7 +51,7 @@ how you build.
 - **Fusion reactors** - toroidal plasma ring built from electromagnets and RF amplifiers, fed by fuel/coolant recipes.
 - **Particle accelerators** - linear and (WIP)toroidal beam lines with magnets, RF cavities and configurable particle sources.
 - **Target chamber** - beam-driven transmutation, detector readouts, antimatter production chain.
-- **Kugelblitz reactor** - 11×11×11 photon-ignition chamber for mini cool looking blackhole.
+- **Kugelblitz chamber** - 11×11×11 photon-ignition chamber for mini cool looking blackhole.
 - **Steam turbines** - rotor shafts, blade tiers, coil materials, steam/exhaust recipes and a transparent energy formula.
 - **In-situ leaching** - ore-vein system with leachers, pumps and research papers as an alternative to traditional mining.
 - **World radiation** - since 1.21 radiation moved to separate mod Nuclear Radiation
@@ -40,7 +62,7 @@ how you build.
 - **Universal pipes** - single conduit that transports items, fluids and energy at once; pipe connectors set per-medium pull/push/auto modes and optional redstone gating.
 - **Energy & storage** - Forge Energy (FE/RF) throughout, with Mekanism and GregTech CE:U interop, plus voiding/buffering storage tiers.
 - **Mod integrations** - JEI, EMI, AE2, Refined Storage, ComputerCraft, OpenComputers v2, TIS-3D, KubeJS, Patchouli, Ponder.
-- **In-game guide** - Patchouli Operator's Handbook covering every multiblock and recipe path.
+- **In-game guide** - Patchouli, GuideMe, Ponders.
 
 ## Credits
 

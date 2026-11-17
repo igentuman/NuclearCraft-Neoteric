@@ -124,6 +124,9 @@ configurations {
 }
 
 dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
+
     implementation "net.neoforged:neoforge:${neo_version}"
 
     compileOnly("cc.tweaked:cc-tweaked-1.21.1-common-api:1.118.0")
@@ -241,6 +244,10 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
 }
 
 idea {

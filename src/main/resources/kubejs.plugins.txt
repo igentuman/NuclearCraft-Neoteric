@@ -1,1 +1,1 @@
-igentuman.nc.compat.kubejs.ModKubeJSPlugin nc
+igentuman.nc.compat.kubejs.ModKubeJSPlugin nuclearcraft

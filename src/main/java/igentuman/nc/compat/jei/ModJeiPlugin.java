@@ -102,6 +102,7 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new FuelInfoCategory(guiHelper));
         registration.addRecipeCategories(new IsotopeInfoCategory(guiHelper));
         registration.addRecipeCategories(new ParticleInfoCategory(guiHelper));
+        registration.addRecipeCategories(new ParticleSourceCategory(guiHelper));
         registration.addRecipeCategories(new PlacementRuleCategory(guiHelper, PlacementRuleCategory.HEAT_SINK, "empty_heat_sink"));
         registration.addRecipeCategories(new PlacementRuleCategory(guiHelper, PlacementRuleCategory.COOLER, "empty_cooler"));
     }
@@ -128,6 +129,7 @@ public class ModJeiPlugin implements IModPlugin {
         addSpecialRecipeCatalyst(registration, "turbine_controller", TurbineRecipeCategory.TYPE);
         addSpecialRecipeCatalyst(registration, "chamber_terminal", KugelblitzRecipeCategory.TYPE);
         addSpecialRecipeCatalyst(registration, "analyzer", OreVeinRecipeCategory.TYPE);
+        addSpecialRecipeCatalyst(registration, "linear_accelerator_controller", ParticleSourceCategory.TYPE);
         addSpecialRecipeCatalyst(registration, "target_chamber_controller", TargetChamberRecipeCategory.TYPE);
         addSpecialRecipeCatalyst(registration, "decay_chamber_controller", DecayChamberRecipeCategory.TYPE);
         addSpecialRecipeCatalyst(registration, "collision_chamber_controller", CollisionChamberRecipeCategory.TYPE);
@@ -241,6 +243,7 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipes(FuelInfoCategory.TYPE, fuelInfoRecipes());
         registration.addRecipes(IsotopeInfoCategory.TYPE, isotopeInfoRecipes());
         registration.addRecipes(ParticleInfoCategory.TYPE, particleInfoRecipes());
+        registration.addRecipes(ParticleSourceCategory.TYPE, igentuman.nc.compat.ParticleSourceRecipe.all());
         registration.addRecipes(PlacementRuleCategory.HEAT_SINK, PlacementRuleRecipe.heatSinks());
         registration.addRecipes(PlacementRuleCategory.COOLER, PlacementRuleRecipe.coolers());
     }

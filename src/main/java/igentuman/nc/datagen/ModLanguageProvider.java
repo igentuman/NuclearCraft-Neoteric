@@ -894,9 +894,11 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("jei.category." + MODID + ".fuel_info", "Fuel Variants");
         add("jei.category." + MODID + ".isotope_info", "Isotope Forms");
         add("jei.category." + MODID + ".particle_info", "Particle Info");
+        add("jei.category." + MODID + ".particle_source_info", "Particle Sources");
         add("emi.category." + MODID + ".fuel_info", "Fuel Variants");
         add("emi.category." + MODID + ".isotope_info", "Isotope Forms");
         add("emi.category." + MODID + ".particle_info", "Particle Info");
+        add("emi.category." + MODID + ".particle_source_info", "Particle Sources");
         add("gui.nuclearcraft.jei.particle.mass", "Mass: %s");
         add("gui.nuclearcraft.jei.particle.charge", "Charge: %s");
         add("gui.nuclearcraft.jei.particle.spin", "Spin: %s");

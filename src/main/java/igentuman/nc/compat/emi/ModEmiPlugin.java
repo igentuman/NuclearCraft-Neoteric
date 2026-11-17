@@ -141,6 +141,7 @@ public class ModEmiPlugin implements EmiPlugin {
         registerFuelInfoCategory(registry);
         registerIsotopeInfoCategory(registry);
         registerParticleInfoCategory(registry);
+        registerParticleSourceCategory(registry);
         registerPlacementRules(registry);
         hideFuelAndIsotopeVariants(registry);
     }
@@ -195,6 +196,18 @@ public class ModEmiPlugin implements EmiPlugin {
                 registry.addRecipe(new IsotopeInfoEmiRecipe(category, r));
             }
         }
+    }
+
+    private void registerParticleSourceCategory(EmiRegistry registry) {
+        EmiRecipeCategory category = new EmiRecipeCategory(NuclearCraft.rl("particle_source_info"),
+                ParticleEmiStack.of(new igentuman.nc.api.particle.ParticleStack(NuclearCraft.rl("alpha"), 1, 0, 0)));
+        registry.addCategory(category);
+        ModEntry controller = ModEntries.get("linear_accelerator_controller");
+        if (controller != null && controller.hasItem()) {
+            registry.addWorkstation(category, EmiStack.of(new ItemStack(controller.item().get())));
+        }
+        igentuman.nc.compat.ParticleSourceRecipe.all().forEach(recipe ->
+                registry.addRecipe(new ParticleSourceEmiRecipe(category, recipe)));
     }
 
     private void registerParticleInfoCategory(EmiRegistry registry) {

@@ -469,10 +469,71 @@
             "surface_depth_multiplier": 0
           },
           "then_run": {
-            "type": "minecraft:block",
-            "result_state": {
-              "Name": "nuclearcraft:wasteland_earth"
-            }
+            "type": "minecraft:sequence",
+            "sequence": [
+              {
+                "type": "minecraft:condition",
+                "if_true": {
+                  "type": "minecraft:above_preliminary_surface"
+                },
+                "then_run": {
+                  "type": "minecraft:sequence",
+                  "sequence": [
+                    {
+                      "type": "minecraft:condition",
+                      "if_true": {
+                        "type": "minecraft:noise_threshold",
+                        "noise": "nuclearcraft:wasteland_surface_patches",
+                        "min_threshold": 1.05,
+                        "max_threshold": 1.7976931348623157e+308
+                      },
+                      "then_run": {
+                        "type": "minecraft:block",
+                        "result_state": {
+                          "Name": "minecraft:cobbled_deepslate"
+                        }
+                      }
+                    },
+                    {
+                      "type": "minecraft:condition",
+                      "if_true": {
+                        "type": "minecraft:noise_threshold",
+                        "noise": "nuclearcraft:wasteland_surface_patches",
+                        "min_threshold": 0.75,
+                        "max_threshold": 1.7976931348623157e+308
+                      },
+                      "then_run": {
+                        "type": "minecraft:block",
+                        "result_state": {
+                          "Name": "minecraft:gravel"
+                        }
+                      }
+                    },
+                    {
+                      "type": "minecraft:condition",
+                      "if_true": {
+                        "type": "minecraft:noise_threshold",
+                        "noise": "nuclearcraft:wasteland_surface_patches",
+                        "min_threshold": -1.7976931348623157e+308,
+                        "max_threshold": -0.65
+                      },
+                      "then_run": {
+                        "type": "minecraft:block",
+                        "result_state": {
+                          "Name": "minecraft:coarse_dirt"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "minecraft:block",
+                "result_state": {
+                  "Name": "nuclearcraft:wasteland_earth"
+                }
+              }
+            ]
           }
         }
       },

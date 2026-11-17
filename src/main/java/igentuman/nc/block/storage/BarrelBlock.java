@@ -30,6 +30,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -45,9 +48,36 @@ import static net.minecraft.world.item.Items.BUCKET;
 
 public class BarrelBlock extends Block implements EntityBlock {
 
+    private static final VoxelShape SHAPE = createShape();
+
+    private static VoxelShape createShape() {
+        double corner = 4.68629;
+        double step = corner / 5;
+        VoxelShape shape = Block.box(0, 0, corner, 16, 16, 16 - corner);
+        for (int i = 0; i < 5; i++) {
+            double edge = i * step;
+            double inset = corner - edge;
+            shape = Shapes.or(shape,
+                    Block.box(inset, 0, edge, 16 - inset, 16, edge + step),
+                    Block.box(inset, 0, 16 - edge - step, 16 - inset, 16, 16 - edge));
+        }
+        return shape.optimize();
+    }
+
     public BarrelBlock(Properties pProperties) {
         super(pProperties);
     }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
+    }
+
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState();

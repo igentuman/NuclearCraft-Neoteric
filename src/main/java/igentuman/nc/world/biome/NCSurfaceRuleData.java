@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.placement.CaveSurface;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class NCSurfaceRuleData {
     private static final SurfaceRules.RuleSource BEDROCK = makeStateRule(Blocks.BEDROCK);
     private static final SurfaceRules.RuleSource GRASS_BLOCK = makeStateRule(WASTELAND_EARTH.get());
     private static final SurfaceRules.RuleSource COARSE_DIRT = makeStateRule(Blocks.COARSE_DIRT);
+    private static final ResourceKey<NormalNoise.NoiseParameters> SURFACE_PATCHES = ResourceKey.create(Registries.NOISE, rl("wasteland_surface_patches"));
 
     private static SurfaceRules.RuleSource makeStateRule(Block block) {
         return SurfaceRules.state(block.defaultBlockState());
@@ -104,15 +106,23 @@ public class NCSurfaceRuleData {
             BEDROCK
         );
         
-        // Use wasteland_earth for the top surface
         SurfaceRules.RuleSource wastelandEarthLayer = SurfaceRules.state(WASTELAND_EARTH.get().defaultBlockState());
+        SurfaceRules.RuleSource surfacePatches = SurfaceRules.sequence(
+            SurfaceRules.ifTrue(SurfaceRules.noiseCondition(SURFACE_PATCHES, 1.05), makeStateRule(Blocks.COBBLED_DEEPSLATE)),
+            SurfaceRules.ifTrue(SurfaceRules.noiseCondition(SURFACE_PATCHES, 0.75), makeStateRule(Blocks.GRAVEL)),
+            SurfaceRules.ifTrue(SurfaceRules.noiseCondition(SURFACE_PATCHES, -Double.MAX_VALUE, -0.65), COARSE_DIRT)
+        );
+        SurfaceRules.RuleSource surfacePalette = SurfaceRules.sequence(
+            SurfaceRules.ifTrue(SurfaceRules.abovePreliminarySurface(), surfacePatches),
+            wastelandEarthLayer
+        );
         
         // Create a surface rule that uses wasteland_earth for the top layer
         SurfaceRules.RuleSource topSurface = SurfaceRules.ifTrue(
             SurfaceRules.ON_FLOOR,
             SurfaceRules.ifTrue(
                 SurfaceRules.waterBlockCheck(-1, 0),
-                wastelandEarthLayer
+                surfacePalette
             )
         );
         

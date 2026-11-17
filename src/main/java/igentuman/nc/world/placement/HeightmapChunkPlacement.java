@@ -2,6 +2,7 @@ package igentuman.nc.world.placement;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import igentuman.nc.world.dimension.Dimensions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import static igentuman.nc.setup.registration.WorldGeneration.WASTELAND;
 import static igentuman.nc.world.placement.NCPlacementModifierTypes.HEIGHTMAP_CHUNK;
 import static net.minecraft.tags.BlockTags.*;
 import static net.minecraft.world.level.block.Blocks.WATER;
+import static net.minecraft.world.level.block.Blocks.COARSE_DIRT;
 
 public class HeightmapChunkPlacement extends PlacementModifier {
     public static final Codec<HeightmapChunkPlacement> CODEC = RecordCodecBuilder.create((p_191701_) -> p_191701_.group(Types.CODEC.fieldOf("heightmap").forGetter((p_191705_) -> p_191705_.heightmap)).apply(p_191701_, HeightmapChunkPlacement::new));
@@ -38,6 +40,7 @@ public class HeightmapChunkPlacement extends PlacementModifier {
         int chunkOriginZ = pPos.getZ() & ~15;
 
         final List<BlockPos> positions = new ArrayList<>();
+        boolean wastelandDimension = pContext.getLevel().getLevel().dimension().equals(Dimensions.WASTELAND);
 
         for (int x = chunkOriginX; x < chunkOriginX + 16; x++) {
             for (int z = chunkOriginZ; z < chunkOriginZ + 16; z++) {
@@ -48,7 +51,7 @@ public class HeightmapChunkPlacement extends PlacementModifier {
                     final BlockState testBs = pContext.getBlockState(pos);
                     if(!pContext.getLevel().getBiome(pos).is(WASTELAND) ||  testBs.is(WATER)) continue;
                     // Only replace dirt/grass surfaces; leave stone, sand, gravel, terracotta untouched.
-                    if(!testBs.is(DIRT)) continue;
+                    if(!testBs.is(DIRT) || (wastelandDimension && testBs.is(COARSE_DIRT))) continue;
                     positions.add(pos);
                 }
             }

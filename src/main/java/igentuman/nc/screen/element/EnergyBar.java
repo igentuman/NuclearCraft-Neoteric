@@ -2,11 +2,11 @@ package igentuman.nc.screen.element;
 
 import igentuman.nc.util.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -20,13 +20,13 @@ public class EnergyBar extends AbstractWidget {
     private int width = 12;
     private int height = 70;
 
-    private final Supplier<IEnergyStorage> energySupplier;
+    private final Supplier<EnergyHandler> energySupplier;
 
-    public EnergyBar(int x, int y, Supplier<IEnergyStorage> energySupplier) {
+    public EnergyBar(int x, int y, Supplier<EnergyHandler> energySupplier) {
         this(x, y, 12, 70, energySupplier);
     }
 
-    public EnergyBar(int x, int y, int w, int h, Supplier<IEnergyStorage> energySupplier) {
+    public EnergyBar(int x, int y, int w, int h, Supplier<EnergyHandler> energySupplier) {
         super(x, y, w, h, Component.empty());
         width = w;
         height = h;
@@ -34,8 +34,8 @@ public class EnergyBar extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        IEnergyStorage energy = energySupplier.get();
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        EnergyHandler energy = energySupplier.get();
         if (energy == null) return;
 
         int x = getX();
@@ -46,8 +46,8 @@ public class EnergyBar extends AbstractWidget {
         graphics.fill(x, y, x + w, y + h, COLOR_BORDER);
         graphics.fill(x + 1, y + 1, x + w - 1, y + h - 1, COLOR_BG);
 
-        int stored = energy.getEnergyStored();
-        int max = energy.getMaxEnergyStored();
+        long stored = energy.getAmountAsLong();
+        long max = energy.getCapacityAsLong();
         if (max > 0 && stored > 0) {
             int fillHeight = (int) ((double) stored / max * (h - 2));
             int fillTop = y + h - 1 - fillHeight;
@@ -65,9 +65,9 @@ public class EnergyBar extends AbstractWidget {
         }
 
         if (isHovered) {
-            int safeStored = energy.getEnergyStored();
-            int safeMax = energy.getMaxEnergyStored();
-            graphics.renderComponentTooltip(
+            long safeStored = energy.getAmountAsLong();
+            long safeMax = energy.getCapacityAsLong();
+            graphics.setComponentTooltipForNextFrame(
                     Minecraft.getInstance().font,
                     List.of(Component.literal(TextUtils.formatEnergy(safeStored) + " / " + TextUtils.formatEnergy(safeMax))),
                     mouseX, mouseY

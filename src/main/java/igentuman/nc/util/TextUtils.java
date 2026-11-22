@@ -4,7 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 
@@ -41,7 +41,7 @@ public class TextUtils
 		for(String code: blocks) {
 			String id = code;
 			if(!id.contains(":")) {
-				ResourceLocation res = rl(id);
+				Identifier res = rl(id);
 				Optional<Block> block = BuiltInRegistries.BLOCK.getOptional(res);
 				block.ifPresent(b -> names.add(b.getName().getString()));
 			} else {

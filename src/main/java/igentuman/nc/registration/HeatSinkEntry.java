@@ -2,9 +2,8 @@ package igentuman.nc.registration;
 
 import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.api.multiblock.part.HeatSinkDef;
+import igentuman.nc.item.NCBlockItem;
 import igentuman.nc.setup.ModEntries;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 import java.util.function.Consumer;
@@ -24,8 +23,9 @@ public class HeatSinkEntry {
         this.name = def.name;
         this.def = def;
         String blockId = def.name + "_heat_sink";
-        this.block = BLOCKS.register(blockId, () -> new HeatSinkBlock(this.def));
-        ITEMS.register(blockId, () -> new BlockItem(this.block.get(), new Item.Properties()));
+        this.block = BLOCKS.registerBlock(blockId, props -> new HeatSinkBlock(props, this.def));
+        ITEMS.registerItem(blockId, props -> new NCBlockItem(this.block.get(), props),
+                props -> props.useBlockDescriptionPrefix());
     }
 
     public static HeatSinkEntry register(HeatSinkDef def) {

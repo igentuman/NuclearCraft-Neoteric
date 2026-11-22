@@ -9,8 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 /** Processor upgrade item whose tooltip reports the bonuses supplied by the hovered stack. */
 public class ProcessorUpgradeItem extends Item {
@@ -36,12 +37,12 @@ public class ProcessorUpgradeItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
         int count = stack.getCount();
-        tooltip.add(Component.translatable("tooltip.nuclearcraft.upgrade." + type.key + ".description")
+        tooltip.accept(Component.translatable("tooltip.nuclearcraft.upgrade." + type.key + ".description")
                 .withStyle(ChatFormatting.GRAY));
         switch (type) {
-            case ENERGY -> tooltip.add(Component.translatable("tooltip.nuclearcraft.upgrade.energy_capacity",
+            case ENERGY -> tooltip.accept(Component.translatable("tooltip.nuclearcraft.upgrade.energy_capacity",
                             count * EnergyCatalyst.CAPACITY_PERCENT_PER_POWER)
                     .withStyle(ChatFormatting.GREEN));
             case SPEED -> addSpeed(tooltip, SpeedCatalyst.speedMultiplier(count));
@@ -56,13 +57,13 @@ public class ProcessorUpgradeItem extends Item {
         }
     }
 
-    private static void addSpeed(List<Component> tooltip, int speed) {
-        tooltip.add(Component.translatable("tooltip.nuclearcraft.upgrade.speed_bonus", speed)
+    private static void addSpeed(Consumer<Component> tooltip, int speed) {
+        tooltip.accept(Component.translatable("tooltip.nuclearcraft.upgrade.speed_bonus", speed)
                 .withStyle(ChatFormatting.AQUA));
     }
 
-    private static void addParallel(List<Component> tooltip, int parallel) {
-        tooltip.add(Component.translatable("tooltip.nuclearcraft.upgrade.parallel_bonus", parallel)
+    private static void addParallel(Consumer<Component> tooltip, int parallel) {
+        tooltip.accept(Component.translatable("tooltip.nuclearcraft.upgrade.parallel_bonus", parallel)
                 .withStyle(ChatFormatting.GOLD));
     }
 }

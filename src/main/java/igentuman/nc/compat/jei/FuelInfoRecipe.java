@@ -1,9 +1,9 @@
 package igentuman.nc.compat.jei;
 
-import igentuman.nc.content.fuel.FuelDef;
+import igentuman.nc.api.content.FuelDef;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.setup.ModEntries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -22,7 +22,7 @@ public class FuelInfoRecipe {
             "fuel.variant.triso"
     };
 
-    private final ResourceLocation id;
+    private final Identifier id;
     private final String group;
     private final String name;
     private final List<Variant> variants;
@@ -49,7 +49,7 @@ public class FuelInfoRecipe {
         return out;
     }
 
-    public ResourceLocation getId() { return id; }
+    public Identifier getId() { return id; }
     public String getGroup() { return group; }
     public String getName() { return name; }
     public List<Variant> getVariants() { return variants; }

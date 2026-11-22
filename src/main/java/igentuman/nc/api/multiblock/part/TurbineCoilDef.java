@@ -149,7 +149,7 @@ public class TurbineCoilDef {
                             if (!bStr.contains(":")) {
                                 bStr = MODID + ":" + bStr;
                             }
-                            tmp.add(BuiltInRegistries.BLOCK.get(rlFromString(bStr)));
+                            tmp.add(BuiltInRegistries.BLOCK.getValue(rlFromString(bStr)));
                         }
                     }
                     blocks.put(condition, tmp);

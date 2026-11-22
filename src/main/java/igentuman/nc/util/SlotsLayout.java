@@ -81,9 +81,17 @@ public class SlotsLayout {
     }
 
     public SlotsLayout withCatalysts(int count) {
+        return withCatalysts(0, count);
+    }
+
+    /** Rebuilds the trailing catalyst row for the requested slot count. */
+    public SlotsLayout withCatalysts(int previousCount, int count) {
         SlotsLayout copy = SlotsLayout.create();
-        copy.slots.addAll(this.slots);
+        copy.slots.addAll(this.slots.subList(0, this.slots.size() - previousCount));
         int startX = 92 - (count - 1) * STRIDE;
+        if (startX < 0) {
+            throw new IllegalArgumentException("Processor catalyst row fits at most 5 slots, requested " + count);
+        }
         for (int i = 0; i < count; i++) {
             copy.slots.add(new SlotDef(startX + i * STRIDE, 74, false));
         }

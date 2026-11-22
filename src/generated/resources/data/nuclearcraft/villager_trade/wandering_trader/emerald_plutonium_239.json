@@ -1,0 +1,15 @@
+{
+  "gives": {
+    "id": "nuclearcraft:plutonium_239"
+  },
+  "max_uses": 8.0,
+  "merchant_predicate": {
+    "condition": "nuclearcraft:wandering_trader_trades_enabled"
+  },
+  "reputation_discount": 0.2,
+  "wants": {
+    "count": 8.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 2.0
+}

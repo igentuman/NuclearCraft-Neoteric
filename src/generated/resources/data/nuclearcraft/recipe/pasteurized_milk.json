@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "item": "minecraft:milk_bucket"
-  },
+  "ingredient": "minecraft:milk_bucket",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:pasteurized_milk_bucket"
   }
 }

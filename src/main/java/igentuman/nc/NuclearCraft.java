@@ -11,11 +11,9 @@ import igentuman.nc.item.ResoniteCrystalItem;
 import igentuman.nc.setup.entries.Anomalies;
 import igentuman.nc.setup.entries.Ghouls;
 import igentuman.nc.block_entity.GlobalBlockEntity;
-import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
 import igentuman.nc.config.*;
 import igentuman.nc.compat.cc.CCCompatHandler;
 import igentuman.nc.compat.oc2.OC2CompatHandler;
-import igentuman.nc.compat.tis3d.TIS3DCompatHandler;
 import igentuman.nc.handler.event.PipeEvents;
 import igentuman.nc.handler.event.ServerEvents;
 import igentuman.nc.multiblock.MultiblockEntry;
@@ -28,28 +26,33 @@ import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
-import igentuman.nc.item.HEVItem;
+import igentuman.nc.handler.fluid.HevItemFluidHandler;
 import igentuman.nc.recipe.RecipeDeserializationLogger;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCSounds;
+import igentuman.nc.setup.NCTrades;
 import igentuman.nc.setup.NCVillagers;
 import igentuman.nc.setup.NcParticles;
 import igentuman.nc.setup.Registers;
 import igentuman.nc.setup.entries.Crafter;
 import igentuman.nc.setup.entries.Energy;
+import igentuman.nc.setup.entries.FissionReactor;
 import igentuman.nc.setup.entries.Pipes;
 import igentuman.nc.setup.entries.Storage;
+import igentuman.nc.setup.level.ModBiomes;
 import igentuman.nc.setup.level.ModFeatures;
 import igentuman.nc.util.MultiblocksProvider;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
-import net.neoforged.neoforge.energy.ComponentEnergyStorage;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+import net.neoforged.neoforge.transfer.energy.ItemAccessEnergyHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import org.slf4j.Logger;
@@ -69,13 +72,11 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.registries.ModifyRegistriesEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -96,9 +97,16 @@ public class NuclearCraft {
         NcParticles.init();
         NCSounds.init();
         ModEntries.init();
+        // Finalize content after KubeJS startup and addon NewRegistryEvent listeners.
+        modEventBus.addListener((ModifyRegistriesEvent event) -> {
+            FissionReactor.rebuildHeatSinkSchedule();
+            ModEntries.finalizeCatalystSlots();
+        });
         NCVillagers.init();
+        NCTrades.init();
         NeoForge.EVENT_BUS.register(new ServerEvents());
         NeoForge.EVENT_BUS.register(new PipeEvents());
+        NeoForge.EVENT_BUS.addListener(ModBiomes::addToOverworld);
         WorldGen.init(
                 ModEntries.ENTRIES.values().stream()
                         .map(ModEntry::materialEntry)
@@ -115,18 +123,19 @@ public class NuclearCraft {
         NeoForge.EVENT_BUS.addListener(this::onAddReloadListener);
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
         NeoForge.EVENT_BUS.addListener(this::onDatapackSync);
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             modEventBus.addListener(this::registerClientReloadListeners);
         }
         if (ModList.get().isLoaded("computercraft")) {
             CCCompatHandler.register(modEventBus);
         }
-        if (ModList.get().isLoaded("oc2")) {
+        if (ModList.get().isLoaded("oc2r")) {
             OC2CompatHandler.register(modEventBus);
         }
-        if (ModList.get().isLoaded("tis3d")) {
-            TIS3DCompatHandler.register(modEventBus);
+        if (ModList.get().isLoaded("catnip")) {
+            igentuman.nc.compat.ponder.CatnipArgumentTypes.register(modEventBus);
         }
+        // TIS-3D hooks are deferred with its excluded integration sources.
         modContainer.registerConfig(ModConfig.Type.COMMON, Common.SPEC, MODID + "/common.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, WorldGen.SPEC, MODID + "/worldgen.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, Materials.SPEC, MODID + "/materials.toml");
@@ -144,7 +153,7 @@ public class NuclearCraft {
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.hasBlockEntity() && entry.itemCap() != null) {
                 event.registerBlockEntity(
-                        Capabilities.ItemHandler.BLOCK,
+                        Capabilities.Item.BLOCK,
                         entry.blockEntity().get(),
                         (be, side) -> {
                             if (be instanceof GlobalBlockEntity gbe) {
@@ -156,7 +165,7 @@ public class NuclearCraft {
             }
             if (entry.hasBlockEntity() && entry.fluidCap() != null) {
                 event.registerBlockEntity(
-                        Capabilities.FluidHandler.BLOCK,
+                        Capabilities.Fluid.BLOCK,
                         entry.blockEntity().get(),
                         (be, side) -> {
                             if (be instanceof GlobalBlockEntity gbe) {
@@ -168,7 +177,7 @@ public class NuclearCraft {
             }
             if (entry.hasBlockEntity() && entry.energyCap() != null) {
                 event.registerBlockEntity(
-                        Capabilities.EnergyStorage.BLOCK,
+                        Capabilities.Energy.BLOCK,
                         entry.blockEntity().get(),
                         (be, side) -> {
                             if (be instanceof GlobalBlockEntity gbe) {
@@ -186,58 +195,45 @@ public class NuclearCraft {
         Pipes.registerCapabilities(event);
 
         int qnpCap = Common.QNP_ENERGY_STORAGE.get();
-        event.registerItem(Capabilities.EnergyStorage.ITEM,
-                (stack, ctx) -> new ComponentEnergyStorage(
-                        stack, Registers.QNP_ENERGY.get(), qnpCap, qnpCap, qnpCap / 4),
+        event.registerItem(Capabilities.Energy.ITEM,
+                (stack, ctx) -> new ItemAccessEnergyHandler(
+                        ctx, Registers.QNP_ENERGY.get(), qnpCap, qnpCap, qnpCap / 4),
                 ModEntries.get("qnp").item().get());
 
         int hevCap = Common.HEV_ENERGY_STORAGE.get();
         var hevArmor = ModEntries.get("hev_armor").armorSetEntry();
         var hevPieces = java.util.List.of(hevArmor.helmet(), hevArmor.chestplate(), hevArmor.leggings(), hevArmor.boots());
         for (var piece : hevPieces) {
-            event.registerItem(Capabilities.EnergyStorage.ITEM,
-                    (stack, ctx) -> new ComponentEnergyStorage(
-                            stack, Registers.HEV_ENERGY.get(), hevCap, 5000, hevCap / 4),
+            event.registerItem(Capabilities.Energy.ITEM,
+                    (stack, ctx) -> new ItemAccessEnergyHandler(
+                            ctx, Registers.HEV_ENERGY.get(), hevCap, 5000, hevCap / 4),
                     piece.get());
         }
         var resoniteItem = ModEntries.get("resonite_crystal").item().get();
-        event.registerItem(Capabilities.EnergyStorage.ITEM,
-                (stack, ctx) -> new IEnergyStorage() {
-                    private int fePerTick() { return ResoniteCrystalItem.feOutput(stack); }
-                    @Override public int receiveEnergy(int maxReceive, boolean simulate) { return 0; }
-                    @Override public int extractEnergy(int maxExtract, boolean simulate) {
-                        return Math.min(Math.max(0, maxExtract), fePerTick());
+        event.registerItem(Capabilities.Energy.ITEM,
+                (stack, ctx) -> new EnergyHandler() {
+                    private int fePerTick() {
+                        return ctx.getAmount() > 0 && ctx.getResource().is(resoniteItem)
+                                ? ResoniteCrystalItem.feOutput(ctx.getResource().toStack()) : 0;
                     }
-                    @Override public int getEnergyStored() { return fePerTick() > 0 ? Integer.MAX_VALUE : 0; }
-                    @Override public int getMaxEnergyStored() { return Integer.MAX_VALUE; }
-                    @Override public boolean canExtract() { return fePerTick() > 0; }
-                    @Override public boolean canReceive() { return false; }
+                    @Override public int insert(int amount, TransactionContext transaction) {
+                        TransferPreconditions.checkNonNegative(amount);
+                        return 0;
+                    }
+                    @Override public int extract(int amount, TransactionContext transaction) {
+                        TransferPreconditions.checkNonNegative(amount);
+                        return Math.min(amount, fePerTick());
+                    }
+                    @Override public long getAmountAsLong() { return fePerTick() > 0 ? Integer.MAX_VALUE : 0; }
+                    @Override public long getCapacityAsLong() { return Integer.MAX_VALUE; }
                 },
                 resoniteItem);
 
         Fluid quantiteFluid = ModEntries.fluidOf("quantite_energy");
         if (quantiteFluid != null) {
             for (var piece : hevPieces) {
-                event.registerItem(Capabilities.FluidHandler.ITEM,
-                        (stack, ctx) -> new IFluidHandlerItem() {
-                            @Override public net.minecraft.world.item.ItemStack getContainer() { return stack; }
-                            @Override public int getTanks() { return 1; }
-                            @Override public FluidStack getFluidInTank(int tank) {
-                                int qe = HEVItem.getQeCharge(stack);
-                                return qe > 0 ? new FluidStack(quantiteFluid, qe) : FluidStack.EMPTY;
-                            }
-                            @Override public int getTankCapacity(int tank) { return HEVItem.MAX_QE_CHARGE; }
-                            @Override public boolean isFluidValid(int tank, FluidStack fs) { return fs.getFluid() == quantiteFluid; }
-                            @Override public int fill(FluidStack resource, IFluidHandler.FluidAction action) {
-                                if (resource.getFluid() != quantiteFluid) return 0;
-                                int currentQe = HEVItem.getQeCharge(stack);
-                                int toFill = Math.min(resource.getAmount(), HEVItem.MAX_QE_CHARGE - currentQe);
-                                if (action.execute() && toFill > 0) HEVItem.setQeCharge(stack, currentQe + toFill);
-                                return toFill;
-                            }
-                            @Override public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) { return FluidStack.EMPTY; }
-                            @Override public FluidStack drain(int maxDrain, IFluidHandler.FluidAction action) { return FluidStack.EMPTY; }
-                        },
+                event.registerItem(Capabilities.Fluid.ITEM,
+                        (stack, ctx) -> new HevItemFluidHandler(ctx, quantiteFluid),
                         piece.get());
             }
         }
@@ -249,17 +245,17 @@ public class NuclearCraft {
             for (ModEntry port : mb.portEntries()) {
                 if (!port.hasBlockEntity()) continue;
                 event.registerBlockEntity(
-                        Capabilities.ItemHandler.BLOCK,
+                        Capabilities.Item.BLOCK,
                         port.blockEntity().get(),
                         (be, side) -> be instanceof MultiblockPortBE part ? part.getItemHandler(side) : null
                 );
                 event.registerBlockEntity(
-                        Capabilities.FluidHandler.BLOCK,
+                        Capabilities.Fluid.BLOCK,
                         port.blockEntity().get(),
                         (be, side) -> be instanceof MultiblockPortBE part ? part.getFluidHandler(side) : null
                 );
                 event.registerBlockEntity(
-                        Capabilities.EnergyStorage.BLOCK,
+                        Capabilities.Energy.BLOCK,
                         port.blockEntity().get(),
                         (be, side) -> be instanceof MultiblockPortBE part ? part.getEnergyHandler(side) : null
                 );
@@ -322,8 +318,8 @@ public class NuclearCraft {
         if (event.getConfig().getSpec() == igentuman.nc.config.Client.SPEC) igentuman.nc.config.Client.refresh();
     }
 
-    private void onAddReloadListener(AddReloadListenerEvent event) {
-        event.addListener(MultiblocksProvider.getInstance());
+    private void onAddReloadListener(AddServerReloadListenersEvent event) {
+        event.addListener(rl("multiblocks"), MultiblocksProvider.getInstance());
     }
 
     private void onServerStarted(ServerStartedEvent event) {
@@ -331,14 +327,14 @@ public class NuclearCraft {
     }
 
     private void onDatapackSync(OnDatapackSyncEvent event) {
+        for (var type : Registers.RECIPE_TYPES.getEntries()) event.sendRecipes(type.get());
         if (event.getPlayer() == null) {
-            FusionReactorControllerBE.invalidateFuelRecipes();
             RecipeDeserializationLogger.logProcessorRecipes(event.getPlayerList().getServer().getRecipeManager());
         }
     }
 
-    private void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(MultiblocksProvider.getInstance());
+    private void registerClientReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(rl("multiblocks"), MultiblocksProvider.getInstance());
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
@@ -456,12 +452,12 @@ public class NuclearCraft {
         }
     }
 
-    public static ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    public static Identifier rl(String path) {
+        return Identifier.fromNamespaceAndPath(MODID, path);
     }
 
-    public static ResourceLocation rlFromString(String name) {
-        return ResourceLocation.tryParse(name);
+    public static Identifier rlFromString(String name) {
+        return Identifier.tryParse(name);
     }
 
     public static void debugLog(String message) {

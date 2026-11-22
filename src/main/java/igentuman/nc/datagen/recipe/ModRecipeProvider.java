@@ -10,7 +10,7 @@ import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -22,7 +22,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -68,19 +67,45 @@ import igentuman.nc.datagen.recipe.particle.DecayChamberRecipes;
 import igentuman.nc.datagen.recipe.particle.TargetChamberRecipes;
 
 /** Root recipe provider that dispatches to every processor generator and exposes shared recipe helpers. */
-public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
+public class ModRecipeProvider extends RecipeProvider {
 
     public static final int TIME = 200;
     public static final int ENERGY = 50;
     public static final int MOLTEN_INGOT = 90;
     public static final int MOLTEN_NUGGET = 10;
 
-    public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    protected ModRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
+    }
+
+    /** Data provider that runs {@link ModRecipeProvider} against the datagen registry lookup. */
+    public static class Runner extends RecipeProvider.Runner {
+        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+            super(output, registries);
+        }
+
+        @Override
+        protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+            return new ModRecipeProvider(registries, output);
+        }
+
+        @Override
+        public @NonNull String getName() {
+            return "NuclearCraft recipes";
+        }
     }
 
     @Override
-    public void buildRecipes(@NonNull RecipeOutput recipeOutput) {
+    protected void buildRecipes() {
+        RecipeGen.bind(registries);
+        try {
+            buildAll(output);
+        } finally {
+            RecipeGen.unbind();
+        }
+    }
+
+    private static void buildAll(RecipeOutput recipeOutput) {
         craftingRecipes(recipeOutput);
         FoodRecipes.food(recipeOutput);
         manufactory(recipeOutput);
@@ -121,7 +146,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         leacher(recipeOutput);
         analyzer(recipeOutput);
         oreVeins(recipeOutput);
-        SpecialRecipeBuilder.special(ResetNbtRecipe::new).save(recipeOutput, rl("reset_nbt"));
+        SpecialRecipeBuilder.special(ResetNbtRecipe::new).save(recipeOutput, RecipeGen.key("reset_nbt"));
     }
 
     // --- record helpers ---
@@ -301,8 +326,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     }
 
     public static Item modItem(String rl) {
-        ResourceLocation id = ResourceLocation.parse(rl);
-        return BuiltInRegistries.ITEM.containsKey(id) ? BuiltInRegistries.ITEM.get(id) : null;
+        Identifier id = Identifier.parse(rl);
+        return BuiltInRegistries.ITEM.getOptional(id).orElse(null);
     }
 
     public static Item oreItem(String name) {
@@ -328,8 +353,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
             if (material.hasGem() && material.gem().get() == item) return gemTag(name);
             if (material.hasNugget() && material.nugget().get() == item) return nuggetTag(name);
             if (material.hasRawOre() && material.rawOre().get() == item) return rawTag(name);
-            if (material.hasOre() && material.oreItem().get() == item) return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ores/" + name));
-            if (material.hasDeepslateOre() && material.deepslateOreItem().get() == item) return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ores/" + name));
+            if (material.hasOre() && material.oreItem().get() == item) return ItemTags.create(Identifier.fromNamespaceAndPath("c", "ores/" + name));
+            if (material.hasDeepslateOre() && material.deepslateOreItem().get() == item) return ItemTags.create(Identifier.fromNamespaceAndPath("c", "ores/" + name));
         }
         if (item == Items.IRON_INGOT) return ingotTag("iron");
         if (item == Items.GOLD_INGOT) return ingotTag("gold");
@@ -385,7 +410,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         var materialFluid = material.materialFluid();
         if (materialFluid.source().get() != fluid && materialFluid.flowing().get() != fluid) return null;
         String fluidName = material.fluidDefinition.resolveName(material.name);
-        return FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", fluidName));
+        return FluidTags.create(Identifier.fromNamespaceAndPath("c", fluidName));
     }
 
     public static Item isotope(String name) {

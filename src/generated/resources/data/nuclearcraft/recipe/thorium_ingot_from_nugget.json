@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:nuggets/thorium"
-    },
-    {
-      "tag": "c:nuggets/thorium"
-    },
-    {
-      "tag": "c:nuggets/thorium"
-    },
-    {
-      "tag": "c:nuggets/thorium"
-    },
-    {
-      "tag": "c:nuggets/thorium"
-    },
-    {
-      "tag": "c:nuggets/thorium"
-    },
-    {
-      "tag": "c:nuggets/thorium"
-    },
-    {
-      "tag": "c:nuggets/thorium"
-    },
-    {
-      "tag": "c:nuggets/thorium"
-    }
+    "#c:nuggets/thorium",
+    "#c:nuggets/thorium",
+    "#c:nuggets/thorium",
+    "#c:nuggets/thorium",
+    "#c:nuggets/thorium",
+    "#c:nuggets/thorium",
+    "#c:nuggets/thorium",
+    "#c:nuggets/thorium",
+    "#c:nuggets/thorium"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:thorium_ingot"
   }
 }

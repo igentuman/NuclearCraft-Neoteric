@@ -19,8 +19,8 @@
       }
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "immersiveengineering:component_iron"
+      "type": "neoforge:registered",
+      "value": "immersiveengineering:component_iron"
     }
   ],
   "type": "nuclearcraft:assembler",

@@ -1,9 +1,10 @@
 package igentuman.nc.recipe.particle;
 
+import igentuman.nc.recipe.RecipeIngredientCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import igentuman.nc.recipe.FluidOutput;
+import igentuman.nc.api.recipe.FluidOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -12,10 +13,11 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.Optional;
 
-public final class AcceleratorCoolantRecipeSerializer implements RecipeSerializer<AcceleratorCoolantRecipe> {
+/** JSON and network codecs for {@link AcceleratorCoolantRecipe}. */
+public final class AcceleratorCoolantRecipeSerializer {
 
     private static final MapCodec<AcceleratorCoolantRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            SizedFluidIngredient.FLAT_CODEC.fieldOf("input_fluid").forGetter(AcceleratorCoolantRecipe::input),
+            RecipeIngredientCodecs.FLUID.fieldOf("input_fluid").forGetter(AcceleratorCoolantRecipe::input),
             FluidOutput.CODEC.fieldOf("output_fluid").forGetter(AcceleratorCoolantRecipe::output),
             Codec.LONG.fieldOf("heat_per_mb").forGetter(AcceleratorCoolantRecipe::heatPerMb),
             Codec.LONG.optionalFieldOf("minimum_temperature_k")
@@ -33,13 +35,9 @@ public final class AcceleratorCoolantRecipeSerializer implements RecipeSerialize
                     (input, output, heatPerMb, minimumTemperatureK) ->
                             new AcceleratorCoolantRecipe(input, output, heatPerMb, minimumTemperatureK.orElse(null)));
 
-    @Override
-    public MapCodec<AcceleratorCoolantRecipe> codec() {
-        return CODEC;
-    }
+    private AcceleratorCoolantRecipeSerializer() {}
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, AcceleratorCoolantRecipe> streamCodec() {
-        return STREAM_CODEC;
+    public static RecipeSerializer<AcceleratorCoolantRecipe> create() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

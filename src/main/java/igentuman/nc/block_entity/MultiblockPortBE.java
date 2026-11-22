@@ -16,9 +16,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.DelegatingEnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EmptyEnergyHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.DelegatingResourceHandler;
+import net.neoforged.neoforge.transfer.EmptyResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 /** Base block entity for non-controller multiblock parts (ports); proxies capabilities to its controller. */
@@ -62,9 +67,11 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
     }
 
     public void setControllerPos(@Nullable BlockPos pos) {
-        if (!java.util.Objects.equals(controllerPos, pos)) controlSignalSample = 0;
+        boolean changed = !java.util.Objects.equals(controllerPos, pos);
+        if (changed) controlSignalSample = 0;
         if (pos == null) sampleControlSignal = false;
         this.controllerPos = pos;
+        if (changed && level != null) level.invalidateCapabilities(worldPosition);
         markDirty();
     }
 
@@ -143,35 +150,65 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
 
     @Nullable
     @Override
-    public IItemHandler getItemHandler(@Nullable Direction side) {
+    public ResourceHandler<ItemResource> getItemHandler(@Nullable Direction side) {
+        if (resolveItemHandler(side) == null) return null;
+        return new DelegatingResourceHandler<>(() -> {
+            ResourceHandler<ItemResource> target = resolveItemHandler(side);
+            return target != null ? target : EmptyResourceHandler.instance();
+        });
+    }
+
+    @Nullable
+    protected ResourceHandler<ItemResource> resolveItemHandler(@Nullable Direction side) {
+        if (isRemoved()) return null;
         MultiblockControllerBE c = controller();
         return c != null ? c.getItemHandler(side) : super.getItemHandler(side);
     }
 
     @Nullable
     @Override
-    public IFluidHandler getFluidHandler(@Nullable Direction side) {
+    public ResourceHandler<FluidResource> getFluidHandler(@Nullable Direction side) {
+        if (resolveFluidHandler(side) == null) return null;
+        return new DelegatingResourceHandler<>(() -> {
+            ResourceHandler<FluidResource> target = resolveFluidHandler(side);
+            return target != null ? target : EmptyResourceHandler.instance();
+        });
+    }
+
+    @Nullable
+    protected ResourceHandler<FluidResource> resolveFluidHandler(@Nullable Direction side) {
+        if (isRemoved()) return null;
         MultiblockControllerBE c = controller();
-        return c != null ? c.getFluidHandler(side) : super.getFluidHandler(side);
+        return c != null && !c.isRemoved() ? c.getFluidHandler(side) : super.getFluidHandler(side);
     }
 
     @Nullable
     @Override
-    public IEnergyStorage getEnergyHandler(@Nullable Direction side) {
+    public EnergyHandler getEnergyHandler(@Nullable Direction side) {
+        if (resolveEnergyHandler(side) == null) return null;
+        return new DelegatingEnergyHandler(() -> {
+            EnergyHandler target = resolveEnergyHandler(side);
+            return target != null ? target : EmptyEnergyHandler.INSTANCE;
+        });
+    }
+
+    @Nullable
+    private EnergyHandler resolveEnergyHandler(@Nullable Direction side) {
+        if (isRemoved()) return null;
         MultiblockControllerBE c = controller();
-        return c != null ? c.getEnergyHandler(side) : super.getEnergyHandler(side);
+        return c != null && !c.isRemoved() ? c.getEnergyHandler(side) : super.getEnergyHandler(side);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveTagData(tag, registries);
         if (controllerPos != null) tag.putLong("controllerPos", controllerPos.asLong());
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        if (tag.contains("controllerPos")) controllerPos = BlockPos.of(tag.getLong("controllerPos"));
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadTagData(tag, registries);
+        if (tag.contains("controllerPos")) controllerPos = BlockPos.of(tag.getLongOr("controllerPos", 0L));
     }
 
     @Override

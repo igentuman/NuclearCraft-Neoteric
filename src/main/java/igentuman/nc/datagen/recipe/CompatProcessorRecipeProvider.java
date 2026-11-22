@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.entries.Processors.ALLOY_SMELTER;
 import static igentuman.nc.setup.entries.Processors.ASSEMBLER;
+import static igentuman.nc.setup.entries.Processors.CRYSTALLIZER;
 import static igentuman.nc.setup.entries.Processors.MANUFACTORY;
 import static igentuman.nc.setup.entries.Processors.PRESSURIZER;
 
@@ -122,7 +123,35 @@ public class CompatProcessorRecipeProvider implements DataProvider {
         saves.add(save(output, "mekanismgenerators", ALLOY_SMELTER, "hohlraum",
                 List.of(tag("c:dusts/gold", 32), tag("mekanism:enriched/carbon", 1)),
                 item("mekanismgenerators:hohlraum", 8), 1600, 200, "mekanism"));
+        saves.add(polonium(output));
         return CompletableFuture.allOf(saves.toArray(CompletableFuture[]::new));
+    }
+
+    /**
+     * Crystallizer molten polonium -> Mekanism polonium pellet. Keeps its original id
+     * {@code nuclearcraft:crystallizer/polonium} but is guarded so core-only packs skip it.
+     */
+    private CompletableFuture<?> polonium(CachedOutput output) {
+        JsonObject recipe = new JsonObject();
+        JsonArray conditions = new JsonArray();
+        conditions.add(modLoadedCondition("mekanism"));
+        JsonObject pellet = new JsonObject();
+        pellet.addProperty("item", "mekanism:pellet_polonium");
+        conditions.add(contentCondition(pellet));
+        recipe.add("neoforge:conditions", conditions);
+        recipe.addProperty("type", rl(CRYSTALLIZER).toString());
+        recipe.addProperty("energy_per_tick", ModRecipeProvider.ENERGY);
+        JsonObject fluid = new JsonObject();
+        fluid.addProperty("amount", 1000);
+        fluid.addProperty("fluid", "nuclearcraft:molten_polonium");
+        JsonArray fluids = new JsonArray();
+        fluids.add(fluid);
+        recipe.add("fluid_inputs", fluids);
+        JsonArray results = new JsonArray();
+        results.add(pellet);
+        recipe.add("item_outputs", results);
+        recipe.addProperty("process_time", 600);
+        return DataProvider.saveStable(output, recipe, recipes.json(rl(CRYSTALLIZER + "/polonium")));
     }
 
     private static JsonObject item(String id, int count) {
@@ -134,7 +163,7 @@ public class CompatProcessorRecipeProvider implements DataProvider {
     }
 
     private static JsonObject reference(String key, String id, int count) {
-        ResourceLocation.parse(id);
+        Identifier.parse(id);
         JsonObject reference = new JsonObject();
         reference.addProperty(key, id);
         reference.addProperty("count", count);
@@ -185,10 +214,11 @@ public class CompatProcessorRecipeProvider implements DataProvider {
 
     private static JsonObject contentCondition(JsonObject reference) {
         if (reference.has("item")) {
-            JsonObject itemExists = new JsonObject();
-            itemExists.addProperty("type", "neoforge:item_exists");
-            itemExists.addProperty("item", reference.get("item").getAsString());
-            return itemExists;
+            // 26.1 replaced neoforge:item_exists with neoforge:registered (registry defaults to item).
+            JsonObject registered = new JsonObject();
+            registered.addProperty("type", "neoforge:registered");
+            registered.addProperty("value", reference.get("item").getAsString());
+            return registered;
         }
         JsonObject tagEmpty = new JsonObject();
         tagEmpty.addProperty("type", "neoforge:tag_empty");

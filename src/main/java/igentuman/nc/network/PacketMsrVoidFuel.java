@@ -29,7 +29,7 @@ public record PacketMsrVoidFuel(BlockPos pos) implements CustomPacketPayload {
     public static void handle(PacketMsrVoidFuel packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            BlockEntity be = serverPlayer.serverLevel().getBlockEntity(packet.pos());
+            BlockEntity be = serverPlayer.level().getBlockEntity(packet.pos());
             if (be instanceof MsrControllerBE controller) {
                 controller.voidFuel();
             }

@@ -42,6 +42,17 @@ public class EXPLBE extends GlobalBlockEntity implements MenuProvider {
         super(ModEntries.get(name).blockEntity().get(), pos, state, name);
     }
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (level == null) return;
+        for (BlockPos proxyPos : EXPLBlock.proxyPositions(pos, state.getValue(FACING))) {
+            if (level.getBlockEntity(proxyPos) instanceof EXPLProxyBE) {
+                level.removeBlock(proxyPos, false);
+            }
+        }
+    }
+
     private Direction getFacing() {
         return getBlockState().getValue(FACING);
     }
@@ -201,12 +212,13 @@ public class EXPLBE extends GlobalBlockEntity implements MenuProvider {
     }
 
     private void killEntitiesInBeam() {
+        if (!(level instanceof ServerLevel server)) return;
         Direction facing = getFacing();
         int distance = getActualLaserDistance();
         for (int i = 1; i < distance; i++) {
             BlockPos pos = worldPosition.relative(facing, i);
-            level.getEntitiesOfClass(LivingEntity.class, new AABB(pos), e -> e != null && e.isAlive())
-                    .forEach(e -> e.hurt(level.damageSources().magic(), 1000.0f));
+            server.getEntitiesOfClass(LivingEntity.class, new AABB(pos), e -> e != null && e.isAlive())
+                    .forEach(e -> e.hurtServer(server, server.damageSources().magic(), 1000.0f));
         }
     }
 
@@ -216,7 +228,7 @@ public class EXPLBE extends GlobalBlockEntity implements MenuProvider {
         FusionBeamParticleData data = new FusionBeamParticleData(getFacing(), getActualLaserDistance() + 1, thickness);
         Vec3 vec = Vec3.atCenterOf(worldPosition.relative(getFacing()));
         for (ServerPlayer player : serverLevel.players()) {
-            serverLevel.sendParticles(player, data, true, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0);
+            serverLevel.sendParticles(player, data, true, false, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0);
         }
     }
 

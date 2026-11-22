@@ -9,8 +9,8 @@ import igentuman.nc.setup.entries.Crafter;
 import igentuman.nc.setup.entries.Processors;
 import igentuman.nc.setup.entries.Turbine;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.data.recipes.*;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -23,6 +23,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.*;
+import static igentuman.nc.datagen.recipe.RecipeGen.*;
 import static igentuman.nc.setup.entries.Processors.*;
 import static igentuman.nc.util.TagUtil.*;
 import static igentuman.nr.util.TagUtil.oreTag;
@@ -36,84 +37,84 @@ public class VanillaRecipes {
 
     public static void craftingRecipes(RecipeOutput out) {
         recipeOutput = out;
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModRecipeProvider.dust("barium_nitrate", 1).item())
+        shapeless(RecipeCategory.MISC, ModRecipeProvider.dust("barium_nitrate", 1).item())
                 .requires(dustTag("barium"))
                 .requires(GUNPOWDER)
                 .unlockedBy("item", has(dustTag("barium")))
-                .save(recipeOutput, rl("barium_nitrate_from_barium"));
+                .save(recipeOutput, key("barium_nitrate_from_barium"));
         for(ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.materialEntry() == null) {
                 continue;
             }
             String name = entry.materialEntry().name;
             if (entry.materialEntry().hasBlock() && entry.materialEntry().hasIngot()) {
-                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, entry.materialEntry().storageBlock().get())
-                        .requires(Ingredient.of(ingotTag(name)), 9)
+                shapeless(RecipeCategory.MISC, entry.materialEntry().storageBlock().get())
+                        .requires(ingredient(ingotTag(name)), 9)
                         .group(MODID+"_blocks")
                         .unlockedBy("has_ingot", has(entry.materialEntry().ingot()))
                         .save(out);
 
-                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, entry.materialEntry().ingot().get(), 9)
-                        .requires(Ingredient.of(blockTag(name)))
+                shapeless(RecipeCategory.MISC, entry.materialEntry().ingot().get(), 9)
+                        .requires(ingredient(blockTag(name)))
                         .group(MODID+"_ingots")
                         .unlockedBy("has_block", has(entry.materialEntry().storageBlock()))
                         .save(out, MODID + ":" + name + "_ingot_from_block");
             }
             if (entry.materialEntry().hasBlock() && entry.materialEntry().hasGem()) {
-                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, entry.materialEntry().storageBlock().get())
-                        .requires(Ingredient.of(gemTag(name)), 9)
+                shapeless(RecipeCategory.MISC, entry.materialEntry().storageBlock().get())
+                        .requires(ingredient(gemTag(name)), 9)
                         .group(MODID+"_blocks")
                         .unlockedBy("has_gem", has(entry.materialEntry().gem()))
                         .save(out, MODID + ":" + name + "_block_from_gem");
 
-                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, entry.materialEntry().gem().get(), 9)
-                        .requires(Ingredient.of(blockTag(name)))
+                shapeless(RecipeCategory.MISC, entry.materialEntry().gem().get(), 9)
+                        .requires(ingredient(blockTag(name)))
                         .group(MODID+"_gems")
                         .unlockedBy("has_block", has(entry.materialEntry().storageBlock()))
                         .save(out, MODID + ":" + name + "_gem_from_block");
             }
             if (entry.materialEntry().hasIngot() && entry.materialEntry().hasNugget()) {
-                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, entry.materialEntry().ingot().get())
-                        .requires(Ingredient.of(nuggetTag(name)), 9)
+                shapeless(RecipeCategory.MISC, entry.materialEntry().ingot().get())
+                        .requires(ingredient(nuggetTag(name)), 9)
                         .group(MODID+"_ingots")
                         .unlockedBy("has_nugget", has(entry.materialEntry().nugget()))
                         .save(out, MODID + ":" + name + "_ingot_from_nugget");
 
-                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, entry.materialEntry().nugget().get(), 9)
-                        .requires(Ingredient.of(ingotTag(name)))
+                shapeless(RecipeCategory.MISC, entry.materialEntry().nugget().get(), 9)
+                        .requires(ingredient(ingotTag(name)))
                         .group(MODID+"_nuggets")
                         .unlockedBy("has_ingot", has(entry.materialEntry().ingot()))
                         .save(out, MODID + ":" + name + "_nugget_from_ingot");
             }
             if (entry.materialEntry().hasIngot()) {
                 if (entry.materialEntry().hasOre()) {
-                    smelting(entry.materialEntry().oreItem(), Ingredient.of(oreTag(name)), entry.materialEntry().ingot());
+                    smelting(entry.materialEntry().oreItem(), ingredient(oreTag(name)), entry.materialEntry().ingot());
                 }
                 if (entry.materialEntry().hasDeepslateOre()) {
-                    smelting(entry.materialEntry().deepslateOreItem(), Ingredient.of(oreTag(name)), entry.materialEntry().ingot());
+                    smelting(entry.materialEntry().deepslateOreItem(), ingredient(oreTag(name)), entry.materialEntry().ingot());
                 }
                 if (entry.materialEntry().hasRawOre()) {
-                    smelting(entry.materialEntry().rawOre(), Ingredient.of(rawTag(name)), entry.materialEntry().ingot());
+                    smelting(entry.materialEntry().rawOre(), ingredient(rawTag(name)), entry.materialEntry().ingot());
                 }
                 if (entry.materialEntry().hasDust()) {
-                    smelting(entry.materialEntry().dust(), Ingredient.of(dustTag(name)), entry.materialEntry().ingot());
+                    smelting(entry.materialEntry().dust(), ingredient(dustTag(name)), entry.materialEntry().ingot());
                 }
                 if (entry.materialEntry().hasPlate()) {
-                    smelting(entry.materialEntry().plate(), Ingredient.of(plateTag(name)), entry.materialEntry().ingot());
+                    smelting(entry.materialEntry().plate(), ingredient(plateTag(name)), entry.materialEntry().ingot());
                 }
             }
         }
-        smelting(ModEntries.get("iron").materialEntry().dust(), Ingredient.of(dustTag("iron")), IRON_INGOT);
-        smelting(ModEntries.get("copper").materialEntry().dust(), Ingredient.of(dustTag("copper")), COPPER_INGOT);
-        smelting(ModEntries.get("gold").materialEntry().dust(), Ingredient.of(dustTag("gold")), GOLD_INGOT);
-        smelting(ModEntries.get("iron").materialEntry().plate(), Ingredient.of(plateTag("iron")), IRON_INGOT);
-        smelting(ModEntries.get("copper").materialEntry().plate(), Ingredient.of(plateTag("copper")), COPPER_INGOT);
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(dust("rhodochrosite")),
+        smelting(ModEntries.get("iron").materialEntry().dust(), ingredient(dustTag("iron")), IRON_INGOT);
+        smelting(ModEntries.get("copper").materialEntry().dust(), ingredient(dustTag("copper")), COPPER_INGOT);
+        smelting(ModEntries.get("gold").materialEntry().dust(), ingredient(dustTag("gold")), GOLD_INGOT);
+        smelting(ModEntries.get("iron").materialEntry().plate(), ingredient(plateTag("iron")), IRON_INGOT);
+        smelting(ModEntries.get("copper").materialEntry().plate(), ingredient(plateTag("copper")), COPPER_INGOT);
+        RecipeGen.blasting(ingredient(dust("rhodochrosite")),
                         RecipeCategory.MISC,
                         ModEntries.get("manganese_oxide").materialEntry().dust(), 1.0f, 100)
                 .unlockedBy("has_dust", has(ModEntries.get("rhodochrosite").materialEntry().dust().get()))
                 .save(out, MODID+"_"+"manganese_oxide_sm1");
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(ingot("manganese_oxide")),
+        RecipeGen.blasting(ingredient(ingot("manganese_oxide")),
                         RecipeCategory.MISC,
                         ModEntries.get("manganese").materialEntry().ingot(), 1.0f, 100)
                 .unlockedBy("has_dust", has(ModEntries.get("manganese_oxide").materialEntry().dust().get()))
@@ -135,7 +136,7 @@ public class VanillaRecipes {
         pipes();
         designerBlocks();
         redstoneDimmer();
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("charging_station"), 1)
+        shaped(RecipeCategory.MISC, item("charging_station"), 1)
                 .pattern("SBS")
                 .pattern("S S")
                 .pattern("STS")
@@ -144,9 +145,9 @@ public class VanillaRecipes {
                 .define('S', IRON_BARS)
                 .group(MODID)
                 .unlockedBy("item", has(item("advanced_voltaic_pile")))
-                .save(recipeOutput, rl("charging_station"));
+                .save(recipeOutput, key("charging_station"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("resonite_crystal").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("resonite_crystal").item())
                 .pattern("SSS")
                 .pattern("SSS")
                 .pattern("SSS")
@@ -157,7 +158,7 @@ public class VanillaRecipes {
     }
 
     private static void designerBlocks() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("fission_reactor_designer"), 1)
+        shaped(RecipeCategory.MISC, item("fission_reactor_designer"), 1)
                 .pattern("PGP")
                 .pattern("GCG")
                 .pattern("PGP")
@@ -166,9 +167,9 @@ public class VanillaRecipes {
                 .define('C', item("analyzer"))
                 .group(MODID)
                 .unlockedBy("item", has(item("analyzer")))
-                .save(recipeOutput, rl("fission_reactor_designer"));
+                .save(recipeOutput, key("fission_reactor_designer"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("multiblock_builder"), 1)
+        shaped(RecipeCategory.MISC, item("multiblock_builder"), 1)
                 .pattern("PCP")
                 .pattern("CFC")
                 .pattern("PCP")
@@ -177,40 +178,40 @@ public class VanillaRecipes {
                 .define('F', item("steel_frame"))
                 .group(MODID)
                 .unlockedBy("item", has(item("steel_frame")))
-                .save(recipeOutput, rl("multiblock_builder"));
+                .save(recipeOutput, key("multiblock_builder"));
     }
 
     private static void toughArmor() {
         var tough = ModEntries.get("tough_armor").armorSetEntry();
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tough.helmet().get())
+        shaped(RecipeCategory.COMBAT, tough.helmet().get())
                 .pattern("TTT")
                 .pattern("T T")
                 .define('T', ingotTag("tough_alloy"))
                 .unlockedBy("item", has(ingot("tough_alloy")))
-                .save(recipeOutput, rl("tough_helmet"));
+                .save(recipeOutput, key("tough_helmet"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tough.chestplate().get())
+        shaped(RecipeCategory.COMBAT, tough.chestplate().get())
                 .pattern("T T")
                 .pattern("TTT")
                 .pattern("TTT")
                 .define('T', ingotTag("tough_alloy"))
                 .unlockedBy("item", has(ingot("tough_alloy")))
-                .save(recipeOutput, rl("tough_chestplate"));
+                .save(recipeOutput, key("tough_chestplate"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tough.leggings().get())
+        shaped(RecipeCategory.COMBAT, tough.leggings().get())
                 .pattern("TTT")
                 .pattern("T T")
                 .pattern("T T")
                 .define('T', ingotTag("tough_alloy"))
                 .unlockedBy("item", has(ingot("tough_alloy")))
-                .save(recipeOutput, rl("tough_leggings"));
+                .save(recipeOutput, key("tough_leggings"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tough.boots().get())
+        shaped(RecipeCategory.COMBAT, tough.boots().get())
                 .pattern("T T")
                 .pattern("T T")
                 .define('T', ingotTag("tough_alloy"))
                 .unlockedBy("item", has(ingot("tough_alloy")))
-                .save(recipeOutput, rl("tough_boots"));
+                .save(recipeOutput, key("tough_boots"));
     }
 
     private static void hevArmor() {
@@ -219,29 +220,29 @@ public class VanillaRecipes {
         ItemLike plate = item("plate_extreme");
         ItemLike cell = item("lithium_ion_cell");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, hev.helmet().get())
+        shaped(RecipeCategory.COMBAT, hev.helmet().get())
                 .pattern(" T ").pattern("THT").pattern(" B ")
                 .define('T', plate).define('H', tough.helmet().get()).define('B', cell)
                 .unlockedBy("item", has(plate))
-                .save(recipeOutput, rl("hev_helmet"));
+                .save(recipeOutput, key("hev_helmet"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, hev.chestplate().get())
+        shaped(RecipeCategory.COMBAT, hev.chestplate().get())
                 .pattern("THT").pattern("TBT").pattern("TTT")
                 .define('T', plate).define('H', tough.chestplate().get()).define('B', cell)
                 .unlockedBy("item", has(plate))
-                .save(recipeOutput, rl("hev_chestplate"));
+                .save(recipeOutput, key("hev_chestplate"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, hev.leggings().get())
+        shaped(RecipeCategory.COMBAT, hev.leggings().get())
                 .pattern("THT").pattern("T T").pattern("B B")
                 .define('T', plate).define('H', tough.leggings().get()).define('B', cell)
                 .unlockedBy("item", has(plate))
-                .save(recipeOutput, rl("hev_leggings"));
+                .save(recipeOutput, key("hev_leggings"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, hev.boots().get())
+        shaped(RecipeCategory.COMBAT, hev.boots().get())
                 .pattern("THT").pattern("B B")
                 .define('T', plate).define('H', tough.boots().get()).define('B', cell)
                 .unlockedBy("item", has(plate))
-                .save(recipeOutput, rl("hev_boots"));
+                .save(recipeOutput, key("hev_boots"));
     }
 
     private static ItemLike item(String name) {
@@ -249,7 +250,7 @@ public class VanillaRecipes {
     }
 
     private static void redstoneDimmer() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, item("redstone_dimmer"))
+        shaped(RecipeCategory.REDSTONE, item("redstone_dimmer"))
                 .pattern("LPL")
                 .pattern("CMC")
                 .pattern("LPL")
@@ -263,16 +264,16 @@ public class VanillaRecipes {
     }
 
     private static void pipes() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("pipe"), 16)
+        shaped(RecipeCategory.MISC, item("pipe"), 16)
                 .pattern("BSB")
                 .pattern("S S")
                 .pattern("BSB")
                 .define('B', item("bioplastic"))
                 .define('S', plateTag("steel"))
                 .unlockedBy("item", has(item("bioplastic")))
-                .save(recipeOutput, rl("pipe_block"));
+                .save(recipeOutput, key("pipe_block"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("pipe_connector"), 4)
+        shaped(RecipeCategory.MISC, item("pipe_connector"), 4)
                 .pattern("BSB")
                 .pattern("SAS")
                 .pattern("BSB")
@@ -280,109 +281,109 @@ public class VanillaRecipes {
                 .define('B', item("bioplastic"))
                 .define('S', plateTag("steel"))
                 .unlockedBy("item", has(item("bioplastic")))
-                .save(recipeOutput, rl("pipe_connector_block"));
+                .save(recipeOutput, key("pipe_connector_block"));
     }
 
     private static void tierBarrel(String result, String prev, String metal, String plate) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item(result))
+        shaped(RecipeCategory.MISC, item(result))
                 .pattern("GPG").pattern("GBG").pattern("GPG")
                 .define('G', plateTag(metal)).define('P', item(plate)).define('B', item(prev))
                 .unlockedBy("item", has(item(prev)))
-                .save(recipeOutput, rl(result));
+                .save(recipeOutput, key(result));
     }
 
     private static void tierContainer(String result, String prev, String metal, String plate) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item(result))
+        shaped(RecipeCategory.MISC, item(result))
                 .pattern("DPD").pattern("PCP").pattern("DPD")
                 .define('D', plateTag(metal)).define('P', item(plate)).define('C', item(prev))
                 .unlockedBy("item", has(item(prev)))
-                .save(recipeOutput, rl(result));
+                .save(recipeOutput, key(result));
     }
 
     private static void storageBlocks() {
         // Barrels
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("basic_barrel"))
+        shaped(RecipeCategory.MISC, item("basic_barrel"))
                 .pattern("GPG").pattern("G G").pattern("GPG")
                 .define('G', plateTag("steel")).define('P', item("plate_basic"))
                 .unlockedBy("item", has(item("plate_basic")))
-                .save(recipeOutput, rl("basic_barrel"));
+                .save(recipeOutput, key("basic_barrel"));
         tierBarrel("advanced_barrel", "basic_barrel", "tough_alloy", "plate_advanced");
         tierBarrel("du_barrel", "advanced_barrel", "hsla_steel", "plate_du");
         tierBarrel("elite_barrel", "du_barrel", "platinum", "plate_elite");
 
         // Containers
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("basic_storage_container"))
+        shaped(RecipeCategory.MISC, item("basic_storage_container"))
                 .pattern(" P ").pattern("PCP").pattern(" P ")
                 .define('C', CHEST).define('P', item("plate_basic"))
                 .unlockedBy("item", has(CHEST))
-                .save(recipeOutput, rl("basic_storage_container"));
+                .save(recipeOutput, key("basic_storage_container"));
         tierContainer("advanced_storage_container", "basic_storage_container", "bronze", "plate_advanced");
         tierContainer("du_storage_container", "advanced_storage_container", "platinum", "plate_du");
         tierContainer("elite_storage_container", "du_storage_container", "hsla_steel", "plate_elite");
 
         // Voltaic piles
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("basic_voltaic_pile"))
+        shaped(RecipeCategory.MISC, item("basic_voltaic_pile"))
                 .pattern("PSP").pattern("SMS").pattern("PSP")
                 .define('P', item("plate_basic")).define('S', item("coil_copper")).define('M', blockTag("magnesium"))
                 .unlockedBy("item", has(item("coil_copper")))
-                .save(recipeOutput, rl("basic_voltaic_pile"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("advanced_voltaic_pile"))
+                .save(recipeOutput, key("basic_voltaic_pile"));
+        shaped(RecipeCategory.MISC, item("advanced_voltaic_pile"))
                 .pattern("PMP").pattern("VVV").pattern("PCP")
                 .define('P', item("plate_advanced")).define('M', ingotTag("magnesium"))
                 .define('V', item("basic_voltaic_pile")).define('C', ingotTag("zinc"))
                 .unlockedBy("item", has(item("basic_voltaic_pile")))
-                .save(recipeOutput, rl("advanced_voltaic_pile"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("du_voltaic_pile"))
+                .save(recipeOutput, key("advanced_voltaic_pile"));
+        shaped(RecipeCategory.MISC, item("du_voltaic_pile"))
                 .pattern("PMP").pattern("VVV").pattern("PCP")
                 .define('P', item("plate_du")).define('M', ingotTag("magnesium"))
                 .define('V', item("advanced_voltaic_pile")).define('C', ingotTag("silver"))
                 .unlockedBy("item", has(item("advanced_voltaic_pile")))
-                .save(recipeOutput, rl("du_voltaic_pile"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("elite_voltaic_pile"))
+                .save(recipeOutput, key("du_voltaic_pile"));
+        shaped(RecipeCategory.MISC, item("elite_voltaic_pile"))
                 .pattern("PMP").pattern("VVV").pattern("PCP")
                 .define('P', item("plate_elite")).define('M', plateTag("magnesium"))
                 .define('V', item("du_voltaic_pile")).define('C', plateTag("cobalt"))
                 .unlockedBy("item", has(item("du_voltaic_pile")))
-                .save(recipeOutput, rl("elite_voltaic_pile"));
+                .save(recipeOutput, key("elite_voltaic_pile"));
 
         // Lithium-ion cell + batteries
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("lithium_ion_cell"))
+        shaped(RecipeCategory.MISC, item("lithium_ion_cell"))
                 .pattern("CCC").pattern("FLF").pattern("DDD")
                 .define('C', plateTag("hard_carbon")).define('D', plateTag("lithium_manganese_oxide"))
                 .define('F', plateTag("ferroboron")).define('L', plateTag("lithium"))
                 .unlockedBy("item", has(plateTag("lithium_manganese_oxide")))
-                .save(recipeOutput, rl("lithium_ion_cell"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("basic_lithium_ion_battery"))
+                .save(recipeOutput, key("lithium_ion_cell"));
+        shaped(RecipeCategory.MISC, item("basic_lithium_ion_battery"))
                 .pattern("PCP").pattern("CSC").pattern("PCP")
                 .define('P', item("plate_basic")).define('C', item("lithium_ion_cell")).define('S', item("coil_copper"))
                 .unlockedBy("item", has(item("lithium_ion_cell")))
-                .save(recipeOutput, rl("basic_lithium_ion_battery"));
+                .save(recipeOutput, key("basic_lithium_ion_battery"));
         tierLithiumBattery("advanced_lithium_ion_battery", "basic_lithium_ion_battery", "plate_advanced", ingotTag("lithium_manganese_dioxide"));
         tierLithiumBattery("du_lithium_ion_battery", "advanced_lithium_ion_battery", "plate_du", ingotTag("lithium_manganese_dioxide"));
         tierLithiumBattery("elite_lithium_ion_battery", "du_lithium_ion_battery", "plate_elite", plateTag("lithium_manganese_dioxide"));
     }
 
     private static void tierLithiumBattery(String result, String prev, String plate, TagKey<Item> dopant) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item(result))
+        shaped(RecipeCategory.MISC, item(result))
                 .pattern("PDP").pattern("LLL").pattern("PSP")
                 .define('P', item(plate)).define('D', dopant)
                 .define('L', item(prev)).define('S', item("coil_magnesium_diboride"))
                 .unlockedBy("item", has(item(prev)))
-                .save(recipeOutput, rl(result));
+                .save(recipeOutput, key(result));
     }
 
     private static void parts() {
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, part("neutron_initiator"))
+        shaped(RecipeCategory.MISC, part("neutron_initiator"))
                 .pattern(" B ")
                 .pattern("BPB")
                 .pattern(" B ")
                 .define('B', ingotTag("beryllium"))
                 .define('P', dustTag("polonium"))
                 .unlockedBy("item", has(dustTag("polonium")))
-                .save(recipeOutput, rl("neutron_initiator"));
+                .save(recipeOutput, key("neutron_initiator"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("speed_upgrade").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("speed_upgrade").item())
                 .pattern("LRL")
                 .pattern("RPR")
                 .pattern("LRL")
@@ -390,9 +391,9 @@ public class VanillaRecipes {
                 .define('R', dustTag("redstone"))
                 .define('P', HEAVY_WEIGHTED_PRESSURE_PLATE)
                 .unlockedBy("item", has(HEAVY_WEIGHTED_PRESSURE_PLATE))
-                .save(recipeOutput, rl("upgrade_speed"));
+                .save(recipeOutput, key("upgrade_speed"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("energy_upgrade").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("energy_upgrade").item())
                 .pattern("ORO")
                 .pattern("RPR")
                 .pattern("ORO")
@@ -400,29 +401,29 @@ public class VanillaRecipes {
                 .define('R', dustTag("quartz"))
                 .define('P', LIGHT_WEIGHTED_PRESSURE_PLATE)
                 .unlockedBy("item", has(LIGHT_WEIGHTED_PRESSURE_PLATE))
-                .save(recipeOutput, rl("upgrade_energy"));
+                .save(recipeOutput, key("upgrade_energy"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("spaxelhoe_thorium").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("spaxelhoe_thorium").item())
                 .pattern("TTT")
                 .pattern("TIT")
                 .pattern(" I ")
                 .define('T', plateTag("thorium"))
                 .define('I', ingotTag("iron"))
                 .unlockedBy("item", has(ModEntries.get("thorium").materialEntry().plate()))
-                .save(recipeOutput, rl("spaxelhoe_thorium"));
+                .save(recipeOutput, key("spaxelhoe_thorium"));
 
         toughArmor();
         hevArmor();
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("plate_basic").item(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("plate_basic").item(), 2)
                 .pattern("LG")
                 .pattern("GL")
                 .define('L', ingotTag("lead"))
                 .define('G', dustTag("graphite"))
                 .unlockedBy("item", has(ingot("lead")))
-                .save(recipeOutput, rl("plate_basic"));
+                .save(recipeOutput, key("plate_basic"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("plate_advanced").item(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("plate_advanced").item(), 2)
                 .pattern(" P ")
                 .pattern("TRT")
                 .pattern(" P ")
@@ -430,9 +431,9 @@ public class VanillaRecipes {
                 .define('P', ModEntries.get("plate_basic").item())
                 .define('T', ingotTag("tough_alloy"))
                 .unlockedBy("item", has(ModEntries.get("plate_basic").item()))
-                .save(recipeOutput, rl("plate_advanced"));
+                .save(recipeOutput, key("plate_advanced"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("plate_du").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("plate_du").item())
                 .pattern("SUS")
                 .pattern("UPU")
                 .pattern("SUS")
@@ -440,9 +441,9 @@ public class VanillaRecipes {
                 .define('P', ModEntries.get("plate_advanced").item())
                 .define('S', dustTag("sulfur"))
                 .unlockedBy("item", has(ModEntries.get("plate_advanced").item()))
-                .save(recipeOutput, rl("plate_du"));
+                .save(recipeOutput, key("plate_du"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("plate_elite").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("plate_elite").item())
                 .pattern("RBR")
                 .pattern("BPB")
                 .pattern("RBR")
@@ -450,9 +451,9 @@ public class VanillaRecipes {
                 .define('P', ModEntries.get("plate_du").item())
                 .define('B', ingotTag("boron"))
                 .unlockedBy("item", has(ModEntries.get("plate_du").item()))
-                .save(recipeOutput, rl("plate_elite"));
+                .save(recipeOutput, key("plate_elite"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("plate_extreme").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("plate_extreme").item())
                 .pattern("RBR")
                 .pattern("BPB")
                 .pattern("RBR")
@@ -460,27 +461,27 @@ public class VanillaRecipes {
                 .define('P', ModEntries.get("plate_elite").item())
                 .define('B', ingotTag("extreme"))
                 .unlockedBy("item", has(ModEntries.get("plate_elite").item()))
-                .save(recipeOutput, rl("plate_extreme"));
+                .save(recipeOutput, key("plate_extreme"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("coil_copper").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("coil_copper").item())
                 .pattern("CC ")
                 .pattern("II ")
                 .pattern("CC ")
                 .define('C', ingotTag("copper"))
                 .define('I', ingotTag("iron"))
                 .unlockedBy("item", has(COPPER_INGOT))
-                .save(recipeOutput, rl("coil_copper"));
+                .save(recipeOutput, key("coil_copper"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("coil_magnesium_diboride").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("coil_magnesium_diboride").item())
                 .pattern("MM ")
                 .pattern("TT ")
                 .pattern("MM ")
                 .define('M', ingotTag("magnesium_diboride"))
                 .define('T', ingotTag("tough_alloy"))
                 .unlockedBy("item", has(ingot("magnesium_diboride")))
-                .save(recipeOutput, rl("coil_magnesium_diboride"));
+                .save(recipeOutput, key("coil_magnesium_diboride"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("servo").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("servo").item())
                 .pattern("F F")
                 .pattern("RSR")
                 .pattern("SCS")
@@ -489,9 +490,9 @@ public class VanillaRecipes {
                 .define('R', REDSTONE)
                 .define('C', ingotTag("copper"))
                 .unlockedBy("item", has(ingot("ferroboron")))
-                .save(recipeOutput, rl("servo"));
+                .save(recipeOutput, key("servo"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("motor").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("motor").item())
                 .pattern("SSG")
                 .pattern("CCI")
                 .pattern("SSG")
@@ -500,9 +501,9 @@ public class VanillaRecipes {
                 .define('I', ingotTag("iron"))
                 .define('C', ModEntries.get("coil_copper").item())
                 .unlockedBy("item", has(ModEntries.get("coil_copper").item()))
-                .save(recipeOutput, rl("motor"));
+                .save(recipeOutput, key("motor"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("actuator").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("actuator").item())
                 .pattern("  S")
                 .pattern("FP ")
                 .pattern("CF ")
@@ -511,9 +512,9 @@ public class VanillaRecipes {
                 .define('C', ingotTag("copper"))
                 .define('P', PISTON)
                 .unlockedBy("item", has(PISTON))
-                .save(recipeOutput, rl("actuator"));
+                .save(recipeOutput, key("actuator"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("chassis").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("chassis").item())
                 .pattern("LSL")
                 .pattern("STS")
                 .pattern("LSL")
@@ -521,9 +522,9 @@ public class VanillaRecipes {
                 .define('L', ingotTag("lead"))
                 .define('T', ingotTag("tough_alloy"))
                 .unlockedBy("item", has(ingot("tough_alloy")))
-                .save(recipeOutput, rl("chassis"));
+                .save(recipeOutput, key("chassis"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("empty_frame").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("empty_frame").item())
                 .pattern("PTP")
                 .pattern("I I")
                 .pattern("PTP")
@@ -531,9 +532,9 @@ public class VanillaRecipes {
                 .define('P', ModEntries.get("plate_basic").item())
                 .define('T', ingotTag("tin"))
                 .unlockedBy("item", has(ModEntries.get("plate_basic").item()))
-                .save(recipeOutput, rl("empty_frame"));
+                .save(recipeOutput, key("empty_frame"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("steel_frame").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("steel_frame").item())
                 .pattern("STS")
                 .pattern("TBT")
                 .pattern("STS")
@@ -541,16 +542,16 @@ public class VanillaRecipes {
                 .define('T', ingotTag("tough_alloy"))
                 .define('B', ingotTag("bronze"))
                 .unlockedBy("item", has(ingot("tough_alloy")))
-                .save(recipeOutput, rl("steel_frame"));
+                .save(recipeOutput, key("steel_frame"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("wire_gold_tungsten").item(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("wire_gold_tungsten").item(), 4)
                 .pattern("GWG")
                 .define('G', ingotTag("gold"))
                 .define('W', ingotTag("tungsten"))
                 .unlockedBy("item", has(ingotTag("tungsten")))
-                .save(recipeOutput, rl("wire_gold_tungsten"));
+                .save(recipeOutput, key("wire_gold_tungsten"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("empty_detector").item(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("empty_detector").item(), 4)
                 .pattern("STS")
                 .pattern("SBS")
                 .pattern("STS")
@@ -558,9 +559,9 @@ public class VanillaRecipes {
                 .define('T', ingotTag("tungsten"))
                 .define('B', ModEntries.get("basic_processor").item())
                 .unlockedBy("item", has(ModEntries.get("basic_processor").item()))
-                .save(recipeOutput, rl("empty_detector"));
+                .save(recipeOutput, key("empty_detector"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("wire_chamber_casing").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("wire_chamber_casing").item())
                 .pattern("WWW")
                 .pattern("ACA")
                 .pattern("WWW")
@@ -568,27 +569,27 @@ public class VanillaRecipes {
                 .define('A', ModEntries.get("advanced_processor").item())
                 .define('C', ModEntries.get("empty_detector").item())
                 .unlockedBy("item", has(ModEntries.get("empty_detector").item()))
-                .save(recipeOutput, rl("wire_chamber_casing"));
+                .save(recipeOutput, key("wire_chamber_casing"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("scintillator_pwo").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("scintillator_pwo").item())
                 .pattern("PPP")
                 .pattern("PWP")
                 .pattern("PPP")
                 .define('P', dustTag("lead"))
                 .define('W', dustTag("tungsten"))
                 .unlockedBy("item", has(dustTag("tungsten")))
-                .save(recipeOutput, rl("scintillator_pwo"));
+                .save(recipeOutput, key("scintillator_pwo"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("scintillator_plastic").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("scintillator_plastic").item())
                 .pattern("PPP")
                 .pattern("PBP")
                 .pattern("PPP")
                 .define('P', ModEntries.get("bioplastic").item())
                 .define('B', dustTag("boron"))
                 .unlockedBy("item", has(ModEntries.get("bioplastic").item()))
-                .save(recipeOutput, rl("scintillator_plastic"));
+                .save(recipeOutput, key("scintillator_plastic"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("laser_assembly").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("laser_assembly").item())
                 .pattern("GRG")
                 .pattern("RDR")
                 .pattern("GRG")
@@ -596,12 +597,12 @@ public class VanillaRecipes {
                 .define('R', AMETHYST_SHARD)
                 .define('D', DIAMOND)
                 .unlockedBy("item", has(DIAMOND))
-                .save(recipeOutput, rl("laser_assembly"));
+                .save(recipeOutput, key("laser_assembly"));
 
     }
 
     private static void collectors() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("water_collector"))
+        shaped(RecipeCategory.MISC, item("water_collector"))
                 .pattern("PIP")
                 .pattern("GBG")
                 .pattern("PIP")
@@ -611,9 +612,9 @@ public class VanillaRecipes {
                 .define('I', WATER_BUCKET)
                 .group(MODID)
                 .unlockedBy("item", has(item("plate_basic")))
-                .save(recipeOutput, rl("water_collector"));
+                .save(recipeOutput, key("water_collector"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("compact_water_collector"))
+        shaped(RecipeCategory.MISC, item("compact_water_collector"))
                 .pattern("CCC")
                 .pattern("CIC")
                 .pattern("CCC")
@@ -621,9 +622,9 @@ public class VanillaRecipes {
                 .define('I', plateTag("platinum"))
                 .group(MODID)
                 .unlockedBy("item", has(item("water_collector")))
-                .save(recipeOutput, rl("compact_water_collector"));
+                .save(recipeOutput, key("compact_water_collector"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("lava_collector"))
+        shaped(RecipeCategory.MISC, item("lava_collector"))
                 .pattern("PIP")
                 .pattern("B B")
                 .pattern("PIP")
@@ -632,9 +633,9 @@ public class VanillaRecipes {
                 .define('I', LAVA_BUCKET)
                 .group(MODID)
                 .unlockedBy("item", has(item("plate_advanced")))
-                .save(recipeOutput, rl("lava_collector"));
+                .save(recipeOutput, key("lava_collector"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("nitrogen_collector"))
+        shaped(RecipeCategory.MISC, item("nitrogen_collector"))
                 .pattern("PIP")
                 .pattern("BMB")
                 .pattern("PIP")
@@ -644,9 +645,9 @@ public class VanillaRecipes {
                 .define('I', plateTag("beryllium"))
                 .group(MODID)
                 .unlockedBy("item", has(item("plate_advanced")))
-                .save(recipeOutput, rl("nitrogen_collector"));
+                .save(recipeOutput, key("nitrogen_collector"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("compact_nitrogen_collector"))
+        shaped(RecipeCategory.MISC, item("compact_nitrogen_collector"))
                 .pattern("CCC")
                 .pattern("CIC")
                 .pattern("CCC")
@@ -654,9 +655,9 @@ public class VanillaRecipes {
                 .define('I', plateTag("beryllium"))
                 .group(MODID)
                 .unlockedBy("item", has(item("nitrogen_collector")))
-                .save(recipeOutput, rl("compact_nitrogen_collector"));
+                .save(recipeOutput, key("compact_nitrogen_collector"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("helium_collector"))
+        shaped(RecipeCategory.MISC, item("helium_collector"))
                 .pattern("PIP")
                 .pattern("BMB")
                 .pattern("PIP")
@@ -666,9 +667,9 @@ public class VanillaRecipes {
                 .define('I', ingotTag("thorium"))
                 .group(MODID)
                 .unlockedBy("item", has(item("plate_advanced")))
-                .save(recipeOutput, rl("helium_collector"));
+                .save(recipeOutput, key("helium_collector"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("compact_helium_collector"))
+        shaped(RecipeCategory.MISC, item("compact_helium_collector"))
                 .pattern("CCC")
                 .pattern("CIC")
                 .pattern("CCC")
@@ -676,11 +677,11 @@ public class VanillaRecipes {
                 .define('I', plateTag("cobalt"))
                 .group(MODID)
                 .unlockedBy("item", has(item("helium_collector")))
-                .save(recipeOutput, rl("compact_helium_collector"));
+                .save(recipeOutput, key("compact_helium_collector"));
     }
 
     private static void acceleratorCraftingRecipes() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("empty_cooler").block(), 8)
+        shaped(RecipeCategory.MISC, ModEntries.get("empty_cooler").block(), 8)
                 .pattern("STS")
                 .pattern("SHS")
                 .pattern("STS")
@@ -700,12 +701,12 @@ public class VanillaRecipes {
             }
             String material = cooler.substring(0, cooler.length() - "_cooler".length());
             TagKey<Item> ingredient = switch (material) {
-                case "slime" -> Tags.Items.SLIMEBALLS;
+                case "slime" -> Tags.Items.SLIME_BALLS;
                 case "nether_brick" -> Tags.Items.BRICKS_NETHER;
                 case "prismarine" -> Tags.Items.GEMS_PRISMARINE;
                 default -> dustTag(material);
             };
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(cooler).block())
+            shaped(RecipeCategory.MISC, ModEntries.get(cooler).block())
                     .pattern(" I ")
                     .pattern("IBI")
                     .pattern(" I ")
@@ -716,7 +717,7 @@ public class VanillaRecipes {
                     .save(recipeOutput);
         }
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("accelerator_casing").block(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("accelerator_casing").block(), 4)
                 .pattern("STS")
                 .pattern("T T")
                 .pattern("STS")
@@ -726,20 +727,20 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ingotTag("tough_alloy")))
                 .save(recipeOutput);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModEntries.get("accelerator_casing_glass").block())
+        shapeless(RecipeCategory.MISC, ModEntries.get("accelerator_casing_glass").block())
                 .requires(ModEntries.get("accelerator_casing").block())
                 .requires(Tags.Items.GLASS_BLOCKS)
                 .group(MODID + "_accelerator")
                 .unlockedBy("item", has(ModEntries.get("accelerator_casing").block()))
                 .save(recipeOutput);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModEntries.get("accelerator_casing").block())
+        shapeless(RecipeCategory.MISC, ModEntries.get("accelerator_casing").block())
                 .requires(ModEntries.get("accelerator_casing_glass").block())
                 .group(MODID + "_accelerator")
                 .unlockedBy("item", has(ModEntries.get("accelerator_casing_glass").block()))
-                .save(recipeOutput, rl("accelerator_casing_from_glass"));
+                .save(recipeOutput, key("accelerator_casing_from_glass"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("particle_beam").block(), 3)
+        shaped(RecipeCategory.MISC, ModEntries.get("particle_beam").block(), 3)
                 .pattern("SSS")
                 .pattern("BBB")
                 .pattern("SSS")
@@ -749,7 +750,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ingotTag("steel")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("electromagnet_yoke").block(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("electromagnet_yoke").block(), 4)
                 .pattern("III")
                 .pattern("IFI")
                 .pattern("III")
@@ -759,7 +760,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("steel_frame").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("linear_accelerator_controller").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("linear_accelerator_controller").block())
                 .pattern("PEP")
                 .pattern("BFB")
                 .pattern("PEP")
@@ -771,7 +772,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("accelerator_casing").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("ring_accelerator_controller").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("ring_accelerator_controller").block())
                 .pattern("PEP")
                 .pattern("AFA")
                 .pattern("PEP")
@@ -783,7 +784,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("accelerator_casing").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("beam_diverter_controller").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("beam_diverter_controller").block())
                 .pattern("PEP")
                 .pattern("BFB")
                 .pattern("PEP")
@@ -795,7 +796,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("accelerator_casing").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("accelerator_port").block(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("accelerator_port").block(), 4)
                 .pattern("SHS")
                 .pattern("VFV")
                 .pattern("SHS")
@@ -807,7 +808,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("steel_frame").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("accelerator_beam_port").block(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("accelerator_beam_port").block(), 4)
                 .pattern("STS")
                 .pattern("BFB")
                 .pattern("STS")
@@ -819,7 +820,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("particle_beam").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("accelerator_ion_source_port").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("accelerator_ion_source_port").block())
                 .pattern("LPL")
                 .pattern("EIE")
                 .pattern("LPL")
@@ -831,7 +832,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("laser_assembly").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("tungsten_filament").item())
+        shaped(RecipeCategory.MISC, ModEntries.get("tungsten_filament").item())
                 .pattern("TTT")
                 .pattern("TWT")
                 .pattern("TTT")
@@ -839,11 +840,11 @@ public class VanillaRecipes {
                 .define('W', ModEntries.get("wire_gold_tungsten").item())
                 .group(MODID + "_accelerator")
                 .unlockedBy("item", has(ModEntries.get("wire_gold_tungsten").item()))
-                .save(recipeOutput, rl("tungsten_filament_source"));
+                .save(recipeOutput, key("tungsten_filament_source"));
     }
 
     private static void particleChamberCraftingRecipes() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("target_chamber_casing").block(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("target_chamber_casing").block(), 4)
                 .pattern("STS")
                 .pattern("T T")
                 .pattern("STS")
@@ -853,20 +854,20 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ingotTag("tungsten")))
                 .save(recipeOutput);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModEntries.get("target_chamber_casing_glass").block())
+        shapeless(RecipeCategory.MISC, ModEntries.get("target_chamber_casing_glass").block())
                 .requires(ModEntries.get("target_chamber_casing").block())
                 .requires(Tags.Items.GLASS_BLOCKS)
                 .group(MODID + "_particle_chamber")
                 .unlockedBy("item", has(ModEntries.get("target_chamber_casing").block()))
                 .save(recipeOutput);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModEntries.get("target_chamber_casing").block())
+        shapeless(RecipeCategory.MISC, ModEntries.get("target_chamber_casing").block())
                 .requires(ModEntries.get("target_chamber_casing_glass").block())
                 .group(MODID + "_particle_chamber")
                 .unlockedBy("item", has(ModEntries.get("target_chamber_casing_glass").block()))
-                .save(recipeOutput, rl("target_chamber_casing_from_glass"));
+                .save(recipeOutput, key("target_chamber_casing_from_glass"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("target_chamber_controller").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("target_chamber_controller").block())
                 .pattern("PTP")
                 .pattern("BFB")
                 .pattern("PTP")
@@ -878,7 +879,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("target_chamber_casing").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("decay_chamber_controller").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("decay_chamber_controller").block())
                 .pattern("PTP")
                 .pattern("BFB")
                 .pattern("PTP")
@@ -890,7 +891,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("target_chamber_casing").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("collision_chamber_controller").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("collision_chamber_controller").block())
                 .pattern("PTP")
                 .pattern("BFB")
                 .pattern("PTP")
@@ -902,7 +903,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("target_chamber_casing").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("target_chamber_port").block(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("target_chamber_port").block(), 4)
                 .pattern("THT")
                 .pattern("VFV")
                 .pattern("THT")
@@ -914,7 +915,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("steel_frame").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("target_chamber_beam_port").block(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("target_chamber_beam_port").block(), 4)
                 .pattern("STS")
                 .pattern("BFB")
                 .pattern("STS")
@@ -926,7 +927,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("particle_beam").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("target_chamber_camera").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("target_chamber_camera").block())
                 .pattern("NSN")
                 .pattern("NCN")
                 .pattern("NSN")
@@ -937,7 +938,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("silicon_tracker").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("silicon_tracker").block())
                 .pattern("BAB")
                 .pattern("ACA")
                 .pattern("BAB")
@@ -948,7 +949,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("empty_detector").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("bubble_chamber").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("bubble_chamber").block())
                 .pattern("GGG")
                 .pattern("GCG")
                 .pattern("GGG")
@@ -958,7 +959,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("empty_detector").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("em_calorimeter").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("em_calorimeter").block())
                 .pattern("SSS")
                 .pattern("SCS")
                 .pattern("SSS")
@@ -968,7 +969,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("empty_detector").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("hadron_calorimeter").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("hadron_calorimeter").block())
                 .pattern("SSS")
                 .pattern("SCS")
                 .pattern("SSS")
@@ -981,7 +982,7 @@ public class VanillaRecipes {
 
     private static void crafterBlocks() {
         // Engineer's Crafting Table
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Crafter.ENGINEERS_CRAFTING_TABLE_BLOCK.get(), 1)
+        shaped(RecipeCategory.MISC, Crafter.ENGINEERS_CRAFTING_TABLE_BLOCK.get(), 1)
                 .pattern("SCS")
                 .pattern("PHP")
                 .pattern("STS")
@@ -992,55 +993,55 @@ public class VanillaRecipes {
                 .define('T', item("basic_voltaic_pile"))
                 .group(MODID)
                 .unlockedBy("item", has(item("plate_basic")))
-                .save(recipeOutput, rl("engineers_crafting_table"));
+                .save(recipeOutput, key("engineers_crafting_table"));
 
         // Crafting Pattern
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Crafter.CRAFTING_PATTERN.get())
+        shapeless(RecipeCategory.MISC, Crafter.CRAFTING_PATTERN.get())
                 .requires(PAPER)
-                .requires(Ingredient.of(dustTag("coal")))
+                .requires(ingredient(dustTag("coal")))
                 .unlockedBy("item", has(dustTag("coal")))
-                .save(recipeOutput, rl("crafting_pattern"));
+                .save(recipeOutput, key("crafting_pattern"));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Crafter.CRAFTING_PATTERN.get())
+        shapeless(RecipeCategory.MISC, Crafter.CRAFTING_PATTERN.get())
                 .requires(PAPER)
-                .requires(Ingredient.of(dustTag("charcoal")))
+                .requires(ingredient(dustTag("charcoal")))
                 .unlockedBy("item", has(dustTag("charcoal")))
-                .save(recipeOutput, rl("crafting_pattern_alt"));
+                .save(recipeOutput, key("crafting_pattern_alt"));
     }
 
     private static void bomb() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, part("compression_charge"))
+        shaped(RecipeCategory.MISC, part("compression_charge"))
                 .pattern("STB").pattern("TB ").pattern("STB")
                 .define('S', ingotTag("lead"))
                 .define('T', TNT)
                 .define('B', ingotTag("baratol"))
                 .unlockedBy("item", has(ingotTag("baratol")))
-                .save(recipeOutput, rl("compression_charge"));
+                .save(recipeOutput, key("compression_charge"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, part("pu_239_pit"))
+        shaped(RecipeCategory.MISC, part("pu_239_pit"))
                 .pattern("FFF").pattern("FNF").pattern("FFF")
                 .define('F', isotope("plutonium/239"))
                 .define('N', part("neutron_initiator"))
                 .unlockedBy("item", has(part("neutron_initiator")))
-                .save(recipeOutput, rl("pu_239_pit"));
+                .save(recipeOutput, key("pu_239_pit"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, part("pu_239_core"))
+        shaped(RecipeCategory.MISC, part("pu_239_core"))
                 .pattern("FFF").pattern("FNF").pattern("FFF")
                 .define('F', isotope("uranium/238"))
                 .define('N', part("pu_239_pit"))
                 .unlockedBy("item", has(part("pu_239_pit")))
-                .save(recipeOutput, rl("pu_239_core"));
+                .save(recipeOutput, key("pu_239_core"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("pu_239_bomb"))
+        shaped(RecipeCategory.MISC, item("pu_239_bomb"))
                 .pattern("CCC").pattern("CNC").pattern("CCC")
                 .define('C', part("compression_charge"))
                 .define('N', part("pu_239_core"))
                 .unlockedBy("item", has(part("pu_239_core")))
-                .save(recipeOutput, rl("pu_239_bomb"));
+                .save(recipeOutput, key("pu_239_bomb"));
     }
 
     private static void msrBlocks() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("msr_controller").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("msr_controller").block())
                 .pattern("LPL")
                 .pattern("TDT")
                 .pattern("LZL")
@@ -1053,7 +1054,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("plate_advanced").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("msr_fuel_cell").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("msr_fuel_cell").block())
                 .pattern("TGT")
                 .pattern("GBG")
                 .pattern("TGT")
@@ -1064,7 +1065,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("msr_port").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("msr_port").block())
                 .pattern("LPL")
                 .pattern("MTM")
                 .pattern("LPL")
@@ -1078,7 +1079,7 @@ public class VanillaRecipes {
     }
 
     private static void turbineBlocks() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_casing").item(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("turbine_casing").item(), 4)
                 .pattern("SSS")
                 .pattern("SLS")
                 .pattern("SSS")
@@ -1088,7 +1089,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_bearing").item(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("turbine_bearing").item(), 2)
                 .pattern("GGG")
                 .pattern("GSG")
                 .pattern("GGG")
@@ -1098,7 +1099,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ingotTag("hsla_steel")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_controller").item(), 1)
+        shaped(RecipeCategory.MISC, ModEntries.get("turbine_controller").item(), 1)
                 .pattern("GCG")
                 .pattern("CBC")
                 .pattern("GCG")
@@ -1109,7 +1110,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("turbine_casing").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_rotor_shaft").item(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("turbine_rotor_shaft").item(), 4)
                 .pattern("STS")
                 .pattern("STS")
                 .pattern("STS")
@@ -1119,7 +1120,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ingotTag("hsla_steel")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_port").item(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("turbine_port").item(), 2)
                 .pattern("TST")
                 .pattern("SBS")
                 .pattern("TST")
@@ -1131,7 +1132,7 @@ public class VanillaRecipes {
                 .save(recipeOutput);
 
         for(String type: Turbine.COILS) {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_"+type+"_coil").item(), 1)
+            shaped(RecipeCategory.MISC, ModEntries.get("turbine_"+type+"_coil").item(), 1)
                     .pattern("SBS")
                     .pattern("SBS")
                     .pattern("SBS")
@@ -1142,7 +1143,7 @@ public class VanillaRecipes {
                     .save(recipeOutput);
         }
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_extreme_rotor_blade").item(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("turbine_extreme_rotor_blade").item(), 2)
                 .pattern(" P ")
                 .pattern(" P ")
                 .pattern(" P ")
@@ -1151,7 +1152,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(plateTag("extreme")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_steel_rotor_blade").item(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("turbine_steel_rotor_blade").item(), 2)
                 .pattern(" P ")
                 .pattern(" P ")
                 .pattern(" P ")
@@ -1160,7 +1161,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(plateTag("steel")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_basic_rotor_blade").item(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("turbine_basic_rotor_blade").item(), 2)
                 .pattern(" P ")
                 .pattern(" P ")
                 .pattern(" P ")
@@ -1169,7 +1170,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(plateTag("iron")))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("turbine_sic_sic_cmc_rotor_blade").item(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("turbine_sic_sic_cmc_rotor_blade").item(), 2)
                 .pattern(" P ")
                 .pattern(" P ")
                 .pattern(" P ")
@@ -1178,7 +1179,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(plateTag("sic_sic_cmc")))
                 .save(recipeOutput);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModEntries.get("turbine_glass").item(), 1)
+        shapeless(RecipeCategory.MISC, ModEntries.get("turbine_glass").item(), 1)
                 .requires(ModEntries.get("turbine_casing").item())
                 .requires(Tags.Items.GLASS_BLOCKS)
                 .group(MODID+"_turbine")
@@ -1188,7 +1189,7 @@ public class VanillaRecipes {
     }
 
     private static void hxBlocks() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_casing").item(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_casing").item(), 4)
                 .pattern("STS")
                 .pattern("TLT")
                 .pattern("STS")
@@ -1199,7 +1200,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_controller").item(), 1)
+        shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_controller").item(), 1)
                 .pattern("GCG")
                 .pattern("CBC")
                 .pattern("GCG")
@@ -1210,7 +1211,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("heat_exchanger_casing").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger").item(), 1)
+        shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger").item(), 1)
                 .pattern("LPL")
                 .pattern("PMP")
                 .pattern("LPL")
@@ -1221,7 +1222,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_radiator").item(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_radiator").item(), 2)
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("TTT")
@@ -1231,7 +1232,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("heat_exchanger_casing").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_hot_coolant_port").item(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_hot_coolant_port").item(), 2)
                 .pattern("TST")
                 .pattern("SBS")
                 .pattern("TST")
@@ -1242,7 +1243,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("heat_exchanger_casing").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_cold_coolant_port").item(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("heat_exchanger_cold_coolant_port").item(), 2)
                 .pattern("TST")
                 .pattern("SBS")
                 .pattern("TST")
@@ -1255,7 +1256,7 @@ public class VanillaRecipes {
     }
 
 /*    private static void solarPanels() {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("solar_panel/basic").get())
+        shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("solar_panel/basic").get())
                 .pattern("LQL")
                 .pattern("PLP")
                 .pattern("CSC")
@@ -1268,7 +1269,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("coil_copper").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("solar_panel/advanced").get())
+        shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("solar_panel/advanced").get())
                 .pattern("PGP")
                 .pattern("SSS")
                 .pattern("PCP")
@@ -1280,7 +1281,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ENERGY_BLOCKS.get("solar_panel/basic").get()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("solar_panel/du").get())
+        shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("solar_panel/du").get())
                 .pattern("PGP")
                 .pattern("SSS")
                 .pattern("PMP")
@@ -1292,7 +1293,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ENERGY_BLOCKS.get("solar_panel/advanced").get()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("solar_panel/elite").get())
+        shaped(RecipeCategory.MISC, ENERGY_BLOCKS.get("solar_panel/elite").get())
                 .pattern("PGP")
                 .pattern("SSS")
                 .pattern("PMP")
@@ -1312,7 +1313,7 @@ public class VanillaRecipes {
         rtg("plutonium_rtg", "plate_advanced", "plutonium238");
         rtg("californium_rtg", "plate_advanced", "californium250");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("solar_panel_basic"))
+        shaped(RecipeCategory.MISC, item("solar_panel_basic"))
                 .pattern("LQL").pattern("PLP").pattern("CSC")
                 .define('L', Tags.Items.GEMS_LAPIS)
                 .define('Q', GLASS_PANE)
@@ -1327,7 +1328,7 @@ public class VanillaRecipes {
         solarPanel("solar_panel_du", "solar_panel_advanced", "plate_du", "energetic_blend", "coil_magnesium_diboride");
         solarPanel("solar_panel_elite", "solar_panel_du", "plate_elite", "energetic_blend", "coil_magnesium_diboride");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item("decay_generator"))
+        shaped(RecipeCategory.MISC, item("decay_generator"))
                 .pattern("PGP").pattern("GUG").pattern("PGP")
                 .define('P', item("coil_copper"))
                 .define('G', REDSTONE)
@@ -1338,7 +1339,7 @@ public class VanillaRecipes {
     }
 
     private static void rtg(String result, String plate, String fuelMaterial) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item(result))
+        shaped(RecipeCategory.MISC, item(result))
                 .pattern("PGP").pattern("GUG").pattern("PGP")
                 .define('P', item(plate))
                 .define('G', plateTag("graphite"))
@@ -1349,7 +1350,7 @@ public class VanillaRecipes {
     }
 
     private static void solarPanel(String result, String prev, String plate, String dust, String coil) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item(result))
+        shaped(RecipeCategory.MISC, item(result))
                 .pattern("PGP").pattern("SSS").pattern("PCP")
                 .define('P', item(plate))
                 .define('S', item(prev))
@@ -1362,7 +1363,7 @@ public class VanillaRecipes {
 
     private static void fissionBlocks() {
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_irradiation_chamber").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_irradiation_chamber").block())
                 .pattern("LPL")
                 .pattern("MTM")
                 .pattern("LPL")
@@ -1374,7 +1375,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("servo").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_port").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_port").block())
                 .pattern("LPL")
                 .pattern("MTM")
                 .pattern("LPL")
@@ -1386,7 +1387,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_casing").block(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_casing").block(), 4)
                 .pattern("LPL")
                 .pattern("P P")
                 .pattern("LPL")
@@ -1396,7 +1397,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("plate_advanced").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_controller").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_controller").block())
                 .pattern("LPL")
                 .pattern("TDT")
                 .pattern("LPL")
@@ -1409,7 +1410,7 @@ public class VanillaRecipes {
                 .save(recipeOutput);
 
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_glass").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_glass").block())
                 .pattern(" P ")
                 .pattern("PTP")
                 .pattern(" P ")
@@ -1419,7 +1420,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_solid_fuel_cell").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("fission_reactor_solid_fuel_cell").block())
                 .pattern("TGT")
                 .pattern("G G")
                 .pattern("TGT")
@@ -1432,7 +1433,7 @@ public class VanillaRecipes {
         fusionCraftingRecipes(recipeOutput);
         kugelblitzCraftingRecipes(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.HEAT_SINKS.get("empty").block())
+        shaped(RecipeCategory.MISC, ModEntries.HEAT_SINKS.get("empty").block())
                 .pattern("TIT")
                 .pattern("ABA")
                 .pattern("TIT")
@@ -1444,7 +1445,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("fission_reactor_casing").block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.HEAT_SINKS.get("empty_active").block())
+        shaped(RecipeCategory.MISC, ModEntries.HEAT_SINKS.get("empty_active").block())
                 .pattern("TIT")
                 .pattern("IBI")
                 .pattern("TIT")
@@ -1461,7 +1462,7 @@ public class VanillaRecipes {
             }
             TagKey<Item> i = dustTag(name.replace("active_", ""));
             if(name.contains("slime")) {
-                i = Tags.Items.SLIMEBALLS;
+                i = Tags.Items.SLIME_BALLS;
             }
             if(name.contains("nether_brick")) {
                 i = Tags.Items.BRICKS_NETHER;
@@ -1471,22 +1472,22 @@ public class VanillaRecipes {
             }
             Block empty = ModEntries.HEAT_SINKS.get("empty").block().get();
             if (name.contains("active")) {
-                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.HEAT_SINKS.get(name).block())
+                shaped(RecipeCategory.MISC, ModEntries.HEAT_SINKS.get(name).block())
                         .pattern("SIS")
                         .pattern("IBI")
                         .pattern("SIS")
-                        .define('I', Ingredient.of(i))
+                        .define('I', ingredient(i))
                         .define('S', ModEntries.get("servo").item())
                         .define('B', empty)
                         .group(MODID + "_fission")
                         .unlockedBy("item", has(empty))
                         .save(recipeOutput);
             } else {
-                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.HEAT_SINKS.get(name).block())
+                shaped(RecipeCategory.MISC, ModEntries.HEAT_SINKS.get(name).block())
                         .pattern(" I ")
                         .pattern("IBI")
                         .pattern(" I ")
-                        .define('I', Ingredient.of(i))
+                        .define('I', ingredient(i))
                         .define('B', empty)
                         .group(MODID + "_fission")
                         .unlockedBy("item", has(empty))
@@ -1497,7 +1498,7 @@ public class VanillaRecipes {
     }
 
     private static void fusionCraftingRecipes(RecipeOutput out) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_casing").block(), 4)
+        shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_casing").block(), 4)
                 .pattern("LPL")
                 .pattern("P P")
                 .pattern("LPL")
@@ -1507,7 +1508,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("plate_advanced").item()))
                 .save(out);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_glass").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_glass").block())
                 .pattern(" P ")
                 .pattern("PTP")
                 .pattern(" P ")
@@ -1517,7 +1518,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("fusion_reactor_casing").block()))
                 .save(out);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_connector").block(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_connector").block(), 2)
                 .pattern("LTL")
                 .pattern("TMT")
                 .pattern("LTL")
@@ -1528,7 +1529,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("fusion_reactor_casing").block()))
                 .save(out);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_core").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("fusion_reactor_core").block())
                 .pattern("LPL")
                 .pattern("TDT")
                 .pattern("LPL")
@@ -1541,17 +1542,17 @@ public class VanillaRecipes {
                 .save(out);
 
         for (String tier : new String[]{"basic", "magnesium_diboride", "niobium_tin", "niobium_titanium", "bscco"}) {
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModEntries.get(tier + "_electromagnet_slope").block())
+            shapeless(RecipeCategory.MISC, ModEntries.get(tier + "_electromagnet_slope").block())
                     .requires(ModEntries.get(tier + "_electromagnet").block())
                     .group(MODID + "_fusion")
                     .unlockedBy("item", has(ModEntries.get(tier + "_electromagnet").block()))
                     .save(out);
 
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModEntries.get(tier + "_electromagnet").block())
+            shapeless(RecipeCategory.MISC, ModEntries.get(tier + "_electromagnet").block())
                     .requires(ModEntries.get(tier + "_electromagnet_slope").block())
                     .group(MODID + "_fusion")
                     .unlockedBy("item", has(ModEntries.get(tier + "_electromagnet_slope").block()))
-                    .save(out, rl(tier + "_electromagnet_from_slope"));
+                    .save(out, key(tier + "_electromagnet_from_slope"));
         }
 
         fusionMagnetRecipes(out);
@@ -1560,7 +1561,7 @@ public class VanillaRecipes {
     private record MagnetTier(String name, Ingredient coil) {}
 
     private static void fusionMagnetRecipes(RecipeOutput out) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("basic_rf_amplifier").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("basic_rf_amplifier").block())
                 .pattern("CCC")
                 .pattern("SWS")
                 .pattern("CCC")
@@ -1569,16 +1570,16 @@ public class VanillaRecipes {
                 .define('S', ingotTag("stainless_steel"))
                 .group(MODID + "_fusion")
                 .unlockedBy("item", has(ModEntries.get("coil_copper").item()))
-                .save(out, rl("basic_rf_amplifier"));
+                .save(out, key("basic_rf_amplifier"));
 
         Item rfBase = ModEntries.get("basic_rf_amplifier").item().get();
         for (MagnetTier t : new MagnetTier[]{
-                new MagnetTier("magnesium_diboride", Ingredient.of(ingotTag("magnesium_diboride"))),
-                new MagnetTier("niobium_tin", Ingredient.of(ingotTag("niobium_tin"))),
-                new MagnetTier("niobium_titanium", Ingredient.of(ingotTag("niobium_titanium"))),
-                new MagnetTier("bscco", Ingredient.of(ModEntries.get("coil_bscco").item())),
+                new MagnetTier("magnesium_diboride", ingredient(ingotTag("magnesium_diboride"))),
+                new MagnetTier("niobium_tin", ingredient(ingotTag("niobium_tin"))),
+                new MagnetTier("niobium_titanium", ingredient(ingotTag("niobium_titanium"))),
+                new MagnetTier("bscco", ingredient(ModEntries.get("coil_bscco").item())),
         }) {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(t.name() + "_rf_amplifier").block())
+            shaped(RecipeCategory.MISC, ModEntries.get(t.name() + "_rf_amplifier").block())
                     .pattern("CCC")
                     .pattern("SBS")
                     .pattern("CCC")
@@ -1587,10 +1588,10 @@ public class VanillaRecipes {
                     .define('B', rfBase)
                     .group(MODID + "_fusion")
                     .unlockedBy("item", has(rfBase))
-                    .save(out, rl(t.name() + "_rf_amplifier"));
+                    .save(out, key(t.name() + "_rf_amplifier"));
         }
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("basic_electromagnet").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("basic_electromagnet").block())
                 .pattern("CCC")
                 .pattern("SBS")
                 .pattern("CCC")
@@ -1599,16 +1600,16 @@ public class VanillaRecipes {
                 .define('B', ingotTag("tough_alloy"))
                 .group(MODID + "_fusion")
                 .unlockedBy("item", has(ModEntries.get("coil_copper").item()))
-                .save(out, rl("basic_electromagnet"));
+                .save(out, key("basic_electromagnet"));
 
         Item emBase = ModEntries.get("basic_electromagnet").item().get();
         for (MagnetTier t : new MagnetTier[]{
-                new MagnetTier("magnesium_diboride", Ingredient.of(ModEntries.get("coil_magnesium_diboride").item())),
-                new MagnetTier("niobium_tin", Ingredient.of(ingotTag("niobium_tin"))),
-                new MagnetTier("niobium_titanium", Ingredient.of(ingotTag("niobium_titanium"))),
-                new MagnetTier("bscco", Ingredient.of(ModEntries.get("coil_bscco").item())),
+                new MagnetTier("magnesium_diboride", ingredient(ModEntries.get("coil_magnesium_diboride").item())),
+                new MagnetTier("niobium_tin", ingredient(ingotTag("niobium_tin"))),
+                new MagnetTier("niobium_titanium", ingredient(ingotTag("niobium_titanium"))),
+                new MagnetTier("bscco", ingredient(ModEntries.get("coil_bscco").item())),
         }) {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(t.name() + "_electromagnet").block())
+            shaped(RecipeCategory.MISC, ModEntries.get(t.name() + "_electromagnet").block())
                     .pattern("CCC")
                     .pattern("SBS")
                     .pattern("CCC")
@@ -1617,7 +1618,7 @@ public class VanillaRecipes {
                     .define('B', emBase)
                     .group(MODID + "_fusion")
                     .unlockedBy("item", has(emBase))
-                    .save(out, rl(t.name() + "_electromagnet"));
+                    .save(out, key(t.name() + "_electromagnet"));
         }
     }
 
@@ -1628,42 +1629,42 @@ public class VanillaRecipes {
         var circuit = ModEntries.get("basic_electric_circuit").item();
         String g = MODID + "_kugelblitz";
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("neutronium_frame").block(), 2)
+        shaped(RecipeCategory.MISC, ModEntries.get("neutronium_frame").block(), 2)
                 .pattern("NTN").pattern("T T").pattern("NTN")
                 .define('N', neutronium).define('T', toughAlloy)
                 .group(g).unlockedBy("item", has(neutronium)).save(out);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("quantum_transformer").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("quantum_transformer").block())
                 .pattern("NCN").pattern("CEC").pattern("NCN")
                 .define('N', ModEntries.get("neutronium_frame").block()).define('C', circuit).define('E', ENDER_EYE)
                 .group(g).unlockedBy("item", has(neutronium)).save(out);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("quantum_flux_regulator").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("quantum_flux_regulator").block())
                 .pattern("NGN").pattern("GRG").pattern("NGN")
                 .define('N', ModEntries.get("neutronium_frame").block()).define('G', GLASS).define('R', REDSTONE_BLOCK)
                 .group(g).unlockedBy("item", has(neutronium)).save(out);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("event_horizon_stabilizer").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("event_horizon_stabilizer").block())
                 .pattern("NGN").pattern("GEG").pattern("NGN")
                 .define('N', ModEntries.get("neutronium_frame").block()).define('G', GLASS).define('E', ENDER_PEARL)
                 .group(g).unlockedBy("item", has(neutronium)).save(out);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("photon_concentrator").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("photon_concentrator").block())
                 .pattern("GQG").pattern("QCQ").pattern("GQG")
                 .define('G', GLASS).define('Q', QUARTZ).define('C', circuit)
                 .group(g).unlockedBy("item", has(circuit)).save(out);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("chamber_port").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("chamber_port").block())
                 .pattern("NCN").pattern("N N").pattern("NCN")
                 .define('N', ModEntries.get("neutronium_frame").block()).define('C', circuit)
                 .group(g).unlockedBy("item", has(neutronium)).save(out);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("chamber_terminal").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("chamber_terminal").block())
                 .pattern("NCN").pattern("CSC").pattern("NCN")
                 .define('N', ModEntries.get("neutronium_frame").block()).define('C', circuit).define('S', NETHER_STAR)
                 .group(g).unlockedBy("item", has(neutronium)).save(out);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get("expl").block())
+        shaped(RecipeCategory.MISC, ModEntries.get("expl").block())
                 .pattern("TCT").pattern("TDT").pattern("TCT")
                 .define('T', toughAlloy).define('C', circuit).define('D', DIAMOND)
                 .group(g).unlockedBy("item", has(toughAlloy)).save(out);
@@ -1714,12 +1715,12 @@ public class VanillaRecipes {
             count1 = 3;
             count2 = 6;
         }
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, pellet, 3)
+        shapeless(RecipeCategory.MISC, pellet, 3)
                 .group(MODID + "_ingots")
                 .requires(i1, count1)
                 .requires(i2, count2)
                 .unlockedBy("item", has(pellet))
-                .save(recipeOutput, rl("fuel_" + idStem + variant + "_cr"));
+                .save(recipeOutput, key("fuel_" + idStem + variant + "_cr"));
     }
 
     private static void moxRecipe(String key, String idStem, String variant, int plutoniumIsotope) {
@@ -1727,19 +1728,19 @@ public class VanillaRecipes {
         Item plutonium = isotopeItem("plutonium", plutoniumIsotope, "");
         Item uranium = isotopeItem("uranium", 238, variant);
         if (pellet == null || plutonium == null || uranium == null) return;
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, pellet, 3)
+        shapeless(RecipeCategory.MISC, pellet, 3)
                 .group(MODID + "_ingots")
                 .requires(plutonium, 1)
                 .requires(uranium, 8)
                 .unlockedBy("item", has(pellet))
-                .save(recipeOutput, rl("fuel_" + idStem + variant + "_cr"));
+                .save(recipeOutput, key("fuel_" + idStem + variant + "_cr"));
     }
 
     private static void fuelSmelt(Item in, Item out, String id) {
         if (in == null || out == null) return;
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(in), RecipeCategory.MISC, out, 1.0f, 100)
+        RecipeGen.smelting(ingredient(in), RecipeCategory.MISC, out, 1.0f, 100)
                 .unlockedBy("item", has(in))
-                .save(recipeOutput, rl(id));
+                .save(recipeOutput, key(id));
     }
 
     private static Item isotopeItem(String group, int number, String variant) {
@@ -1749,7 +1750,7 @@ public class VanillaRecipes {
 
     private static void processors()
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(SUBATOMIC_LIQUIFIER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(SUBATOMIC_LIQUIFIER).block())
                 .pattern("PYP")
                 .pattern("PCP")
                 .pattern("PMP")
@@ -1761,7 +1762,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get(CENTRIFUGE).block()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(ANALYZER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(ANALYZER).block())
                 .pattern("PYP")
                 .pattern("PCP")
                 .pattern("PMP")
@@ -1775,7 +1776,7 @@ public class VanillaRecipes {
 
 
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(PUMP).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(PUMP).block())
                 .pattern("PMP")
                 .pattern("PCP")
                 .pattern("PMP")
@@ -1786,7 +1787,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(CAULDRON))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(GAS_SCRUBBER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(GAS_SCRUBBER).block())
                 .pattern("PGP")
                 .pattern("CEC")
                 .pattern("PMP")
@@ -1799,7 +1800,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("borax").materialEntry().dust()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(NUCLEAR_FURNACE).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(NUCLEAR_FURNACE).block())
                 .pattern("PTP")
                 .pattern("TFT")
                 .pattern("PTP")
@@ -1810,7 +1811,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("plate_basic").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(MANUFACTORY).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(MANUFACTORY).block())
                 .pattern("LRL")
                 .pattern("FPF")
                 .pattern("LSL")
@@ -1823,7 +1824,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(FLINT))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(CENTRIFUGE).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(CENTRIFUGE).block())
                 .pattern("LSL")
                 .pattern("FPF")
                 .pattern("LRL")
@@ -1836,7 +1837,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(CHEMICAL_REACTOR).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(CHEMICAL_REACTOR).block())
                 .pattern("LFL")
                 .pattern("XPX")
                 .pattern("LSL")
@@ -1849,7 +1850,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(ALLOY_SMELTER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(ALLOY_SMELTER).block())
                 .pattern("LFL")
                 .pattern("XPX")
                 .pattern("LSL")
@@ -1862,7 +1863,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("plate_basic").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(MELTER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(MELTER).block())
                 .pattern("LXL")
                 .pattern("XPX")
                 .pattern("LSL")
@@ -1874,7 +1875,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("plate_advanced").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(INGOT_FORMER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(INGOT_FORMER).block())
                 .pattern("LFL")
                 .pattern("XPX")
                 .pattern("LSL")
@@ -1887,7 +1888,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(FUEL_REPROCESSOR).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(FUEL_REPROCESSOR).block())
                 .pattern("PGP")
                 .pattern("ECE")
                 .pattern("PSP")
@@ -1900,7 +1901,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(DECAY_HASTENER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(DECAY_HASTENER).block())
                 .pattern("PBP")
                 .pattern("TCT")
                 .pattern("PAP")
@@ -1914,7 +1915,7 @@ public class VanillaRecipes {
                 .save(recipeOutput);
 
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(ISOTOPE_SEPARATOR).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(ISOTOPE_SEPARATOR).block())
                 .pattern("PMP")
                 .pattern("RCR")
                 .pattern("PMP")
@@ -1926,7 +1927,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(PRESSURIZER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(PRESSURIZER).block())
                 .pattern("PTP")
                 .pattern("ACA")
                 .pattern("PNP")
@@ -1939,7 +1940,7 @@ public class VanillaRecipes {
                 .unlockedBy("has_chassis", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
         
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(FLUID_ENRICHER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(FLUID_ENRICHER).block())
                 .pattern("PHP")
                 .pattern("LCL")
                 .pattern("PMP")
@@ -1952,7 +1953,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("plate_advanced").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(ELECTROLYZER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(ELECTROLYZER).block())
                 .pattern("PGP")
                 .pattern("SCS")
                 .pattern("PMP")
@@ -1965,7 +1966,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("motor").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(ASSEMBLER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(ASSEMBLER).block())
                 .pattern("PHP")
                 .pattern("ACA")
                 .pattern("PMP")
@@ -1978,7 +1979,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("actuator").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(SUPERCOOLER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(SUPERCOOLER).block())
                 .pattern("PDP")
                 .pattern("HCH")
                 .pattern("PSP")
@@ -1991,7 +1992,7 @@ public class VanillaRecipes {
                 .unlockedBy("item", has(ModEntries.get("servo").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(EXTRACTOR).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(EXTRACTOR).block())
                 .pattern("PMP")
                 .pattern("BCB")
                 .pattern("PSP")
@@ -2004,7 +2005,7 @@ public class VanillaRecipes {
                 .unlockedBy("has_item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(CRYSTALLIZER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(CRYSTALLIZER).block())
                 .pattern("PSP")
                 .pattern("SCS")
                 .pattern("PUP")
@@ -2016,7 +2017,7 @@ public class VanillaRecipes {
                 .unlockedBy("has_item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(STEAM_TURBINE).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(STEAM_TURBINE).block())
                 .pattern("PUP")
                 .pattern("SCS")
                 .pattern("PFP")
@@ -2029,7 +2030,7 @@ public class VanillaRecipes {
                 .unlockedBy("has_item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(IRRADIATOR).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(IRRADIATOR).block())
                 .pattern("PUP")
                 .pattern("SCS")
                 .pattern("PFP")
@@ -2042,7 +2043,7 @@ public class VanillaRecipes {
                 .unlockedBy("has_item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(FLUID_INFUSER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(FLUID_INFUSER).block())
                 .pattern("PBP")
                 .pattern("GCG")
                 .pattern("PSP")
@@ -2055,7 +2056,7 @@ public class VanillaRecipes {
                 .unlockedBy("has_item", has(ModEntries.get("chassis").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(ROCK_CRUSHER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(ROCK_CRUSHER).block())
                 .pattern("PMP")
                 .pattern("ACA")
                 .pattern("PTP")
@@ -2068,7 +2069,7 @@ public class VanillaRecipes {
                 .unlockedBy("has_item", has(ModEntries.get("motor").item()))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModEntries.get(LEACHER).block())
+        shaped(RecipeCategory.MISC, ModEntries.get(LEACHER).block())
                 .pattern("LRL")
                 .pattern("FPF")
                 .pattern("LSL")
@@ -2083,23 +2084,15 @@ public class VanillaRecipes {
     }
 
     public static void smelting(DeferredItem<? extends Item> inputItem, Ingredient input, ItemLike output) {
-        SimpleCookingRecipeBuilder.smelting(input,
+        RecipeGen.smelting(input,
                         RecipeCategory.MISC,
                         output, 1.0f, 200)
                 .unlockedBy("has_ore", has(inputItem))
                 .save(recipeOutput, MODID+":smelting/"+inputItem.getId().getPath());
-        SimpleCookingRecipeBuilder.blasting(input,
+        RecipeGen.blasting(input,
                         RecipeCategory.MISC,
                         output, 1.0f, 100)
                 .unlockedBy("has_ore", has(inputItem))
                 .save(recipeOutput, MODID+":blasting/"+inputItem.getId().getPath());
-    }
-
-    protected static Criterion<InventoryChangeTrigger.TriggerInstance> has(ItemLike item) {
-        return InventoryChangeTrigger.TriggerInstance.hasItems(item);
-    }
-
-    protected static Criterion<InventoryChangeTrigger.TriggerInstance> has(TagKey<Item> tag) {
-        return InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(tag).build());
     }
 }

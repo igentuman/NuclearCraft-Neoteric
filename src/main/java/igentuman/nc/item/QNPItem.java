@@ -18,17 +18,16 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -38,31 +37,38 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.util.AreaUtil.getArea;
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
 
-public class QNPItem extends PickaxeItem {
+/** FE-powered mining tool with area and vein modes and charge-dependent mining speed. */
+public class QNPItem extends Item {
 
     private static final int MAX_BAR_WIDTH = 13;
     private int veinMinedBlocksCounter = 0;
 
-    public QNPItem(Tier tier, Properties properties) {
-        super(tier, properties);
+    private final ToolMaterial material;
+
+    public QNPItem(ToolMaterial material, Properties properties) {
+        super(properties.pickaxe(material, 11.0F, 2.0F).setNoCombineRepair());
+        this.material = material;
     }
 
-    public IEnergyStorage getEnergy(ItemStack stack) {
-        return stack.getCapability(Capabilities.EnergyStorage.ITEM);
+    public EnergyHandler getEnergy(ItemStack stack) {
+        return stack.isEmpty() ? null : ItemAccess.forStack(stack).getCapability(Capabilities.Energy.ITEM);
     }
 
     public static Mode getMode(@NotNull ItemStack stack) {
@@ -86,29 +92,27 @@ public class QNPItem extends PickaxeItem {
     private static int enchantLevel(Level level, ItemStack stack, ResourceKey<Enchantment> key) {
         if (level == null) return 0;
         Holder<Enchantment> holder = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(key);
-        return EnchantmentHelper.getItemEnchantmentLevel(holder, stack);
+        return stack.getEnchantmentLevel(holder);
     }
 
     private boolean enoughEnergy(ItemStack stack) {
-        IEnergyStorage energy = getEnergy(stack);
+        EnergyHandler energy = getEnergy(stack);
         if (energy == null) return false;
         Mode mode = getMode(stack);
         int perBlock = baseEnergyPerBlock();
-        if (mode.radius == 0) return energy.getEnergyStored() > perBlock;
+        if (mode.radius == 0) return energy.getAmountAsInt() > perBlock;
         int fe = perBlock * (mode.radius * 2 + 1) * (mode.radius * 2 + 1);
         if (mode.depth) fe *= (mode.radius * 2 + 1);
-        return energy.getEnergyStored() > fe;
+        return energy.getAmountAsInt() > fe;
     }
 
     private void consumeEnergy(ItemStack stack, Level level) {
-        IEnergyStorage energy = getEnergy(stack);
+        EnergyHandler energy = getEnergy(stack);
         if (energy == null) return;
-        energy.extractEnergy(energyPerBlock(stack, level), false);
-    }
-
-    @Override
-    public boolean isRepairable(@NotNull ItemStack stack) {
-        return false;
+        try (var transaction = Transaction.openRoot()) {
+            energy.extract(energyPerBlock(stack, level), transaction);
+            transaction.commit();
+        }
     }
 
     @Override
@@ -132,8 +136,8 @@ public class QNPItem extends PickaxeItem {
 
     @Override
     public int getBarWidth(@NotNull ItemStack stack) {
-        IEnergyStorage energy = getEnergy(stack);
-        float ratio = energy == null ? 0 : (float) energy.getEnergyStored() / (float) Common.QNP_ENERGY_STORAGE.get();
+        EnergyHandler energy = getEnergy(stack);
+        float ratio = energy == null ? 0 : (float) energy.getAmountAsInt() / (float) Common.QNP_ENERGY_STORAGE.get();
         return (int) Math.min(MAX_BAR_WIDTH, MAX_BAR_WIDTH * ratio);
     }
 
@@ -144,12 +148,7 @@ public class QNPItem extends PickaxeItem {
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
-        return enoughEnergy(stack) ? getTier().getSpeed() : 0.1F;
-    }
-
-    @Override
-    public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {
-        return enoughEnergy(stack) && super.canPerformAction(stack, itemAbility);
+        return enoughEnergy(stack) ? material.speed() : 0.1F;
     }
 
     @Override
@@ -210,7 +209,7 @@ public class QNPItem extends PickaxeItem {
         if (!(worldIn instanceof ServerLevel serverLevel) || !(entityLiving instanceof ServerPlayer serverPlayer)) return totalDrops;
         BlockState tempState = worldIn.getBlockState(pos);
         if (tempState.isAir()) return totalDrops;
-        BlockEvent.BreakEvent event = CommonHooks.fireBlockBreak(worldIn, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, pos, tempState);
+        BreakBlockEvent event = CommonHooks.fireBlockBreak(worldIn, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, pos, tempState);
         if (event.isCanceled()) return totalDrops;
         BlockEntity be = worldIn.getBlockEntity(pos);
         int xp = tempState.getExpDrop(serverLevel, pos, be, serverPlayer, tool);
@@ -244,31 +243,27 @@ public class QNPItem extends PickaxeItem {
         Block.popResourceFromFace(level, pos, Direction.UP, stack);
     }
 
-    private boolean chargeFromEnergyBlock(Level level, BlockPos pos, ItemStack tool) {
-        IEnergyStorage toolEnergy = getEnergy(tool);
+    private boolean chargeFromEnergyBlock(Level level, BlockPos pos, ItemAccess tool) {
+        EnergyHandler toolEnergy = tool.getCapability(Capabilities.Energy.ITEM);
         if (toolEnergy == null) return false;
-        if (toolEnergy.getEnergyStored() >= toolEnergy.getMaxEnergyStored()) return false;
+        if (toolEnergy.getAmountAsLong() >= toolEnergy.getCapacityAsLong()) return false;
         for (Direction side : Direction.values()) {
             if (pullEnergy(level, pos, side, toolEnergy)) return true;
         }
         return pullEnergy(level, pos, null, toolEnergy);
     }
 
-    private boolean pullEnergy(Level level, BlockPos pos, Direction side, IEnergyStorage toolEnergy) {
-        IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
-        if (storage == null || !storage.canExtract()) return false;
-        int room = toolEnergy.getMaxEnergyStored() - toolEnergy.getEnergyStored();
-        int simulated = storage.extractEnergy(room, true);
-        int accepted = toolEnergy.receiveEnergy(simulated, false);
-        storage.extractEnergy(accepted, false);
-        return accepted > 0;
+    private boolean pullEnergy(Level level, BlockPos pos, Direction side, EnergyHandler toolEnergy) {
+        EnergyHandler storage = level.getCapability(Capabilities.Energy.BLOCK, pos, side);
+        return EnergyHandlerUtil.move(storage, toolEnergy, Integer.MAX_VALUE, null) > 0;
     }
 
     @Override
     public @NotNull InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level level = context.getLevel();
-        if (level.isClientSide) return InteractionResult.PASS;
-        if (chargeFromEnergyBlock(level, context.getClickedPos(), stack)) {
+        if (level.isClientSide()) return InteractionResult.PASS;
+        if (context.getPlayer() != null && chargeFromEnergyBlock(level, context.getClickedPos(),
+                ItemAccess.forPlayerInteraction(context.getPlayer(), context.getHand()))) {
             Player player = context.getPlayer();
             if (player != null) player.playSound(NCSounds.ITEM_CHARGED.get(), 0.5f, 1f);
             return InteractionResult.SUCCESS;
@@ -277,25 +272,25 @@ public class QNPItem extends PickaxeItem {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
-        if (level.isClientSide) return super.use(level, player, hand);
+    public @NotNull InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+        if (level.isClientSide()) return super.use(level, player, hand);
         if (player.isSecondaryUseActive()) {
             ItemStack tool = player.getItemInHand(hand);
             Mode next = Mode.values()[(getMode(tool).ordinal() + 1) % Mode.values().length];
             tool.set(Registers.QNP_MODE.get(), next.ordinal());
             player.sendSystemMessage(__("tooltip.nc.qnp_mode", next.getName()).withStyle(ChatFormatting.GREEN));
-            return InteractionResultHolder.success(tool);
+            return InteractionResult.SUCCESS;
         }
         return super.use(level, player, hand);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flag) {
-        list.add(__("tooltip.nc.qnp_mode", __("tooltip.mode." + getMode(stack).getName())).withStyle(ChatFormatting.BLUE));
-        list.add(__("tooltip.nc.shift_rbm_to_change").withStyle(ChatFormatting.GRAY));
-        IEnergyStorage energy = getEnergy(stack);
-        int stored = energy == null ? 0 : energy.getEnergyStored();
-        list.add(__("tooltip.nuclearcraft.energy_stored",
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+        builder.accept(__("tooltip.nc.qnp_mode", __("tooltip.mode." + getMode(stack).getName())).withStyle(ChatFormatting.BLUE));
+        builder.accept(__("tooltip.nc.shift_rbm_to_change").withStyle(ChatFormatting.GRAY));
+        EnergyHandler energy = getEnergy(stack);
+        int stored = energy == null ? 0 : energy.getAmountAsInt();
+        builder.accept(__("tooltip.nuclearcraft.energy_stored",
                 formatEnergy(stored), formatEnergy(Common.QNP_ENERGY_STORAGE.get())).withStyle(ChatFormatting.BLUE));
     }
 

@@ -1,14 +1,12 @@
-#version 150
+#version 330
 
-#moj_import <fog.glsl>
+#moj_import <minecraft:fog.glsl>
+#moj_import <minecraft:dynamictransforms.glsl>
 
 uniform sampler2D Sampler0;
 
-uniform vec4 ColorModulator;
-uniform float FogStart;
-uniform float FogEnd;
-
-in float vertexDistance;
+in float sphericalVertexDistance;
+in float cylindricalVertexDistance;
 in vec4 vertexColor;
 in vec2 texCoord0;
 
@@ -19,5 +17,8 @@ void main() {
     if (color.a < 0.1) {
         discard;
     }
-    fragColor = color * ColorModulator * linear_fog_fade(vertexDistance, FogStart, FogEnd);
+    // Fade (rather than tint) into fog so the glow disappears with distance, as before.
+    float fog = total_fog_value(sphericalVertexDistance, cylindricalVertexDistance,
+            FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd);
+    fragColor = color * ColorModulator * (1.0 - fog);
 }

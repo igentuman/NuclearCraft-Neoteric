@@ -8,12 +8,9 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.recipe.fission.BoilingRecipe;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /** EMI recipe display for a fission reactor coolant boiling recipe. */
@@ -23,27 +20,18 @@ public class BoilingEmiRecipe implements EmiRecipe {
     private static final int HEIGHT = 46;
 
     private final EmiRecipeCategory category;
-    private final ResourceLocation id;
+    private final Identifier id;
     private final BoilingRecipe recipe;
     private final EmiIngredient input;
     private final EmiStack output;
 
-    public BoilingEmiRecipe(EmiRecipeCategory category, ResourceLocation id, BoilingRecipe recipe) {
+    public BoilingEmiRecipe(EmiRecipeCategory category, Identifier id, BoilingRecipe recipe) {
         this.category = category;
         this.id = id;
         this.recipe = recipe;
 
-        SizedFluidIngredient in = recipe.input();
-        List<EmiStack> inFluids = new ArrayList<>();
-        for (FluidStack fs : in.getFluids()) {
-            inFluids.add(EmiStack.of(fs.getFluid(), in.amount()));
-        }
-        this.input = EmiIngredient.of(inFluids.stream().map(s -> (EmiIngredient) s).toList());
-
-        List<FluidStack> outMembers = recipe.output().members();
-        this.output = outMembers.isEmpty()
-                ? EmiStack.EMPTY
-                : EmiStack.of(outMembers.getFirst().getFluid(), outMembers.getFirst().getAmount());
+        this.input = EmiIngredients.fluids(recipe.input());
+        this.output = EmiIngredients.firstFluid(recipe.output().members());
     }
 
     @Override
@@ -52,7 +40,7 @@ public class BoilingEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public @Nullable Identifier getId() {
         return id;
     }
 

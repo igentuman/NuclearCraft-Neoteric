@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft_machines",
   "key": {
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "D": {
-      "tag": "c:ingots/magnesium_diboride"
-    },
-    "H": {
-      "tag": "c:ingots/hard_carbon"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    },
-    "S": {
-      "item": "nuclearcraft:servo"
-    }
+    "C": "nuclearcraft:chassis",
+    "D": "#c:ingots/magnesium_diboride",
+    "H": "#c:ingots/hard_carbon",
+    "P": "nuclearcraft:plate_advanced",
+    "S": "nuclearcraft:servo"
   },
   "pattern": [
     "PDP",
@@ -25,7 +15,6 @@
     "PSP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:supercooler"
   }
 }

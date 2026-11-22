@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_fission",
   "key": {
-    "B": {
-      "item": "nuclearcraft:empty_heat_sink"
-    },
-    "I": {
-      "tag": "c:dusts/lapis"
-    }
+    "B": "nuclearcraft:empty_heat_sink",
+    "I": "#c:dusts/lapis"
   },
   "pattern": [
     " I ",
@@ -16,7 +12,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:lapis_heat_sink"
   }
 }

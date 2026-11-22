@@ -3,33 +3,15 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "item": "nuclearcraft:thorium_230_za"
-    },
-    {
-      "item": "nuclearcraft:thorium_232_za"
-    },
-    {
-      "item": "nuclearcraft:thorium_232_za"
-    },
-    {
-      "item": "nuclearcraft:thorium_232_za"
-    },
-    {
-      "item": "nuclearcraft:thorium_232_za"
-    },
-    {
-      "item": "nuclearcraft:thorium_232_za"
-    },
-    {
-      "item": "nuclearcraft:thorium_232_za"
-    },
-    {
-      "item": "nuclearcraft:thorium_232_za"
-    },
-    {
-      "item": "nuclearcraft:thorium_232_za"
-    }
+    "nuclearcraft:thorium_230_za",
+    "nuclearcraft:thorium_232_za",
+    "nuclearcraft:thorium_232_za",
+    "nuclearcraft:thorium_232_za",
+    "nuclearcraft:thorium_232_za",
+    "nuclearcraft:thorium_232_za",
+    "nuclearcraft:thorium_232_za",
+    "nuclearcraft:thorium_232_za",
+    "nuclearcraft:thorium_232_za"
   ],
   "result": {
     "count": 3,

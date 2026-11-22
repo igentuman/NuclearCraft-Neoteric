@@ -1,5 +1,6 @@
 package igentuman.nc.entity.anomaly;
 
+import net.minecraft.server.level.ServerLevel;
 import igentuman.nc.config.Common;
 import igentuman.nc.util.NCDamageSources;
 import net.minecraft.world.entity.EntityType;
@@ -37,7 +38,7 @@ public class RadioactiveAnomalyEntity extends AnomalyEntity {
             double dist = living.position().distanceTo(position());
             double falloff = Math.max(0.0D, 1.0D - dist / radius);
             float damage = (float) (2.0D + 18.0D * falloff);
-            living.hurt(NCDamageSources.of(level(), NCDamageSources.RADIATION), damage);
+            living.hurtServer((ServerLevel) level(), NCDamageSources.of(level(), NCDamageSources.RADIATION), damage);
         }
     }
 

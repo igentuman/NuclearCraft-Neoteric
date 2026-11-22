@@ -2,7 +2,7 @@ package igentuman.nc.screen;
 
 import igentuman.nc.container.MultiblockControllerContainer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -15,18 +15,15 @@ import static igentuman.nc.util.TextUtils.__;
 public class DecayChamberScreen extends MultiblockControllerScreen {
 
     public DecayChamberScreen(MultiblockControllerContainer menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, 176, 120);
         backgroundTexture = rl("textures/gui/accelerators/decay_chamber_controller.png");
-        imageWidth = 176;
-        imageHeight = 120;
-        inventoryLabelY = imageHeight - 94;
     }
 
     private static final int[][] OUTPUT_POSITIONS = {{101, 14}, {101, 37}, {101, 60}};
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, 0xFF404040, false);
 
         int localMouseX = mouseX - leftPos;
         int localMouseY = mouseY - topPos;

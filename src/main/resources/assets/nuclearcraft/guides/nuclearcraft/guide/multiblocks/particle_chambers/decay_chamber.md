@@ -31,4 +31,4 @@ Like all [particle chambers](general.md#detectors), detectors placed inside rais
 
 ## Operation
 
-A decay recipe takes one incoming particle stack — a type, a minimum energy and an amount — and yields several lighter particles. Browse JEI for the full list and the energies involved.
+A decay recipe takes one incoming particle stack - a type, a minimum energy and an amount - and yields several lighter particles. Browse JEI for the full list and the energies involved.

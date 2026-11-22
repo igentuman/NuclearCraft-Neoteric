@@ -2,7 +2,7 @@ package igentuman.nc.client.bomb;
 
 import igentuman.nc.config.Client;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.ParticleStatus;
+import net.minecraft.server.level.ParticleStatus;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;

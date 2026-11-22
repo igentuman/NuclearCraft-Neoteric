@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:nuggets/cobalt"
-    },
-    {
-      "tag": "c:nuggets/cobalt"
-    },
-    {
-      "tag": "c:nuggets/cobalt"
-    },
-    {
-      "tag": "c:nuggets/cobalt"
-    },
-    {
-      "tag": "c:nuggets/cobalt"
-    },
-    {
-      "tag": "c:nuggets/cobalt"
-    },
-    {
-      "tag": "c:nuggets/cobalt"
-    },
-    {
-      "tag": "c:nuggets/cobalt"
-    },
-    {
-      "tag": "c:nuggets/cobalt"
-    }
+    "#c:nuggets/cobalt",
+    "#c:nuggets/cobalt",
+    "#c:nuggets/cobalt",
+    "#c:nuggets/cobalt",
+    "#c:nuggets/cobalt",
+    "#c:nuggets/cobalt",
+    "#c:nuggets/cobalt",
+    "#c:nuggets/cobalt",
+    "#c:nuggets/cobalt"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:cobalt_ingot"
   }
 }

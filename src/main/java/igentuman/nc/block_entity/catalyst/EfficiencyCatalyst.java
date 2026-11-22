@@ -1,12 +1,13 @@
 package igentuman.nc.block_entity.catalyst;
 
+import igentuman.nc.api.catalyst.Catalyst;
+import igentuman.nc.api.catalyst.CatalystType;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-/** Efficiency catalyst that rolls a power-scaled chance to yield a bonus output item on each completed operation. */
 public class EfficiencyCatalyst extends Catalyst {
 
     private static final float CHANCE_PER_POWER = 0.05f;
@@ -35,6 +36,7 @@ public class EfficiencyCatalyst extends Catalyst {
             ItemStack stack = handler.getStackInSlot(start + i);
             if (!stack.isEmpty() && stack.getCount() < stack.getMaxStackSize()) {
                 stack.grow(1);
+                handler.setStackInSlot(start + i, stack);
                 host.markDirty();
                 return;
             }

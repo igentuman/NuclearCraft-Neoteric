@@ -7,11 +7,10 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.recipe.turbine.TurbineRecipe;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 
 /** EMI display for a multiblock turbine recipe. */
@@ -21,26 +20,20 @@ public class TurbineEmiRecipe implements EmiRecipe {
     private static final int HEIGHT = 46;
 
     private final EmiRecipeCategory category;
-    private final ResourceLocation id;
+    private final Identifier id;
     private final TurbineRecipe recipe;
     private final EmiIngredient input;
     private final EmiIngredient outputIngredient;
     private final EmiStack output;
 
-    public TurbineEmiRecipe(EmiRecipeCategory category, ResourceLocation id, TurbineRecipe recipe) {
+    public TurbineEmiRecipe(EmiRecipeCategory category, Identifier id, TurbineRecipe recipe) {
         this.category = category;
         this.id = id;
         this.recipe = recipe;
-        this.input = EmiIngredient.of(Arrays.stream(recipe.input().getFluids())
-                .map(stack -> (EmiIngredient) EmiStack.of(stack.getFluid(), recipe.input().amount()))
-                .toList());
+        this.input = EmiIngredients.fluids(recipe.input());
         List<FluidStack> members = recipe.output().members();
-        this.outputIngredient = EmiIngredient.of(members.stream()
-                .map(stack -> (EmiIngredient) EmiStack.of(stack.getFluid(), stack.getAmount()))
-                .toList());
-        this.output = members.isEmpty()
-                ? EmiStack.EMPTY
-                : EmiStack.of(members.getFirst().getFluid(), members.getFirst().getAmount());
+        this.outputIngredient = EmiIngredients.fluidMembers(members);
+        this.output = EmiIngredients.firstFluid(members);
     }
 
     @Override
@@ -49,7 +42,7 @@ public class TurbineEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public @Nullable Identifier getId() {
         return id;
     }
 

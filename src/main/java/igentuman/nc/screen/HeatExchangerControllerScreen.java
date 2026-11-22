@@ -1,12 +1,13 @@
 package igentuman.nc.screen;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.network.PacketHeatExchangerToggleRadiators;
 import igentuman.nc.screen.element.HeatBar;
 import igentuman.nc.screen.element.RadiatorToggleButton;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -34,7 +35,7 @@ public class HeatExchangerControllerScreen extends MultiblockControllerScreen {
                 leftPos + 30, topPos + 66,
                 ModEntries.get("heat_exchanger_radiator").block().toStack(),
                 this::radiatorsEnabled,
-                () -> PacketDistributor.sendToServer(new PacketHeatExchangerToggleRadiators(menu.getPosition())),
+                () -> ClientPacketDistributor.sendToServer(new PacketHeatExchangerToggleRadiators(menu.getPosition())),
                 this::radiatorToggleTooltip
         );
         addRenderableWidget(radiatorToggle);
@@ -50,8 +51,8 @@ public class HeatExchangerControllerScreen extends MultiblockControllerScreen {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractLabels(guiGraphics, mouseX, mouseY);
         radiatorToggle.visible = menu.isFormed();
         if (!menu.isFormed()) return;
 
@@ -77,12 +78,12 @@ public class HeatExchangerControllerScreen extends MultiblockControllerScreen {
         return tooltip;
     }
 
-    private void line(GuiGraphics g, int x, int y, Component text) {
+    private void line(GuiGraphicsExtractor g, int x, int y, Component text) {
         float scale = 0.75f;
-        g.pose().pushPose();
-        g.pose().scale(scale, scale, 1f);
-        g.drawString(font, text, (int) (x / scale), (int) (y / scale), 0x404040, false);
-        g.pose().popPose();
+        g.pose().pushMatrix();
+        g.pose().scale(scale, scale);
+        g.text(font, text, (int) (x / scale), (int) (y / scale), 0xFF404040, false);
+        g.pose().popMatrix();
     }
 
 }

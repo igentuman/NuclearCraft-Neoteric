@@ -3,12 +3,13 @@ package igentuman.nc.multiblock.fission;
 import igentuman.nc.api.multiblock.AbstractMultiblockLogic;
 import igentuman.nc.block_entity.fission.MsrControllerBE;
 import igentuman.nc.config.Multiblocks;
-import igentuman.nc.content.fuel.FuelDef;
+import igentuman.nc.api.content.FuelDef;
 import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.ReactorPebble;
+import igentuman.nc.util.persistence.LegacyTagReaders;
 import igentuman.nr.api.RadiationProfile;
 import igentuman.nr.api.binding.RadiationBindings;
 import igentuman.nr.radiation.source.Corium;
@@ -18,6 +19,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,8 +30,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import igentuman.nc.handler.item.CustomInventoryHandler;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.ArrayList;
@@ -164,12 +169,20 @@ public class MsrLogic extends AbstractMultiblockLogic<MsrCache> {
         if (tanks != null) {
             double hotRoom = tanks.getTankCapacity(1) - hotSaltVolume;
             double rateCap = Math.min(be.saltInputRate, be.saltOutputRate) * 1000.0;
-            converted = Math.min(Math.min(maxConversion, saltVolume), Math.min(hotRoom, rateCap));
-            if (converted > 0) {
-                Fluid hot = ModEntries.fluidOf("flibe_hot_molten_salt");
-                tanks.drainTank(0, (int) converted, IFluidHandler.FluidAction.EXECUTE);
-                if (hot != null) {
-                    tanks.fillTank(1, new FluidStack(hot, (int) converted), IFluidHandler.FluidAction.EXECUTE);
+            // Efficiency uses the unrounded target, as in 1.21; only whole millibuckets move.
+            double target = Math.min(Math.min(maxConversion, saltVolume), Math.min(hotRoom, rateCap));
+            int amount = (int) target;
+            Fluid hot = ModEntries.fluidOf("flibe_hot_molten_salt");
+            if (amount <= 0) {
+                converted = Math.max(0, target);
+            } else if (hot != null) {
+                FluidResource cold = tanks.getResource(0);
+                try (var transaction = Transaction.openRoot()) {
+                    if (!cold.isEmpty() && tanks.extract(0, cold, amount, transaction) == amount
+                            && tanks.insert(1, FluidResource.of(hot), amount, transaction) == amount) {
+                        transaction.commit();
+                        converted = target;
+                    }
                 }
             }
         }
@@ -190,7 +203,7 @@ public class MsrLogic extends AbstractMultiblockLogic<MsrCache> {
     }
 
     private void consumeInput(MsrControllerBE be, MsrCache cache) {
-        ItemStackHandler items = be.itemStacks();
+        CustomInventoryHandler items = be.itemStacks();
         if (items == null) return;
         ItemStack in = items.getStackInSlot(0);
         if (in.isEmpty() || !(in.getItem() instanceof ItemFuel fuel)) return;
@@ -200,8 +213,12 @@ public class MsrLogic extends AbstractMultiblockLogic<MsrCache> {
         int ticks = Math.max(1, def.depletion);
         double gamma = def.name.toLowerCase().startsWith("l") ? GAMMA_LE : GAMMA_HE;
         double irradiation = Math.pow(def.heat / 100.0 + 200.0 / Math.max(1, def.depletion) + 0.5, 1.5) * 2;
-        pebbles.add(ReactorPebble.make(ticks, depletedFor(def), def.criticality, def.heat, gamma, irradiation));
-        items.extractItem(0, 1, false);
+        ReactorPebble pebble = ReactorPebble.make(ticks, depletedFor(def), def.criticality, def.heat, gamma, irradiation);
+        try (var transaction = Transaction.openRoot()) {
+            if (items.extract(0, ItemResource.of(in), 1, transaction) != 1) return;
+            transaction.commit();
+        }
+        pebbles.add(pebble);
     }
 
     private ItemStack depletedFor(FuelDef def) {
@@ -213,16 +230,21 @@ public class MsrLogic extends AbstractMultiblockLogic<MsrCache> {
 
     private void outputDepleted(MsrControllerBE be) {
         if (depletedPebbles.isEmpty()) return;
-        ItemStackHandler items = be.itemStacks();
+        CustomInventoryHandler items = be.itemStacks();
         if (items == null) return;
         Iterator<ItemStack> it = depletedPebbles.iterator();
         while (it.hasNext()) {
             ItemStack stack = it.next();
-            ItemStack remainder = items.insertItem(1, stack.copy(), false);
-            if (remainder.isEmpty()) {
+            int inserted;
+            try (var transaction = Transaction.openRoot()) {
+                inserted = items.insert(1, ItemResource.of(stack), stack.getCount(), transaction);
+                if (inserted <= 0) break;
+                transaction.commit();
+            }
+            if (inserted == stack.getCount()) {
                 it.remove();
             } else {
-                stack.setCount(remainder.getCount());
+                stack.shrink(inserted);
                 break;
             }
         }
@@ -234,7 +256,7 @@ public class MsrLogic extends AbstractMultiblockLogic<MsrCache> {
             level.setBlock(BlockPos.of(key), corium, Block.UPDATE_ALL);
         }
         BlockPos pos = be.getBlockPos();
-        ItemStackHandler items = be.itemStacks();
+        CustomInventoryHandler items = be.itemStacks();
         ItemStack fuelStack = items != null ? items.getStackInSlot(0) : ItemStack.EMPTY;
         spawnMeltdownRadiation(level, pos, fuelStack, cache.fuelCellCount);
 
@@ -294,7 +316,7 @@ public class MsrLogic extends AbstractMultiblockLogic<MsrCache> {
         tag.put("pebbles", pebblesTag);
         ListTag depletedTag = new ListTag();
         for (ItemStack stack : depletedPebbles) {
-            depletedTag.add(stack.saveOptional(registries));
+            depletedTag.add(ItemStack.OPTIONAL_CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow());
         }
         tag.put("depletedPebbles", depletedTag);
         tag.putDouble("temperature", temperature);
@@ -308,23 +330,24 @@ public class MsrLogic extends AbstractMultiblockLogic<MsrCache> {
     @Override
     public void loadRuntime(CompoundTag tag, HolderLookup.Provider registries) {
         pebbles.clear();
-        ListTag pebblesTag = tag.getList("pebbles", 10);
+        ListTag pebblesTag = LegacyTagReaders.list(tag, "pebbles", Tag.TAG_COMPOUND);
         for (int i = 0; i < pebblesTag.size(); i++) {
             ReactorPebble pebble = new ReactorPebble();
-            pebble.deserializeNBT(registries, pebblesTag.getCompound(i));
+            pebble.deserializeNBT(registries, pebblesTag.getCompoundOrEmpty(i));
             pebbles.add(pebble);
         }
         depletedPebbles.clear();
-        ListTag depletedTag = tag.getList("depletedPebbles", 10);
+        ListTag depletedTag = LegacyTagReaders.list(tag, "depletedPebbles", Tag.TAG_COMPOUND);
         for (int i = 0; i < depletedTag.size(); i++) {
-            ItemStack stack = ItemStack.parseOptional(registries, depletedTag.getCompound(i));
+            ItemStack stack = ItemStack.OPTIONAL_CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE),
+                    depletedTag.getCompoundOrEmpty(i)).result().orElse(ItemStack.EMPTY);
             if (!stack.isEmpty()) depletedPebbles.add(stack);
         }
-        temperature = tag.contains("temperature") ? tag.getDouble("temperature") : MsrControllerBE.T_AMBIENT;
-        reactivity = tag.getDouble("reactivity");
-        impurity = tag.getDouble("impurity");
-        depletion = tag.getDouble("depletion");
-        heatPerTick = tag.getDouble("heatPerTick");
-        overheatTimer = tag.getInt("overheatTimer");
+        temperature = tag.contains("temperature") ? tag.getDoubleOr("temperature", 0D) : MsrControllerBE.T_AMBIENT;
+        reactivity = tag.getDoubleOr("reactivity", 0D);
+        impurity = tag.getDoubleOr("impurity", 0D);
+        depletion = tag.getDoubleOr("depletion", 0D);
+        heatPerTick = tag.getDoubleOr("heatPerTick", 0D);
+        overheatTimer = tag.getIntOr("overheatTimer", 0);
     }
 }

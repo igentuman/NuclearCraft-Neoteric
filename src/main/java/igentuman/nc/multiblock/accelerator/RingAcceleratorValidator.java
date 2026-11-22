@@ -7,7 +7,7 @@ import igentuman.nc.multiblock.accelerator.AcceleratorSlice.Component;
 import igentuman.nc.api.multiblock.part.ElectromagnetDef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -23,11 +23,11 @@ import static igentuman.nc.multiblock.MultiblockDebug.step;
 
 public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAcceleratorCache> {
 
-    private static final ResourceLocation EXPECTED_CASING = rl("accelerator_casing");
-    private static final ResourceLocation EXPECTED_BEAM = rl("particle_beam");
-    private static final ResourceLocation EXPECTED_SLICE = rl("accelerator_slice");
-    private static final ResourceLocation EXPECTED_YOKE = rl("electromagnet_yoke");
-    private static final ResourceLocation EXPECTED_BEAM_PORT = rl("accelerator_beam_port");
+    private static final Identifier EXPECTED_CASING = rl("accelerator_casing");
+    private static final Identifier EXPECTED_BEAM = rl("particle_beam");
+    private static final Identifier EXPECTED_SLICE = rl("accelerator_slice");
+    private static final Identifier EXPECTED_YOKE = rl("electromagnet_yoke");
+    private static final Identifier EXPECTED_BEAM_PORT = rl("accelerator_beam_port");
     private static final int HEIGHT = AcceleratorComponents.CROSS_SECTION;
     private static final int BAND = AcceleratorComponents.RING_WALL_OFFSET + 1;
     private static final int PREFETCH_SECTIONS = 32;
@@ -75,7 +75,7 @@ public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAc
         BlockPos controllerPos = cache.controllerPos();
         if (!resolveBlocks()) {
             return fail("multiblock.validation.dimensions_unresolved", controllerPos, rl("valid_dimensions"),
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         Direction facing = cache.facing();
         if (!facing.getAxis().isHorizontal() || !isShell(cache.getBlockState(controllerPos))) {
@@ -109,11 +109,11 @@ public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAc
 
         if (width < range[0] || width > maximumSide || height != HEIGHT
                 || depth < range[0] || depth > maximumSide) {
-            return fail("multiblock.discovery.wrong_size", controllerPos, EXPECTED_CASING, (ResourceLocation) null);
+            return fail("multiblock.discovery.wrong_size", controllerPos, EXPECTED_CASING, (Identifier) null);
         }
         if (width != depth || width < BAND * 2 + 1) {
             return fail("multiblock.discovery.expected_square_ring", controllerPos, EXPECTED_CASING,
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
 
         origin = frontBottomLeft;
@@ -215,16 +215,16 @@ public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAc
     protected boolean validateRelations(RingAcceleratorCache cache) {
         if (controllerCount != 1) {
             return fail("multiblock.ring.controller_count", cache.controllerPos(), rl("ring_accelerator_controller"),
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         if (beamPorts.size() < 2) {
             return fail("multiblock.ring.not_enough_beam_ports", cache.controllerPos(), EXPECTED_BEAM_PORT,
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         for (CornerDipole corner : corners) {
             if (corner.up == null || corner.down == null) {
                 return fail("multiblock.ring.incomplete_corner_dipole", cache.controllerPos(), EXPECTED_SLICE,
-                        (ResourceLocation) null);
+                        (Identifier) null);
             }
         }
         beamPorts.sort(Comparator.comparingInt(BeamPort::order));
@@ -386,7 +386,7 @@ public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAc
 
     private boolean tooLarge(BlockPos from, Direction direction, int limit) {
         return fail("multiblock.discovery.too_large", from.relative(direction, limit + 1),
-                EXPECTED_CASING, (ResourceLocation) null);
+                EXPECTED_CASING, (Identifier) null);
     }
 
     private BlockPos at(int r, int u, int f) {

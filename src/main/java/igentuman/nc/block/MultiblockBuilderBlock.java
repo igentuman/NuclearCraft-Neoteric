@@ -18,6 +18,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -31,19 +32,14 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.__;
 
-/** Facing block that opens the multiblock builder GUI (loads a plan and builds it in the world). */
-public class MultiblockBuilderBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class MultiblockBuilderBlock extends HorizontalDirectionalBlock implements EntityBlock, TooltipBlock {
 
     public static final MapCodec<MultiblockBuilderBlock> CODEC = simpleCodec(MultiblockBuilderBlock::new);
-
-    public MultiblockBuilderBlock() {
-        this(Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops());
-    }
 
     public MultiblockBuilderBlock(Properties props) {
         super(props);
@@ -75,7 +71,7 @@ public class MultiblockBuilderBlock extends HorizontalDirectionalBlock implement
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof MultiblockBuilderBE) {
                 MenuProvider provider = new MenuProvider() {
@@ -92,11 +88,11 @@ public class MultiblockBuilderBlock extends HorizontalDirectionalBlock implement
                 serverPlayer.openMenu(provider, buf -> buf.writeBlockPos(pos));
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
-        list.add(TextUtils.applyFormat(__("nc.multiblock_builder.description"), ChatFormatting.AQUA));
+    public void addTooltip(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
+        list.accept(TextUtils.applyFormat(__("nc.multiblock_builder.description"), ChatFormatting.AQUA));
     }
 }

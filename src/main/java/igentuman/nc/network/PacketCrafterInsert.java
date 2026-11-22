@@ -3,7 +3,6 @@ package igentuman.nc.network;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block_entity.crafter.EngineersCrafterBE;
 import igentuman.nc.container.EngineersCrafterContainer;
-import igentuman.nc.handler.crafter.AggregatedInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -12,6 +11,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.item.CarriedSlotWrapper;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public record PacketCrafterInsert(BlockPos pos, boolean single) implements CustomPacketPayload {
 
@@ -40,29 +43,17 @@ public record PacketCrafterInsert(BlockPos pos, boolean single) implements Custo
             ItemStack carried = menu.getCarried();
             if (carried.isEmpty()) return;
 
-            AggregatedInventory agg = new AggregatedInventory(be.containerSlots);
-            boolean changed = false;
-            if (packet.single()) {
-                ItemStack one = carried.copy();
-                one.setCount(1);
-                if (agg.insert(one, false).isEmpty()) {
-                    carried.shrink(1);
-                    menu.setCarried(carried.isEmpty() ? ItemStack.EMPTY : carried);
-                    changed = true;
-                }
-            } else {
-                int before = carried.getCount();
-                ItemStack leftover = agg.insert(carried, false);
-                if (leftover.getCount() != before) {
-                    menu.setCarried(leftover);
-                    changed = true;
-                }
+            var cursor = CarriedSlotWrapper.of(menu);
+            var resource = ItemResource.of(carried);
+            int amount = packet.single() ? 1 : carried.getCount();
+            try (var transaction = Transaction.openRoot()) {
+                int moved = ResourceHandlerUtil.move(cursor, be.getItemHandler(null),
+                        resource::equals, amount, transaction);
+                if (moved == 0) return;
+                transaction.commit();
             }
-
-            if (changed) {
-                be.markUpdated();
-                menu.broadcastChanges();
-            }
+            be.markUpdated();
+            menu.broadcastChanges();
         });
     }
 }

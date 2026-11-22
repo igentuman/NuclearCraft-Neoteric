@@ -30,7 +30,7 @@ public class SlotModePair {
     }
 
     public static SlotModePair[] deserializeArray(CompoundTag compound) {
-        int[] vals = compound.getIntArray("pairs");
+        int[] vals = compound.getIntArray("pairs").orElseThrow(() -> new IllegalArgumentException("Missing slot modes"));
         SlotModePair[] slotModePairs = new SlotModePair[vals.length];
         for (int i = 0; i < vals.length; i++) {
             slotModePairs[i] = unpack(vals[i]);

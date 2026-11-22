@@ -2,16 +2,17 @@ package igentuman.nc.item;
 
 import igentuman.nc.api.particle.ParticleDefinition;
 import igentuman.nc.api.particle.ParticleStack;
-import igentuman.nc.particle.ParticleSourceData;
+import igentuman.nc.api.particle.ParticleSourceData;
 import igentuman.nc.setup.Registers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.util.TextUtils.__;
 
@@ -30,11 +31,11 @@ public class ParticleSourceItem extends Item {
 
     @Nullable
     public static ParticleSourceData data(ItemStack stack) {
-        return stack.get(Registers.PARTICLE_SOURCE.get());
+        return stack.get(ParticleSourceData.componentType());
     }
 
     public static void setData(ItemStack stack, ParticleSourceData data) {
-        stack.set(Registers.PARTICLE_SOURCE.get(), data);
+        stack.set(ParticleSourceData.componentType(), data);
     }
 
     public static ParticleStack emit(ItemStack stack, long batchSize) {
@@ -67,16 +68,16 @@ public class ParticleSourceItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
         ParticleSourceData sourceData = data(stack);
         if (sourceData == null) {
             return;
         }
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(sourceData.particleId());
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(sourceData.particleId());
         Component species = definition == null
                 ? Component.literal(sourceData.particleId().toString())
                 : __(definition.translationKey());
-        list.add(__("tooltip.nuclearcraft.particle_source.species", species).withStyle(ChatFormatting.AQUA));
-        list.add(__("tooltip.nuclearcraft.particle_source.remaining", sourceData.remainingAmount(), sourceData.capacity()).withStyle(ChatFormatting.BLUE));
+        list.accept(__("tooltip.nuclearcraft.particle_source.species", species).withStyle(ChatFormatting.AQUA));
+        list.accept(__("tooltip.nuclearcraft.particle_source.remaining", sourceData.remainingAmount(), sourceData.capacity()).withStyle(ChatFormatting.BLUE));
     }
 }

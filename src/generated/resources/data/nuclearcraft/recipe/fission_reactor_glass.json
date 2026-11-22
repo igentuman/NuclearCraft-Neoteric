@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_fission",
   "key": {
-    "P": {
-      "tag": "c:glass_blocks"
-    },
-    "T": {
-      "item": "nuclearcraft:fission_reactor_casing"
-    }
+    "P": "#c:glass_blocks",
+    "T": "nuclearcraft:fission_reactor_casing"
   },
   "pattern": [
     " P ",
@@ -16,7 +12,6 @@
     " P "
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:fission_reactor_glass"
   }
 }

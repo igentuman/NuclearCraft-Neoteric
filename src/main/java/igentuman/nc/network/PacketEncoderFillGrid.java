@@ -7,21 +7,23 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /** Client -> server: load a recipe into the encoder (grid recipe into the ghost grid, or a processor recipe). */
-public record PacketEncoderFillGrid(BlockPos pos, ResourceLocation recipeId) implements CustomPacketPayload {
+public record PacketEncoderFillGrid(BlockPos pos, Identifier recipeId) implements CustomPacketPayload {
 
     public static final Type<PacketEncoderFillGrid> TYPE = new Type<>(NuclearCraft.rl("encoder_fill_grid"));
 
     public static final StreamCodec<FriendlyByteBuf, PacketEncoderFillGrid> STREAM_CODEC =
             StreamCodec.composite(
                     BlockPos.STREAM_CODEC, PacketEncoderFillGrid::pos,
-                    ResourceLocation.STREAM_CODEC, PacketEncoderFillGrid::recipeId,
+                    Identifier.STREAM_CODEC, PacketEncoderFillGrid::recipeId,
                     PacketEncoderFillGrid::new
             );
 
@@ -38,7 +40,7 @@ public record PacketEncoderFillGrid(BlockPos pos, ResourceLocation recipeId) imp
             if (!menu.getBlockPos().equals(packet.pos())) return;
             if (!menu.stillValid(player)) return;
 
-            RecipeHolder<?> holder = player.level().getRecipeManager().byKey(packet.recipeId()).orElse(null);
+            RecipeHolder<?> holder = player.level().recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, packet.recipeId())).orElse(null);
             if (holder == null) return;
             if (holder.value() instanceof CraftingRecipe craftingRecipe) {
                 menu.fillGhostGrid(craftingRecipe);

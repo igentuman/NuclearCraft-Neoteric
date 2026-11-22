@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:plates/aluminum"
-  },
+  "ingredient": "#c:plates/aluminum",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:aluminum_ingot"
   }
 }

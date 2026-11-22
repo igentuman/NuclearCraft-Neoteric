@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_particle_chamber",
   "key": {
-    "C": {
-      "item": "nuclearcraft:empty_detector"
-    },
-    "S": {
-      "item": "nuclearcraft:scintillator_pwo"
-    }
+    "C": "nuclearcraft:empty_detector",
+    "S": "nuclearcraft:scintillator_pwo"
   },
   "pattern": [
     "SSS",
@@ -16,7 +12,6 @@
     "SSS"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:em_calorimeter"
   }
 }

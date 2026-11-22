@@ -1,352 +1,292 @@
 package igentuman.nc.handler.fluid;
 
+import com.mojang.serialization.Codec;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
-/** Multi-tank fluid handler with per-tank capacity, validators, restricted external views, and NBT. */
-public class FluidStackHandler implements IFluidHandler, INBTSerializable<CompoundTag> {
+/** Native multi-tank storage with transactional contents, restricted views and current-format Value I/O. */
+public class FluidStackHandler implements ResourceHandler<FluidResource>, ValueIOSerializable {
+    public record SavedTank(int tank, int capacity, FluidStack fluid) {
+        public static final Codec<SavedTank> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.intRange(0, Integer.MAX_VALUE).fieldOf("Tank").forGetter(SavedTank::tank),
+                Codec.intRange(0, Integer.MAX_VALUE).fieldOf("Capacity").forGetter(SavedTank::capacity),
+                FluidStack.CODEC.optionalFieldOf("Fluid", FluidStack.EMPTY).forGetter(SavedTank::fluid)
+        ).apply(instance, SavedTank::new));
+    }
 
-    protected int tanks;
-    protected FluidStack[] fluids;
-    protected int[] capacities;
-    protected Predicate<FluidStack>[] validators;
+    // ValueInput may return a codec's partial result. Never turn malformed fluid into an empty tank.
+    public static final Codec<List<SavedTank>> TANKS_CODEC = SavedTank.CODEC.listOf().mapResult(new Codec.ResultFunction<>() {
+        private <T> DataResult<T> complete(DataResult<T> result) {
+            return result.error().<DataResult<T>>map(error -> DataResult.error(error::message)).orElse(result);
+        }
+        @Override public <T> DataResult<Pair<List<SavedTank>, T>> apply(DynamicOps<T> ops, T input,
+                                                                       DataResult<Pair<List<SavedTank>, T>> result) {
+            return complete(result);
+        }
+        @Override public <T> DataResult<T> coApply(DynamicOps<T> ops, List<SavedTank> input, DataResult<T> result) {
+            return complete(result);
+        }
+    });
+
+    private FluidStack[] fluids;
+    private int[] capacities;
+    private Predicate<FluidStack>[] validators;
+    private List<TankJournal> journals;
     private boolean fixedCapacities;
 
-    // External access restriction fields
-    private FluidStackHandler inner;
-    private int[] fillableTanks;
-    private int[] drainableTanks;
-
     public FluidStackHandler(int tanks, int[] capacities) {
-        this.tanks = tanks;
-        this.fluids = new FluidStack[tanks];
-        this.capacities = capacities;
-        this.validators = new Predicate[tanks];
-        for (int i = 0; i < tanks; i++) {
-            this.fluids[i] = FluidStack.EMPTY;
-            this.validators[i] = fs -> true;
-        }
+        if (tanks < 0 || capacities.length != tanks) throw new IllegalArgumentException("Invalid tank capacities");
+        for (int capacity : capacities) checkCapacity(capacity);
+        this.capacities = capacities.clone();
+        initialize(tanks);
     }
 
-    @SuppressWarnings("unchecked")
     public FluidStackHandler(int tanks, int defaultCapacity) {
-        this.tanks = tanks;
-        this.fluids = new FluidStack[tanks];
-        this.capacities = new int[tanks];
-        this.validators = new Predicate[tanks];
-        for (int i = 0; i < tanks; i++) {
-            this.fluids[i] = FluidStack.EMPTY;
-            this.capacities[i] = defaultCapacity;
-            this.validators[i] = fs -> true;
-        }
-    }
-
-    /**
-     * Private constructor for creating an external-access-restricted view.
-     * The returned handler delegates all reads to the inner handler but restricts
-     * fill operations to fillableTanks and drain operations to drainableTanks.
-     */
-    private FluidStackHandler(FluidStackHandler inner, int[] fillableTanks, int[] drainableTanks) {
-        this.inner = inner;
-        this.fillableTanks = fillableTanks;
-        this.drainableTanks = drainableTanks;
-        this.tanks = inner.tanks;
-        this.fluids = inner.fluids;
-        this.capacities = inner.capacities;
-        this.validators = inner.validators;
-    }
-
-    /**
-     * Creates an external-access-restricted view of this handler.
-     * Fill operations only target fillable tanks (input + global).
-     * Drain operations only target drainable tanks (output + global).
-     * All tanks remain visible for reading (getTanks, getFluidInTank, etc.).
-     *
-     * @param fillableTanks  tank indices that accept external fill (input + global)
-     * @param drainableTanks tank indices that allow external drain (output + global)
-     * @return a restricted IFluidHandler view backed by this handler
-     */
-    public FluidStackHandler createExternalView(int[] fillableTanks, int[] drainableTanks) {
-        return new FluidStackHandler(this, fillableTanks, drainableTanks);
-    }
-
-    private boolean isExternalView() {
-        return inner != null;
+        if (tanks < 0) throw new IllegalArgumentException("Negative tank count");
+        checkCapacity(defaultCapacity);
+        capacities = new int[tanks];
+        Arrays.fill(capacities, defaultCapacity);
+        initialize(tanks);
     }
 
     @SuppressWarnings("unchecked")
+    private void initialize(int size) {
+        fluids = new FluidStack[size];
+        Arrays.fill(fluids, FluidStack.EMPTY);
+        validators = new Predicate[size];
+        Arrays.fill(validators, (Predicate<FluidStack>) stack -> true);
+        journals = new ArrayList<>(size);
+        for (int tank = 0; tank < size; tank++) journals.add(new TankJournal(tank));
+    }
+
+    /** Resizing clears contents, retaining configured capacities and validators for existing indices. */
     public void setSize(int size) {
-        int[] previousCapacities = this.capacities;
-        Predicate<FluidStack>[] previousValidators = this.validators;
-        this.tanks = size;
-        this.fluids = new FluidStack[size];
-        this.capacities = new int[size];
-        this.validators = new Predicate[size];
-        for (int i = 0; i < size; i++) {
-            this.fluids[i] = FluidStack.EMPTY;
-            this.capacities[i] = i < previousCapacities.length ? previousCapacities[i] : 1000;
-            this.validators[i] = i < previousValidators.length ? previousValidators[i] : fs -> true;
+        checkDirectMutation();
+        if (size < 0) throw new IllegalArgumentException("Negative tank count");
+        int[] previousCapacities = capacities;
+        Predicate<FluidStack>[] previousValidators = validators;
+        capacities = new int[size];
+        initialize(size);
+        for (int tank = 0; tank < size; tank++) {
+            capacities[tank] = tank < previousCapacities.length ? previousCapacities[tank] : 1000;
+            if (tank < previousValidators.length) validators[tank] = previousValidators[tank];
         }
     }
 
-    /** Keeps capacities configured by the machine instead of restoring them from saved NBT. */
     public void setFixedCapacities() {
+        checkDirectMutation();
         fixedCapacities = true;
     }
 
-    /**
-     * Sets the capacity for a specific tank.
-     */
+    /** Capacity changes retain existing fluid, including when the configured capacity becomes smaller. */
     public void setTankCapacity(int tank, int capacity) {
+        checkDirectMutation();
         validateTankIndex(tank);
-        this.capacities[tank] = capacity;
+        checkCapacity(capacity);
+        capacities[tank] = capacity;
     }
 
-    /**
-     * Sets the fluid validator for a specific tank.
-     */
     public void setTankValidator(int tank, Predicate<FluidStack> validator) {
+        checkDirectMutation();
         validateTankIndex(tank);
-        this.validators[tank] = validator;
+        validators[tank] = Objects.requireNonNull(validator);
     }
 
-    /**
-     * Directly sets the fluid in a specific tank.
-     */
+    /** Machine-internal overwrite; external transfers must use insert/extract with the caller's transaction. */
     public void setFluidInTank(int tank, FluidStack stack) {
+        checkDirectMutation();
         validateTankIndex(tank);
-        this.fluids[tank] = stack;
-        onContentsChanged(tank);
+        FluidStack previous = fluids[tank];
+        fluids[tank] = stack.copy();
+        if (!sameContents(previous, fluids[tank])) onContentsChanged(tank);
     }
 
-    @Override
-    public int getTanks() {
-        return tanks;
-    }
-
-    @Override
-    public @NotNull FluidStack getFluidInTank(int tank) {
+    public void voidTank(int tank) { setFluidInTank(tank, FluidStack.EMPTY); }
+    public int getTanks() { return size(); }
+    public FluidStack getFluidInTank(int tank) {
         validateTankIndex(tank);
-        return this.fluids[tank];
+        return fluids[tank].copy();
     }
-
-    @Override
     public int getTankCapacity(int tank) {
         validateTankIndex(tank);
-        return this.capacities[tank];
+        return capacities[tank];
     }
-
-    @Override
-    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+    public boolean isFluidValid(int tank, FluidStack stack) {
         validateTankIndex(tank);
-        return validators[tank].test(stack);
+        return validators[tank].test(stack.copy());
     }
 
-    /**
-     * Fills the first compatible tank with the given fluid resource.
-     * If this is an external view, only fillable tanks are tried.
-     * Otherwise, tries each tank in order.
-     */
-    @Override
-    public int fill(@NotNull FluidStack resource, FluidAction action) {
-        if (resource.isEmpty()) return 0;
-
-        if (isExternalView()) {
-            for (int tank : fillableTanks) {
-                int filled = inner.fillTank(tank, resource, action);
-                if (filled > 0) return filled;
-            }
-            return 0;
-        }
-
-        for (int i = 0; i < tanks; i++) {
-            int filled = fillTank(i, resource, action);
-            if (filled > 0) return filled;
-        }
-        return 0;
+    @Override public int size() { return fluids.length; }
+    @Override public FluidResource getResource(int index) {
+        validateTankIndex(index);
+        return FluidResource.of(fluids[index]);
     }
-
-    /**
-     * Fills a specific tank with the given fluid resource.
-     *
-     * @param tank     the tank index
-     * @param resource the fluid to insert
-     * @param action   SIMULATE or EXECUTE
-     * @return the amount of fluid that was (or would be) filled
-     */
-    public int fillTank(int tank, @NotNull FluidStack resource, FluidAction action) {
-        if (resource.isEmpty()) return 0;
-        if (!isFluidValid(tank, resource)) return 0;
-
-        validateTankIndex(tank);
-
-        FluidStack existing = this.fluids[tank];
-        int capacity = getTankCapacity(tank);
-
-        if (!existing.isEmpty()) {
-            if (!FluidStack.isSameFluidSameComponents(resource, existing))
-                return 0;
-
-            int space = capacity - existing.getAmount();
-            if (space <= 0) return 0;
-
-            int toFill = Math.min(resource.getAmount(), space);
-            if (action.execute()) {
-                existing.grow(toFill);
-                onContentsChanged(tank);
-            }
-            return toFill;
-        } else {
-            int toFill = Math.min(resource.getAmount(), capacity);
-            if (action.execute()) {
-                this.fluids[tank] = resource.copyWithAmount(toFill);
-                onContentsChanged(tank);
-            }
-            return toFill;
-        }
+    @Override public long getAmountAsLong(int index) {
+        validateTankIndex(index);
+        return fluids[index].getAmount();
     }
-
-    /**
-     * Drains a specific fluid from the first matching tank.
-     * If this is an external view, only drainable tanks are considered.
-     */
-    @Override
-    public @NotNull FluidStack drain(@NotNull FluidStack resource, FluidAction action) {
-        if (resource.isEmpty()) return FluidStack.EMPTY;
-
-        if (isExternalView()) {
-            for (int tank : drainableTanks) {
-                FluidStack existing = inner.getFluidInTank(tank);
-                if (!existing.isEmpty() && FluidStack.isSameFluidSameComponents(resource, existing)) {
-                    return inner.drainTank(tank, resource.getAmount(), action);
-                }
-            }
-            return FluidStack.EMPTY;
-        }
-
-        for (int i = 0; i < tanks; i++) {
-            FluidStack existing = this.fluids[i];
-            if (!existing.isEmpty() && FluidStack.isSameFluidSameComponents(resource, existing)) {
-                return drainTank(i, resource.getAmount(), action);
-            }
-        }
-        return FluidStack.EMPTY;
+    @Override public long getCapacityAsLong(int index, FluidResource resource) {
+        return resource.isEmpty() || isValid(index, resource) ? getTankCapacity(index) : 0;
     }
-
-    /**
-     * Drains up to maxDrain from the first non-empty tank.
-     * If this is an external view, only drainable tanks are considered.
-     */
-    @Override
-    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-        if (maxDrain <= 0) return FluidStack.EMPTY;
-
-        if (isExternalView()) {
-            for (int tank : drainableTanks) {
-                FluidStack existing = inner.getFluidInTank(tank);
-                if (!existing.isEmpty()) {
-                    return inner.drainTank(tank, maxDrain, action);
-                }
-            }
-            return FluidStack.EMPTY;
-        }
-
-        for (int i = 0; i < tanks; i++) {
-            if (!this.fluids[i].isEmpty()) {
-                return drainTank(i, maxDrain, action);
-            }
-        }
-        return FluidStack.EMPTY;
-    }
-
-    public void voidTank(int tank) {
-        validateTankIndex(tank);
-        this.fluids[tank] = FluidStack.EMPTY;
-        onContentsChanged(tank);
-    }
-
-    public @NotNull FluidStack drainTank(int tank, int maxDrain, FluidAction action) {
-        if (maxDrain <= 0) return FluidStack.EMPTY;
-
-        validateTankIndex(tank);
-
-        FluidStack existing = this.fluids[tank];
-        if (existing.isEmpty()) return FluidStack.EMPTY;
-
-        int toDrain = Math.min(maxDrain, existing.getAmount());
-
-        FluidStack drained = existing.copyWithAmount(toDrain);
-        if (action.execute()) {
-            existing.shrink(toDrain);
-            if (existing.isEmpty()) {
-                this.fluids[tank] = FluidStack.EMPTY;
-            }
-            onContentsChanged(tank);
-        }
-        return drained;
+    @Override public boolean isValid(int index, FluidResource resource) {
+        return isFluidValid(index, resource.toStack(1));
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        ListTag tankList = new ListTag();
-        for (int i = 0; i < tanks; i++) {
-            CompoundTag tankTag = new CompoundTag();
-            tankTag.putInt("Tank", i);
-            tankTag.putInt("Capacity", capacities[i]);
-            if (!fluids[i].isEmpty()) {
-                Tag fluidTag = fluids[i].save(provider);
-                tankTag.put("Fluid", fluidTag);
-            }
-            tankList.add(tankTag);
+    public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        validateTankIndex(index);
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        FluidStack current = fluids[index];
+        if (!isValid(index, resource) || (!current.isEmpty() && !resource.matches(current))) return 0;
+        int inserted = Math.min(amount, Math.max(0, capacities[index] - current.getAmount()));
+        if (inserted > 0) {
+            journals.get(index).updateSnapshots(transaction);
+            fluids[index] = resource.toStack(current.getAmount() + inserted);
         }
-        CompoundTag nbt = new CompoundTag();
-        nbt.put("Tanks", tankList);
-        nbt.putInt("Size", tanks);
-        return nbt;
+        return inserted;
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        int size = nbt.contains("Size", Tag.TAG_INT) ? nbt.getInt("Size") : tanks;
-        if (size != tanks) {
-            setSize(size);
-        } else {
-            Arrays.fill(fluids, FluidStack.EMPTY);
+    public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        validateTankIndex(index);
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        if (!resource.matches(fluids[index])) return 0;
+        int extracted = Math.min(amount, fluids[index].getAmount());
+        if (extracted > 0) {
+            journals.get(index).updateSnapshots(transaction);
+            fluids[index] = resource.toStack(fluids[index].getAmount() - extracted);
         }
-        ListTag tankList = nbt.getList("Tanks", Tag.TAG_COMPOUND);
-        for (int i = 0; i < tankList.size(); i++) {
-            CompoundTag tankTag = tankList.getCompound(i);
-            int tank = tankTag.getInt("Tank");
-            if (tank >= 0 && tank < tanks) {
-                if (!fixedCapacities && tankTag.contains("Capacity", Tag.TAG_INT)) {
-                    capacities[tank] = tankTag.getInt("Capacity");
-                }
-                // Support both new format (nested "Fluid" tag) and legacy format (inline)
-                if (tankTag.contains("Fluid")) {
-                    FluidStack.parse(provider, tankTag.getCompound("Fluid")).ifPresent(stack -> fluids[tank] = stack);
-                } else if (tankTag.contains("id", Tag.TAG_STRING)) {
-                    FluidStack.parse(provider, tankTag).ifPresent(stack -> fluids[tank] = stack);
-                }
+        return extracted;
+    }
+
+    /** All tanks stay visible; both indexed and whole-handler transfers obey these restrictions. */
+    public ResourceHandler<FluidResource> createExternalView(int[] fillableTanks, int[] drainableTanks) {
+        int[] fillable = fillableTanks.clone();
+        int[] drainable = drainableTanks.clone();
+        for (int tank : fillable) validateTankIndex(tank);
+        for (int tank : drainable) validateTankIndex(tank);
+        return new ResourceHandler<>() {
+            private boolean allows(int[] indices, int index) {
+                return Arrays.stream(indices).anyMatch(tank -> tank == index);
             }
+            @Override public int size() { return FluidStackHandler.this.size(); }
+            @Override public FluidResource getResource(int index) { return FluidStackHandler.this.getResource(index); }
+            @Override public long getAmountAsLong(int index) { return FluidStackHandler.this.getAmountAsLong(index); }
+            @Override public long getCapacityAsLong(int index, FluidResource resource) {
+                validateTankIndex(index);
+                return resource.isEmpty() || isValid(index, resource) ? getTankCapacity(index) : 0;
+            }
+            @Override public boolean isValid(int index, FluidResource resource) {
+                validateTankIndex(index);
+                return allows(fillable, index) && FluidStackHandler.this.isValid(index, resource);
+            }
+            @Override public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+                validateTankIndex(index);
+                TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+                return allows(fillable, index) ? FluidStackHandler.this.insert(index, resource, amount, transaction) : 0;
+            }
+            @Override public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+                validateTankIndex(index);
+                TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+                return allows(drainable, index) ? FluidStackHandler.this.extract(index, resource, amount, transaction) : 0;
+            }
+        };
+    }
+
+    @Override
+    public void serialize(ValueOutput output) {
+        List<SavedTank> saved = new ArrayList<>(size());
+        for (int tank = 0; tank < size(); tank++) saved.add(new SavedTank(tank, capacities[tank], fluids[tank]));
+        output.putInt("Size", size());
+        output.store("Tanks", TANKS_CODEC, saved);
+    }
+
+    @Override
+    public void deserialize(ValueInput input) {
+        checkDirectMutation();
+        int size = input.getIntOr("Size", -1);
+        List<SavedTank> saved = input.read("Tanks", TANKS_CODEC)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid current-format fluid tanks"));
+        validateSavedTanks(size, saved).getOrThrow();
+        if (fixedCapacities && size != size()) throw new IllegalArgumentException("Fixed tank count changed");
+        if (size != size()) setSize(size);
+        // Validate the entire payload before changing any live content; validators describe insertion, not loading.
+        for (SavedTank tank : saved) {
+            if (!fixedCapacities) capacities[tank.tank()] = tank.capacity();
+            fluids[tank.tank()] = tank.fluid().copy();
         }
         onLoad();
     }
 
-    protected void validateTankIndex(int tank) {
-        if (tank < 0 || tank >= tanks)
-            throw new RuntimeException("Tank " + tank + " not in valid range - [0," + tanks + ")");
+    public static DataResult<List<SavedTank>> validateSavedTanks(int size, List<SavedTank> saved) {
+        if (size < 0 || saved.size() != size) return DataResult.error(() -> "Fluid tank count mismatch");
+        boolean[] seen = new boolean[size];
+        for (SavedTank tank : saved) {
+            if (tank.tank() < 0 || tank.tank() >= size || seen[tank.tank()] || tank.capacity() < 0) {
+                return DataResult.error(() -> "Invalid or duplicate fluid tank index/capacity");
+            }
+            seen[tank.tank()] = true;
+        }
+        return DataResult.success(saved);
     }
 
-    protected void onLoad() {}
+    /** Current-format bridge for owners whose other persistence fields still use raw tags. */
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
+        serialize(output);
+        return output.buildResult();
+    }
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
+        deserialize(TagValueInput.create(ProblemReporter.DISCARDING, provider, tag));
+    }
 
+    protected void validateTankIndex(int tank) { Objects.checkIndex(tank, size()); }
+    protected void onLoad() {}
     protected void onContentsChanged(int tank) {}
+
+    private static void checkCapacity(int capacity) {
+        if (capacity < 0) throw new IllegalArgumentException("Negative tank capacity");
+    }
+    private void checkDirectMutation() {
+        if (journals.stream().anyMatch(SnapshotJournal::isInTransaction)) {
+            throw new IllegalStateException("Cannot overwrite fluid storage during a transfer");
+        }
+    }
+    private static boolean sameContents(FluidStack first, FluidStack second) {
+        return first.getAmount() == second.getAmount()
+                && (first.isEmpty() && second.isEmpty() || FluidStack.isSameFluidSameComponents(first, second));
+    }
+
+    private class TankJournal extends SnapshotJournal<FluidStack> {
+        private final int tank;
+        private TankJournal(int tank) { this.tank = tank; }
+        @Override protected FluidStack createSnapshot() { return fluids[tank].copy(); }
+        @Override protected void revertToSnapshot(FluidStack snapshot) { fluids[tank] = snapshot; }
+        @Override protected void onRootCommit(FluidStack original) {
+            if (!sameContents(original, fluids[tank])) onContentsChanged(tank);
+        }
+    }
 }

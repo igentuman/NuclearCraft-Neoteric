@@ -21,7 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +40,7 @@ public class CreativeParticleSourceBE extends UniversalProcessorBE {
     private static final long[] ENERGY_MULTIPLIERS = {1L, 1_000L, 1_000_000L, 1_000_000_000L};
 
     @Nullable
-    private ResourceLocation particleId;
+    private Identifier particleId;
     private double focus = 1D;
     private double energyValue = 1D;
     private int energyScale = 1;
@@ -50,7 +50,7 @@ public class CreativeParticleSourceBE extends UniversalProcessorBE {
     }
 
     @Nullable
-    public ResourceLocation particleId() {
+    public Identifier particleId() {
         return particleId;
     }
 
@@ -81,7 +81,7 @@ public class CreativeParticleSourceBE extends UniversalProcessorBE {
         return (long) energy;
     }
 
-    public boolean updateSettings(ResourceLocation newParticleId, double newFocus,
+    public boolean updateSettings(Identifier newParticleId, double newFocus,
                                   double newEnergyValue, int newEnergyScale) {
         if (newParticleId == null || !Registers.PARTICLE_DEFINITION_REGISTRY.containsKey(newParticleId)
                 || !Double.isFinite(newFocus) || newFocus < 0
@@ -113,7 +113,7 @@ public class CreativeParticleSourceBE extends UniversalProcessorBE {
 
     private boolean sendParticle(ServerLevel serverLevel) {
         if (particleId == null) return false;
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(particleId);
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(particleId);
         if (definition == null || !getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) return false;
         Direction direction = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite();
         BeamConnection outputConnection = BeamConnectionResolver.resolve(serverLevel, worldPosition, direction,
@@ -134,7 +134,7 @@ public class CreativeParticleSourceBE extends UniversalProcessorBE {
         ParticleTransfer.Result result;
         try {
             result = ParticleTransfer.execute(new ParticleTransfer.Request(source, 0, destination, 0,
-                    List.of(serverLevel.dimension().location(), worldPosition.immutable()), BATCH_SIZE,
+                    List.of(serverLevel.dimension().identifier(), worldPosition.immutable()), BATCH_SIZE,
                     stack -> LinearParticleProcessor.attenuateConnection(stack, definition,
                             Multiblocks.particleMachines().accelerator(), corridorLength)));
         } catch (ArithmeticException | IllegalArgumentException ignored) {
@@ -149,8 +149,8 @@ public class CreativeParticleSourceBE extends UniversalProcessorBE {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveTagData(tag, registries);
         if (particleId != null) tag.putString("particleId", particleId.toString());
         tag.putDouble("particleFocus", focus);
         tag.putDouble("particleEnergyValue", energyValue);
@@ -158,12 +158,14 @@ public class CreativeParticleSourceBE extends UniversalProcessorBE {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ResourceLocation savedId = ResourceLocation.tryParse(tag.getString("particleId"));
-        double savedFocus = tag.getDouble("particleFocus");
-        double savedValue = tag.getDouble("particleEnergyValue");
-        int savedScale = tag.getInt("particleEnergyScale");
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadTagData(tag, registries);
+        // An unset source saves no id; tryParse("") would yield "minecraft:" and change state on reload.
+        Identifier savedId = tag.getString("particleId").filter(id -> !id.isEmpty())
+                .map(Identifier::tryParse).orElse(null);
+        double savedFocus = tag.getDoubleOr("particleFocus", 0.0D);
+        double savedValue = tag.getDoubleOr("particleEnergyValue", 0.0D);
+        int savedScale = tag.getIntOr("particleEnergyScale", 0);
         if (savedId != null && Double.isFinite(savedFocus) && savedFocus >= 0 && savedValue >= 0
                 && savedScale >= 0 && savedScale < ENERGY_MULTIPLIERS.length) {
             try {

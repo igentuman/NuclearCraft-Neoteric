@@ -6,7 +6,7 @@ import igentuman.nc.api.multiblock.part.RFAmplifierDef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,9 +22,9 @@ public class FusionReactorValidator extends AbstractMultiblockValidator<FusionRe
     private static final int MAX_SIZE = 32;
     private static final int MAX_CONNECTOR_DISTANCE = MAX_SIZE / 2 + 1;
     private static final List<Direction> SIDES = List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
-    private static final ResourceLocation EXPECTED_CASING = rl("fusion_reactor_casing");
-    private static final ResourceLocation EXPECTED_CONNECTOR = rl("fusion_reactor_connector");
-    private static final ResourceLocation EXPECTED_AIR = BuiltInRegistries.BLOCK.getKey(Blocks.AIR);
+    private static final Identifier EXPECTED_CASING = rl("fusion_reactor_casing");
+    private static final Identifier EXPECTED_CONNECTOR = rl("fusion_reactor_connector");
+    private static final Identifier EXPECTED_AIR = BuiltInRegistries.BLOCK.getKey(Blocks.AIR);
 
     private Block connector;
     private Block proxy;

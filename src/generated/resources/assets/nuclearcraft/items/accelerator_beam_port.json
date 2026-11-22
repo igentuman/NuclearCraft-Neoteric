@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "nuclearcraft:block/accelerator_beam_port_disabled"
+  }
+}

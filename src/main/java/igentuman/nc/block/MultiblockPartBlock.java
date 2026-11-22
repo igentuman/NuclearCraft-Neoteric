@@ -9,11 +9,12 @@ import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.WrenchUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -31,7 +32,6 @@ import java.util.function.Supplier;
 
 import static igentuman.nc.util.TextUtils.__;
 
-/** Block entity block for a multiblock port; opens the port menu, exposes a comparator signal and cycles redstone mode. */
 public class MultiblockPartBlock extends BaseEntityBlock {
 
     public static MapCodec<MultiblockPartBlock> CODEC;
@@ -52,9 +52,9 @@ public class MultiblockPartBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        MultiblockHandler.trackBlockChange(level, pos, state, newState);
-        super.onRemove(state, level, pos, newState, movedByPiston);
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        MultiblockHandler.trackBlockChange(level, pos, state, level.getBlockState(pos));
     }
 
     @Override
@@ -79,7 +79,7 @@ public class MultiblockPartBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) return null;
+        if (level.isClientSide()) return null;
         return (lvl, pos, st, be) -> {
             if (be instanceof MultiblockPortBE partBE) partBE.serverTick();
         };
@@ -91,38 +91,38 @@ public class MultiblockPartBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-        if (level.isClientSide) return 0;
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
+        if (level.isClientSide()) return 0;
         return level.getBlockEntity(pos) instanceof MultiblockPortBE port ? port.getComparatorOutput() : 0;
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                                Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (WrenchUtil.isWrench(stack) && level.getBlockEntity(pos) instanceof IBeamPort port) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 BeamPortMode mode = player.isShiftKeyDown()
                         ? port.cycleBeamPortMode(line -> player.sendSystemMessage(Component.literal(line)))
                         : port.cycleBeamPortMode();
                 player.sendSystemMessage(__("message.nuclearcraft.beam_port_mode",
                         __("message.nuclearcraft.beam_port_mode." + mode.getSerializedName())));
             }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                 Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof MultiblockPortBE port && player.isShiftKeyDown() && port.supportsRedstone()) {
                 int mode = port.cycleRedstoneMode();
                 String[] keys = port.redstoneModes();
                 String key = mode >= 0 && mode < keys.length ? keys[mode] : "none";
-                serverPlayer.displayClientMessage(Component.translatable("message.nuclearcraft.redstone_mode",
-                        Component.translatable("message.nuclearcraft.redstone_mode." + key)), true);
+                serverPlayer.sendOverlayMessage(Component.translatable("message.nuclearcraft.redstone_mode",
+                        Component.translatable("message.nuclearcraft.redstone_mode." + key)));
             } else if (be instanceof MultiblockPortBE partBE) {
                 ModEntry entry = ModEntries.get(partBE.name);
                 if (entry != null && entry.menu() != null) {
@@ -130,6 +130,6 @@ public class MultiblockPartBlock extends BaseEntityBlock {
                 }
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 }

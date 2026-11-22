@@ -14,9 +14,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
-
-import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
-import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public class HeatExchangerLogic extends AbstractMultiblockLogic<HeatExchangerCache> {
 
@@ -47,7 +46,7 @@ public class HeatExchangerLogic extends AbstractMultiblockLogic<HeatExchangerCac
 
     @Override
     public void loadRuntime(CompoundTag tag, HolderLookup.Provider registries) {
-        heat.currentHeat = Math.max(0, tag.getDouble("currentHeat"));
+        heat.currentHeat = Math.max(0, tag.getDoubleOr("currentHeat", 0D));
         runtimeLoaded = true;
     }
 
@@ -146,11 +145,14 @@ public class HeatExchangerLogic extends AbstractMultiblockLogic<HeatExchangerCac
         if (operations <= 0) return false;
 
         int fillAmount = (int) (operations * outputAmount);
-        FluidStack toOutput = new FluidStack(outputTemplate.getFluid(), fillAmount);
-        if (tanks.fillTank(outTank, toOutput, SIMULATE) < fillAmount) return false;
-
-        tanks.drainTank(inTank, (int) (operations * inputAmount), EXECUTE);
-        tanks.fillTank(outTank, toOutput, EXECUTE);
+        int drainAmount = (int) (operations * inputAmount);
+        try (var transaction = Transaction.openRoot()) {
+            if (tanks.extract(inTank, FluidResource.of(input), drainAmount, transaction) != drainAmount
+                    || tanks.insert(outTank, FluidResource.of(outputTemplate), fillAmount, transaction) != fillAmount) {
+                return false;
+            }
+            transaction.commit();
+        }
         if (recipeHeat > 0) {
             heat.currentHeat = Math.min(heat.capacity, heat.currentHeat + (double) operations * recipeHeat);
             heat.heatPerTick += (double) operations * recipeHeat;
@@ -166,7 +168,7 @@ public class HeatExchangerLogic extends AbstractMultiblockLogic<HeatExchangerCac
 
     private HeatExchangerRecipe findRecipe(ServerLevel level, FluidStack input, boolean hot) {
         for (RecipeHolder<HeatExchangerRecipe> holder
-                : level.getRecipeManager().getAllRecipesFor(HeatExchangerRecipes.HX_TYPE.get())) {
+                : level.recipeAccess().recipeMap().byType(HeatExchangerRecipes.HX_TYPE.get())) {
             HeatExchangerRecipe recipe = holder.value();
             if (hot ? !recipe.isHot() : !recipe.isCold()) continue;
             if (recipe.input().test(input)) return recipe;

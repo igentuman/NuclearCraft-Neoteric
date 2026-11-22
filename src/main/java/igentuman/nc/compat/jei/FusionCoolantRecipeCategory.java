@@ -11,23 +11,24 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 /** JEI category for fusion reactor coolant conversion recipes. */
-public class FusionCoolantRecipeCategory implements IRecipeCategory<FusionCoolantRecipe> {
+public class FusionCoolantRecipeCategory implements IRecipeCategory<RecipeHolder<FusionCoolantRecipe>> {
 
-    public static final RecipeType<FusionCoolantRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "fusion_coolant", FusionCoolantRecipe.class);
+    public static final IRecipeHolderType<FusionCoolantRecipe> TYPE =
+            IRecipeHolderType.create(NuclearCraft.rl("fusion_coolant"));
 
     private static final int WIDTH = 124;
     private static final int HEIGHT = 46;
@@ -44,7 +45,7 @@ public class FusionCoolantRecipeCategory implements IRecipeCategory<FusionCoolan
     }
 
     @Override
-    public RecipeType<FusionCoolantRecipe> getRecipeType() {
+    public IRecipeHolderType<FusionCoolantRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -69,17 +70,16 @@ public class FusionCoolantRecipeCategory implements IRecipeCategory<FusionCoolan
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, FusionCoolantRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<FusionCoolantRecipe> holder, IFocusGroup focuses) {
+        FusionCoolantRecipe recipe = holder.value();
         IRecipeSlotBuilder input = builder.addSlot(RecipeIngredientRole.INPUT, 7, 5);
-        for (FluidStack stack : recipe.input().getFluids()) {
-            input.addFluidStack(stack.getFluid(), recipe.input().amount());
-        }
+        JeiRecipeSlots.addFluids(input, recipe.input());
         input.setFluidRenderer(Math.max(1, recipe.input().amount()), false, 16, 16);
 
         IRecipeSlotBuilder output = builder.addSlot(RecipeIngredientRole.OUTPUT, WIDTH - 23, 5);
         List<FluidStack> members = recipe.output().members();
         for (FluidStack stack : members) {
-            output.addFluidStack(stack.getFluid(), stack.getAmount());
+            JeiRecipeSlots.addFluid(output, stack);
         }
         if (!members.isEmpty()) {
             output.setFluidRenderer(Math.max(1, members.getFirst().getAmount()), false, 16, 16);
@@ -87,14 +87,15 @@ public class FusionCoolantRecipeCategory implements IRecipeCategory<FusionCoolan
     }
 
     @Override
-    public void draw(FusionCoolantRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics,
+    public void draw(RecipeHolder<FusionCoolantRecipe> holder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics,
                      double mouseX, double mouseY) {
+        FusionCoolantRecipe recipe = holder.value();
         slot.draw(graphics, 6, 4);
         slot.draw(graphics, WIDTH - 24, 4);
-        graphics.drawString(Minecraft.getInstance().font, Component.literal("→"), WIDTH / 2 - 3, 8,
-                0x404040, false);
-        graphics.drawString(Minecraft.getInstance().font,
+        graphics.text(Minecraft.getInstance().font, Component.literal("→"), WIDTH / 2 - 3, 8,
+                0xFF404040, false);
+        graphics.text(Minecraft.getInstance().font,
                 Component.translatable("gui.nuclearcraft.fusion_coolant.cooling", recipe.coolingRate())
-                        .withStyle(ChatFormatting.DARK_GRAY), 4, 27, 0x404040, false);
+                        .withStyle(ChatFormatting.DARK_GRAY), 4, 27, 0xFF404040, false);
     }
 }

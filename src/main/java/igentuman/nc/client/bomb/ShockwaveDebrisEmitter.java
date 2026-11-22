@@ -3,11 +3,13 @@ package igentuman.nc.client.bomb;
 import com.mojang.blaze3d.vertex.PoseStack;
 import igentuman.nc.config.Client;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.ParticleStatus;
+import net.minecraft.server.level.ParticleStatus;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.BlockModelResolver;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -16,14 +18,15 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public final class ShockwaveDebrisEmitter {
 
@@ -208,17 +211,24 @@ public final class ShockwaveDebrisEmitter {
         return spawned;
     }
 
-    public static void render(RenderLevelStageEvent event) {
-        if (PIECES.isEmpty()) return;
+    private static final BlockDisplayContext DISPLAY = BlockDisplayContext.create();
+    private static final Map<BlockState, BlockModelRenderState> MODELS = new HashMap<>();
+
+    public static void render(SubmitCustomGeometryEvent event) {
+        if (PIECES.isEmpty()) {
+            MODELS.clear();
+            return;
+        }
         Minecraft mc = Minecraft.getInstance();
         ClientLevel level = mc.level;
         if (level == null) return;
-        Vec3 camera = event.getCamera().getPosition();
-        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
-        Frustum frustum = event.getFrustum();
+        Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
+        float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        Frustum frustum = event.getLevelRenderState().cameraRenderState.cullFrustum;
         PoseStack pose = event.getPoseStack();
-        MultiBufferSource.BufferSource buffers = mc.renderBuffers().bufferSource();
-        BlockRenderDispatcher dispatcher = mc.getBlockRenderer();
+        SubmitNodeCollector collector = event.getSubmitNodeCollector();
+        BlockModelResolver resolver = mc.getBlockModelResolver();
+        Map<BlockState, BlockModelRenderState> resolved = new HashMap<>();
         Quaternionf rotation = new Quaternionf();
         for (Piece p : PIECES) {
             double x = p.x(partialTick);
@@ -229,15 +239,21 @@ public final class ShockwaveDebrisEmitter {
             if (frustum != null && !frustum.isVisible(new AABB(x - half, y - half, z - half, x + half, y + half, z + half))) {
                 continue;
             }
+            BlockModelRenderState model = resolved.computeIfAbsent(p.state, s -> {
+                BlockModelRenderState m = MODELS.computeIfAbsent(s, k -> new BlockModelRenderState());
+                resolver.update(m, s, DISPLAY);
+                return m;
+            });
             pose.pushPose();
             pose.translate(x - camera.x, y - camera.y, z - camera.z);
             pose.mulPose(rotation.identity().rotateAxis(Mth.lerp(partialTick, p.prevRot, p.rot), p.axis));
             pose.scale(p.sx, p.sy, p.sz);
             pose.translate(-0.5f, -0.5f, -0.5f);
-            int light = LevelRenderer.getLightColor(level, BlockPos.containing(x, y, z));
-            dispatcher.renderSingleBlock(p.state, pose, buffers, light, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
+            int light = LevelRenderer.getLightCoords(level, BlockPos.containing(x, y, z));
+            model.submit(pose, collector, light, OverlayTexture.NO_OVERLAY, 0);
             pose.popPose();
         }
+        MODELS.keySet().retainAll(resolved.keySet());
     }
 
     public static int liveCount() {
@@ -246,5 +262,6 @@ public final class ShockwaveDebrisEmitter {
 
     public static void clear() {
         PIECES.clear();
+        MODELS.clear();
     }
 }

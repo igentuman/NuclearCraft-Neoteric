@@ -1,39 +1,73 @@
 package igentuman.nc.particle;
 
-import igentuman.nc.NuclearCraft;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import igentuman.nc.api.particle.IParticleHandler;
 import igentuman.nc.api.particle.ParticleAction;
 import igentuman.nc.api.particle.ParticleStack;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public class ParticleStorage implements IParticleHandler, INBTSerializable<CompoundTag> {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/** Stores particle channels with rollback and commit-only change notifications. */
+public class ParticleStorage implements IParticleHandler, ValueIOSerializable {
+
+    private record SavedChannel(int channel, long capacity, ParticleStack stack) {
+        private static final Codec<SavedChannel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.intRange(0, Integer.MAX_VALUE).fieldOf("Channel").forGetter(SavedChannel::channel),
+                Codec.LONG.validate(capacity -> capacity >= 0 ? DataResult.success(capacity)
+                        : DataResult.error(() -> "Negative particle capacity")).fieldOf("Capacity").forGetter(SavedChannel::capacity),
+                ParticleStack.CODEC.fieldOf("Particle").forGetter(SavedChannel::stack)
+        ).apply(instance, SavedChannel::new));
+    }
+
+    // ValueInput can accept partial results; a damaged list must never erase valid channels.
+    private static final Codec<List<SavedChannel>> CHANNELS_CODEC = SavedChannel.CODEC.listOf().mapResult(new Codec.ResultFunction<>() {
+        private <T> DataResult<T> complete(DataResult<T> result) {
+            return result.error().<DataResult<T>>map(error -> DataResult.error(error::message)).orElse(result);
+        }
+        @Override public <T> DataResult<Pair<List<SavedChannel>, T>> apply(DynamicOps<T> ops, T input,
+                                                                         DataResult<Pair<List<SavedChannel>, T>> result) {
+            return complete(result);
+        }
+        @Override public <T> DataResult<T> coApply(DynamicOps<T> ops, List<SavedChannel> input, DataResult<T> result) {
+            return complete(result);
+        }
+    });
 
     protected int channels;
     protected ParticleStack[] stacks;
     protected long[] capacities;
+    private final ChannelJournal[] journals;
 
     public ParticleStorage(int channels, long[] capacities) {
+        if (channels < 0 || capacities.length != channels || Arrays.stream(capacities).anyMatch(capacity -> capacity < 0)) {
+            throw new IllegalArgumentException("Invalid particle channel capacities");
+        }
         this.channels = channels;
         this.stacks = new ParticleStack[channels];
-        this.capacities = capacities;
+        this.capacities = capacities.clone();
+        this.journals = new ChannelJournal[channels];
         for (int i = 0; i < channels; i++) {
             this.stacks[i] = ParticleStack.EMPTY;
+            this.journals[i] = new ChannelJournal(i);
         }
     }
 
     public ParticleStorage(int channels, long defaultCapacity) {
-        this.channels = channels;
-        this.stacks = new ParticleStack[channels];
-        this.capacities = new long[channels];
-        for (int i = 0; i < channels; i++) {
-            this.stacks[i] = ParticleStack.EMPTY;
-            this.capacities[i] = defaultCapacity;
-        }
+        this(channels, new long[channels]);
+        if (defaultCapacity < 0) throw new IllegalArgumentException("Negative particle capacity");
+        Arrays.fill(this.capacities, defaultCapacity);
     }
 
     @Override
@@ -55,6 +89,15 @@ public class ParticleStorage implements IParticleHandler, INBTSerializable<Compo
 
     @Override
     public ParticleStack insert(int channel, ParticleStack stack, ParticleAction action) {
+        try (var transaction = Transaction.openRoot()) {
+            ParticleStack remainder = insert(channel, stack, transaction);
+            if (action == ParticleAction.EXECUTE) transaction.commit();
+            return remainder;
+        }
+    }
+
+    /** Inserts particles in the same transaction as an item or fluid conversion. */
+    public ParticleStack insert(int channel, ParticleStack stack, TransactionContext transaction) {
         validateChannelIndex(channel);
         if (stack.isEmpty()) {
             return ParticleStack.EMPTY;
@@ -68,10 +111,8 @@ public class ParticleStorage implements IParticleHandler, INBTSerializable<Compo
             if (toInsert <= 0) {
                 return stack;
             }
-            if (action == ParticleAction.EXECUTE) {
-                stacks[channel] = new ParticleStack(stack.particleId(), toInsert, stack.meanEnergyKeV(), stack.focus());
-                onContentsChanged(channel);
-            }
+            journals[channel].updateSnapshots(transaction);
+            stacks[channel] = new ParticleStack(stack.particleId(), toInsert, stack.meanEnergyKeV(), stack.focus());
             long remainderAmount = stack.amount() - toInsert;
             return remainderAmount > 0
                     ? new ParticleStack(stack.particleId(), remainderAmount, stack.meanEnergyKeV(), stack.focus())
@@ -89,10 +130,8 @@ public class ParticleStorage implements IParticleHandler, INBTSerializable<Compo
             return stack;
         }
         long toInsert = Math.min(stack.amount(), space);
-        if (action == ParticleAction.EXECUTE) {
-            stacks[channel] = ParticleStack.merge(existing, new ParticleStack(stack.particleId(), toInsert, stack.meanEnergyKeV(), stack.focus()));
-            onContentsChanged(channel);
-        }
+        journals[channel].updateSnapshots(transaction);
+        stacks[channel] = ParticleStack.merge(existing, new ParticleStack(stack.particleId(), toInsert, stack.meanEnergyKeV(), stack.focus()));
         long remainderAmount = stack.amount() - toInsert;
         return remainderAmount > 0
                 ? new ParticleStack(stack.particleId(), remainderAmount, stack.meanEnergyKeV(), stack.focus())
@@ -101,6 +140,15 @@ public class ParticleStorage implements IParticleHandler, INBTSerializable<Compo
 
     @Override
     public ParticleStack extract(int channel, long maximumAmount, ParticleAction action) {
+        try (var transaction = Transaction.openRoot()) {
+            ParticleStack extracted = extract(channel, maximumAmount, transaction);
+            if (action == ParticleAction.EXECUTE) transaction.commit();
+            return extracted;
+        }
+    }
+
+    /** Extracts particles with nested-transaction rollback support. */
+    public ParticleStack extract(int channel, long maximumAmount, TransactionContext transaction) {
         validateChannelIndex(channel);
         if (maximumAmount <= 0) {
             return ParticleStack.EMPTY;
@@ -114,59 +162,61 @@ public class ParticleStorage implements IParticleHandler, INBTSerializable<Compo
         long toExtract = Math.min(maximumAmount, existing.amount());
         ParticleStack extracted = new ParticleStack(existing.particleId(), toExtract, existing.meanEnergyKeV(), existing.focus());
 
-        if (action == ParticleAction.EXECUTE) {
-            long remaining = existing.amount() - toExtract;
-            stacks[channel] = remaining > 0
-                    ? new ParticleStack(existing.particleId(), remaining, existing.meanEnergyKeV(), existing.focus())
-                    : ParticleStack.EMPTY;
-            onContentsChanged(channel);
-        }
+        journals[channel].updateSnapshots(transaction);
+        long remaining = existing.amount() - toExtract;
+        stacks[channel] = remaining > 0
+                ? new ParticleStack(existing.particleId(), remaining, existing.meanEnergyKeV(), existing.focus())
+                : ParticleStack.EMPTY;
         return extracted;
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        ListTag channelList = new ListTag();
-        for (int i = 0; i < channels; i++) {
-            if (!stacks[i].isEmpty()) {
-                int channel = i;
-                ParticleStack.CODEC.encodeStart(NbtOps.INSTANCE, stacks[i]).result().ifPresent(particleTag -> {
-                    CompoundTag channelTag = new CompoundTag();
-                    channelTag.putInt("Channel", channel);
-                    channelTag.putLong("Capacity", capacities[channel]);
-                    channelTag.put("Particle", particleTag);
-                    channelList.add(channelTag);
-                });
-            }
+    public void serialize(ValueOutput output) {
+        List<SavedChannel> saved = new ArrayList<>(channels);
+        for (int channel = 0; channel < channels; channel++) {
+            saved.add(new SavedChannel(channel, capacities[channel], stacks[channel]));
         }
-        CompoundTag nbt = new CompoundTag();
-        nbt.put("Channels", channelList);
-        nbt.putInt("Size", channels);
-        return nbt;
+        output.putInt("Size", channels);
+        output.store("Channels", CHANNELS_CODEC, saved);
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        ListTag channelList = nbt.getList("Channels", Tag.TAG_COMPOUND);
-        for (int i = 0; i < channelList.size(); i++) {
-            CompoundTag channelTag = channelList.getCompound(i);
-            int channel = channelTag.getInt("Channel");
-            if (channel < 0 || channel >= channels) {
-                continue;
-            }
-            if (channelTag.contains("Capacity", Tag.TAG_LONG)) {
-                capacities[channel] = channelTag.getLong("Capacity");
-            }
-            ParticleStack.CODEC.parse(NbtOps.INSTANCE, channelTag.get("Particle")).result().ifPresentOrElse(
-                    stack -> stacks[channel] = stack,
-                    () -> NuclearCraft.LOGGER.error("Particle storage: dropping unreadable or unknown-species entry in channel {}", channel)
-            );
+    public void deserialize(ValueInput input) {
+        if (Arrays.stream(journals).anyMatch(SnapshotJournal::isInTransaction)) {
+            throw new IllegalStateException("Cannot replace particle storage during a transaction");
         }
+        if (input.getIntOr("Size", -1) != channels) throw new IllegalArgumentException("Configured particle channel count changed");
+        List<SavedChannel> saved = input.read("Channels", CHANNELS_CODEC)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid current-format particle storage"));
+        if (saved.size() != channels) throw new IllegalArgumentException("Missing particle channels");
+        ParticleStack[] loaded = new ParticleStack[channels];
+        long[] loadedCapacities = new long[channels];
+        for (SavedChannel channel : saved) {
+            if (channel.channel() >= channels || loaded[channel.channel()] != null
+                    || channel.stack().amount() > channel.capacity()) {
+                throw new IllegalArgumentException("Invalid or duplicate particle channel: " + channel.channel());
+            }
+            loaded[channel.channel()] = channel.stack();
+            loadedCapacities[channel.channel()] = channel.capacity();
+        }
+        stacks = loaded;
+        capacities = loadedCapacities;
     }
 
     protected void validateChannelIndex(int channel) {
         if (channel < 0 || channel >= channels) {
             throw new IndexOutOfBoundsException("Channel " + channel + " not in valid range - [0," + channels + ")");
+        }
+    }
+
+    private class ChannelJournal extends SnapshotJournal<ParticleStack> {
+        private final int channel;
+
+        private ChannelJournal(int channel) { this.channel = channel; }
+        @Override protected ParticleStack createSnapshot() { return stacks[channel]; }
+        @Override protected void revertToSnapshot(ParticleStack snapshot) { stacks[channel] = snapshot; }
+        @Override protected void onRootCommit(ParticleStack original) {
+            if (!original.equals(stacks[channel])) onContentsChanged(channel);
         }
     }
 

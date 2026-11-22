@@ -1,5 +1,7 @@
 package igentuman.nc.entity.anomaly;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntitySpawnReason;
 import igentuman.nc.config.Common;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,7 +12,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 
 import java.util.List;
 
@@ -40,13 +43,13 @@ public class ElectricAnomalyEntity extends AnomalyEntity {
             return;
         }
         LivingEntity target = targets.get(random.nextInt(targets.size()));
-        LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level());
+        LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level(), EntitySpawnReason.TRIGGERED);
         if (bolt != null) {
-            bolt.moveTo(target.getX(), target.getY(), target.getZ());
+            bolt.snapTo(target.getX(), target.getY(), target.getZ());
             bolt.setVisualOnly(true);
             level().addFreshEntity(bolt);
         }
-        target.hurt(damageSources().lightningBolt(), (float) (double) Common.ANOMALY_CONFIG.ELECTRIC_DAMAGE.get());
+        target.hurtServer((ServerLevel) level(), damageSources().lightningBolt(), (float) (double) Common.ANOMALY_CONFIG.ELECTRIC_DAMAGE.get());
     }
 
     @Override
@@ -75,14 +78,15 @@ public class ElectricAnomalyEntity extends AnomalyEntity {
 
     private boolean tryDischargeInto(BlockPos pos, int threshold) {
         for (Direction side : Direction.values()) {
-            IEnergyStorage storage = level().getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
-            if (storage == null || !storage.canReceive()) {
-                continue;
-            }
-            int free = storage.getMaxEnergyStored() - storage.getEnergyStored();
-            if (free >= threshold) {
-                storage.receiveEnergy(threshold, false);
-                return true;
+            EnergyHandler storage = level().getCapability(Capabilities.Energy.BLOCK, pos, side);
+            if (storage == null) continue;
+            if (storage.getCapacityAsLong() - storage.getAmountAsLong() >= threshold) {
+                try (var transaction = Transaction.openRoot()) {
+                    if (storage.insert(threshold, transaction) == threshold) {
+                        transaction.commit();
+                        return true;
+                    }
+                }
             }
         }
         return false;

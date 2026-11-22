@@ -8,14 +8,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record CreativeParticleSourceSettingsPayload(
         BlockPos sourcePos,
-        ResourceLocation particleId,
+        Identifier particleId,
         double focus,
         double energyValue,
         int energyScale
@@ -27,7 +27,7 @@ public record CreativeParticleSourceSettingsPayload(
     public static final StreamCodec<FriendlyByteBuf, CreativeParticleSourceSettingsPayload> STREAM_CODEC =
             StreamCodec.composite(
                     BlockPos.STREAM_CODEC, CreativeParticleSourceSettingsPayload::sourcePos,
-                    ResourceLocation.STREAM_CODEC, CreativeParticleSourceSettingsPayload::particleId,
+                    Identifier.STREAM_CODEC, CreativeParticleSourceSettingsPayload::particleId,
                     ByteBufCodecs.DOUBLE, CreativeParticleSourceSettingsPayload::focus,
                     ByteBufCodecs.DOUBLE, CreativeParticleSourceSettingsPayload::energyValue,
                     ByteBufCodecs.VAR_INT, CreativeParticleSourceSettingsPayload::energyScale,
@@ -45,7 +45,7 @@ public record CreativeParticleSourceSettingsPayload(
                     || !(player.containerMenu instanceof CreativeParticleSourceContainer menu)
                     || !menu.getPosition().equals(payload.sourcePos()) || !menu.stillValid(player)
                     || player.distanceToSqr(payload.sourcePos().getCenter()) > 64D) return;
-            BlockEntity blockEntity = player.serverLevel().getBlockEntity(payload.sourcePos());
+            BlockEntity blockEntity = player.level().getBlockEntity(payload.sourcePos());
             if (blockEntity instanceof CreativeParticleSourceBE source && menu.getBlockEntity() == source) {
                 source.updateSettings(payload.particleId(), payload.focus(),
                         payload.energyValue(), payload.energyScale());

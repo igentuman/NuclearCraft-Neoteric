@@ -13,7 +13,7 @@ public class ProcessorApi extends MachineApi<GlobalBlockEntity> {
         super(be, errors);
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final int getSlotsCount() {
         int items = be.hasInventory() ? be.contentHandler.getItemHandler().getSlots() : 0;
@@ -21,7 +21,7 @@ public class ProcessorApi extends MachineApi<GlobalBlockEntity> {
         return items + tanks;
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final String getSlotMode(int slot, String side) {
         checkSlot(slot);

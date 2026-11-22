@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft",
   "key": {
-    "B": {
-      "item": "minecraft:bucket"
-    },
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "M": {
-      "tag": "c:ingots/magnesium"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    },
-    "S": {
-      "item": "nuclearcraft:servo"
-    }
+    "B": "minecraft:bucket",
+    "C": "nuclearcraft:chassis",
+    "M": "#c:ingots/magnesium",
+    "P": "nuclearcraft:plate_advanced",
+    "S": "nuclearcraft:servo"
   },
   "pattern": [
     "PMP",
@@ -25,7 +15,6 @@
     "PSP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:extractor"
   }
 }

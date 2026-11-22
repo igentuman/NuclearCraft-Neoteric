@@ -4,9 +4,9 @@ import igentuman.nc.block.accelerator.AcceleratorBeamPortBlock;
 import igentuman.nc.block.accelerator.BeamPortMode;
 import igentuman.nc.compat.ponder.PonderScenes;
 import igentuman.nc.setup.ModEntries;
-import net.createmod.ponder.api.PonderPalette;
-import net.createmod.ponder.api.scene.SceneBuilder;
-import net.createmod.ponder.api.scene.SceneBuildingUtil;
+import net.createmod.ponder.api.client.PonderPalette;
+import net.createmod.ponder.api.client.scene.SceneBuilder;
+import net.createmod.ponder.api.client.scene.SceneBuildingUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 

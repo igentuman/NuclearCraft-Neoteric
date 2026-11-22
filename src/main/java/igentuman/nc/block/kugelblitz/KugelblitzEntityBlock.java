@@ -5,6 +5,7 @@ import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -50,7 +51,7 @@ public class KugelblitzEntityBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return (lvl, pos, st, be) -> {
                 if (be instanceof GlobalBlockEntity g) g.clientTick();
             };
@@ -67,9 +68,9 @@ public class KugelblitzEntityBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        super.onRemove(state, level, pos, newState, movedByPiston);
-        if (track) MultiblockHandler.trackBlockChange(level, pos, state, newState);
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        if (track) MultiblockHandler.trackBlockChange(level, pos, state, level.getBlockState(pos));
     }
 
 }

@@ -1,8 +1,8 @@
 package igentuman.nc.compat.ponder.scenes;
 
 import igentuman.nc.compat.ponder.PonderScenes;
-import net.createmod.ponder.api.scene.SceneBuilder;
-import net.createmod.ponder.api.scene.SceneBuildingUtil;
+import net.createmod.ponder.api.client.scene.SceneBuilder;
+import net.createmod.ponder.api.client.scene.SceneBuildingUtil;
 
 public class TargetChamberPonderScenes {
 

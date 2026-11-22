@@ -84,7 +84,7 @@ public class BlastTask implements Runnable {
         double ez = epicenter.getZ();
         for (int sx = sxMin; sx <= sxMax; sx++) {
             for (int sz = szMin; sz <= szMax; sz++) {
-                long chunkKey = ChunkPos.asLong(sx, sz);
+                long chunkKey = ChunkPos.pack(sx, sz);
                 if (!chunkSnapshot.containsKey(chunkKey)) continue;
                 for (int sy = syMin; sy <= syMax; sy++) {
                     double minX = sx * 16.0, maxX = minX + 16.0;
@@ -176,7 +176,7 @@ public class BlastTask implements Runnable {
                 long dZCz = cz - czEpicenter;
                 double dSq = xTerm + dZCz * dZCz * invHSq;
                 if (dSq > 1.0) continue;
-                if (!chunkSnapshot.containsKey(ChunkPos.asLong(cx, cz))) continue;
+                if (!chunkSnapshot.containsKey(ChunkPos.pack(cx, cz))) continue;
                 double distanceFactor = clamp01(1.0 - dSq);
                 if (distanceFactor <= 0.0) continue;
                 outQueue.add(new BlastOp.RadiationDeposit(new ChunkPos(cx, cz), distanceFactor));
@@ -191,10 +191,10 @@ public class BlastTask implements Runnable {
     }
 
     private BlockState stateAt(BlockPos pos) {
-        long key = ChunkPos.asLong(pos.getX() >> 4, pos.getZ() >> 4);
+        long key = ChunkPos.pack(pos.getX() >> 4, pos.getZ() >> 4);
         ChunkAccess chunk = chunkSnapshot.get(key);
         if (chunk == null) return null;
-        if (pos.getY() < chunk.getMinBuildHeight() || pos.getY() >= chunk.getMaxBuildHeight()) return null;
+        if (pos.getY() < chunk.getMinY() || pos.getY() > chunk.getMaxY()) return null;
         try {
             return chunk.getBlockState(pos);
         } catch (Throwable t) {

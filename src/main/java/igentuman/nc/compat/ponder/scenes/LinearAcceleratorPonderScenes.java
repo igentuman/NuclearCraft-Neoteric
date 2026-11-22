@@ -4,10 +4,9 @@ import igentuman.nc.compat.ponder.PonderScenes;
 import igentuman.nc.block.accelerator.AcceleratorBeamPortBlock;
 import igentuman.nc.block.accelerator.BeamPortMode;
 import igentuman.nc.setup.ModEntries;
-import net.createmod.ponder.api.PonderPalette;
-import net.createmod.ponder.api.scene.SceneBuilder;
-import net.createmod.ponder.api.scene.SceneBuildingUtil;
-import net.createmod.ponder.foundation.instruction.RotateSceneInstruction;
+import net.createmod.ponder.api.client.PonderPalette;
+import net.createmod.ponder.api.client.scene.SceneBuilder;
+import net.createmod.ponder.api.client.scene.SceneBuildingUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -76,7 +75,7 @@ public class LinearAcceleratorPonderScenes {
         scene.idle(65);
 
         scene.addKeyframe();
-        scene.addInstruction(new RotateSceneInstruction(0, 180, true));
+        scene.rotateCameraY(180);
         scene.world().showSection(util.select().fromTo(0, 1, 0, 24, 4, 0), Direction.SOUTH);
         scene.world().showSection(util.select().fromTo(0, 1, 4, 24, 4, 4), Direction.NORTH);
         scene.world().showSection(util.select().fromTo(0, 1, 1, 0, 4, 3), Direction.EAST);

@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/zirconium"
-  },
+  "ingredient": "#c:dusts/zirconium",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:zirconium_ingot"
   }
 }

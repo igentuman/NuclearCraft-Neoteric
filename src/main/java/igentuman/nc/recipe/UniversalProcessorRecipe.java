@@ -1,12 +1,15 @@
 package igentuman.nc.recipe;
 
+import igentuman.nc.api.recipe.FluidOutput;
+import igentuman.nc.api.recipe.ItemOutput;
+import igentuman.nc.api.recipe.ProcessorRecipeView;
 import igentuman.nc.config.Processors;
 import igentuman.nc.setup.ModEntries;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import igentuman.nc.setup.Registers;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -18,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Shared recipe implementation for every processor, holding item/fluid inputs and outputs, process time, and energy. */
-public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput> {
+public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput>, ProcessorRecipeView {
 
     private final String processorName;
     private final List<SizedIngredient> itemInputs;
@@ -38,10 +41,10 @@ public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput> {
             int energyPerTick
     ) {
         this.processorName = processorName;
-        this.itemInputs = itemInputs;
-        this.fluidInputs = fluidInputs;
-        this.itemOutputs = itemOutputs;
-        this.fluidOutputs = fluidOutputs;
+        this.itemInputs = List.copyOf(itemInputs);
+        this.fluidInputs = List.copyOf(fluidInputs);
+        this.itemOutputs = List.copyOf(itemOutputs);
+        this.fluidOutputs = List.copyOf(fluidOutputs);
         this.processTime = processTime;
         this.energyPerTick = energyPerTick;
     }
@@ -82,37 +85,45 @@ public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(ProcessorRecipeInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(ProcessorRecipeInput input) {
+        return itemOutputs.isEmpty() ? ItemStack.EMPTY : itemOutputs.getFirst().resolve();
+    }
+
+    /** First deterministic output for machine and encoder presentation. */
+    public ItemStack getResultItem() {
         return itemOutputs.isEmpty() ? ItemStack.EMPTY : itemOutputs.getFirst().resolve();
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return true;
+    public boolean showNotification() {
+        return false;
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return itemOutputs.isEmpty() ? ItemStack.EMPTY : itemOutputs.getFirst().resolve();
+    public String group() {
+        return "";
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        NonNullList<Ingredient> list = NonNullList.create();
-        for (SizedIngredient si : itemInputs) {
-            list.add(si.ingredient());
-        }
-        return list;
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return ModEntries.get(processorName).recipeSerializer().get();
+    public RecipeBookCategory recipeBookCategory() {
+        return Registers.PROCESSOR_RECIPE_CATEGORY.get();
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return ModEntries.get(processorName).recipeType().get();
+    @SuppressWarnings("unchecked")
+    public RecipeSerializer<UniversalProcessorRecipe> getSerializer() {
+        return (RecipeSerializer<UniversalProcessorRecipe>) ModEntries.get(processorName).recipeSerializer().get();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public RecipeType<UniversalProcessorRecipe> getType() {
+        return (RecipeType<UniversalProcessorRecipe>) ModEntries.get(processorName).recipeType().get();
     }
 
     @Override
@@ -122,22 +133,27 @@ public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput> {
 
     // --- Getters ---
 
+    @Override
     public String getProcessorName() {
         return processorName;
     }
 
+    @Override
     public List<SizedIngredient> getItemInputs() {
         return itemInputs;
     }
 
+    @Override
     public List<SizedFluidIngredient> getFluidInputs() {
         return fluidInputs;
     }
 
+    @Override
     public List<ItemOutput> getItemOutputs() {
         return itemOutputs;
     }
 
+    @Override
     public List<FluidOutput> getFluidOutputs() {
         return fluidOutputs;
     }
@@ -152,18 +168,22 @@ public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput> {
         return fluidOutputs.get(i).resolve();
     }
 
+    @Override
     public int getBaseProcessTime() {
         return processTime;
     }
 
+    @Override
     public int getBaseEnergyPerTick() {
         return energyPerTick;
     }
 
+    @Override
     public int getProcessTime() {
         return Processors.processTime(processorName, processTime);
     }
 
+    @Override
     public int getEnergyPerTick() {
         return Processors.energyPerTick(processorName, energyPerTick);
     }
@@ -173,7 +193,7 @@ public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput> {
             if (si.ingredient().isEmpty()) return false;
         }
         for (SizedFluidIngredient sfi : fluidInputs) {
-            if (sfi.ingredient().isEmpty()) return false;
+            if (sfi.ingredient().fluids().isEmpty()) return false;
         }
         for (ItemOutput output : itemOutputs) {
             if (!output.isComplete()) return false;
@@ -195,7 +215,7 @@ public class UniversalProcessorRecipe implements Recipe<ProcessorRecipeInput> {
         }
         for (int i = 0; i < fluidInputs.size(); i++) {
             SizedFluidIngredient input = fluidInputs.get(i);
-            if (input.ingredient().isEmpty()) {
+            if (input.ingredient().fluids().isEmpty()) {
                 problems.add("fluid_inputs[" + i + "] resolved to no fluids: " + input);
             }
         }

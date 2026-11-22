@@ -25,9 +25,9 @@ public final class HighEnergyComponents {
         if (initialized) return;
         initialized = true;
         for (String tier : TIERS) {
-            add(tier + "_electromagnet").block(name -> new ElectromagnetBlock(properties())).build();
-            add(tier + "_electromagnet_slope").block(name -> new ElectromagnetSlopeBlock(properties().noOcclusion())).build();
-            add(tier + "_rf_amplifier").block(name -> new RFAmplifierBlock(properties())).build();
+            add(tier + "_electromagnet").block(ElectromagnetBlock::new, HighEnergyComponents::properties).build();
+            add(tier + "_electromagnet_slope").block(ElectromagnetSlopeBlock::new, () -> properties().noOcclusion()).build();
+            add(tier + "_rf_amplifier").block(RFAmplifierBlock::new, HighEnergyComponents::properties).build();
         }
     }
 

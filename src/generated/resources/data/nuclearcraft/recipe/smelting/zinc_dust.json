@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/zinc"
-  },
+  "ingredient": "#c:dusts/zinc",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:zinc_ingot"
   }
 }

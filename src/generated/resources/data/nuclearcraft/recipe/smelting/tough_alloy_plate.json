@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:plates/tough_alloy"
-  },
+  "ingredient": "#c:plates/tough_alloy",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:tough_alloy_ingot"
   }
 }

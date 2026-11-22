@@ -1,22 +1,24 @@
 package igentuman.nc.util;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import igentuman.nc.client.render.builder.StructurePreviewState;
+import igentuman.nc.client.render.builder.PreviewBlockEntities;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
+import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.HashMap;
 import java.util.Map;
 
-/** Renders a rotatable, sliceable 3D preview of a multiblock structure inside a GUI rectangle. */
+/**
+ * Renders a rotatable, sliceable 3D preview of a multiblock structure inside a GUI rectangle, through
+ * a picture-in-picture state drawn by {@link igentuman.nc.client.render.builder.StructurePreviewPipRenderer}.
+ */
 public final class StructurePreviewRenderer {
 
     private static final float ROTATION_SPEED_DEG_PER_SEC = 15f;
@@ -35,7 +37,7 @@ public final class StructurePreviewRenderer {
 
     private StructurePreviewRenderer() {}
 
-    public static void render(GuiGraphics graphics, MultiblockStructure structure,
+    public static void render(GuiGraphicsExtractor graphics, MultiblockStructure structure,
                               int x, int y, int width, int height,
                               double mouseX, double mouseY) {
         if (structure == null) return;
@@ -60,49 +62,76 @@ public final class StructurePreviewRenderer {
             pitch = TILT_DEG;
         }
 
-        PoseStack pose = graphics.pose();
-        pose.pushPose();
-        pose.translate(x + width / 2f, y + height / 2f, 200f);
-        pose.scale(scale, -scale, scale);
-        pose.mulPose(new Quaternionf().rotationX((float) Math.toRadians(pitch)));
-        pose.mulPose(new Quaternionf().rotationY((float) Math.toRadians(yaw)));
-        pose.translate(-sw / 2f, -sh / 2f, -sd / 2f);
+        Map<BlockPos, BlockState> relative = relativeBlocks(structure);
+        submit(graphics, relative, relativePayloads(structure), sw, sh, sd, yaw, pitch, sliceLevel, true, x, y, width, height, scale);
+    }
 
-        Minecraft mc = Minecraft.getInstance();
-        BlockRenderDispatcher dispatcher = mc.getBlockRenderer();
-        MultiBufferSource.BufferSource buffers = mc.renderBuffers().bufferSource();
+    private static final java.util.WeakHashMap<MultiblockStructure, Map<BlockPos, BlockState>> RELATIVE_BLOCKS = new java.util.WeakHashMap<>();
 
-        RenderSystem.applyModelViewMatrix();
-        com.mojang.blaze3d.platform.Lighting.setupFor3DItems();
+    /** Block states keyed relative to the structure minimum, cached per structure so the mesh is reused. */
+    private static Map<BlockPos, BlockState> relativeBlocks(MultiblockStructure structure) {
+        return RELATIVE_BLOCKS.computeIfAbsent(structure, s -> {
+            Map<BlockPos, BlockState> out = new HashMap<>();
+            for (Map.Entry<BlockPos, BlockState> entry : s.getBlocks().entrySet()) {
+                BlockState state = entry.getValue();
+                if (state == null || state.isAir()) continue;
+                BlockPos pos = entry.getKey();
+                out.put(new BlockPos(pos.getX() - s.getMinX(), pos.getY() - s.getMinY(), pos.getZ() - s.getMinZ()), state);
+            }
+            return Map.copyOf(out);
+        });
+    }
 
-        for (Map.Entry<BlockPos, BlockState> entry : structure.getBlocks().entrySet()) {
-            BlockState state = entry.getValue();
-            if (state == null || state.isAir()) continue;
-            BlockPos pos = entry.getKey();
-            int rx = pos.getX() - structure.getMinX();
-            int ry = pos.getY() - structure.getMinY();
-            int rz = pos.getZ() - structure.getMinZ();
-
-            if (sliceLevel >= 0 && ry >= sliceLevel) continue;
-
-            pose.pushPose();
-            pose.translate(rx, ry, rz);
-            dispatcher.renderSingleBlock(state, pose, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
-            pose.popPose();
+    /** Copies native template payloads into the same coordinate space as the block snapshot. */
+    private static Map<BlockPos, CompoundTag> relativePayloads(MultiblockStructure structure) {
+        Map<BlockPos, CompoundTag> payloads = new HashMap<>();
+        var template = structure.getStructureNbt();
+        if (template == null) return payloads;
+        var entries = template.getListOrEmpty("blocks");
+        for (int i = 0; i < entries.size(); i++) {
+            var entry = entries.getCompoundOrEmpty(i);
+            var pos = entry.getListOrEmpty("pos");
+            if (pos.size() != 3) continue;
+            entry.getCompound("nbt").ifPresent(tag -> payloads.put(new BlockPos(
+                    pos.getIntOr(0, 0) - structure.getMinX(), pos.getIntOr(1, 0) - structure.getMinY(),
+                    pos.getIntOr(2, 0) - structure.getMinZ()), tag.copy()));
         }
+        return payloads;
+    }
 
-        buffers.endBatch();
+    /**
+     * Submits a picture-in-picture preview at a GUI rectangle given in the current pose's space.
+     * Shared with {@link igentuman.nc.util.builder.DesignPreviewRenderer}.
+     * The block map must be a stable snapshot; submit a new map when the layout changes.
+     */
+    public static void submit(GuiGraphicsExtractor graphics, Map<BlockPos, BlockState> blocks, int sw, int sh, int sd,
+                              float yaw, float pitch, int slice, boolean boundingBox,
+                              int x, int y, int width, int height, float scale) {
+        submit(graphics, blocks, Map.of(), sw, sh, sd, yaw, pitch, slice, boundingBox,
+                x, y, width, height, scale);
+    }
 
-        renderBoundingBox(pose, sw, sh, sd);
-
-        pose.popPose();
-        com.mojang.blaze3d.platform.Lighting.setupForFlatItems();
+    public static void submit(GuiGraphicsExtractor graphics, Map<BlockPos, BlockState> blocks,
+                              Map<BlockPos, CompoundTag> payloads, int sw, int sh, int sd,
+                              float yaw, float pitch, int slice, boolean boundingBox,
+                              int x, int y, int width, int height, float scale) {
+        Vector2f a = graphics.pose().transformPosition(new Vector2f(x, y));
+        Vector2f b = graphics.pose().transformPosition(new Vector2f(x + width, y + height));
+        int x0 = Math.round(Math.min(a.x, b.x));
+        int y0 = Math.round(Math.min(a.y, b.y));
+        int x1 = Math.round(Math.max(a.x, b.x));
+        int y1 = Math.round(Math.max(a.y, b.y));
+        float poseScale = width == 0 ? 1f : (x1 - x0) / (float) width;
+        ScreenRectangle scissor = graphics.peekScissorStack();
+        graphics.submitPictureInPictureRenderState(new StructurePreviewState(blocks, PreviewBlockEntities.extract(blocks, payloads, slice), sw, sh, sd, yaw, pitch, slice,
+                boundingBox, x0, y0, x1, y1, scale * poseScale, scissor,
+                PictureInPictureRenderState.getBounds(x0, y0, x1, y1, scissor)));
     }
 
     private static void updateDragRotation(int x, int y, int width, int height,
                                             double mouseX, double mouseY) {
         Minecraft mc = Minecraft.getInstance();
-        long window = mc.getWindow().getWindow();
+        long window = mc.getWindow().handle();
         boolean lmbDown = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
 
         boolean inside = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
@@ -133,7 +162,7 @@ public final class StructurePreviewRenderer {
     private static void updateSlice(int x, int y, int width, int height,
                                      double mouseX, double mouseY, int sh) {
         Minecraft mc = Minecraft.getInstance();
-        long window = mc.getWindow().getWindow();
+        long window = mc.getWindow().handle();
         boolean rmbDown = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
         boolean inside = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
 
@@ -148,51 +177,4 @@ public final class StructurePreviewRenderer {
         rmbPrev = rmbDown;
     }
 
-    private static void renderBoundingBox(PoseStack pose, int sw, int sh, int sd) {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableCull();
-        RenderSystem.lineWidth(2.0f);
-
-        Tesselator tess = Tesselator.getInstance();
-        BufferBuilder buf = tess.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f m = pose.last().pose();
-
-        float r = 0.2f, g = 1.0f, b = 0.2f, a = 0.8f;
-        float x0 = 0, y0 = 0, z0 = 0;
-        float x1 = sw, y1 = sh, z1 = sd;
-
-        // bottom rectangle
-        line(buf, m, x0, y0, z0, x1, y0, z0, r, g, b, a);
-        line(buf, m, x1, y0, z0, x1, y0, z1, r, g, b, a);
-        line(buf, m, x1, y0, z1, x0, y0, z1, r, g, b, a);
-        line(buf, m, x0, y0, z1, x0, y0, z0, r, g, b, a);
-        // top rectangle
-        line(buf, m, x0, y1, z0, x1, y1, z0, r, g, b, a);
-        line(buf, m, x1, y1, z0, x1, y1, z1, r, g, b, a);
-        line(buf, m, x1, y1, z1, x0, y1, z1, r, g, b, a);
-        line(buf, m, x0, y1, z1, x0, y1, z0, r, g, b, a);
-        // vertical edges
-        line(buf, m, x0, y0, z0, x0, y1, z0, r, g, b, a);
-        line(buf, m, x1, y0, z0, x1, y1, z0, r, g, b, a);
-        line(buf, m, x1, y0, z1, x1, y1, z1, r, g, b, a);
-        line(buf, m, x0, y0, z1, x0, y1, z1, r, g, b, a);
-
-        MeshData mesh = buf.build();
-        if (mesh != null) {
-            BufferUploader.drawWithShader(mesh);
-        }
-
-        RenderSystem.enableCull();
-        RenderSystem.disableBlend();
-    }
-
-    private static void line(BufferBuilder buf, Matrix4f m,
-                             float ax, float ay, float az,
-                             float bx, float by, float bz,
-                             float r, float g, float b, float a) {
-        buf.addVertex(m, ax, ay, az).setColor(r, g, b, a);
-        buf.addVertex(m, bx, by, bz).setColor(r, g, b, a);
-    }
 }

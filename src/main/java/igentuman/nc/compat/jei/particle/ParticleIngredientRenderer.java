@@ -1,14 +1,19 @@
 package igentuman.nc.compat.jei.particle;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.api.particle.ParticleDefinition;
 import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.setup.Registers;
 import igentuman.nc.util.TextUtils;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,18 +23,30 @@ import static igentuman.nc.util.TextUtils.__;
 public class ParticleIngredientRenderer implements IIngredientRenderer<ParticleStack> {
 
     @Override
-    public void render(GuiGraphics graphics, ParticleStack ingredient) {
+    public void render(GuiGraphicsExtractor graphics, ParticleStack ingredient) {
         if (ingredient == null || ingredient.isEmpty()) return;
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(ingredient.particleId());
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(ingredient.particleId());
         if (definition == null) return;
-        graphics.blit(definition.textureId(), 0, 0, 0, 0, 16, 16, 16, 16);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, definition.textureId(), 0, 0, 0, 0, 16, 16, 16, 16);
     }
 
     @Override
+    public void getTooltip(ITooltipBuilder tooltip, ParticleStack ingredient, Item.TooltipContext context,
+                           @Nullable Player player, TooltipFlag tooltipFlag) {
+        tooltip.addAll(lines(ingredient));
+    }
+
+    /** JEI still declares this legacy entry point abstract; delete this override once JEI removes it. */
+    @Override
+    @SuppressWarnings("removal")
     public List<Component> getTooltip(ParticleStack ingredient, TooltipFlag tooltipFlag) {
+        return lines(ingredient);
+    }
+
+    private static List<Component> lines(ParticleStack ingredient) {
         List<Component> tooltip = new ArrayList<>();
         if (ingredient == null || ingredient.isEmpty()) return tooltip;
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(ingredient.particleId());
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(ingredient.particleId());
         tooltip.add(definition == null
                 ? Component.literal(ingredient.particleId().getPath())
                 : Component.translatable(definition.translationKey()));

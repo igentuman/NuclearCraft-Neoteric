@@ -8,17 +8,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.TntBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,25 +27,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.setup.entries.Bomb.TICKET_CONTROLLER;
 import static igentuman.nc.util.TextUtils.__;
 
-/**
- * Remote detonator + maintenance tool. Phase 3.
- *
- * <ul>
- *   <li>{@code useOn}: click a Pu-239 bomb block or any vanilla {@code TNT} to <em>link</em>
- *       target coords onto the multitool's {@link net.minecraft.core.component.DataComponents#CUSTOM_DATA}.
- *       Bomb links require the placer to be the original placer (else "not your project").</li>
- *   <li>{@code use}: with a linked target, two-press arm / fire within 60 ticks schedules a
- *       {@link BombTask} (stage 0 force-loads the chunk, stage 1 ticks next-game-tick to detonate).</li>
- *   <li>{@code tickTasks}: pumped from {@code ServerEvents.onServerTick} after the global tick counter
- *       advances; advances staged tasks and un-forces when finished.</li>
- *   <li>Mekanism wrench compat is guarded by {@code ModList.get().isLoaded("mekanism")} — Phase 9 will
- *       wire it. Sneak-bypass is supported.</li>
- * </ul>
- */
 public class MultitoolItem extends Item {
 
     public MultitoolItem(Properties properties) {
@@ -96,19 +83,19 @@ public class MultitoolItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         CompoundTag tag = readCustomData(stack);
-        if (tag != null && (tag.getBoolean("has_bomb") || tag.getBoolean("has_tnt"))) {
+        if (tag != null && (tag.getBooleanOr("has_bomb", false) || tag.getBooleanOr("has_tnt", false))) {
             if (world.isClientSide()) {
-                return InteractionResultHolder.success(stack);
+                return InteractionResult.SUCCESS;
             }
-            int bombX = tag.getInt("bomb_x");
-            int bombY = tag.getInt("bomb_y");
-            int bombZ = tag.getInt("bomb_z");
-            boolean isTnt = tag.getBoolean("has_tnt");
+            int bombX = tag.getIntOr("bomb_x", 0);
+            int bombY = tag.getIntOr("bomb_y", 0);
+            int bombZ = tag.getIntOr("bomb_z", 0);
+            boolean isTnt = tag.getBooleanOr("has_tnt", false);
             long gameTime = world.getGameTime();
-            long lastArmedTime = tag.getLong("last_armed_time");
+            long lastArmedTime = tag.getLongOr("last_armed_time", 0L);
 
             if (gameTime - lastArmedTime <= 60 && gameTime >= lastArmedTime) {
                 if (isTnt) {
@@ -124,24 +111,24 @@ public class MultitoolItem extends Item {
                 player.sendSystemMessage(__("message.nc.multitool.armed_confirm"));
                 writeCustomData(stack, compoundTag -> compoundTag.putLong("last_armed_time", gameTime));
             }
-            return InteractionResultHolder.success(stack);
+            return InteractionResult.SUCCESS;
         }
         return super.use(world, player, hand);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @NotNull TooltipContext context, List<Component> list, TooltipFlag flag) {
-        list.add(__("tooltip.nc.multitool.desc").withStyle(ChatFormatting.YELLOW));
-        list.add(__("tooltip.nc.multitool.shift.desc").withStyle(ChatFormatting.YELLOW));
+    public void appendHoverText(ItemStack stack, @NotNull TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
+        list.accept(__("tooltip.nc.multitool.desc").withStyle(ChatFormatting.YELLOW));
+        list.accept(__("tooltip.nc.multitool.shift.desc").withStyle(ChatFormatting.YELLOW));
         CompoundTag tag = readCustomData(stack);
-        if (tag != null && tag.getBoolean("has_bomb")) {
-            list.add(__("tooltip.nc.multitool.connected_to_bomb",
-                    tag.getInt("bomb_x"), tag.getInt("bomb_y"), tag.getInt("bomb_z"))
+        if (tag != null && tag.getBooleanOr("has_bomb", false)) {
+            list.accept(__("tooltip.nc.multitool.connected_to_bomb",
+                    tag.getIntOr("bomb_x", 0), tag.getIntOr("bomb_y", 0), tag.getIntOr("bomb_z", 0))
                     .withStyle(ChatFormatting.RED));
         }
-        if (tag != null && tag.getBoolean("has_tnt")) {
-            list.add(__("tooltip.nc.multitool.connected_to_tnt",
-                    tag.getInt("bomb_x"), tag.getInt("bomb_y"), tag.getInt("bomb_z"))
+        if (tag != null && tag.getBooleanOr("has_tnt", false)) {
+            list.accept(__("tooltip.nc.multitool.connected_to_tnt",
+                    tag.getIntOr("bomb_x", 0), tag.getIntOr("bomb_y", 0), tag.getIntOr("bomb_z", 0))
                     .withStyle(ChatFormatting.RED));
         }
     }
@@ -152,7 +139,7 @@ public class MultitoolItem extends Item {
      */
     public static boolean isLinked(ItemStack stack) {
         CompoundTag tag = readCustomData(stack);
-        return tag != null && (tag.getBoolean("has_bomb") || tag.getBoolean("has_tnt"));
+        return tag != null && (tag.getBooleanOr("has_bomb", false) || tag.getBooleanOr("has_tnt", false));
     }
 
     /** Read-only view of the multitool's CUSTOM_DATA tag (or {@code null} if unset). */
@@ -232,20 +219,22 @@ public class MultitoolItem extends Item {
 
         for (BombTask task : ready) {
             if (task.stage == 0) {
-                net.minecraft.world.level.ChunkPos cp = new net.minecraft.world.level.ChunkPos(task.pos);
+                net.minecraft.world.level.ChunkPos cp = net.minecraft.world.level.ChunkPos.containing(task.pos);
                 try {
-                    TICKET_CONTROLLER.forceChunk(task.level, task.pos, cp.x, cp.z, true, true);
+                    TICKET_CONTROLLER.forceChunk(task.level, task.pos, cp.x(), cp.z(), true, true);
                 } catch (IllegalArgumentException e) {
-                    // Controller not registered — proceed anyway; the bomb block itself enforces chunk loading.
+                    // Controller not registered - proceed anyway; the bomb block itself enforces chunk loading.
                 }
                 synchronized (BOMB_TASKS) {
                     BOMB_TASKS.add(new BombTask(task.level, task.pos, 1, 1, task.isTnt));
                 }
             } else if (task.stage == 1) {
                 if (task.isTnt) {
-                    if (task.level.getBlockState(task.pos).is(Blocks.TNT)) {
-                        TntBlock.explode(task.level, task.pos);
-                        task.level.setBlock(task.pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                    BlockState tnt = task.level.getBlockState(task.pos);
+                    if (tnt.is(Blocks.TNT)) {
+                        if (tnt.onCaughtFire(task.level, task.pos, null, null)) {
+                            task.level.setBlock(task.pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                        }
                     }
                 } else {
                     BlockEntity be = task.level.getBlockEntity(task.pos);

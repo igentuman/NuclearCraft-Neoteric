@@ -1,8 +1,8 @@
 package igentuman.nc.recipe;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 
 import java.util.UUID;
 
@@ -49,8 +49,8 @@ public final class ProcessingOrder {
 
     public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
-        tag.putUUID("Job", jobId);
-        tag.put("Crafter", NbtUtils.writeBlockPos(crafter));
+        tag.store("Job", UUIDUtil.CODEC, jobId);
+        tag.store("Crafter", BlockPos.CODEC, crafter);
         tag.putString("Recipe", recipeId);
         tag.putInt("Remaining", remaining);
         tag.putInt("InFlight", inFlight);
@@ -58,12 +58,13 @@ public final class ProcessingOrder {
     }
 
     public static ProcessingOrder load(CompoundTag tag) {
-        BlockPos crafter = NbtUtils.readBlockPos(tag, "Crafter").orElse(null);
-        String recipe = tag.getString("Recipe");
-        int remaining = tag.getInt("Remaining");
-        int inFlight = tag.getInt("InFlight");
-        if (!tag.hasUUID("Job") || crafter == null || recipe.isEmpty() || remaining < 0 || inFlight < 0) return null;
-        ProcessingOrder order = new ProcessingOrder(tag.getUUID("Job"), crafter, recipe, Math.max(1, remaining));
+        BlockPos crafter = tag.read("Crafter", BlockPos.CODEC).orElse(null);
+        String recipe = tag.getStringOr("Recipe", "");
+        int remaining = tag.getIntOr("Remaining", 0);
+        int inFlight = tag.getIntOr("InFlight", 0);
+        UUID jobId = tag.read("Job", UUIDUtil.CODEC).orElse(null);
+        if (jobId == null || crafter == null || recipe.isEmpty() || remaining < 0 || inFlight < 0) return null;
+        ProcessingOrder order = new ProcessingOrder(jobId, crafter, recipe, Math.max(1, remaining));
         order.remaining = remaining;
         order.inFlight = inFlight;
         return order;

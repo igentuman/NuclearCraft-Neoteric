@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_turbine",
   "key": {
-    "B": {
-      "item": "minecraft:cauldron"
-    },
-    "S": {
-      "tag": "c:ingots/hsla_steel"
-    },
-    "T": {
-      "tag": "c:ingots/zinc"
-    }
+    "B": "minecraft:cauldron",
+    "S": "#c:ingots/hsla_steel",
+    "T": "#c:ingots/zinc"
   },
   "pattern": [
     "TST",

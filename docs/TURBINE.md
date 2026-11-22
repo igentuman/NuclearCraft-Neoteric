@@ -7,7 +7,7 @@ then recover the spent steam to keep your water loop running.
 This guide covers the **turbine multiblock**. There is also a single-block
 **Steam Turbine** processor, described below. Use JEI or EMI for crafting recipes
 and your modpack's available fluid recipes. Values here describe the default
-NeoForge 1.21.1 configuration.
+NeoForge 26.1.2 configuration.
 
 ## Building the multiblock
 

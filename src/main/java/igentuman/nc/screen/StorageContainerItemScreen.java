@@ -1,28 +1,27 @@
 package igentuman.nc.screen;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.container.StorageContainerItemMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import static igentuman.nc.NuclearCraft.rl;
 
 public class StorageContainerItemScreen extends AbstractContainerScreen<StorageContainerItemMenu> {
 
-    private final ResourceLocation gui;
+    private final Identifier gui;
     private Button magnetButton;
 
     public StorageContainerItemScreen(StorageContainerItemMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, menu.getColumns() * 18 + 20, (menu.getRows() + 4) * 18 + 20);
         this.gui = rl("textures/gui/storage/" + menu.getTier() + ".png");
-        this.imageWidth = menu.getColumns() * 18 + 20;
-        this.imageHeight = (menu.getRows() + 4) * 18 + 20;
     }
 
     @Override
@@ -44,22 +43,22 @@ public class StorageContainerItemScreen extends AbstractContainerScreen<StorageC
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         if (magnetButton != null) {
             magnetButton.setMessage(magnetLabel());
             magnetButton.setTooltip(Tooltip.create(Component.translatable(
                     magnetOn() ? "tooltip.nuclearcraft.magnet.on" : "tooltip.nuclearcraft.magnet.off")));
         }
-        super.render(graphics, mouseX, mouseY, partialTicks);
-        renderTooltip(graphics, mouseX, mouseY);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        graphics.blit(gui, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTicks);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, gui, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
     }
 }

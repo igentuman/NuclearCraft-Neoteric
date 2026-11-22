@@ -1,14 +1,16 @@
 package igentuman.nc.screen.element;
 
 import igentuman.nc.network.PacketFluidTankClick;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 /** Click region for a tank drawn directly by a custom screen. */
 public final class FluidTankInteraction extends AbstractWidget {
@@ -22,24 +24,30 @@ public final class FluidTankInteraction extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         return active && visible && isMouseOver(mouseX, mouseY) && click(menu, tank, button);
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {}
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {}
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput output) {}
 
     public static boolean click(AbstractContainerMenu menu, int tank, int button) {
-        if (button == 0 && Screen.hasShiftDown() && menu.getCarried().isEmpty()) {
-            PacketDistributor.sendToServer(new PacketFluidTankClick(menu.containerId, tank, true));
-            return true;
+        if (button != 0 && button != 1) return false;
+
+        var carried = menu.getCarried();
+        boolean flush = carried.isEmpty();
+        if (flush) {
+            if (button != 0 || !Minecraft.getInstance().hasShiftDown()) return false;
+        } else if (ItemAccess.forStack(carried.copyWithCount(1)).getCapability(Capabilities.Fluid.ITEM) == null) {
+            return false;
         }
-        if ((button != 0 && button != 1)
-                || FluidUtil.getFluidHandler(menu.getCarried().copyWithCount(1)).isEmpty()) return false;
-        PacketDistributor.sendToServer(new PacketFluidTankClick(menu.containerId, tank, false));
+        ClientPacketDistributor.sendToServer(new PacketFluidTankClick(menu.containerId, tank, flush));
         return true;
     }
 }

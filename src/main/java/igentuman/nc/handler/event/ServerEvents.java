@@ -31,7 +31,10 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemStackResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,7 +84,7 @@ public class ServerEvents {
             Map<Holder<MobEffect>, Integer> strongest;
             if ((level.getGameTime() + player.getId()) % refresh == 0) {
                 strongest = new HashMap<>();
-                for (ItemStack stack : player.getInventory().items) {
+                for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
                     accumulateCrystal(strongest, stack);
                 }
                 if (ModUtil.isCuriosLoaded()) {
@@ -126,24 +129,29 @@ public class ServerEvents {
     @SubscribeEvent
     public void onItemPickup(ItemEntityPickupEvent.Pre event) {
         Player player = event.getPlayer();
-        if (player.level().isClientSide) return;
+        if (player.level().isClientSide()) return;
         ItemStack picked = event.getItemEntity().getItem();
         if (picked.isEmpty() || picked.getItem() instanceof ContainerBlockItem) return;
 
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack containerStack = player.getInventory().getItem(i);
-            if (!(containerStack.getItem() instanceof ContainerBlockItem containerItem)) continue;
-            if (!containerItem.isMagnetEnabled(containerStack)) continue;
+        var source = new ItemStackResourceHandler() {
+            private ItemStack contents = picked.copy();
+            @Override protected ItemStack getStack() { return contents; }
+            @Override protected void setStack(ItemStack stack) { contents = stack; }
+            // Pickup events require retaining the original entity stack object.
+            @Override protected void onRootCommit(ItemStack original) { picked.setCount(contents.getCount()); }
+        };
+        try (var transaction = Transaction.openRoot()) {
+            for (int i = 0; i < player.getInventory().getContainerSize() && source.getAmountAsInt(0) > 0; i++) {
+                ItemStack containerStack = player.getInventory().getItem(i);
+                if (!(containerStack.getItem() instanceof ContainerBlockItem containerItem)) continue;
+                if (!containerItem.isMagnetEnabled(containerStack)) continue;
 
-            containerItem.assignUuid(containerStack);
-            IItemHandler inventory = containerStack.getCapability(Capabilities.ItemHandler.ITEM);
-            if (inventory == null) continue;
-
-            for (int slot = 0; slot < inventory.getSlots() && !picked.isEmpty(); slot++) {
-                ItemStack remainder = inventory.insertItem(slot, picked.copy(), false);
-                picked.shrink(picked.getCount() - remainder.getCount());
+                containerItem.assignUuid(containerStack);
+                var inventory = ItemAccess.forPlayerSlot(player, i).getCapability(Capabilities.Item.ITEM);
+                if (inventory == null) continue;
+                ResourceHandlerUtil.move(source, inventory, resource -> true, source.getAmountAsInt(0), transaction);
             }
-            if (picked.isEmpty()) return;
+            transaction.commit();
         }
     }
 }

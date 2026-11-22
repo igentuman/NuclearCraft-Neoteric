@@ -10,20 +10,21 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 /** JEI category displaying nuclear-blast block transformations with their conversion chance. */
-public class NuclearBlastRecipeCategory implements IRecipeCategory<NuclearBlastRecipe> {
+public class NuclearBlastRecipeCategory implements IRecipeCategory<RecipeHolder<NuclearBlastRecipe>> {
 
-    public static final RecipeType<NuclearBlastRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "nuclear_blast", NuclearBlastRecipe.class);
+    public static final IRecipeHolderType<NuclearBlastRecipe> TYPE =
+            IRecipeHolderType.create(NuclearCraft.rl("nuclear_blast"));
 
     private static final int WIDTH = 124;
     private static final int HEIGHT = 46;
@@ -39,7 +40,7 @@ public class NuclearBlastRecipeCategory implements IRecipeCategory<NuclearBlastR
     }
 
     @Override
-    public RecipeType<NuclearBlastRecipe> getRecipeType() {
+    public IRecipeHolderType<NuclearBlastRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -64,18 +65,20 @@ public class NuclearBlastRecipeCategory implements IRecipeCategory<NuclearBlastR
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, NuclearBlastRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 7, 5).addIngredients(recipe.input());
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<NuclearBlastRecipe> holder, IFocusGroup focuses) {
+        NuclearBlastRecipe recipe = holder.value();
+        builder.addSlot(RecipeIngredientRole.INPUT, 7, 5).add(recipe.input());
         builder.addSlot(RecipeIngredientRole.OUTPUT, WIDTH - 23, 5).addItemStacks(recipe.output().members());
     }
 
     @Override
-    public void draw(NuclearBlastRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<NuclearBlastRecipe> holder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
+        NuclearBlastRecipe recipe = holder.value();
         slot.draw(graphics, 6, 4);
         slot.draw(graphics, WIDTH - 24, 4);
-        graphics.drawString(Minecraft.getInstance().font, Component.literal("→"), WIDTH / 2 - 3, 8, 0x404040, false);
-        graphics.drawString(Minecraft.getInstance().font,
+        graphics.text(Minecraft.getInstance().font, Component.literal("→"), WIDTH / 2 - 3, 8, 0xFF404040, false);
+        graphics.text(Minecraft.getInstance().font,
                 Component.translatable("gui.nuclearcraft.nuclear_blast.chance", (int) Math.round(recipe.chance() * 100) + "%")
-                        .withStyle(ChatFormatting.DARK_GRAY), 4, 28, 0x404040, false);
+                        .withStyle(ChatFormatting.DARK_GRAY), 4, 28, 0xFF404040, false);
     }
 }

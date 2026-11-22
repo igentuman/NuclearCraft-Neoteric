@@ -6,17 +6,15 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.compat.ParticleCompatUtil;
-import igentuman.nc.recipe.FluidOutput;
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.api.recipe.FluidOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import igentuman.nc.recipe.particle.TargetChamberRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
@@ -25,7 +23,7 @@ import static igentuman.nc.util.TextUtils.formatParticleEnergy;
 
 public class TargetChamberEmiRecipe extends BasicEmiRecipe {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/accelerators/target_chamber_controller.png");
+    private static final Identifier TEXTURE = rl("textures/gui/accelerators/target_chamber_controller.png");
 
     private static final int WIDTH = 160;
     private static final int HEIGHT = 107;
@@ -40,26 +38,21 @@ public class TargetChamberEmiRecipe extends BasicEmiRecipe {
 
     private static final List<Vec2> BYPRODUCT_POSITIONS = List.of(new Vec2(76, 5), new Vec2(136, 36), new Vec2(76, 68));
 
-    public TargetChamberEmiRecipe(EmiRecipeCategory category, ResourceLocation id, TargetChamberRecipe recipe) {
+    public TargetChamberEmiRecipe(EmiRecipeCategory category, Identifier id, TargetChamberRecipe recipe) {
         super(category, id, WIDTH, HEIGHT);
         this.releasedEnergyKeV = recipe.releasedEnergyKeV();
 
         for (SizedIngredient si : recipe.itemInputs()) {
-            itemInputWidgets.add(EmiIngredient.of(Arrays.stream(si.ingredient().getItems())
-                    .map(stack -> (EmiIngredient) EmiStack.of(stack.copyWithCount(si.count())))
-                    .toList()));
+            itemInputWidgets.add(EmiIngredients.items(si));
         }
         for (SizedFluidIngredient sfi : recipe.fluidInputs()) {
-            fluidInputWidgets.add(EmiIngredient.of(Arrays.stream(sfi.getFluids())
-                    .map(fs -> (EmiIngredient) EmiStack.of(fs.getFluid(), sfi.amount()))
-                    .toList()));
+            fluidInputWidgets.add(EmiIngredients.fluids(sfi));
         }
         for (ItemOutput out : recipe.itemOutputs()) {
-            itemOutputWidgets.add(out.members().isEmpty() ? EmiStack.EMPTY : EmiStack.of(out.members().getFirst()));
+            itemOutputWidgets.add(EmiIngredients.firstItem(out.members()));
         }
         for (FluidOutput out : recipe.fluidOutputs()) {
-            List<FluidStack> members = out.members();
-            fluidOutputWidgets.add(members.isEmpty() ? EmiStack.EMPTY : EmiStack.of(members.getFirst().getFluid(), members.getFirst().getAmount()));
+            fluidOutputWidgets.add(EmiIngredients.firstFluid(out.members()));
         }
 
         this.beamInput = EmiIngredient.of(ParticleCompatUtil.stacksOf(recipe.particleInput()).stream()

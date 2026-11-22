@@ -49,7 +49,7 @@ public class EngineersCrafterApi extends ComputerApi<EngineersCrafterBE> {
         return be.getPatternsInfo();
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final Map<String, Object> getEnergy() {
         Map<String, Object> result = new HashMap<>();
@@ -58,7 +58,7 @@ public class EngineersCrafterApi extends ComputerApi<EngineersCrafterBE> {
         return result;
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final boolean isCrafting() {
         return be.hasActiveJob();

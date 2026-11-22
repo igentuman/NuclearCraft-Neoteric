@@ -7,9 +7,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.util.TextUtils.formatEnergy;
 
@@ -20,12 +21,12 @@ public class BatteryBlockItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
         if (getBlock() instanceof AbstractStorageBlock block) {
             int capacity = StorageDefs.batteryStorage(block.storageName());
-            tooltip.add(Component.translatable("tooltip.nuclearcraft.energy_capacity",
+            tooltip.accept(Component.translatable("tooltip.nuclearcraft.energy_capacity",
                     formatEnergy(capacity)).withStyle(ChatFormatting.BLUE));
         }
-        tooltip.add(Component.translatable("tooltip.nuclearcraft.use_wrench").withStyle(ChatFormatting.YELLOW));
+        tooltip.accept(Component.translatable("tooltip.nuclearcraft.use_wrench").withStyle(ChatFormatting.YELLOW));
     }
 }

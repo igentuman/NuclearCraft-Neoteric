@@ -5,7 +5,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -43,9 +43,9 @@ public class TagUtil {
 
     public static FluidStack getFluidByName(String name)
     {
-        ResourceLocation rl = rlFromString(name);
+        Identifier rl = rlFromString(name);
         if (!BuiltInRegistries.FLUID.containsKey(rl)) return FluidStack.EMPTY;
-        Fluid fluid = BuiltInRegistries.FLUID.get(rl);
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(rl);
         if (fluid == null || fluid == Fluids.EMPTY) return FluidStack.EMPTY;
         return new FluidStack(fluid, 1);
     }
@@ -54,7 +54,7 @@ public class TagUtil {
     {
         HashSet<Block> tmp = new HashSet<>();
         TagKey<Block> tag = TagKey.create(Registries.BLOCK, rlFromString(key));
-        BuiltInRegistries.BLOCK.getTag(tag).ifPresent(holders ->
+        BuiltInRegistries.BLOCK.get(tag).ifPresent(holders ->
             holders.forEach(holder -> tmp.add(holder.value()))
         );
         return tmp;
@@ -79,17 +79,17 @@ public class TagUtil {
     {
         List<Item> tmp = new ArrayList<>();
         TagKey<Item> tag = TagKey.create(Registries.ITEM, rlFromString(key));
-        BuiltInRegistries.ITEM.getTag(tag).ifPresent(holders ->
+        BuiltInRegistries.ITEM.get(tag).ifPresent(holders ->
             holders.forEach(holder -> tmp.add(holder.value()))
         );
         return tmp;
     }
 
     public static <TYPE> Optional<HolderSet.Named<TYPE>> tag(Registry<TYPE> registry, TagKey<TYPE> key) {
-        return registry.getTag(key);
+        return registry.get(key);
     }
 
-    public static <TYPE> TagKey<TYPE> createKey(Registry<TYPE> registry, ResourceLocation tag) {
+    public static <TYPE> TagKey<TYPE> createKey(Registry<TYPE> registry, Identifier tag) {
         return TagKey.create(registry.key(), tag);
     }
 
@@ -101,40 +101,40 @@ public class TagUtil {
         return registry.wrapAsHolder(element).tags();
     }
 
-    public static <TYPE> Set<ResourceLocation> tagNames(Registry<TYPE> registry, TYPE element) {
+    public static <TYPE> Set<Identifier> tagNames(Registry<TYPE> registry, TYPE element) {
         return tagNames(tagsStream(registry, element));
     }
 
-    public static Set<ResourceLocation> tagNames(Stream<? extends TagKey<?>> stream) {
+    public static Set<Identifier> tagNames(Stream<? extends TagKey<?>> stream) {
         return stream.map(TagKey::location)
                 .collect(Collectors.toUnmodifiableSet());
     }
 
     public static TagKey<Item> plateTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "plates/" + name));
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", "plates/" + name));
     }
 
     public static TagKey<Item> dustTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "dusts/" + name));
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", "dusts/" + name));
     }
 
     public static TagKey<Item> rawTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "raw_materials/" + name));
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", "raw_materials/" + name));
     }
 
     public static TagKey<Item> ingotTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ingots/" + name));
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", "ingots/" + name));
     }
 
     public static TagKey<Item> blockTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/" + name));
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", "storage_blocks/" + name));
     }
 
     public static TagKey<Item> gemTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "gems/" + name));
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", "gems/" + name));
     }
 
     public static TagKey<Item> nuggetTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "nuggets/" + name));
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", "nuggets/" + name));
     }
 }

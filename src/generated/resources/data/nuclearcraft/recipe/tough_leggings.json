@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "T": {
-      "tag": "c:ingots/tough_alloy"
-    }
+    "T": "#c:ingots/tough_alloy"
   },
   "pattern": [
     "TTT",
@@ -12,7 +10,6 @@
     "T T"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:tough_leggings"
   }
 }

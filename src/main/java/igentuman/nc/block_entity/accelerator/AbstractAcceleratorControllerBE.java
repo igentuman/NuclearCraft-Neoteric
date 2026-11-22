@@ -95,7 +95,7 @@ public abstract class AbstractAcceleratorControllerBE extends MultiblockControll
         int clampedFocus = stack.isEmpty() ? 0
                 : (int) Math.min(Integer.MAX_VALUE, Math.round(stack.focus() * 10_000D));
         ParticleDefinition particleDefinition = stack.isEmpty() ? null
-                : Registers.PARTICLE_DEFINITION_REGISTRY.get(stack.particleId());
+                : Registers.PARTICLE_DEFINITION_REGISTRY.getValue(stack.particleId());
         int registryId = particleDefinition == null ? -1
                 : Registers.PARTICLE_DEFINITION_REGISTRY.getId(particleDefinition);
         if (clampedAmount == particleAmount && energyKeV == particleEnergyKeV

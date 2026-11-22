@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_fission",
   "key": {
-    "L": {
-      "tag": "c:plates/lead"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    }
+    "L": "#c:plates/lead",
+    "P": "nuclearcraft:plate_advanced"
   },
   "pattern": [
     "LPL",

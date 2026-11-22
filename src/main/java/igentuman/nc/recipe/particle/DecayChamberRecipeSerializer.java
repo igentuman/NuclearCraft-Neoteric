@@ -12,7 +12,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import java.util.List;
 
-public final class DecayChamberRecipeSerializer implements RecipeSerializer<DecayChamberRecipe> {
+/** JSON and network codecs for {@link DecayChamberRecipe}. */
+public final class DecayChamberRecipeSerializer {
 
     private static final MapCodec<DecayChamberRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             ParticleIngredient.CODEC.fieldOf("particle_input").forGetter(DecayChamberRecipe::particleInput),
@@ -46,13 +47,9 @@ public final class DecayChamberRecipeSerializer implements RecipeSerializer<Deca
         }
     };
 
-    @Override
-    public MapCodec<DecayChamberRecipe> codec() {
-        return CODEC;
-    }
+    private DecayChamberRecipeSerializer() {}
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, DecayChamberRecipe> streamCodec() {
-        return STREAM_CODEC;
+    public static RecipeSerializer<DecayChamberRecipe> create() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

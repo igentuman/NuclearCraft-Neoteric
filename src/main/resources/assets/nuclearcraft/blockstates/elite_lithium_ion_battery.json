@@ -1,5 +1,5 @@
 {
   "variants": {
-    "": { "model": "nuclearcraft:block/elite_lithium_ion_battery" }
+    "": { "type": "nuclearcraft:battery", "side": "nuclearcraft:block/energy/lithium_ion_battery/elite/side", "top": "nuclearcraft:block/energy/lithium_ion_battery/elite/top" }
   }
 }

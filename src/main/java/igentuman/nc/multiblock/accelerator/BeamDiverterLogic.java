@@ -49,7 +49,7 @@ public class BeamDiverterLogic
         Direction outputFacing = facing(level.getBlockState(outputPort));
         if (inputFacing == null || outputFacing == null) return;
 
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(stack.particleId());
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(stack.particleId());
         if (definition == null) return;
         boolean turn = BeamDiverterParticleProcessor.isTurn(inputFacing, outputFacing);
         boolean incompatible = turn && (definition.charge() == 0 || definition.massMeV() <= 0);
@@ -85,7 +85,7 @@ public class BeamDiverterLogic
     private void transferOutput(ServerLevel level, BlockPos controllerPos, BlockPos outputPort) {
         ParticleStack pending = pendingOutput.snapshot(0);
         ParticleDefinition definition = pending.isEmpty() ? null
-                : Registers.PARTICLE_DEFINITION_REGISTRY.get(pending.particleId());
+                : Registers.PARTICLE_DEFINITION_REGISTRY.getValue(pending.particleId());
         if (definition == null) return;
         ParticleMachinesConfig.Accelerator config = Multiblocks.particleMachines().accelerator();
         transferPendingOutput(level, controllerPos, outputPort,

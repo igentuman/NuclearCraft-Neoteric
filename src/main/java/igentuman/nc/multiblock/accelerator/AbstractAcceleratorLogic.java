@@ -21,20 +21,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiFunction;
 
 public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
@@ -43,11 +42,13 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
     protected final ParticleStorage input = new SinglePacketParticleStorage(Integer.MAX_VALUE);
     protected final ParticleStorage pendingOutput = new ParticleStorage(1, Integer.MAX_VALUE);
     private RecipeHolder<AcceleratorCoolantRecipe> cachedCoolantRecipe;
-    private boolean coolantValidatorInstalled;
+    private RecipeMap coolantRecipeMap;
+    private FluidCapabilityHandler coolantValidatorTanks;
+    private int coolantValidatorTank = -1;
     protected long storedHeat;
     protected int controlSignal;
     protected int overheatCooldown;
-    protected ResourceLocation activeCoolantRecipeId;
+    protected Identifier activeCoolantRecipeId;
     protected boolean processedThisTick;
 
     public ParticleStorage input() {
@@ -104,11 +105,11 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
     @Override
     public void loadRuntime(CompoundTag tag, HolderLookup.Provider registries) {
         clearBeams();
-        storedHeat = Math.max(0, tag.getLong("storedHeat"));
-        controlSignal = Math.clamp(tag.getInt("controlSignal"), 0, 15);
-        overheatCooldown = Math.max(0, tag.getInt("overheatCooldown"));
+        storedHeat = Math.max(0, tag.getLongOr("storedHeat", 0L));
+        controlSignal = Math.clamp(tag.getIntOr("controlSignal", 0), 0, 15);
+        overheatCooldown = Math.max(0, tag.getIntOr("overheatCooldown", 0));
         activeCoolantRecipeId = tag.contains("activeCoolantRecipe")
-                ? ResourceLocation.tryParse(tag.getString("activeCoolantRecipe")) : null;
+                ? Identifier.tryParse(tag.getStringOr("activeCoolantRecipe", "")) : null;
     }
 
     protected final void clearBeams() {
@@ -148,7 +149,7 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
                                      int coolantInputTank, int coolantOutputTank) {
         long passive = AcceleratorThermal.applyPassiveCooling(storedHeat, stats.coolingPerTick());
         long heat = runCoolant(level, controller.contentHandler.getFluidHandler(),
-                coolantInputTank, coolantOutputTank, passive, stats.heatCapacity());
+                coolantInputTank, coolantOutputTank, storedHeat-passive, stats.heatCapacity());
 
         long currentTemperatureK = AcceleratorThermal.temperatureK(heat, stats.heatCapacity());
         if (AcceleratorThermal.isOverheated(currentTemperatureK, stats.maximumTemperatureK())) {
@@ -192,13 +193,16 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
                 cold.getAmount(), availableOutput, outAmount);
         if (ops <= 0) return heat;
 
-        FluidStack toOutput = new FluidStack(outTemplate.getFluid(), (int) (ops * outAmount));
-        if (tanks.fillTank(outputTank, toOutput, IFluidHandler.FluidAction.SIMULATE) != toOutput.getAmount()) {
-            return heat;
+        int drainAmount = (int) (ops * inAmount);
+        int fillAmount = (int) (ops * outAmount);
+        try (var transaction = Transaction.openRoot()) {
+            if (tanks.extract(inputTank, FluidResource.of(cold), drainAmount, transaction) != drainAmount
+                    || tanks.insert(outputTank, FluidResource.of(outTemplate), fillAmount, transaction) != fillAmount) {
+                return heat;
+            }
+            transaction.commit();
         }
-        tanks.drainTank(inputTank, (int) (ops * inAmount), IFluidHandler.FluidAction.EXECUTE);
-        tanks.fillTank(outputTank, toOutput, IFluidHandler.FluidAction.EXECUTE);
-        activeCoolantRecipeId = holder.id();
+        activeCoolantRecipeId = holder.id().identifier();
         return AcceleratorThermal.heatAfterCoolant(heat, recipe.heatPerMb(), inAmount, ops);
     }
 
@@ -207,7 +211,7 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
             return cachedCoolantRecipe;
         }
         for (RecipeHolder<AcceleratorCoolantRecipe> holder
-                : level.getRecipeManager().getAllRecipesFor(ParticleRecipes.ACCELERATOR_COOLANT_TYPE.get())) {
+                : level.recipeAccess().recipeMap().byType(ParticleRecipes.ACCELERATOR_COOLANT_TYPE.get())) {
             if (holder.value().input().test(coolant)) {
                 cachedCoolantRecipe = holder;
                 return holder;
@@ -218,14 +222,16 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
     }
 
     private void installCoolantValidator(ServerLevel level, FluidCapabilityHandler tanks, int inputTank) {
-        if (coolantValidatorInstalled) return;
-        Set<Fluid> accepted = new HashSet<>();
-        for (RecipeHolder<AcceleratorCoolantRecipe> holder
-                : level.getRecipeManager().getAllRecipesFor(ParticleRecipes.ACCELERATOR_COOLANT_TYPE.get())) {
-            for (FluidStack candidate : holder.value().input().getFluids()) accepted.add(candidate.getFluid());
-        }
-        tanks.getInternalHandler().setTankValidator(inputTank, stack -> accepted.contains(stack.getFluid()));
-        coolantValidatorInstalled = true;
+        RecipeMap current = level.recipeAccess().recipeMap();
+        if (current == coolantRecipeMap && tanks == coolantValidatorTanks && inputTank == coolantValidatorTank) return;
+        cachedCoolantRecipe = null;
+        List<AcceleratorCoolantRecipe> recipes = current.byType(ParticleRecipes.ACCELERATOR_COOLANT_TYPE.get()).stream()
+                .map(RecipeHolder::value).toList();
+        tanks.getInternalHandler().setTankValidator(inputTank,
+                stack -> recipes.stream().anyMatch(recipe -> recipe.input().ingredient().test(stack)));
+        coolantRecipeMap = current;
+        coolantValidatorTanks = tanks;
+        coolantValidatorTank = inputTank;
     }
 
     protected final void addProcessingHeat(AcceleratorStats stats) {
@@ -254,7 +260,7 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
         try {
             int corridorLength = BeamConnectionResolver.corridorLength(outputConnection);
             result = ParticleTransfer.execute(new ParticleTransfer.Request(pendingOutput, 0, destination, 0,
-                    List.of(level.dimension().location(), controllerPos), Long.MAX_VALUE,
+                    List.of(level.dimension().identifier(), controllerPos), Long.MAX_VALUE,
                     stack -> attenuation.apply(stack, corridorLength)));
         } catch (ArithmeticException | IllegalArgumentException ignored) {
             return false;
@@ -275,7 +281,7 @@ public abstract class AbstractAcceleratorLogic<C extends AcceleratorCache,
     }
 
     @Nullable
-    public ResourceLocation activeCoolantRecipeId() {
+    public Identifier activeCoolantRecipeId() {
         return activeCoolantRecipeId;
     }
 }

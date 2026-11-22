@@ -10,24 +10,24 @@ import igentuman.nc.util.WrenchUtil;
 import igentuman.nc.setup.entries.Particles;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.common.data.BlockTagCopyingItemTagProvider;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.NuclearCraft.rl;
 
 /** Generates item tags for tools, armor, materials, isotopes, and fission fuels. */
-public class ModItemTagProvider extends ItemTagsProvider {
-    public ModItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTags, ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, blockTags, MODID, existingFileHelper);
+public class ModItemTagProvider extends BlockTagCopyingItemTagProvider {
+    public ModItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTags) {
+        super(output, lookupProvider, blockTags, MODID);
     }
 
     @Override
@@ -103,6 +103,12 @@ public class ModItemTagProvider extends ItemTagsProvider {
                 tag(materialTag("storage_blocks/" + name)).add(material.storageItem().get());
             }
         }
+        // Recipe inputs name these common tags, but nothing in a core pack fills them. 26.1 resolves
+        // recipe tags while loading, so an undefined tag rejects the whole recipe (e.g. the borax ore
+        // vein). Declare them empty; other mods' tag files merge into them.
+        for (String path : List.of("ores/aluminum", "ores/nickel", "ores/sodium", "gems/ruby")) {
+            tag(materialTag(path));
+        }
         for (IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
             TagKey<Item> isoTag = materialTag("isotopes/" + isotope.name);
             isotope.variants().values().forEach(item -> tag(isoTag).add(item.get()));
@@ -113,7 +119,7 @@ public class ModItemTagProvider extends ItemTagsProvider {
             TagKey<Item> depletedFuelTag = materialTag("fission_fuel/depleted_" + fuel.group + "/" + fuel.name.replace("-", "_"));
             fuel.depletedItems().values().forEach(item -> tag(depletedFuelTag).add(item.get()));
         }
-        TagKey<Item> musicDiscs = ItemTags.create(ResourceLocation.withDefaultNamespace("music_discs"));
+        TagKey<Item> musicDiscs = ItemTags.create(Identifier.withDefaultNamespace("music_discs"));
         for (String name : NCJukeboxSongs.RECORDS.keySet()) {
             tag(musicDiscs).add(ModEntries.get(name).item().get());
         }
@@ -134,6 +140,6 @@ public class ModItemTagProvider extends ItemTagsProvider {
     }
 
     private static TagKey<Item> materialTag(String path) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", path));
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", path));
     }
 }

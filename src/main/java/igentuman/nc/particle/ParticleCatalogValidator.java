@@ -1,7 +1,7 @@
 package igentuman.nc.particle;
 
 import igentuman.nc.api.particle.ParticleDefinition;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,14 +20,14 @@ public final class ParticleCatalogValidator {
         }
     }
 
-    public record Problem(ResourceLocation particleId, String fieldPath, String message) {
+    public record Problem(Identifier particleId, String fieldPath, String message) {
     }
 
-    public static Report validate(Map<ResourceLocation, ParticleDefinition> definitions) {
+    public static Report validate(Map<Identifier, ParticleDefinition> definitions) {
         List<Problem> problems = new ArrayList<>();
 
-        for (Map.Entry<ResourceLocation, ParticleDefinition> entry : definitions.entrySet()) {
-            ResourceLocation id = entry.getKey();
+        for (Map.Entry<Identifier, ParticleDefinition> entry : definitions.entrySet()) {
+            Identifier id = entry.getKey();
             ParticleDefinition definition = entry.getValue();
 
             if (!definitions.containsKey(definition.antiparticleId())) {
@@ -53,8 +53,8 @@ public final class ParticleCatalogValidator {
             }
         }
 
-        for (ResourceLocation id : definitions.keySet()) {
-            List<ResourceLocation> cycle = findCompositionCycle(id, definitions);
+        for (Identifier id : definitions.keySet()) {
+            List<Identifier> cycle = findCompositionCycle(id, definitions);
             if (cycle != null) {
                 problems.add(new Problem(id, "composition", "composition cycle: " + cycle));
             }
@@ -63,18 +63,18 @@ public final class ParticleCatalogValidator {
         return new Report(problems);
     }
 
-    private static List<ResourceLocation> findCompositionCycle(ResourceLocation start,
-                                                                 Map<ResourceLocation, ParticleDefinition> definitions) {
-        List<ResourceLocation> path = new ArrayList<>();
-        Set<ResourceLocation> onPath = new HashSet<>();
+    private static List<Identifier> findCompositionCycle(Identifier start,
+                                                                 Map<Identifier, ParticleDefinition> definitions) {
+        List<Identifier> path = new ArrayList<>();
+        Set<Identifier> onPath = new HashSet<>();
         if (walk(start, definitions, path, onPath)) {
             return path;
         }
         return null;
     }
 
-    private static boolean walk(ResourceLocation id, Map<ResourceLocation, ParticleDefinition> definitions,
-                                 List<ResourceLocation> path, Set<ResourceLocation> onPath) {
+    private static boolean walk(Identifier id, Map<Identifier, ParticleDefinition> definitions,
+                                 List<Identifier> path, Set<Identifier> onPath) {
         ParticleDefinition definition = definitions.get(id);
         if (definition == null) {
             return false;
@@ -82,7 +82,7 @@ public final class ParticleCatalogValidator {
         path.add(id);
         onPath.add(id);
         for (ParticleDefinition.Component component : definition.composition()) {
-            ResourceLocation componentId = component.particleId();
+            Identifier componentId = component.particleId();
             if (onPath.contains(componentId)) {
                 path.add(componentId);
                 return true;

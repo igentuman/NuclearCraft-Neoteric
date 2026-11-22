@@ -11,13 +11,13 @@ import igentuman.nc.handler.crafter.AggregatedInventory;
 import igentuman.nc.network.PacketCrafterFillGrid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.resources.ResourceLocation;
+import igentuman.nc.recipe.RecipeSources;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,26 +59,28 @@ public class EngineersCrafterEmiRecipeHandler implements StandardRecipeHandler<E
 
     @Override
     public boolean canCraft(EmiRecipe recipe, EmiCraftContext<EngineersCrafterContainer> context) {
-        CraftingRecipe craftingRecipe = resolve(recipe);
-        return craftingRecipe != null && context.getScreenHandler().canAssemble(craftingRecipe);
+        RecipeHolder<CraftingRecipe> holder = craftingHolder(recipe);
+        return holder != null && context.getScreenHandler().canAssemble(holder.value());
     }
 
     @Override
     public boolean craft(EmiRecipe recipe, EmiCraftContext<EngineersCrafterContainer> context) {
-        CraftingRecipe craftingRecipe = resolve(recipe);
-        if (craftingRecipe == null || !context.getScreenHandler().canAssemble(craftingRecipe)) return false;
-        PacketDistributor.sendToServer(new PacketCrafterFillGrid(context.getScreenHandler().getBlockPos(), recipe.getId()));
+        RecipeHolder<CraftingRecipe> holder = craftingHolder(recipe);
+        if (holder == null || !context.getScreenHandler().canAssemble(holder.value())) return false;
+        ClientPacketDistributor.sendToServer(new PacketCrafterFillGrid(context.getScreenHandler().getBlockPos(), holder.id().identifier()));
         return true;
     }
 
-    private static CraftingRecipe resolve(EmiRecipe recipe) {
-        ResourceLocation id = recipe.getId();
+    /** The backing holder when EMI supplies one, otherwise the synchronized client recipe with the same ID. */
+    static RecipeHolder<CraftingRecipe> craftingHolder(EmiRecipe recipe) {
+        RecipeHolder<?> holder = recipe.getBackingRecipe();
         Minecraft mc = Minecraft.getInstance();
-        if (id == null || mc.level == null) return null;
-        return mc.level.getRecipeManager().byKey(id)
-                .map(RecipeHolder::value)
-                .filter(r -> r instanceof CraftingRecipe)
-                .map(r -> (CraftingRecipe) r)
-                .orElse(null);
+        if (holder == null && recipe.getId() != null && mc.level != null) {
+            holder = RecipeSources.byId(mc.level, recipe.getId()).orElse(null);
+        }
+        if (holder == null || !(holder.value() instanceof CraftingRecipe)) return null;
+        @SuppressWarnings("unchecked")
+        RecipeHolder<CraftingRecipe> crafting = (RecipeHolder<CraftingRecipe>) holder;
+        return crafting;
     }
 }

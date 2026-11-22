@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_rtg",
   "key": {
-    "G": {
-      "tag": "c:plates/graphite"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "U": {
-      "tag": "c:storage_blocks/uranium238"
-    }
+    "G": "#c:plates/graphite",
+    "P": "nuclearcraft:plate_basic",
+    "U": "#c:storage_blocks/uranium238"
   },
   "pattern": [
     "PGP",
@@ -19,7 +13,6 @@
     "PGP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:uranium_rtg"
   }
 }

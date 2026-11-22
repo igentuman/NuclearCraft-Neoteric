@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.ResultContainer;
@@ -28,7 +28,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+/** Crafting terminal menu with native storage-item slots. */
 public class EngineersCrafterContainer extends AbstractContainerMenu {
 
     private static final int CONTAINER_START = 0;
@@ -77,7 +78,7 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
 
         for (int row = 0; row < CONTAINER_ROWS; row++) {
             for (int col = 0; col < CONTAINER_COLS; col++) {
-                addSlot(new SlotItemHandler(blockEntity.containerSlots, col + row * CONTAINER_COLS,
+                addSlot(new ResourceHandlerSlot(blockEntity.containerSlots, blockEntity.containerSlots::set, col + row * CONTAINER_COLS,
                         CONTAINER_X + col * 18, CONTAINER_Y + row * 18));
             }
         }
@@ -101,22 +102,24 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
     @Override
     public void slotsChanged(@NotNull Container container) {
         super.slotsChanged(container);
-        if (!level.isClientSide && container == craftSlots) {
+        if (!level.isClientSide() && container == craftSlots) {
             updateResult();
         }
     }
 
     private void updateResult() {
+        if (!(level instanceof ServerLevel serverLevel) || !(player instanceof ServerPlayer sp)) return;
         CraftingInput input = craftSlots.asCraftInput();
         Optional<RecipeHolder<CraftingRecipe>> recipe =
-                level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level);
-        ItemStack result = recipe
-                .map(r -> r.value().assemble(input, level.registryAccess()))
-                .orElse(ItemStack.EMPTY);
-        resultSlots.setItem(0, result);
-        if (player instanceof ServerPlayer sp) {
-            sp.connection.send(new ClientboundContainerSetSlotPacket(containerId, incrementStateId(), RESULT_SLOT, result));
+                serverLevel.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, serverLevel);
+        ItemStack result = ItemStack.EMPTY;
+        if (recipe.isPresent() && resultSlots.setRecipeUsed(sp, recipe.get())) {
+            ItemStack assembled = recipe.get().value().assemble(input);
+            if (assembled.isItemEnabled(level.enabledFeatures())) result = assembled;
         }
+        resultSlots.setItem(0, result);
+        setRemoteSlot(RESULT_SLOT, result);
+        sp.connection.send(new ClientboundContainerSetSlotPacket(containerId, incrementStateId(), RESULT_SLOT, result));
     }
 
     @Override
@@ -127,7 +130,7 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
             ItemStack stack = slot.getItem();
             result = stack.copy();
             if (index == RESULT_SLOT) {
-                access.execute((lvl, pos) -> stack.getItem().onCraftedBy(stack, lvl, p));
+                access.execute((lvl, pos) -> stack.getItem().onCraftedBy(stack, p));
                 if (!moveItemStackTo(stack, PLAYER_START, PLAYER_END, true)) return ItemStack.EMPTY;
                 slot.onQuickCraft(stack, result);
             } else if (index >= PLAYER_START && index < PLAYER_END) {
@@ -158,20 +161,22 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
 
     @Override
     public void broadcastChanges() {
-        super.broadcastChanges();
-        if (player instanceof ServerPlayer sp && level instanceof ServerLevel serverLevel) {
-            syncSubscriptions(sp, serverLevel);
+        if (player instanceof ServerPlayer sp) {
+            syncSubscriptions(sp);
         }
+        super.broadcastChanges();
     }
 
-    private void syncSubscriptions(ServerPlayer sp, ServerLevel serverLevel) {
+    private void syncSubscriptions(ServerPlayer sp) {
         Set<UUID> current = new HashSet<>();
         for (int i = 0; i < blockEntity.containerSlots.getSlots(); i++) {
             ItemStack s = blockEntity.containerSlots.getStackInSlot(i);
             if (!(s.getItem() instanceof ContainerBlockItem ci)) continue;
-            ci.assignUuid(s);
             UUID u = ContainerBlockItem.readUuid(s);
-            if (u == null) continue;
+            if (u == null) {
+                u = ci.assignUuid(s);
+                blockEntity.containerSlots.setStackInSlot(i, s);
+            }
             current.add(u);
             if (subscribed.add(u)) {
                 ContainerSyncDispatcher.subscribe(sp, u);
@@ -215,7 +220,7 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
     }
 
     public boolean canAssemble(CraftingRecipe recipe) {
-        StackedContents contents = new StackedContents();
+        StackedItemContents contents = new StackedItemContents();
         for (ItemStack s : availableItems()) contents.accountStack(s);
         return contents.canCraft(recipe, null);
     }
@@ -238,6 +243,9 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
     }
 
     public void fillCraftGrid(CraftingRecipe recipe, Player p) {
+        if (!(level instanceof ServerLevel)) return;
+        Ingredient[] layout = RecipeGridLayout.layout(recipe);
+        if (layout == null) return;
         AggregatedInventory agg = new AggregatedInventory(blockEntity.containerSlots);
         for (int i = 0; i < 9; i++) {
             ItemStack cur = craftSlots.getItem(i);
@@ -247,7 +255,6 @@ public class EngineersCrafterContainer extends AbstractContainerMenu {
             craftSlots.setItem(i, ItemStack.EMPTY);
         }
 
-        Ingredient[] layout = RecipeGridLayout.layout(recipe);
         for (int i = 0; i < 9; i++) {
             Ingredient ing = layout[i];
             if (ing == null || ing.isEmpty()) continue;

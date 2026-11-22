@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:storage_blocks/tin"
-    }
+    "#c:storage_blocks/tin"
   ],
   "result": {
     "count": 9,

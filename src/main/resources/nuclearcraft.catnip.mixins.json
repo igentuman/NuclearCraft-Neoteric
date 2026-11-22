@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "igentuman.nc.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "CatnipConfigValueAccessor",
+    "NeoForgeCatnipConfigRegistryMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

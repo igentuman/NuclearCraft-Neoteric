@@ -3,33 +3,15 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "item": "nuclearcraft:americium_242_ni"
-    },
-    {
-      "item": "nuclearcraft:americium_242_ni"
-    },
-    {
-      "item": "nuclearcraft:americium_242_ni"
-    },
-    {
-      "item": "nuclearcraft:americium_243_ni"
-    },
-    {
-      "item": "nuclearcraft:americium_243_ni"
-    },
-    {
-      "item": "nuclearcraft:americium_243_ni"
-    },
-    {
-      "item": "nuclearcraft:americium_243_ni"
-    },
-    {
-      "item": "nuclearcraft:americium_243_ni"
-    },
-    {
-      "item": "nuclearcraft:americium_243_ni"
-    }
+    "nuclearcraft:americium_242_ni",
+    "nuclearcraft:americium_242_ni",
+    "nuclearcraft:americium_242_ni",
+    "nuclearcraft:americium_243_ni",
+    "nuclearcraft:americium_243_ni",
+    "nuclearcraft:americium_243_ni",
+    "nuclearcraft:americium_243_ni",
+    "nuclearcraft:americium_243_ni",
+    "nuclearcraft:americium_243_ni"
   ],
   "result": {
     "count": 3,

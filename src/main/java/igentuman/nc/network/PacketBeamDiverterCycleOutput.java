@@ -29,7 +29,7 @@ public record PacketBeamDiverterCycleOutput(BlockPos pos) implements CustomPacke
     public static void handle(PacketBeamDiverterCycleOutput packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            BlockEntity be = serverPlayer.serverLevel().getBlockEntity(packet.pos());
+            BlockEntity be = serverPlayer.level().getBlockEntity(packet.pos());
             if (be instanceof BeamDiverterControllerBE controller) {
                 controller.cycleSelectedOutputChannel();
             }

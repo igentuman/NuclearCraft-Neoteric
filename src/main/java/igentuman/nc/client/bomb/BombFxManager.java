@@ -14,7 +14,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
@@ -91,15 +91,16 @@ public class BombFxManager {
             }
             b.visual.evaluate(b, 0f);
         }
-        Vec3 camera = mc.gameRenderer.getMainCamera().getPosition();
+        Vec3 camera = mc.gameRenderer.getMainCamera().position();
         GroundSmokeEmitter.tick(ACTIVE, camera);
         DebrisFireEmitter.tick(ACTIVE, mc.level, camera);
         ShockwaveDebrisEmitter.tick(ACTIVE, mc.level, camera);
     }
 
     @SubscribeEvent
-    public static void onRenderLevelStage(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_ENTITIES) ShockwaveDebrisEmitter.render(event);
+    public static void onSubmitCustomGeometry(SubmitCustomGeometryEvent event) {
+        // Shockwave debris blocks are submitted with the level's features (old AFTER_ENTITIES stage).
+        ShockwaveDebrisEmitter.render(event);
     }
 
     public static float flashAlpha(float partialTick) {

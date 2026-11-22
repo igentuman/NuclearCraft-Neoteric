@@ -11,20 +11,38 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+/** Converts processor recipe stacks to Refined Storage's processing resources. */
 public final class RSPatternTransfer {
+
+    // Refined Storage 3.2.1 uses the same capacity for both processing matrices.
+    private static final int PROCESSING_MATRIX_SIZE = 81;
 
     private RSPatternTransfer() {
     }
 
+    /** Whether the recipe has inputs and outputs and fits both processing matrices. */
+    public static boolean fits(UniversalProcessorRecipe recipe) {
+        int inputs = recipe.getItemInputs().size() + recipe.getFluidInputs().size();
+        int outputs = recipe.getItemOutputs().size() + recipe.getFluidOutputs().size();
+        return inputs > 0 && inputs <= PROCESSING_MATRIX_SIZE && outputs > 0 && outputs <= PROCESSING_MATRIX_SIZE;
+    }
+
     public static void transfer(PatternGridContainerMenu menu, UniversalProcessorRecipe recipe) {
-        ProcessorRecipeStacks stacks = ProcessorRecipeStacks.of(recipe);
+        transfer(menu, ProcessorRecipeStacks.of(recipe));
+    }
+
+    public static void transfer(PatternGridContainerMenu menu, ProcessorRecipeStacks stacks) {
+        // The Pattern Grid sorts each slot's alternatives in place on the server.
         List<List<ResourceAmount>> inputs = new ArrayList<>();
-        stacks.itemInputs().forEach(options -> inputs.add(options.stream().map(RSPatternTransfer::item).toList()));
-        stacks.fluidInputs().forEach(options -> inputs.add(options.stream().map(RSPatternTransfer::fluid).toList()));
+        stacks.itemInputs().forEach(options -> inputs.add(options.stream()
+                .map(RSPatternTransfer::item).collect(Collectors.toCollection(ArrayList::new))));
+        stacks.fluidInputs().forEach(options -> inputs.add(options.stream()
+                .map(RSPatternTransfer::fluid).collect(Collectors.toCollection(ArrayList::new))));
         List<List<ResourceAmount>> outputs = new ArrayList<>();
-        stacks.itemOutputs().forEach(stack -> outputs.add(List.of(item(stack))));
-        stacks.fluidOutputs().forEach(stack -> outputs.add(List.of(fluid(stack))));
+        stacks.itemOutputs().forEach(stack -> outputs.add(new ArrayList<>(List.of(item(stack)))));
+        stacks.fluidOutputs().forEach(stack -> outputs.add(new ArrayList<>(List.of(fluid(stack)))));
         menu.transferProcessingRecipe(inputs, outputs);
     }
 

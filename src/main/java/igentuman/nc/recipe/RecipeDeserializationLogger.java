@@ -3,6 +3,7 @@ package igentuman.nc.recipe;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.config.Common;
 import igentuman.nc.registration.ModEntry;
+import igentuman.nc.registration.RecipeSchemaKind;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -23,13 +24,14 @@ public final class RecipeDeserializationLogger {
         int incomplete = 0;
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.recipeType() == null || entry.recipeSerializer() == null
-                    || !(entry.recipeSerializer().get() instanceof UniversalProcessorRecipeSerializer)) {
+                    || entry.recipeFamily() == null
+                    || entry.recipeFamily().schemaKind() != RecipeSchemaKind.UNIVERSAL_PROCESSOR) {
                 continue;
             }
 
             RecipeType<UniversalProcessorRecipe> recipeType =
                     (RecipeType<UniversalProcessorRecipe>) entry.recipeType().get();
-            for (var holder : recipeManager.getAllRecipesFor(recipeType)) {
+            for (var holder : recipeManager.recipeMap().byType(recipeType)) {
                 loaded++;
                 List<String> problems = holder.value().getResolutionProblems();
                 if (problems.isEmpty()) continue;
@@ -38,7 +40,7 @@ public final class RecipeDeserializationLogger {
                 for (String problem : problems) {
                     NuclearCraft.LOGGER.debug(
                             "[Recipes] Incomplete recipe {} for processor '{}': {}",
-                            holder.id(), holder.value().getProcessorName(), problem
+                            holder.id().identifier(), holder.value().getProcessorName(), problem
                     );
                 }
             }

@@ -12,7 +12,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
-/** Particle options carrying beam direction, length and energy scale for the fusion reactor beam particle. */
 public record FusionBeamParticleData(Direction direction, double distance, float energyScale) implements ParticleOptions {
 
     public static final MapCodec<FusionBeamParticleData> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(

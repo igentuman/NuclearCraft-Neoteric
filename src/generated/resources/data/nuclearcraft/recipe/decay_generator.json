@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_energy",
   "key": {
-    "G": {
-      "item": "minecraft:redstone"
-    },
-    "P": {
-      "item": "nuclearcraft:coil_copper"
-    },
-    "U": {
-      "item": "minecraft:iron_block"
-    }
+    "G": "minecraft:redstone",
+    "P": "nuclearcraft:coil_copper",
+    "U": "minecraft:iron_block"
   },
   "pattern": [
     "PGP",
@@ -19,7 +13,6 @@
     "PGP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:decay_generator"
   }
 }

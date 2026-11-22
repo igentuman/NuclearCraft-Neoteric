@@ -1,5 +1,6 @@
 package igentuman.nc.world.anomaly;
 
+import net.minecraft.world.entity.EntitySpawnReason;
 import igentuman.nc.config.Common;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.entity.anomaly.AnomalyType;
@@ -73,13 +74,13 @@ public final class AnomalySpawnManager {
         if (type == null) {
             return;
         }
-        AnomalyEntity anomaly = type.create(level);
+        AnomalyEntity anomaly = type.create(level, EntitySpawnReason.NATURAL);
         if (anomaly == null) {
             return;
         }
         int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, planned.x(), planned.z());
         int hover = planned.type() == AnomalyType.TELEPORTING ? Common.ANOMALY_CONFIG.TP_HOVER_OFFSET.get() : 0;
-        anomaly.moveTo(planned.x() + 0.5D, surface + 1 + hover, planned.z() + 0.5D, 0.0F, 0.0F);
+        anomaly.snapTo(planned.x() + 0.5D, surface + 1 + hover, planned.z() + 0.5D, 0.0F, 0.0F);
         anomaly.setCellId(planned.cellId());
         if (anomaly instanceof TeleportingAnomalyEntity tp) {
             tp.setAnchor(planned.x() + 0.5D, planned.z() + 0.5D);
@@ -89,8 +90,8 @@ public final class AnomalySpawnManager {
 
     private static boolean isAnomalyAlreadyPresent(ServerLevel level, AnomalyPlacement.PlannedAnomaly planned) {
         int pad = Math.max(3, (int) Math.ceil(Common.ANOMALY_CONFIG.TP_SELF_RADIUS.get()) + 2);
-        AABB box = new AABB(planned.x() - pad, level.getMinBuildHeight(), planned.z() - pad,
-                planned.x() + pad + 1, level.getMaxBuildHeight(), planned.z() + pad + 1);
+        AABB box = new AABB(planned.x() - pad, level.getMinY(), planned.z() - pad,
+                planned.x() + pad + 1, level.getMaxY() + 1, planned.z() + pad + 1);
         for (AnomalyEntity existing : level.getEntitiesOfClass(AnomalyEntity.class, box)) {
             if (existing.getCellId() == planned.cellId()) {
                 return true;

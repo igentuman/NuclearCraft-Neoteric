@@ -35,7 +35,7 @@ jobs:
       - name: Checkout publish tooling
         uses: actions/checkout@v7
         with:
-          ref: 1.21
+          ref: 26.1.2
           path: .publish-tooling
 
       - name: Checkout Nuclear Radiation build dependency
@@ -43,15 +43,15 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: igentuman/Nuclear-Radiation
-          ref: 1.21.1
-          path: NuclearRadiation
+          ref: 26.1.2
+          path: Nuclear-Radiation-26.1
 
-      - name: Set up Java 21
+      - name: Set up Java 25
         if: ${{ inputs.target != 'curseforge-update' }}
         uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: '25'
 
       - name: Set up Gradle
         if: ${{ inputs.target != 'curseforge-update' }}
@@ -61,7 +61,7 @@ jobs:
         if: ${{ inputs.target != 'curseforge-update' }}
         run: |
           chmod +x ./gradlew
-          ./gradlew build
+          ./gradlew build -PradiationProjectDir=Nuclear-Radiation-26.1
 
       - name: Prepare upload metadata
         id: metadata

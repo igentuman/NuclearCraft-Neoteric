@@ -1,9 +1,8 @@
 package igentuman.nc.screen;
 
-import igentuman.nc.compat.ProcessorRecipeStacks;
 import igentuman.nc.container.EngineersEncoderContainer;
 import igentuman.nc.container.EngineersEncoderContainer.PatternSlot;
-import igentuman.nc.recipe.UniversalProcessorRecipe;
+import igentuman.nc.handler.crafter.EncoderRecipePreview;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.element.NcPanel;
 import igentuman.nc.screen.element.ScrollableItemGrid;
@@ -12,7 +11,7 @@ import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.GuiFluidRenderer;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -21,6 +20,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -48,13 +48,15 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
     private static final int EXTRA_COLS = 2;
     private static final int EXTRA_ROWS = 3;
 
-    private static final ItemStack CRAFTING_ICON = new ItemStack(Items.CRAFTING_TABLE);
-    private static final ItemStack PROCESSING_ICON = new ItemStack(Items.FURNACE);
+    private static final ItemStackTemplate CRAFTING_ICON = new ItemStackTemplate(Items.CRAFTING_TABLE);
+    private static final ItemStackTemplate PROCESSING_ICON = new ItemStackTemplate(Items.FURNACE);
 
     private int visibleRows = PATTERN_ROWS;
     private int scrollRow = 0;
     private int appliedSlotShift = 0;
     private IconButton modeButton;
+    /** Window height for the visible pattern rows; {@code imageHeight} is final and stays at the full height. */
+    private int dynHeight = FULL_IMAGE_HEIGHT;
 
     /** A pseudo-slot drawn in processing mode (fluid or secondary output), used for hover tooltips. */
     private record Preview(int x, int y, ItemStack item, FluidStack fluid) {}
@@ -62,9 +64,7 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
     private final List<Preview> previews = new ArrayList<>();
 
     public EngineersEncoderScreen(EngineersEncoderContainer menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
-        this.imageWidth = GRID_X + PATTERN_COLS * 18 + ScrollableItemGrid.SCROLLBAR_WIDTH + 8;
-        this.imageHeight = FULL_IMAGE_HEIGHT;
+        super(menu, inventory, title, GRID_X + PATTERN_COLS * 18 + ScrollableItemGrid.SCROLLBAR_WIDTH + 8, FULL_IMAGE_HEIGHT);
     }
 
     @Override
@@ -76,9 +76,10 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
             visibleRows = MIN_VISIBLE_ROWS + extraRows;
         }
         int slotShift = (visibleRows - PATTERN_ROWS) * 18;
-        imageHeight = FULL_IMAGE_HEIGHT + slotShift;
+        dynHeight = FULL_IMAGE_HEIGHT + slotShift;
 
         super.init();
+        topPos = (height - dynHeight) / 2;
 
         if (slotShift != appliedSlotShift) {
             for (int i = PLAYER_START; i < PLAYER_END; i++) {
@@ -105,7 +106,7 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
 
     private void refreshModeButton() {
         boolean processing = menu.isProcessingMode();
-        modeButton.icon = processing ? PROCESSING_ICON : CRAFTING_ICON;
+        modeButton.icon = (processing ? PROCESSING_ICON : CRAFTING_ICON).create();
         modeButton.setTooltip(Tooltip.create(Component.translatable(processing
                 ? "screen.nuclearcraft.crafter.mode.processing_patterns"
                 : "screen.nuclearcraft.crafter.mode.crafting_patterns")));
@@ -131,6 +132,16 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
     }
 
     @Override
+    public int getImageHeight() {
+        return dynHeight;
+    }
+
+    @Override
+    protected boolean hasClickedOutside(double mx, double my, int xo, int yo) {
+        return mx < xo || my < yo || mx >= xo + imageWidth || my >= yo + dynHeight;
+    }
+
+    @Override
     public boolean mouseScrolled(double mx, double my, double scrollX, double scrollY) {
         if (scrollY != 0 && maxScroll() > 0 && isOverPatterns(mx, my)) {
             scrollRow = Mth.clamp(scrollRow - (int) Math.signum(scrollY), 0, maxScroll());
@@ -141,16 +152,16 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
     }
 
     @Override
-    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTicks) {
         refreshModeButton();
-        super.render(g, mouseX, mouseY, partialTicks);
-        renderTooltip(g, mouseX, mouseY);
+        super.extractRenderState(g, mouseX, mouseY, partialTicks);
         renderPreviewTooltips(g, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics g, float partialTicks, int mouseX, int mouseY) {
-        NcPanel.drawPanel(g, leftPos, topPos, imageWidth, imageHeight);
+    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(g, mouseX, mouseY, partialTicks);
+        NcPanel.drawPanel(g, leftPos, topPos, imageWidth, dynHeight);
         for (int i = 0; i < menu.slots.size(); i++) {
             Slot s = menu.slots.get(i);
             if (!s.isActive()) continue;
@@ -166,8 +177,8 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
         if (menu.isProcessingMode()) renderProcessing(g);
     }
 
-    private void renderProcessing(GuiGraphics g) {
-        UniversalProcessorRecipe recipe = menu.selectedRecipe();
+    private void renderProcessing(GuiGraphicsExtractor g) {
+        EncoderRecipePreview recipe = menu.selectedPreview();
         for (int i = 0; i < MAX_FLUID_IN; i++) {
             NcPanel.drawSlot(g, leftPos + FLUID_IN_X + i * 18, topPos + FLUID_IN_Y);
         }
@@ -179,16 +190,15 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
         NcPanel.drawSlot(g, leftPos + PROC_ICON_X, topPos + PROC_ICON_Y);
         if (recipe == null) return;
 
-        ModEntry entry = ModEntries.get(recipe.getProcessorName());
+        ModEntry entry = ModEntries.get(recipe.processor());
         if (entry != null && entry.hasItem()) {
             ItemStack icon = new ItemStack(entry.item().get());
-            g.renderItem(icon, leftPos + PROC_ICON_X, topPos + PROC_ICON_Y);
+            g.item(icon, leftPos + PROC_ICON_X, topPos + PROC_ICON_Y);
             previews.add(new Preview(PROC_ICON_X, PROC_ICON_Y, icon, FluidStack.EMPTY));
         }
 
-        ProcessorRecipeStacks stacks = ProcessorRecipeStacks.of(recipe);
         int i = 0;
-        for (FluidStack f : stacks.primaryFluidInputs()) {
+        for (FluidStack f : recipe.fluidInputs()) {
             if (i >= MAX_FLUID_IN) break;
             int x = FLUID_IN_X + i * 18;
             GuiFluidRenderer.renderFluidTank(g, leftPos + x, topPos + FLUID_IN_Y, 16, 16, f, Math.max(1, f.getAmount()));
@@ -197,17 +207,17 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
         }
 
         List<Preview> extras = new ArrayList<>();
-        List<ItemStack> outputs = stacks.itemOutputs();
+        List<ItemStack> outputs = recipe.itemOutputs();
         for (int o = 1; o < outputs.size(); o++) extras.add(new Preview(0, 0, outputs.get(o), FluidStack.EMPTY));
-        for (FluidStack f : stacks.fluidOutputs()) extras.add(new Preview(0, 0, ItemStack.EMPTY, f));
+        for (FluidStack f : recipe.fluidOutputs()) extras.add(new Preview(0, 0, ItemStack.EMPTY, f));
         int idx = 0;
         for (Preview p : extras) {
             if (idx >= EXTRA_COLS * EXTRA_ROWS) break;
             int x = EXTRA_X + (idx % EXTRA_COLS) * 18;
             int y = EXTRA_Y + (idx / EXTRA_COLS) * 18;
             if (!p.item().isEmpty()) {
-                g.renderItem(p.item(), leftPos + x, topPos + y);
-                g.renderItemDecorations(font, p.item(), leftPos + x, topPos + y);
+                g.item(p.item(), leftPos + x, topPos + y);
+                g.itemDecorations(font, p.item(), leftPos + x, topPos + y);
             } else {
                 GuiFluidRenderer.renderFluidTank(g, leftPos + x, topPos + y, 16, 16, p.fluid(), Math.max(1, p.fluid().getAmount()));
             }
@@ -216,7 +226,7 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
         }
     }
 
-    private void renderPreviewTooltips(GuiGraphics g, int mouseX, int mouseY) {
+    private void renderPreviewTooltips(GuiGraphicsExtractor g, int mouseX, int mouseY) {
         if (!menu.isProcessingMode()) return;
         for (Preview p : previews) {
             int x = leftPos + p.x();
@@ -228,28 +238,28 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
                     tip.addFirst(Component.translatable("screen.nuclearcraft.crafter.processor", Component.empty())
                             .withStyle(ChatFormatting.GRAY));
                 }
-                g.renderComponentTooltip(font, tip, mouseX, mouseY);
+                g.setComponentTooltipForNextFrame(font, tip, mouseX, mouseY);
             } else if (!p.fluid().isEmpty()) {
                 List<Component> tip = new ArrayList<>();
                 tip.add(p.fluid().getHoverName());
                 tip.add(Component.literal(TextUtils.formatLiquid(p.fluid().getAmount())).withStyle(ChatFormatting.GRAY));
-                g.renderComponentTooltip(font, tip, mouseX, mouseY);
+                g.setComponentTooltipForNextFrame(font, tip, mouseX, mouseY);
             }
             return;
         }
     }
 
     @Override
-    protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
-        g.drawString(font, title, 8, 6, 0x404040, false);
-        if (menu.isProcessingMode() && menu.selectedRecipe() == null) {
+    protected void extractLabels(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+        g.text(font, title, 8, 6, 0xFF404040, false);
+        if (menu.isProcessingMode() && menu.selectedPreview() == null) {
             Component hint = Component.translatable("screen.nuclearcraft.crafter.no_recipe");
-            g.drawString(font, hint, FLUID_IN_X + MAX_FLUID_IN * 18 + 6, FLUID_IN_Y + 4, 0x808080, false);
+            g.text(font, hint, FLUID_IN_X + MAX_FLUID_IN * 18 + 6, FLUID_IN_Y + 4, 0xFF808080, false);
         }
     }
 
     /** Vanilla button that draws an item icon instead of a label. */
-    private static class IconButton extends Button {
+    private static class IconButton extends Button.Plain {
         ItemStack icon = ItemStack.EMPTY;
 
         IconButton(int x, int y, int w, int h, OnPress onPress) {
@@ -257,10 +267,10 @@ public class EngineersEncoderScreen extends AbstractContainerScreen<EngineersEnc
         }
 
         @Override
-        protected void renderWidget(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-            super.renderWidget(g, mouseX, mouseY, partialTick);
+        protected void extractContents(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
+            super.extractContents(g, mouseX, mouseY, partialTick);
             if (!icon.isEmpty()) {
-                g.renderItem(icon, getX() + (width - 16) / 2, getY() + (height - 16) / 2);
+                g.item(icon, getX() + (width - 16) / 2, getY() + (height - 16) / 2);
             }
         }
     }

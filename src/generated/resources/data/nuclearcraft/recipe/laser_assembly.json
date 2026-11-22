@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": {
-      "item": "minecraft:diamond"
-    },
-    "G": {
-      "item": "minecraft:glass"
-    },
-    "R": {
-      "item": "minecraft:amethyst_shard"
-    }
+    "D": "minecraft:diamond",
+    "G": "minecraft:glass",
+    "R": "minecraft:amethyst_shard"
   },
   "pattern": [
     "GRG",
@@ -18,7 +12,6 @@
     "GRG"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:laser_assembly"
   }
 }

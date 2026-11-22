@@ -1,7 +1,6 @@
 package igentuman.nc.setup;
 
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.compat.ponder.PonderUtil;
 import igentuman.nc.client.render.bomb.PrimedFissionBombRenderer;
 import igentuman.nc.client.render.q36.Q36EnergyFlashRenderer;
 import igentuman.nc.client.render.q36.Q36PulseProjectileRenderer;
@@ -17,11 +16,10 @@ import igentuman.nc.entity.EntityBlockProjectile;
 import igentuman.nc.entity.EntityWastelandBoss;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.entity.anomaly.GravitationalAnomalyEntity;
-import igentuman.nc.handler.crafter.CraftingPattern;
-import igentuman.nc.item.ResoniteCrystalItem;
 import igentuman.nc.setup.entries.*;
 import igentuman.nc.client.renderer.DelayedRenderHandler;
 import igentuman.nc.client.renderer.ScenePostEffects;
+import igentuman.nc.compat.ponder.PonderUtil;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.container.PipeConnectorContainer;
@@ -42,13 +40,7 @@ import igentuman.nc.client.render.kugelblitz.BlackholeRenderer;
 import igentuman.nc.client.render.kugelblitz.EXPLRenderer;
 import igentuman.nc.container.EXPLContainer;
 import igentuman.nc.screen.*;
-import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffect;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
@@ -63,12 +55,18 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
+import net.neoforged.neoforge.client.fluid.FluidTintSources;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.resources.model.sprite.Material;
+import igentuman.nc.client.item.ResoniteCrystalTint;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.client.model.DynamicFluidContainerModel;
+import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 import static igentuman.nc.setup.entries.Parts.Q36_ENERGY_FLASH;
 import static igentuman.nc.setup.entries.Parts.Q36_PULSE_PROJECTILE;
@@ -79,6 +77,10 @@ import static igentuman.nc.setup.entries.Parts.Q36_PULSE_PROJECTILE;
 public class Client {
     public Client(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        if (ModList.get().isLoaded("ponder")) {
+            igentuman.nc.compat.ponder.PonderConfigFix.registerEarly();
+            PonderUtil.registerRendererEarly();
+        }
     }
 
     @SubscribeEvent
@@ -87,28 +89,16 @@ public class Client {
             // Register the game-bus render handlers (level-stage events).
             DelayedRenderHandler.register();
             ScenePostEffects.register();
-            registerFluidRenderLayers();
-            ItemProperties.register(
-                    Crafter.CRAFTING_PATTERN.get(),
-                    NuclearCraft.rl("encoded"),
-                    (stack, lvl, entity, seed) ->
-                           CraftingPattern.isEncoded(stack) ? 1f : 0f);
+            if (ModList.get().isLoaded("ponder")) {
+                PonderUtil.initPlugin();
+            }
         });
-        if (ModList.get().isLoaded("ponder")) {
-            PonderUtil.initPlugin();
-        }
     }
 
-    private static void registerFluidRenderLayers() {
-        for (ModEntry entry : ModEntries.ENTRIES.values()) {
-            if (entry.materialEntry() instanceof MaterialEntry mat && mat.hasFluid()) {
-                var materialFluid = mat.materialFluid();
-                if (materialFluid.fluidType().get().getDensity() < 1000) {
-                    ItemBlockRenderTypes.setRenderLayer(materialFluid.source().get(), RenderType.translucent());
-                    ItemBlockRenderTypes.setRenderLayer(materialFluid.flowing().get(), RenderType.translucent());
-                }
-            }
-        }
+    @SubscribeEvent
+    static void registerReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(NuclearCraft.rl("scene_post_effects"),
+                (ResourceManagerReloadListener) manager -> ScenePostEffects.close());
     }
 
     @SuppressWarnings("unchecked")
@@ -216,13 +206,18 @@ public class Client {
     }
 
     @SubscribeEvent
-    static void registerSideConfigModels(ModelEvent.RegisterAdditional event) {
+    static void registerSideConfigModels(ModelEvent.RegisterStandalone event) {
         igentuman.nc.client.model.SideConfigFaces.registerModels(event);
     }
 
     @SubscribeEvent
-    static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(igentuman.nc.client.model.BatteryModelLoader.ID, new igentuman.nc.client.model.BatteryModelLoader());
+    static void registerBlockStateModels(RegisterBlockStateModels event) {
+        event.registerModel(igentuman.nc.client.model.BatteryUnbakedModel.ID, igentuman.nc.client.model.BatteryUnbakedModel.CODEC);
+    }
+
+    @SubscribeEvent
+    static void registerItemModels(RegisterItemModelsEvent event) {
+        event.register(igentuman.nc.client.item.CraftingPatternItemModel.ID, igentuman.nc.client.item.CraftingPatternItemModel.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent
@@ -232,6 +227,13 @@ public class Client {
         event.registerSpriteSet(NcParticles.SMOKE.get(), igentuman.nc.client.particle.FireVerticalParticle.Factory::new);
         event.registerSpriteSet(NcParticles.EXPLOSION.get(), igentuman.nc.client.particle.ExplosionParticle.Factory::new);
         event.registerSpriteSet(NcParticles.EXPLOSION_SEED.get(), igentuman.nc.client.particle.ExplosionSeedParticle.Factory::new);
+    }
+
+    /** 3D structure previews in screens and recipe viewers render through picture-in-picture. */
+    @SubscribeEvent
+    static void registerPictureInPictureRenderers(net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent event) {
+        event.register(igentuman.nc.client.render.builder.StructurePreviewState.class,
+                igentuman.nc.client.render.builder.StructurePreviewPipRenderer::new);
     }
 
     @SubscribeEvent
@@ -282,7 +284,6 @@ public class Client {
                 (EntityType<? extends EntityBlockProjectile>) (EntityType<?>)
                         Ghouls.WASTELAND_PROJECTILE.get(),
                 WastelandProjectileRenderer::new);
-        // Empty renderer stub for the primed bomb entity; all visuals are client FX (Phase 7).
         event.registerEntityRenderer(
                 (EntityType<? extends PrimedFissionBombEntity>) (EntityType<?>)
                         Bomb.PRIMED_FISSION_BOMB.get(),
@@ -322,92 +323,45 @@ public class Client {
     }
 
     /**
-     * Register client-side fluid rendering extensions (textures + tint color).
+     * Registers fluid models (still/flowing sprites and ARGB tint) for every material fluid.
+     * Fluids lighter than water render translucent, as the old translucent render layer did;
+     * tint alpha still drives gas/acid translucency there.
      */
     @SubscribeEvent
-    static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(new net.neoforged.neoforge.client.extensions.common.IClientItemExtensions() {
-            @Override
-            public net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return igentuman.nc.client.item.CraftingPatternRenderer.get();
-            }
-        }, igentuman.nc.setup.entries.Crafter.CRAFTING_PATTERN.get());
+    static void registerFluidModels(RegisterFluidModelsEvent event) {
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.materialEntry() instanceof MaterialEntry mat && mat.hasFluid()) {
-                registerFluidExtension(event, mat.materialFluid().fluidType().get());
+                registerFluidModel(event, mat);
             }
         }
         for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
             for (MaterialEntry mat : fuel.fluids()) {
-                registerFluidExtension(event, mat.materialFluid().fluidType().get());
+                registerFluidModel(event, mat);
             }
         }
         for (igentuman.nc.registration.IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
             for (MaterialEntry mat : isotope.fluids()) {
-                registerFluidExtension(event, mat.materialFluid().fluidType().get());
+                registerFluidModel(event, mat);
             }
         }
     }
 
-    private static void registerFluidExtension(RegisterClientExtensionsEvent event, net.neoforged.neoforge.fluids.FluidType fluidType) {
-        if (fluidType instanceof MaterialFluidType mft) {
-            event.registerFluidType(new IClientFluidTypeExtensions() {
-                @Override
-                public ResourceLocation getStillTexture() {
-                    return mft.getStillTexture();
-                }
-
-                @Override
-                public ResourceLocation getFlowingTexture() {
-                    return mft.getFlowingTexture();
-                }
-
-                @Override
-                public ResourceLocation getOverlayTexture() {
-                    return mft.getOverlayTexture();
-                }
-
-                @Override
-                public int getTintColor() {
-                    // Full ARGB; alpha drives translucency for gases/acids.
-                    return mft.getTintColor();
-                }
-            }, fluidType);
+    private static void registerFluidModel(RegisterFluidModelsEvent event, MaterialEntry mat) {
+        var materialFluid = mat.materialFluid();
+        if (!(materialFluid.fluidType().get() instanceof MaterialFluidType mft)) {
+            return;
         }
+        boolean translucent = mft.getDensity() < 1000;
+        Material still = new Material(mft.getStillTexture(), translucent);
+        Material flowing = new Material(mft.getFlowingTexture(), translucent);
+        Material overlay = mft.getOverlayTexture() == null ? null : new Material(mft.getOverlayTexture(), translucent);
+        event.register(new FluidModel.Unbaked(still, flowing, overlay, FluidTintSources.constant(mft.getTintColor())),
+                materialFluid.source(), materialFluid.flowing());
     }
 
-    /**
-     * Tints fluid buckets by the fluid's color. {@link DynamicFluidContainerModel.Colors} reads the
-     * fluid's {@link IClientFluidTypeExtensions#getTintColor()} for the masked fluid layer; the
-     * matching bucket model is generated with {@code applyTint(true)}.
-     */
+    /** Resonite crystals are tinted by their effect colour; buckets are tinted by their fluid_container model. */
     @SubscribeEvent
-    static void registerItemColors(RegisterColorHandlersEvent.Item event) {
-        DynamicFluidContainerModel.Colors bucketColors = new DynamicFluidContainerModel.Colors();
-        for (ModEntry entry : ModEntries.ENTRIES.values()) {
-            if (entry.materialEntry() instanceof MaterialEntry mat && mat.hasFluid()) {
-                event.register(bucketColors, mat.bucket());
-            }
-        }
-        for (FissionFuelEntry fuel : ModEntries.FISSION_FUEL.values()) {
-            for (MaterialEntry mat : fuel.fluids()) {
-                event.register(bucketColors, mat.bucket());
-            }
-        }
-        for (igentuman.nc.registration.IsotopeEntry isotope : ModEntries.ISOTOPES.values()) {
-            for (MaterialEntry mat : isotope.fluids()) {
-                event.register(bucketColors, mat.bucket());
-            }
-        }
-        event.register(RESONITE_CRYSTAL_COLOR, ModEntries.get("resonite_crystal").item().get());
+    static void registerItemTintSources(RegisterColorHandlersEvent.ItemTintSources event) {
+        event.register(ResoniteCrystalTint.ID, ResoniteCrystalTint.MAP_CODEC);
     }
-
-    private static final ItemColor RESONITE_CRYSTAL_COLOR = (stack, tintIndex) -> {
-        if (tintIndex != 0) {
-            return 0xFFFFFF;
-        }
-        Holder<MobEffect> effect =
-                ResoniteCrystalItem.getEffect(stack);
-        return effect == null ? 0xFFFFFFFF : 0xFF000000 | effect.value().getColor();
-    };
 }

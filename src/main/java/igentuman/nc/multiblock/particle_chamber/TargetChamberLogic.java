@@ -6,18 +6,21 @@ import igentuman.nc.block_entity.particle.ParticleChamberControllerBE;
 import igentuman.nc.particle.ParticleStorage;
 import igentuman.nc.recipe.particle.ParticleRecipes;
 import igentuman.nc.recipe.particle.TargetChamberRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/** Reserves target material and converts particle irradiation into reaction products. */
 public class TargetChamberLogic extends ParticleChamberLogic {
 
     @Override
@@ -28,7 +31,7 @@ public class TargetChamberLogic extends ParticleChamberLogic {
         if (incoming.isEmpty()) return;
 
         TargetChamberRecipe recipe;
-        ResourceLocation recipeId;
+        Identifier recipeId;
         if (activeReactionId == null) {
             RecipeHolder<TargetChamberRecipe> holder = bestRecipe(level, ParticleRecipes.TARGET_CHAMBER_TYPE.get(),
                     candidate -> TargetChamberProcessor.matchesSpecies(candidate.particleInput(), incoming)
@@ -36,7 +39,9 @@ public class TargetChamberLogic extends ParticleChamberLogic {
                     TargetChamberRecipe::priority);
             if (holder == null || !reserveTargetInput(controller, holder.value())) return;
             recipe = holder.value();
-            recipeId = holder.id();
+            recipeId = holder.id().identifier();
+            // Retain the committed target reservation even when FE is unavailable this tick.
+            finishCycle(recipeId, fractionalWork, fractionalYields);
         } else {
             recipeId = activeReactionId;
             recipe = resolveRecipe(level, recipeId);
@@ -88,10 +93,10 @@ public class TargetChamberLogic extends ParticleChamberLogic {
                 : (int) Math.min(100L, (long) (Math.max(0, work) * 100L / requiredWork));
     }
 
-    private static TargetChamberRecipe resolveRecipe(ServerLevel level, ResourceLocation recipeId) {
+    private static TargetChamberRecipe resolveRecipe(ServerLevel level, Identifier recipeId) {
         for (RecipeHolder<TargetChamberRecipe> holder
-                : level.getRecipeManager().getAllRecipesFor(ParticleRecipes.TARGET_CHAMBER_TYPE.get())) {
-            if (holder.id().equals(recipeId)) return holder.value();
+                : level.recipeAccess().recipeMap().byType(ParticleRecipes.TARGET_CHAMBER_TYPE.get())) {
+            if (holder.id().identifier().equals(recipeId)) return holder.value();
         }
         return null;
     }
@@ -124,7 +129,11 @@ public class TargetChamberLogic extends ParticleChamberLogic {
             ItemStack existing = items.getStackInSlot(0);
             for (SizedIngredient ingredient : recipe.itemInputs()) {
                 if (ingredient.test(existing) && existing.getCount() >= ingredient.count()) {
-                    items.extractItem(0, ingredient.count(), false);
+                    try (var transaction = Transaction.openRoot()) {
+                        if (items.extract(0, ItemResource.of(existing), ingredient.count(), transaction)
+                                != ingredient.count()) continue;
+                        transaction.commit();
+                    }
                     return true;
                 }
             }
@@ -136,8 +145,12 @@ public class TargetChamberLogic extends ParticleChamberLogic {
             FluidStack existing = fluids.getFluidInTank(0);
             for (SizedFluidIngredient ingredient : recipe.fluidInputs()) {
                 if (ingredient.test(existing) && existing.getAmount() >= ingredient.amount()) {
-                    FluidStack drained = fluids.drainTank(0, ingredient.amount(), IFluidHandler.FluidAction.EXECUTE);
-                    if (drained.getAmount() == ingredient.amount()) return true;
+                    try (var transaction = Transaction.openRoot()) {
+                        if (fluids.extract(0, FluidResource.of(existing), ingredient.amount(), transaction)
+                                != ingredient.amount()) continue;
+                        transaction.commit();
+                    }
+                    return true;
                 }
             }
         }
@@ -149,18 +162,22 @@ public class TargetChamberLogic extends ParticleChamberLogic {
             var items = controller.contentHandler.getItemHandler();
             if (items == null) return false;
             ItemStack out = recipe.itemOutputs().getFirst().resolve();
-            if (out.isEmpty() || !items.insertItem(1, out.copy(), true).isEmpty()) return false;
-            items.insertItem(1, out.copy(), false);
+            if (out.isEmpty()) return false;
+            try (var transaction = Transaction.openRoot()) {
+                if (items.insert(1, ItemResource.of(out), out.getCount(), transaction) != out.getCount()) return false;
+                transaction.commit();
+            }
             return true;
         }
         if (!recipe.fluidOutputs().isEmpty()) {
             var fluids = controller.contentHandler.getFluidHandler();
             if (fluids == null) return false;
             FluidStack out = recipe.fluidOutputs().getFirst().resolve();
-            if (out.isEmpty() || fluids.fillTank(1, out.copy(), IFluidHandler.FluidAction.SIMULATE) != out.getAmount()) {
-                return false;
+            if (out.isEmpty()) return false;
+            try (var transaction = Transaction.openRoot()) {
+                if (fluids.insert(1, FluidResource.of(out), out.getAmount(), transaction) != out.getAmount()) return false;
+                transaction.commit();
             }
-            fluids.fillTank(1, out.copy(), IFluidHandler.FluidAction.EXECUTE);
             return true;
         }
         return false;

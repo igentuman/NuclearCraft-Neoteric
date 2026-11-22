@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "nuclearcraft:basic_storage_container"
-    },
-    "D": {
-      "tag": "c:plates/bronze"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    }
+    "C": "nuclearcraft:basic_storage_container",
+    "D": "#c:plates/bronze",
+    "P": "nuclearcraft:plate_advanced"
   },
   "pattern": [
     "DPD",
@@ -18,7 +12,6 @@
     "DPD"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:advanced_storage_container"
   }
 }

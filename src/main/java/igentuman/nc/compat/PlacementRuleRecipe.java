@@ -7,7 +7,7 @@ import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public record PlacementRuleRecipe(ResourceLocation id, ItemStack part, long cooling, List<Condition> conditions) {
+public record PlacementRuleRecipe(Identifier id, ItemStack part, long cooling, List<Condition> conditions) {
 
     public record Condition(Component description, List<ItemStack> alternatives) {}
 
@@ -58,7 +58,7 @@ public record PlacementRuleRecipe(ResourceLocation id, ItemStack part, long cool
                 int count = parts.length == 2 ? Integer.parseInt(parts[1]) : 1;
                 List<ItemStack> blocks;
                 if (parts[0].startsWith("#")) {
-                    var tag = TagKey.create(Registries.BLOCK, ResourceLocation.parse(parts[0].substring(1)));
+                    var tag = TagKey.create(Registries.BLOCK, Identifier.parse(parts[0].substring(1)));
                     blocks = new ArrayList<>();
                     BuiltInRegistries.BLOCK.getTagOrEmpty(tag).forEach(holder -> {
                         ItemStack stack = new ItemStack(holder.value());
@@ -77,8 +77,8 @@ public record PlacementRuleRecipe(ResourceLocation id, ItemStack part, long cool
     }
 
     private static ItemStack blockStack(String name) {
-        ResourceLocation id = name.contains(":") ? ResourceLocation.parse(name) : NuclearCraft.rl(name);
-        Block block = BuiltInRegistries.BLOCK.get(id);
+        Identifier id = name.contains(":") ? Identifier.parse(name) : NuclearCraft.rl(name);
+        Block block = BuiltInRegistries.BLOCK.getValue(id);
         return block == Blocks.AIR ? ItemStack.EMPTY : new ItemStack(block);
     }
 }

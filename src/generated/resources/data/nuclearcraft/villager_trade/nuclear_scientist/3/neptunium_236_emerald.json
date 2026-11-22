@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "count": 4,
+    "id": "minecraft:emerald"
+  },
+  "max_uses": 7.0,
+  "reputation_discount": 0.02,
+  "wants": {
+    "id": "nuclearcraft:neptunium_236"
+  },
+  "xp": 15.0
+}

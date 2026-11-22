@@ -32,8 +32,8 @@ public class Bomb extends ModEntries {
 
     public static void bomb() {
         add("pu_239_bomb")
-                .block(name -> new Pu239BombBlock(
-                        BlockBehaviour.Properties.of()
+                .block((props, name) -> new Pu239BombBlock(
+                        props
                                 .mapColor(MapColor.METAL)
                                 .sound(SoundType.METAL)
                                 .strength(5.0f)

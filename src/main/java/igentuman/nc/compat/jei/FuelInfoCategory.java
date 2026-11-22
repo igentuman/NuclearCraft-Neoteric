@@ -8,11 +8,11 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -23,8 +23,8 @@ import static igentuman.nc.util.TextUtils.__;
 
 public class FuelInfoCategory implements IRecipeCategory<FuelInfoRecipe> {
 
-    public static final RecipeType<FuelInfoRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "fuel_info", FuelInfoRecipe.class);
+    public static final IRecipeType<FuelInfoRecipe> TYPE =
+            IRecipeType.create(NuclearCraft.MODID, "fuel_info", FuelInfoRecipe.class);
 
     private static final int WIDTH = 176;
     private static final int ROW_HEIGHT = 26;
@@ -40,7 +40,7 @@ public class FuelInfoCategory implements IRecipeCategory<FuelInfoRecipe> {
     }
 
     @Override
-    public RecipeType<FuelInfoRecipe> getRecipeType() { return TYPE; }
+    public IRecipeType<FuelInfoRecipe> getRecipeType() { return TYPE; }
 
     @Override
     public Component getTitle() {
@@ -58,29 +58,29 @@ public class FuelInfoCategory implements IRecipeCategory<FuelInfoRecipe> {
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, FuelInfoRecipe recipe, IFocusGroup focuses) {
-        builder.addInvisibleIngredients(RecipeIngredientRole.CATALYST)
-                .addItemStack(recipe.getBaseItem());
+        builder.addInvisibleIngredients(RecipeIngredientRole.CRAFTING_STATION)
+                .add(recipe.getBaseItem());
 
         int y = HEADER;
         for (FuelInfoRecipe.Variant v : recipe.getVariants()) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, 2, y)
-                    .addItemStack(v.item);
+                    .add(v.item);
             y += ROW_HEIGHT;
         }
     }
 
     @Override
-    public void draw(FuelInfoRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(FuelInfoRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
         Font font = Minecraft.getInstance().font;
-        graphics.drawString(font, __("jei.nuclearcraft.fuel_info.title", recipe.getName().toUpperCase()), 2, 1, 0xFF404040, false);
+        graphics.text(font, __("jei.nuclearcraft.fuel_info.title", recipe.getName().toUpperCase()), 2, 1, 0xFF404040, false);
 
         int y = HEADER;
         int textX = 24;
         for (FuelInfoRecipe.Variant v : recipe.getVariants()) {
             slot.draw(graphics, 1, y - 1);
-            graphics.drawString(font, __(v.labelKey).getString(), textX, y + 3, 0xFF202020, false);
-            graphics.pose().pushPose();
-            graphics.pose().scale(0.7F, 0.7F, 1F);
+            graphics.text(font, __(v.labelKey).getString(), textX, y + 3, 0xFF202020, false);
+            graphics.pose().pushMatrix();
+            graphics.pose().scale(0.7F, 0.7F);
             int sx = (int) ((textX - 20) / 0.7F);
             int sy = (int) ((y + 10) / 0.7F);
             String stats;
@@ -97,8 +97,8 @@ public class FuelInfoCategory implements IRecipeCategory<FuelInfoRecipe> {
                         v.def.depletion
                 ).getString();
             }
-            graphics.drawString(font, stats, sx, sy + 10, Color.darkGray.getRGB(), false);
-            graphics.pose().popPose();
+            graphics.text(font, stats, sx, sy + 10, Color.darkGray.getRGB(), false);
+            graphics.pose().popMatrix();
             y += ROW_HEIGHT;
         }
     }

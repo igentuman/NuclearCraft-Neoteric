@@ -26,11 +26,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import igentuman.nc.handler.sided.ItemCapabilityHandler;
 import org.jetbrains.annotations.Nullable;
 
-/** Controller block entity for the fission reactor; runs the reaction each tick and manages heat, energy/steam, and redstone modes. */
 public class FissionReactorControllerBE extends MultiblockControllerBE implements RedstoneModeController, OutputLevelSource {
 
     private static final int TOGGLE_ARM_TICKS = 200;
@@ -95,7 +94,6 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
         return fh != null ? fh.getInternalHandler() : null;
     }
 
-    /** Player request (from GUI button) to switch energy/steam mode after the arming delay. */
     public void requestToggleMode() {
         if (!Multiblocks.fissionSupportsBoiling) return;
         if (toggleTimer >= TOGGLE_IDLE_TICKS) {
@@ -108,8 +106,6 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
         return boilingBuffer;
     }
 
-    /** Restricts each tank to its intended fluid so coolant routed through a port lands in the
-     *  matching active tank and the boiling tank only accepts boilable coolants. */
     private void ensureTankValidators() {
         if (validatorsReady) return;
         FluidCapabilityHandler fh = contentHandler.getFluidHandler();
@@ -139,7 +135,7 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
 
     private void spawnParticles() {
         if (level == null || aabbMinPacked == 0 || aabbMaxPacked == 0) return;
-        if (level.getGameTime() % (level.random.nextInt(5) + 1) != 0) return;
+        if (level.getGameTime() % (level.getRandom().nextInt(5) + 1) != 0) return;
         BlockPos min = BlockPos.of(aabbMinPacked);
         BlockPos max = BlockPos.of(aabbMaxPacked);
         int interiorMinX = min.getX() + 1, interiorMinY = min.getY() + 1, interiorMinZ = min.getZ() + 1;
@@ -150,13 +146,13 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
         int width = max.getX() - min.getX() + 1;
         int height = max.getY() - min.getY() + 1;
         int depth = max.getZ() - min.getZ() + 1;
-        for (BlockPos pos : BlockPos.randomBetweenClosed(level.random, width + height + depth,
+        for (BlockPos pos : BlockPos.randomBetweenClosed(level.getRandom(), width + height + depth,
                 interiorMinX, interiorMinY, interiorMinZ, interiorMaxX, interiorMaxY, interiorMaxZ)) {
             if (excludeArea.contains(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5)) continue;
-            level.addParticle(ParticleTypes.HAPPY_VILLAGER, true,
-                    pos.getX() + level.random.nextFloat(),
-                    pos.getY() + level.random.nextFloat(),
-                    pos.getZ() + level.random.nextFloat(),
+            level.addParticle(ParticleTypes.HAPPY_VILLAGER, true, false,
+                    pos.getX() + level.getRandom().nextFloat(),
+                    pos.getY() + level.getRandom().nextFloat(),
+                    pos.getZ() + level.getRandom().nextFloat(),
                     0, -0.05f, 0);
         }
     }
@@ -186,8 +182,6 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
         }
     }
 
-    /** Counts down the arming timer; flips mode at zero, then parks the timer at idle. Mirrors the
-     *  legacy 200-tick arm / 2000-tick idle behaviour. */
     private void tickToggle() {
         if (toggleTimer >= TOGGLE_IDLE_TICKS) return;
         toggleTimer--;
@@ -199,8 +193,6 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
         }
     }
 
-    /** Energy capability is withheld in steam mode; refresh the controller and every structure
-     *  member (ports) so connected machines re-resolve the capability. */
     private void invalidateStructureCaps() {
         if (!(level instanceof ServerLevel serverLevel)) return;
         serverLevel.invalidateCapabilities(worldPosition);
@@ -279,7 +271,6 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
         setChanged();
     }
 
-    /** Output throttle (0..1) set by MODERATOR-mode ports; 1.0 when none drive it. */
     public double moderationFactor() {
         return moderationFactor;
     }
@@ -297,7 +288,7 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
             case FissionPortBE.MODE_HEAT -> OutputLevelSource.fraction(heatBuffer.currentHeat, heatBuffer.capacity);
             case FissionPortBE.MODE_PROGRESS -> OutputLevelSource.fraction(progress, 100);
             case FissionPortBE.MODE_ITEMS -> {
-                IItemHandler items = getItemHandler(null);
+                ItemCapabilityHandler items = contentHandler.getItemHandler();
                 ItemStack fuel = items != null ? items.getStackInSlot(0) : ItemStack.EMPTY;
                 yield fuel.isEmpty() ? 0 : OutputLevelSource.fraction(fuel.getCount(), fuel.getMaxStackSize());
             }
@@ -324,13 +315,13 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
 
     @Nullable
     @Override
-    public IEnergyStorage getEnergyHandler(@Nullable Direction side) {
+    public EnergyHandler getEnergyHandler(@Nullable Direction side) {
         return steamMode ? null : super.getEnergyHandler(side);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveTagData(tag, registries);
         tag.putBoolean("SteamMode", steamMode);
         tag.putInt("ToggleTimer", toggleTimer);
         tag.putBoolean("RedstoneActivated", redstoneActivated);
@@ -338,12 +329,11 @@ public class FissionReactorControllerBE extends MultiblockControllerBE implement
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        if (!tag.contains("runtime") && tag.contains("Reaction")) tag.put("runtime", tag.getCompound("Reaction"));
-        super.loadAdditional(tag, registries);
-        steamMode = tag.getBoolean("SteamMode");
-        toggleTimer = tag.contains("ToggleTimer") ? tag.getInt("ToggleTimer") : TOGGLE_IDLE_TICKS;
-        redstoneActivated = !tag.contains("RedstoneActivated") || tag.getBoolean("RedstoneActivated");
-        moderationFactor = tag.contains("ModerationFactor") ? tag.getDouble("ModerationFactor") : 1.0;
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadTagData(tag, registries);
+        steamMode = tag.getBooleanOr("SteamMode", false);
+        toggleTimer = tag.contains("ToggleTimer") ? tag.getIntOr("ToggleTimer", 0) : TOGGLE_IDLE_TICKS;
+        redstoneActivated = !tag.contains("RedstoneActivated") || tag.getBooleanOr("RedstoneActivated", false);
+        moderationFactor = tag.contains("ModerationFactor") ? tag.getDoubleOr("ModerationFactor", 0.0D) : 1.0;
     }
 }

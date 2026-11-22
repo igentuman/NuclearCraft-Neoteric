@@ -7,7 +7,7 @@ requires a redstone signal at the controller to process fluids.
 
 Use JEI or EMI for crafting recipes and the heat exchanger recipes available in
 your modpack. Values below describe the default configuration and recipes in the
-NeoForge 1.21.1 port.
+NeoForge 26.1.2 port.
 
 ## Building the multiblock
 

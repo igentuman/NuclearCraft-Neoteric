@@ -31,7 +31,7 @@ public record PacketRedstoneModeCycle(BlockPos pos) implements CustomPacketPaylo
     public static void handle(PacketRedstoneModeCycle packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            ServerLevel level = serverPlayer.serverLevel();
+            ServerLevel level = serverPlayer.level();
             BlockEntity be = level.getBlockEntity(packet.pos());
             if (be instanceof MultiblockPortBE port) {
                 port.cycleRedstoneMode();

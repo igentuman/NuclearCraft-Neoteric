@@ -36,7 +36,7 @@ public class ContainerSyncDispatcher {
 
     public static void sendSnapshot(ServerPlayer player, UUID uuid) {
         if (uuid == null) return;
-        StoredInventory inv = ContainerInventoryStore.get(player.getServer()).get(uuid);
+        StoredInventory inv = ContainerInventoryStore.get(player.level().getServer()).get(uuid);
         int size = inv != null ? inv.size() : 0;
         PacketDistributor.sendToPlayer(player, new PacketSyncContainerInventory(uuid, size, inv));
     }

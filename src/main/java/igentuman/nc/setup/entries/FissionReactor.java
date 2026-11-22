@@ -129,8 +129,6 @@ public class FissionReactor extends ModEntries {
         register(new HeatSinkDef("active_liquid_nitrogen").heat(555).rules("copper_heat_sink", "purpur_heat_sink"));
         register(new HeatSinkDef("active_liquid_helium").heat(420).rules("redstone_heat_sink", "#nuclearcraft:fission_reactor_casing"));
 
-        ModEntries.HS_SCHEDULE = computeSchedule();
-
         MultiblockEntryBuilder.name("fission_reactor")
                 .controller(ModEntries.get("fission_reactor_controller"))
                 .ports(ModEntries.get("fission_reactor_port"))
@@ -158,19 +156,21 @@ public class FissionReactor extends ModEntries {
         if (entry != null) entry.override(mutator);
     }
 
-    private static List<String> computeSchedule() {
+    public static void rebuildHeatSinkSchedule() {
         ValidationScheduler scheduler = new ValidationScheduler();
         for (HeatSinkEntry entry : ModEntries.HEAT_SINKS.values()) {
+            if (!entry.isEnabled()) continue;
             scheduler.addNode(entry.name);
             for (String rule : entry.def().rules) {
                 for (String dep : extractHeatSinkDeps(rule)) {
-                    if (ModEntries.HEAT_SINKS.containsKey(dep) && !dep.equals(entry.name)) {
+                    HeatSinkEntry dependency = ModEntries.HEAT_SINKS.get(dep);
+                    if (dependency != null && dependency.isEnabled() && !dep.equals(entry.name)) {
                         scheduler.graphAddEdge(entry.name, dep);
                     }
                 }
             }
         }
-        return scheduler.getSchedule();
+        ModEntries.HS_SCHEDULE = scheduler.getSchedule();
     }
 
     private static List<String> extractHeatSinkDeps(String rule) {

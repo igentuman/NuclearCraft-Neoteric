@@ -1,7 +1,7 @@
 package igentuman.nc.screen;
 
 import igentuman.nc.screen.element.NcPanel;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -107,13 +107,13 @@ public class HubConfirmDialog extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
-        super.renderBackground(g, mouseX, mouseY, partialTicks);
+    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(g, mouseX, mouseY, partialTicks);
         NcPanel.drawPanel(g, left, top, PANEL_W, panelH);
-        NcPanel.drawCentered(g, font, title, left + PANEL_W / 2, top + 10, 0x404040);
+        NcPanel.drawCentered(g, font, title, left + PANEL_W / 2, top + 10, 0xFF404040);
         int lineY = top + 28;
         for (net.minecraft.util.FormattedCharSequence line : font.split(message, PANEL_W - 20)) {
-            g.drawString(font, line, left + 10, lineY, 0x202020, false);
+            g.text(font, line, left + 10, lineY, 0xFF202020, false);
             lineY += LINE_H;
         }
     }

@@ -11,49 +11,48 @@ import igentuman.nc.setup.entries.Kugelblitz;
 import igentuman.nc.setup.entries.Accelerator;
 import igentuman.nc.setup.entries.ParticleChamber;
 import igentuman.nc.setup.entries.Turbine;
-import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
+import net.createmod.ponder.api.client.registration.PonderSceneRegistrationHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.util.TagUtil.getBlocksByTagKey;
 
 public class PonderScenes {
 
-    public static final ResourceLocation FISSION_REACTOR = rl("fission_reactor");
-    public static final ResourceLocation FUSION_REACTOR = rl("fusion_reactor");
-    public static final ResourceLocation TURBINE = rl("turbine");
-    public static final ResourceLocation TARGET_CHAMBER = rl("target_chamber");
-    public static final ResourceLocation DECAY_CHAMBER = rl("decay_chamber");
-    public static final ResourceLocation COLLISION_CHAMBER = rl("collision_chamber");
-    public static final ResourceLocation LINEAR_ACCELERATOR = rl("linear_accelerator");
-    public static final ResourceLocation RING_ACCELERATOR = rl("ring_accelerator");
-    public static final ResourceLocation BEAM_DIVERTER = rl("beam_diverter");
-    public static final ResourceLocation KUGELBLITZ_CHAMBER = rl("kugelblitz_chamber");
-    public static final ResourceLocation HEAT_EXCHANGER = rl("heat_exchanger");
-    public static final ResourceLocation MOLTEN_SALT_REACTOR = rl("molten_salt_reactor");
+    public static final Identifier FISSION_REACTOR = rl("fission_reactor");
+    public static final Identifier FUSION_REACTOR = rl("fusion_reactor");
+    public static final Identifier TURBINE = rl("turbine");
+    public static final Identifier TARGET_CHAMBER = rl("target_chamber");
+    public static final Identifier DECAY_CHAMBER = rl("decay_chamber");
+    public static final Identifier COLLISION_CHAMBER = rl("collision_chamber");
+    public static final Identifier LINEAR_ACCELERATOR = rl("linear_accelerator");
+    public static final Identifier RING_ACCELERATOR = rl("ring_accelerator");
+    public static final Identifier BEAM_DIVERTER = rl("beam_diverter");
+    public static final Identifier KUGELBLITZ_CHAMBER = rl("kugelblitz_chamber");
+    public static final Identifier HEAT_EXCHANGER = rl("heat_exchanger");
+    public static final Identifier MOLTEN_SALT_REACTOR = rl("molten_salt_reactor");
 
-    public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
+    public static void register(PonderSceneRegistrationHelper<Identifier> helper) {
         PonderSceneRegistrationHelper<Item> HELPER = helper.withKeyFunction(BuiltInRegistries.ITEM::getKey);
-        List<Item> fissionItems = new ArrayList<>(List.of(
+        // Ponder registers scenes before the client receives world tags.
+        var fissionItems = new LinkedHashSet<>(List.of(
                 ModEntries.get("fission_reactor_casing").item().get(),
                 ModEntries.get("fission_reactor_irradiation_chamber").item().get(),
                 ModEntries.get("fission_reactor_pile-driver_irradiation_chamber").item().get(),
                 ModEntries.get("irradiator").item().get(),
                 ModEntries.get("fission_reactor_glass").item().get(),
                 ModEntries.get("fission_reactor_controller").item().get(),
-                ModEntries.get("fission_reactor_port").item().get()
+                ModEntries.get("fission_reactor_port").item().get(),
+                ModEntries.get("graphite").materialEntry().storageBlock().get().asItem(),
+                ModEntries.get("beryllium").materialEntry().storageBlock().get().asItem()
         ));
-        HashSet<Block> moderators = getBlocksByTagKey(FissionTags.MODERATORS.location().toString());
-        for (Block block : moderators) {
-            fissionItems.add(block.asItem());
-        }
+        BuiltInRegistries.BLOCK.get(FissionTags.MODERATORS)
+                .ifPresent(moderators -> moderators.forEach(block -> fissionItems.add(block.value().asItem())));
         for (HeatSinkEntry hs : ModEntries.HEAT_SINKS.values()) {
             if (hs.isEnabled()) fissionItems.add(hs.block().get().asItem());
         }

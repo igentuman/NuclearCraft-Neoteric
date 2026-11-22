@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
-    "B": {
-      "item": "minecraft:glass"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "B": "minecraft:glass",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "SSS",

@@ -21,7 +21,7 @@ public final class TextureUtil {
      *                    {@code "textures/item/fuel/uranium/heu_233.png"}
      */
     public static int getAverageColor(String texturePath) {
-        if (!FMLEnvironment.dist.isClient()) {
+        if (!FMLEnvironment.getDist().isClient()) {
             return DEFAULT_COLOR;
         }
         String path = "assets/nuclearcraft/" + texturePath;

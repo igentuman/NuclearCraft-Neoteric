@@ -1,16 +1,11 @@
 package igentuman.nc.handler.event.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import igentuman.nc.NuclearCraft;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -58,20 +53,15 @@ public class Q36BeamRenderer {
     }
 
     @SubscribeEvent
-    public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
+    public static void onRenderLevel(RenderLevelStageEvent.AfterTranslucentBlocks event) {
         if (ACTIVE.isEmpty()) return;
 
-        Camera cam = Minecraft.getInstance().gameRenderer.getMainCamera();
-        Vec3 camPos = cam.getPosition();
+        Vec3 camPos = event.getLevelRenderState().cameraRenderState.pos;
         PoseStack pose = event.getPoseStack();
 
-        RenderSystem.disableCull();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-        BufferBuilder bb = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        // Translucent, double-sided POSITION_COLOR quads.
+        MultiBufferSource.BufferSource buffers = Minecraft.getInstance().renderBuffers().bufferSource();
+        VertexConsumer bb = buffers.getBuffer(RenderTypes.debugQuads());
         boolean hasVertices = false;
 
         for (Beam b : ACTIVE) {
@@ -111,9 +101,7 @@ public class Q36BeamRenderer {
         }
 
         if (hasVertices) {
-            BufferUploader.drawWithShader(bb.buildOrThrow());
+            buffers.endBatch(RenderTypes.debugQuads());
         }
-        RenderSystem.enableCull();
-        RenderSystem.disableBlend();
     }
 }

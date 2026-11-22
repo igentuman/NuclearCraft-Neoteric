@@ -6,8 +6,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 /** Coordinates a block entity's per-side item and fluid capability handlers, auto-transfer, and NBT. */
@@ -42,13 +43,13 @@ public class SidedContentHandler {
     }
 
     @Nullable
-    public IItemHandler getItemCapability(@Nullable Direction side) {
+    public ResourceHandler<ItemResource> getItemCapability(@Nullable Direction side) {
         if (itemHandler == null) return null;
         return itemHandler.getCapability(side);
     }
 
     @Nullable
-    public IFluidHandler getFluidCapability(@Nullable Direction side) {
+    public ResourceHandler<FluidResource> getFluidCapability(@Nullable Direction side) {
         if (fluidHandler == null) return null;
         return fluidHandler.getCapability(side);
     }
@@ -145,10 +146,10 @@ public class SidedContentHandler {
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (itemHandler != null && tag.contains("ItemHandler")) {
-            itemHandler.deserializeNBT(provider, tag.getCompound("ItemHandler"));
+            itemHandler.deserializeNBT(provider, tag.getCompound("ItemHandler").orElseThrow());
         }
         if (fluidHandler != null && tag.contains("FluidHandler")) {
-            fluidHandler.deserializeNBT(provider, tag.getCompound("FluidHandler"));
+            fluidHandler.deserializeNBT(provider, tag.getCompound("FluidHandler").orElseThrow());
         }
     }
 

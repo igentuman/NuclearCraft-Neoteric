@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/lead"
-  },
+  "ingredient": "#c:dusts/lead",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:lead_ingot"
   }
 }

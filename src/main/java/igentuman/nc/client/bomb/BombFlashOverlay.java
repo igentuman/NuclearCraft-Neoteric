@@ -1,16 +1,16 @@
 package igentuman.nc.client.bomb;
 
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 import org.jetbrains.annotations.NotNull;
 
-public class BombFlashOverlay implements LayeredDraw.Layer {
+public class BombFlashOverlay implements GuiLayer {
 
     public static final BombFlashOverlay BOMB_FLASH = new BombFlashOverlay();
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker deltaTracker) {
+    public void render(@NotNull GuiGraphicsExtractor graphics, @NotNull DeltaTracker deltaTracker) {
         float partialTick = deltaTracker.getGameTimeDeltaPartialTick(false);
         float alpha = BombFxManager.flashAlpha(partialTick);
         if (alpha <= 0.01f) return;

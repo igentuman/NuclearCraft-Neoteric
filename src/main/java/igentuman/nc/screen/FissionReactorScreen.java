@@ -1,5 +1,7 @@
 package igentuman.nc.screen;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.network.PacketFissionToggleMode;
 import igentuman.nc.multiblock.fission.ActiveCoolant;
@@ -7,10 +9,10 @@ import igentuman.nc.screen.element.BoilingBar;
 import igentuman.nc.screen.element.HeatBar;
 import igentuman.nc.screen.element.ProcessorImageButton;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -23,7 +25,7 @@ import static igentuman.nc.util.TextUtils.__;
 /** Fission reactor controller screen adding heat/boiling bars, reactivity readout and an energy/steam mode toggle. */
 public class FissionReactorScreen extends MultiblockControllerScreen {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/fission_controller.png");
+    private static final Identifier TEXTURE = rl("textures/gui/fission_controller.png");
 
     private ProcessorImageButton modeButton;
     private BoilingBar boilingBar;
@@ -40,7 +42,7 @@ public class FissionReactorScreen extends MultiblockControllerScreen {
                 leftPos + 152, topPos + 50,
                 () -> 220,
                 () -> isSteamMode() ? 112 : 148,
-                () -> PacketDistributor.sendToServer(new PacketFissionToggleMode(menu.getPosition())),
+                () -> ClientPacketDistributor.sendToServer(new PacketFissionToggleMode(menu.getPosition())),
                 List::of
         );
         boilingBar = new BoilingBar(leftPos + 8, topPos + 10, 8, 70, () -> menu.getBlockEntity().boilingBuffer());
@@ -51,9 +53,9 @@ public class FissionReactorScreen extends MultiblockControllerScreen {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         drawCenteredString(guiGraphics, this.font, __("screen.nuclearcraft.fission_reactor"), imageWidth/2, this.titleLabelY, 4210752);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
+        guiGraphics.text(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0xFF404040, false);
 
         modeButton.visible = menu.isFormed();
         if (!menu.isFormed()) return;
@@ -98,16 +100,16 @@ public class FissionReactorScreen extends MultiblockControllerScreen {
         return synced("steamMode") != 0;
     }
 
-    private void line(GuiGraphics g, int x, int y, String key, String value) {
-        g.drawString(font, Component.translatable(key).append(": " + value).withStyle(ChatFormatting.DARK_GRAY),
-                x, y, 0x404040, false);
+    private void line(GuiGraphicsExtractor g, int x, int y, String key, String value) {
+        g.text(font, Component.translatable(key).append(": " + value).withStyle(ChatFormatting.DARK_GRAY),
+                x, y, 0xFF404040, false);
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void extractPanel(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         progressBar.setProgress(menu.getProgress());
         energyBar.visible = !isSteamMode();
         boilingBar.visible = isSteamMode();

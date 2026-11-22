@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
-    "F": {
-      "item": "nuclearcraft:steel_frame"
-    },
-    "H": {
-      "item": "minecraft:hopper"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    },
-    "V": {
-      "item": "nuclearcraft:servo"
-    }
+    "F": "nuclearcraft:steel_frame",
+    "H": "minecraft:hopper",
+    "S": "#c:ingots/steel",
+    "V": "nuclearcraft:servo"
   },
   "pattern": [
     "SHS",

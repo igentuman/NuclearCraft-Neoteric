@@ -73,7 +73,7 @@ public class Anomalies extends ModEntries {
                             .updateInterval(3));
 
     public static void anomalies() {
-        addItem("resonite_shard", () -> new net.minecraft.world.item.Item(new net.minecraft.world.item.Item.Properties().stacksTo(64))).build();
-        addItem("resonite_crystal", () -> new ResoniteCrystalItem(new net.minecraft.world.item.Item.Properties().stacksTo(1))).build();
+        addItem("resonite_shard", props -> new net.minecraft.world.item.Item(props.stacksTo(64))).build();
+        addItem("resonite_crystal", props -> new ResoniteCrystalItem(props.stacksTo(1))).build();
     }
 }

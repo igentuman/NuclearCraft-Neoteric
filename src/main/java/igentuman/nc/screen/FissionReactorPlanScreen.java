@@ -4,9 +4,10 @@ import igentuman.nc.client.gui.fission.designer.DesignGrid;
 import igentuman.nc.client.gui.fission.designer.DesignGridRenderer;
 import igentuman.nc.item.FissionReactorPlanItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -40,8 +41,8 @@ public class FissionReactorPlanScreen extends Screen {
         super(stack.getHoverName());
         CompoundTag design = FissionReactorPlanItem.getDesign(stack);
         grid = DesignGrid.fromTag(design);
-        fuel = FissionReactorPlanItem.fuelLabel(design.getString(FissionReactorPlanItem.FUEL_KEY),
-                design.getString(FissionReactorPlanItem.VARIANT_KEY));
+        fuel = FissionReactorPlanItem.fuelLabel(design.getStringOr(FissionReactorPlanItem.FUEL_KEY, ""),
+                design.getStringOr(FissionReactorPlanItem.VARIANT_KEY, ""));
     }
 
     public static void open(ItemStack stack) {
@@ -73,11 +74,11 @@ public class FissionReactorPlanScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawCenteredString(font, title, width / 2, 6, 0xFFFFFF);
-        graphics.drawCenteredString(font, __("screen.nuclearcraft.reactor_plan.read_only",
-                grid.sizeX, grid.sizeY, grid.sizeZ), width / 2, 20, 0xA0A0A0);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        graphics.centeredText(font, title, width / 2, 6, 0xFFFFFFFF);
+        graphics.centeredText(font, __("screen.nuclearcraft.reactor_plan.read_only",
+                grid.sizeX, grid.sizeY, grid.sizeZ), width / 2, 20, 0xFFA0A0A0);
 
         int firstLayer = scroll * columns;
         int lastLayer = Math.min(grid.sizeY, firstLayer + columns * visibleRows);
@@ -85,20 +86,20 @@ public class FissionReactorPlanScreen extends Screen {
             int index = layer - firstLayer;
             int x = MARGIN + index % columns * (cell * grid.sizeX + GAP);
             int y = GRID_TOP + index / columns * (LABEL_HEIGHT + cell * grid.sizeZ + GAP);
-            graphics.drawString(font, __("screen.nuclearcraft.designer.layer", layer + 1), x, y + 2, 0xE0E0E0);
+            graphics.text(font, __("screen.nuclearcraft.designer.layer", layer + 1), x, y + 2, 0xFFE0E0E0);
             DesignGridRenderer.drawLayer(graphics, grid, layer, x, y + LABEL_HEIGHT, cell);
         }
 
         if (!fuel.isEmpty()) {
-            graphics.drawString(font, font.plainSubstrByWidth(__("tooltip.nc.fission_reactor_plan.fuel", fuel).getString(),
-                    width - 2 * MARGIN), MARGIN, height - 46, 0xFFCC66);
+            graphics.text(font, font.plainSubstrByWidth(__("tooltip.nc.fission_reactor_plan.fuel", fuel).getString(),
+                    width - 2 * MARGIN), MARGIN, height - 46, 0xFFFFCC66);
         }
-        graphics.drawString(font, __("screen.nuclearcraft.reactor_plan.layers", firstLayer + 1, lastLayer, grid.sizeY),
-                MARGIN + 50, height - 20, 0xC0C0C0);
+        graphics.text(font, __("screen.nuclearcraft.reactor_plan.layers", firstLayer + 1, lastLayer, grid.sizeY),
+                MARGIN + 50, height - 20, 0xFFC0C0C0);
         drawCellTooltip(graphics, mouseX, mouseY, firstLayer, lastLayer);
     }
 
-    private void drawCellTooltip(GuiGraphics graphics, int mouseX, int mouseY, int firstLayer, int lastLayer) {
+    private void drawCellTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int firstLayer, int lastLayer) {
         for (int layer = firstLayer; layer < lastLayer; layer++) {
             int index = layer - firstLayer;
             int x = MARGIN + index % columns * (cell * grid.sizeX + GAP);
@@ -114,7 +115,7 @@ public class FissionReactorPlanScreen extends Screen {
                 tooltip.add(new ItemStack(block).getHoverName());
             }
             tooltip.add(__("screen.nuclearcraft.reactor_plan.position", cx + 1, layer + 1, cz + 1));
-            graphics.renderComponentTooltip(font, tooltip, mouseX, mouseY);
+            graphics.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY);
             return;
         }
     }
@@ -126,12 +127,12 @@ public class FissionReactorPlanScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (minecraft.options.keyInventory.matches(keyCode, scanCode)) {
+    public boolean keyPressed(KeyEvent event) {
+        if (minecraft.options.keyInventory.matches(event)) {
             onClose();
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override

@@ -10,21 +10,21 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 
 /** JEI category for Kugelblitz transmutation recipes. */
-public class KugelblitzRecipeCategory implements IRecipeCategory<KugelblitzRecipe> {
+public class KugelblitzRecipeCategory implements IRecipeCategory<RecipeHolder<KugelblitzRecipe>> {
 
-    public static final RecipeType<KugelblitzRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "kugelblitz_chamber", KugelblitzRecipe.class);
+    public static final IRecipeHolderType<KugelblitzRecipe> TYPE =
+            IRecipeHolderType.create(NuclearCraft.rl("kugelblitz_chamber"));
 
     private static final int WIDTH = 124;
     private static final int HEIGHT = 26;
@@ -41,7 +41,7 @@ public class KugelblitzRecipeCategory implements IRecipeCategory<KugelblitzRecip
     }
 
     @Override
-    public RecipeType<KugelblitzRecipe> getRecipeType() {
+    public IRecipeHolderType<KugelblitzRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -66,25 +66,24 @@ public class KugelblitzRecipeCategory implements IRecipeCategory<KugelblitzRecip
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, KugelblitzRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<KugelblitzRecipe> holder, IFocusGroup focuses) {
+        KugelblitzRecipe recipe = holder.value();
         var inputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 7, 5);
         if (recipe.input().ingredient().test(recipe.getResultStack())) {
-            inputSlot.addItemStack(new ItemStack(ModEntries.get("unknown_ingredient").item().get()));
+            inputSlot.add(new ItemStack(ModEntries.get("unknown_ingredient").item().get()));
         } else {
-            inputSlot.addItemStacks(Arrays.stream(recipe.input().ingredient().getItems())
-                    .map(stack -> stack.copyWithCount(recipe.input().count()))
-                    .toList());
+            JeiRecipeSlots.addItems(inputSlot, recipe.input());
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, WIDTH - 23, 5)
                 .addItemStacks(recipe.output().members());
     }
 
     @Override
-    public void draw(KugelblitzRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics,
+    public void draw(RecipeHolder<KugelblitzRecipe> holder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics,
                      double mouseX, double mouseY) {
         slot.draw(graphics, 6, 4);
         slot.draw(graphics, WIDTH - 24, 4);
-        graphics.drawString(Minecraft.getInstance().font, Component.literal("→"), WIDTH / 2 - 3, 8,
-                0x404040, false);
+        graphics.text(Minecraft.getInstance().font, Component.literal("→"), WIDTH / 2 - 3, 8,
+                0xFF404040, false);
     }
 }

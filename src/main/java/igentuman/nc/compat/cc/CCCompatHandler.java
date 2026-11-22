@@ -6,6 +6,7 @@ import igentuman.nc.block_entity.MultiblockControllerBE;
 import igentuman.nc.block_entity.UniversalProcessorBE;
 import igentuman.nc.block_entity.accelerator.AbstractAcceleratorControllerBE;
 import igentuman.nc.block_entity.accelerator.BeamDiverterControllerBE;
+import igentuman.nc.block_entity.crafter.EngineersCrafterBE;
 import igentuman.nc.block_entity.fission.FissionReactorControllerBE;
 import igentuman.nc.block_entity.fission.MsrControllerBE;
 import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
@@ -15,7 +16,7 @@ import igentuman.nc.block_entity.particle.ParticleChamberControllerBE;
 import igentuman.nc.block_entity.turbine.TurbineControllerBE;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
-import igentuman.nc.setup.entries.Crafter;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
@@ -28,17 +29,16 @@ public class CCCompatHandler {
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        var capability = PeripheralCapability.get();
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (!entry.hasBlockEntity()) continue;
-            event.registerBlockEntity(PeripheralCapability.get(), entry.blockEntity().get(),
+            event.registerBlockEntity(capability, entry.blockEntity().get(),
                     (be, side) -> peripheral(be));
         }
-        event.registerBlockEntity(PeripheralCapability.get(), Crafter.ENGINEERS_CRAFTING_TABLE_BE.get(),
-                (be, side) -> new EngineersCrafterPeripheral(be));
     }
 
     @Nullable
-    private static IPeripheral peripheral(Object be) {
+    private static IPeripheral peripheral(BlockEntity be) {
         return switch (be) {
             case FissionReactorControllerBE c -> new FissionReactorPeripheral(c);
             case MsrControllerBE c -> new MsrPeripheral(c);
@@ -51,6 +51,7 @@ public class CCCompatHandler {
             case ParticleChamberControllerBE c -> new ParticleChamberPeripheral(c);
             case MultiblockControllerBE c -> new ControllerPeripheral<>(c);
             case UniversalProcessorBE p -> new ProcessorPeripheral(p);
+            case EngineersCrafterBE c -> new EngineersCrafterPeripheral(c);
             default -> null;
         };
     }

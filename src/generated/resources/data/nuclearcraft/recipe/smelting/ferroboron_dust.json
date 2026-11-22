@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/ferroboron"
-  },
+  "ingredient": "#c:dusts/ferroboron",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:ferroboron_ingot"
   }
 }

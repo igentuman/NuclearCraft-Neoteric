@@ -3,33 +3,15 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "item": "nuclearcraft:californium_251"
-    },
-    {
-      "item": "nuclearcraft:californium_252"
-    },
-    {
-      "item": "nuclearcraft:californium_252"
-    },
-    {
-      "item": "nuclearcraft:californium_252"
-    },
-    {
-      "item": "nuclearcraft:californium_252"
-    },
-    {
-      "item": "nuclearcraft:californium_252"
-    },
-    {
-      "item": "nuclearcraft:californium_252"
-    },
-    {
-      "item": "nuclearcraft:californium_252"
-    },
-    {
-      "item": "nuclearcraft:californium_252"
-    }
+    "nuclearcraft:californium_251",
+    "nuclearcraft:californium_252",
+    "nuclearcraft:californium_252",
+    "nuclearcraft:californium_252",
+    "nuclearcraft:californium_252",
+    "nuclearcraft:californium_252",
+    "nuclearcraft:californium_252",
+    "nuclearcraft:californium_252",
+    "nuclearcraft:californium_252"
   ],
   "result": {
     "count": 3,

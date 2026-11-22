@@ -1,7 +1,8 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.input.MouseButtonEvent;
 import igentuman.nc.util.GuiFluidRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -35,13 +36,16 @@ public class FluidTankBar extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         return menu != null && active && visible && isMouseOver(mouseX, mouseY)
                 && FluidTankInteraction.click(menu, tank, button);
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
         int w = width;
@@ -53,8 +57,7 @@ public class FluidTankBar extends AbstractWidget {
         FluidStack fluid = fluidSupplier.get();
         int capacity = capacitySupplier.getAsInt();
         if (fluid != null && !fluid.isEmpty() && capacity > 0) {
-            // Immediate-mode fluid draw: flush the batched background first so it stays behind.
-            graphics.flush();
+            // Extraction keeps submission order, so the fluid lands above the background fill.
             GuiFluidRenderer.renderFluidTank(graphics, x + 1, y + 1, w - 2, h - 2, fluid, capacity);
         }
 

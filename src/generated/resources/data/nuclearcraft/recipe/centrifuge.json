@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft_processors",
   "key": {
-    "F": {
-      "item": "nuclearcraft:motor"
-    },
-    "L": {
-      "item": "nuclearcraft:plate_advanced"
-    },
-    "P": {
-      "item": "nuclearcraft:chassis"
-    },
-    "R": {
-      "item": "nuclearcraft:servo"
-    },
-    "S": {
-      "tag": "c:ingots/ferroboron"
-    }
+    "F": "nuclearcraft:motor",
+    "L": "nuclearcraft:plate_advanced",
+    "P": "nuclearcraft:chassis",
+    "R": "nuclearcraft:servo",
+    "S": "#c:ingots/ferroboron"
   },
   "pattern": [
     "LSL",
@@ -25,7 +15,6 @@
     "LRL"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:centrifuge"
   }
 }

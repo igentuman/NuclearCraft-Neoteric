@@ -6,7 +6,7 @@ import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.network.PacketMultiblockDebug;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -30,7 +30,7 @@ public final class MultiblockDebug {
         if (enabled()) NuclearCraft.LOGGER.info("[Multiblock] " + message, arguments);
     }
 
-    public static void beginTrace(ResourceLocation machineId, BlockPos controllerPos) {
+    public static void beginTrace(Identifier machineId, BlockPos controllerPos) {
         TRACE.remove();
         if (!enabled()) return;
         TRACE.set(new Trace(machineId, controllerPos.immutable(), System.nanoTime()));
@@ -56,7 +56,7 @@ public final class MultiblockDebug {
     }
 
     public static void fail(String diagnosticKey, BlockPos position,
-                            @Nullable ResourceLocation expected, @Nullable ResourceLocation actual) {
+                            @Nullable Identifier expected, @Nullable Identifier actual) {
         Trace trace = TRACE.get();
         if (trace == null) return;
         trace.diagnosticKey = diagnosticKey;
@@ -71,7 +71,7 @@ public final class MultiblockDebug {
         TRACE.remove();
     }
 
-    public static void finishValidation(ServerLevel level, ResourceLocation machineId, BlockPos controllerPos,
+    public static void finishValidation(ServerLevel level, Identifier machineId, BlockPos controllerPos,
                                         AbstractMultiblockCache cache,
                                         AbstractMultiblockValidator.Result result, long elapsedNanos) {
         if (!enabled()) return;
@@ -94,7 +94,7 @@ public final class MultiblockDebug {
     public static void send(ServerLevel level, PacketMultiblockDebug packet) {
         if (!enabled()) return;
         PacketDistributor.sendToPlayersTrackingChunk(level,
-                new ChunkPos(packet.controllerPos()), packet);
+                ChunkPos.containing(packet.controllerPos()), packet);
     }
 
     private static String format(String template, Object... arguments) {
@@ -105,7 +105,7 @@ public final class MultiblockDebug {
     }
 
     private static final class Trace {
-        private final ResourceLocation machineId;
+        private final Identifier machineId;
         private final BlockPos controllerPos;
         private final long startedNanos;
         private String diagnosticKey = "multiblock.validation.invalid";
@@ -114,10 +114,10 @@ public final class MultiblockDebug {
         private BlockPos start;
         private BlockPos end;
         private BlockPos failingPosition;
-        private ResourceLocation expected;
-        private ResourceLocation actual;
+        private Identifier expected;
+        private Identifier actual;
 
-        private Trace(ResourceLocation machineId, BlockPos controllerPos, long startedNanos) {
+        private Trace(Identifier machineId, BlockPos controllerPos, long startedNanos) {
             this.machineId = machineId;
             this.controllerPos = controllerPos;
             this.startedNanos = startedNanos;

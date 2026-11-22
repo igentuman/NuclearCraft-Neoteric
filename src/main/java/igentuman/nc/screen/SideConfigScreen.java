@@ -1,13 +1,14 @@
 package igentuman.nc.screen;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.handler.SlotModePair;
 import igentuman.nc.screen.element.SideConfigButton;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 
 import static igentuman.nc.NuclearCraft.rl;
@@ -16,7 +17,7 @@ import static igentuman.nc.util.TextUtils.__;
 /** Popup screen laying out six directional buttons to configure a single slot's I/O mode per face. */
 public class SideConfigScreen extends Screen {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/small_window.png");
+    private static final Identifier TEXTURE = rl("textures/gui/small_window.png");
 
     private static final int WIN_W = 120;
     private static final int WIN_H = 100;
@@ -53,11 +54,11 @@ public class SideConfigScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.blit(TEXTURE, winX, winY, 0, 0, WIN_W, WIN_H, 256, 256);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, winX, winY, 0, 0, WIN_W, WIN_H, 256, 256);
         FormattedCharSequence formattedcharsequence = this.title.getVisualOrderText();
-        guiGraphics.drawString(font, formattedcharsequence, winX + WIN_W / 2 - font.width(formattedcharsequence) / 2 - 6, winY + 6, 0x404040, false);
+        guiGraphics.text(font, formattedcharsequence, winX + WIN_W / 2 - font.width(formattedcharsequence) / 2 - 6, winY + 6, 0xFF404040, false);
     }
 
     @Override

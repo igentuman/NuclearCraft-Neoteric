@@ -3,18 +3,10 @@
   "category": "redstone",
   "group": "nuclearcraft_dimmer",
   "key": {
-    "C": {
-      "item": "minecraft:comparator"
-    },
-    "L": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "M": {
-      "item": "nuclearcraft:chassis"
-    },
-    "P": {
-      "item": "minecraft:repeater"
-    }
+    "C": "minecraft:comparator",
+    "L": "nuclearcraft:plate_basic",
+    "M": "nuclearcraft:chassis",
+    "P": "minecraft:repeater"
   },
   "pattern": [
     "LPL",
@@ -22,7 +14,6 @@
     "LPL"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:redstone_dimmer"
   }
 }

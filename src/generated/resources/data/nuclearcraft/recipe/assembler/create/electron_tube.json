@@ -5,8 +5,8 @@
       "modid": "create"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "create:polished_rose_quartz"
+      "type": "neoforge:registered",
+      "value": "create:polished_rose_quartz"
     },
     {
       "type": "neoforge:not",
@@ -16,8 +16,8 @@
       }
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "create:electron_tube"
+      "type": "neoforge:registered",
+      "value": "create:electron_tube"
     }
   ],
   "type": "nuclearcraft:assembler",

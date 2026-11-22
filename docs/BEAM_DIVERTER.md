@@ -4,7 +4,7 @@ The Beam Diverter routes one incoming particle beam to one of three outputs.
 Use it to send an accelerator's beam to different machines, or to turn a beam
 through 90 degrees. Only one output is active at a time.
 
-This guide describes the current NeoForge 1.21.1 implementation. Use JEI or EMI
+This guide describes the current NeoForge 26.1.2 implementation. Use JEI or EMI
 for crafting recipes; energy costs and beam attenuation depend on the modpack's
 accelerator configuration.
 

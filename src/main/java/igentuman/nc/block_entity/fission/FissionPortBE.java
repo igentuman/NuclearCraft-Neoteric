@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** Fission reactor port: adds redstone signal modes on top of the shared capability-proxy port. */
 public class FissionPortBE extends MultiblockPortBE {
 
     public static final int MODE_NONE = 0;
@@ -44,8 +43,6 @@ public class FissionPortBE extends MultiblockPortBE {
         return redstoneMode;
     }
 
-    /** Advances to the next redstone mode, releasing any control the previous mode held so a port
-     *  left in SWITCH/MODERATOR doesn't strand the reactor disabled/throttled. Returns the new mode. */
     @Override
     public int cycleRedstoneMode() {
         int previous = redstoneMode;
@@ -60,7 +57,6 @@ public class FissionPortBE extends MultiblockPortBE {
         return redstoneMode;
     }
 
-    /** Comparator strength (0-15). Non-output modes report 0. Server side only. */
     public int getComparatorOutput() {
         if (redstoneMode == MODE_NONE || redstoneMode == MODE_SWITCH || redstoneMode == MODE_MODERATOR) return 0;
         return controller() instanceof RedstoneModeController rmc ? rmc.comparatorSignal(redstoneMode) : 0;

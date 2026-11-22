@@ -5,7 +5,7 @@ boosts a beam supplied by another machine. RF amplifier sections raise particle
 energy, quadrupole electromagnets improve focus, and coolers remove heat.
 The output can feed another accelerator or a particle chamber.
 
-This guide describes the NeoForge 1.21.1 implementation. Values below use the
+This guide describes the NeoForge 26.1.2 implementation. Values below use the
 default configuration; modpacks can change components, sources, and coolant recipes.
 
 ## Blocks and connections

@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft_processors",
   "key": {
-    "F": {
-      "item": "nuclearcraft:motor"
-    },
-    "L": {
-      "item": "nuclearcraft:plate_advanced"
-    },
-    "P": {
-      "item": "nuclearcraft:chassis"
-    },
-    "S": {
-      "item": "nuclearcraft:servo"
-    },
-    "X": {
-      "tag": "c:dusts/glowstone"
-    }
+    "F": "nuclearcraft:motor",
+    "L": "nuclearcraft:plate_advanced",
+    "P": "nuclearcraft:chassis",
+    "S": "nuclearcraft:servo",
+    "X": "#c:dusts/glowstone"
   },
   "pattern": [
     "LFL",
@@ -25,7 +15,6 @@
     "LSL"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:chemical_reactor"
   }
 }

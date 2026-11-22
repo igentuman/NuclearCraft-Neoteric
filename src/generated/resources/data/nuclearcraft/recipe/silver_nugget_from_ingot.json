@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_nuggets",
   "ingredients": [
-    {
-      "tag": "c:ingots/silver"
-    }
+    "#c:ingots/silver"
   ],
   "result": {
     "count": 9,

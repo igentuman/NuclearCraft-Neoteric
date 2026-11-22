@@ -1,7 +1,9 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.input.MouseButtonEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import igentuman.nc.network.PacketMsrRateAdjust;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.core.BlockPos;
@@ -58,12 +60,12 @@ public class MsrRateSlider extends AbstractWidget {
     private void send(int v) {
         if (v != lastSent) {
             lastSent = v;
-            PacketDistributor.sendToServer(new PacketMsrRateAdjust(pos, buttonId, v));
+            ClientPacketDistributor.sendToServer(new PacketMsrRateAdjust(pos, buttonId, v));
         }
     }
 
     @Override
-    protected void renderWidget(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
         int mid = y + height / 2;
@@ -74,20 +76,23 @@ public class MsrRateSlider extends AbstractWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
         dragging = true;
         dragValue = xToValue(mouseX - 3);
         send(dragValue);
     }
 
     @Override
-    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
+    protected void onDrag(MouseButtonEvent event, double dragX, double dragY) {
+        double mouseX = event.x();
         dragValue = xToValue(mouseX - 3);
         send(dragValue);
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
+    public void onRelease(MouseButtonEvent event) {
+        double mouseX = event.x();
         if (dragging) {
             send(xToValue(mouseX - 3));
             dragging = false;

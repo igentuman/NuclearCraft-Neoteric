@@ -10,18 +10,18 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 import static igentuman.nc.NuclearCraft.rl;
 
 public class ParticleSourceCategory implements IRecipeCategory<ParticleSourceRecipe> {
 
-    public static final RecipeType<ParticleSourceRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "particle_source_info", ParticleSourceRecipe.class);
+    public static final IRecipeType<ParticleSourceRecipe> TYPE =
+            IRecipeType.create(NuclearCraft.MODID, "particle_source_info", ParticleSourceRecipe.class);
 
     private final IDrawable icon;
     private final IDrawable slot;
@@ -32,7 +32,7 @@ public class ParticleSourceCategory implements IRecipeCategory<ParticleSourceRec
     }
 
     @Override
-    public RecipeType<ParticleSourceRecipe> getRecipeType() { return TYPE; }
+    public IRecipeType<ParticleSourceRecipe> getRecipeType() { return TYPE; }
 
     @Override
     public Component getTitle() {
@@ -52,19 +52,19 @@ public class ParticleSourceCategory implements IRecipeCategory<ParticleSourceRec
     public void setRecipe(IRecipeLayoutBuilder builder, ParticleSourceRecipe recipe, IFocusGroup focuses) {
         var input = builder.addSlot(RecipeIngredientRole.INPUT, 11, 11);
         if (!recipe.item().isEmpty()) {
-            input.addItemStack(recipe.item());
+            input.add(recipe.item());
         } else {
-            input.addFluidStack(recipe.fluid().getFluid(), recipe.fluid().getAmount())
+            JeiRecipeSlots.addFluid(input, recipe.fluid())
                     .setFluidRenderer(recipe.fluid().getAmount(), false, 16, 16);
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, 63, 11)
-                .addIngredient(ParticleType.PARTICLE, recipe.output());
+                .add(ParticleType.PARTICLE, recipe.output());
     }
 
     @Override
-    public void draw(ParticleSourceRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(ParticleSourceRecipe recipe, IRecipeSlotsView slots, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
         slot.draw(graphics, 10, 10);
         slot.draw(graphics, 62, 10);
-        graphics.drawString(Minecraft.getInstance().font, "→", 42, 14, 0x404040, false);
+        graphics.text(Minecraft.getInstance().font, "→", 42, 14, 0xFF404040, false);
     }
 }

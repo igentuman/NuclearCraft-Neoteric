@@ -4,7 +4,9 @@ import igentuman.nc.registration.MaterialFluidType;
 import igentuman.nc.util.NCDamageSources;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -14,10 +16,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 
-/**
- * Material fluid block. Molten fluids are hot (fire source, light, ignite entities);
- * gases evaporate the instant they are placed (lighter-than-air density).
- */
 public class NCFluidBlock extends LiquidBlock {
 
     public NCFluidBlock(FlowingFluid fluid, Properties properties) {
@@ -51,16 +49,17 @@ public class NCFluidBlock extends LiquidBlock {
     }
 
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        super.entityInside(state, level, pos, entity);
-        if (level.isClientSide) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
+                                InsideBlockEffectApplier effectApplier, boolean isPrecise) {
+        super.entityInside(state, level, pos, entity, effectApplier, isPrecise);
+        if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
         if (isMolten()) {
             entity.igniteForSeconds(1.0F);
         }
         if (isToxic()) {
-            entity.hurt(NCDamageSources.of(level, NCDamageSources.ACID), 1.0F);
+            entity.hurtServer(serverLevel, NCDamageSources.of(level, NCDamageSources.ACID), 1.0F);
         }
     }
 

@@ -1,38 +1,40 @@
 package igentuman.nc.screen;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.block_entity.particle.CreativeParticleSourceBE;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.network.particle.CreativeParticleSourceSettingsPayload;
 import igentuman.nc.screen.element.ParticleSelector;
 import igentuman.nc.screen.element.ScaleDropdown;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.network.PacketDistributor;
-import org.lwjgl.glfw.GLFW;
 
 import static igentuman.nc.NuclearCraft.rl;
 
 public class CreativeParticleSourceScreen extends AbstractContainerScreen<UniversalProcessorContainer> {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/processor.png");
+    private static final Identifier TEXTURE = rl("textures/gui/processor.png");
 
     private ParticleSelector particleSelector;
     private ScaleDropdown scaleDropdown;
     private EditBox focusField;
     private EditBox energyField;
-    private ResourceLocation selectedParticle;
+    private Identifier selectedParticle;
     private double focusValue = 1D;
     private double energyValue = 1D;
     private int scaleIndex = 1;
+    private int dropdownMouseButton = -1;
 
     public CreativeParticleSourceScreen(UniversalProcessorContainer menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
-        imageWidth = 180;
-        imageHeight = 180;
+        super(menu, inventory, title, 180, 180);
     }
 
     @Override
@@ -89,7 +91,7 @@ public class CreativeParticleSourceScreen extends AbstractContainerScreen<Univer
     private EditBox numericField(int x, int y, int width, int height) {
         EditBox field = new EditBox(font, x, y, width, height, Component.empty());
         field.setMaxLength(32);
-        field.setTextColor(0xFFFFFF);
+        field.setTextColor(0xFFFFFFFF);
         field.setFilter(value -> value.isEmpty() || value.matches("\\d*(\\.\\d*)?"));
         return field;
     }
@@ -115,7 +117,7 @@ public class CreativeParticleSourceScreen extends AbstractContainerScreen<Univer
 
     private void sendUpdate() {
         if (selectedParticle == null || !validEnergy(energyValue, scaleIndex)) return;
-        PacketDistributor.sendToServer(new CreativeParticleSourceSettingsPayload(
+        ClientPacketDistributor.sendToServer(new CreativeParticleSourceSettingsPayload(
                 menu.getPosition(), selectedParticle, focusValue, energyValue, scaleIndex));
     }
 
@@ -128,55 +130,105 @@ public class CreativeParticleSourceScreen extends AbstractContainerScreen<Univer
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawCenteredString(font, title, imageWidth / 2, titleLabelY, 0xFFFFFF);
-        graphics.drawString(font, Component.translatable("gui.nuclearcraft.creative_particle_source.focus"),
-                10, 45, 0x404040, false);
-        graphics.drawString(font, Component.translatable("gui.nuclearcraft.creative_particle_source.energy"),
-                10, 65, 0x404040, false);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        graphics.centeredText(font, title, imageWidth / 2, titleLabelY, 0xFFFFFFFF);
+        graphics.text(font, Component.translatable("gui.nuclearcraft.creative_particle_source.focus"),
+                10, 45, 0xFF404040, false);
+        graphics.text(font, Component.translatable("gui.nuclearcraft.creative_particle_source.energy"),
+                10, 65, 0xFF404040, false);
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(graphics, mouseX, mouseY, partialTick);
-        super.render(graphics, mouseX, mouseY, partialTick);
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractContents(graphics, mouseX, mouseY, partialTick);
         particleSelector.renderOverlay(graphics, mouseX, mouseY);
         scaleDropdown.renderOverlay(graphics, mouseX, mouseY);
-        renderTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+    protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        if (!isOverDropdown(mouseX, mouseY)) {
+            super.extractTooltip(graphics, mouseX, mouseY);
+        }
+    }
+
+    @Override
+    public boolean keyPressed(KeyEvent event) {
+        if (event.isEscape()) {
             boolean closed = particleSelector.isOpen() || scaleDropdown.isOpen();
             particleSelector.close();
             scaleDropdown.close();
             if (closed) return true;
         }
-        if (particleSelector.isFieldFocused() && particleSelector.keyPressed(keyCode, scanCode, modifiers)) {
+        if (particleSelector.isFieldFocused() && particleSelector.keyPressed(event)) {
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        if (particleSelector.isFieldFocused() && particleSelector.charTyped(codePoint, modifiers)) {
+    public boolean charTyped(CharacterEvent event) {
+        if (particleSelector.isFieldFocused() && particleSelector.charTyped(event)) {
             return true;
         }
-        return super.charTyped(codePoint, modifiers);
+        return super.charTyped(event);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        focusField.setFocused(false);
-        energyField.setFocused(false);
-        particleSelector.clearFieldFocus();
-        return super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+        if (isOverDropdown(x, y)) {
+            particleSelector.mouseScrolled(x, y, scrollX, scrollY);
+            return true;
+        }
+        return super.mouseScrolled(x, y, scrollX, scrollY);
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double x = event.x();
+        double y = event.y();
+        if (dropdownMouseButton != -1) {
+            return true;
+        }
+        if (!particleSelector.isMouseOver(x, y)) {
+            particleSelector.close();
+        }
+        if (!scaleDropdown.isMouseOver(x, y)) {
+            scaleDropdown.close();
+        }
+        if (isOverDropdown(x, y)) {
+            dropdownMouseButton = event.button();
+        } else if (getChildAt(x, y).isEmpty()) {
+            setFocused(null);
+        }
+        return super.mouseClicked(event, doubleClick);
+    }
+
+    @Override
+    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
+        return dropdownMouseButton != -1 || super.mouseDragged(event, dx, dy);
+    }
+
+    @Override
+    public boolean mouseReleased(MouseButtonEvent event) {
+        if (dropdownMouseButton == -1) {
+            return super.mouseReleased(event);
+        }
+        if (dropdownMouseButton == event.button()) {
+            dropdownMouseButton = -1;
+            setDragging(false);
+        }
+        // Dropdown rows can cover inventory slots, including when the click closes the list.
+        return true;
+    }
+
+    private boolean isOverDropdown(double x, double y) {
+        return particleSelector.isMouseOver(x, y) || scaleDropdown.isMouseOver(x, y);
     }
 }

@@ -48,6 +48,12 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
         super(type, pos, state, multiblockName);
     }
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (level instanceof ServerLevel serverLevel) onControllerRemoved(serverLevel);
+    }
+
     public String getMultiblockName() {
         return name;
     }
@@ -71,6 +77,16 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
         return formed;
     }
 
+    /**
+     * Applies a published validation result before the logic links ports, so role lookups during
+     * {@code onFormed}/{@code onPortsChanged} see the accepted structure instead of the previous tick's state.
+     */
+    public void syncStructureFormed(boolean value) {
+        if (formed == value) return;
+        formed = value;
+        wasChanged = true;
+    }
+
     /** Positions this controller assigned to a structural role, in channel order. */
     public List<BlockPos> rolePositions(StructureRole role) {
         return List.of();
@@ -89,7 +105,7 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
         setChanged();
     }
 
-    /** Called from the controller block on removal. */
+    /** Called before the controller block entity is removed. */
     public void onControllerRemoved(ServerLevel level) {
         MultiblockHandler.destroyMultiblock(level, worldPosition);
     }
@@ -144,8 +160,8 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveTagData(tag, registries);
         if (level instanceof ServerLevel serverLevel) {
             MultiblockHandler.MultiblockInstance instance = MultiblockHandler.getInstance(serverLevel, worldPosition);
             if (instance != null) {
@@ -160,21 +176,16 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        pendingRuntimeNbt = tag.contains("runtime") ? tag.getCompound("runtime") : legacyRuntime(tag);
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadTagData(tag, registries);
+        pendingRuntimeNbt = tag.contains("runtime") ? tag.getCompoundOrEmpty("runtime") : null;
         if (tag.contains("cache")) {
-            pendingCacheNbt = tag.getCompound("cache");
+            pendingCacheNbt = tag.getCompoundOrEmpty("cache");
             pendingRegistries = registries;
         } else {
             pendingCacheNbt = null;
             pendingRegistries = pendingRuntimeNbt == null ? null : registries;
         }
-    }
-
-    @Nullable
-    protected CompoundTag legacyRuntime(CompoundTag tag) {
-        return tag.contains("particleRuntime") ? tag.getCompound("particleRuntime") : null;
     }
 
     @Override

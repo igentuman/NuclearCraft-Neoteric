@@ -1,8 +1,8 @@
 package igentuman.nc.compat.kubejs;
 
 import dev.latvian.mods.kubejs.event.KubeEvent;
+import igentuman.nc.api.content.ContentRegistration;
 import igentuman.nc.api.multiblock.part.HeatSinkDef;
-import igentuman.nc.setup.entries.FissionReactor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +22,12 @@ public class RegisterHeatSinkKubeEvent implements KubeEvent {
 
     /** Disables a built-in heat sink (block stays registered but hidden and skipped in validation). */
     public void remove(String name) {
-        FissionReactor.remove(name);
+        ContentRegistration.removeHeatSink(name);
     }
 
     /** Mutates parameters of an existing heat sink in place. */
     public void override(String name, Consumer<HeatSinkDef> mutator) {
-        FissionReactor.override(name, mutator);
+        ContentRegistration.overrideHeatSink(name, mutator);
     }
 
     public List<HeatSinkDef> getCollected() {

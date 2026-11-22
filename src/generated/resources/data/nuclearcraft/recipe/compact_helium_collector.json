@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft",
   "key": {
-    "C": {
-      "item": "nuclearcraft:helium_collector"
-    },
-    "I": {
-      "tag": "c:plates/cobalt"
-    }
+    "C": "nuclearcraft:helium_collector",
+    "I": "#c:plates/cobalt"
   },
   "pattern": [
     "CCC",
@@ -16,7 +12,6 @@
     "CCC"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:compact_helium_collector"
   }
 }

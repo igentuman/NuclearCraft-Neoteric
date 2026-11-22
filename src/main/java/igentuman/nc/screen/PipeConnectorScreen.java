@@ -1,17 +1,19 @@
 package igentuman.nc.screen;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.container.PipeConnectorContainer;
 import igentuman.nc.network.PacketPipeConnectorButton;
-import igentuman.nc.api.pipe.PipeCapabilityType;
-import net.minecraft.client.gui.GuiGraphics;
+import igentuman.nc.pipe.PipeCapabilityType;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BooleanSupplier;
@@ -22,16 +24,13 @@ import static igentuman.nc.util.TextUtils.__;
 
 public class PipeConnectorScreen extends AbstractContainerScreen<PipeConnectorContainer> {
 
-    private static final ResourceLocation GUI = rl("textures/gui/processor.png");
+    private static final Identifier GUI = rl("textures/gui/processor.png");
 
     private Button modeButton;
     private Button redstoneButton;
 
     public PipeConnectorScreen(PipeConnectorContainer container, Inventory inv, Component name) {
-        super(container, inv, name);
-        imageWidth = 176;
-        imageHeight = 176;
-        inventoryLabelY = imageHeight - 94;
+        super(container, inv, name, 176, 176);
     }
 
     @Override
@@ -53,7 +52,7 @@ public class PipeConnectorScreen extends AbstractContainerScreen<PipeConnectorCo
     }
 
     private void send(int buttonId) {
-        PacketDistributor.sendToServer(new PacketPipeConnectorButton(menu.getBlockPos(), buttonId));
+        ClientPacketDistributor.sendToServer(new PacketPipeConnectorButton(menu.getBlockPos(), buttonId));
     }
 
     private static int buttonIdFor(PipeCapabilityType type) {
@@ -77,22 +76,22 @@ public class PipeConnectorScreen extends AbstractContainerScreen<PipeConnectorCo
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         modeButton.setMessage(modeLabel());
         redstoneButton.setMessage(redstoneLabel());
-        super.render(graphics, mouseX, mouseY, partialTicks);
-        renderTooltip(graphics, mouseX, mouseY);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        graphics.blit(GUI, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    public void extractBackground(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTicks);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, GUI, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, titleLabelX, titleLabelY, 0x404040, false);
-        graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0x404040, false);
+    protected void extractLabels(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        graphics.text(font, title, titleLabelX, titleLabelY, 0xFF404040, false);
+        graphics.text(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0xFF404040, false);
     }
 
     private class CapabilityCheckbox extends AbstractButton {
@@ -107,12 +106,12 @@ public class PipeConnectorScreen extends AbstractContainerScreen<PipeConnectorCo
         }
 
         @Override
-        public void onPress() {
+        public void onPress(InputWithModifiers input) {
             send(buttonId);
         }
 
         @Override
-        protected void renderWidget(@NotNull GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
+        protected void extractContents(@NotNull GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTicks) {
             int boxSize = 11;
             int bx = getX();
             int by = getY() + (height - boxSize) / 2;
@@ -121,8 +120,8 @@ public class PipeConnectorScreen extends AbstractContainerScreen<PipeConnectorCo
             if (state.getAsBoolean()) {
                 g.fill(bx + 3, by + 3, bx + boxSize - 3, by + boxSize - 3, 0xFF55D355);
             }
-            int textColor = isHoveredOrFocused() ? 0xFFFFA0 : 0x000000;
-            g.drawString(font, getMessage(), bx + boxSize + 4, getY() + (height - 8) / 2, textColor, false);
+            int textColor = isHoveredOrFocused() ? 0xFFFFFFA0 : 0xFF000000;
+            g.text(font, getMessage(), bx + boxSize + 4, getY() + (height - 8) / 2, textColor, false);
         }
 
         @Override

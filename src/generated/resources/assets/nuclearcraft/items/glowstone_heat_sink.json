@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "nuclearcraft:block/glowstone_heat_sink"
+  }
+}

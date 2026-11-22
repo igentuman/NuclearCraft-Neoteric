@@ -19,6 +19,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
+import java.util.function.Function;
 
 import static igentuman.nc.setup.Registers.*;
 
@@ -28,18 +29,18 @@ public class MaterialEntry {
     public final int color;
     public final String name;
 
-    private Supplier<? extends Block> oreBlockSupplier;
-    private Supplier<? extends Block> deepslateOreBlockSupplier;
-    private Supplier<? extends Block> storageBlockSupplier;
-    private Supplier<? extends Item> ingotSupplier;
-    private Supplier<? extends Item> gemSupplier;
-    private Supplier<? extends Item> rawOreSupplier;
-    private Supplier<? extends BlockItem> oreItemSupplier;
-    private Supplier<? extends BlockItem> deepslateOreItemSupplier;
-    private Supplier<? extends BlockItem> storageItemSupplier;
-    private Supplier<? extends Item> dustSupplier;
-    private Supplier<? extends Item> plateSupplier;
-    private Supplier<? extends Item> nuggetSupplier;
+    private Function<BlockBehaviour.Properties, ? extends Block> oreBlockFactory;
+    private Supplier<BlockBehaviour.Properties> oreBlockProperties;
+    private Function<BlockBehaviour.Properties, ? extends Block> deepslateOreBlockFactory;
+    private Supplier<BlockBehaviour.Properties> deepslateOreBlockProperties;
+    private Function<BlockBehaviour.Properties, ? extends Block> storageBlockFactory;
+    private Supplier<BlockBehaviour.Properties> storageBlockProperties;
+    private Function<Item.Properties, ? extends Item> ingotSupplier;
+    private Function<Item.Properties, ? extends Item> gemSupplier;
+    private Function<Item.Properties, ? extends Item> rawOreSupplier;
+    private Function<Item.Properties, ? extends Item> dustSupplier;
+    private Function<Item.Properties, ? extends Item> plateSupplier;
+    private Function<Item.Properties, ? extends Item> nuggetSupplier;
 
     public FluidDefinition fluidDefinition = null;
 
@@ -64,50 +65,53 @@ public class MaterialEntry {
         return new MaterialEntry(color, name);
     }
 
-    public MaterialEntry setIngotSupplier(Supplier<? extends Item> ingotSupplier) {
+    public MaterialEntry setIngotSupplier(Function<Item.Properties, ? extends Item> ingotSupplier) {
         this.ingotSupplier = ingotSupplier;
         return this;
     }
 
-    public MaterialEntry setGemSupplier(Supplier<? extends Item> gemSupplier) {
+    public MaterialEntry setGemSupplier(Function<Item.Properties, ? extends Item> gemSupplier) {
         this.gemSupplier = gemSupplier;
         return this;
     }
 
-    public MaterialEntry setBlock(Supplier<? extends Block> storageBlock, Supplier<? extends BlockItem> storageItem) {
-        this.storageBlockSupplier = storageBlock;
-        this.storageItemSupplier = storageItem;
+    public MaterialEntry setBlock(Function<BlockBehaviour.Properties, ? extends Block> factory,
+                                     Supplier<BlockBehaviour.Properties> properties) {
+        this.storageBlockFactory = factory;
+        this.storageBlockProperties = properties;
         return this;
     }
 
-    public MaterialEntry setOre(Supplier<? extends Block> oreBlock, Supplier<? extends BlockItem> oreItem) {
-        this.oreBlockSupplier = oreBlock;
-        this.oreItemSupplier = oreItem;
+    public MaterialEntry setOre(Function<BlockBehaviour.Properties, ? extends Block> factory,
+                                     Supplier<BlockBehaviour.Properties> properties) {
+        this.oreBlockFactory = factory;
+        this.oreBlockProperties = properties;
         return this;
     }
 
-    public MaterialEntry setDeepslateOre(Supplier<? extends Block> oreBlock, Supplier<? extends BlockItem> oreItem) {
-        this.deepslateOreBlockSupplier = oreBlock;
-        this.deepslateOreItemSupplier = oreItem;
+    public MaterialEntry setDeepslateOre(Function<BlockBehaviour.Properties, ? extends Block> factory,
+                                     Supplier<BlockBehaviour.Properties> properties) {
+        this.deepslateOreBlockFactory = factory;
+        this.deepslateOreBlockProperties = properties;
         return this;
     }
 
-    public MaterialEntry setDustSupplier(Supplier<? extends Item> dustSupplier) {
+    public MaterialEntry setDustSupplier(Function<Item.Properties, ? extends Item> dustSupplier) {
         this.dustSupplier = dustSupplier;
         return this;
     }
 
-    public MaterialEntry setNuggetSupplier(Supplier<? extends Item> nuggetSupplier) {
+    public MaterialEntry setNuggetSupplier(Function<Item.Properties, ? extends Item> nuggetSupplier) {
         this.nuggetSupplier = nuggetSupplier;
         return this;
     }
 
-    public MaterialEntry setRawOreSupplier(Supplier<? extends Item> rawOreSupplier) {
+    public MaterialEntry setRawOreSupplier(Function<Item.Properties, ? extends Item> rawOreSupplier) {
         this.rawOreSupplier = rawOreSupplier;
         return this;
     }
 
-    public MaterialEntry setPlateSupplier(Supplier<? extends Item> plateSupplier) {
+    public MaterialEntry setPlateSupplier(Function<Item.Properties, ? extends Item> plateSupplier) {
         this.plateSupplier = plateSupplier;
         return this;
     }
@@ -119,9 +123,9 @@ public class MaterialEntry {
 
     public MaterialEntry noIngot() { this.ingotSupplier = null; return this; }
     public MaterialEntry noGem() { this.gemSupplier = null; return this; }
-    public MaterialEntry noBlock() { this.storageBlockSupplier = null; this.storageItemSupplier = null; return this; }
-    public MaterialEntry noOre() { this.oreBlockSupplier = null; this.oreItemSupplier = null; return this; }
-    public MaterialEntry noDeepslateOre() { this.deepslateOreBlockSupplier = null; this.deepslateOreItemSupplier = null; return this; }
+    public MaterialEntry noBlock() { this.storageBlockFactory = null; return this; }
+    public MaterialEntry noOre() { this.oreBlockFactory = null; return this; }
+    public MaterialEntry noDeepslateOre() { this.deepslateOreBlockFactory = null; return this; }
     public MaterialEntry noDust() { this.dustSupplier = null; return this; }
     public MaterialEntry noNugget() { this.nuggetSupplier = null; return this; }
     public MaterialEntry noRawOre() { this.rawOreSupplier = null; return this; }
@@ -130,9 +134,9 @@ public class MaterialEntry {
 
     public boolean hasIngot() { return ingotSupplier != null; }
     public boolean hasGem() { return gemSupplier != null; }
-    public boolean hasBlock() { return storageBlockSupplier != null; }
-    public boolean hasOre() { return oreBlockSupplier != null; }
-    public boolean hasDeepslateOre() { return deepslateOreBlockSupplier != null; }
+    public boolean hasBlock() { return storageBlockFactory != null; }
+    public boolean hasOre() { return oreBlockFactory != null; }
+    public boolean hasDeepslateOre() { return deepslateOreBlockFactory != null; }
     public boolean hasDust() { return dustSupplier != null; }
     public boolean hasNugget() { return nuggetSupplier != null; }
     public boolean hasRawOre() { return rawOreSupplier != null; }
@@ -180,15 +184,15 @@ public class MaterialEntry {
                 .requiresCorrectToolForDrops()
                 .sound(SoundType.METAL);
 
-        this.setOre(() -> new Block(oreProps),() -> new BlockItem(new Block(oreProps), new Item.Properties()));
+        this.setOre(Block::new, () -> oreProps);
 
-        this.setIngotSupplier(() -> new Item(new Item.Properties()));
-        this.setDustSupplier(() -> new Item(new Item.Properties()));
-        this.setPlateSupplier(() -> new Item(new Item.Properties()));
-        this.setNuggetSupplier(() -> new Item(new Item.Properties()));
-        this.setRawOreSupplier(() -> new Item(new Item.Properties()));
+        this.setIngotSupplier(Item::new);
+        this.setDustSupplier(Item::new);
+        this.setPlateSupplier(Item::new);
+        this.setNuggetSupplier(Item::new);
+        this.setRawOreSupplier(Item::new);
 
-        this.setBlock(() -> new Block(blockProps), () -> new BlockItem(new Block(blockProps), new Item.Properties()));
+        this.setBlock(Block::new, () -> blockProps);
 
         // Molten metal fluid by default
         this.setFluidDefinition(FluidDefinition.metal());
@@ -204,7 +208,7 @@ public class MaterialEntry {
                 .strength(4.5f, 3.0f)
                 .requiresCorrectToolForDrops()
                 .sound(SoundType.DEEPSLATE);
-        this.setDeepslateOre(() -> new Block(deepslateOreProps), () -> new BlockItem(new Block(deepslateOreProps), new Item.Properties()));
+        this.setDeepslateOre(Block::new, () -> deepslateOreProps);
         return this;
     }
 
@@ -216,7 +220,7 @@ public class MaterialEntry {
                 .strength(4.5f, 3.0f)
                 .requiresCorrectToolForDrops()
                 .sound(SoundType.DEEPSLATE);
-        this.setDeepslateOre(() -> new Block(deepslateOreProps), () -> new BlockItem(new Block(deepslateOreProps), new Item.Properties()));
+        this.setDeepslateOre(Block::new, () -> deepslateOreProps);
         this.worldgenConfig(-60, 0, 9);
         return this;
     }
@@ -233,15 +237,15 @@ public class MaterialEntry {
                 .requiresCorrectToolForDrops()
                 .sound(SoundType.AMETHYST_CLUSTER);
 
-        this.setOre(() -> new Block(oreProps),() -> new BlockItem(new Block(oreProps), new Item.Properties()));
+        this.setOre(Block::new, () -> oreProps);
 
-        this.setGemSupplier(() -> new Item(new Item.Properties()));
-        this.setDustSupplier(() -> new Item(new Item.Properties()));
-        this.setPlateSupplier(() -> new Item(new Item.Properties()));
-        this.setNuggetSupplier(() -> new Item(new Item.Properties()));
-        this.setRawOreSupplier(() -> new Item(new Item.Properties()));
+        this.setGemSupplier(Item::new);
+        this.setDustSupplier(Item::new);
+        this.setPlateSupplier(Item::new);
+        this.setNuggetSupplier(Item::new);
+        this.setRawOreSupplier(Item::new);
 
-        this.setBlock(() -> new Block(blockProps), () -> new BlockItem(new Block(blockProps), new Item.Properties()));
+        this.setBlock(Block::new, () -> blockProps);
 
         return this;
     }
@@ -263,38 +267,38 @@ public class MaterialEntry {
         DeferredItem<Item> regBucket = null;
         MaterialFluid regMaterialFluid = null;
 
-        if (oreBlockSupplier != null) {
-            regOreBlock = BLOCKS.register(name + "_ore", oreBlockSupplier);
+        if (oreBlockFactory != null) {
+            regOreBlock = BLOCKS.registerBlock(name + "_ore", oreBlockFactory, oreBlockProperties);
             final DeferredBlock<Block> finalOreBlock = regOreBlock;
-            regOreItem = ITEMS.register(name + "_ore", () -> new BlockItem(finalOreBlock.get(), new Item.Properties()));
+            regOreItem = ITEMS.registerSimpleBlockItem(name + "_ore", finalOreBlock);
         }
-        if (deepslateOreBlockSupplier != null) {
-            regDeepslateOreBlock = BLOCKS.register(name + "_deepslate_ore", deepslateOreBlockSupplier);
+        if (deepslateOreBlockFactory != null) {
+            regDeepslateOreBlock = BLOCKS.registerBlock(name + "_deepslate_ore", deepslateOreBlockFactory, deepslateOreBlockProperties);
             final DeferredBlock<Block> finalDeepslateOreBlock = regDeepslateOreBlock;
-            regDeepslateOreItem = ITEMS.register(name + "_deepslate_ore", () -> new BlockItem(finalDeepslateOreBlock.get(), new Item.Properties()));
+            regDeepslateOreItem = ITEMS.registerSimpleBlockItem(name + "_deepslate_ore", finalDeepslateOreBlock);
         }
-        if (storageBlockSupplier != null) {
-            regStorageBlock = BLOCKS.register(name + "_block", storageBlockSupplier);
+        if (storageBlockFactory != null) {
+            regStorageBlock = BLOCKS.registerBlock(name + "_block", storageBlockFactory, storageBlockProperties);
             final DeferredBlock<Block> finalStorageBlock = regStorageBlock;
-            regStorageItem = ITEMS.register(name + "_block", () -> new BlockItem(finalStorageBlock.get(), new Item.Properties()));
+            regStorageItem = ITEMS.registerSimpleBlockItem(name + "_block", finalStorageBlock);
         }
         if (ingotSupplier != null) {
-            regIngot = ITEMS.register(name + "_ingot", ingotSupplier);
+            regIngot = ITEMS.registerItem(name + "_ingot", ingotSupplier);
         }
         if (gemSupplier != null) {
-            regGem = ITEMS.register(name + "_gem", gemSupplier);
+            regGem = ITEMS.registerItem(name + "_gem", gemSupplier);
         }
         if (rawOreSupplier != null) {
-            regRawOre = ITEMS.register("raw_" + name, rawOreSupplier);
+            regRawOre = ITEMS.registerItem("raw_" + name, rawOreSupplier);
         }
         if (dustSupplier != null) {
-            regDust = ITEMS.register(name + "_dust", dustSupplier);
+            regDust = ITEMS.registerItem(name + "_dust", dustSupplier);
         }
         if (plateSupplier != null) {
-            regPlate = ITEMS.register(name + "_plate", plateSupplier);
+            regPlate = ITEMS.registerItem(name + "_plate", plateSupplier);
         }
         if (nuggetSupplier != null) {
-            regNugget = ITEMS.register(name + "_nugget", nuggetSupplier);
+            regNugget = ITEMS.registerItem(name + "_nugget", nuggetSupplier);
         }
 
         // Register fluid (FluidType + source + flowing + block + bucket)
@@ -357,24 +361,18 @@ public class MaterialEntry {
                         () -> new BaseFlowingFluid.Flowing(propsSupplier.get()));
 
         // Register fluid block
-        blockHolder[0] = (DeferredBlock<LiquidBlock>)
-                (DeferredBlock<?>) BLOCKS.register(fluidName + "_block", () -> {
-                    BlockBehaviour.Properties props = BlockBehaviour.Properties.of()
-                            .noCollission()
-                            .strength(100.0F)
-                            .noLootTable()
-                            .liquid()
-                            .replaceable();
-                    return new NCFluidBlock(sourceHolder[0].get(), props);
-                });
+        blockHolder[0] = BLOCKS.registerBlock(fluidName + "_block",
+                props -> new NCFluidBlock(sourceHolder[0].get(), props),
+                () -> BlockBehaviour.Properties.of()
+                        .noCollision()
+                        .strength(100.0F)
+                        .noLootTable()
+                        .liquid()
+                        .replaceable());
 
         // Register bucket item
-        bucketHolder[0] = ITEMS.register(fluidName + "_bucket", () -> new BucketItem(
-                sourceHolder[0].get(),
-                new Item.Properties()
-                        .craftRemainder(Items.BUCKET)
-                        .stacksTo(1)
-        ));
+        bucketHolder[0] = ITEMS.registerItem(fluidName + "_bucket", props -> new BucketItem(
+                sourceHolder[0].get(), props.craftRemainder(Items.BUCKET).stacksTo(1)));
 
         MaterialFluid materialFluid = new MaterialFluid(
                 fluidType, sourceHolder[0], flowingHolder[0], blockHolder[0], bucketHolder[0]

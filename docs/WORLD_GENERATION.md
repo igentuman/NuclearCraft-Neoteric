@@ -2,15 +2,17 @@
 
 NuclearCraft: Neoteric adds the Wasteland dimension and biome, ruined structures,
 a Nuclear Scientist villager profession, and ores for the nuclear-tech progression.
-This guide describes the current Minecraft 1.21.1 implementation and its defaults.
+This guide describes the current Minecraft 26.1.2 implementation and its defaults.
 Modpacks can change recipes, tags, world-generation data, and configuration.
 
 ## The Wasteland
 
 The dimension and its custom biome both use the ID `nuclearcraft:wasteland`.
-The dimension's biome source includes the Wasteland and vanilla Desert. The
-Wasteland biome is provided through this dimension; the mod does not add it to
-the default Overworld biome source.
+The dimension's biome source includes the Wasteland and vanilla Desert. In
+newly generated chunks in the standard Overworld, the Wasteland biome occupies
+the driest inland part of the vanilla Desert climate range. These patches have
+Wasteland Earth over coarse dirt. Use `/locate biome nuclearcraft:wasteland`
+from the Overworld to find a nearby patch.
 
 The Wasteland is hot and dry, with no precipitation, muted sky and vegetation
 colors, discolored water, dead bushes, and its own background music. Spiders and

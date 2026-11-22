@@ -1,0 +1,16 @@
+{
+  "name": "RadAway",
+  "icon": "nuclear_radiation:radaway",
+  "category": "nuclearcraft:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "radaway",
+      "type": "items/2",
+      "header": "RadAway",
+      "item1": "nuclear_radiation:radaway",
+      "item2": "nuclear_radiation:anti_rad_injection",
+      "text": "$(item)RadAway$() из Nuclear Radiation сразу снижает накопленную дозу и временно даёт радиозащиту и очищение. $(item)Антирадиационная инъекция$() ускоряет выведение внутренних загрязнений и очищение лёгких."
+    }
+  ]
+}

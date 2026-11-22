@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:nuggets/magnesium"
-    },
-    {
-      "tag": "c:nuggets/magnesium"
-    },
-    {
-      "tag": "c:nuggets/magnesium"
-    },
-    {
-      "tag": "c:nuggets/magnesium"
-    },
-    {
-      "tag": "c:nuggets/magnesium"
-    },
-    {
-      "tag": "c:nuggets/magnesium"
-    },
-    {
-      "tag": "c:nuggets/magnesium"
-    },
-    {
-      "tag": "c:nuggets/magnesium"
-    },
-    {
-      "tag": "c:nuggets/magnesium"
-    }
+    "#c:nuggets/magnesium",
+    "#c:nuggets/magnesium",
+    "#c:nuggets/magnesium",
+    "#c:nuggets/magnesium",
+    "#c:nuggets/magnesium",
+    "#c:nuggets/magnesium",
+    "#c:nuggets/magnesium",
+    "#c:nuggets/magnesium",
+    "#c:nuggets/magnesium"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:magnesium_ingot"
   }
 }

@@ -2,7 +2,7 @@ package igentuman.nc.entity.anomaly;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Supplier;
 
@@ -18,7 +18,7 @@ public enum AnomalyType {
 
     private final Supplier<ParticleOptions> ambientParticle;
     private final int color;
-    private final ResourceLocation texture;
+    private final Identifier texture;
     private final int gridCols;
     private final int gridRows;
 
@@ -42,7 +42,7 @@ public enum AnomalyType {
         return color;
     }
 
-    public ResourceLocation texture() {
+    public Identifier texture() {
         return texture;
     }
 

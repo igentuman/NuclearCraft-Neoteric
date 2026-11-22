@@ -11,6 +11,7 @@ import igentuman.nc.particle.BeamConnection;
 import igentuman.nc.particle.BeamConnectionResolver;
 import igentuman.nc.particle.ParticleStorage;
 import igentuman.nc.particle.ParticleTransfer;
+import igentuman.nc.util.persistence.LegacyTagReaders;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -18,7 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -38,7 +39,7 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
     protected List<ParticleStorage> inputs = List.of();
     protected List<ParticleStorage> pendingOutputs = List.of();
     @Nullable
-    protected ResourceLocation activeReactionId;
+    protected Identifier activeReactionId;
     protected double fractionalWork;
     protected List<Double> fractionalYields = List.of();
     protected boolean enabled;
@@ -101,7 +102,7 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
             if (destination == null) continue;
             try {
                 ParticleTransfer.Result result = ParticleTransfer.execute(new ParticleTransfer.Request(
-                        output, 0, destination, 0, List.of(level.dimension().location(), controllerPos, portPos)));
+                        output, 0, destination, 0, List.of(level.dimension().identifier(), controllerPos, portPos)));
                 if (result.transferred().isEmpty()) continue;
                 if (level.getBlockEntity(portPos) instanceof MultiblockPortBE sourcePort) {
                     sourcePort.recordParticleTransfer(result.transferred(), level.getGameTime(), direction);
@@ -130,7 +131,7 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
         changed = true;
     }
 
-    protected final void finishCycle(@Nullable ResourceLocation reaction, double work, List<Double> yields) {
+    protected final void finishCycle(@Nullable Identifier reaction, double work, List<Double> yields) {
         activeReactionId = reaction;
         fractionalWork = Math.max(0, work);
         fractionalYields = List.copyOf(yields);
@@ -166,12 +167,12 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
     protected static <I extends RecipeInput, R extends Recipe<I>> RecipeHolder<R> bestRecipe(
             ServerLevel level, RecipeType<R> type, Predicate<R> matches, ToIntFunction<R> priority) {
         RecipeHolder<R> best = null;
-        for (RecipeHolder<R> holder : level.getRecipeManager().getAllRecipesFor(type)) {
+        for (RecipeHolder<R> holder : level.recipeAccess().recipeMap().byType(type)) {
             R recipe = holder.value();
             if (!matches.test(recipe)) continue;
             if (best == null || priority.applyAsInt(recipe) > priority.applyAsInt(best.value())
                     || (priority.applyAsInt(recipe) == priority.applyAsInt(best.value())
-                    && holder.id().compareTo(best.id()) < 0)) {
+                    && holder.id().identifier().compareTo(best.id().identifier()) < 0)) {
                 best = holder;
             }
         }
@@ -216,14 +217,14 @@ public abstract class ParticleChamberLogic extends AbstractMultiblockLogic<Parti
     public void loadRuntime(CompoundTag tag, HolderLookup.Provider registries) {
         inputs = List.of();
         pendingOutputs = List.of();
-        double work = tag.getDouble("fractionalWork");
+        double work = tag.getDoubleOr("fractionalWork", 0D);
         fractionalWork = Double.isFinite(work) && work >= 0 ? work : 0D;
-        enabled = tag.getBoolean("enabled");
+        enabled = tag.getBooleanOr("enabled", false);
         activeReactionId = tag.contains("activeReaction")
-                ? ResourceLocation.tryParse(tag.getString("activeReaction")) : null;
+                ? Identifier.tryParse(tag.getStringOr("activeReaction", "")) : null;
         List<Double> yields = new ArrayList<>();
-        ListTag yieldsTag = tag.getList("fractionalYields", Tag.TAG_DOUBLE);
-        for (int i = 0; i < yieldsTag.size(); i++) yields.add(yieldsTag.getDouble(i));
+        ListTag yieldsTag = LegacyTagReaders.list(tag, "fractionalYields", Tag.TAG_DOUBLE);
+        for (int i = 0; i < yieldsTag.size(); i++) yields.add(yieldsTag.getDoubleOr(i, 0D));
         fractionalYields = List.copyOf(yields);
     }
 }

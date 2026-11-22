@@ -1,10 +1,12 @@
 package igentuman.nc.screen;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.block_entity.UniversalProcessorBE;
-import igentuman.nc.block_entity.catalyst.CatalystDef;
-import igentuman.nc.block_entity.catalyst.CatalystRegistry;
-import igentuman.nc.block_entity.catalyst.CatalystType;
+import igentuman.nc.api.catalyst.CatalystDef;
+import igentuman.nc.api.catalyst.CatalystRegistry;
+import igentuman.nc.api.catalyst.CatalystType;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.network.PacketProcessorButtonPress;
 import igentuman.nc.registration.ModEntry;
@@ -18,16 +20,15 @@ import igentuman.nc.util.GuiFluidRenderer;
 import igentuman.nc.util.SlotDef;
 import igentuman.nc.util.SlotsLayout;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import igentuman.nc.handler.sided.FluidCapabilityHandler;
-import igentuman.nc.compat.emi.EmiHelper;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.network.PacketDistributor;
+import igentuman.nc.compat.emi.EmiHelper;
+import igentuman.nc.handler.sided.FluidCapabilityHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ import static igentuman.nc.util.TextUtils.__;
 /** GUI screen for a generic processor machine: renders slots, fluid tanks, energy/progress bars and control buttons. */
 public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalProcessorContainer> {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/processor.png");
+    private static final Identifier TEXTURE = rl("textures/gui/processor.png");
     private static final int U_SIDE_CONFIG    = 220;
     private static final int V_SIDE_CONFIG    = 220;
     private static final int U_REDSTONE       = 184;
@@ -50,10 +51,7 @@ public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalP
     private ProgressBar progressBar;
 
     public UniversalProcessorScreen(UniversalProcessorContainer menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        imageWidth = 180;
-        imageHeight = 180;
-        this.inventoryLabelY = this.imageHeight - 94;
+        super(menu, playerInventory, title, 180, 180);
     }
 
     @Override
@@ -138,7 +136,7 @@ public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalP
                 leftPos + imageWidth - 28, topPos + 74,
                 () -> U_REDSTONE,
                 () -> V_REDSTONE_BASE - menu.getRedstoneMode() * 36,
-                () -> PacketDistributor.sendToServer(new PacketProcessorButtonPress(
+                () -> ClientPacketDistributor.sendToServer(new PacketProcessorButtonPress(
                         menu.getPosition(), PacketProcessorButtonPress.REDSTONE_BTN_ID)),
                 () -> List.of(__("screen.nuclearcraft.redstone_config_" + menu.getRedstoneMode()))
         ));
@@ -160,16 +158,17 @@ public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalP
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, a);
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         progressBar.setProgress(menu.getProgress());
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractLabels(guiGraphics, mouseX, mouseY);
         GlobalBlockEntity be = menu.getBlockEntity();
         if (be.hasFluidTanks()) {
             FluidCapabilityHandler tanks = be.contentHandler.getFluidHandler();
@@ -178,13 +177,8 @@ public class UniversalProcessorScreen extends AbstractContainerScreen<UniversalP
         }
     }
 
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderTooltip(guiGraphics, mouseX, mouseY);
-    }
 
-    private void renderFluidTanks(GuiGraphics guiGraphics, int x, int y,
+    private void renderFluidTanks(GuiGraphicsExtractor guiGraphics, int x, int y,
                                    FluidCapabilityHandler tanks, boolean tooltip, int mouseX, int mouseY) {
         SlotsLayout layout = menu.getLayout();
         if (layout == null) return;

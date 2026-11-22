@@ -3,33 +3,15 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "item": "nuclearcraft:plutonium_241_ni"
-    },
-    {
-      "item": "nuclearcraft:plutonium_242_ni"
-    },
-    {
-      "item": "nuclearcraft:plutonium_242_ni"
-    },
-    {
-      "item": "nuclearcraft:plutonium_242_ni"
-    },
-    {
-      "item": "nuclearcraft:plutonium_242_ni"
-    },
-    {
-      "item": "nuclearcraft:plutonium_242_ni"
-    },
-    {
-      "item": "nuclearcraft:plutonium_242_ni"
-    },
-    {
-      "item": "nuclearcraft:plutonium_242_ni"
-    },
-    {
-      "item": "nuclearcraft:plutonium_242_ni"
-    }
+    "nuclearcraft:plutonium_241_ni",
+    "nuclearcraft:plutonium_242_ni",
+    "nuclearcraft:plutonium_242_ni",
+    "nuclearcraft:plutonium_242_ni",
+    "nuclearcraft:plutonium_242_ni",
+    "nuclearcraft:plutonium_242_ni",
+    "nuclearcraft:plutonium_242_ni",
+    "nuclearcraft:plutonium_242_ni",
+    "nuclearcraft:plutonium_242_ni"
   ],
   "result": {
     "count": 3,

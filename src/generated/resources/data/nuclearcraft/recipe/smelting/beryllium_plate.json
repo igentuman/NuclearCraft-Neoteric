@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:plates/beryllium"
-  },
+  "ingredient": "#c:plates/beryllium",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:beryllium_ingot"
   }
 }

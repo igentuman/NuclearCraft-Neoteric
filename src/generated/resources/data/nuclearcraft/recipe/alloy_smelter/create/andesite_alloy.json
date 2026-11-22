@@ -5,8 +5,8 @@
       "modid": "create"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "minecraft:andesite"
+      "type": "neoforge:registered",
+      "value": "minecraft:andesite"
     },
     {
       "type": "neoforge:not",
@@ -16,8 +16,8 @@
       }
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "create:andesite_alloy"
+      "type": "neoforge:registered",
+      "value": "create:andesite_alloy"
     }
   ],
   "type": "nuclearcraft:alloy_smelter",

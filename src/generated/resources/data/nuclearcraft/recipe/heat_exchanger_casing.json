@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_heat_exchanger",
   "key": {
-    "L": {
-      "item": "nuclearcraft:chassis"
-    },
-    "S": {
-      "tag": "c:plates/hsla_steel"
-    },
-    "T": {
-      "tag": "c:plates/thermoconducting"
-    }
+    "L": "nuclearcraft:chassis",
+    "S": "#c:plates/hsla_steel",
+    "T": "#c:plates/thermoconducting"
   },
   "pattern": [
     "STS",

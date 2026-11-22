@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_turbine",
   "key": {
-    "P": {
-      "tag": "c:plates/sic_sic_cmc"
-    }
+    "P": "#c:plates/sic_sic_cmc"
   },
   "pattern": [
     " P ",

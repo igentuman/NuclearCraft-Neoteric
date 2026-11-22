@@ -1,6 +1,6 @@
 package igentuman.nc.api.multiblock.part;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -15,7 +15,7 @@ import java.util.Map;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
-public record CoolerDef(ResourceLocation id, long coolingPerTick, List<String> placementRules) {
+public record CoolerDef(Identifier id, long coolingPerTick, List<String> placementRules) {
 
     private static final Map<String, CoolerDef> BY_NAME = new HashMap<>();
 
@@ -84,7 +84,7 @@ public record CoolerDef(ResourceLocation id, long coolingPerTick, List<String> p
                 default -> Component.literal(target);
             };
         }
-        ResourceLocation id = target.contains(":") ? ResourceLocation.parse(target) : rl(target);
+        Identifier id = target.contains(":") ? Identifier.parse(target) : rl(target);
         return Component.translatable("block." + id.getNamespace() + "." + id.getPath());
     }
 
@@ -94,7 +94,7 @@ public record CoolerDef(ResourceLocation id, long coolingPerTick, List<String> p
             int required = parts.length == 2 ? Integer.parseInt(parts[1]) : 1;
             boolean tag = parts[0].startsWith("#");
             String name = tag ? parts[0].substring(1) : parts[0];
-            ResourceLocation target = name.contains(":") ? ResourceLocation.parse(name) : rl(name);
+            Identifier target = name.contains(":") ? Identifier.parse(name) : rl(name);
             long matches = neighbors.stream().filter(state -> tag
                     ? state.is(TagKey.create(Registries.BLOCK, target))
                     : BuiltInRegistries.BLOCK.getKey(state.getBlock()).equals(target)).count();

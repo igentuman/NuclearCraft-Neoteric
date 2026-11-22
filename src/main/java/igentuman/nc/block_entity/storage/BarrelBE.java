@@ -9,8 +9,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 public class BarrelBE extends AbstractStorageBE {
@@ -28,9 +32,31 @@ public class BarrelBE extends AbstractStorageBE {
 
     @Nullable
     @Override
-    public IFluidHandler getFluidHandler(@Nullable Direction side) {
+    public ResourceHandler<FluidResource> getFluidHandler(@Nullable Direction side) {
+        if (isRemoved()) return null;
         if (side != null && getSideMode(side) == SideMode.DISABLED) return null;
-        return fluidTank;
+        if (side == null) return fluidTank;
+        // Recheck the mode even when automation retains this capability view.
+        return new ResourceHandler<>() {
+            private boolean enabled() { return !isRemoved() && getSideMode(side) != SideMode.DISABLED; }
+            @Override public int size() { return fluidTank.size(); }
+            @Override public FluidResource getResource(int index) { return fluidTank.getResource(index); }
+            @Override public long getAmountAsLong(int index) { return fluidTank.getAmountAsLong(index); }
+            @Override public long getCapacityAsLong(int index, FluidResource resource) {
+                return enabled() ? fluidTank.getCapacityAsLong(index, resource) : 0;
+            }
+            @Override public boolean isValid(int index, FluidResource resource) {
+                return enabled() && fluidTank.isValid(index, resource);
+            }
+            @Override public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+                TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+                return enabled() ? fluidTank.insert(index, resource, amount, transaction) : 0;
+            }
+            @Override public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+                TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+                return enabled() ? fluidTank.extract(index, resource, amount, transaction) : 0;
+            }
+        };
     }
 
     @Override
@@ -40,29 +66,15 @@ public class BarrelBE extends AbstractStorageBE {
         for (Direction direction : Direction.values()) {
             SideMode mode = getSideMode(direction);
             if (mode == SideMode.DEFAULT || mode == SideMode.DISABLED) continue;
-            IFluidHandler neighbour = level.getCapability(
-                    Capabilities.FluidHandler.BLOCK, worldPosition.relative(direction), direction.getOpposite());
+            ResourceHandler<FluidResource> neighbour = level.getCapability(
+                    Capabilities.Fluid.BLOCK, worldPosition.relative(direction), direction.getOpposite());
             if (neighbour == null) continue;
-
-            if (mode == SideMode.OUT) {
-                FluidStack drained = fluidTank.drainTank(0, getCapacity(), IFluidHandler.FluidAction.SIMULATE);
-                if (drained.isEmpty()) continue;
-                int filled = neighbour.fill(drained, IFluidHandler.FluidAction.EXECUTE);
-                if (filled > 0) {
-                    fluidTank.drainTank(0, filled, IFluidHandler.FluidAction.EXECUTE);
-                    changed = true;
-                }
-            } else if (mode == SideMode.IN) {
-                FluidStack available = neighbour.drain(getCapacity(), IFluidHandler.FluidAction.SIMULATE);
-                if (available.isEmpty()) continue;
-                int accepted = fluidTank.fillTank(0, available, IFluidHandler.FluidAction.SIMULATE);
-                if (accepted > 0) {
-                    FluidStack toMove = neighbour.drain(accepted, IFluidHandler.FluidAction.EXECUTE);
-                    if (!toMove.isEmpty()) {
-                        fluidTank.fillTank(0, toMove, IFluidHandler.FluidAction.EXECUTE);
-                        changed = true;
-                    }
-                }
+            try (var transaction = Transaction.openRoot()) {
+                int moved = mode == SideMode.OUT
+                        ? ResourceHandlerUtil.move(fluidTank, neighbour, resource -> true, getCapacity(), transaction)
+                        : ResourceHandlerUtil.move(neighbour, fluidTank, resource -> true, getCapacity(), transaction);
+                transaction.commit();
+                changed |= moved > 0;
             }
         }
         return changed;
@@ -80,16 +92,16 @@ public class BarrelBE extends AbstractStorageBE {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveTagData(tag, registries);
         tag.put("FluidTank", fluidTank.serializeNBT(registries));
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadTagData(tag, registries);
         if (tag.contains("FluidTank")) {
-            fluidTank.deserializeNBT(registries, tag.getCompound("FluidTank"));
+            fluidTank.deserializeNBT(registries, tag.getCompoundOrEmpty("FluidTank"));
         }
     }
 }

@@ -1,9 +1,10 @@
 package igentuman.nc.datagen.recipe.processors;
 
-import igentuman.nc.recipe.FluidOutput;
+import igentuman.nc.datagen.recipe.RecipeGen;
+import igentuman.nc.api.recipe.FluidOutput;
 import igentuman.nc.recipe.fission.BoilingRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -23,6 +24,6 @@ public class FissionBoilingRecipes {
         if (in == null || output == null) return;
         BoilingRecipe recipe = new BoilingRecipe(
                 SizedFluidIngredient.of(in, inAmount), FluidOutput.of(output, outAmount), heatRequired);
-        out.accept(ResourceLocation.fromNamespaceAndPath(MODID, "fission_boiling/" + name), recipe, null);
+        out.accept(RecipeGen.key("fission_boiling/" + name), recipe, null);
     }
 }

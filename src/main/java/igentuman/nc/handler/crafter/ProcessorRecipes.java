@@ -2,15 +2,16 @@ package igentuman.nc.handler.crafter;
 
 import igentuman.nc.compat.ProcessorRecipeStacks;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
-import igentuman.nc.recipe.UniversalProcessorRecipeSerializer;
+import igentuman.nc.registration.RecipeSchemaKind;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.entries.Processors;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.Level;
+import igentuman.nc.recipe.RecipeSources;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -34,7 +35,8 @@ public final class ProcessorRecipes {
     public static boolean isProcessorEntry(ModEntry entry) {
         return entry != null && isAllowed(entry.name()) && entry.hasRecipes() && entry.isEnabled()
                 && entry.recipeType() != null && entry.recipeSerializer() != null
-                && entry.recipeSerializer().get() instanceof UniversalProcessorRecipeSerializer;
+                && entry.recipeFamily() != null
+                && entry.recipeFamily().schemaKind() == RecipeSchemaKind.UNIVERSAL_PROCESSOR;
     }
 
     public static List<ModEntry> processorEntries() {
@@ -46,29 +48,29 @@ public final class ProcessorRecipes {
     }
 
     @Nullable
-    public static UniversalProcessorRecipe byId(RecipeManager manager, ResourceLocation id) {
-        Recipe<?> r = manager.byKey(id).map(RecipeHolder::value).orElse(null);
+    public static UniversalProcessorRecipe byId(Level level, Identifier id) {
+        Recipe<?> r = RecipeSources.byId(level, id).map(RecipeHolder::value).orElse(null);
         return r instanceof UniversalProcessorRecipe upr && upr.isComplete()
                 && isProcessorEntry(ModEntries.get(upr.getProcessorName())) ? upr : null;
     }
 
     /**
-     * Finds the registered id of a recipe instance (EMI/JEI hand us the value, not the holder). Identity is
+     * Finds the registered id of a recipe value supplied by EMI. Identity is
      * tried first; a structurally equal recipe is accepted as fallback for copies or stale instances after a reload.
      */
     @Nullable
     @SuppressWarnings("unchecked")
-    public static ResourceLocation idOf(RecipeManager manager, UniversalProcessorRecipe recipe) {
+    public static Identifier idOf(Level level, UniversalProcessorRecipe recipe) {
         ModEntry entry = ModEntries.get(recipe.getProcessorName());
         if (!isProcessorEntry(entry)) return null;
         RecipeType<UniversalProcessorRecipe> type = (RecipeType<UniversalProcessorRecipe>) entry.recipeType().get();
-        var holders = manager.getAllRecipesFor(type);
+        var holders = RecipeSources.recipes(level).byType(type);
         for (RecipeHolder<UniversalProcessorRecipe> h : holders) {
-            if (h.value() == recipe) return h.id();
+            if (h.value() == recipe) return h.id().identifier();
         }
         ProcessorRecipeStacks want = ProcessorRecipeStacks.of(recipe);
         for (RecipeHolder<UniversalProcessorRecipe> h : holders) {
-            if (sameStacks(want, ProcessorRecipeStacks.of(h.value()))) return h.id();
+            if (sameStacks(want, ProcessorRecipeStacks.of(h.value()))) return h.id().identifier();
         }
         return null;
     }
@@ -104,14 +106,14 @@ public final class ProcessorRecipes {
      */
     @Nullable
     @SuppressWarnings("unchecked")
-    public static RecipeHolder<UniversalProcessorRecipe> matchByItems(RecipeManager manager, List<ItemStack> ghosts) {
+    public static RecipeHolder<UniversalProcessorRecipe> matchByItems(Level level, List<ItemStack> ghosts) {
         List<ItemStack> items = new ArrayList<>();
         for (ItemStack s : ghosts) if (!s.isEmpty()) items.add(s);
         if (items.isEmpty()) return null;
         RecipeHolder<UniversalProcessorRecipe> best = null;
         for (ModEntry entry : processorEntries()) {
             RecipeType<UniversalProcessorRecipe> type = (RecipeType<UniversalProcessorRecipe>) entry.recipeType().get();
-            for (RecipeHolder<UniversalProcessorRecipe> h : manager.getAllRecipesFor(type)) {
+            for (RecipeHolder<UniversalProcessorRecipe> h : RecipeSources.recipes(level).byType(type)) {
                 UniversalProcessorRecipe r = h.value();
                 if (!r.isComplete()) continue;
                 if (r.getItemInputs().size() != items.size()) continue;

@@ -31,13 +31,13 @@ public class ParticleChamberApi extends BeamControllerApi<ParticleChamberControl
         setEnabled(false);
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final Map<Integer, Map<String, Object>> getInputParticlesInfo() {
         return channels(be.inputParticleRegId, be.inputParticleAmount, be.inputParticleEnergy, be.inputParticleFocus);
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final Map<Integer, Map<String, Object>> getOutputParticlesInfo() {
         return channels(be.outputParticleRegId, be.outputParticleAmount, be.outputParticleEnergy, be.outputParticleFocus);

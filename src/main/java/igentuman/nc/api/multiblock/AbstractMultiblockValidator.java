@@ -6,7 +6,7 @@ import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -24,8 +24,8 @@ public abstract class AbstractMultiblockValidator<C extends AbstractMultiblockCa
     public record Result(Outcome outcome,
                          @Nullable String errorKey,
                          @Nullable BlockPos errorPos,
-                         @Nullable ResourceLocation expected,
-                         @Nullable ResourceLocation actual) {
+                         @Nullable Identifier expected,
+                         @Nullable Identifier actual) {
 
         public static final Result VALID = new Result(Outcome.VALID, null, null, null, null);
 
@@ -36,8 +36,8 @@ public abstract class AbstractMultiblockValidator<C extends AbstractMultiblockCa
 
     private String errorKey;
     private BlockPos errorPos;
-    private ResourceLocation expected;
-    private ResourceLocation actual;
+    private Identifier expected;
+    private Identifier actual;
 
     public final Result run(C cache) {
         errorKey = null;
@@ -86,12 +86,12 @@ public abstract class AbstractMultiblockValidator<C extends AbstractMultiblockCa
     protected void calculateStatistics(C cache) {
     }
 
-    protected final boolean fail(String key, BlockPos pos, @Nullable ResourceLocation expectedId, BlockState found) {
+    protected final boolean fail(String key, BlockPos pos, @Nullable Identifier expectedId, BlockState found) {
         return fail(key, pos, expectedId, BuiltInRegistries.BLOCK.getKey(found.getBlock()));
     }
 
-    protected final boolean fail(String key, BlockPos pos, @Nullable ResourceLocation expectedId,
-                                 @Nullable ResourceLocation actualId) {
+    protected final boolean fail(String key, BlockPos pos, @Nullable Identifier expectedId,
+                                 @Nullable Identifier actualId) {
         errorKey = key;
         errorPos = pos.immutable();
         expected = expectedId;

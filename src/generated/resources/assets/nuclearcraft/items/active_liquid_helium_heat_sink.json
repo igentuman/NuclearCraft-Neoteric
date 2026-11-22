@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "nuclearcraft:block/active_liquid_helium_heat_sink"
+  }
+}

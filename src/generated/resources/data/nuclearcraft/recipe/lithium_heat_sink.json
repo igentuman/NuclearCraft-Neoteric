@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_fission",
   "key": {
-    "B": {
-      "item": "nuclearcraft:empty_heat_sink"
-    },
-    "I": {
-      "tag": "c:dusts/lithium"
-    }
+    "B": "nuclearcraft:empty_heat_sink",
+    "I": "#c:dusts/lithium"
   },
   "pattern": [
     " I ",
@@ -16,7 +12,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:lithium_heat_sink"
   }
 }

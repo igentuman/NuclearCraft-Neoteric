@@ -1,0 +1,15 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+
+[[mods]]
+modId = "nc_gametest"
+version = "${mod_version}"
+displayName = "NuclearCraft GameTests"
+
+[[dependencies.nc_gametest]]
+modId = "${mod_id}"
+type = "required"
+versionRange = "*"
+ordering = "AFTER"
+side = "SERVER"

@@ -1,15 +1,16 @@
 package igentuman.nc.screen;
 
+import net.minecraft.client.Minecraft;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import igentuman.nc.network.PacketTerminalCraft;
 import igentuman.nc.screen.element.NcPanel;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class CraftConfirmScreen extends Screen {
 
@@ -46,7 +47,7 @@ public class CraftConfirmScreen extends Screen {
     }
 
     private int step() {
-        return hasShiftDown() ? 10 : 1;
+        return Minecraft.getInstance().hasShiftDown() ? 10 : 1;
     }
 
     private void setQty(int value) {
@@ -54,7 +55,7 @@ public class CraftConfirmScreen extends Screen {
     }
 
     private void confirm() {
-        PacketDistributor.sendToServer(new PacketTerminalCraft(pos, target, qty));
+        ClientPacketDistributor.sendToServer(new PacketTerminalCraft(pos, target, qty));
         onClose();
     }
 
@@ -69,13 +70,13 @@ public class CraftConfirmScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
-        super.renderBackground(g, mouseX, mouseY, partialTicks);
+    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(g, mouseX, mouseY, partialTicks);
         NcPanel.drawPanel(g, left, top, PANEL_W, PANEL_H);
-        NcPanel.drawCentered(g, font, title, left + PANEL_W / 2, top + 8, 0x404040);
-        g.renderItem(target, left + PANEL_W / 2 - 8, top + 22);
-        NcPanel.drawCentered(g, font, target.getHoverName(), left + PANEL_W / 2, top + 42, 0x404040);
+        NcPanel.drawCentered(g, font, title, left + PANEL_W / 2, top + 8, 0xFF404040);
+        g.item(target, left + PANEL_W / 2 - 8, top + 22);
+        NcPanel.drawCentered(g, font, target.getHoverName(), left + PANEL_W / 2, top + 42, 0xFF404040);
         NcPanel.drawCentered(g, font, Component.translatable("screen.nuclearcraft.crafter.qty", qty),
-                left + PANEL_W / 2, top + 61, 0x202020);
+                left + PANEL_W / 2, top + 61, 0xFF202020);
     }
 }

@@ -1,20 +1,12 @@
 package igentuman.nc.client.renderer;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 
-/**
- * Generic descriptor for a camera-facing (billboarded) sprite effect rendered by
- * {@link BillboardingEffectRenderer}. Not tied to any specific block or entity.
- *
- * <p>The texture is treated as a square sprite-sheet of {@code gridSize x gridSize} frames; the
- * current frame advances with the render tick to animate. Subclass and override {@link #getPos}
- * (and call {@link #tick()}) to drive position/animation from your own logic.
- */
 public class CustomEffect {
 
     private final int gridSize;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
     private Vec3 pos = Vec3.ZERO;
     private int[] color = {255, 255, 255, 255};
@@ -22,11 +14,11 @@ public class CustomEffect {
 
     protected int ticker;
 
-    public CustomEffect(ResourceLocation texture) {
+    public CustomEffect(Identifier texture) {
         this(texture, 4);
     }
 
-    public CustomEffect(ResourceLocation texture, int gridSize) {
+    public CustomEffect(Identifier texture, int gridSize) {
         this.texture = texture;
         this.gridSize = gridSize;
     }
@@ -62,7 +54,7 @@ public class CustomEffect {
         return scale;
     }
 
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         return texture;
     }
 

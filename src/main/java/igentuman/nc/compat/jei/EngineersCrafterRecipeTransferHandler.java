@@ -6,9 +6,8 @@ import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -16,7 +15,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ import java.util.Optional;
 import static igentuman.nc.setup.entries.Crafter.ENGINEERS_CRAFTING_TABLE_MENU;
 import static igentuman.nc.util.TextUtils.__;
 
-public class EngineersCrafterRecipeTransferHandler implements IRecipeTransferHandler<EngineersCrafterContainer, RecipeHolder<CraftingRecipe>> {
+public class EngineersCrafterRecipeTransferHandler implements ContextRecipeTransferHandler<EngineersCrafterContainer, RecipeHolder<CraftingRecipe>> {
 
     private final IRecipeTransferHandlerHelper helper;
 
@@ -48,14 +47,14 @@ public class EngineersCrafterRecipeTransferHandler implements IRecipeTransferHan
     }
 
     @Override
-    public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
+    public IRecipeHolderType<CraftingRecipe> getRecipeType() {
         return RecipeTypes.CRAFTING;
     }
 
     @Override
-    public @Nullable IRecipeTransferError transferRecipe(EngineersCrafterContainer container, RecipeHolder<CraftingRecipe> recipe,
+    public @Nullable IRecipeTransferError transfer(EngineersCrafterContainer container, RecipeHolder<CraftingRecipe> recipe,
                                                          IRecipeSlotsView recipeSlots, Player player,
-                                                         boolean maxTransfer, boolean doTransfer) {
+                                                         boolean doTransfer) {
         if (!container.canAssemble(recipe.value())) {
             Component message = __("jei.tooltip.transfer.no.ingredients");
             List<IRecipeSlotView> missing = findMissingSlots(container.availableItems(), recipeSlots);
@@ -64,7 +63,7 @@ public class EngineersCrafterRecipeTransferHandler implements IRecipeTransferHan
                     : helper.createUserErrorForMissingSlots(message, missing);
         }
         if (doTransfer) {
-            PacketDistributor.sendToServer(new PacketCrafterFillGrid(container.getBlockPos(), recipe.id()));
+            ClientPacketDistributor.sendToServer(new PacketCrafterFillGrid(container.getBlockPos(), recipe.id().identifier()));
         }
         return null;
     }

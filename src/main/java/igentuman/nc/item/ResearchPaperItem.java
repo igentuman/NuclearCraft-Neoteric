@@ -9,8 +9,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.util.TextUtils.__;
 
@@ -22,15 +23,15 @@ public class ResearchPaperItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         if (tag.contains("vein")) {
-            list.add(__(tag.getString("vein")).withStyle(ChatFormatting.AQUA));
+            list.accept(__(tag.getStringOr("vein", "")).withStyle(ChatFormatting.AQUA));
         }
         if (tag.contains("pos")) {
-            BlockPos pos = BlockPos.of(tag.getLong("pos"));
-            list.add(__("tooltip.nc.chunk_position", pos.toShortString()).withStyle(ChatFormatting.BLUE));
-            list.add(__("tooltip.nc.use_in_leacher", pos.toShortString()).withStyle(ChatFormatting.GREEN));
+            BlockPos pos = BlockPos.of(tag.getLongOr("pos", 0L));
+            list.accept(__("tooltip.nc.chunk_position", pos.toShortString()).withStyle(ChatFormatting.BLUE));
+            list.accept(__("tooltip.nc.use_in_leacher", pos.toShortString()).withStyle(ChatFormatting.GREEN));
         }
     }
 }

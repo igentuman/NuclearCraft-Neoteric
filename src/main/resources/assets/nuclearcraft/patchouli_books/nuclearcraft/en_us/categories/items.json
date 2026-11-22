@@ -1,0 +1,6 @@
+{
+  "name": "Items",
+  "description": "$(l)The tools of the trade.",
+  "icon": "nuclear_radiation:geiger_counter",
+  "sortnum": 1
+}

@@ -13,7 +13,7 @@ public class BeamDiverterApi extends BeamControllerApi<BeamDiverterControllerBE>
         super(be, errors);
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final @Nullable Map<String, Object> getParticleInfo() {
         return particleInfo(be.particleTypeId, be.particleAmount, be.particleEnergyKeV, be.particleFocusScaled / 10_000D);

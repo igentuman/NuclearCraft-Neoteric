@@ -1,8 +1,9 @@
 package igentuman.nc.block_entity.catalyst;
 
+import igentuman.nc.api.catalyst.Catalyst;
+import igentuman.nc.api.catalyst.CatalystType;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 
-/** Speed catalyst that raises the host processor's recipe multiplier by its power each tick. */
 public class SpeedCatalyst extends Catalyst {
 
     public SpeedCatalyst(GlobalBlockEntity host) {

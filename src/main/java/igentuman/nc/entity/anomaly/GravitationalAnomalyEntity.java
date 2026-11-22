@@ -1,8 +1,10 @@
 package igentuman.nc.entity.anomaly;
 
+import net.minecraft.server.level.ServerLevel;
 import igentuman.nc.config.Common;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -94,7 +96,7 @@ public class GravitationalAnomalyEntity extends AnomalyEntity {
                     entity.hurtMarked = true;
                 }
                 if (dist <= 2.0D) {
-                    living.hurt(damageSources().magic(), 5.0F);
+                    living.hurtServer((ServerLevel) level(), damageSources().magic(), 5.0F);
                 }
             }
             if (entity instanceof Player) {
@@ -142,7 +144,7 @@ public class GravitationalAnomalyEntity extends AnomalyEntity {
 
     @Override
     protected void onCounterplayResolved() {
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             return;
         }
         if (Common.ANOMALY_CONFIG.GRAV_EXPLOSION.get()) {
@@ -155,16 +157,17 @@ public class GravitationalAnomalyEntity extends AnomalyEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putInt("AbsorbedBlocks", getAbsorbedBlocks());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("AbsorbedBlocks", getAbsorbedBlocks());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        if (tag.contains("AbsorbedBlocks")) {
-            setAbsorbedBlocks(tag.getInt("AbsorbedBlocks"));
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        var keys = input.keySet();
+        if (keys.contains("AbsorbedBlocks")) {
+            setAbsorbedBlocks(input.getIntOr("AbsorbedBlocks", 0));
         }
     }
 }

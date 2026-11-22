@@ -1,0 +1,15 @@
+{
+  "name": "Зелье радиозащиты",
+  "icon": "nuclear_radiation:rad_protection_potion",
+  "category": "nuclearcraft:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "radx",
+      "type": "items/1",
+      "header": "Зелье радиозащиты",
+      "item": "nuclear_radiation:rad_protection_potion",
+      "text": "$(item)Зелье радиозащиты$() из Nuclear Radiation снижает получаемую дозу радиации на пять минут. Зелье II даёт более сильную защиту на десять минут."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "additional_wants": {
+    "count": 4.0,
+    "id": "minecraft:book"
+  },
+  "gives": {
+    "count": 2,
+    "id": "nuclearcraft:fuel_californium_hecf_251"
+  },
+  "max_uses": 7.0,
+  "reputation_discount": 0.02,
+  "wants": {
+    "count": 32.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 20.0
+}

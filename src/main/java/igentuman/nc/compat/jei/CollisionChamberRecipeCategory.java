@@ -11,13 +11,14 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,12 +31,12 @@ import static igentuman.nc.util.TextUtils.formatParticleEnergy;
 import static igentuman.nc.util.TextUtils.numberFormat;
 
 @SuppressWarnings("removal")
-public class CollisionChamberRecipeCategory implements IRecipeCategory<CollisionChamberRecipe> {
+public class CollisionChamberRecipeCategory implements IRecipeCategory<RecipeHolder<CollisionChamberRecipe>> {
 
-    public static final RecipeType<CollisionChamberRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "collision_chamber", CollisionChamberRecipe.class);
+    public static final IRecipeHolderType<CollisionChamberRecipe> TYPE =
+            IRecipeHolderType.create(NuclearCraft.rl("collision_chamber"));
 
-    public static final ResourceLocation TEXTURE = rl("textures/gui/accelerators/collision_chamber_controller.png");
+    public static final Identifier TEXTURE = rl("textures/gui/accelerators/collision_chamber_controller.png");
 
     private static final int WIDTH = 150;
     private static final int HEIGHT = 113;
@@ -50,7 +51,7 @@ public class CollisionChamberRecipeCategory implements IRecipeCategory<Collision
     }
 
     @Override
-    public RecipeType<CollisionChamberRecipe> getRecipeType() {
+    public IRecipeHolderType<CollisionChamberRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -59,10 +60,6 @@ public class CollisionChamberRecipeCategory implements IRecipeCategory<Collision
         return __("block." + NuclearCraft.MODID + ".collision_chamber_controller");
     }
 
-    @Override
-    public IDrawable getBackground() {
-        return background;
-    }
 
     @Override
     public @Nullable IDrawable getIcon() {
@@ -80,7 +77,8 @@ public class CollisionChamberRecipeCategory implements IRecipeCategory<Collision
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CollisionChamberRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CollisionChamberRecipe> holder, IFocusGroup focuses) {
+        CollisionChamberRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 36, 35)
                 .addIngredients(ParticleType.PARTICLE, ParticleCompatUtil.stacksOf(recipe.particleInputs().get(0)));
         builder.addSlot(RecipeIngredientRole.INPUT, 104, 35)
@@ -92,24 +90,26 @@ public class CollisionChamberRecipeCategory implements IRecipeCategory<Collision
             if (output.isEmpty() || i >= outputPositions.size()) { i++; continue; }
             Vec2 pos = outputPositions.get(i);
             builder.addSlot(RecipeIngredientRole.OUTPUT, (int) pos.x, (int) pos.y)
-                    .addIngredient(ParticleType.PARTICLE, output);
+                    .add(ParticleType.PARTICLE, output);
             i++;
         }
     }
 
     @Override
-    public void draw(CollisionChamberRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<CollisionChamberRecipe> holder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
+        CollisionChamberRecipe recipe = holder.value();
+        background.draw(graphics);
         var font = Minecraft.getInstance().font;
         var input = recipe.particleInputs().getFirst();
-        graphics.drawString(font, __("tooltip.nuclearcraft.particlestack.focus", numberFormat(input.minimumFocus())),
-                0, 85, 0x404040, false);
-        graphics.drawString(font, __("label.nuclearcraft.cross_section",
+        graphics.text(font, __("tooltip.nuclearcraft.particlestack.focus", numberFormat(input.minimumFocus())),
+                0, 85, 0xFF404040, false);
+        graphics.text(font, __("label.nuclearcraft.cross_section",
                 String.format(Locale.ROOT, "%.1f", recipe.crossSection() * 100)),
-                0, 95, 0x404040, false);
+                0, 95, 0xFF404040, false);
         var energyLabel = input.minimumEnergyKeV() == input.maximumEnergyKeV()
                 ? __("label.nuclearcraft.energy", formatParticleEnergy(input.minimumEnergyKeV()))
                 : __("label.nuclearcraft.energy_range", formatParticleEnergy(input.minimumEnergyKeV()),
                         formatParticleEnergy(input.maximumEnergyKeV()));
-        graphics.drawString(font, energyLabel, 0, 105, 0x404040, false);
+        graphics.text(font, energyLabel, 0, 105, 0xFF404040, false);
     }
 }

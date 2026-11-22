@@ -2,7 +2,7 @@ package igentuman.nc.screen;
 
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.screen.element.BeamDiverterOutputButton;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -23,8 +23,8 @@ public class BeamDiverterScreen extends MultiblockControllerScreen {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, 0xFF404040, false);
         outputButton.visible = menu.isFormed();
     }
 }

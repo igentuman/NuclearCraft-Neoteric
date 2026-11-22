@@ -1,20 +1,21 @@
 package igentuman.nc.client.multiblock;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import igentuman.nc.NuclearCraft;
+import igentuman.nc.client.renderer.ModRenderType;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.network.PacketMultiblockDebug;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShapeRenderer;
+import net.minecraft.util.ARGB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -64,45 +65,47 @@ public final class MultiblockDebugClient {
     }
 
     @SubscribeEvent
-    public static void render(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS || !isActive()) return;
+    public static void render(RenderLevelStageEvent.AfterTranslucentBlocks event) {
+        if (!isActive()) return;
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || SNAPSHOTS.isEmpty()) return;
 
-        Camera camera = event.getCamera();
-        double cameraX = camera.getPosition().x;
-        double cameraY = camera.getPosition().y;
-        double cameraZ = camera.getPosition().z;
+        Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
+        double cameraX = camera.x;
+        double cameraY = camera.y;
+        double cameraZ = camera.z;
         PoseStack poseStack = event.getPoseStack();
+        float width = minecraft.gameRenderer.getGameRenderState().windowRenderState.appropriateLineWidth;
         MultiBufferSource.BufferSource buffers = minecraft.renderBuffers().bufferSource();
-        VertexConsumer lines = buffers.getBuffer(RenderType.lines());
+        // See-through lines: no depth test so the boxes stay visible through walls.
+        VertexConsumer lines = buffers.getBuffer(ModRenderType.LINES_NO_DEPTH);
 
-        RenderSystem.disableDepthTest();
-        RenderSystem.enableBlend();
         for (PacketMultiblockDebug snapshot : SNAPSHOTS.values()) {
             if (snapshot.controllerPos().distSqr(minecraft.player.blockPosition()) > 256D * 256D) continue;
             if (snapshot.minimum() != null && snapshot.maximum() != null) {
                 BlockPos min = snapshot.minimum();
                 BlockPos max = snapshot.maximum();
                 AABB bounds = new AABB(min.getX(), min.getY(), min.getZ(),
-                        max.getX() + 1D, max.getY() + 1D, max.getZ() + 1D)
-                        .move(-cameraX, -cameraY, -cameraZ);
-                LevelRenderer.renderLineBox(poseStack, lines, bounds, 1F, 0.85F, 0F, 0.9F);
+                        max.getX() + 1D, max.getY() + 1D, max.getZ() + 1D);
+                box(poseStack, lines, bounds, cameraX, cameraY, cameraZ, ARGB.colorFromFloat(0.9F, 1F, 0.85F, 0F), width);
             }
-            drawBlock(poseStack, lines, snapshot.start(), cameraX, cameraY, cameraZ, 0F, 1F, 0F);
-            drawBlock(poseStack, lines, snapshot.end(), cameraX, cameraY, cameraZ, 0.15F, 0.45F, 1F);
-            drawBlock(poseStack, lines, snapshot.failingPosition(), cameraX, cameraY, cameraZ, 1F, 0F, 0F);
+            drawBlock(poseStack, lines, snapshot.start(), cameraX, cameraY, cameraZ, 0F, 1F, 0F, width);
+            drawBlock(poseStack, lines, snapshot.end(), cameraX, cameraY, cameraZ, 0.15F, 0.45F, 1F, width);
+            drawBlock(poseStack, lines, snapshot.failingPosition(), cameraX, cameraY, cameraZ, 1F, 0F, 0F, width);
         }
-        buffers.endBatch(RenderType.lines());
-        RenderSystem.disableBlend();
-        RenderSystem.enableDepthTest();
+        buffers.endBatch(ModRenderType.LINES_NO_DEPTH);
     }
 
     private static void drawBlock(PoseStack poseStack, VertexConsumer lines, BlockPos pos,
                                   double cameraX, double cameraY, double cameraZ,
-                                  float red, float green, float blue) {
+                                  float red, float green, float blue, float width) {
         if (pos == null) return;
-        AABB box = new AABB(pos).inflate(0.006D).move(-cameraX, -cameraY, -cameraZ);
-        LevelRenderer.renderLineBox(poseStack, lines, box, red, green, blue, 1F);
+        box(poseStack, lines, new AABB(pos).inflate(0.006D), cameraX, cameraY, cameraZ,
+                ARGB.colorFromFloat(1F, red, green, blue), width);
+    }
+
+    private static void box(PoseStack poseStack, VertexConsumer lines, AABB box,
+                            double cameraX, double cameraY, double cameraZ, int color, float width) {
+        ShapeRenderer.renderShape(poseStack, lines, Shapes.create(box), -cameraX, -cameraY, -cameraZ, color, width);
     }
 }

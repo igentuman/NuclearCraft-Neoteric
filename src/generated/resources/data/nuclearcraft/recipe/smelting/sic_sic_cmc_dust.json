@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/sic_sic_cmc"
-  },
+  "ingredient": "#c:dusts/sic_sic_cmc",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:sic_sic_cmc_ingot"
   }
 }

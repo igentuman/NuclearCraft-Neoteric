@@ -8,12 +8,9 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.recipe.heat_exchanger.HeatExchangerRecipe;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /** EMI recipe display for a heat exchanger recipe with signed heat transfer. */
@@ -23,25 +20,18 @@ public class HeatExchangerEmiRecipe implements EmiRecipe {
     private static final int HEIGHT = 46;
 
     private final EmiRecipeCategory category;
-    private final ResourceLocation id;
+    private final Identifier id;
     private final HeatExchangerRecipe recipe;
     private final EmiIngredient input;
     private final EmiStack output;
 
-    public HeatExchangerEmiRecipe(EmiRecipeCategory category, ResourceLocation id, HeatExchangerRecipe recipe) {
+    public HeatExchangerEmiRecipe(EmiRecipeCategory category, Identifier id, HeatExchangerRecipe recipe) {
         this.category = category;
         this.id = id;
         this.recipe = recipe;
 
-        SizedFluidIngredient in = recipe.input();
-        List<EmiStack> inFluids = new ArrayList<>();
-        for (FluidStack fs : in.getFluids()) {
-            inFluids.add(EmiStack.of(fs.getFluid(), in.amount()));
-        }
-        this.input = EmiIngredient.of(inFluids.stream().map(s -> (EmiIngredient) s).toList());
-
-        FluidStack out = recipe.output().resolve();
-        this.output = out.isEmpty() ? EmiStack.EMPTY : EmiStack.of(out.getFluid(), out.getAmount());
+        this.input = EmiIngredients.fluids(recipe.input());
+        this.output = EmiIngredients.fluid(recipe.output().resolve());
     }
 
     @Override
@@ -50,7 +40,7 @@ public class HeatExchangerEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public @Nullable Identifier getId() {
         return id;
     }
 

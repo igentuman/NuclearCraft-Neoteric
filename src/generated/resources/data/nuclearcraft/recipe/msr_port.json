@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_msr",
   "key": {
-    "L": {
-      "tag": "c:plates/tough_alloy"
-    },
-    "M": {
-      "item": "nuclearcraft:servo"
-    },
-    "P": {
-      "item": "minecraft:bucket"
-    },
-    "T": {
-      "item": "nuclearcraft:fission_reactor_casing"
-    }
+    "L": "#c:plates/tough_alloy",
+    "M": "nuclearcraft:servo",
+    "P": "minecraft:bucket",
+    "T": "nuclearcraft:fission_reactor_casing"
   },
   "pattern": [
     "LPL",
@@ -22,7 +14,6 @@
     "LPL"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:msr_port"
   }
 }

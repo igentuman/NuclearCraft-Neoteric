@@ -5,7 +5,7 @@ The Kugelblitz Chamber confines a miniature black hole. It generates Forge Energ
 items into other materials. Six charged lasers create the black hole; a steady
 supply of Subliquid Matter keeps it alive.
 
-This guide describes the NeoForge 1.21.1 implementation and default settings.
+This guide describes the NeoForge 26.1.2 implementation and default settings.
 Use JEI or EMI for crafting recipes, the Ponder scene for the chamber layout,
 and the [KubeJS guide](KUBEJS.md#particle-coolant-and-kugelblitz-recipe-functions)
 for custom transformation recipes.

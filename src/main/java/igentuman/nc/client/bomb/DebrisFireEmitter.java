@@ -2,9 +2,10 @@ package igentuman.nc.client.bomb;
 
 import igentuman.nc.config.Client;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.ParticleStatus;
+import net.minecraft.server.level.ParticleStatus;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -100,7 +101,7 @@ public final class DebrisFireEmitter {
             int z = Mth.floor(bomb.epicenter.getZ() + 0.5f + Mth.sin(angle) * radius);
             if (!level.hasChunk(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z))) continue;
             int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
-            if (y <= level.getMinBuildHeight()) continue;
+            if (y <= level.getMinY()) continue;
             if (!level.getFluidState(new BlockPos(x, y - 1, z)).isEmpty()) continue;
             float strength = 1f - 0.6f * Mth.clamp(radius / max, 0f, 1f);
             int burn = Math.round(Mth.nextInt(RANDOM, MIN_BURN_TICKS, MAX_BURN_TICKS) * (0.5f + 0.5f * strength));
@@ -119,7 +120,7 @@ public final class DebrisFireEmitter {
                 jitter(0.01), 0.06 + 0.04 * RANDOM.nextDouble(), jitter(0.01));
         if (p == null) return 0;
         p.scale(Mth.lerp(RANDOM.nextFloat(), MIN_SCALE, MAX_SCALE) * (0.6f + 0.4f * fire.strength));
-        p.setColor(fire.shade, fire.shade * 0.97f, fire.shade * 0.93f);
+        if (p instanceof SingleQuadParticle quad) quad.setColor(fire.shade, fire.shade * 0.97f, fire.shade * 0.93f);
         LIVE.add(p);
         return 1;
     }

@@ -4,7 +4,7 @@ import igentuman.nc.block.fission.FissionDesignerBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 
 public final class ClientFissionDesignCache {
 
-    private record Key(ResourceLocation dimension, BlockPos pos) {}
+    private record Key(Identifier dimension, BlockPos pos) {}
 
     private static final Map<Key, CompoundTag> CACHE = new HashMap<>();
     private static int tickCounter = 0;
@@ -22,7 +22,7 @@ public final class ClientFissionDesignCache {
     private ClientFissionDesignCache() {}
 
     private static Key key(BlockPos pos) {
-        return new Key(Minecraft.getInstance().level.dimension().location(), pos);
+        return new Key(Minecraft.getInstance().level.dimension().identifier(), pos);
     }
 
     public static CompoundTag get(BlockPos pos) {
@@ -49,7 +49,7 @@ public final class ClientFissionDesignCache {
         if (mc.level == null || mc.player == null) return;
         if (++tickCounter < 20) return;
         tickCounter = 0;
-        ResourceLocation dim = mc.level.dimension().location();
+        Identifier dim = mc.level.dimension().identifier();
         Iterator<Map.Entry<Key, CompoundTag>> it = CACHE.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Key, CompoundTag> e = it.next();

@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft_solar_panels",
   "key": {
-    "C": {
-      "item": "nuclearcraft:coil_copper"
-    },
-    "L": {
-      "tag": "c:gems/lapis"
-    },
-    "P": {
-      "item": "minecraft:heavy_weighted_pressure_plate"
-    },
-    "Q": {
-      "item": "minecraft:glass_pane"
-    },
-    "S": {
-      "item": "minecraft:daylight_detector"
-    }
+    "C": "nuclearcraft:coil_copper",
+    "L": "#c:gems/lapis",
+    "P": "minecraft:heavy_weighted_pressure_plate",
+    "Q": "minecraft:glass_pane",
+    "S": "minecraft:daylight_detector"
   },
   "pattern": [
     "LQL",
@@ -25,7 +15,6 @@
     "CSC"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:solar_panel_basic"
   }
 }

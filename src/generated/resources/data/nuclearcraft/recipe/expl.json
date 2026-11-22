@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_kugelblitz",
   "key": {
-    "C": {
-      "item": "nuclearcraft:basic_electric_circuit"
-    },
-    "D": {
-      "item": "minecraft:diamond"
-    },
-    "T": {
-      "item": "nuclearcraft:tough_alloy_ingot"
-    }
+    "C": "nuclearcraft:basic_electric_circuit",
+    "D": "minecraft:diamond",
+    "T": "nuclearcraft:tough_alloy_ingot"
   },
   "pattern": [
     "TCT",
@@ -19,7 +13,6 @@
     "TCT"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:expl"
   }
 }

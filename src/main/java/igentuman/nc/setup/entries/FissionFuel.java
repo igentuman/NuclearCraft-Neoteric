@@ -1,6 +1,6 @@
 package igentuman.nc.setup.entries;
 
-import igentuman.nc.content.fuel.FuelDef;
+import igentuman.nc.api.content.FuelDef;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.setup.ModEntries;
 

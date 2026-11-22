@@ -3,18 +3,18 @@ package igentuman.nc.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
-public class FireVerticalParticle extends TextureSheetParticle {
+public class FireVerticalParticle extends SingleQuadParticle {
 
     private final SpriteSet sprites;
 
     protected FireVerticalParticle(ClientLevel world, double x, double y, double z, double vx, double vy, double vz, SpriteSet sprites) {
-        super(world, x, y, z, vx, vy, vz);
+        super(world, x, y, z, vx, vy, vz, sprites.first());
         this.sprites = sprites;
         this.xd = vx;
         this.yd = vy <= 0 ? 0.08D : vy;
@@ -30,12 +30,12 @@ public class FireVerticalParticle extends TextureSheetParticle {
     }
 
     @Override
-    public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected SingleQuadParticle.@NotNull Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
-    public int getLightColor(float partialTick) {
+    protected int getLightCoords(float partialTick) {
         return 240;
     }
 
@@ -59,7 +59,7 @@ public class FireVerticalParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel world, double x, double y, double z, double vx, double vy, double vz) {
+        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel world, double x, double y, double z, double vx, double vy, double vz, @NotNull RandomSource random) {
             return new FireVerticalParticle(world, x, y, z, vx, vy, vz, this.spriteSet);
         }
     }

@@ -1,9 +1,9 @@
 {
-  "loader": "nuclearcraft:battery_model",
-  "parent": "minecraft:block/block",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "particle": "nuclearcraft:block/energy/lithium_ion_battery/du/top",
-    "down": "nuclearcraft:block/energy/lithium_ion_battery/du/side",
-    "up": "nuclearcraft:block/energy/lithium_ion_battery/du/top"
+    "particle": "nuclearcraft:block/energy/lithium_ion_battery/du/side",
+    "bottom": "nuclearcraft:block/energy/lithium_ion_battery/du/side",
+    "side": "nuclearcraft:block/energy/lithium_ion_battery/du/side",
+    "top": "nuclearcraft:block/energy/lithium_ion_battery/du/top"
   }
 }

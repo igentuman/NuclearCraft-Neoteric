@@ -1,18 +1,18 @@
 package igentuman.nc.entity.anomaly;
 
-import igentuman.nc.client.sound.AnomalyAmbientSound;
+import igentuman.nc.client.sound.AnomalySoundController;
 import igentuman.nc.config.Common;
 import igentuman.nc.setup.NCSounds;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.world.anomaly.AnomalySavedData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.entity.Entity;
@@ -26,8 +26,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -53,8 +51,8 @@ public abstract class AnomalyEntity extends Mob {
 
     protected long cellId = UNSET_CELL;
 
-    @OnlyIn(Dist.CLIENT)
-    private SoundInstance ambientSound;
+    /** Client-only sound handle owned by {@link AnomalySoundController}; always null on servers. */
+    private Object ambientSound;
 
     protected AnomalyEntity(EntityType<? extends Mob> type, Level level) {
         super(type, level);
@@ -107,12 +105,12 @@ public abstract class AnomalyEntity extends Mob {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         return false;
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
         return true;
     }
 
@@ -131,7 +129,7 @@ public abstract class AnomalyEntity extends Mob {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(@Nullable Entity other) {
         return false;
     }
 
@@ -146,12 +144,7 @@ public abstract class AnomalyEntity extends Mob {
     }
 
     @Override
-    public boolean shouldDespawnInPeaceful() {
-        return false;
-    }
-
-    @Override
-    protected boolean shouldDropLoot() {
+    protected boolean shouldDropLoot(ServerLevel level) {
         return false;
     }
 
@@ -161,31 +154,32 @@ public abstract class AnomalyEntity extends Mob {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putLong("CellId", cellId);
-        tag.putByte("AnomalyState", (byte) getState().ordinal());
-        tag.putFloat("AnomalyIntensity", getIntensity());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putLong("CellId", cellId);
+        output.putByte("AnomalyState", (byte) getState().ordinal());
+        output.putFloat("AnomalyIntensity", getIntensity());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        if (tag.contains("CellId")) {
-            cellId = tag.getLong("CellId");
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        var keys = input.keySet();
+        if (keys.contains("CellId")) {
+            cellId = input.getLongOr("CellId", 0L);
         }
-        if (tag.contains("AnomalyState")) {
-            setState(State.byByte(tag.getByte("AnomalyState")));
+        if (keys.contains("AnomalyState")) {
+            setState(State.byByte(input.getByteOr("AnomalyState", (byte) 0)));
         }
-        if (tag.contains("AnomalyIntensity")) {
-            setIntensity(tag.getFloat("AnomalyIntensity"));
+        if (keys.contains("AnomalyIntensity")) {
+            setIntensity(input.getFloatOr("AnomalyIntensity", 0.0F));
         }
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             clientTick();
         } else {
             serverTick();
@@ -215,9 +209,8 @@ public abstract class AnomalyEntity extends Mob {
         tickAmbientSound();
     }
 
-    @OnlyIn(Dist.CLIENT)
     private void tickAmbientSound() {
-        if (ambientSound != null && Minecraft.getInstance().getSoundManager().isActive(ambientSound)) {
+        if (AnomalySoundController.isActive(ambientSound)) {
             return;
         }
         if (!onInterval(20)) {
@@ -225,8 +218,7 @@ public abstract class AnomalyEntity extends Mob {
         }
         SoundEvent sound = NCSounds.getAnomalySound(getAnomalyType());
         if (sound != null) {
-            ambientSound = new AnomalyAmbientSound(this, sound, ambientSoundVolume());
-            Minecraft.getInstance().getSoundManager().play(ambientSound);
+            ambientSound = AnomalySoundController.play(this, sound, ambientSoundVolume());
         }
     }
 
@@ -236,8 +228,8 @@ public abstract class AnomalyEntity extends Mob {
 
     @Override
     public void remove(Entity.RemovalReason reason) {
-        if (level().isClientSide && ambientSound != null) {
-            Minecraft.getInstance().getSoundManager().stop(ambientSound);
+        if (level().isClientSide() && ambientSound != null) {
+            AnomalySoundController.stop(ambientSound);
             ambientSound = null;
         }
         super.remove(reason);
@@ -270,7 +262,7 @@ public abstract class AnomalyEntity extends Mob {
     }
 
     protected void onCounterplayResolved() {
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             return;
         }
         if (cellId != UNSET_CELL) {
@@ -303,7 +295,7 @@ public abstract class AnomalyEntity extends Mob {
     }
 
     public void onQ36Hit(Entity source) {
-        if (!level().isClientSide && acceptsQ36Counterplay()) {
+        if (!level().isClientSide() && acceptsQ36Counterplay()) {
             onCounterplayResolved();
         }
     }

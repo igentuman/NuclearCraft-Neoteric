@@ -1,15 +1,16 @@
 package igentuman.nc.registration;
 
+import igentuman.nc.item.NCBlockItem;
 import igentuman.nc.util.SlotsLayout;
 import igentuman.nc.util.caps.EnergyCapDefinition;
 import igentuman.nc.util.caps.FluidCapDefinition;
 import igentuman.nc.util.caps.ItemCapDefinition;
 import igentuman.nc.block.UniversalProcessorBlock;
 import igentuman.nc.block_entity.UniversalProcessorBE;
-import igentuman.nc.block_entity.catalyst.CatalystDef;
-import igentuman.nc.block_entity.catalyst.CatalystFactory;
-import igentuman.nc.block_entity.catalyst.CatalystRegistry;
-import igentuman.nc.block_entity.catalyst.CatalystType;
+import igentuman.nc.api.catalyst.CatalystDef;
+import igentuman.nc.api.catalyst.CatalystFactory;
+import igentuman.nc.api.catalyst.CatalystRegistry;
+import igentuman.nc.api.catalyst.CatalystType;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.container.UniversalProcessorContainer;
@@ -21,6 +22,8 @@ import igentuman.nc.block_entity.MultiblockPortBE;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.recipe.UniversalProcessorRecipeSerializer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvent;
@@ -29,15 +32,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.core.Holder;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.network.IContainerFactory;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -54,7 +55,7 @@ import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.EnumSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -69,8 +70,9 @@ import static igentuman.nc.setup.Registers.*;
 public class ModEntryBuilder {
 
     private final String name;
-    private Supplier<? extends Block> blockSupplier;
-    private Supplier<? extends Item> itemSupplier;
+    private Function<BlockBehaviour.Properties, ? extends Block> blockFactory;
+    private Supplier<BlockBehaviour.Properties> blockProperties = BlockBehaviour.Properties::of;
+    private Function<Item.Properties, ? extends Item> itemFactory;
     private Function<Block, Supplier<? extends BlockEntityType<?>>> entitySupplierFactory;
     private Supplier<MenuType<?>> menuType;
     private EnergyCapDefinition energy;
@@ -83,21 +85,20 @@ public class ModEntryBuilder {
     public MaterialEntry material;
     private SlotsLayout slotsLayout;
     private int progressBar = 0;
-    private Tier toolTier;
+    private ToolMaterial toolTier;
     private String toolItemPrefix;
-    private Holder<ArmorMaterial> armorMaterialHolder;
+    private ArmorMaterial armorMaterial;
     private ArmorMaterialEntry armorMaterialEntry;
-    private int armorDurabilityMultiplier = 15;
     private String armorItemPrefix;
-    private BiFunction<Tier, Item.Properties, ? extends Item> swordFactory;
-    private BiFunction<Tier, Item.Properties, ? extends Item> pickaxeFactory;
-    private BiFunction<Tier, Item.Properties, ? extends Item> axeFactory;
-    private BiFunction<Tier, Item.Properties, ? extends Item> shovelFactory;
-    private BiFunction<Tier, Item.Properties, ? extends Item> hoeFactory;
-    private TriFunction<Holder<ArmorMaterial>, ArmorItem.Type, Item.Properties, ? extends Item> helmetFactory;
-    private TriFunction<Holder<ArmorMaterial>, ArmorItem.Type, Item.Properties, ? extends Item> chestplateFactory;
-    private TriFunction<Holder<ArmorMaterial>, ArmorItem.Type, Item.Properties, ? extends Item> leggingsFactory;
-    private TriFunction<Holder<ArmorMaterial>, ArmorItem.Type, Item.Properties, ? extends Item> bootsFactory;
+    private BiFunction<ToolMaterial, Item.Properties, ? extends Item> swordFactory;
+    private BiFunction<ToolMaterial, Item.Properties, ? extends Item> pickaxeFactory;
+    private BiFunction<ToolMaterial, Item.Properties, ? extends Item> axeFactory;
+    private BiFunction<ToolMaterial, Item.Properties, ? extends Item> shovelFactory;
+    private BiFunction<ToolMaterial, Item.Properties, ? extends Item> hoeFactory;
+    private TriFunction<ArmorMaterial, ArmorType, Item.Properties, ? extends Item> helmetFactory;
+    private TriFunction<ArmorMaterial, ArmorType, Item.Properties, ? extends Item> chestplateFactory;
+    private TriFunction<ArmorMaterial, ArmorType, Item.Properties, ? extends Item> leggingsFactory;
+    private TriFunction<ArmorMaterial, ArmorType, Item.Properties, ? extends Item> bootsFactory;
     private DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> registeredBe;
     private Set<CatalystType> supportedCatalysts = Set.of();
     private boolean customModel = false;
@@ -111,11 +112,11 @@ public class ModEntryBuilder {
     }
 
     public static ModEntryBuilder addItem(String name) {
-        return add(name).item(() -> new Item(new Item.Properties()));
+        return add(name).item(Item::new);
     }
 
-    public static ModEntryBuilder addItem(String name, Supplier<? extends Item> itemSupplier) {
-        return add(name).item(itemSupplier);
+    public static ModEntryBuilder addItem(String name, Function<Item.Properties, ? extends Item> itemFactory) {
+        return add(name).item(itemFactory);
     }
 
     public static IsotopeEntry addIsotope(String name, double radiation) {
@@ -143,23 +144,17 @@ public class ModEntryBuilder {
         return materialEntry;
     }
 
-    public static ModEntryBuilder addToolSet(String name, Tier tier) {
+    public static ModEntryBuilder addToolSet(String name, ToolMaterial tier) {
         ModEntryBuilder b = add(name + "_tools");
         b.toolTier = tier;
         b.toolItemPrefix = name;
         return b;
     }
 
-    public static ModEntryBuilder addArmorSet(String name, Holder<ArmorMaterial> material) {
+    public static ModEntryBuilder addArmorSet(String name, ArmorMaterial material) {
         ModEntryBuilder b = add(name + "_armor");
-        b.armorMaterialHolder = material;
+        b.armorMaterial = material;
         b.armorItemPrefix = name;
-        return b;
-    }
-
-    public static ModEntryBuilder addArmorSet(String name, Holder<ArmorMaterial> material, int durabilityMultiplier) {
-        ModEntryBuilder b = addArmorSet(name, material);
-        b.armorDurabilityMultiplier = durabilityMultiplier;
         return b;
     }
 
@@ -170,13 +165,13 @@ public class ModEntryBuilder {
         return b;
     }
 
-    public ModEntryBuilder sword(BiFunction<Tier, Item.Properties, ? extends Item> factory)   { this.swordFactory = factory;   return this; }
-    public ModEntryBuilder pickaxe(BiFunction<Tier, Item.Properties, ? extends Item> factory) { this.pickaxeFactory = factory; return this; }
-    public ModEntryBuilder axe(BiFunction<Tier, Item.Properties, ? extends Item> factory)     { this.axeFactory = factory;     return this; }
-    public ModEntryBuilder shovel(BiFunction<Tier, Item.Properties, ? extends Item> factory)  { this.shovelFactory = factory;  return this; }
-    public ModEntryBuilder hoe(BiFunction<Tier, Item.Properties, ? extends Item> factory)     { this.hoeFactory = factory;     return this; }
+    public ModEntryBuilder sword(BiFunction<ToolMaterial, Item.Properties, ? extends Item> factory)   { this.swordFactory = factory;   return this; }
+    public ModEntryBuilder pickaxe(BiFunction<ToolMaterial, Item.Properties, ? extends Item> factory) { this.pickaxeFactory = factory; return this; }
+    public ModEntryBuilder axe(BiFunction<ToolMaterial, Item.Properties, ? extends Item> factory)     { this.axeFactory = factory;     return this; }
+    public ModEntryBuilder shovel(BiFunction<ToolMaterial, Item.Properties, ? extends Item> factory)  { this.shovelFactory = factory;  return this; }
+    public ModEntryBuilder hoe(BiFunction<ToolMaterial, Item.Properties, ? extends Item> factory)     { this.hoeFactory = factory;     return this; }
 
-    public ModEntryBuilder toolFactory(BiFunction<Tier, Item.Properties, ? extends Item> factory) {
+    public ModEntryBuilder toolFactory(BiFunction<ToolMaterial, Item.Properties, ? extends Item> factory) {
         this.swordFactory = factory;
         this.pickaxeFactory = factory;
         this.axeFactory = factory;
@@ -185,12 +180,12 @@ public class ModEntryBuilder {
         return this;
     }
 
-    public ModEntryBuilder helmet(TriFunction<Holder<ArmorMaterial>, ArmorItem.Type, Item.Properties, ? extends Item> factory)     { this.helmetFactory = factory;     return this; }
-    public ModEntryBuilder chestplate(TriFunction<Holder<ArmorMaterial>, ArmorItem.Type, Item.Properties, ? extends Item> factory) { this.chestplateFactory = factory; return this; }
-    public ModEntryBuilder leggings(TriFunction<Holder<ArmorMaterial>, ArmorItem.Type, Item.Properties, ? extends Item> factory)   { this.leggingsFactory = factory;   return this; }
-    public ModEntryBuilder boots(TriFunction<Holder<ArmorMaterial>, ArmorItem.Type, Item.Properties, ? extends Item> factory)      { this.bootsFactory = factory;      return this; }
+    public ModEntryBuilder helmet(TriFunction<ArmorMaterial, ArmorType, Item.Properties, ? extends Item> factory)     { this.helmetFactory = factory;     return this; }
+    public ModEntryBuilder chestplate(TriFunction<ArmorMaterial, ArmorType, Item.Properties, ? extends Item> factory) { this.chestplateFactory = factory; return this; }
+    public ModEntryBuilder leggings(TriFunction<ArmorMaterial, ArmorType, Item.Properties, ? extends Item> factory)   { this.leggingsFactory = factory;   return this; }
+    public ModEntryBuilder boots(TriFunction<ArmorMaterial, ArmorType, Item.Properties, ? extends Item> factory)      { this.bootsFactory = factory;      return this; }
 
-    public ModEntryBuilder armorFactory(TriFunction<Holder<ArmorMaterial>, ArmorItem.Type, Item.Properties, ? extends Item> factory) {
+    public ModEntryBuilder armorFactory(TriFunction<ArmorMaterial, ArmorType, Item.Properties, ? extends Item> factory) {
         this.helmetFactory = factory;
         this.chestplateFactory = factory;
         this.leggingsFactory = factory;
@@ -207,7 +202,7 @@ public class ModEntryBuilder {
         if(material == null) {
             material(0);
         }
-        material.setIngotSupplier(() -> new Item(new Item.Properties()));
+        material.setIngotSupplier(Item::new);
         return this;
     }
 
@@ -215,7 +210,7 @@ public class ModEntryBuilder {
         if(material == null) {
             material(0);
         }
-        material.setGemSupplier(() -> new Item(new Item.Properties()));
+        material.setGemSupplier(Item::new);
         return this;
     }
 
@@ -223,7 +218,7 @@ public class ModEntryBuilder {
         if(material == null) {
             material(0);
         }
-        material.setDustSupplier(() -> new Item(new Item.Properties()));
+        material.setDustSupplier(Item::new);
         return this;
     }
 
@@ -231,7 +226,7 @@ public class ModEntryBuilder {
         if(material == null) {
             material(0);
         }
-        material.setNuggetSupplier(() -> new Item(new Item.Properties()));
+        material.setNuggetSupplier(Item::new);
         return this;
     }
 
@@ -239,7 +234,7 @@ public class ModEntryBuilder {
         if(material == null) {
             material(0);
         }
-        material.setRawOreSupplier(() -> new Item(new Item.Properties()));
+        material.setRawOreSupplier(Item::new);
         return this;
     }
 
@@ -247,7 +242,7 @@ public class ModEntryBuilder {
         if(material == null) {
             material(0);
         }
-        material.setPlateSupplier(() -> new Item(new Item.Properties()));
+        material.setPlateSupplier(Item::new);
         return this;
     }
 
@@ -260,7 +255,7 @@ public class ModEntryBuilder {
                 .strength(3.0f, 3.0f)
                 .requiresCorrectToolForDrops()
                 .sound(SoundType.STONE);
-        material.setOre(() -> new Block(oreProps), () -> new BlockItem(new Block(oreProps), new Item.Properties()));
+        material.setOre(Block::new, () -> oreProps);
         return this;
     }
 
@@ -273,7 +268,7 @@ public class ModEntryBuilder {
                 .strength(5.0f, 6.0f)
                 .requiresCorrectToolForDrops()
                 .sound(SoundType.METAL);
-        material.setBlock(() -> new Block(blockProps), () -> new BlockItem(new Block(blockProps), new Item.Properties()));
+        material.setBlock(Block::new, () -> blockProps);
         return this;
     }
 
@@ -322,10 +317,10 @@ public class ModEntryBuilder {
 
     /**
      * Declares which catalyst types this processor accepts. One catalyst slot is allocated
-     * per type (in {@link CatalystType} ordinal order) during {@link #build()}.
+     * per distinct type in declaration order during {@link #build()}.
      */
     public ModEntryBuilder catalysts(CatalystType... types) {
-        this.supportedCatalysts = types.length == 0 ? Set.of() : EnumSet.copyOf(Arrays.asList(types));
+        this.supportedCatalysts = new LinkedHashSet<>(Arrays.asList(types));
         return this;
     }
 
@@ -334,12 +329,12 @@ public class ModEntryBuilder {
      * processor supporting {@code type} auto-attaches it. The item participates in F8 gating.
      */
     public static ModEntry addCatalyst(String name, CatalystType type, CatalystFactory factory) {
-        return addCatalyst(name, type, factory, () -> new Item(new Item.Properties()));
+        return addCatalyst(name, type, factory, Item::new);
     }
 
     public static ModEntry addCatalyst(String name, CatalystType type, CatalystFactory factory,
-                                       Supplier<? extends Item> itemSupplier) {
-        ModEntry entry = add(name).item(itemSupplier).build();
+                                       Function<Item.Properties, ? extends Item> itemFactory) {
+        ModEntry entry = add(name).item(itemFactory).build();
         CatalystRegistry.register(new CatalystDef(entry.item(), type, factory));
         return entry;
     }
@@ -358,12 +353,13 @@ public class ModEntryBuilder {
     @SuppressWarnings("unchecked")
     public static ModEntryBuilder addMultiblockController(String name, ControllerBlockFactory blockFactory) {
         ModEntryBuilder b = add(name);
-        b.blockSupplier = () -> blockFactory.create(defaultMultiblockProps(), name,
+        b.blockProperties = ModEntryBuilder::defaultMultiblockProps;
+        b.blockFactory = props -> blockFactory.create(props, name,
                 () -> (BlockEntityType<? extends MultiblockControllerBE>) b.registeredBe.get());
-        b.entitySupplierFactory = block -> () -> BlockEntityType.Builder.of(
+        b.entitySupplierFactory = block -> () -> new BlockEntityType<>(
                 (pos, state) -> new MultiblockControllerBE(b.registeredBe.get(), pos, state, name),
                 block
-        ).build(null);
+        );
         b.menuType = () -> IMenuTypeExtension.create(
                 (IContainerFactory<MultiblockControllerContainer>) MultiblockControllerContainer::new);
         return b.withRecipes();
@@ -374,12 +370,14 @@ public class ModEntryBuilder {
     }
 
     public static ModEntry addMultiblockBlock(String name, BlockBehaviour.Properties props) {
-        return addMultiblockBlock(name, () -> new MultiblockBlock(props));
+        return addMultiblockBlock(name, MultiblockBlock::new, () -> props);
     }
 
-    public static ModEntry addMultiblockBlock(String name, Supplier<? extends Block> blockSupplier) {
-        DeferredBlock<Block> block = BLOCKS.register(name, blockSupplier);
-        DeferredItem<Item> item = ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+    public static ModEntry addMultiblockBlock(String name, Function<BlockBehaviour.Properties, ? extends Block> blockFactory,
+                                               Supplier<BlockBehaviour.Properties> properties) {
+        DeferredBlock<Block> block = BLOCKS.registerBlock(name, blockFactory, properties);
+        DeferredItem<Item> item = ITEMS.<Item>registerItem(name, itemProps -> new NCBlockItem(block.get(), itemProps),
+                () -> new Item.Properties().useBlockDescriptionPrefix());
         ModEntry entry = new ModEntry(name, block, item, null, null, false, null, null, null, null, null, null, null, 0, null, null, Set.of(), Set.of(), false);
         ENTRIES.put(name, entry);
         return entry;
@@ -427,18 +425,19 @@ public class ModEntryBuilder {
                                              @Nullable IContainerFactory<? extends AbstractContainerMenu> menuFactory) {
         final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>[] beHolder = new DeferredHolder[1];
 
-        DeferredBlock<Block> block = BLOCKS.register(name, () ->
-                blockFactory.create(props, name,
-                        () -> (BlockEntityType<? extends MultiblockPortBE>) beHolder[0].get()));
+        DeferredBlock<Block> block = BLOCKS.registerBlock(name, properties ->
+                blockFactory.create(properties, name,
+                        () -> (BlockEntityType<? extends MultiblockPortBE>) beHolder[0].get()), () -> props);
 
         DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> beReg =
-                BLOCK_ENTITIES.register(name, () -> BlockEntityType.Builder.of(
+                BLOCK_ENTITIES.register(name, () -> new BlockEntityType<>(
                         (pos, state) -> beFactory.create(beHolder[0].get(), pos, state, name),
                         block.get()
-                ).build(null));
+                ));
         beHolder[0] = (DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>) (DeferredHolder) beReg;
 
-        DeferredItem<Item> item = ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        DeferredItem<Item> item = ITEMS.<Item>registerItem(name, itemProps -> new NCBlockItem(block.get(), itemProps),
+                () -> new Item.Properties().useBlockDescriptionPrefix());
 
         DeferredHolder<MenuType<?>, MenuType<?>> menu = null;
         if (menuFactory != null) {
@@ -477,7 +476,7 @@ public class ModEntryBuilder {
     }
 
     public static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> addEntityType(String name, EntityType.Builder<T> builder) {
-        return ENTITY_TYPES.register(name, () -> builder.build(name));
+        return ENTITY_TYPES.register(name, id -> builder.build(ResourceKey.create(Registries.ENTITY_TYPE, id)));
     }
 
     public static DeferredHolder<SoundEvent, SoundEvent> addSoundEvent(String name) {
@@ -495,26 +494,36 @@ public class ModEntryBuilder {
         return ATTACHMENT_TYPES.register(name, attachmentFactory);
     }
 
-    public <B extends Block> ModEntryBuilder block(Supplier<B> blockSupplier) {
-        this.blockSupplier = blockSupplier;
+    public <B extends Block> ModEntryBuilder block(Function<BlockBehaviour.Properties, B> blockFactory) {
+        this.blockFactory = blockFactory;
         return this;
     }
 
-    public <B extends Block> ModEntryBuilder block(Function<String, B> blockFactory) {
-        this.blockSupplier = () -> blockFactory.apply(name);
-        return this;
+    public <B extends Block> ModEntryBuilder block(Function<BlockBehaviour.Properties, B> blockFactory,
+                                                  Supplier<BlockBehaviour.Properties> properties) {
+        this.blockProperties = properties;
+        return block(blockFactory);
     }
 
-    public ModEntryBuilder item(Supplier<? extends Item> itemSupplier) {
-        this.itemSupplier = itemSupplier;
+    public <B extends Block> ModEntryBuilder block(BiFunction<BlockBehaviour.Properties, String, B> blockFactory) {
+        return block(props -> blockFactory.apply(props, name));
+    }
+
+    public <B extends Block> ModEntryBuilder block(BiFunction<BlockBehaviour.Properties, String, B> blockFactory,
+                                                  Supplier<BlockBehaviour.Properties> properties) {
+        return block(props -> blockFactory.apply(props, name), properties);
+    }
+
+    public ModEntryBuilder item(Function<Item.Properties, ? extends Item> itemFactory) {
+        this.itemFactory = itemFactory;
         return this;
     }
 
     public <E extends BlockEntity> ModEntryBuilder blockEntity(TriFunction<BlockPos, BlockState, String, E> entityConstructor) {
-        this.entitySupplierFactory = block -> () -> BlockEntityType.Builder.of(
+        this.entitySupplierFactory = block -> () -> new BlockEntityType<>(
                 (pos, state) -> entityConstructor.apply(pos, state, name),
                 block
-        ).build(null);
+        );
         return this;
     }
 
@@ -522,7 +531,6 @@ public class ModEntryBuilder {
         this.menuType = () -> IMenuTypeExtension.create(factory);
         return this;
     }
-
 
     public ModEntryBuilder withEnergyInput(int capacity) {
         this.energy = EnergyCapDefinition.processor(capacity);
@@ -567,15 +575,7 @@ public class ModEntryBuilder {
     public ModEntryBuilder withRecipes() {
         return withRecipeFamily(name, RecipeSchemaKind.UNIVERSAL_PROCESSOR,
                 () -> RecipeType.<UniversalProcessorRecipe>simple(rl(name)),
-                () -> new UniversalProcessorRecipeSerializer(name));
-    }
-
-    public ModEntryBuilder withRecipes(
-            Supplier<RecipeType<?>> recipeTypeSupplier,
-            Supplier<RecipeSerializer<?>> recipeSerializerSupplier
-    ) {
-        return withRecipeFamily(name, RecipeSchemaKind.UNIVERSAL_PROCESSOR,
-                recipeTypeSupplier, recipeSerializerSupplier);
+                () -> UniversalProcessorRecipeSerializer.create(name));
     }
 
     public ModEntryBuilder withRecipeFamily(
@@ -605,17 +605,18 @@ public class ModEntryBuilder {
         DeferredHolder<MenuType<?>, MenuType<?>> menu = null;
         DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> blockEntity = null;
         DeferredHolder<RecipeType<?>, RecipeType<?>> recipeType = null;
-        if (blockSupplier != null) {
-            block = BLOCKS.register(name, blockSupplier);
+        if (blockFactory != null) {
+            block = BLOCKS.registerBlock(name, blockFactory, blockProperties);
         }
 
         final DeferredBlock<Block> finalBlock = block;
 
         // Register item - use provided supplier or create BlockItem
-        if (itemSupplier != null) {
-            item = ITEMS.register(name, itemSupplier);
+        if (itemFactory != null) {
+            item = ITEMS.registerItem(name, itemFactory);
         } else if(finalBlock != null) {
-            item = ITEMS.register(name, () -> new BlockItem(finalBlock.get(), new Item.Properties()));
+            item = ITEMS.<Item>registerItem(name, props -> new NCBlockItem(finalBlock.get(), props),
+                    () -> new Item.Properties().useBlockDescriptionPrefix());
         }
 
         if (entitySupplierFactory != null && block != null) {
@@ -666,8 +667,8 @@ public class ModEntryBuilder {
         if (armorMaterialEntry != null) {
             armorSetEntry = ArmorSetEntry.build(armorName, armorMaterialEntry,
                     helmetFactory, chestplateFactory, leggingsFactory, bootsFactory);
-        } else if (armorMaterialHolder != null) {
-            armorSetEntry = ArmorSetEntry.build(armorName, armorMaterialHolder, armorDurabilityMultiplier,
+        } else if (armorMaterial != null) {
+            armorSetEntry = ArmorSetEntry.build(armorName, armorMaterial,
                     helmetFactory, chestplateFactory, leggingsFactory, bootsFactory);
         }
 

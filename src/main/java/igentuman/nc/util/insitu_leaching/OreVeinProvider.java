@@ -5,6 +5,7 @@ import igentuman.nc.recipe.OreVeinRecipe;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -18,13 +19,22 @@ public class OreVeinProvider {
 
     private final ServerLevel level;
     protected List<OreVeinRecipe> recipes;
+    private RecipeMap recipeMap;
     protected static final Map<Level, OreVeinProvider> providers = new HashMap<>();
 
-    @SuppressWarnings("unchecked")
     private OreVeinProvider(ServerLevel level) {
         this.level = level;
+        refreshRecipes();
+    }
+
+    /** Retains native recipe priority order and refreshes the vein pool after datapack reload. */
+    @SuppressWarnings("unchecked")
+    private void refreshRecipes() {
+        RecipeMap current = level.recipeAccess().recipeMap();
+        if (current == recipeMap) return;
         RecipeType<OreVeinRecipe> type = (RecipeType<OreVeinRecipe>) ModEntries.get("nc_ore_veins").recipeType().get();
-        this.recipes = level.getRecipeManager().getAllRecipesFor(type).stream().map(RecipeHolder::value).toList();
+        recipes = current.byType(type).stream().map(RecipeHolder::value).toList();
+        recipeMap = current;
     }
 
     /** Rolls against the configured veins rarity to determine if a chunk contains a vein. */
@@ -59,6 +69,7 @@ public class OreVeinProvider {
 
     /** Selects a random vein recipe from the pool, weighted by rarity modifier (higher = rarer). */
     public OreVeinRecipe selectRandomVein(Random random, int x, int z) {
+        refreshRecipes();
         if (recipes.isEmpty()) return null;
         if (Common.IN_SITU_RANDOMIZED_ORES.get()) {
             return recipes.get(random.nextInt(recipes.size()));

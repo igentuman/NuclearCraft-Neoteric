@@ -1,7 +1,7 @@
 # Armor, tools, weapons and bomb
 
 This guide covers equipment implemented in NuclearCraft: Neoteric for NeoForge
-1.21.1. Values below are defaults; modpack recipes and server configuration can
+26.1.2. Values below are defaults; modpack recipes and server configuration can
 change them. Use JEI/EMI for the recipes available in your pack.
 
 ## Armor
@@ -50,7 +50,7 @@ flight: its flight permission ends when QE runs out. The FE effects currently
 check for a positive charge without consuming FE in the armor tick.
 
 Radiation mechanics belong to the separate
-[Nuclear Radiation mod](https://github.com/igentuman/Nuclear-Radiation/blob/1.21.1/README.md).
+[Nuclear Radiation mod](https://github.com/igentuman/Nuclear-Radiation/blob/26.1.2/README.md).
 Consult its documentation for radiation protection rules in your pack.
 
 ## Tools

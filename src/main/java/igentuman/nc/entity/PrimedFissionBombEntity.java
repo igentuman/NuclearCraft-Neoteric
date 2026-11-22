@@ -13,12 +13,14 @@ import igentuman.nr.api.isotope.IsotopeRegistry;
 import igentuman.nr.api.isotope.IsotopeStack;
 import igentuman.nr.radiation.source.LeftOverRadSource;
 import igentuman.nr.radiation.source.WorldSourceRegistry;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -46,7 +48,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
@@ -138,7 +140,7 @@ public class PrimedFissionBombEntity extends Entity {
         int cx = epicenter.getX() >> 4;
         int cz = epicenter.getZ() >> 4;
         forceChunk(server, cx, cz, true, true);
-        forcedChunks.add(ChunkPos.asLong(cx, cz));
+        forcedChunks.add(ChunkPos.pack(cx, cz));
     }
 
     private void forceChunk(ServerLevel server, int cx, int cz, boolean add, boolean ticking) {
@@ -152,7 +154,7 @@ public class PrimedFissionBombEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide) return;
+        if (level().isClientSide()) return;
         if (task == null && phase == Phase.PRELOAD) {
             startSimulation();
         }
@@ -284,9 +286,9 @@ public class PrimedFissionBombEntity extends Entity {
         for (int cx = cxMin; cx <= cxMax; cx++) {
             for (int cz = czMin; cz <= czMax; cz++) {
                 forceChunk(server, cx, cz, true, false);
-                forcedChunks.add(ChunkPos.asLong(cx, cz));
+                forcedChunks.add(ChunkPos.pack(cx, cz));
                 ChunkAccess chunk = server.getChunk(cx, cz, ChunkStatus.FULL, true);
-                snapshot.put(ChunkPos.asLong(cx, cz), chunk);
+                snapshot.put(ChunkPos.pack(cx, cz), chunk);
             }
         }
         task = new BlastTask(epicenter, hRadius, vRadius, yield, snapshot);
@@ -329,11 +331,11 @@ public class PrimedFissionBombEntity extends Entity {
             if (player != null) {
                 int cx = sb.pos().getX() >> 4;
                 int cz = sb.pos().getZ() >> 4;
-                long chunkKey = ChunkPos.asLong(cx, cz);
+                long chunkKey = ChunkPos.pack(cx, cz);
                 if (protectedChunks.containsKey(chunkKey)) {
                     if (protectedChunks.get(chunkKey)) return;
                 } else if (!oldState.isAir()) {
-                    BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(server, sb.pos(), oldState, player);
+                    BreakBlockEvent breakEvent = new BreakBlockEvent(server, sb.pos(), oldState, player);
                     if (NeoForge.EVENT_BUS.post(breakEvent).isCanceled()) {
                         protectedChunks.put(chunkKey, true);
                         return;
@@ -344,7 +346,12 @@ public class PrimedFissionBombEntity extends Entity {
             if (igentuman.nc.config.Bomb.FAST_BLOCK_WRITES.get()) {
                 applySetBlockFast(server, sb.pos(), sb.state());
             } else {
-                server.setBlock(sb.pos(), sb.state(), SET_BLOCK_FLAGS);
+                if (server.setBlock(sb.pos(), sb.state(), SET_BLOCK_FLAGS)
+                        && !oldState.is(sb.state().getBlock())) {
+                    // These writes omit UPDATE_NEIGHBORS. Keep the removal notifications
+                    // formerly delivered by onRemove, without enabling full neighbor updates.
+                    oldState.affectNeighborsAfterRemoval(server, sb.pos(), false);
+                }
             }
         } else if (op instanceof BlastOp.VoidSection vs) {
             voidSection(server, vs.sx(), vs.sy(), vs.sz());
@@ -395,8 +402,8 @@ public class PrimedFissionBombEntity extends Entity {
         if (old.hasBlockEntity()) {
             chunk.removeBlockEntity(pos);
         }
-        chunk.setUnsaved(true);
-        long chunkKey = ChunkPos.asLong(cx, cz);
+        chunk.markUnsaved();
+        long chunkKey = ChunkPos.pack(cx, cz);
         dirtyFastChunks.add(chunkKey);
         dirtyFastSections.add(SectionPos.asLong(cx, pos.getY() >> 4, cz));
         chunksToResend.add(chunkKey);
@@ -434,7 +441,7 @@ public class PrimedFissionBombEntity extends Entity {
             chunk.setLightCorrect(false);
             relightPending.incrementAndGet();
             le.lightChunk(chunk, false).thenAccept(c ->
-                    pendingResend.add(ChunkPos.asLong(c.getPos().x, c.getPos().z)));
+                    pendingResend.add(ChunkPos.pack(c.getPos().x(), c.getPos().z())));
         }
         dirtyFastChunks.clear();
     }
@@ -473,7 +480,7 @@ public class PrimedFissionBombEntity extends Entity {
 
         Player player = getPlacerPlayer(server);
         if (player != null) {
-            long chunkKey = ChunkPos.asLong(sx, sz);
+            long chunkKey = ChunkPos.pack(sx, sz);
             boolean isProtected;
             if (protectedChunks.containsKey(chunkKey)) {
                 isProtected = protectedChunks.get(chunkKey);
@@ -489,8 +496,8 @@ public class PrimedFissionBombEntity extends Entity {
                             BlockState state = chunk.getBlockState(mpos);
                             if (!state.isAir()) {
                                 foundBlockToCheck = true;
-                                BlockEvent.BreakEvent breakEvent =
-                                        new BlockEvent.BreakEvent(server, mpos.immutable(), state, player);
+                                BreakBlockEvent breakEvent =
+                                        new BreakBlockEvent(server, mpos.immutable(), state, player);
                                 checkResult = NeoForge.EVENT_BUS.post(breakEvent).isCanceled();
                                 break;
                             }
@@ -535,8 +542,7 @@ public class PrimedFissionBombEntity extends Entity {
                 }
             }
         } else {
-            Registry<Biome> biomeReg = server.registryAccess().registryOrThrow(Registries.BIOME);
-            sections[idx] = new LevelChunkSection(biomeReg);
+            sections[idx] = new LevelChunkSection(server.palettedContainerFactory());
         }
 
         int yMax = yMin + 16;
@@ -546,9 +552,9 @@ public class PrimedFissionBombEntity extends Entity {
         }
         for (BlockPos pos : toRemove) chunk.removeBlockEntity(pos);
 
-        chunk.setUnsaved(true);
+        chunk.markUnsaved();
         server.getChunkSource().getLightEngine().updateSectionStatus(SectionPos.of(sx, sy, sz), true);
-        long key = ChunkPos.asLong(sx, sz);
+        long key = ChunkPos.pack(sx, sz);
         chunksToResend.add(key);
         dirtyFastChunks.add(key);
     }
@@ -617,7 +623,7 @@ public class PrimedFissionBombEntity extends Entity {
             float atten = (float) Math.pow(0.85, walls);
             float dmg = (float) (5000.0 * (1.0 - t)) * atten;
             if (dmg <= 0f) continue;
-            le.hurt(server.damageSources().explosion(this, null), dmg);
+            le.hurtServer(server, server.damageSources().explosion(this, null), dmg);
             if (le.isAlive()) {
                 le.igniteForSeconds(30);
             }
@@ -658,6 +664,11 @@ public class PrimedFissionBombEntity extends Entity {
     }
 
     @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        return false;
+    }
+
+    @Override
     public void remove(RemovalReason reason) {
         releaseForcedChunks();
         super.remove(reason);
@@ -671,12 +682,12 @@ public class PrimedFissionBombEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
-        yield = tag.getFloat("yield");
-        hRadius = tag.getInt("hRadius");
-        vRadius = tag.getInt("vRadius");
-        placerUuid = tag.getString("placerUuid");
-        String phaseName = tag.getString("phase");
+    protected void readAdditionalSaveData(ValueInput input) {
+        yield = input.getFloatOr("yield", 0.0F);
+        hRadius = input.getIntOr("hRadius", 0);
+        vRadius = input.getIntOr("vRadius", 0);
+        placerUuid = input.getStringOr("placerUuid", "");
+        String phaseName = input.getStringOr("phase", "");
         if (!phaseName.isEmpty()) {
             try {
                 phase = Phase.valueOf(phaseName);
@@ -690,12 +701,12 @@ public class PrimedFissionBombEntity extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
-        tag.putFloat("yield", yield);
-        tag.putInt("hRadius", hRadius);
-        tag.putInt("vRadius", vRadius);
-        tag.putString("placerUuid", placerUuid);
-        tag.putString("phase", phase.name());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        output.putFloat("yield", yield);
+        output.putInt("hRadius", hRadius);
+        output.putInt("vRadius", vRadius);
+        output.putString("placerUuid", placerUuid);
+        output.putString("phase", phase.name());
     }
 
     @Override

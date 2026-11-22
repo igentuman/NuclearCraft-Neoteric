@@ -8,7 +8,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 
-/** Looping, block-positioned sound whose volume falls off with distance to the client player. */
 public class TileSoundInstance extends AbstractTickableSoundInstance {
 
     private final float baseVolume;

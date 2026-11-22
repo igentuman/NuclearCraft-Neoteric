@@ -40,14 +40,14 @@ public final class StackUtils {
     public static List<String> getItemsByTagKey(String key) {
         List<String> tmp = new ArrayList<>();
         TagKey<Item> tag = TagKey.create(Registries.ITEM, rlFromString(key));
-        BuiltInRegistries.ITEM.getTag(tag).ifPresent(holders ->
+        BuiltInRegistries.ITEM.get(tag).ifPresent(holders ->
             holders.forEach(holder -> tmp.add(BuiltInRegistries.ITEM.getKey(holder.value()).toString()))
         );
         return tmp;
     }
 
     public static Item getItemByRegistryName(String id) {
-        return BuiltInRegistries.ITEM.get(rlFromString(id));
+        return BuiltInRegistries.ITEM.getValue(rlFromString(id));
     }
 
     private static final List<Item> allowedTools = new ArrayList<>();

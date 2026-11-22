@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:nuggets/zirconium"
-    },
-    {
-      "tag": "c:nuggets/zirconium"
-    },
-    {
-      "tag": "c:nuggets/zirconium"
-    },
-    {
-      "tag": "c:nuggets/zirconium"
-    },
-    {
-      "tag": "c:nuggets/zirconium"
-    },
-    {
-      "tag": "c:nuggets/zirconium"
-    },
-    {
-      "tag": "c:nuggets/zirconium"
-    },
-    {
-      "tag": "c:nuggets/zirconium"
-    },
-    {
-      "tag": "c:nuggets/zirconium"
-    }
+    "#c:nuggets/zirconium",
+    "#c:nuggets/zirconium",
+    "#c:nuggets/zirconium",
+    "#c:nuggets/zirconium",
+    "#c:nuggets/zirconium",
+    "#c:nuggets/zirconium",
+    "#c:nuggets/zirconium",
+    "#c:nuggets/zirconium",
+    "#c:nuggets/zirconium"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:zirconium_ingot"
   }
 }

@@ -7,10 +7,8 @@ import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.FluidTagsProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.resources.Identifier;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.MODID;
@@ -18,8 +16,8 @@ import static igentuman.nc.NuclearCraft.rl;
 
 /** Generates fluid tags for material, isotope, and fission-fuel fluids under mod and common namespaces. */
 public class ModFluidTagProvider extends FluidTagsProvider {
-    public ModFluidTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, provider, MODID, existingFileHelper);
+    public ModFluidTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, provider, MODID);
     }
 
     @Override
@@ -34,26 +32,26 @@ public class ModFluidTagProvider extends FluidTagsProvider {
                         rl(fluidName)
                 );
                 tag(fluidTag)
-                        .add(materialFluid.source().getKey())
-                        .add(materialFluid.flowing().getKey());
+                        .add(materialFluid.source().get())
+                        .add(materialFluid.flowing().get());
 
                 // Common tags (c: namespace)
                 // e.g. c:molten_silver for molten metals, c:silver for non-molten fluids
                 var commonFluidTag = net.minecraft.tags.FluidTags.create(
-                        ResourceLocation.fromNamespaceAndPath("c", fluidName)
+                        Identifier.fromNamespaceAndPath("c", fluidName)
                 );
                 tag(commonFluidTag)
-                        .add(materialFluid.source().getKey())
-                        .add(materialFluid.flowing().getKey());
+                        .add(materialFluid.source().get())
+                        .add(materialFluid.flowing().get());
 
                 // Also add a base material tag (c:silver) for molten fluids
                 if (mat.fluidDefinition.isMolten) {
                     var commonMaterialTag = net.minecraft.tags.FluidTags.create(
-                            ResourceLocation.fromNamespaceAndPath("c", mat.name)
+                            Identifier.fromNamespaceAndPath("c", mat.name)
                     );
                     tag(commonMaterialTag)
-                            .add(materialFluid.source().getKey())
-                            .add(materialFluid.flowing().getKey());
+                            .add(materialFluid.source().get())
+                            .add(materialFluid.flowing().get());
                 }
             }
         }
@@ -63,11 +61,11 @@ public class ModFluidTagProvider extends FluidTagsProvider {
                 var materialFluid = mat.materialFluid();
                 String fluidName = mat.fluidDefinition.resolveName(mat.name);
                 tag(net.minecraft.tags.FluidTags.create(rl(fluidName)))
-                        .add(materialFluid.source().getKey())
-                        .add(materialFluid.flowing().getKey());
-                tag(net.minecraft.tags.FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", fluidName)))
-                        .add(materialFluid.source().getKey())
-                        .add(materialFluid.flowing().getKey());
+                        .add(materialFluid.source().get())
+                        .add(materialFluid.flowing().get());
+                tag(net.minecraft.tags.FluidTags.create(Identifier.fromNamespaceAndPath("c", fluidName)))
+                        .add(materialFluid.source().get())
+                        .add(materialFluid.flowing().get());
             }
         }
 
@@ -76,11 +74,11 @@ public class ModFluidTagProvider extends FluidTagsProvider {
                 var materialFluid = mat.materialFluid();
                 String fluidName = mat.fluidDefinition.resolveName(mat.name);
                 tag(net.minecraft.tags.FluidTags.create(rl(fluidName)))
-                        .add(materialFluid.source().getKey())
-                        .add(materialFluid.flowing().getKey());
-                tag(net.minecraft.tags.FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", fluidName)))
-                        .add(materialFluid.source().getKey())
-                        .add(materialFluid.flowing().getKey());
+                        .add(materialFluid.source().get())
+                        .add(materialFluid.flowing().get());
+                tag(net.minecraft.tags.FluidTags.create(Identifier.fromNamespaceAndPath("c", fluidName)))
+                        .add(materialFluid.source().get())
+                        .add(materialFluid.flowing().get());
             }
         }
     }

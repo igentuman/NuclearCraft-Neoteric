@@ -2,15 +2,15 @@ package igentuman.nc.block_entity.pipe;
 
 import igentuman.nc.container.PipeConnectorContainer;
 import igentuman.nc.api.pipe.ConnectorMode;
-import igentuman.nc.api.pipe.PipeCapabilityType;
-import igentuman.nc.api.pipe.PipeNetwork;
-import igentuman.nc.api.pipe.PipeNetworkManager;
+import igentuman.nc.pipe.PipeCapabilityType;
+import igentuman.nc.pipe.PipeNetwork;
+import igentuman.nc.pipe.PipeNetworkManager;
 import igentuman.nc.api.pipe.RedstoneMode;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
@@ -115,8 +115,6 @@ public class PipeConnectorBE extends BlockEntity implements MenuProvider {
         return true;
     }
 
-    /** Resolves a capability on the machine adjacent to {@code face}, skipping other pipe nodes so
-     *  content never routes into the network's own conduit. Returns null off-server or when absent. */
     public <T> T getExternalCapability(Direction face, BlockCapability<T, Direction> cap) {
         if (!(level instanceof ServerLevel sl)) {
             return null;
@@ -148,38 +146,39 @@ public class PipeConnectorBE extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    protected void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        super.loadAdditional(tag, registries);
-        if (tag.contains("EnabledCaps")) {
-            byte mask = tag.getByte("EnabledCaps");
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        var keys = input.keySet();
+        if (keys.contains("EnabledCaps")) {
+            byte mask = input.getByteOr("EnabledCaps", (byte) 0);
             for (int i = 0; i < enabledCaps.length; i++) {
                 enabledCaps[i] = (mask & (1 << i)) != 0;
             }
         }
-        if (tag.contains("Mode")) {
-            int i = tag.getInt("Mode");
+        if (keys.contains("Mode")) {
+            int i = input.getIntOr("Mode", 0);
             ConnectorMode[] modes = ConnectorMode.values();
             mode = i >= 0 && i < modes.length ? modes[i] : ConnectorMode.DEFAULT;
         }
-        if (tag.contains("RedstoneMode")) {
-            int i = tag.getInt("RedstoneMode");
+        if (keys.contains("RedstoneMode")) {
+            int i = input.getIntOr("RedstoneMode", 0);
             RedstoneMode[] rmodes = RedstoneMode.values();
             redstoneMode = i >= 0 && i < rmodes.length ? rmodes[i] : RedstoneMode.ALWAYS;
         }
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
         byte mask = 0;
         for (int i = 0; i < enabledCaps.length; i++) {
             if (enabledCaps[i]) {
                 mask |= (1 << i);
             }
         }
-        tag.putByte("EnabledCaps", mask);
-        tag.putInt("Mode", mode.ordinal());
-        tag.putInt("RedstoneMode", redstoneMode.ordinal());
+        output.putByte("EnabledCaps", mask);
+        output.putInt("Mode", mode.ordinal());
+        output.putInt("RedstoneMode", redstoneMode.ordinal());
     }
 
     @Override

@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "nuclearcraft:plate_elite"
+  },
+  "max_uses": 7.0,
+  "reputation_discount": 0.02,
+  "wants": {
+    "count": 16.0,
+    "id": "nuclearcraft:platinum_plate"
+  },
+  "xp": 20.0
+}

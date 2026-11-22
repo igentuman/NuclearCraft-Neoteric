@@ -3,7 +3,6 @@ package igentuman.nc.world.structure;
 import com.mojang.serialization.Codec;
 import igentuman.nc.setup.level.ModBiomes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -28,7 +27,7 @@ public abstract class TemplateFeature extends Feature<NoneFeatureConfiguration> 
     }
 
     protected static StructureTemplateManager templates(LevelAccessor world) {
-        return ((WorldGenRegion) world).getLevel().getStructureManager();
+        return java.util.Objects.requireNonNull(world.getServer(), "Template features place on the logical server").getStructureManager();
     }
 
     protected static StructurePlaceSettings randomSettings(RandomSource random) {

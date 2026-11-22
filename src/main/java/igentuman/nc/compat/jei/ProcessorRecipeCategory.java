@@ -1,10 +1,11 @@
 package igentuman.nc.compat.jei;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.compat.ProcessorCategoryLayout;
 import igentuman.nc.compat.ProcessorCategoryLayout.Slot;
-import igentuman.nc.recipe.FluidOutput;
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.api.recipe.FluidOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.element.ProgressBar;
@@ -17,18 +18,18 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +38,12 @@ import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
 /** JEI category displaying a universal processor recipe, laid out to match the in-game GUI. */
-public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcessorRecipe> {
+public class ProcessorRecipeCategory implements IRecipeCategory<RecipeHolder<UniversalProcessorRecipe>> {
 
-    private static final ResourceLocation SLOTS_TEX = rl("textures/gui/slots.png");
-    private static final ResourceLocation PROGRESS_TEX = rl("textures/gui/progress_bars.png");
+    private static final Identifier SLOTS_TEX = rl("textures/gui/slots.png");
+    private static final Identifier PROGRESS_TEX = rl("textures/gui/progress_bars.png");
 
-    public final RecipeType<UniversalProcessorRecipe> recipeType;
+    public final IRecipeHolderType<UniversalProcessorRecipe> recipeType;
     private final IGuiHelper guiHelper;
     private final ProcessorCategoryLayout layout;
     private final IDrawable background;
@@ -52,10 +53,12 @@ public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcess
     private final IDrawableStatic arrowBackground;
     private final Map<Integer, IDrawableAnimated> arrowCache = new HashMap<>();
 
-    public ProcessorRecipeCategory(IGuiHelper guiHelper, ModEntry entry, RecipeType<UniversalProcessorRecipe> recipeType) {
+    public ProcessorRecipeCategory(IGuiHelper guiHelper, ModEntry entry, IRecipeHolderType<UniversalProcessorRecipe> recipeType) {
         this.recipeType = recipeType;
         this.guiHelper = guiHelper;
-        this.title = __("block." + NuclearCraft.MODID + "." + entry.name());
+        this.title = ProcessorCategoryLayout.isMsrFuel(entry.name())
+                ? Component.translatable("emi.category.nuclearcraft." + ProcessorCategoryLayout.MSR_FUEL_CATEGORY)
+                : __("block." + NuclearCraft.MODID + "." + entry.name());
         this.layout = new ProcessorCategoryLayout(entry);
         this.background = guiHelper.createBlankDrawable(layout.width, layout.height);
 
@@ -70,7 +73,7 @@ public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcess
     }
 
     @Override
-    public RecipeType<UniversalProcessorRecipe> getRecipeType() {
+    public IRecipeHolderType<UniversalProcessorRecipe> getRecipeType() {
         return recipeType;
     }
 
@@ -95,7 +98,8 @@ public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcess
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, UniversalProcessorRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<UniversalProcessorRecipe> holder, IFocusGroup focuses) {
+        UniversalProcessorRecipe recipe = holder.value();
         List<SizedIngredient> itemInputs = recipe.getItemInputs();
         List<SizedFluidIngredient> fluidInputs = recipe.getFluidInputs();
         List<ItemOutput> itemOutputs = recipe.getItemOutputs();
@@ -108,13 +112,7 @@ public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcess
                     IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.INPUT, s.ingX, s.ingY);
                     if (itemIn < itemInputs.size()) {
                         SizedIngredient si = itemInputs.get(itemIn);
-                        slot.addItemStacks(Arrays.stream(si.ingredient().getItems())
-                                .map(stack -> {
-                                    ItemStack copy = stack.copy();
-                                    copy.setCount(si.count());
-                                    return copy;
-                                })
-                                .toList());
+                        JeiRecipeSlots.addItems(slot, si);
                     }
                     itemIn++;
                 }
@@ -122,11 +120,7 @@ public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcess
                     IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.INPUT, s.ingX, s.ingY);
                     if (fluidIn < fluidInputs.size()) {
                         SizedFluidIngredient sfi = fluidInputs.get(fluidIn);
-                        for (FluidStack fs : sfi.getFluids()) {
-                            FluidStack copy = fs.copy();
-                            copy.setAmount(sfi.amount());
-                            slot.addFluidStack(copy.getFluid(), copy.getAmount());
-                        }
+                        JeiRecipeSlots.addFluids(slot, sfi);
                         slot.setFluidRenderer(sfi.amount(), false, ProcessorCategoryLayout.SLOT - 2, ProcessorCategoryLayout.SLOT - 2);
                     }
                     fluidIn++;
@@ -145,7 +139,7 @@ public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcess
                         List<FluidStack> members = fluidOutputs.get(fluidOut).members();
                         int amount = members.isEmpty() ? 0 : members.getFirst().getAmount();
                         for (FluidStack fs : members) {
-                            slot.addFluidStack(fs.getFluid(), fs.getAmount());
+                            JeiRecipeSlots.addFluid(slot, fs);
                         }
                         if (amount > 0) {
                             slot.setFluidRenderer(amount, false, ProcessorCategoryLayout.SLOT - 2, ProcessorCategoryLayout.SLOT - 2);
@@ -158,9 +152,10 @@ public class ProcessorRecipeCategory implements IRecipeCategory<UniversalProcess
     }
 
     @Override
-    public void draw(UniversalProcessorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<UniversalProcessorRecipe> holder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
+        UniversalProcessorRecipe recipe = holder.value();
         for (Slot s : layout.slots) {
-            graphics.blit(SLOTS_TEX, s.spriteX, s.spriteY, s.type.u, s.type.v, ProcessorCategoryLayout.SLOT, ProcessorCategoryLayout.SLOT);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, SLOTS_TEX, s.spriteX, s.spriteY, s.type.u, s.type.v, ProcessorCategoryLayout.SLOT, ProcessorCategoryLayout.SLOT, 256, 256);
         }
         if (layout.hasArrow) {
             arrowBackground.draw(graphics, layout.arrowX, layout.arrowY);

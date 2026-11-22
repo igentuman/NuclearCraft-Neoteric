@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "tag": "c:dusts/lead"
-    },
-    "W": {
-      "tag": "c:dusts/tungsten"
-    }
+    "P": "#c:dusts/lead",
+    "W": "#c:dusts/tungsten"
   },
   "pattern": [
     "PPP",
@@ -15,7 +11,6 @@
     "PPP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:scintillator_pwo"
   }
 }

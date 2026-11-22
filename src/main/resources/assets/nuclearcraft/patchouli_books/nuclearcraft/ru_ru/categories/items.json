@@ -1,0 +1,6 @@
+{
+  "name": "Предметы",
+  "description": "$(l)Полезные предметы.",
+  "icon": "nuclear_radiation:geiger_counter",
+  "sortnum": 1
+}

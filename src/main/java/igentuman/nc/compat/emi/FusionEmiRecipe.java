@@ -6,16 +6,15 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.TextWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
-import igentuman.nc.recipe.FluidOutput;
+import igentuman.nc.api.recipe.FluidOutput;
 import igentuman.nc.recipe.fusion.FusionRecipe;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static igentuman.nc.util.TextUtils.scaledFormat;
@@ -30,32 +29,26 @@ public class FusionEmiRecipe implements EmiRecipe {
     private static final int[][] OUTPUT_POSITIONS = {{100, 4}, {122, 4}, {100, 26}, {122, 26}};
 
     private final EmiRecipeCategory category;
-    private final ResourceLocation id;
+    private final Identifier id;
     private final FusionRecipe recipe;
     private final List<EmiIngredient> inputs;
     private final List<EmiStack> outputs = new ArrayList<>();
     private final List<EmiIngredient> outputIngredients = new ArrayList<>();
 
-    public FusionEmiRecipe(EmiRecipeCategory category, ResourceLocation id, FusionRecipe recipe) {
+    public FusionEmiRecipe(EmiRecipeCategory category, Identifier id, FusionRecipe recipe) {
         this.category = category;
         this.id = id;
         this.recipe = recipe;
         this.inputs = List.of(fluidIngredient(recipe.inputA()), fluidIngredient(recipe.inputB()));
         for (FluidOutput output : recipe.outputs()) {
             List<FluidStack> members = output.members();
-            outputs.add(members.isEmpty()
-                    ? EmiStack.EMPTY
-                    : EmiStack.of(members.getFirst().getFluid(), members.getFirst().getAmount()));
-            outputIngredients.add(EmiIngredient.of(members.stream()
-                    .map(stack -> (EmiIngredient) EmiStack.of(stack.getFluid(), stack.getAmount()))
-                    .toList()));
+            outputs.add(EmiIngredients.firstFluid(members));
+            outputIngredients.add(EmiIngredients.fluidMembers(members));
         }
     }
 
     private static EmiIngredient fluidIngredient(SizedFluidIngredient ingredient) {
-        return EmiIngredient.of(Arrays.stream(ingredient.getFluids())
-                .map(stack -> (EmiIngredient) EmiStack.of(stack.getFluid(), ingredient.amount()))
-                .toList());
+        return EmiIngredients.fluids(ingredient);
     }
 
     @Override
@@ -64,7 +57,7 @@ public class FusionEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public @Nullable Identifier getId() {
         return id;
     }
 

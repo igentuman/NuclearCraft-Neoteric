@@ -1,6 +1,7 @@
 package igentuman.nc.block.fission;
 
 import com.mojang.serialization.MapCodec;
+import igentuman.nc.block.TooltipBlock;
 import igentuman.nc.block_entity.fission.FissionDesignerBE;
 import igentuman.nc.container.FissionDesignerContainer;
 import igentuman.nc.setup.ModEntries;
@@ -17,6 +18,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -30,19 +32,14 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.util.TextUtils.__;
 
-/** Facing block that opens the full-screen fission reactor designer GUI. */
-public class FissionDesignerBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class FissionDesignerBlock extends HorizontalDirectionalBlock implements EntityBlock, TooltipBlock {
 
     public static final MapCodec<FissionDesignerBlock> CODEC = simpleCodec(FissionDesignerBlock::new);
-
-    public FissionDesignerBlock() {
-        this(Properties.of().sound(SoundType.METAL).strength(4f).requiresCorrectToolForDrops());
-    }
 
     public FissionDesignerBlock(Properties props) {
         super(props);
@@ -74,7 +71,7 @@ public class FissionDesignerBlock extends HorizontalDirectionalBlock implements 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof FissionDesignerBE) {
                 MenuProvider provider = new MenuProvider() {
@@ -91,11 +88,11 @@ public class FissionDesignerBlock extends HorizontalDirectionalBlock implements 
                 serverPlayer.openMenu(provider, buf -> buf.writeBlockPos(pos));
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
-        list.add(__("tooltip.nc.fission_reactor_designer").withStyle(ChatFormatting.GREEN));
+    public void addTooltip(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
+        list.accept(__("tooltip.nc.fission_reactor_designer").withStyle(ChatFormatting.GREEN));
     }
 }

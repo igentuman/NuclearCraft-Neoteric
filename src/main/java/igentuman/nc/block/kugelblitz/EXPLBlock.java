@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -40,7 +40,7 @@ import java.util.List;
 
 public class EXPLBlock extends BaseEntityBlock {
 
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     private MapCodec<EXPLBlock> codec;
     private final String name;
 
@@ -64,7 +64,7 @@ public class EXPLBlock extends BaseEntityBlock {
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         Direction facing = state.getValue(FACING);
         if (canPlaceBody(level, pos, facing)) {
             if (level.getBlockEntity(pos) instanceof EXPLBE core) {
@@ -74,14 +74,6 @@ public class EXPLBlock extends BaseEntityBlock {
             Block.popResource(serverLevel, pos, new ItemStack(state.getBlock().asItem()));
             serverLevel.destroyBlock(pos, false);
         }
-    }
-
-    @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock()) && !level.isClientSide) {
-            removeProxyBlocks(level, pos, state.getValue(FACING));
-        }
-        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
     private boolean canPlaceBody(Level level, BlockPos pos, Direction facing) {
@@ -97,14 +89,6 @@ public class EXPLBlock extends BaseEntityBlock {
             level.setBlock(p, proxyState, 3);
             if (level.getBlockEntity(p) instanceof EXPLProxyBE be) {
                 be.setCore(core);
-            }
-        }
-    }
-
-    private void removeProxyBlocks(Level level, BlockPos pos, Direction facing) {
-        for (BlockPos p : proxyPositions(pos, facing)) {
-            if (level.getBlockEntity(p) instanceof EXPLProxyBE) {
-                level.removeBlock(p, false);
             }
         }
     }
@@ -186,17 +170,17 @@ public class EXPLBlock extends BaseEntityBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer
                 && level.getBlockEntity(pos) instanceof EXPLBE expl) {
             serverPlayer.openMenu(expl, pos);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return (lvl, p, st, be) -> {
                 if (be instanceof GlobalBlockEntity g) g.clientTick();
             };

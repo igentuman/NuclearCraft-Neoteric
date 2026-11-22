@@ -1,10 +1,12 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.input.MouseButtonEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.network.PacketRedstoneModeCycle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -32,7 +34,7 @@ public class RedstoneModeButton extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         String[] modes = modes();
         if (modes.length == 0) return;
 
@@ -45,11 +47,11 @@ public class RedstoneModeButton extends AbstractWidget {
 
         Font font = Minecraft.getInstance().font;
         String glyph = String.valueOf(mode);
-        graphics.drawString(font, glyph, x + (SIZE - font.width(glyph)) / 2, y + 4, 0xFFFFFFFF, true);
+        graphics.text(font, glyph, x + (SIZE - font.width(glyph)) / 2, y + 4, 0xFFFFFFFF, true);
 
         if (isHovered()) {
             Component modeName = Component.translatable("message.nuclearcraft.redstone_mode." + modes[mode]);
-            graphics.renderTooltip(font,
+            graphics.setTooltipForNextFrame(font,
                     Component.translatable("message.nuclearcraft.redstone_mode", modeName),
                     mouseX, mouseY);
         }
@@ -63,10 +65,13 @@ public class RedstoneModeButton extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         if (!isActive() || !visible) return false;
         if (mouseX >= getX() && mouseX < getX() + SIZE && mouseY >= getY() && mouseY < getY() + SIZE) {
-            PacketDistributor.sendToServer(new PacketRedstoneModeCycle(menu.getPosition()));
+            ClientPacketDistributor.sendToServer(new PacketRedstoneModeCycle(menu.getPosition()));
             playDownSound(Minecraft.getInstance().getSoundManager());
             return true;
         }

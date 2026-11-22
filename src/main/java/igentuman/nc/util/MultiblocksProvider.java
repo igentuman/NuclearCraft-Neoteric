@@ -3,11 +3,10 @@ package igentuman.nc.util;
 import igentuman.nc.NuclearCraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,9 +43,9 @@ public class MultiblocksProvider implements PreparableReloadListener {
     }
 
     @Override
-    public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, 
-                                          ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, 
-                                          Executor backgroundExecutor, Executor gameExecutor) {
+    public CompletableFuture<Void> reload(SharedState currentReload, Executor backgroundExecutor,
+                                          PreparationBarrier preparationBarrier, Executor gameExecutor) {
+        ResourceManager resourceManager = currentReload.resourceManager();
         return CompletableFuture.supplyAsync(() -> {
             return loadMultiblockStructures(resourceManager);
         }, backgroundExecutor).thenCompose(preparationBarrier::wait).thenAcceptAsync(loadedStructures -> {
@@ -64,11 +63,11 @@ public class MultiblocksProvider implements PreparableReloadListener {
     private static List<MultiblockStructure> loadFromLocation(ResourceManager resourceManager, String structures) {
         List<MultiblockStructure> tmp = new ArrayList<>();
         // Get all .nbt files from the structures directory
-        Map<ResourceLocation, Resource> structureFiles = resourceManager.listResources(structures,
+        Map<Identifier, Resource> structureFiles = resourceManager.listResources(structures,
                 location -> location.getPath().endsWith(".nbt"));
 
-        for (Map.Entry<ResourceLocation, Resource> entry : structureFiles.entrySet()) {
-            ResourceLocation location = entry.getKey();
+        for (Map.Entry<Identifier, Resource> entry : structureFiles.entrySet()) {
+            Identifier location = entry.getKey();
             Resource resource = entry.getValue();
 
             try {
@@ -114,7 +113,7 @@ public class MultiblocksProvider implements PreparableReloadListener {
             if (is == null) return null;
             CompoundTag nbt = NbtIo.readCompressed(is, NbtAccounter.unlimitedHeap());
             if (!validateStructureBlocks(nbt)) return null;
-            ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(NuclearCraft.MODID,
+            Identifier rl = Identifier.fromNamespaceAndPath(NuclearCraft.MODID,
                     "structures/" + name + ".nbt");
             return new MultiblockStructure(rl, nbt, name + ".nbt");
         } catch (IOException e) {
@@ -130,22 +129,22 @@ public class MultiblocksProvider implements PreparableReloadListener {
      * @return true if all blocks exist, false otherwise
      */
     private static boolean validateStructureBlocks(CompoundTag nbt) {
-        if (!nbt.contains("palette", Tag.TAG_LIST)) {
+        if (nbt.getList("palette").isEmpty()) {
             return false; // No palette means no blocks to validate
         }
 
-        ListTag palette = nbt.getList("palette", Tag.TAG_COMPOUND);
+        ListTag palette = nbt.getListOrEmpty("palette");
 
         for (int i = 0; i < palette.size(); i++) {
-            CompoundTag blockState = palette.getCompound(i);
-            String blockId = blockState.getString("Name");
+            CompoundTag blockState = palette.getCompoundOrEmpty(i);
+            String blockId = blockState.getStringOr("Name", "");
 
             if (blockId.isEmpty()) {
                 continue; // Skip empty block names
             }
 
             try {
-                ResourceLocation blockLocation = rlFromString(blockId);
+                Identifier blockLocation = rlFromString(blockId);
                 if (!BuiltInRegistries.BLOCK.containsKey(blockLocation)) {
                     System.out.println("Missing block in structure: " + blockId);
                     return false;

@@ -1,22 +1,19 @@
 package igentuman.nc.client.render.builder;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.CardinalLighting;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@OnlyIn(Dist.CLIENT)
 public class FakeStructureLevel implements BlockAndTintGetter {
 
     private final Map<BlockPos, BlockState> blocks = new HashMap<>();
@@ -49,14 +46,8 @@ public class FakeStructureLevel implements BlockAndTintGetter {
     }
 
     @Override
-    public float getShade(Direction direction, boolean shade) {
-        if (!shade) return 1.0f;
-        return switch (direction) {
-            case DOWN -> 0.5f;
-            case UP -> 1.0f;
-            case NORTH, SOUTH -> 0.8f;
-            case EAST, WEST -> 0.6f;
-        };
+    public CardinalLighting cardinalLighting() {
+        return CardinalLighting.DEFAULT;
     }
 
     @Override
@@ -70,8 +61,7 @@ public class FakeStructureLevel implements BlockAndTintGetter {
 
     @Override
     public LevelLightEngine getLightEngine() {
-        Minecraft mc = Minecraft.getInstance();
-        return mc.level != null ? mc.level.getLightEngine() : null;
+        return LevelLightEngine.EMPTY;
     }
 
     @Override
@@ -85,7 +75,7 @@ public class FakeStructureLevel implements BlockAndTintGetter {
     }
 
     @Override
-    public int getMinBuildHeight() {
+    public int getMinY() {
         return 0;
     }
 

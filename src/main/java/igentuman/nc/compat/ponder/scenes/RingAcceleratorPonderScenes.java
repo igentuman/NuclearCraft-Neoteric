@@ -2,10 +2,9 @@ package igentuman.nc.compat.ponder.scenes;
 
 import igentuman.nc.compat.ponder.PonderScenes;
 import igentuman.nc.setup.ModEntries;
-import net.createmod.ponder.api.PonderPalette;
-import net.createmod.ponder.api.scene.SceneBuilder;
-import net.createmod.ponder.api.scene.SceneBuildingUtil;
-import net.createmod.ponder.foundation.instruction.RotateSceneInstruction;
+import net.createmod.ponder.api.client.PonderPalette;
+import net.createmod.ponder.api.client.scene.SceneBuilder;
+import net.createmod.ponder.api.client.scene.SceneBuildingUtil;
 import net.minecraft.core.Direction;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
@@ -55,7 +54,7 @@ public class RingAcceleratorPonderScenes {
         scene.idle(70);
 
         scene.addKeyframe();
-        scene.addInstruction(new RotateSceneInstruction(0, 90, true));
+        scene.rotateCameraY(90);
         scene.world().showSection(util.select().fromTo(0, 4, 0, 19, 4, 19), Direction.DOWN);
         scene.overlay().showOutline(PonderPalette.WHITE, new Object(), util.select().position(19, 1, 7), 65);
         scene.overlay().showText(65).pointAt(util.vector().centerOf(19, 1, 7))

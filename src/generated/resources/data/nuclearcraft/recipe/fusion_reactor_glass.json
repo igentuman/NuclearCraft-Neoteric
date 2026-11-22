@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_fusion",
   "key": {
-    "P": {
-      "tag": "c:glass_blocks"
-    },
-    "T": {
-      "item": "nuclearcraft:fusion_reactor_casing"
-    }
+    "P": "#c:glass_blocks",
+    "T": "nuclearcraft:fusion_reactor_casing"
   },
   "pattern": [
     " P ",
@@ -16,7 +12,6 @@
     " P "
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:fusion_reactor_glass"
   }
 }

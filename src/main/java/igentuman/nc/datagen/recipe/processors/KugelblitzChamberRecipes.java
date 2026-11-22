@@ -1,11 +1,12 @@
 package igentuman.nc.datagen.recipe.processors;
 
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.datagen.recipe.RecipeGen;
+import igentuman.nc.api.recipe.ItemOutput;
 import igentuman.nc.recipe.kugelblitz.KugelblitzRecipe;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -38,7 +39,7 @@ public class KugelblitzChamberRecipes {
         if (toughAlloy != null && bscco != null) {
             TagKey<Item> toughAlloyTag = materialTag(toughAlloy);
             emit(out, "tough_alloy_bscco",
-                    toughAlloyTag == null ? SizedIngredient.of(toughAlloy, 1) : SizedIngredient.of(toughAlloyTag, 1),
+                    toughAlloyTag == null ? SizedIngredient.of(toughAlloy, 1) : RecipeGen.sized(toughAlloyTag, 1),
                     ItemOutput.of(bscco, 2));
         }
         Item stackUpgrade = ModEntries.get("stack_upgrade").item().get();
@@ -48,7 +49,7 @@ public class KugelblitzChamberRecipes {
         for (String path : TAGS) {
             TagKey<Item> tag = tag(path);
             emit(out, path.replace('/', '_'),
-                    SizedIngredient.of(tag, 1), ItemOutput.of(tag, 1));
+                    RecipeGen.sized(tag, 1), ItemOutput.of(tag, 1));
         }
         for (Item item : ITEMS) {
             String name = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item).getPath();
@@ -63,10 +64,10 @@ public class KugelblitzChamberRecipes {
     private static void emit(RecipeOutput out, String name, SizedIngredient input, ItemOutput output,
                              double timeModifier) {
         KugelblitzRecipe recipe = new KugelblitzRecipe(input, output, timeModifier, 1.0);
-        out.accept(ResourceLocation.fromNamespaceAndPath(MODID, "kugelblitz_chamber/" + name), recipe, null);
+        out.accept(RecipeGen.key("kugelblitz_chamber/" + name), recipe, null);
     }
 
     private static TagKey<Item> tag(String path) {
-        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", path));
+        return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", path));
     }
 }

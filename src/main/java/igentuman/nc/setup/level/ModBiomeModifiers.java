@@ -7,14 +7,12 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
 import static igentuman.nc.NuclearCraft.rl;
 
@@ -28,9 +26,10 @@ public class ModBiomeModifiers {
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
         HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
-        HolderSet<Biome> oreBiomes = new OrHolderSet<>(
-                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
-                biomes.getOrThrow(ModBiomes.WASTELAND_TAG));
+        // A single tag, not neoforge:or: 26.1 decodes registry entries in parallel, and every
+        // composite holder set registers a listener on the shared overworld tag's unsynchronized
+        // list, which intermittently fails startup.
+        HolderSet<Biome> oreBiomes = biomes.getOrThrow(ModBiomes.ORE_BIOMES_TAG);
 
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (entry.materialEntry() == null || !entry.materialEntry().hasWorldgenConfig()) continue;

@@ -10,20 +10,21 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 /** JEI category displaying a fission fuel with its power, heat, and depletion stats. */
-public class FissionFuelRecipeCategory implements IRecipeCategory<FissionFuelRecipe> {
+public class FissionFuelRecipeCategory implements IRecipeCategory<RecipeHolder<FissionFuelRecipe>> {
 
-    public static final RecipeType<FissionFuelRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "fission_fuel", FissionFuelRecipe.class);
+    public static final IRecipeHolderType<FissionFuelRecipe> TYPE =
+            IRecipeHolderType.create(NuclearCraft.rl("fission_fuel"));
 
     private static final int WIDTH = 124;
     private static final int HEIGHT = 56;
@@ -39,7 +40,7 @@ public class FissionFuelRecipeCategory implements IRecipeCategory<FissionFuelRec
     }
 
     @Override
-    public RecipeType<FissionFuelRecipe> getRecipeType() {
+    public IRecipeHolderType<FissionFuelRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -64,24 +65,26 @@ public class FissionFuelRecipeCategory implements IRecipeCategory<FissionFuelRec
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, FissionFuelRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 7, 5).addIngredients(recipe.input());
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<FissionFuelRecipe> holder, IFocusGroup focuses) {
+        FissionFuelRecipe recipe = holder.value();
+        builder.addSlot(RecipeIngredientRole.INPUT, 7, 5).add(recipe.input());
         builder.addSlot(RecipeIngredientRole.OUTPUT, WIDTH - 23, 5).addItemStacks(recipe.output().members());
     }
 
     @Override
-    public void draw(FissionFuelRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<FissionFuelRecipe> holder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
+        FissionFuelRecipe recipe = holder.value();
         slot.draw(graphics, 6, 4);
         slot.draw(graphics, WIDTH - 24, 4);
-        graphics.drawString(Minecraft.getInstance().font, Component.literal("→"), WIDTH / 2 - 3, 8, 0x404040, false);
+        graphics.text(Minecraft.getInstance().font, Component.literal("→"), WIDTH / 2 - 3, 8, 0xFF404040, false);
 
         var font = Minecraft.getInstance().font;
         int y = 26;
-        graphics.drawString(font, Component.translatable("tooltip.nuclearcraft.fuel.forge_energy", recipe.power() + " FE/t")
-                .withStyle(ChatFormatting.DARK_GRAY), 4, y, 0x404040, false);
-        graphics.drawString(font, Component.translatable("tooltip.nuclearcraft.fuel.heat", recipe.heat())
-                .withStyle(ChatFormatting.DARK_GRAY), 4, y + 10, 0x404040, false);
-        graphics.drawString(font, Component.translatable("tooltip.nuclearcraft.fuel.depletion", recipe.processTime())
-                .withStyle(ChatFormatting.DARK_GRAY), 4, y + 20, 0x404040, false);
+        graphics.text(font, Component.translatable("tooltip.nuclearcraft.fuel.forge_energy", recipe.power() + " FE/t")
+                .withStyle(ChatFormatting.DARK_GRAY), 4, y, 0xFF404040, false);
+        graphics.text(font, Component.translatable("tooltip.nuclearcraft.fuel.heat", recipe.heat())
+                .withStyle(ChatFormatting.DARK_GRAY), 4, y + 10, 0xFF404040, false);
+        graphics.text(font, Component.translatable("tooltip.nuclearcraft.fuel.depletion", recipe.processTime())
+                .withStyle(ChatFormatting.DARK_GRAY), 4, y + 20, 0xFF404040, false);
     }
 }

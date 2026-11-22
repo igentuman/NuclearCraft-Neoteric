@@ -3,7 +3,7 @@ package igentuman.nc.multiblock.turbine;
 import igentuman.nc.api.multiblock.part.TurbineCoilDef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,7 +47,7 @@ public final class TurbineCoilValidator {
     }
 
     private static boolean isCoil(Block b) {
-        ResourceLocation rl = BuiltInRegistries.BLOCK.getKey(b);
+        Identifier rl = BuiltInRegistries.BLOCK.getKey(b);
         String path = rl.getPath();
         return path.startsWith("turbine_") && path.endsWith("_coil");
     }

@@ -3,12 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_accelerator",
   "ingredients": [
-    {
-      "item": "nuclearcraft:accelerator_casing_glass"
-    }
+    "nuclearcraft:accelerator_casing_glass"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:accelerator_casing"
   }
 }

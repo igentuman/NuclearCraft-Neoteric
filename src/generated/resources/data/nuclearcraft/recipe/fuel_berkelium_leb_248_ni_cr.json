@@ -3,33 +3,15 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "item": "nuclearcraft:berkelium_248_ni"
-    },
-    {
-      "item": "nuclearcraft:berkelium_247_ni"
-    },
-    {
-      "item": "nuclearcraft:berkelium_247_ni"
-    },
-    {
-      "item": "nuclearcraft:berkelium_247_ni"
-    },
-    {
-      "item": "nuclearcraft:berkelium_247_ni"
-    },
-    {
-      "item": "nuclearcraft:berkelium_247_ni"
-    },
-    {
-      "item": "nuclearcraft:berkelium_247_ni"
-    },
-    {
-      "item": "nuclearcraft:berkelium_247_ni"
-    },
-    {
-      "item": "nuclearcraft:berkelium_247_ni"
-    }
+    "nuclearcraft:berkelium_248_ni",
+    "nuclearcraft:berkelium_247_ni",
+    "nuclearcraft:berkelium_247_ni",
+    "nuclearcraft:berkelium_247_ni",
+    "nuclearcraft:berkelium_247_ni",
+    "nuclearcraft:berkelium_247_ni",
+    "nuclearcraft:berkelium_247_ni",
+    "nuclearcraft:berkelium_247_ni",
+    "nuclearcraft:berkelium_247_ni"
   ],
   "result": {
     "count": 3,

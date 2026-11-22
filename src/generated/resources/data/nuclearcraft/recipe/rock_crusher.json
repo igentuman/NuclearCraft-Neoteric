@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft",
   "key": {
-    "A": {
-      "item": "nuclearcraft:actuator"
-    },
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "M": {
-      "item": "nuclearcraft:motor"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    },
-    "T": {
-      "tag": "c:ingots/tough_alloy"
-    }
+    "A": "nuclearcraft:actuator",
+    "C": "nuclearcraft:chassis",
+    "M": "nuclearcraft:motor",
+    "P": "nuclearcraft:plate_advanced",
+    "T": "#c:ingots/tough_alloy"
   },
   "pattern": [
     "PMP",
@@ -25,7 +15,6 @@
     "PTP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:rock_crusher"
   }
 }

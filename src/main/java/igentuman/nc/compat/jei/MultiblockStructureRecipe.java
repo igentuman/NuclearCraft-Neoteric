@@ -5,7 +5,7 @@ import igentuman.nc.util.MultiblockStructure;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
@@ -19,7 +19,7 @@ import static igentuman.nc.NuclearCraft.rl;
 
 /** JEI recipe holding a multiblock's example structure and the block counts required to build it. */
 public class MultiblockStructureRecipe {
-    private final ResourceLocation id;
+    private final Identifier id;
     private final CompoundTag structureNbt;
     private final String name;
     private final MultiblockStructure structure;
@@ -52,7 +52,7 @@ public class MultiblockStructureRecipe {
         this.ingredientManager = ingredientManager;
     }
     
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
     
@@ -79,7 +79,7 @@ public class MultiblockStructureRecipe {
     }
 
     public Ingredient getIngredients() {
-        Ingredient ingredient = Ingredient.of(outputs.toArray(new ItemStack[0]));
+        Ingredient ingredient = Ingredient.of(outputs.stream().map(ItemStack::getItem));
         return ingredient;
     }
 

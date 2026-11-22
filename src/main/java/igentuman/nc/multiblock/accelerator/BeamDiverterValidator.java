@@ -5,7 +5,7 @@ import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
 import igentuman.nc.api.multiblock.part.ElectromagnetDef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -19,10 +19,10 @@ public class BeamDiverterValidator extends AbstractMultiblockValidator<BeamDiver
     private static final int CENTER = 2;
     private static final int LAST = SIZE - 1;
 
-    private static final ResourceLocation EXPECTED_CASING = rl("accelerator_casing");
-    private static final ResourceLocation EXPECTED_BEAM_PORT = rl("accelerator_beam_port");
-    private static final ResourceLocation EXPECTED_BEAM = rl("particle_beam");
-    private static final ResourceLocation EXPECTED_YOKE = rl("electromagnet_yoke");
+    private static final Identifier EXPECTED_CASING = rl("accelerator_casing");
+    private static final Identifier EXPECTED_BEAM_PORT = rl("accelerator_beam_port");
+    private static final Identifier EXPECTED_BEAM = rl("particle_beam");
+    private static final Identifier EXPECTED_YOKE = rl("electromagnet_yoke");
 
     private Block casing;
     private Block casingGlass;
@@ -54,7 +54,7 @@ public class BeamDiverterValidator extends AbstractMultiblockValidator<BeamDiver
         BlockPos controllerPos = cache.controllerPos();
         if (!resolveBlocks()) {
             return fail("multiblock.validation.dimensions_unresolved", controllerPos, rl("valid_dimensions"),
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         Direction facing = cache.facing();
         if (!facing.getAxis().isHorizontal() || !isShell(cache.getBlockState(controllerPos))) {
@@ -84,7 +84,7 @@ public class BeamDiverterValidator extends AbstractMultiblockValidator<BeamDiver
         int depth = depthExtent + 1;
         step("beam diverter extents width={} height={} depth={}", width, height, depth);
         if (width != SIZE || height != SIZE || depth != SIZE) {
-            return fail("multiblock.discovery.wrong_size", controllerPos, EXPECTED_CASING, (ResourceLocation) null);
+            return fail("multiblock.discovery.wrong_size", controllerPos, EXPECTED_CASING, (Identifier) null);
         }
 
         origin = frontBottomLeft;
@@ -145,17 +145,17 @@ public class BeamDiverterValidator extends AbstractMultiblockValidator<BeamDiver
     protected boolean validateRelations(BeamDiverterCache cache) {
         if (controllerCount != 1) {
             return fail("multiblock.diverter.controller_count", cache.controllerPos(),
-                    rl("beam_diverter_controller"), (ResourceLocation) null);
+                    rl("beam_diverter_controller"), (Identifier) null);
         }
         for (BlockPos port : beamPorts) {
             if (port == null) {
                 return fail("multiblock.diverter.beam_port_count", cache.controllerPos(), EXPECTED_BEAM_PORT,
-                        (ResourceLocation) null);
+                        (Identifier) null);
             }
         }
         if (upMagnet == null || downMagnet == null) {
             return fail("multiblock.diverter.incomplete_magnet_pair", cache.controllerPos(), EXPECTED_YOKE,
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         cache.addHeatPerTick(upMagnet.heat);
         cache.addBeamInput(beamPorts[0]);
@@ -254,7 +254,7 @@ public class BeamDiverterValidator extends AbstractMultiblockValidator<BeamDiver
 
     private boolean tooLarge(BlockPos from, Direction direction, int limit) {
         return fail("multiblock.discovery.too_large", from.relative(direction, limit + 1),
-                EXPECTED_CASING, (ResourceLocation) null);
+                EXPECTED_CASING, (Identifier) null);
     }
 
     private BlockPos at(int r, int u, int f) {

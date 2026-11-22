@@ -1,6 +1,7 @@
 package igentuman.nc.block.bomb;
 
 import com.mojang.serialization.MapCodec;
+import igentuman.nc.block.TooltipBlock;
 import igentuman.nc.block_entity.bomb.Pu239BombBE;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.TextUtils;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -23,14 +25,15 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.util.TextUtils.__;
 
-public class Pu239BombBlock extends BaseEntityBlock {
+public class Pu239BombBlock extends BaseEntityBlock implements TooltipBlock {
 
     private final String name;
     private final MapCodec<? extends BaseEntityBlock> codec;
@@ -55,7 +58,7 @@ public class Pu239BombBlock extends BaseEntityBlock {
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         BlockEntity be = level.getBlockEntity(pos);
         if (!(be instanceof Pu239BombBE bomb)) return;
         if (placer instanceof Player player && !(placer instanceof FakePlayer)) {
@@ -71,9 +74,9 @@ public class Pu239BombBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block fromBlock, BlockPos fromPos, boolean isMoving) {
-        super.neighborChanged(state, level, pos, fromBlock, fromPos, isMoving);
-        if (level.isClientSide) return;
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block fromBlock, @Nullable Orientation orientation, boolean isMoving) {
+        super.neighborChanged(state, level, pos, fromBlock, orientation, isMoving);
+        if (level.isClientSide()) return;
         if (!level.hasNeighborSignal(pos)) return;
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof Pu239BombBE bomb) {
@@ -90,7 +93,7 @@ public class Pu239BombBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return (lvl, pos, st, be) -> {
                 if (be instanceof Pu239BombBE bomb) bomb.clientTick();
             };
@@ -101,12 +104,12 @@ public class Pu239BombBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext ctx, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(TextUtils.applyFormat(__("block.nuclearcraft.pu_239_bomb.desc"), ChatFormatting.RED));
+    public void addTooltip(ItemStack stack, Item.TooltipContext ctx, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(TextUtils.applyFormat(__("block.nuclearcraft.pu_239_bomb.desc"), ChatFormatting.RED));
     }
 }

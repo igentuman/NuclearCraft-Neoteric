@@ -6,9 +6,9 @@ import igentuman.nc.block_entity.energy.DecayGeneratorBE;
 import igentuman.nc.block_entity.energy.RtgBE;
 import igentuman.nc.block_entity.energy.SolarPanelBE;
 import igentuman.nc.content.energy.EnergyGenDefs;
+import igentuman.nc.item.NCBlockItem;
 import igentuman.nc.registration.ModEntry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -59,14 +59,15 @@ public class Energy {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static void register(String name, EnergyBEFactory beFactory) {
-        DeferredBlock<Block> block = BLOCKS.register(name, () -> new EnergyBlock(props(), name));
-        DeferredItem<Item> item = ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        DeferredBlock<Block> block = BLOCKS.registerBlock(name, p -> new EnergyBlock(p, name), Energy::props);
+        DeferredItem<Item> item = ITEMS.<Item>registerItem(name, p -> new NCBlockItem(block.get(), p),
+                () -> new Item.Properties().useBlockDescriptionPrefix());
 
         final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>[] beHolder = new DeferredHolder[1];
         DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> beReg = BLOCK_ENTITIES.register(name,
-                () -> BlockEntityType.Builder.of(
+                () -> new BlockEntityType<>(
                         (pos, state) -> beFactory.create(beHolder[0].get(), pos, state, name),
-                        block.get()).build(null));
+                        block.get()));
         beHolder[0] = (DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>) (DeferredHolder) beReg;
 
         ModEntry entry = new ModEntry(name, block, item, null, beHolder[0], false, null, null, null,
@@ -77,7 +78,7 @@ public class Energy {
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         for (ModEntry entry : ENERGY_ENTRIES) {
-            event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, entry.blockEntity().get(),
+            event.registerBlockEntity(Capabilities.Energy.BLOCK, entry.blockEntity().get(),
                     (be, side) -> be instanceof AbstractEnergyBE energy ? energy.getEnergyHandler(side) : null);
         }
     }

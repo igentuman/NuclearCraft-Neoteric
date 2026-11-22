@@ -1,8 +1,8 @@
 package igentuman.nc.particle;
 
-import igentuman.nc.setup.Registers;
+import igentuman.nc.api.particle.ParticleSourceData;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -19,8 +19,8 @@ public final class ParticleSourceCatalog {
     public static final double DEFAULT_FOCUS = 0.4;
     public static final long FLUID_PARTICLES_PER_MILLIBUCKET = 10_000;
 
-    private static final Map<ResourceLocation, ParticleSourceData> ITEM_SOURCES = new LinkedHashMap<>();
-    private static final Map<ResourceLocation, ParticleSourceData> FLUID_SOURCES = new LinkedHashMap<>();
+    private static final Map<Identifier, ParticleSourceData> ITEM_SOURCES = new LinkedHashMap<>();
+    private static final Map<Identifier, ParticleSourceData> FLUID_SOURCES = new LinkedHashMap<>();
 
     static {
         registerItemSource(rl("source_calcium_48"), charge(rl("calcium_48_ion"), 5_000_000));
@@ -41,27 +41,27 @@ public final class ParticleSourceCatalog {
 
     private ParticleSourceCatalog() {}
 
-    public static Map<ResourceLocation, ParticleSourceData> itemSources() {
+    public static Map<Identifier, ParticleSourceData> itemSources() {
         return Collections.unmodifiableMap(ITEM_SOURCES);
     }
 
-    public static Map<ResourceLocation, ParticleSourceData> fluidSources() {
+    public static Map<Identifier, ParticleSourceData> fluidSources() {
         return Collections.unmodifiableMap(FLUID_SOURCES);
     }
 
-    public static synchronized void registerItemSource(ResourceLocation itemId, ParticleSourceData data) {
+    public static synchronized void registerItemSource(Identifier itemId, ParticleSourceData data) {
         ITEM_SOURCES.put(itemId, data);
     }
 
-    public static synchronized void registerFluidSource(ResourceLocation fluidId, ParticleSourceData data) {
+    public static synchronized void registerFluidSource(Identifier fluidId, ParticleSourceData data) {
         FLUID_SOURCES.put(fluidId, data);
     }
 
-    public static synchronized void removeItemSource(ResourceLocation itemId) {
+    public static synchronized void removeItemSource(Identifier itemId) {
         ITEM_SOURCES.remove(itemId);
     }
 
-    public static synchronized void removeFluidSource(ResourceLocation fluidId) {
+    public static synchronized void removeFluidSource(Identifier fluidId) {
         FLUID_SOURCES.remove(fluidId);
     }
 
@@ -74,7 +74,7 @@ public final class ParticleSourceCatalog {
     public static ParticleSourceData sourceData(ItemStack stack) {
         ParticleSourceData template = itemSource(stack);
         if (template == null) return null;
-        ParticleSourceData stored = stack.get(Registers.PARTICLE_SOURCE.get());
+        ParticleSourceData stored = stack.get(ParticleSourceData.componentType());
         return stored != null ? stored : template;
     }
 
@@ -83,7 +83,7 @@ public final class ParticleSourceCatalog {
         return stack.isEmpty() ? null : FLUID_SOURCES.get(BuiltInRegistries.FLUID.getKey(stack.getFluid()));
     }
 
-    public static ParticleSourceData charge(ResourceLocation particleId, long capacity) {
+    public static ParticleSourceData charge(Identifier particleId, long capacity) {
         return ParticleSourceData.fullCharge(particleId, capacity, DEFAULT_ENERGY_KEV, DEFAULT_FOCUS);
     }
 }

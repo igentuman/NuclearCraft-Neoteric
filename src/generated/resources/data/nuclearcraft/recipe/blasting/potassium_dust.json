@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/potassium"
-  },
+  "ingredient": "#c:dusts/potassium",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:potassium_ingot"
   }
 }

@@ -7,13 +7,13 @@ import igentuman.nc.setup.Registers;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public record ParticleStack(
-        @Nullable ResourceLocation particleId,
+        @Nullable Identifier particleId,
         long amount,
         long meanEnergyKeV,
         double focus
@@ -55,7 +55,7 @@ public record ParticleStack(
         return new ParticleStack(a.particleId(), Math.addExact(a.amount(), b.amount()), a.meanEnergyKeV(), a.focus());
     }
 
-    public static final Codec<ResourceLocation> PARTICLE_ID_CODEC = ResourceLocation.CODEC.comapFlatMap(
+    public static final Codec<Identifier> PARTICLE_ID_CODEC = Identifier.CODEC.comapFlatMap(
             id -> Registers.PARTICLE_DEFINITION_REGISTRY.containsKey(id)
                     ? DataResult.success(id)
                     : DataResult.error(() -> "Unknown particle species: " + id),
@@ -70,7 +70,7 @@ public record ParticleStack(
     ).apply(inst, (particleId, amount, energy, focus) -> new ParticleStack(particleId.orElse(null), amount, energy, focus)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ParticleStack> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), s -> Optional.ofNullable(s.particleId),
+            ByteBufCodecs.optional(Identifier.STREAM_CODEC), s -> Optional.ofNullable(s.particleId),
             ByteBufCodecs.VAR_LONG, ParticleStack::amount,
             ByteBufCodecs.VAR_LONG, ParticleStack::meanEnergyKeV,
             ByteBufCodecs.DOUBLE, ParticleStack::focus,

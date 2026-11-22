@@ -1,5 +1,6 @@
 package igentuman.nc.screen;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.block_entity.accelerator.AbstractAcceleratorControllerBE;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
@@ -10,14 +11,15 @@ import igentuman.nc.screen.element.FluidTankBar;
 import igentuman.nc.setup.Registers;
 import igentuman.nc.api.particle.ParticleDefinition;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import igentuman.nc.util.GuiTooltips;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
@@ -27,7 +29,7 @@ import static igentuman.nc.util.TextUtils.scaledFormat;
 
 public abstract class AbstractAcceleratorControllerScreen extends MultiblockControllerScreen {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/accelerators/linear_controller.png");
+    private static final Identifier TEXTURE = rl("textures/gui/accelerators/linear_controller.png");
 
     private final boolean compactLayout;
     private AcceleratorThermalBar thermalBar;
@@ -36,11 +38,9 @@ public abstract class AbstractAcceleratorControllerScreen extends MultiblockCont
 
     protected AbstractAcceleratorControllerScreen(MultiblockControllerContainer menu, Inventory inventory,
                                                    Component title, boolean compactLayout) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, compactLayout ? 196 : 180, compactLayout ? 109 : 180);
         this.compactLayout = compactLayout;
         if (compactLayout) {
-            imageWidth = 196;
-            imageHeight = 109;
             titleLabelY = 6;
             inventoryLabelY = imageHeight + 1;
             backgroundTexture = TEXTURE;
@@ -90,18 +90,18 @@ public abstract class AbstractAcceleratorControllerScreen extends MultiblockCont
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void extractPanel(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
         if (!compactLayout) {
-            super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
+            super.extractPanel(guiGraphics, mouseX, mouseY, a);
             return;
         }
-        guiGraphics.blit(backgroundTexture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, backgroundTexture, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (!compactLayout) {
-            super.renderLabels(guiGraphics, mouseX, mouseY);
+            super.extractLabels(guiGraphics, mouseX, mouseY);
             if (!menu.isFormed()) return;
             int y = 20;
             line(guiGraphics, 70, y, __("screen.nuclearcraft.accelerator.control_signal", synced("controlSignal")));
@@ -116,7 +116,7 @@ public abstract class AbstractAcceleratorControllerScreen extends MultiblockCont
         if (!menu.isFormed()) return;
         int y = 40;
         for (Component stat : machineLines()) {
-            guiGraphics.drawString(font, stat, 37, y, 0xFFFFFF, false);
+            guiGraphics.text(font, stat, 37, y, 0xFFFFFFFF, false);
             y += 10;
         }
     }
@@ -137,16 +137,16 @@ public abstract class AbstractAcceleratorControllerScreen extends MultiblockCont
         return lines;
     }
 
-    private void renderParticle(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderParticle(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         AbstractAcceleratorControllerBE controller = (AbstractAcceleratorControllerBE) menu.getBlockEntity();
         if (controller.particleAmount <= 0) return;
         ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.byId(controller.particleTypeId);
         if (definition == null) return;
-        guiGraphics.blit(definition.textureId(), 40, 21, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, definition.textureId(), 40, 21, 0, 0, 16, 16, 16, 16);
         int localMouseX = mouseX - leftPos;
         int localMouseY = mouseY - topPos;
         if (localMouseX >= 40 && localMouseX < 56 && localMouseY >= 21 && localMouseY < 37) {
-            guiGraphics.renderComponentTooltip(font, List.of(
+            GuiTooltips.components(guiGraphics, List.of(
                     Component.translatable(definition.translationKey()),
                     __("tooltip.nuclearcraft.particlestack.amount", controller.particleAmount)
                             .withStyle(ChatFormatting.GRAY),
@@ -191,19 +191,19 @@ public abstract class AbstractAcceleratorControllerScreen extends MultiblockCont
         return tooltip;
     }
 
-    private void line(GuiGraphics guiGraphics, int x, int y, Component text) {
+    private void line(GuiGraphicsExtractor guiGraphics, int x, int y, Component text) {
         float scale = 0.75f;
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(scale, scale, 1f);
-        guiGraphics.drawString(font, text, (int) (x / scale), (int) (y / scale), 0x404040, false);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(scale, scale);
+        guiGraphics.text(font, text, (int) (x / scale), (int) (y / scale), 0xFF404040, false);
+        guiGraphics.pose().popMatrix();
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
         if (compactLayout) {
             statusCheckbox.setChecked(menu.isFormed());
         }
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, a);
     }
 }

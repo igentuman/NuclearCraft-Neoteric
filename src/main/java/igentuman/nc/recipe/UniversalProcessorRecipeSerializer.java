@@ -1,5 +1,7 @@
 package igentuman.nc.recipe;
 
+import igentuman.nc.api.recipe.FluidOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -13,20 +15,16 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import java.util.List;
 
 /** Per-processor serializer that bakes its processor name into every {@link UniversalProcessorRecipe} it deserializes. */
-public class UniversalProcessorRecipeSerializer implements RecipeSerializer<UniversalProcessorRecipe> {
+public final class UniversalProcessorRecipeSerializer {
 
-    private final String processorName;
-    private final MapCodec<UniversalProcessorRecipe> codec;
-    private final StreamCodec<RegistryFriendlyByteBuf, UniversalProcessorRecipe> streamCodec;
+    private UniversalProcessorRecipeSerializer() {}
 
-    public UniversalProcessorRecipeSerializer(String processorName) {
-        this.processorName = processorName;
-
-        this.codec = RecordCodecBuilder.mapCodec(inst -> inst.group(
-                SizedIngredient.FLAT_CODEC.listOf()
+    public static RecipeSerializer<UniversalProcessorRecipe> create(String processorName) {
+        MapCodec<UniversalProcessorRecipe> codec = RecordCodecBuilder.mapCodec(inst -> inst.group(
+                RecipeIngredientCodecs.ITEM.listOf()
                         .optionalFieldOf("item_inputs", List.of())
                         .forGetter(UniversalProcessorRecipe::getItemInputs),
-                SizedFluidIngredient.FLAT_CODEC.listOf()
+                RecipeIngredientCodecs.FLUID.listOf()
                         .optionalFieldOf("fluid_inputs", List.of())
                         .forGetter(UniversalProcessorRecipe::getFluidInputs),
                 ItemOutput.CODEC.listOf()
@@ -45,7 +43,7 @@ public class UniversalProcessorRecipeSerializer implements RecipeSerializer<Univ
                 new UniversalProcessorRecipe(processorName, itemIn, fluidIn, itemOut, fluidOut, time, energy)
         ));
 
-        this.streamCodec = new StreamCodec<>() {
+        StreamCodec<RegistryFriendlyByteBuf, UniversalProcessorRecipe> streamCodec = new StreamCodec<>() {
             private final StreamCodec<RegistryFriendlyByteBuf, List<SizedIngredient>> ITEM_INPUT_LIST =
                     SizedIngredient.STREAM_CODEC.apply(ByteBufCodecs.list());
             private final StreamCodec<RegistryFriendlyByteBuf, List<SizedFluidIngredient>> FLUID_INPUT_LIST =
@@ -78,15 +76,6 @@ public class UniversalProcessorRecipeSerializer implements RecipeSerializer<Univ
                 buf.writeVarInt(recipe.getBaseEnergyPerTick());
             }
         };
-    }
-
-    @Override
-    public MapCodec<UniversalProcessorRecipe> codec() {
-        return codec;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, UniversalProcessorRecipe> streamCodec() {
-        return streamCodec;
+        return new RecipeSerializer<>(codec, streamCodec);
     }
 }

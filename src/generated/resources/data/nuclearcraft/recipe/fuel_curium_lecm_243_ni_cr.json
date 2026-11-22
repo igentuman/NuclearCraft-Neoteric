@@ -3,33 +3,15 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "item": "nuclearcraft:curium_243_ni"
-    },
-    {
-      "item": "nuclearcraft:curium_246_ni"
-    },
-    {
-      "item": "nuclearcraft:curium_246_ni"
-    },
-    {
-      "item": "nuclearcraft:curium_246_ni"
-    },
-    {
-      "item": "nuclearcraft:curium_246_ni"
-    },
-    {
-      "item": "nuclearcraft:curium_246_ni"
-    },
-    {
-      "item": "nuclearcraft:curium_246_ni"
-    },
-    {
-      "item": "nuclearcraft:curium_246_ni"
-    },
-    {
-      "item": "nuclearcraft:curium_246_ni"
-    }
+    "nuclearcraft:curium_243_ni",
+    "nuclearcraft:curium_246_ni",
+    "nuclearcraft:curium_246_ni",
+    "nuclearcraft:curium_246_ni",
+    "nuclearcraft:curium_246_ni",
+    "nuclearcraft:curium_246_ni",
+    "nuclearcraft:curium_246_ni",
+    "nuclearcraft:curium_246_ni",
+    "nuclearcraft:curium_246_ni"
   ],
   "result": {
     "count": 3,

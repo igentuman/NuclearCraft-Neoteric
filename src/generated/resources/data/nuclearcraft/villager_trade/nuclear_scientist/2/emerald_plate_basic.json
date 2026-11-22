@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "nuclearcraft:plate_basic"
+  },
+  "max_uses": 16.0,
+  "reputation_discount": 0.02,
+  "wants": {
+    "count": 6.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 5.0
+}

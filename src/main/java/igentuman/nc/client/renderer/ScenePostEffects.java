@@ -2,19 +2,36 @@ package igentuman.nc.client.renderer;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.platform.GlStateManager;
 import igentuman.nc.compat.iris.IrisCompat;
 import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ExtractLevelRenderStateEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.lifecycle.ClientStoppingEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
 
+/**
+ * Schedules the mod's full-screen effects inside the level's main pass.
+ *
+ * <ul>
+ *   <li>{@link RenderLevelStageEvent.AfterOpaqueBlocks}: distortion lenses and anomaly glows.</li>
+ *   <li>{@link RenderLevelStageEvent.AfterOpaqueFeatures}: black holes (after entities and block
+ *       entities, before translucent terrain), then the scene depth is captured for the nuke.</li>
+ *   <li>{@link RenderLevelStageEvent.AfterLevel}: the volumetric nuke cloud.</li>
+ * </ul>
+ *
+ * <p>With an Iris shader pack active, the opaque feature stage captures scene depth and all effects
+ * draw after Iris has composited the world. Effects sample {@link #sceneDepth} separately from
+ * the main depth attachment they draw into.
+ */
 public final class ScenePostEffects {
 
     private static TextureTarget sceneDepth;
-    private static boolean captured;
+    private static LatePass latePass = LatePass.NONE;
+
+    private enum LatePass {
+        NONE, NUKE, SHADER_PACK
+    }
 
     private ScenePostEffects() {
     }
@@ -24,91 +41,96 @@ public final class ScenePostEffects {
     }
 
     public static void clear() {
-        captured = false;
+        latePass = LatePass.NONE;
         DistortShader.clear();
         AnomalyShader.clear();
         BlackHoleShader.clear();
         NukeVolumeRenderer.clear();
     }
 
+    /** Frees every GPU resource owned by the effects (resource reload / shutdown). */
+    public static void close() {
+        latePass = LatePass.NONE;
+        DistortShader.close();
+        AnomalyShader.close();
+        BlackHoleShader.close();
+        NukeVolumeRenderer.close();
+        if (sceneDepth != null) sceneDepth.destroyBuffers();
+        sceneDepth = null;
+    }
+
     @SubscribeEvent
-    public static void onRenderLevelStage(RenderLevelStageEvent event) {
-        RenderLevelStageEvent.Stage stage = event.getStage();
+    public static void onClientStopping(ClientStoppingEvent event) {
+        close();
+    }
+
+    @SubscribeEvent
+    public static void onExtractLevel(ExtractLevelRenderStateEvent event) {
+        NukeVolumeRenderer.extractLighting(event);
+    }
+
+    @SubscribeEvent
+    public static void onAfterOpaqueBlocks(RenderLevelStageEvent.AfterOpaqueBlocks event) {
+        latePass = LatePass.NONE;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || IrisCompat.shaderPackInUse()) return;
+        if (DistortShader.hasWork() || AnomalyShader.hasWork()) {
+            TextureTarget depth = captureDepth(mc.getMainRenderTarget());
+            DistortShader.render(event, depth);
+            AnomalyShader.render(event, depth);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onAfterOpaqueFeatures(RenderLevelStageEvent.AfterOpaqueFeatures event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
-
-        if (!IrisCompat.shaderPackInUse()) {
-            if (stage == RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
-                captured = false;
-                DistortShader.render(event);
-                AnomalyShader.render(event);
-            } else if (stage == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
-                BlackHoleShader.render(event);
-                captured = NukeVolumeRenderer.hasWork() && captureDepth(mc.getMainRenderTarget());
-            } else if (stage == RenderLevelStageEvent.Stage.AFTER_LEVEL && captured) {
-                captured = false;
-                NukeVolumeRenderer.render(event, sceneDepth.getDepthTextureId());
+        if (IrisCompat.shaderPackInUse()) {
+            if (DistortShader.hasWork() || AnomalyShader.hasWork() || BlackHoleShader.hasWork()
+                    || NukeVolumeRenderer.hasFrame()) {
+                captureDepth(mc.getMainRenderTarget());
+                latePass = LatePass.SHADER_PACK;
             }
             return;
         }
+        if (BlackHoleShader.hasWork()) {
+            BlackHoleShader.render(event, captureDepth(mc.getMainRenderTarget()));
+        }
+        if (NukeVolumeRenderer.hasFrame()) {
+            captureDepth(mc.getMainRenderTarget());
+            latePass = LatePass.NUKE;
+        }
+    }
 
-        if (stage == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
-            captured = false;
-            if (DistortShader.hasWork() || AnomalyShader.hasWork() || BlackHoleShader.hasWork()
-                    || NukeVolumeRenderer.hasWork()) {
-                captured = captureDepth(mc.getMainRenderTarget());
-            }
-        } else if (stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
-            if (captured) {
-                captured = false;
-                RenderTarget main = mc.getMainRenderTarget();
+    @SubscribeEvent
+    public static void onAfterLevel(RenderLevelStageEvent.AfterLevel event) {
+        LatePass pass = latePass;
+        latePass = LatePass.NONE;
+        if (pass == LatePass.SHADER_PACK) {
+            DistortShader.render(event, sceneDepth);
+            AnomalyShader.render(event, sceneDepth);
+            if (BlackHoleShader.hasWork()) {
+                RenderTarget main = Minecraft.getInstance().getMainRenderTarget();
+                // Start from opaque depth and carry the black hole's depth writes into the volume pass.
                 main.copyDepthFrom(sceneDepth);
-                main.bindWrite(false);
-                DistortShader.render(event);
-                AnomalyShader.render(event);
-                BlackHoleShader.render(event);
-                main.bindWrite(true);
-                NukeVolumeRenderer.render(event, main.getDepthTextureId());
+                BlackHoleShader.render(event, sceneDepth);
+                if (NukeVolumeRenderer.hasFrame()) sceneDepth.copyDepthFrom(main);
             }
-            BlackHoleShader.clear();
         }
+        if (pass != LatePass.NONE) {
+            NukeVolumeRenderer.render(event, sceneDepth);
+        }
+        BlackHoleShader.clear();
     }
 
-    private static boolean captureDepth(RenderTarget main) {
-        if (sceneDepth == null) {
-            sceneDepth = new TextureTarget(main.width, main.height, true, Minecraft.ON_OSX);
+    private static TextureTarget captureDepth(RenderTarget main) {
+        if (sceneDepth == null || sceneDepth.useStencil != main.useStencil) {
+            if (sceneDepth != null) sceneDepth.destroyBuffers();
+            sceneDepth = new TextureTarget("nc scene depth", main.width, main.height, true, main.useStencil);
         } else if (sceneDepth.width != main.width || sceneDepth.height != main.height) {
-            sceneDepth.resize(main.width, main.height, Minecraft.ON_OSX);
+            sceneDepth.resize(main.width, main.height);
         }
-        matchDepthFormat(sceneDepth, main);
         sceneDepth.copyDepthFrom(main);
-        main.bindWrite(false);
-        return true;
-    }
-
-    static void matchDepthFormat(RenderTarget target, RenderTarget main) {
-        int mainFormat = depthInternalFormat(main);
-        if (mainFormat == 0 || mainFormat == depthInternalFormat(target)) return;
-        boolean stencil = mainFormat == GL30.GL_DEPTH24_STENCIL8 || mainFormat == GL30.GL_DEPTH32F_STENCIL8;
-        int pixelFormat = stencil ? GL30.GL_DEPTH_STENCIL : GL11.GL_DEPTH_COMPONENT;
-        int pixelType = mainFormat == GL30.GL_DEPTH24_STENCIL8 ? GL30.GL_UNSIGNED_INT_24_8
-                : mainFormat == GL30.GL_DEPTH32F_STENCIL8 ? GL30.GL_FLOAT_32_UNSIGNED_INT_24_8_REV
-                : mainFormat == GL30.GL_DEPTH_COMPONENT32F ? GL11.GL_FLOAT
-                : GL11.GL_UNSIGNED_INT;
-        GlStateManager._bindTexture(target.getDepthTextureId());
-        GlStateManager._texImage2D(GL11.GL_TEXTURE_2D, 0, mainFormat, target.width, target.height, 0, pixelFormat, pixelType, null);
-        GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, target.frameBufferId);
-        GlStateManager._glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_STENCIL_ATTACHMENT, GL11.GL_TEXTURE_2D, 0, 0);
-        GlStateManager._glFramebufferTexture2D(GL30.GL_FRAMEBUFFER,
-                stencil ? GL30.GL_DEPTH_STENCIL_ATTACHMENT : GL30.GL_DEPTH_ATTACHMENT,
-                GL11.GL_TEXTURE_2D, target.getDepthTextureId(), 0);
-        GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-    }
-
-    private static int depthInternalFormat(RenderTarget target) {
-        int id = target.getDepthTextureId();
-        if (id <= 0) return 0;
-        GlStateManager._bindTexture(id);
-        return GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_INTERNAL_FORMAT);
+        return sceneDepth;
     }
 }

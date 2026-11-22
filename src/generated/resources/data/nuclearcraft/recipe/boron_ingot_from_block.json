@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:storage_blocks/boron"
-    }
+    "#c:storage_blocks/boron"
   ],
   "result": {
     "count": 9,

@@ -10,7 +10,7 @@ source slot and accepts only **charged particles with positive mass**. By defaul
 incoming particles must have at least **5 MeV (5,000 keV)** and must not exceed the
 ring's maximum energy for that particle type.
 
-This guide describes the NeoForge 1.21.1 implementation and default settings.
+This guide describes the NeoForge 26.1.2 implementation and default settings.
 Use JEI or EMI for crafting recipes and your modpack's coolant recipes.
 
 ## Building the ring

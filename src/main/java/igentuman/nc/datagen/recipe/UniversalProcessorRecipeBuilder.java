@@ -1,16 +1,17 @@
 package igentuman.nc.datagen.recipe;
 
-import igentuman.nc.recipe.FluidOutput;
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.api.recipe.FluidOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
@@ -20,12 +21,11 @@ import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static igentuman.nc.NuclearCraft.MODID;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.fluidTag;
 import static igentuman.nc.datagen.recipe.ModRecipeProvider.materialTag;
 
@@ -60,7 +60,7 @@ public class UniversalProcessorRecipeBuilder implements RecipeBuilder {
 
     public UniversalProcessorRecipeBuilder itemInput(ItemLike item, int count) {
         TagKey<Item> tag = materialTag(item);
-        itemInputs.add(new SizedIngredient(tag == null ? Ingredient.of(item) : Ingredient.of(tag), count));
+        itemInputs.add(new SizedIngredient(tag == null ? Ingredient.of(item) : RecipeGen.ingredient(tag), count));
         return this;
     }
 
@@ -69,7 +69,7 @@ public class UniversalProcessorRecipeBuilder implements RecipeBuilder {
     }
 
     public UniversalProcessorRecipeBuilder itemInput(TagKey<Item> tag, int count) {
-        itemInputs.add(new SizedIngredient(Ingredient.of(tag), count));
+        itemInputs.add(new SizedIngredient(RecipeGen.ingredient(tag), count));
         return this;
     }
 
@@ -86,13 +86,13 @@ public class UniversalProcessorRecipeBuilder implements RecipeBuilder {
     }
 
     public UniversalProcessorRecipeBuilder fluidInput(TagKey<Fluid> tag, int amount) {
-        fluidInputs.add(SizedFluidIngredient.of(tag, amount));
+        fluidInputs.add(RecipeGen.fluidIngredient(tag, amount));
         return this;
     }
 
     public UniversalProcessorRecipeBuilder fluidInput(String fluid, int amount) {
-        TagKey<Fluid> tag = TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", fluid));
-        fluidInputs.add(SizedFluidIngredient.of(tag, amount));
+        TagKey<Fluid> tag = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", fluid));
+        fluidInputs.add(RecipeGen.fluidIngredient(tag, amount));
         return this;
     }
 
@@ -155,15 +155,14 @@ public class UniversalProcessorRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
+    /** Processor recipes are always saved under an explicit {@code <processor>/<name>} id. */
     @Override
-    public Item getResult() {
-        if (itemOutputs.isEmpty()) return Items.AIR;
-        ItemOutput first = itemOutputs.getFirst();
-        return first.isTag() ? Items.AIR : first.item();
+    public ResourceKey<Recipe<?>> defaultId() {
+        throw new UnsupportedOperationException("Processor recipes need an explicit id");
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, ResourceLocation id) {
+    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
         UniversalProcessorRecipe recipe = new UniversalProcessorRecipe(
                 processorName,
                 List.copyOf(itemInputs),
@@ -174,12 +173,12 @@ public class UniversalProcessorRecipeBuilder implements RecipeBuilder {
                 energyPerTick
         );
         // Item tag outputs get a load-time tag-empty guard so the recipe drops if the tag is empty.
-        // No fluid-tag condition exists in NeoForge 21.1.228; fluid tags fall back to the runtime
-        // isComplete() gate.
+        // Fluid tag outputs keep the runtime isComplete() gate (unchanged output; the generic
+        // 26.1 TagEmptyCondition could guard them too).
         List<ICondition> conditions = new ArrayList<>();
         for (ItemOutput output : itemOutputs) {
             if (output.isTag()) {
-                conditions.add(new NotCondition(new TagEmptyCondition(output.tag())));
+                conditions.add(new NotCondition(new TagEmptyCondition<>(output.tag())));
             }
         }
         recipeOutput.accept(id, recipe, null, conditions.toArray(new ICondition[0]));
@@ -188,7 +187,8 @@ public class UniversalProcessorRecipeBuilder implements RecipeBuilder {
     /**
      * Convenience method: saves the recipe with an auto-generated ID based on processor name and a suffix.
      */
+    @Override
     public void save(RecipeOutput recipeOutput, String recipeName) {
-        save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, processorName + "/" + recipeName));
+        save(recipeOutput, RecipeGen.key(processorName + "/" + recipeName));
     }
 }

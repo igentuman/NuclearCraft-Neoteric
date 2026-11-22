@@ -8,6 +8,7 @@ import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.multiblock.fission.MsrCache;
 import igentuman.nc.multiblock.fission.MsrLogic;
 import igentuman.nc.registration.FissionFuelEntry;
+import igentuman.nc.item.ItemFuel;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCSounds;
 import igentuman.nc.util.NBTField;
@@ -22,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import igentuman.nc.handler.item.CustomInventoryHandler;
 import net.neoforged.neoforge.registries.DeferredItem;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,6 +60,14 @@ public class MsrControllerBE extends MultiblockControllerBE {
             fluids.setTransferLimits(0, () -> rateInMb(saltInputRate), this::freeSaltVolume,
                     1, () -> rateInMb(saltOutputRate));
         }
+        if (contentHandler.getItemHandler() != null) {
+            // MsrLogic only turns TRISO fuel into pebbles; anything else would sit in the slot and block it.
+            contentHandler.getItemHandler().setSlotValidator(0, MsrControllerBE::isTrisoFuel);
+        }
+    }
+
+    private static boolean isTrisoFuel(ItemStack stack) {
+        return stack.getItem() instanceof ItemFuel fuel && "_tr".equals(fuel.variant);
     }
 
     private static int rateInMb(int bucketsPerTick) {
@@ -152,7 +161,7 @@ public class MsrControllerBE extends MultiblockControllerBE {
     }
 
     @Nullable
-    public ItemStackHandler itemStacks() {
+    public CustomInventoryHandler itemStacks() {
         return contentHandler.hasItemCapability() ? contentHandler.getItemHandler().getInternalHandler() : null;
     }
 
@@ -186,7 +195,7 @@ public class MsrControllerBE extends MultiblockControllerBE {
     public void voidFuel() {
         MsrLogic logic = logic();
         if (logic != null) logic.voidFuel();
-        ItemStackHandler items = itemStacks();
+        CustomInventoryHandler items = itemStacks();
         if (items != null) items.setStackInSlot(0, ItemStack.EMPTY);
         setChanged();
         markDirty();
@@ -201,11 +210,6 @@ public class MsrControllerBE extends MultiblockControllerBE {
             }
         }
         return allowedInputs;
-    }
-
-    @Override
-    protected CompoundTag legacyRuntime(CompoundTag tag) {
-        return tag.contains("pebbles") ? tag : null;
     }
 
     @Override

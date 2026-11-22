@@ -30,7 +30,7 @@ public record PacketFissionToggleMode(BlockPos pos) implements CustomPacketPaylo
     public static void handle(PacketFissionToggleMode packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            BlockEntity be = serverPlayer.serverLevel().getBlockEntity(packet.pos());
+            BlockEntity be = serverPlayer.level().getBlockEntity(packet.pos());
             if (be instanceof FissionReactorControllerBE controller) {
                 controller.requestToggleMode();
             }

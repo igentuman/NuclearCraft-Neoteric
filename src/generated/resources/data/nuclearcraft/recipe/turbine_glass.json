@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_turbine",
   "ingredients": [
-    {
-      "item": "nuclearcraft:turbine_casing"
-    },
-    {
-      "tag": "c:glass_blocks"
-    }
+    "nuclearcraft:turbine_casing",
+    "#c:glass_blocks"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:turbine_glass"
   }
 }

@@ -16,7 +16,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -139,7 +141,7 @@ public class MultiblockBuilderBE extends BlockEntity {
             return true;
         }
 
-        List<IItemHandler> containers = findConnectedContainers();
+        List<ResourceHandler<ItemResource>> containers = findConnectedContainers();
         if (containers.isEmpty()) {
             if (player != null) {
                 player.sendSystemMessage(TextUtils.applyFormat(
@@ -148,44 +150,33 @@ public class MultiblockBuilderBE extends BlockEntity {
             return false;
         }
 
-        Map<Item, Integer> available = new HashMap<>();
-        for (IItemHandler handler : containers) {
-            for (int i = 0; i < handler.getSlots(); i++) {
-                ItemStack stack = handler.getStackInSlot(i);
-                if (!stack.isEmpty()) {
-                    available.merge(stack.getItem(), stack.getCount(), Integer::sum);
+        Map<Item, Integer> missing = new HashMap<>();
+        try (var transaction = Transaction.openRoot()) {
+            for (Map.Entry<Item, Integer> entry : required.entrySet()) {
+                int remaining = entry.getValue();
+                for (ResourceHandler<ItemResource> handler : containers) {
+                    for (int slot = 0; slot < handler.size() && remaining > 0; slot++) {
+                        var resource = handler.getResource(slot);
+                        if (resource.is(entry.getKey())) {
+                            remaining -= handler.extract(slot, resource, remaining, transaction);
+                        }
+                    }
+                    if (remaining == 0) break;
                 }
+                if (remaining > 0) missing.put(entry.getKey(), remaining);
             }
+            if (missing.isEmpty()) transaction.commit();
         }
-
-        boolean missing = false;
-        for (Map.Entry<Item, Integer> e : required.entrySet()) {
-            int have = available.getOrDefault(e.getKey(), 0);
-            if (have < e.getValue()) {
-                missing = true;
-                if (player != null) {
+        if (!missing.isEmpty()) {
+            if (player != null) {
+                for (Map.Entry<Item, Integer> entry : missing.entrySet()) {
                     player.sendSystemMessage(TextUtils.applyFormat(
                             __("nc.multiblock_builder.missing_blocks",
-                                    new ItemStack(e.getKey()).getHoverName().getString(),
-                                    e.getValue() - have),
-                            ChatFormatting.RED));
+                                    new ItemStack(entry.getKey()).getHoverName().getString(),
+                                    entry.getValue()), ChatFormatting.RED));
                 }
             }
-        }
-        if (missing) return false;
-
-        for (Map.Entry<Item, Integer> e : required.entrySet()) {
-            int toExtract = e.getValue();
-            for (IItemHandler handler : containers) {
-                for (int i = 0; i < handler.getSlots() && toExtract > 0; i++) {
-                    ItemStack stack = handler.getStackInSlot(i);
-                    if (stack.getItem() == e.getKey()) {
-                        int ex = Math.min(toExtract, stack.getCount());
-                        handler.extractItem(i, ex, false);
-                        toExtract -= ex;
-                    }
-                }
-            }
+            return false;
         }
 
         placeBlocks(planMap, globalPos);
@@ -228,8 +219,8 @@ public class MultiblockBuilderBE extends BlockEntity {
         }
     }
 
-    private List<IItemHandler> findConnectedContainers() {
-        List<IItemHandler> handlers = new ArrayList<>();
+    private List<ResourceHandler<ItemResource>> findConnectedContainers() {
+        List<ResourceHandler<ItemResource>> handlers = new ArrayList<>();
         Set<BlockPos> visited = new HashSet<>();
         Queue<BlockPos> queue = new ArrayDeque<>();
         queue.add(getBlockPos());
@@ -240,7 +231,7 @@ public class MultiblockBuilderBE extends BlockEntity {
                 BlockPos neighbor = pos.relative(dir);
                 if (visited.contains(neighbor)) continue;
                 visited.add(neighbor);
-                IItemHandler handler = getLevel().getCapability(Capabilities.ItemHandler.BLOCK, neighbor, null);
+                ResourceHandler<ItemResource> handler = getLevel().getCapability(Capabilities.Item.BLOCK, neighbor, null);
                 if (handler != null) {
                     handlers.add(handler);
                     queue.add(neighbor);

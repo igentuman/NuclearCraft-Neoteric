@@ -1,6 +1,6 @@
 package igentuman.nc.client.model;
 
-import igentuman.nc.entity.EntityFeralGhoul;
+import igentuman.nc.client.renderer.FeralGhoulRenderState;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -10,7 +10,7 @@ import net.minecraft.util.Mth;
 
 import static igentuman.nc.NuclearCraft.rl;
 
-public class ModelFeralGhoul extends HumanoidModel<EntityFeralGhoul> {
+public class ModelFeralGhoul extends HumanoidModel<FeralGhoulRenderState> {
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(rl("feral_ghoul"), "main");
 
@@ -22,13 +22,14 @@ public class ModelFeralGhoul extends HumanoidModel<EntityFeralGhoul> {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        partdefinition.addOrReplaceChild("head",
+        PartDefinition head = partdefinition.addOrReplaceChild("head",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
                         .addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(-0.1F)),
                 PartPose.offset(0.0F, 3.5F, -2.2F));
 
-        partdefinition.addOrReplaceChild("hat",
+        // 26.1: HumanoidModel looks up "hat" as a child of "head".
+        head.addOrReplaceChild("hat",
                 CubeListBuilder.create()
                         .texOffs(32, 0)
                         .addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.4F)),
@@ -70,8 +71,13 @@ public class ModelFeralGhoul extends HumanoidModel<EntityFeralGhoul> {
     }
 
     @Override
-    public void setupAnim(EntityFeralGhoul entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    public void setupAnim(FeralGhoulRenderState state) {
+        super.setupAnim(state);
+        float limbSwing = state.walkAnimationPos;
+        float limbSwingAmount = state.walkAnimationSpeed;
+        float ageInTicks = state.ageInTicks;
+        float netHeadYaw = state.yRot;
+        float headPitch = state.xRot;
 
         this.head.setPos(0.0F, 3.5F, -2.2F);
         this.head.xRot = 0.11344640137963141F + headPitch * 0.017453292F;
@@ -104,15 +110,5 @@ public class ModelFeralGhoul extends HumanoidModel<EntityFeralGhoul> {
 
         this.rightLeg.zRot = 0.02617993877991494F;
         this.leftLeg.zRot = -0.02617993877991494F;
-    }
-
-    @Override
-    protected Iterable<ModelPart> headParts() {
-        return java.util.List.of(this.head);
-    }
-
-    @Override
-    protected Iterable<ModelPart> bodyParts() {
-        return java.util.List.of(this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
     }
 }

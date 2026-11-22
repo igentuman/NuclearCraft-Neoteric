@@ -1,6 +1,6 @@
 package igentuman.nc.config;
 
-import net.minecraft.client.GraphicsStatus;
+import net.minecraft.client.GraphicsPreset;
 import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -47,8 +47,8 @@ public class Client {
 
     public static NukeQuality effectiveNukeQuality() {
         if (nukeQuality != NukeQuality.AUTO) return nukeQuality;
-        GraphicsStatus graphics = Minecraft.getInstance().options.graphicsMode().get();
-        return graphics == GraphicsStatus.FAST ? NukeQuality.LOW : NukeQuality.HIGH;
+        GraphicsPreset graphics = Minecraft.getInstance().options.graphicsPreset().get();
+        return graphics == GraphicsPreset.FAST ? NukeQuality.LOW : NukeQuality.HIGH;
     }
 
     public enum NukeQuality {

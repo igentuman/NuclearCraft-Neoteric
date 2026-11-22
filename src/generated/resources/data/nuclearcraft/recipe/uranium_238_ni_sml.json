@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "item": "nuclearcraft:uranium_238_ni"
-  },
+  "ingredient": "nuclearcraft:uranium_238_ni",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:uranium_238"
   }
 }

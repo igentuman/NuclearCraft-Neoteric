@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "nuclearcraft:bioplastic"
-    },
-    "S": {
-      "tag": "c:plates/steel"
-    }
+    "B": "nuclearcraft:bioplastic",
+    "S": "#c:plates/steel"
   },
   "pattern": [
     "BSB",

@@ -3,33 +3,15 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "item": "nuclearcraft:neptunium_236"
-    },
-    {
-      "item": "nuclearcraft:neptunium_236"
-    },
-    {
-      "item": "nuclearcraft:neptunium_236"
-    },
-    {
-      "item": "nuclearcraft:neptunium_237"
-    },
-    {
-      "item": "nuclearcraft:neptunium_237"
-    },
-    {
-      "item": "nuclearcraft:neptunium_237"
-    },
-    {
-      "item": "nuclearcraft:neptunium_237"
-    },
-    {
-      "item": "nuclearcraft:neptunium_237"
-    },
-    {
-      "item": "nuclearcraft:neptunium_237"
-    }
+    "nuclearcraft:neptunium_236",
+    "nuclearcraft:neptunium_236",
+    "nuclearcraft:neptunium_236",
+    "nuclearcraft:neptunium_237",
+    "nuclearcraft:neptunium_237",
+    "nuclearcraft:neptunium_237",
+    "nuclearcraft:neptunium_237",
+    "nuclearcraft:neptunium_237",
+    "nuclearcraft:neptunium_237"
   ],
   "result": {
     "count": 3,

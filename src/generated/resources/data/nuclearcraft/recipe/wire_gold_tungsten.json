@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "W": {
-      "tag": "c:ingots/tungsten"
-    }
+    "G": "#c:ingots/gold",
+    "W": "#c:ingots/tungsten"
   },
   "pattern": [
     "GWG"

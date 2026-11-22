@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft_machines",
   "key": {
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "G": {
-      "tag": "c:ingots/graphite"
-    },
-    "M": {
-      "item": "nuclearcraft:motor"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    },
-    "S": {
-      "item": "nuclearcraft:coil_copper"
-    }
+    "C": "nuclearcraft:chassis",
+    "G": "#c:ingots/graphite",
+    "M": "nuclearcraft:motor",
+    "P": "nuclearcraft:plate_advanced",
+    "S": "nuclearcraft:coil_copper"
   },
   "pattern": [
     "PGP",
@@ -25,7 +15,6 @@
     "PMP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:electrolyzer"
   }
 }

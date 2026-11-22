@@ -4,7 +4,8 @@
 		"0": "nuclearcraft:block/fusion/fusion_core/plain_face",
 		"1": "nuclearcraft:block/fusion/fusion_core/top",
 		"2": "nuclearcraft:block/fusion/fusion_core/core_foot",
-		"3": "nuclearcraft:block/fusion/fusion_core/core_centre"
+		"3": "nuclearcraft:block/fusion/fusion_core/core_centre",
+		"particle": "nuclearcraft:block/fusion/fusion_core/core_centre"
 	},
 	"elements": [
 		{

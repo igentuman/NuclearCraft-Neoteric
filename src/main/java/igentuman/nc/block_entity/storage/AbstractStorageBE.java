@@ -11,8 +11,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractStorageBE extends GlobalBlockEntity {
@@ -34,6 +34,7 @@ public abstract class AbstractStorageBE extends GlobalBlockEntity {
         sideConfig[direction.ordinal()] = sideConfig[direction.ordinal()].next();
         setChanged();
         if (level != null) {
+            level.invalidateCapabilities(worldPosition);
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
         return sideConfig[direction.ordinal()];
@@ -45,10 +46,8 @@ public abstract class AbstractStorageBE extends GlobalBlockEntity {
         return ModelData.builder().with(SIDE_CONFIG, sideConfig.clone()).build();
     }
 
-    /** Moves content to/from neighbours per {@link SideMode}. Returns true if anything changed. */
     protected abstract boolean transfer();
 
-    /** Analog comparator strength 0-15 based on fill level. */
     public abstract int getComparatorSignal();
 
     @Override
@@ -66,22 +65,22 @@ public abstract class AbstractStorageBE extends GlobalBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveTagData(tag, registries);
         int[] modes = new int[6];
         for (int i = 0; i < 6; i++) modes[i] = sideConfig[i].ordinal();
         tag.putIntArray("sideConfig", modes);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadTagData(tag, registries);
         if (tag.contains("sideConfig")) {
-            int[] modes = tag.getIntArray("sideConfig");
+            int[] modes = tag.getIntArray("sideConfig").orElseGet(() -> new int[0]);
             for (int i = 0; i < 6 && i < modes.length; i++) {
                 sideConfig[i] = SideMode.values()[modes[i]];
             }
-            if (level != null && level.isClientSide) {
+            if (level != null && level.isClientSide()) {
                 requestModelDataUpdate();
                 Minecraft.getInstance().levelRenderer.setSectionDirty(
                         SectionPos.blockToSectionCoord(worldPosition.getX()),

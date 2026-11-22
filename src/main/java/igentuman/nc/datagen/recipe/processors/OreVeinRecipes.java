@@ -1,8 +1,9 @@
 package igentuman.nc.datagen.recipe.processors;
 
+import igentuman.nc.datagen.recipe.RecipeGen;
 import igentuman.nc.recipe.OreVeinRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -59,12 +60,12 @@ public class OreVeinRecipes {
         for (Object[] ore : ores) {
             String material = (String) ore[0];
             int weight = (int) ore[1];
-            TagKey<Item> tag = ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "ores/" + material));
-            SizedIngredient ingredient = new SizedIngredient(Ingredient.of(tag), 1);
+            TagKey<Item> tag = ItemTags.create(Identifier.fromNamespaceAndPath("c", "ores/" + material));
+            SizedIngredient ingredient = RecipeGen.sized(tag, 1);
             entries.add(new OreVeinRecipe.OreEntry(ingredient, weight));
         }
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MODID, name);
+        Identifier id = Identifier.fromNamespaceAndPath(MODID, name);
         OreVeinRecipe recipe = new OreVeinRecipe(id, entries, rarity);
-        out.accept(id, recipe, null);
+        out.accept(RecipeGen.key(id), recipe, null);
     }
 }

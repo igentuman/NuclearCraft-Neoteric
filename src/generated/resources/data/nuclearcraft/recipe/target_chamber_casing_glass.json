@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_particle_chamber",
   "ingredients": [
-    {
-      "item": "nuclearcraft:target_chamber_casing"
-    },
-    {
-      "tag": "c:glass_blocks"
-    }
+    "nuclearcraft:target_chamber_casing",
+    "#c:glass_blocks"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:target_chamber_casing_glass"
   }
 }

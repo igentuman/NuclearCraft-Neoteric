@@ -157,7 +157,7 @@ public abstract class AbstractCapabilityHandler {
         for (int side = 0; side < 6; side++) {
             String key = "Side" + side;
             if (tag.contains(key)) {
-                sideMap.put(side, SlotModePair.deserializeArray(tag.getCompound(key)));
+                sideMap.put(side, SlotModePair.deserializeArray(tag.getCompound(key).orElseThrow()));
             }
         }
         sideMapUpdated = false;

@@ -6,42 +6,42 @@ navigation:
   position: 1
 ---
 
-# Камера частиц — управление компьютером
+# Камера частиц - управление компьютером
 
-## Целевая камера — `nc_target_chamber`
+## Целевая камера - `nc_target_chamber`
 
 `TargetChamberPeripheral`
 
-- `isFormed()` → boolean — корпус и внутренности корректны
-- `getName()` → string — идентификатор контроллера
-- `hasRecipe()` → boolean — активен рецепт
-- `getRecipeProgress()` → int — прогресс 0..100
-- `enableController()` → nil — снять принудительное отключение
-- `disableController()` → nil — принудительно отключить
-- `getEnergyPerTick()` → int — расход энергии за тик
-- `getEnergyStored()` → int — запас энергии Forge
-- `getInputItem()` → table — данные входного предмета
-- `getInputFluid()` → table — данные входной жидкости
-- `getInputParticleInfo()` → table | nil — входящий пучок: `energy`, `focus`, `amount`, `particle`
-- `getOutputParticlesInfo()` → table | nil — выходные пучки по имени частицы
-- `getBeamPortsInfo()` → list | nil — см. [Управление компьютером](../computers.md)
-- `setBeamPortMode(id, mode)` → boolean — см. [Управление компьютером](../computers.md)
+- `isFormed()` → boolean - корпус и внутренности корректны
+- `getName()` → string - идентификатор контроллера
+- `hasRecipe()` → boolean - активен рецепт
+- `getRecipeProgress()` → int - прогресс 0..100
+- `enableController()` → nil - снять принудительное отключение
+- `disableController()` → nil - принудительно отключить
+- `getEnergyPerTick()` → int - расход энергии за тик
+- `getEnergyStored()` → int - запас энергии Forge
+- `getInputItem()` → table - данные входного предмета
+- `getInputFluid()` → table - данные входной жидкости
+- `getInputParticleInfo()` → table | nil - входящий пучок: `energy`, `focus`, `amount`, `particle`
+- `getOutputParticlesInfo()` → table | nil - выходные пучки по имени частицы
+- `getBeamPortsInfo()` → list | nil - см. [Управление компьютером](../computers.md)
+- `setBeamPortMode(id, mode)` → boolean - см. [Управление компьютером](../computers.md)
 
-## Камера распада — `nc_decay_chamber`
+## Камера распада - `nc_decay_chamber`
 
 `DecayChamberPeripheral`
 
 То же, что и у целевой камеры, без `getInputItem()` / `getInputFluid()`. `getInputParticleInfo()`
 возвращает единственный входящий пучок.
 
-## Камера столкновений — `nc_decay_chamber`
+## Камера столкновений - `nc_decay_chamber`
 
 `CollisionChamberPeripheral`
 
 Сообщает тот же тип, что и камера распада. Те же методы, что и у камеры распада, кроме:
 
-- `getInputParticleInfo()` → table | nil — два входящих пучка с ключами `particle_1` и `particle_2`
-- нет `setBeamPortMode` — расположение портов ввода/вывода камеры столкновений фиксировано
+- `getInputParticleInfo()` → table | nil - два входящих пучка с ключами `particle_1` и `particle_2`
+- нет `setBeamPortMode` - расположение портов ввода/вывода камеры столкновений фиксировано
 
 ## OpenComputers v2
 

@@ -6,6 +6,7 @@ import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.NBTField;
 import igentuman.nc.util.TagUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -15,6 +16,8 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import java.util.Optional;
 
@@ -54,6 +57,8 @@ public class NuclearFurnaceBE extends UniversalProcessorBE {
         contentHandler.tick();
 
         boolean wasLit = burnTime > 0;
+        int previousBurnTime = burnTime;
+        int previousCookTime = cookTime;
         boolean changed = false;
 
         if (burnTime > 0) burnTime--;
@@ -67,10 +72,9 @@ public class NuclearFurnaceBE extends UniversalProcessorBE {
         }
 
         if (burnTime > 0 && canBurn) {
-            cookTime++;
-            if (cookTime >= COOK_TIME_TOTAL) {
+            cookTime = Math.min(COOK_TIME_TOTAL, cookTime + 1);
+            if (cookTime >= COOK_TIME_TOTAL && smeltOne(recipe)) {
                 cookTime = 0;
-                smeltOne(recipe);
                 changed = true;
             }
         } else if (cookTime > 0) {
@@ -79,6 +83,7 @@ public class NuclearFurnaceBE extends UniversalProcessorBE {
 
         maxProgress = COOK_TIME_TOTAL;
         progress = cookTime;
+        if (previousBurnTime != burnTime || previousCookTime != cookTime) setChanged();
 
         if (wasLit != (burnTime > 0)) {
             updateLitState(burnTime > 0);
@@ -109,55 +114,61 @@ public class NuclearFurnaceBE extends UniversalProcessorBE {
     }
 
     private boolean hasSmeltingRecipe(ItemStack stack) {
-        if (stack.isEmpty() || level == null) return false;
-        return level.getRecipeManager()
-                .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level)
+        if (stack.isEmpty() || !(level instanceof ServerLevel serverLevel)) return false;
+        return serverLevel.recipeAccess()
+                .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), serverLevel)
                 .isPresent();
     }
 
     private SmeltingRecipe getActiveRecipe() {
-        if (level == null) return null;
+        if (!(level instanceof ServerLevel serverLevel)) return null;
         ItemStack input = contentHandler.getItemHandler().getStackInSlot(SMELT_SLOT);
         if (input.isEmpty()) return null;
-        Optional<RecipeHolder<SmeltingRecipe>> holder = level.getRecipeManager()
-                .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(input), level);
+        Optional<RecipeHolder<SmeltingRecipe>> holder = serverLevel.recipeAccess()
+                .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(input), serverLevel);
         return holder.map(RecipeHolder::value).orElse(null);
     }
 
     private ItemStack resultOf(SmeltingRecipe recipe) {
         ItemStack input = contentHandler.getItemHandler().getStackInSlot(SMELT_SLOT);
-        return recipe.assemble(new SingleRecipeInput(input), level.registryAccess()).copy();
+        return recipe.assemble(new SingleRecipeInput(input));
     }
 
     private boolean canFitOutput(SmeltingRecipe recipe) {
         ItemStack result = resultOf(recipe);
         if (result.isEmpty()) return false;
-        ItemStack existing = contentHandler.getItemHandler().getStackInSlot(OUTPUT_SLOT);
-        if (existing.isEmpty()) return true;
-        if (!ItemStack.isSameItemSameComponents(existing, result)) return false;
-        return existing.getCount() + result.getCount() <= existing.getMaxStackSize();
+        try (var transaction = Transaction.openRoot()) {
+            return contentHandler.getItemHandler().insert(OUTPUT_SLOT, ItemResource.of(result),
+                    result.getCount(), transaction) == result.getCount();
+        }
     }
 
     private boolean consumeFuel() {
         ItemCapabilityHandler handler = contentHandler.getItemHandler();
         ItemStack fuel = handler.getStackInSlot(FUEL_SLOT);
         if (!isFuel(fuel)) return false;
-        handler.extractItem(FUEL_SLOT, 1, false);
+        try (var transaction = Transaction.openRoot()) {
+            if (handler.extract(FUEL_SLOT, ItemResource.of(fuel), 1, transaction) != 1) return false;
+            transaction.commit();
+        }
         burnTime = FUEL_BURN_TIME;
         burnDuration = FUEL_BURN_TIME;
         return true;
     }
 
-    private void smeltOne(SmeltingRecipe recipe) {
+    private boolean smeltOne(SmeltingRecipe recipe) {
         ItemCapabilityHandler handler = contentHandler.getItemHandler();
+        ItemResource input = handler.getResource(SMELT_SLOT);
+        if (input.isEmpty()) return false;
         ItemStack result = resultOf(recipe);
-        ItemStack existing = handler.getStackInSlot(OUTPUT_SLOT);
-        if (existing.isEmpty()) {
-            handler.setStackInSlot(OUTPUT_SLOT, result);
-        } else {
-            existing.grow(result.getCount());
+        if (result.isEmpty()) return false;
+        try (var transaction = Transaction.openRoot()) {
+            if (handler.extract(SMELT_SLOT, input, 1, transaction) != 1
+                    || handler.insert(OUTPUT_SLOT, ItemResource.of(result), result.getCount(), transaction)
+                    != result.getCount()) return false;
+            transaction.commit();
         }
-        handler.extractItem(SMELT_SLOT, 1, false);
+        return true;
     }
 
     private void updateLitState(boolean lit) {

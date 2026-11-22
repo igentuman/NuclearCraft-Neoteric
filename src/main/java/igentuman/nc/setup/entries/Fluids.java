@@ -72,11 +72,11 @@ public class Fluids extends ModEntries {
 
         liquid("chocolate_liquor", 0xFF41241C, 400);
         mat("cocoa_butter", 0xFFF6EEBF)
-                .item(() -> new Item(new Item.Properties()))
+                .item(props -> new Item(props))
                 .fluid(FluidDefinition.liquid().setName("cocoa_butter").setTemperature(400)).build();
         liquid("sugar", 0x50FFD59A, 400);
         mat("gelatin", 0x50DDD09C)
-                .item(() -> new Item(new Item.Properties()))
+                .item(props -> new Item(props))
                 .fluid(FluidDefinition.liquid().setName("gelatin")).build();
         liquid("hydrated_gelatin", 0x50DDD09C, 300);
         liquid("pasteurized_milk", 0xFFFFF2F2, 300);

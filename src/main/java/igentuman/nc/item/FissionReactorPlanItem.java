@@ -7,15 +7,16 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.util.TextUtils.__;
 
@@ -32,20 +33,20 @@ public class FissionReactorPlanItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (getDesign(stack).isEmpty()) {
-            return InteractionResultHolder.pass(stack);
+            return InteractionResult.PASS;
         }
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             FissionReactorPlanScreen.open(stack);
         }
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     public static CompoundTag getDesign(ItemStack stack) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        return tag.getCompound(DESIGN_KEY);
+        return tag.getCompoundOrEmpty(DESIGN_KEY);
     }
 
     public static void setDesign(ItemStack stack, CompoundTag design) {
@@ -68,31 +69,31 @@ public class FissionReactorPlanItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, TooltipFlag flag) {
         CompoundTag design = getDesign(stack);
         if (design.isEmpty()) {
-            list.add(__("tooltip.nc.fission_reactor_plan.blank").withStyle(ChatFormatting.DARK_GRAY));
+            list.accept(__("tooltip.nc.fission_reactor_plan.blank").withStyle(ChatFormatting.DARK_GRAY));
             return;
         }
-        int sx = design.getInt("sizeX");
-        int sy = design.getInt("sizeY");
-        int sz = design.getInt("sizeZ");
-        list.add(__("tooltip.nc.fission_reactor_plan.size", sx, sy, sz).withStyle(ChatFormatting.AQUA));
+        int sx = design.getIntOr("sizeX", 0);
+        int sy = design.getIntOr("sizeY", 0);
+        int sz = design.getIntOr("sizeZ", 0);
+        list.accept(__("tooltip.nc.fission_reactor_plan.size", sx, sy, sz).withStyle(ChatFormatting.AQUA));
         if (design.contains(FUEL_KEY)) {
-            String label = fuelLabel(design.getString(FUEL_KEY), design.getString(VARIANT_KEY));
+            String label = fuelLabel(design.getStringOr(FUEL_KEY, ""), design.getStringOr(VARIANT_KEY, ""));
             if (!label.isEmpty()) {
-                list.add(__("tooltip.nc.fission_reactor_plan.fuel", label).withStyle(ChatFormatting.GOLD));
+                list.accept(__("tooltip.nc.fission_reactor_plan.fuel", label).withStyle(ChatFormatting.GOLD));
             }
         }
         if (design.contains(NET_HEAT_KEY)) {
-            list.add(__("tooltip.nc.fission_reactor_plan.net_heat",
-                    TextUtils.numberFormat(design.getDouble(NET_HEAT_KEY))).withStyle(ChatFormatting.RED));
+            list.accept(__("tooltip.nc.fission_reactor_plan.net_heat",
+                    TextUtils.numberFormat(design.getDoubleOr(NET_HEAT_KEY, 0.0))).withStyle(ChatFormatting.RED));
         }
         if (design.contains(FE_GEN_KEY)) {
-            list.add(__("tooltip.nc.fission_reactor_plan.fe_gen",
-                    TextUtils.numberFormat(design.getInt(FE_GEN_KEY))).withStyle(ChatFormatting.GREEN));
+            list.accept(__("tooltip.nc.fission_reactor_plan.fe_gen",
+                    TextUtils.numberFormat(design.getIntOr(FE_GEN_KEY, 0))).withStyle(ChatFormatting.GREEN));
         }
-        list.add(__("tooltip.nc.fission_reactor_plan.view", Component.keybind("key.use"))
+        list.accept(__("tooltip.nc.fission_reactor_plan.view", Component.keybind("key.use"))
                 .withStyle(ChatFormatting.GRAY));
     }
 }

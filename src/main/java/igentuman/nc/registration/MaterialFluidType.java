@@ -1,6 +1,6 @@
 package igentuman.nc.registration;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.joml.Vector3f;
 
@@ -9,9 +9,9 @@ import static igentuman.nc.NuclearCraft.rl;
 /** FluidType for material fluids: selects still/flow textures by kind (molten/gas/liquid) and carries the ARGB tint color. */
 public class MaterialFluidType extends FluidType {
 
-    private final ResourceLocation stillTexture;
-    private final ResourceLocation flowingTexture;
-    private final ResourceLocation overlayTexture;
+    private final Identifier stillTexture;
+    private final Identifier flowingTexture;
+    private final Identifier overlayTexture;
     private final int tintColor;
     private final boolean molten;
     private final boolean gas;
@@ -37,15 +37,15 @@ public class MaterialFluidType extends FluidType {
         this.overlayTexture = null;
     }
 
-    public ResourceLocation getStillTexture() {
+    public Identifier getStillTexture() {
         return stillTexture;
     }
 
-    public ResourceLocation getFlowingTexture() {
+    public Identifier getFlowingTexture() {
         return flowingTexture;
     }
 
-    public ResourceLocation getOverlayTexture() {
+    public Identifier getOverlayTexture() {
         return overlayTexture;
     }
 

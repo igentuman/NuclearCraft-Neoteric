@@ -5,8 +5,8 @@
       "modid": "exdeorum"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "exdeorum:uranium_ore_chunk"
+      "type": "neoforge:registered",
+      "value": "exdeorum:uranium_ore_chunk"
     },
     {
       "type": "neoforge:not",

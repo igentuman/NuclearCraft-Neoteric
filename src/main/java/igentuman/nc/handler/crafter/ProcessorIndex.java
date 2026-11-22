@@ -1,8 +1,8 @@
 package igentuman.nc.handler.crafter;
 
-import igentuman.nc.api.pipe.PipeCapabilityType;
-import igentuman.nc.api.pipe.PipeNetwork;
-import igentuman.nc.api.pipe.PipeNetworkManager;
+import igentuman.nc.pipe.PipeCapabilityType;
+import igentuman.nc.pipe.PipeNetwork;
+import igentuman.nc.pipe.PipeNetworkManager;
 import igentuman.nc.block_entity.UniversalProcessorBE;
 import igentuman.nc.block_entity.pipe.PipeConnectorBE;
 import igentuman.nc.setup.ModEntries;

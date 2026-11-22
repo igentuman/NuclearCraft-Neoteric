@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "T": {
-      "tag": "c:plates/thorium"
-    }
+    "I": "#c:ingots/iron",
+    "T": "#c:plates/thorium"
   },
   "pattern": [
     "TTT",
@@ -15,7 +11,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:spaxelhoe_thorium"
   }
 }

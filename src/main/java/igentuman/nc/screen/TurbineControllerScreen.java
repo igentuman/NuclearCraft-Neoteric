@@ -5,7 +5,7 @@ import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.util.GuiFluidRenderer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -28,8 +28,8 @@ public class TurbineControllerScreen extends MultiblockControllerScreen {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractLabels(guiGraphics, mouseX, mouseY);
         renderFluidTanks(guiGraphics, mouseX - leftPos, mouseY - topPos);
 
         if (!menu.isFormed()) return;
@@ -54,7 +54,7 @@ public class TurbineControllerScreen extends MultiblockControllerScreen {
         addFluidTankInteraction(OUTPUT_TANK_X, TANK_Y, TANK_W, TANK_H, 1);
     }
 
-    private void renderFluidTanks(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderFluidTanks(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         GlobalBlockEntity be = menu.getBlockEntity();
         if (!be.hasFluidTanks()) return;
         FluidCapabilityHandler tanks = be.contentHandler.getFluidHandler();
@@ -94,12 +94,12 @@ public class TurbineControllerScreen extends MultiblockControllerScreen {
         return Component.translatable(key).append(": " + value).withStyle(ChatFormatting.GOLD);
     }
 
-    private void line(GuiGraphics g, int x, int y, String key, String value) {
+    private void line(GuiGraphicsExtractor g, int x, int y, String key, String value) {
         float scale = 0.75f;
-        g.pose().pushPose();
-        g.pose().scale(scale, scale, 1f);
-        g.drawString(font, Component.translatable(key).append(": " + value),
-                (int) (x / scale), (int) (y / scale), 0x404040, false);
-        g.pose().popPose();
+        g.pose().pushMatrix();
+        g.pose().scale(scale, scale);
+        g.text(font, Component.translatable(key).append(": " + value),
+                (int) (x / scale), (int) (y / scale), 0xFF404040, false);
+        g.pose().popMatrix();
     }
 }

@@ -1,0 +1,7 @@
+{
+  "name": "Ядерная энергетика",
+  "description": "$(l)Расщепление атома для выгоды и веселья. Чикагская поленница, домашнее издание.",
+  "icon": "nuclearcraft:fission_reactor_controller",
+  "parent": "nuclearcraft:multiblocks",
+  "sortnum": 0
+}

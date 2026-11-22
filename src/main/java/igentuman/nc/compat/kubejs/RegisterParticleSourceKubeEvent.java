@@ -1,9 +1,10 @@
 package igentuman.nc.compat.kubejs;
 
 import dev.latvian.mods.kubejs.event.KubeEvent;
+import igentuman.nc.api.content.ContentRegistration;
 import igentuman.nc.particle.ParticleSourceCatalog;
-import igentuman.nc.particle.ParticleSourceData;
-import net.minecraft.resources.ResourceLocation;
+import igentuman.nc.api.particle.ParticleSourceData;
+import net.minecraft.resources.Identifier;
 
 import static igentuman.nc.NuclearCraft.rl;
 
@@ -18,7 +19,7 @@ public class RegisterParticleSourceKubeEvent implements KubeEvent {
     }
 
     public void item(String item, String particle, long capacity, long energyKeV, double focus) {
-        ParticleSourceCatalog.registerItemSource(ResourceLocation.parse(item), source(particle, capacity, energyKeV, focus));
+        ContentRegistration.registerItemParticleSource(Identifier.parse(item), source(particle, capacity, energyKeV, focus));
     }
 
     public void fluid(String fluid, String particle) {
@@ -30,20 +31,20 @@ public class RegisterParticleSourceKubeEvent implements KubeEvent {
     }
 
     public void fluid(String fluid, String particle, long particlesPerMillibucket, long energyKeV, double focus) {
-        ParticleSourceCatalog.registerFluidSource(ResourceLocation.parse(fluid),
+        ContentRegistration.registerFluidParticleSource(Identifier.parse(fluid),
                 source(particle, particlesPerMillibucket, energyKeV, focus));
     }
 
     public void removeItem(String item) {
-        ParticleSourceCatalog.removeItemSource(ResourceLocation.parse(item));
+        ContentRegistration.removeItemParticleSource(Identifier.parse(item));
     }
 
     public void removeFluid(String fluid) {
-        ParticleSourceCatalog.removeFluidSource(ResourceLocation.parse(fluid));
+        ContentRegistration.removeFluidParticleSource(Identifier.parse(fluid));
     }
 
     private static ParticleSourceData source(String particle, long capacity, long energyKeV, double focus) {
-        ResourceLocation particleId = particle.indexOf(':') >= 0 ? ResourceLocation.parse(particle) : rl(particle);
+        Identifier particleId = particle.indexOf(':') >= 0 ? Identifier.parse(particle) : rl(particle);
         return ParticleSourceData.fullCharge(particleId, capacity, energyKeV, focus);
     }
 }

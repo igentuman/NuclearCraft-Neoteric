@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_machines",
   "key": {
-    "C": {
-      "item": "nuclearcraft:chemical_reactor"
-    },
-    "M": {
-      "item": "nuclearcraft:centrifuge"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_extreme"
-    },
-    "Y": {
-      "item": "nuclearcraft:centrifuge"
-    }
+    "C": "nuclearcraft:chemical_reactor",
+    "M": "nuclearcraft:centrifuge",
+    "P": "nuclearcraft:plate_extreme",
+    "Y": "nuclearcraft:centrifuge"
   },
   "pattern": [
     "PYP",
@@ -22,7 +14,6 @@
     "PMP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:subatomic_liquifier"
   }
 }

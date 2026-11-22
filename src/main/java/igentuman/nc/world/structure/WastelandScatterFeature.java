@@ -2,7 +2,7 @@ package igentuman.nc.world.structure;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
@@ -17,7 +17,7 @@ import java.util.List;
 public class WastelandScatterFeature extends TemplateFeature {
 
     private final String prefix;
-    private final List<ResourceLocation> pool = new ArrayList<>();
+    private final List<Identifier> pool = new ArrayList<>();
     private volatile boolean loaded = false;
 
     public WastelandScatterFeature(Codec<NoneFeatureConfiguration> codec, String prefix) {
@@ -25,11 +25,11 @@ public class WastelandScatterFeature extends TemplateFeature {
         this.prefix = prefix;
     }
 
-    private List<ResourceLocation> pool(StructureTemplateManager manager) {
+    private List<Identifier> pool(StructureTemplateManager manager) {
         if (loaded) return pool;
         synchronized (pool) {
             if (loaded) return pool;
-            for (ResourceLocation location : manager.listTemplates().toList()) {
+            for (Identifier location : manager.listTemplates().toList()) {
                 String path = location.getPath();
                 if (!path.startsWith(prefix)) continue;
                 String fileName = path.substring(path.lastIndexOf('/') + 1);
@@ -51,10 +51,10 @@ public class WastelandScatterFeature extends TemplateFeature {
         if (!inWasteland(world, pos)) return false;
 
         StructureTemplateManager manager = templates(world);
-        List<ResourceLocation> pool = pool(manager);
+        List<Identifier> pool = pool(manager);
         if (pool.isEmpty()) return false;
 
-        ResourceLocation id = pool.get(context.random().nextInt(pool.size()));
+        Identifier id = pool.get(context.random().nextInt(pool.size()));
         StructureTemplate template = manager.get(id).orElse(null);
         if (template == null) return false;
 
@@ -85,10 +85,10 @@ public class WastelandScatterFeature extends TemplateFeature {
     }
 
     private static int groundLevel(LevelAccessor world, BlockPos pos) {
-        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos(pos.getX(), world.getMaxBuildHeight(), pos.getZ());
-        while (cursor.getY() > world.getMinBuildHeight() && world.isEmptyBlock(cursor)) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos(pos.getX(), world.getMaxY() + 1, pos.getZ());
+        while (cursor.getY() > world.getMinY() && world.isEmptyBlock(cursor)) {
             cursor.move(0, -1, 0);
         }
-        return cursor.getY() <= world.getMinBuildHeight() ? -1 : cursor.getY();
+        return cursor.getY() <= world.getMinY() ? -1 : cursor.getY();
     }
 }

@@ -3,6 +3,7 @@ package igentuman.nc.entity;
 import igentuman.nc.setup.entries.Ghouls;
 import igentuman.nr.radiation.storage.EntityRadiationData;
 import igentuman.nr.radiation.storage.NRAttachments;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
@@ -27,7 +28,8 @@ public class EntityBlockProjectile extends ThrowableProjectile {
     }
 
     public EntityBlockProjectile(Level level, LivingEntity owner) {
-        super(Ghouls.WASTELAND_PROJECTILE.get(), owner, level);
+        super(Ghouls.WASTELAND_PROJECTILE.get(), owner.getX(), owner.getEyeY() - 0.1F, owner.getZ(), level);
+        setOwner(owner);
     }
 
     @Override
@@ -37,7 +39,7 @@ public class EntityBlockProjectile extends ThrowableProjectile {
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             Vec3 movement = getDeltaMovement();
             for (int i = 0; i < 2; i++) {
                 double trail = 0.3D + i * 0.35D;
@@ -56,13 +58,15 @@ public class EntityBlockProjectile extends ThrowableProjectile {
     @Override
     protected void onHitEntity(EntityHitResult result) {
         super.onHitEntity(result);
-        if (level().isClientSide || result.getEntity() == getOwner()) {
+        if (level().isClientSide() || result.getEntity() == getOwner()) {
             return;
         }
 
         Entity target = result.getEntity();
         LivingEntity owner = getOwner() instanceof LivingEntity living ? living : null;
-        if (target.hurt(damageSources().mobProjectile(this, owner), DAMAGE) && target instanceof LivingEntity livingTarget) {
+        if (level() instanceof ServerLevel serverLevel
+                && target.hurtServer(serverLevel, damageSources().mobProjectile(this, owner), DAMAGE)
+                && target instanceof LivingEntity livingTarget) {
             Vec3 knockback = livingTarget.position().subtract(position()).normalize().scale(0.5D);
             livingTarget.setDeltaMovement(livingTarget.getDeltaMovement().add(knockback.x, 0.1D, knockback.z));
             if (livingTarget instanceof Player player) {
@@ -75,7 +79,7 @@ public class EntityBlockProjectile extends ThrowableProjectile {
     @Override
     protected void onHit(HitResult result) {
         super.onHit(result);
-        if (tickCount < 3 || level().isClientSide) {
+        if (tickCount < 3 || level().isClientSide()) {
             return;
         }
         level().broadcastEntityEvent(this, (byte) 3);

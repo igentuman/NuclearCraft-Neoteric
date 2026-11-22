@@ -2,7 +2,6 @@ package igentuman.nc.block_entity.catalyst;
 
 import igentuman.nc.block_entity.GlobalBlockEntity;
 
-/** End-game speed upgrade providing standard speed scaling and one extra parallel operation per item. */
 public class QuantumCatalyst extends SpeedCatalyst {
 
     public QuantumCatalyst(GlobalBlockEntity host) {

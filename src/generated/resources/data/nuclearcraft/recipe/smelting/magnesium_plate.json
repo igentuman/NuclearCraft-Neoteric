@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:plates/magnesium"
-  },
+  "ingredient": "#c:plates/magnesium",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:magnesium_ingot"
   }
 }

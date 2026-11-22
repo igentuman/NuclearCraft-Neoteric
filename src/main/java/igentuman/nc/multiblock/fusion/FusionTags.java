@@ -1,7 +1,7 @@
 package igentuman.nc.multiblock.fusion;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
@@ -17,6 +17,6 @@ public final class FusionTags {
     public static final TagKey<Block> RF_AMPLIFIERS = block("rf_amplifiers");
 
     private static TagKey<Block> block(String path) {
-        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MODID, path));
+        return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MODID, path));
     }
 }

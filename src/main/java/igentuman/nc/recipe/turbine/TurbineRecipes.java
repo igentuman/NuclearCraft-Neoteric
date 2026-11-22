@@ -14,8 +14,8 @@ public final class TurbineRecipes {
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<TurbineRecipe>> TURBINE_TYPE =
             RECIPE_TYPES.register("turbine", () -> RecipeType.simple(rl("turbine")));
-    public static final DeferredHolder<RecipeSerializer<?>, TurbineRecipeSerializer> TURBINE_SERIALIZER =
-            RECIPE_SERIALIZERS.register("turbine", TurbineRecipeSerializer::new);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<TurbineRecipe>> TURBINE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("turbine", TurbineRecipeSerializer::create);
 
     public static void init() {}
 }

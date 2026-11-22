@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft",
   "key": {
-    "B": {
-      "item": "minecraft:nautilus_shell"
-    },
-    "G": {
-      "tag": "c:plates/thermoconducting"
-    },
-    "I": {
-      "item": "minecraft:water_bucket"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    }
+    "B": "minecraft:nautilus_shell",
+    "G": "#c:plates/thermoconducting",
+    "I": "minecraft:water_bucket",
+    "P": "nuclearcraft:plate_basic"
   },
   "pattern": [
     "PIP",
@@ -22,7 +14,6 @@
     "PIP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:water_collector"
   }
 }

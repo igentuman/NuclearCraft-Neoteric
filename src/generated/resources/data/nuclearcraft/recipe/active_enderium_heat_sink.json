@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_fission",
   "key": {
-    "B": {
-      "item": "nuclearcraft:empty_heat_sink"
-    },
-    "I": {
-      "tag": "c:dusts/enderium"
-    },
-    "S": {
-      "item": "nuclearcraft:servo"
-    }
+    "B": "nuclearcraft:empty_heat_sink",
+    "I": "#c:dusts/enderium",
+    "S": "nuclearcraft:servo"
   },
   "pattern": [
     "SIS",
@@ -19,7 +13,6 @@
     "SIS"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:active_enderium_heat_sink"
   }
 }

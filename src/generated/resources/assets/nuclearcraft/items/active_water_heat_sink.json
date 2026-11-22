@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "nuclearcraft:block/active_water_heat_sink"
+  }
+}

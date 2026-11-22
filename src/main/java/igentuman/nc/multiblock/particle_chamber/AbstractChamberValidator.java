@@ -5,7 +5,7 @@ import igentuman.nc.block.particle.DetectorBlock;
 import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -16,11 +16,11 @@ import static igentuman.nc.multiblock.MultiblockDebug.step;
 
 public abstract class AbstractChamberValidator extends AbstractMultiblockValidator<ParticleChamberCache> {
 
-    protected static final ResourceLocation EXPECTED_CASING = rl("target_chamber_casing");
-    protected static final ResourceLocation EXPECTED_BEAM_PORT = rl("target_chamber_beam_port");
-    protected static final ResourceLocation EXPECTED_BEAM = rl("particle_beam");
-    protected static final ResourceLocation EXPECTED_CAMERA = rl("target_chamber_camera");
-    protected static final ResourceLocation EXPECTED_INNER = rl("target_chamber_inner");
+    protected static final Identifier EXPECTED_CASING = rl("target_chamber_casing");
+    protected static final Identifier EXPECTED_BEAM_PORT = rl("target_chamber_beam_port");
+    protected static final Identifier EXPECTED_BEAM = rl("particle_beam");
+    protected static final Identifier EXPECTED_CAMERA = rl("target_chamber_camera");
+    protected static final Identifier EXPECTED_INNER = rl("target_chamber_inner");
 
     private final String prefix;
     private final String controllerName;
@@ -81,7 +81,7 @@ public abstract class AbstractChamberValidator extends AbstractMultiblockValidat
         controllerPosition = controllerPos;
         if (!resolveBlocks()) {
             return fail("multiblock.validation.dimensions_unresolved", controllerPos, rl("valid_dimensions"),
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         Direction facing = cache.facing();
         if (!facing.getAxis().isHorizontal() || !isShell(cache.getBlockState(controllerPos))) {
@@ -130,7 +130,7 @@ public abstract class AbstractChamberValidator extends AbstractMultiblockValidat
     }
 
     protected final boolean wrongSize(String key) {
-        return fail(key, controllerPosition, EXPECTED_CASING, (ResourceLocation) null);
+        return fail(key, controllerPosition, EXPECTED_CASING, (Identifier) null);
     }
 
     @Override
@@ -164,7 +164,7 @@ public abstract class AbstractChamberValidator extends AbstractMultiblockValidat
     protected final boolean validateRelations(ParticleChamberCache cache) {
         if (controllerCount != 1) {
             return fail(prefix + "controller_count", cache.controllerPos(), rl(controllerName),
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         return validateLayout(cache);
     }
@@ -206,10 +206,10 @@ public abstract class AbstractChamberValidator extends AbstractMultiblockValidat
     }
 
     protected final boolean invalid(String suffix, BlockPos pos) {
-        return fail(prefix + suffix, pos, null, (ResourceLocation) null);
+        return fail(prefix + suffix, pos, null, (Identifier) null);
     }
 
-    protected final boolean invalid(String suffix, BlockPos pos, ResourceLocation expected, BlockState state) {
+    protected final boolean invalid(String suffix, BlockPos pos, Identifier expected, BlockState state) {
         return fail(prefix + suffix, pos, expected, state);
     }
 
@@ -247,7 +247,7 @@ public abstract class AbstractChamberValidator extends AbstractMultiblockValidat
 
     private boolean tooLarge(BlockPos from, Direction direction, int limit) {
         return fail("multiblock.discovery.too_large", from.relative(direction, limit + 1),
-                EXPECTED_CASING, (ResourceLocation) null);
+                EXPECTED_CASING, (Identifier) null);
     }
 
     private boolean resolveBlocks() {

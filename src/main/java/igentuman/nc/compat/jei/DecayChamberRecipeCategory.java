@@ -11,13 +11,14 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,12 +31,12 @@ import static igentuman.nc.util.TextUtils.formatParticleEnergy;
 import static igentuman.nc.util.TextUtils.numberFormat;
 
 @SuppressWarnings("removal")
-public class DecayChamberRecipeCategory implements IRecipeCategory<DecayChamberRecipe> {
+public class DecayChamberRecipeCategory implements IRecipeCategory<RecipeHolder<DecayChamberRecipe>> {
 
-    public static final RecipeType<DecayChamberRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "decay_chamber", DecayChamberRecipe.class);
+    public static final IRecipeHolderType<DecayChamberRecipe> TYPE =
+            IRecipeHolderType.create(NuclearCraft.rl("decay_chamber"));
 
-    public static final ResourceLocation TEXTURE = rl("textures/gui/accelerators/decay_chamber_controller.png");
+    public static final Identifier TEXTURE = rl("textures/gui/accelerators/decay_chamber_controller.png");
 
     private static final int WIDTH = 130;
     private static final int HEIGHT = 100;
@@ -50,7 +51,7 @@ public class DecayChamberRecipeCategory implements IRecipeCategory<DecayChamberR
     }
 
     @Override
-    public RecipeType<DecayChamberRecipe> getRecipeType() {
+    public IRecipeHolderType<DecayChamberRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -59,10 +60,6 @@ public class DecayChamberRecipeCategory implements IRecipeCategory<DecayChamberR
         return __("block." + NuclearCraft.MODID + ".decay_chamber_controller");
     }
 
-    @Override
-    public IDrawable getBackground() {
-        return background;
-    }
 
     @Override
     public @Nullable IDrawable getIcon() {
@@ -80,7 +77,8 @@ public class DecayChamberRecipeCategory implements IRecipeCategory<DecayChamberR
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, DecayChamberRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<DecayChamberRecipe> holder, IFocusGroup focuses) {
+        DecayChamberRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 58, 27)
                 .addIngredients(ParticleType.PARTICLE, ParticleCompatUtil.stacksOf(recipe.particleInput()));
 
@@ -90,20 +88,22 @@ public class DecayChamberRecipeCategory implements IRecipeCategory<DecayChamberR
             if (output.isEmpty() || i >= outputPositions.size()) { i++; continue; }
             Vec2 pos = outputPositions.get(i);
             builder.addSlot(RecipeIngredientRole.OUTPUT, (int) pos.x, (int) pos.y)
-                    .addIngredient(ParticleType.PARTICLE, output);
+                    .add(ParticleType.PARTICLE, output);
             i++;
         }
     }
 
     @Override
-    public void draw(DecayChamberRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<DecayChamberRecipe> holder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
+        DecayChamberRecipe recipe = holder.value();
+        background.draw(graphics);
         var font = Minecraft.getInstance().font;
         var input = recipe.particleInput();
-        graphics.drawString(font, __("tooltip.nuclearcraft.particlestack.focus", numberFormat(input.minimumFocus())),
-                0, 65, 0x404040, false);
-        graphics.drawString(font, __("label.nuclearcraft.cross_section",
+        graphics.text(font, __("tooltip.nuclearcraft.particlestack.focus", numberFormat(input.minimumFocus())),
+                0, 65, 0xFF404040, false);
+        graphics.text(font, __("label.nuclearcraft.cross_section",
                 String.format(Locale.ROOT, "%.1f", recipe.crossSection() * 100)),
-                0, 75, 0x404040, false);
+                0, 75, 0xFF404040, false);
         Component energyLabel;
         if (input.maximumEnergyKeV() == Long.MAX_VALUE) {
             energyLabel = input.minimumEnergyKeV() == 0
@@ -115,6 +115,6 @@ public class DecayChamberRecipeCategory implements IRecipeCategory<DecayChamberR
             energyLabel = __("label.nuclearcraft.energy_range", formatParticleEnergy(input.minimumEnergyKeV()),
                     formatParticleEnergy(input.maximumEnergyKeV()));
         }
-        graphics.drawString(font, energyLabel, 0, 85, 0x404040, false);
+        graphics.text(font, energyLabel, 0, 85, 0xFF404040, false);
     }
 }

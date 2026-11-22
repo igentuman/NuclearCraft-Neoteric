@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "nuclearcraft:item/dummy_turbine_blade"
+  }
+}

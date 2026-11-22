@@ -1,9 +1,10 @@
 package igentuman.nc.recipe.fusion;
 
+import igentuman.nc.recipe.RecipeIngredientCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import igentuman.nc.recipe.FluidOutput;
+import igentuman.nc.api.recipe.FluidOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -13,11 +14,11 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import java.util.List;
 
 /** Codec and stream codec for reading and syncing {@link FusionRecipe} instances. */
-public class FusionRecipeSerializer implements RecipeSerializer<FusionRecipe> {
+public final class FusionRecipeSerializer {
 
     private static final MapCodec<FusionRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            SizedFluidIngredient.FLAT_CODEC.fieldOf("input_a").forGetter(FusionRecipe::inputA),
-            SizedFluidIngredient.FLAT_CODEC.fieldOf("input_b").forGetter(FusionRecipe::inputB),
+            RecipeIngredientCodecs.FLUID.fieldOf("input_a").forGetter(FusionRecipe::inputA),
+            RecipeIngredientCodecs.FLUID.fieldOf("input_b").forGetter(FusionRecipe::inputB),
             FluidOutput.CODEC.listOf().fieldOf("outputs").forGetter(FusionRecipe::outputs),
             Codec.INT.fieldOf("energy").forGetter(FusionRecipe::energy),
             Codec.DOUBLE.fieldOf("optimal_temperature").forGetter(FusionRecipe::optimalTemperature),
@@ -34,13 +35,9 @@ public class FusionRecipeSerializer implements RecipeSerializer<FusionRecipe> {
                     ByteBufCodecs.VAR_INT, FusionRecipe::processTime,
                     FusionRecipe::new);
 
-    @Override
-    public MapCodec<FusionRecipe> codec() {
-        return CODEC;
-    }
+    private FusionRecipeSerializer() {}
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, FusionRecipe> streamCodec() {
-        return STREAM_CODEC;
+    public static RecipeSerializer<FusionRecipe> create() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

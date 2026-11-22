@@ -1,5 +1,7 @@
 package igentuman.nc.screen;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.network.PacketProcessorButtonPress;
@@ -8,13 +10,12 @@ import igentuman.nc.screen.element.FluidTankBar;
 import igentuman.nc.screen.element.ProcessorImageButton;
 import igentuman.nc.screen.element.SlotWidget;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
@@ -23,17 +24,14 @@ import static igentuman.nc.util.TextUtils.__;
 
 public class ChargingStationScreen extends AbstractContainerScreen<UniversalProcessorContainer> {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/processor.png");
+    private static final Identifier TEXTURE = rl("textures/gui/processor.png");
     private static final int U_SIDE_CONFIG = 220;
     private static final int V_SIDE_CONFIG = 220;
     private static final int U_REDSTONE = 184;
     private static final int V_REDSTONE_BASE = 220;
 
     public ChargingStationScreen(UniversalProcessorContainer menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        imageWidth = 180;
-        imageHeight = 180;
-        this.inventoryLabelY = this.imageHeight - 94;
+        super(menu, playerInventory, title, 180, 180);
     }
 
     @Override
@@ -80,22 +78,22 @@ public class ChargingStationScreen extends AbstractContainerScreen<UniversalProc
                 leftPos + imageWidth - 28, topPos + 74,
                 () -> U_REDSTONE,
                 () -> V_REDSTONE_BASE - menu.getRedstoneMode() * 36,
-                () -> PacketDistributor.sendToServer(new PacketProcessorButtonPress(
+                () -> ClientPacketDistributor.sendToServer(new PacketProcessorButtonPress(
                         menu.getPosition(), PacketProcessorButtonPress.REDSTONE_BTN_ID)),
                 () -> List.of(__("screen.nuclearcraft.redstone_config_" + menu.getRedstoneMode()))
         ));
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderTooltip(guiGraphics, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
     }
 }

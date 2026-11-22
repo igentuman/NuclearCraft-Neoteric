@@ -1,5 +1,6 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
@@ -15,9 +16,14 @@ public class FluidSlotWidget extends SlotWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean isMouseOver(double mouseX, double mouseY) {
         return isActive() && visible && mouseX >= X() && mouseX < X() + 16
-                && mouseY >= Y() && mouseY < Y() + 16
-                && FluidTankInteraction.click(menu, tank, button);
+                && mouseY >= Y() && mouseY < Y() + 16;
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        return isMouseOver(event.x(), event.y())
+                && FluidTankInteraction.click(menu, tank, event.button());
     }
 }

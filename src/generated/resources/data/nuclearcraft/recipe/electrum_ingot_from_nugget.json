@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:nuggets/electrum"
-    },
-    {
-      "tag": "c:nuggets/electrum"
-    },
-    {
-      "tag": "c:nuggets/electrum"
-    },
-    {
-      "tag": "c:nuggets/electrum"
-    },
-    {
-      "tag": "c:nuggets/electrum"
-    },
-    {
-      "tag": "c:nuggets/electrum"
-    },
-    {
-      "tag": "c:nuggets/electrum"
-    },
-    {
-      "tag": "c:nuggets/electrum"
-    },
-    {
-      "tag": "c:nuggets/electrum"
-    }
+    "#c:nuggets/electrum",
+    "#c:nuggets/electrum",
+    "#c:nuggets/electrum",
+    "#c:nuggets/electrum",
+    "#c:nuggets/electrum",
+    "#c:nuggets/electrum",
+    "#c:nuggets/electrum",
+    "#c:nuggets/electrum",
+    "#c:nuggets/electrum"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:electrum_ingot"
   }
 }

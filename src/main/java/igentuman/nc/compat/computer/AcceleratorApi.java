@@ -22,7 +22,7 @@ public class AcceleratorApi<T extends AbstractAcceleratorControllerBE> extends B
         return be.particleAmount > 0;
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final @Nullable Map<String, Object> getParticleInfo() {
         return particleInfo(be.particleTypeId, be.particleAmount, be.particleEnergyKeV, be.particleFocusScaled / 10_000D);

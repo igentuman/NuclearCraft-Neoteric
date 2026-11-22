@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_particle_chamber",
   "key": {
-    "C": {
-      "item": "nuclearcraft:empty_detector"
-    },
-    "G": {
-      "item": "minecraft:glass"
-    }
+    "C": "nuclearcraft:empty_detector",
+    "G": "minecraft:glass"
   },
   "pattern": [
     "GGG",
@@ -16,7 +12,6 @@
     "GGG"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:bubble_chamber"
   }
 }

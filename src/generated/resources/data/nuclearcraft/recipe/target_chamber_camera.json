@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_particle_chamber",
   "key": {
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "N": {
-      "tag": "c:ingots/tin"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "C": "nuclearcraft:chassis",
+    "N": "#c:ingots/tin",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "NSN",
@@ -19,7 +13,6 @@
     "NSN"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:target_chamber_camera"
   }
 }

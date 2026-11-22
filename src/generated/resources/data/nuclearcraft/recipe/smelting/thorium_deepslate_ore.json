@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:ores/thorium"
-  },
+  "ingredient": "#c:ores/thorium",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:thorium_ingot"
   }
 }

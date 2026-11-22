@@ -12,7 +12,8 @@ import igentuman.nr.radiation.storage.EntityRadiationData;
 import igentuman.nr.radiation.storage.NRAttachments;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -29,7 +30,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -39,9 +40,9 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -91,6 +92,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     private int animationStartTick;
 
     private final ServerBossEvent bossEvent = new ServerBossEvent(
+            Mth.createInsecureUUID(this.random),
             Component.translatable("entity.nuclearcraft.feral_ghoul_boss"),
             BossEvent.BossBarColor.GREEN,
             BossEvent.BossBarOverlay.PROGRESS);
@@ -148,15 +150,15 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     }
 
     public static boolean checkSpawnRules(EntityType<EntityWastelandBoss> type, ServerLevelAccessor level,
-                                          MobSpawnType spawnType, BlockPos pos, net.minecraft.util.RandomSource random) {
+                                          EntitySpawnReason spawnType, BlockPos pos, net.minecraft.util.RandomSource random) {
         return Monster.checkMonsterSpawnRules(type, level, spawnType, pos, random)
                 && level.getBiome(pos).is(ModBiomes.WASTELAND_TAG);
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
+    public boolean doHurtTarget(ServerLevel level, Entity target) {
         level().broadcastEntityEvent(this, ANIMATION_MELEE);
-        boolean hurt = super.doHurtTarget(target);
+        boolean hurt = super.doHurtTarget(level, target);
         if (hurt && target instanceof Player player) {
             EntityRadiationData radiation = player.getData(NRAttachments.ENTITY_RADIATION.get());
             radiation.addSv(MELEE_RADIATION_SV);
@@ -170,7 +172,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             bossEvent.setProgress(Mth.clamp(getHealth() / getMaxHealth(), 0.0F, 1.0F));
             bossEvent.setName(getDisplayName());
         }
@@ -182,7 +184,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         throwSpamDurationRemaining = decrement(throwSpamDurationRemaining);
         throwSpamIntervalRemaining = decrement(throwSpamIntervalRemaining);
 
-        if (!level().isClientSide && !hasEnteredEnragedState && isEnraged()) {
+        if (!level().isClientSide() && !hasEnteredEnragedState && isEnraged()) {
             hasEnteredEnragedState = true;
             playSound(NCSounds.BOSS_ANGRY.get(), 1.5F, 0.6F);
             playSound(SoundEvents.ENDER_DRAGON_GROWL, 1.0F, 0.8F);
@@ -195,7 +197,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     }
 
     public void executeRadiationBurst() {
-        if (radiationBurstCooldownRemaining > 0 || level().isClientSide) {
+        if (radiationBurstCooldownRemaining > 0 || level().isClientSide()) {
             return;
         }
         playSound(NCSounds.BOSS_ANGRY.get(), 0.7F, 1.0F);
@@ -219,7 +221,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         AABB area = getBoundingBox().inflate(RADIATION_BURST_RANGE);
         for (Player player : level().getEntitiesOfClass(Player.class, area, Player::isAlive)) {
             player.getData(NRAttachments.ENTITY_RADIATION.get()).addSv(BURST_RADIATION_SV);
-            player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 40));
+            player.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 40));
             player.addEffect(new MobEffectInstance(MobEffects.POISON, 40));
         }
         radiationBurstCooldownRemaining = RADIATION_BURST_COOLDOWN;
@@ -242,12 +244,12 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 if (spawnPos == null) {
                     continue;
                 }
-                EntityFeralGhoul ghoul = Ghouls.FERAL_GHOUL.get().create(server);
+                EntityFeralGhoul ghoul = Ghouls.FERAL_GHOUL.get().create(server, EntitySpawnReason.MOB_SUMMONED);
                 if (ghoul == null) {
                     continue;
                 }
-                ghoul.moveTo(spawnPos, random.nextFloat() * 360.0F, 0.0F);
-                ghoul.finalizeSpawn(server, server.getCurrentDifficultyAt(spawnPos), MobSpawnType.MOB_SUMMONED, null);
+                ghoul.snapTo(spawnPos, random.nextFloat() * 360.0F, 0.0F);
+                ghoul.finalizeSpawn(server, server.getCurrentDifficultyAt(spawnPos), EntitySpawnReason.MOB_SUMMONED, null);
                 ghoul.setTarget(target);
                 server.addFreshEntity(ghoul);
                 server.sendParticles(ParticleTypes.ANGRY_VILLAGER,
@@ -266,7 +268,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
         for (int y = targetPos.getY() + 4; y >= targetPos.getY() - 4; y--) {
             BlockPos candidate = new BlockPos(x, y, z);
             BlockState floor = level().getBlockState(candidate.below());
-            if (floor.isSolidRender(level(), candidate.below())
+            if (floor.isSolidRender()
                     && level().getBlockState(candidate).getCollisionShape(level(), candidate).isEmpty()
                     && level().getBlockState(candidate.above()).getCollisionShape(level(), candidate.above()).isEmpty()) {
                 return candidate;
@@ -299,7 +301,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
                 continue;
             }
             float damage = 10.0F * (1.0F - (float) (distance / SLAM_ATTACK_RANGE));
-            victim.hurt(damageSources().mobAttack(this), damage);
+            victim.hurtServer(server, damageSources().mobAttack(this), damage);
             Vec3 direction = victim.position().subtract(position()).normalize();
             double strength = Mth.clamp(Math.log(SLAM_ATTACK_RANGE / distance) + 0.6D, 0.6D, 2.5D);
             victim.setDeltaMovement(direction.x * strength, strength, direction.z * strength);
@@ -308,7 +310,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     }
 
     public void executeRangedAttack() {
-        if (rangedAttackCooldownRemaining > 0 || level().isClientSide) {
+        if (rangedAttackCooldownRemaining > 0 || level().isClientSide()) {
             return;
         }
         LivingEntity target = getTarget();
@@ -344,7 +346,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     }
 
     public void startThrowSpamAttack() {
-        if (throwSpamCooldownRemaining > 0 || level().isClientSide) {
+        if (throwSpamCooldownRemaining > 0 || level().isClientSide()) {
             return;
         }
         throwSpamDurationRemaining = THROW_SPAM_DURATION;
@@ -355,7 +357,7 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     }
 
     public void throwSpamProjectile() {
-        if (throwSpamDurationRemaining <= 0 || throwSpamIntervalRemaining > 0 || level().isClientSide) {
+        if (throwSpamDurationRemaining <= 0 || throwSpamIntervalRemaining > 0 || level().isClientSide()) {
             return;
         }
         LivingEntity target = getTarget();
@@ -427,38 +429,38 @@ public class EntityWastelandBoss extends EntityFeralGhoul {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypeTags.IS_FIRE) || source.is(DamageTypes.WITHER) || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return source.is(DamageTypeTags.IS_FIRE) || source.is(DamageTypes.WITHER) || super.isInvulnerableTo(level, source);
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (source.getDirectEntity() instanceof AbstractArrow || source.is(DamageTypeTags.IS_EXPLOSION)) {
             amount *= 0.25F;
         }
-        return super.hurt(source, amount);
+        return super.hurtServer(level, source, amount);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putInt("SlamCooldown", slamAttackCooldownRemaining);
-        tag.putInt("RadiationBurstCooldown", radiationBurstCooldownRemaining);
-        tag.putInt("SummonCooldown", summonCooldownRemaining);
-        tag.putInt("RangedCooldown", rangedAttackCooldownRemaining);
-        tag.putInt("ThrowSpamCooldown", throwSpamCooldownRemaining);
-        tag.putBoolean("HasEnraged", hasEnteredEnragedState);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("SlamCooldown", slamAttackCooldownRemaining);
+        output.putInt("RadiationBurstCooldown", radiationBurstCooldownRemaining);
+        output.putInt("SummonCooldown", summonCooldownRemaining);
+        output.putInt("RangedCooldown", rangedAttackCooldownRemaining);
+        output.putInt("ThrowSpamCooldown", throwSpamCooldownRemaining);
+        output.putBoolean("HasEnraged", hasEnteredEnragedState);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        slamAttackCooldownRemaining = tag.getInt("SlamCooldown");
-        radiationBurstCooldownRemaining = tag.getInt("RadiationBurstCooldown");
-        summonCooldownRemaining = tag.getInt("SummonCooldown");
-        rangedAttackCooldownRemaining = tag.getInt("RangedCooldown");
-        throwSpamCooldownRemaining = tag.getInt("ThrowSpamCooldown");
-        hasEnteredEnragedState = tag.getBoolean("HasEnraged");
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        slamAttackCooldownRemaining = input.getIntOr("SlamCooldown", 0);
+        radiationBurstCooldownRemaining = input.getIntOr("RadiationBurstCooldown", 0);
+        summonCooldownRemaining = input.getIntOr("SummonCooldown", 0);
+        rangedAttackCooldownRemaining = input.getIntOr("RangedCooldown", 0);
+        throwSpamCooldownRemaining = input.getIntOr("ThrowSpamCooldown", 0);
+        hasEnteredEnragedState = input.getBooleanOr("HasEnraged", false);
         if (hasCustomName()) {
             bossEvent.setName(getDisplayName());
         }

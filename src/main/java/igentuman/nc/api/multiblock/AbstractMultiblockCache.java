@@ -341,11 +341,11 @@ public abstract class AbstractMultiblockCache implements IMultiblockCache {
     @Override
     public final void loadNbt(CompoundTag tag, HolderLookup.Provider registries) {
         if (tag.contains("bounds_min") && tag.contains("bounds_max")) {
-            publishedMin = BlockPos.of(tag.getLong("bounds_min"));
-            publishedMax = BlockPos.of(tag.getLong("bounds_max"));
+            publishedMin = BlockPos.of(tag.getLongOr("bounds_min", 0L));
+            publishedMax = BlockPos.of(tag.getLongOr("bounds_max", 0L));
         }
         Set<Long> ports = new HashSet<>();
-        for (long port : tag.getLongArray("ports")) ports.add(port);
+        for (long port : tag.getLongArray("ports").orElseGet(() -> new long[0])) ports.add(port);
         publishedPorts = Set.copyOf(ports);
         loadData(tag);
     }

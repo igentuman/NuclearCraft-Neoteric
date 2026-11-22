@@ -19,7 +19,7 @@ Example Synchrotron Accelerator.
 
 ## Construction
 
-Synchrotron Accelerators are a square torus of Accelerator Casings or Glass that must be 5 wide. Power, coolant, redstone and computer access all run through the dedicated **Ring Accelerator Port** — the linear Accelerator Port and Ion Source Port will not validate on a ring. Particle input and output use [Accelerator Beam Ports](general.md#construction). There must be a continuous ring of Accelerator Beam Blocks down the center. Any beam port must be connected to the central beam ring with a beam block. Example shown on the opposite page.
+Synchrotron Accelerators are a square torus of Accelerator Casings or Glass that must be 5 wide. Power, coolant, redstone and computer access all run through the dedicated **Ring Accelerator Port** - the linear Accelerator Port and Ion Source Port will not validate on a ring. Particle input and output use [Accelerator Beam Ports](general.md#construction). There must be a continuous ring of Accelerator Beam Blocks down the center. Any beam port must be connected to the central beam ring with a beam block. Example shown on the opposite page.
 
 At each corner and beam port intersection there must be a [dipole magnet](general.md#dipole). So a synchrotron has a minimum of 4 dipoles. The example above will require at least 5 dipoles.
 

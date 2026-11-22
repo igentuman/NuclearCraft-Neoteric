@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
-    "B": {
-      "item": "nuclearcraft:particle_beam"
-    },
-    "F": {
-      "item": "nuclearcraft:steel_frame"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    },
-    "T": {
-      "tag": "c:ingots/tough_alloy"
-    }
+    "B": "nuclearcraft:particle_beam",
+    "F": "nuclearcraft:steel_frame",
+    "S": "#c:ingots/steel",
+    "T": "#c:ingots/tough_alloy"
   },
   "pattern": [
     "STS",

@@ -1,8 +1,9 @@
 package igentuman.nc.screen;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.container.MultiblockControllerContainer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -17,25 +18,22 @@ public class CollisionChamberScreen extends MultiblockControllerScreen {
     private static final int CONTENT_OFFSET_Y = 20;
 
     public CollisionChamberScreen(MultiblockControllerContainer menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, 176, 200);
         backgroundTexture = rl("textures/gui/accelerators/collision_chamber_controller.png");
-        imageWidth = 176;
-        imageHeight = 200;
-        inventoryLabelY = imageHeight - 94;
     }
 
     private static final int[][] INPUT_POSITIONS = {{46, 45}, {114, 45}};
     private static final int[][] OUTPUT_POSITIONS = {{49, 14}, {111, 14}, {111, 76}, {49, 76}};
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, 0xFF404040, false);
         int x = progressBar.getX();
         int y = progressBar.getY();
         if (mouseX >= x && mouseX < x + progressBar.getWidth() && mouseY >= y && mouseY < y + progressBar.getHeight()) {
             List<Component> tooltip = List.of(
                     __("tooltip.nuclearcraft.collision_chamber.progress", menu.getProgress()).withStyle(ChatFormatting.GRAY));
-            guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY);
         }
 
         int localMouseX = mouseX - leftPos;
@@ -49,10 +47,10 @@ public class CollisionChamberScreen extends MultiblockControllerScreen {
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
+    protected void extractPanel(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
+        super.extractPanel(guiGraphics, mouseX, mouseY, a);
         guiGraphics.fill(leftPos + 45, topPos + 13, leftPos + 131, topPos + 93, 0xFFC6C6C6);
-        guiGraphics.blit(backgroundTexture, leftPos + 45, topPos + 13 + CONTENT_OFFSET_Y,
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, backgroundTexture, leftPos + 45, topPos + 13 + CONTENT_OFFSET_Y,
                 45, 13, 86, 80, 256, 256);
     }
 

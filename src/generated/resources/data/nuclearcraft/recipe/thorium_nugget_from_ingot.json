@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_nuggets",
   "ingredients": [
-    {
-      "tag": "c:ingots/thorium"
-    }
+    "#c:ingots/thorium"
   ],
   "result": {
     "count": 9,

@@ -35,7 +35,7 @@ public class RingAcceleratorLogic
             controller.updateDiagnostics(0, false, false, false);
             return;
         }
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(stack.particleId());
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(stack.particleId());
         if (definition == null) {
             controller.updateDiagnostics(0, false, false, true);
             return;
@@ -91,7 +91,7 @@ public class RingAcceleratorLogic
         if (outputPort == null) return;
         ParticleStack pending = pendingOutput.snapshot(0);
         ParticleDefinition definition = pending.isEmpty() ? null
-                : Registers.PARTICLE_DEFINITION_REGISTRY.get(pending.particleId());
+                : Registers.PARTICLE_DEFINITION_REGISTRY.getValue(pending.particleId());
         if (definition == null) return;
         ParticleMachinesConfig.Accelerator config = Multiblocks.particleMachines().accelerator();
         transferPendingOutput(level, controllerPos, outputPort,

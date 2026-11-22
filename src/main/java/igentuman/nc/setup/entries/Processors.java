@@ -4,11 +4,12 @@ import igentuman.nc.block.UniversalProcessorBlock;
 import igentuman.nc.block.particle.CreativeParticleSourceBlock;
 import igentuman.nc.block_entity.*;
 import igentuman.nc.block_entity.particle.CreativeParticleSourceBE;
-import igentuman.nc.block_entity.catalyst.CatalystType;
+import igentuman.nc.api.catalyst.CatalystType;
 import igentuman.nc.container.CreativeParticleSourceContainer;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.recipe.OreVeinRecipe;
 import igentuman.nc.recipe.OreVeinRecipeSerializer;
+import igentuman.nc.registration.RecipeSchemaKind;
 import igentuman.nc.registration.ModEntryBuilder;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.SlotsLayout;
@@ -123,9 +124,9 @@ public class Processors extends ModEntries {
 
     private static void oreVeinRecipes() {
         add("nc_ore_veins")
-                .withRecipes(
+                .withRecipeFamily("nc_ore_veins", RecipeSchemaKind.ORE_VEIN,
                         () -> RecipeType.<OreVeinRecipe>simple(rl("nc_ore_veins")),
-                        OreVeinRecipeSerializer::new
+                        OreVeinRecipeSerializer::create
                 )
                 .build();
     }

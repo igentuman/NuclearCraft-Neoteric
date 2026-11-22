@@ -12,13 +12,12 @@ import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -26,13 +25,9 @@ import static igentuman.nc.NuclearCraft.MODID;
 
 /** Generates block tags for mining, ores, storage blocks, and fission/fusion structure membership. */
 public class ModBlockTagProvider extends BlockTagsProvider {
-    public ModBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, MODID, existingFileHelper);
+    public ModBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, MODID);
     }
-
-    private static final TagKey<Block> HEAT_SINKS_TAG = TagKey.create(
-            net.minecraft.core.registries.Registries.BLOCK,
-            ResourceLocation.fromNamespaceAndPath(MODID, "heat_sinks"));
 
     @Override
     public void addTags(HolderLookup.Provider provider) {
@@ -41,7 +36,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 tag(BlockTags.MINEABLE_WITH_PICKAXE).add(entry.block().get());
                 tag(BlockTags.NEEDS_IRON_TOOL).add(entry.block().get());
                 if (!entry.def().isActive()) {
-                    tag(HEAT_SINKS_TAG).add(entry.block().get());
+                    tag(FissionTags.HEAT_SINKS).add(entry.block().get());
                 }
             }
         }
@@ -145,6 +140,6 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     }
 
     private static TagKey<Block> blockTag(String path) {
-        return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", path));
+        return BlockTags.create(Identifier.fromNamespaceAndPath("c", path));
     }
 }

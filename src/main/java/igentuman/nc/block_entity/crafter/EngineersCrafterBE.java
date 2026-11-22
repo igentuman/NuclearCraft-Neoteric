@@ -13,6 +13,8 @@ import igentuman.nc.handler.crafter.ProcessorIndex;
 import igentuman.nc.handler.crafter.ProcessorIndex.Link;
 import igentuman.nc.handler.energy.LargeEnergyStorage;
 import igentuman.nc.setup.entries.Crafter;
+import igentuman.nc.handler.item.CustomInventoryHandler;
+import igentuman.nc.util.persistence.TagDataIO;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -24,6 +26,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -32,10 +35,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,10 +62,9 @@ public class EngineersCrafterBE extends BlockEntity {
     public static final int PATTERNS_SIZE = 72;
     public static final int CONTAINER_SLOTS = 9;
     public static final int OPEN_ENCODER_BTN = 191;
-    /** Ticks between processor rescans while the topology stamp is unchanged. */
     private static final int LINK_REFRESH = 40;
 
-    public final ItemStackHandler containerSlots = new ItemStackHandler(CONTAINER_SLOTS) {
+    public final CustomInventoryHandler containerSlots = new CustomInventoryHandler(CONTAINER_SLOTS) {
         @Override
         protected void onContentsChanged(int slot) {
             markUpdated();
@@ -75,7 +81,7 @@ public class EngineersCrafterBE extends BlockEntity {
         }
     };
 
-    public final ItemStackHandler encoderBlanks = new ItemStackHandler(1) {
+    public final CustomInventoryHandler encoderBlanks = new CustomInventoryHandler(1) {
         @Override
         protected void onContentsChanged(int slot) {
             markUpdated();
@@ -87,7 +93,7 @@ public class EngineersCrafterBE extends BlockEntity {
         }
     };
 
-    public final ItemStackHandler patterns = new ItemStackHandler(PATTERNS_SIZE) {
+    public final CustomInventoryHandler patterns = new CustomInventoryHandler(PATTERNS_SIZE) {
         @Override
         protected void onContentsChanged(int slot) {
             markUpdated();
@@ -101,7 +107,7 @@ public class EngineersCrafterBE extends BlockEntity {
 
     public final LargeEnergyStorage energy = LargeEnergyStorage.create(ENERGY_CAPACITY, ENERGY_MAX_RECEIVE, 0, this::markUpdated);
 
-    private final AggregatedItemHandler aggregatedItems = new AggregatedItemHandler(containerSlots);
+    private final AggregatedItemHandler aggregatedItems = new AggregatedItemHandler(containerSlots, () -> !isRemoved());
 
     private CraftingJob job;
     public int craftOpIndex = 0;
@@ -117,30 +123,48 @@ public class EngineersCrafterBE extends BlockEntity {
         super(Crafter.ENGINEERS_CRAFTING_TABLE_BE.get(), pos, state);
     }
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (level == null) return;
+        dropHandler(pos, containerSlots);
+        dropHandler(pos, patterns);
+        dropHandler(pos, encoderBlanks);
+    }
+
+    private void dropHandler(BlockPos pos, CustomInventoryHandler handler) {
+        for (int i = 0; i < handler.getSlots(); i++) {
+            ItemStack stack = handler.getStackInSlot(i);
+            if (stack.isEmpty()) continue;
+            handler.voidSlot(i);
+            Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack);
+        }
+    }
+
     public void markUpdated() {
         wasChanged = true;
         setChanged();
     }
 
     private void flushUpdate() {
-        if (wasChanged && level != null && !level.isClientSide) {
+        if (wasChanged && level != null && !level.isClientSide()) {
             wasChanged = false;
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
     }
 
     @Nullable
-    public IItemHandler getItemHandler(@Nullable Direction side) {
+    public ResourceHandler<ItemResource> getItemHandler(@Nullable Direction side) {
         return aggregatedItems;
     }
 
     @Nullable
-    public IEnergyStorage getEnergyHandler(@Nullable Direction side) {
+    public EnergyHandler getEnergyHandler(@Nullable Direction side) {
         return energy;
     }
 
     public void tickServer() {
-        if (level == null || level.isClientSide) return;
+        if (level == null || level.isClientSide()) return;
 
         if (job != null && !job.isFinished()) {
             switch (job.phase()) {
@@ -305,13 +329,13 @@ public class EngineersCrafterBE extends BlockEntity {
     }
 
     public int getInventorySlots() {
-        return aggregatedItems.getSlots();
+        return aggregatedItems.size();
     }
 
     @Nullable
     public Object getSlotData(int id) {
-        if (id < 0 || id >= aggregatedItems.getSlots()) return null;
-        ItemStack s = aggregatedItems.getStackInSlot(id);
+        if (id < 0 || id >= aggregatedItems.size()) return null;
+        ItemStack s = aggregatedItems.getResource(id).toStack(aggregatedItems.getAmountAsInt(id));
         if (s.isEmpty()) return null;
         Map<String, Object> m = new HashMap<>();
         m.put("item", itemKey(s));
@@ -384,7 +408,7 @@ public class EngineersCrafterBE extends BlockEntity {
     }
 
     public boolean startCraft(int patternId, int qty) {
-        if (level == null || level.isClientSide) return false;
+        if (level == null || level.isClientSide()) return false;
         if (qty <= 0 || hasActiveJob()) return false;
         if (patternId < 0 || patternId >= patterns.getSlots()) return false;
         CraftingPattern p = CraftingPattern.from(patterns.getStackInSlot(patternId));
@@ -397,55 +421,42 @@ public class EngineersCrafterBE extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.put("ContainerSlots", containerSlots.serializeNBT(registries));
-        tag.put("Patterns", patterns.serializeNBT(registries));
-        tag.put("EncoderBlanks", encoderBlanks.serializeNBT(registries));
-        tag.put("Energy", energy.serializeNBT(registries));
+    protected final void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        writeContents(output);
         if (job != null && !job.isFinished()) {
-            CompoundTag jobTag = new CompoundTag();
-            job.save(jobTag, registries);
-            tag.put("Job", jobTag);
+            TagDataIO.write(output.child("Job"), job::save);
         }
+    }
+
+    private void writeContents(ValueOutput output) {
+        containerSlots.serialize(output.child("ContainerSlots"));
+        patterns.serialize(output.child("Patterns"));
+        encoderBlanks.serialize(output.child("EncoderBlanks"));
+        energy.serialize(output.child("Energy"));
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        if (tag.contains("ContainerSlots")) loadKeepingSize(containerSlots, tag.getCompound("ContainerSlots"), registries);
-        if (tag.contains("Patterns")) loadKeepingSize(patterns, tag.getCompound("Patterns"), registries);
-        if (tag.contains("EncoderBlanks")) encoderBlanks.deserializeNBT(registries, tag.getCompound("EncoderBlanks"));
-        if (tag.contains("Energy")) energy.deserializeNBT(registries, tag.get("Energy"));
-        job = tag.contains("Job") ? CraftingJob.load(tag.getCompound("Job"), registries) : null;
-        craftOpIndex = tag.getInt("CraftOpIndex");
-        craftOpTotal = tag.getInt("CraftOpTotal");
-    }
-
-    // deserializeNBT resizes the handler to the saved size; copy instead so older saves keep the current capacity
-    private static void loadKeepingSize(ItemStackHandler target, CompoundTag tag, HolderLookup.Provider registries) {
-        ItemStackHandler saved = new ItemStackHandler();
-        saved.deserializeNBT(registries, tag);
-        for (int i = 0; i < target.getSlots(); i++) {
-            target.setStackInSlot(i, i < saved.getSlots() ? saved.getStackInSlot(i) : ItemStack.EMPTY);
-        }
+    protected final void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        containerSlots.deserialize(input.childOrEmpty("ContainerSlots"));
+        patterns.deserialize(input.childOrEmpty("Patterns"));
+        encoderBlanks.deserialize(input.childOrEmpty("EncoderBlanks"));
+        energy.deserialize(input.childOrEmpty("Energy"));
+        job = input.child("Job").flatMap(child -> TagDataIO.read(child, CraftingJob::load)).orElse(null);
+        craftOpIndex = input.getIntOr("CraftOpIndex", job == null ? 0 : job.opIndex());
+        craftOpTotal = input.getIntOr("CraftOpTotal", job == null ? 0 : job.operationsSize());
     }
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = super.getUpdateTag(registries);
-        tag.put("ContainerSlots", containerSlots.serializeNBT(registries));
-        tag.put("Patterns", patterns.serializeNBT(registries));
-        tag.put("EncoderBlanks", encoderBlanks.serializeNBT(registries));
-        tag.put("Energy", energy.serializeNBT(registries));
-        if (job != null && !job.isFinished() && job.operationsSize() > 0) {
-            tag.putInt("CraftOpIndex", job.opIndex());
-            tag.putInt("CraftOpTotal", job.operationsSize());
-        } else {
-            tag.putInt("CraftOpIndex", 0);
-            tag.putInt("CraftOpTotal", 0);
+        try (var problems = new ProblemReporter.ScopedCollector(problemPath(), igentuman.nc.NuclearCraft.LOGGER)) {
+            var output = TagValueOutput.createWithContext(problems, registries);
+            writeContents(output);
+            output.putInt("CraftOpIndex", job != null && !job.isFinished() ? job.opIndex() : 0);
+            output.putInt("CraftOpTotal", job != null && !job.isFinished() ? job.operationsSize() : 0);
+            return output.buildResult();
         }
-        return tag;
     }
 
     @Nullable

@@ -32,7 +32,7 @@ public record PacketFusionAmplificationAdjust(BlockPos pos, int value) implement
     public static void handle(PacketFusionAmplificationAdjust packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            BlockEntity be = serverPlayer.serverLevel().getBlockEntity(packet.pos());
+            BlockEntity be = serverPlayer.level().getBlockEntity(packet.pos());
             if (be instanceof FusionReactorControllerBE controller) {
                 controller.setAmplificationAdjustment(packet.value());
             }

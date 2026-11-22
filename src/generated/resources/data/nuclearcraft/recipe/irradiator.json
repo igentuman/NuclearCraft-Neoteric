@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft",
   "key": {
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "F": {
-      "item": "minecraft:furnace"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    },
-    "S": {
-      "item": "nuclearcraft:coil_magnesium_diboride"
-    },
-    "U": {
-      "item": "minecraft:chest"
-    }
+    "C": "nuclearcraft:chassis",
+    "F": "minecraft:furnace",
+    "P": "nuclearcraft:plate_advanced",
+    "S": "nuclearcraft:coil_magnesium_diboride",
+    "U": "minecraft:chest"
   },
   "pattern": [
     "PUP",
@@ -25,7 +15,6 @@
     "PFP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:irradiator"
   }
 }

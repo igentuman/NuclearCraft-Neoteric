@@ -1,4 +1,14 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "mekanism:pellet_polonium"
+    }
+  ],
   "type": "nuclearcraft:crystallizer",
   "energy_per_tick": 50,
   "fluid_inputs": [

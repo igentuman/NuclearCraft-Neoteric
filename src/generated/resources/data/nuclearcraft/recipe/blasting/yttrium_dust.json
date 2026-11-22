@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/yttrium"
-  },
+  "ingredient": "#c:dusts/yttrium",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:yttrium_ingot"
   }
 }

@@ -17,12 +17,12 @@ public class Blocks extends ModEntries {
                 .sound(SoundType.GRAVEL)
                 .strength(1.5f)
                 .requiresCorrectToolForDrops());
-        add("wasteland_portal").block(() -> new PortalBlock()).build();
-        add("redstone_dimmer").block(() -> new RedstoneDimmerBlock()).build();
+        add("wasteland_portal").block(PortalBlock::new).build();
+        add("redstone_dimmer").block(RedstoneDimmerBlock::new).build();
         deco("glowing_mushroom", BlockBehaviour.Properties.of()
                 .mapColor(MapColor.COLOR_LIGHT_GRAY)
                 .sound(SoundType.GRASS)
-                .noCollission()
+                .noCollision()
                 .noOcclusion()
                 .instabreak()
                 .randomTicks()

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "T": {
-      "tag": "c:ingots/tin"
-    }
+    "I": "#c:ingots/iron",
+    "P": "nuclearcraft:plate_basic",
+    "T": "#c:ingots/tin"
   },
   "pattern": [
     "PTP",
@@ -18,7 +12,6 @@
     "PTP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:empty_frame"
   }
 }

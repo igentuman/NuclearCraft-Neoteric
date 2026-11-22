@@ -2,7 +2,9 @@ package igentuman.nc.client.renderer;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.shaders.UniformType;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.client.bomb.ActiveBomb;
 import igentuman.nc.client.bomb.BombFxManager;
@@ -10,18 +12,20 @@ import igentuman.nc.client.bomb.NukeTimeline;
 import igentuman.nc.client.bomb.NukeVisualState;
 import igentuman.nc.config.Client;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.EffectInstance;
-import net.minecraft.client.renderer.PostPass;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceProvider;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.client.renderer.state.level.SkyRenderState;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.event.ExtractLevelRenderStateEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
+import org.joml.Matrix4fc;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,18 +35,37 @@ public final class NukeVolumeRenderer {
 
     public static final int MAX_DETAILED = 4;
     public static final double MAX_RENDER_DISTANCE = 4096.0;
-    public static final ResourceLocation NOISE_ATLAS = rl("textures/effect/nuke_noise.png");
-    private static final String[] SHAPE_A = {"ShapeA0", "ShapeA1", "ShapeA2", "ShapeA3"};
-    private static final String[] SHAPE_B = {"ShapeB0", "ShapeB1", "ShapeB2", "ShapeB3"};
+    public static final Identifier NOISE_ATLAS = rl("textures/effect/nuke_noise.png");
     private static final float SELECTION_HYSTERESIS = 1.25f;
 
+    static final RenderPipeline THERMAL_PIPELINE = PostEffectSupport.pipeline(rl("pipeline/nuke_thermal"), rl("post/nuke_thermal"))
+            .withSampler("InSampler")
+            .withSampler("DepthSampler")
+            .withUniform("NukeThermal", UniformType.UNIFORM_BUFFER)
+            .build();
+    static final RenderPipeline VOLUME_PIPELINE = PostEffectSupport.pipeline(rl("pipeline/nuke_volume"), rl("post/nuke_volume"))
+            .withSampler("DepthSampler")
+            .withSampler("NoiseSampler")
+            .withUniform("NukeVolume", UniformType.UNIFORM_BUFFER)
+            .build();
+    static final RenderPipeline COMPOSITE_PIPELINE = PostEffectSupport.pipeline(rl("pipeline/nuke_composite"), rl("post/nuke_composite"))
+            .withSampler("InSampler")
+            .withSampler("VolumeSampler")
+            .withSampler("DepthSampler")
+            .withUniform("NukeComposite", UniformType.UNIFORM_BUFFER)
+            .build();
+
+    private static final PostEffectSupport.Uniforms THERMAL_UNIFORMS = new PostEffectSupport.Uniforms("nc nuke thermal", 512);
+    private static final PostEffectSupport.Uniforms VOLUME_UNIFORMS = new PostEffectSupport.Uniforms("nc nuke volume", 768);
+    private static final PostEffectSupport.Uniforms COMPOSITE_UNIFORMS = new PostEffectSupport.Uniforms("nc nuke composite", 64);
+
     private static TextureTarget thermalOut;
-    private static HdrTextureTarget volumeOut;
-    private static TextureTarget compositeOut;
-    private static PostPass thermalPass;
-    private static PostPass volumePass;
-    private static PostPass compositePass;
-    private static int depthTexture;
+    /** RGBA8 stores logarithmic radiance and linear transmittance. */
+    private static TextureTarget volumeOut;
+    private static Lighting pendingLighting;
+    private static boolean failed;
+
+    private record Lighting(float x, float y, float intensity, int skyColor, float brightness) {}
 
     private static final List<ActiveBomb> CANDIDATES = new ArrayList<>();
     private static final List<ActiveBomb> SELECTED = new ArrayList<>(MAX_DETAILED);
@@ -51,15 +74,14 @@ public final class NukeVolumeRenderer {
     private static final float[] THERMAL_CENTERS = new float[16];
     private static final float[] THERMAL_PARAMS = new float[16];
     private static final float[] THERMAL_EXTRA = new float[16];
-    private static final Matrix4f SCRATCH = new Matrix4f();
 
     private NukeVolumeRenderer() {}
 
     public static boolean available() {
-        return thermalPass != null && volumePass != null && compositePass != null;
+        return !failed;
     }
 
-    public static boolean hasWork() {
+    private static boolean hasWork() {
         if (!available()) return false;
         for (ActiveBomb bomb : BombFxManager.active()) {
             if (!bomb.expired()) return true;
@@ -67,42 +89,36 @@ public final class NukeVolumeRenderer {
         return false;
     }
 
-    public static void reload(ResourceProvider resources) {
-        close();
-        Minecraft mc = Minecraft.getInstance();
-        RenderTarget main = mc.getMainRenderTarget();
-        Client.NukeQuality quality = Client.effectiveNukeQuality();
-        try {
-            thermalOut = new TextureTarget(main.width, main.height, false, Minecraft.ON_OSX);
-            volumeOut = new HdrTextureTarget(scaled(main.width, quality), scaled(main.height, quality), false, Minecraft.ON_OSX);
-            compositeOut = new TextureTarget(main.width, main.height, false, Minecraft.ON_OSX);
+    static boolean hasFrame() {
+        return pendingLighting != null;
+    }
 
-            thermalPass = new PostPass(resources, "nuclearcraft:nuke_thermal", main, thermalOut, false);
-            thermalPass.addAuxAsset("DepthSampler", NukeVolumeRenderer::depthTexture, main.width, main.height);
+    static void extractLighting(ExtractLevelRenderStateEvent event) {
+        // The level renderer resets its sky state before the final render stage.
+        pendingLighting = null;
+        if (!hasWork()) return;
 
-            volumePass = new PostPass(resources, "nuclearcraft:nuke_volume", main, volumeOut, false);
-            volumePass.addAuxAsset("DepthSampler", NukeVolumeRenderer::depthTexture, main.width, main.height);
-            volumePass.addAuxAsset("NoiseSampler", NukeVolumeRenderer::noiseTexture, 0, 0);
-
-            compositePass = new PostPass(resources, "nuclearcraft:nuke_composite", thermalOut, compositeOut, false);
-            compositePass.addAuxAsset("VolumeSampler", () -> volumeOut.getColorTextureId(), volumeOut.width, volumeOut.height);
-            compositePass.addAuxAsset("DepthSampler", NukeVolumeRenderer::depthTexture, main.width, main.height);
-
-            resize(main, quality);
-        } catch (IOException | RuntimeException e) {
-            close();
-            NuclearCraft.LOGGER.error("Unable to load nuke volume shaders; volumetric explosions disabled", e);
-        } finally {
-            main.bindWrite(false);
+        SkyRenderState sky = event.getRenderState().skyRenderState;
+        float partialTick = event.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        var attributes = event.getCamera().attributeProbe();
+        int skyColor = attributes.getValue(EnvironmentAttributes.SKY_COLOR, partialTick);
+        float brightness = Math.max(0.2f, attributes.getValue(EnvironmentAttributes.SKY_LIGHT_FACTOR, partialTick));
+        if (sky.skybox != DimensionType.Skybox.OVERWORLD) {
+            pendingLighting = new Lighting(0f, 1f, 0f, skyColor, brightness);
+            return;
         }
-    }
 
-    private static int depthTexture() {
-        return depthTexture;
-    }
-
-    private static int noiseTexture() {
-        return Minecraft.getInstance().getTextureManager().getTexture(NOISE_ATLAS).getId();
+        float sunHeight = Mth.cos(sky.sunAngle);
+        float moonHeight = Mth.cos(sky.moonAngle);
+        float sun = Mth.clamp(sunHeight * 4f + 0.2f, 0f, 1f);
+        float moon = Mth.clamp(moonHeight * 4f + 0.2f, 0f, 1f) * 0.15f;
+        boolean useSun = sun >= moon;
+        // SkyRenderer turns the celestial path onto the X/Y plane.
+        float x = -Mth.sin(useSun ? sky.sunAngle : sky.moonAngle);
+        float y = Math.max(useSun ? sunHeight : moonHeight, 0.15f);
+        float length = Mth.sqrt(x * x + y * y);
+        float intensity = Math.max(sun, moon) * (0.4f + 0.6f * sky.rainBrightness);
+        pendingLighting = new Lighting(x / length, y / length, intensity, skyColor, brightness);
     }
 
     private static int scaled(int size, Client.NukeQuality quality) {
@@ -110,24 +126,14 @@ public final class NukeVolumeRenderer {
     }
 
     private static void resize(RenderTarget main, Client.NukeQuality quality) {
-        if (thermalOut.width != main.width || thermalOut.height != main.height) {
-            thermalOut.resize(main.width, main.height, Minecraft.ON_OSX);
-        }
-        if (compositeOut.width != main.width || compositeOut.height != main.height) {
-            compositeOut.resize(main.width, main.height, Minecraft.ON_OSX);
-        }
+        thermalOut = PostEffectSupport.ensureTarget(thermalOut, "nc nuke thermal", main, false);
         int volumeWidth = scaled(main.width, quality);
         int volumeHeight = scaled(main.height, quality);
-        if (volumeOut.width != volumeWidth || volumeOut.height != volumeHeight) {
-            volumeOut.resize(volumeWidth, volumeHeight, Minecraft.ON_OSX);
+        if (volumeOut == null) {
+            volumeOut = new TextureTarget("nc nuke volume", volumeWidth, volumeHeight, false);
+        } else if (volumeOut.width != volumeWidth || volumeOut.height != volumeHeight) {
+            volumeOut.resize(volumeWidth, volumeHeight);
         }
-        thermalPass.setOrthoMatrix(ortho(thermalOut));
-        volumePass.setOrthoMatrix(ortho(volumeOut));
-        compositePass.setOrthoMatrix(ortho(compositeOut));
-    }
-
-    private static Matrix4f ortho(RenderTarget target) {
-        return new Matrix4f().setOrtho(0F, target.width, 0F, target.height, 0.1F, 1000F);
     }
 
     private static void select(Vec3 camera, float partialTick) {
@@ -158,57 +164,88 @@ public final class NukeVolumeRenderer {
         return Math.sqrt(camera.distanceToSqr(Vec3.atCenterOf(bomb.epicenter)));
     }
 
-    static void render(RenderLevelStageEvent event, int sceneDepthTexture) {
+    static void render(RenderLevelStageEvent event, TextureTarget sceneDepth) {
+        Lighting light = pendingLighting;
+        pendingLighting = null;
         Minecraft mc = Minecraft.getInstance();
-        if (!available() || mc.level == null || sceneDepthTexture <= 0) return;
-        Vec3 camera = event.getCamera().getPosition();
-        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+        if (light == null || !available() || mc.level == null || sceneDepth == null) return;
+        LevelRenderState state = event.getLevelRenderState();
+        Vec3 camera = state.cameraRenderState.pos;
+        float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
         select(camera, partialTick);
         if (SELECTED.isEmpty()) return;
 
-        depthTexture = sceneDepthTexture;
         RenderTarget main = mc.getMainRenderTarget();
         Client.NukeQuality quality = Client.effectiveNukeQuality();
-        resize(main, quality);
-        Matrix4f projection = event.getProjectionMatrix();
-        Matrix4f view = event.getModelViewMatrix();
+        Matrix4fc projection = state.cameraRenderState.projectionMatrix;
+        Matrix4fc view = event.getModelViewMatrix();
         Matrix4f inverseProjection = new Matrix4f(projection).invert();
         Matrix4f inverseView = new Matrix4f(view).invert();
-        EffectInstance thermal = thermalPass.getEffect();
-        EffectInstance volume = volumePass.getEffect();
-        EffectInstance composite = compositePass.getEffect();
-        uploadCamera(thermal, inverseProjection, inverseView);
-        uploadCamera(volume, inverseProjection, inverseView);
-        uploadCamera(composite, inverseProjection, inverseView);
-        thermal.safeGetUniform("Projection").set(projection);
-        thermal.safeGetUniform("ViewMat").set(view);
-        uploadThermal(thermal, camera);
-        uploadVolumes(volume, camera, quality);
-        uploadLighting(volume, mc.level, camera, partialTick);
 
         try {
-            RenderSystem.disableBlend();
-            thermalPass.process(partialTick);
-            volumePass.process(partialTick);
-            compositePass.process(partialTick);
-            main.bindWrite(false);
-            compositeOut.blitToScreen(main.width, main.height);
-        } finally {
-            depthTexture = 0;
-            main.bindWrite(true);
-            RenderSystem.depthMask(true);
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthFunc(GL11.GL_LEQUAL);
-            RenderSystem.defaultBlendFunc();
+            resize(main, quality);
+            int thermalCount = packThermal(camera);
+            GpuBuffer thermal = THERMAL_UNIFORMS.write(b -> b
+                    .putMat4f(inverseProjection)
+                    .putMat4f(inverseView)
+                    .putMat4f(projection)
+                    .putMat4f(view)
+                    .putMat4f(new Matrix4f().set(THERMAL_CENTERS))
+                    .putMat4f(new Matrix4f().set(THERMAL_PARAMS))
+                    .putMat4f(new Matrix4f().set(THERMAL_EXTRA))
+                    .putInt(thermalCount));
+            float detail = quality.detail;
+            GpuBuffer volume = VOLUME_UNIFORMS.write(b -> {
+                b.putMat4f(inverseProjection).putMat4f(inverseView);
+                Matrix4f[] shapeB = new Matrix4f[MAX_DETAILED];
+                for (int i = 0; i < MAX_DETAILED; i++) {
+                    if (i < SELECTED.size()) {
+                        ActiveBomb bomb = SELECTED.get(i);
+                        bomb.visual.pack(PACKED, bomb, camera, detail);
+                        b.putMat4f(new Matrix4f().set(PACKED, 0));
+                        shapeB[i] = new Matrix4f().set(PACKED, 16);
+                    } else {
+                        b.putMat4f(new Matrix4f().zero());
+                        shapeB[i] = new Matrix4f().zero();
+                    }
+                }
+                for (Matrix4f m : shapeB) b.putMat4f(m);
+                b.putVec4(light.x(), light.y(), 0f, light.intensity());
+                b.putVec4(ARGB.redFloat(light.skyColor()), ARGB.greenFloat(light.skyColor()),
+                        ARGB.blueFloat(light.skyColor()), light.brightness());
+                b.putInt(SELECTED.size()).putInt(quality.maxSamples).putInt(quality.lightProbes);
+            });
+            GpuBuffer composite = COMPOSITE_UNIFORMS.write(b -> b.putMat4f(inverseProjection));
+
+            // Thermal refraction reads the finished frame; the volume is ray-marched at reduced
+            // resolution; the composite blends both back into the main target.
+            new PostEffectSupport.Draw("nc nuke thermal", THERMAL_PIPELINE)
+                    .sampler("InSampler", main.getColorTextureView())
+                    .sampler("DepthSampler", sceneDepth.getDepthTextureView())
+                    .uniform("NukeThermal", thermal)
+                    .into(thermalOut.getColorTextureView(), null);
+            AbstractTexture noise = mc.getTextureManager().getTexture(NOISE_ATLAS);
+            new PostEffectSupport.Draw("nc nuke volume", VOLUME_PIPELINE)
+                    .sampler("DepthSampler", sceneDepth.getDepthTextureView())
+                    .sampler("NoiseSampler", noise.getTextureView(), noise.getSampler())
+                    .uniform("NukeVolume", volume)
+                    .into(volumeOut.getColorTextureView(), null);
+            new PostEffectSupport.Draw("nc nuke composite", COMPOSITE_PIPELINE)
+                    .sampler("InSampler", thermalOut.getColorTextureView())
+                    .sampler("VolumeSampler", volumeOut.getColorTextureView())
+                    .sampler("DepthSampler", sceneDepth.getDepthTextureView())
+                    .uniform("NukeComposite", composite)
+                    .into(main.getColorTextureView(), null);
+        } catch (RuntimeException e) {
+            failed = true;
+            NuclearCraft.LOGGER.error("Nuke volume shaders failed; volumetric explosions disabled", e);
         }
     }
 
-    private static void uploadCamera(EffectInstance effect, Matrix4f inverseProjection, Matrix4f inverseView) {
-        effect.safeGetUniform("InverseProjection").set(inverseProjection);
-        effect.safeGetUniform("InverseView").set(inverseView);
-    }
-
-    private static void uploadThermal(EffectInstance effect, Vec3 camera) {
+    private static int packThermal(Vec3 camera) {
+        java.util.Arrays.fill(THERMAL_CENTERS, 0f);
+        java.util.Arrays.fill(THERMAL_PARAMS, 0f);
+        java.util.Arrays.fill(THERMAL_EXTRA, 0f);
         int count = 0;
         if (Client.nukeThermalRefraction) {
             for (ActiveBomb bomb : SELECTED) {
@@ -225,53 +262,14 @@ public final class NukeVolumeRenderer {
                 THERMAL_PARAMS[o + 3] = v.hazeRadius;
                 THERMAL_EXTRA[o] = v.age;
                 THERMAL_EXTRA[o + 1] = v.r;
-                THERMAL_EXTRA[o + 2] = 0f;
-                THERMAL_EXTRA[o + 3] = 0f;
                 count++;
             }
         }
-        effect.safeGetUniform("ThermalCenters").set(SCRATCH.set(THERMAL_CENTERS));
-        effect.safeGetUniform("ThermalParams").set(SCRATCH.set(THERMAL_PARAMS));
-        effect.safeGetUniform("ThermalExtra").set(SCRATCH.set(THERMAL_EXTRA));
-        effect.safeGetUniform("ThermalCount").set(count);
-    }
-
-    private static void uploadVolumes(EffectInstance effect, Vec3 camera, Client.NukeQuality quality) {
-        float detail = quality.detail;
-        for (int i = 0; i < MAX_DETAILED; i++) {
-            if (i < SELECTED.size()) {
-                ActiveBomb bomb = SELECTED.get(i);
-                bomb.visual.pack(PACKED, bomb, camera, detail);
-                effect.safeGetUniform(SHAPE_A[i]).set(SCRATCH.set(PACKED, 0));
-                effect.safeGetUniform(SHAPE_B[i]).set(SCRATCH.set(PACKED, 16));
-            } else {
-                effect.safeGetUniform(SHAPE_A[i]).set(SCRATCH.zero());
-                effect.safeGetUniform(SHAPE_B[i]).set(SCRATCH.zero());
-            }
-        }
-        effect.safeGetUniform("VolumeCount").set(SELECTED.size());
-        effect.safeGetUniform("MaxSamples").set(quality.maxSamples);
-        effect.safeGetUniform("LightProbes").set(quality.lightProbes);
-    }
-
-    private static void uploadLighting(EffectInstance effect, ClientLevel level, Vec3 camera, float partialTick) {
-        float angle = level.getTimeOfDay(partialTick) * Mth.TWO_PI;
-        float sx = -Mth.sin(angle);
-        float sy = Mth.cos(angle);
-        float sun = Mth.clamp(sy * 4f + 0.2f, 0f, 1f);
-        float moon = Mth.clamp(-sy * 4f + 0.2f, 0f, 1f) * 0.15f;
-        float intensity = Math.max(sun, moon) * (1f - level.getRainLevel(partialTick) * 0.6f);
-        float lx = sy >= 0f ? sx : -sx;
-        float ly = Math.max(Math.abs(sy), 0.15f);
-        float lz = 0.15f;
-        float length = Mth.sqrt(lx * lx + ly * ly + lz * lz);
-        effect.safeGetUniform("Light").set(lx / length, ly / length, lz / length, intensity);
-        Vec3 sky = level.getSkyColor(camera, partialTick);
-        float brightness = level.getSkyDarken(partialTick);
-        effect.safeGetUniform("Ambient").set((float) sky.x, (float) sky.y, (float) sky.z, brightness);
+        return count;
     }
 
     public static void clear() {
+        pendingLighting = null;
         SELECTED.clear();
         PREVIOUS.clear();
         CANDIDATES.clear();
@@ -279,17 +277,13 @@ public final class NukeVolumeRenderer {
 
     public static void close() {
         clear();
-        if (thermalPass != null) thermalPass.close();
-        if (volumePass != null) volumePass.close();
-        if (compositePass != null) compositePass.close();
+        THERMAL_UNIFORMS.close();
+        VOLUME_UNIFORMS.close();
+        COMPOSITE_UNIFORMS.close();
         if (thermalOut != null) thermalOut.destroyBuffers();
         if (volumeOut != null) volumeOut.destroyBuffers();
-        if (compositeOut != null) compositeOut.destroyBuffers();
-        thermalPass = null;
-        volumePass = null;
-        compositePass = null;
         thermalOut = null;
         volumeOut = null;
-        compositeOut = null;
+        failed = false;
     }
 }

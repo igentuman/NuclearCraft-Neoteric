@@ -6,12 +6,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -41,7 +40,7 @@ public record PacketBuildMultiblock(BlockPos pos, CompoundTag blockMapTag) imple
         CompoundTag tag = new CompoundTag();
         ListTag list = new ListTag();
         for (var entry : blockMap.entrySet()) {
-            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(entry.getValue());
+            Identifier id = BuiltInRegistries.BLOCK.getKey(entry.getValue());
             if (id == null) continue;
             CompoundTag cell = new CompoundTag();
             cell.putLong("pos", entry.getKey().asLong());
@@ -54,13 +53,12 @@ public record PacketBuildMultiblock(BlockPos pos, CompoundTag blockMapTag) imple
 
     public static HashMap<BlockPos, Block> readBlockMap(CompoundTag tag) {
         HashMap<BlockPos, Block> map = new HashMap<>();
-        ListTag list = tag.getList("blocks", Tag.TAG_COMPOUND);
+        ListTag list = tag.getListOrEmpty("blocks");
         for (int i = 0; i < list.size(); i++) {
-            CompoundTag cell = list.getCompound(i);
-            Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(cell.getString("block")));
-            if (block != null) {
-                map.put(BlockPos.of(cell.getLong("pos")), block);
-            }
+            CompoundTag cell = list.getCompoundOrEmpty(i);
+            Identifier id = cell.getString("block").map(Identifier::tryParse).orElse(null);
+            if (id == null || cell.getLong("pos").isEmpty()) continue;
+            map.put(BlockPos.of(cell.getLong("pos").get()), BuiltInRegistries.BLOCK.getValue(id));
         }
         return map;
     }
@@ -68,7 +66,7 @@ public record PacketBuildMultiblock(BlockPos pos, CompoundTag blockMapTag) imple
     public static void handle(PacketBuildMultiblock packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer player)) return;
-            BlockEntity be = player.serverLevel().getBlockEntity(packet.pos());
+            BlockEntity be = player.level().getBlockEntity(packet.pos());
             if (be instanceof MultiblockBuilderBE builder
                     && builder.build(readBlockMap(packet.blockMapTag()), player)) {
                 PacketDistributor.sendToPlayer(player, new PacketMultiblockBuilt(packet.pos()));

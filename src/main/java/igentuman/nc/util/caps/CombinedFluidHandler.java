@@ -1,103 +1,80 @@
 package igentuman.nc.util.caps;
 
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-/** Exposes multiple fluid handlers as one, with separate fillable and drainable tank groups. */
-public class CombinedFluidHandler implements IFluidHandler {
+import java.util.Arrays;
+import java.util.Objects;
 
-    private final IFluidHandler[] delegates;
-    /** Handlers that accept external fill (input + global tanks). */
-    private final IFluidHandler[] fillable;
-    /** Handlers that accept external drain (output + global tanks). */
-    private final IFluidHandler[] drainable;
-    private final int totalTanks;
+/** Combines native fluid stores with separate insertion and extraction permissions. */
+public class CombinedFluidHandler implements ResourceHandler<FluidResource> {
+    private final ResourceHandler<FluidResource>[] delegates;
+    private final ResourceHandler<FluidResource>[] fillable;
+    private final ResourceHandler<FluidResource>[] drainable;
 
-    public CombinedFluidHandler(IFluidHandler... delegates) {
+    @SafeVarargs
+    public CombinedFluidHandler(ResourceHandler<FluidResource>... delegates) {
         this(delegates, delegates, delegates);
     }
 
-    /**
-     * @param allTanks    all tanks for indexing/query purposes
-     * @param fillable    tanks that accept external fill (input + global)
-     * @param drainable   tanks that accept external drain (output + global)
-     */
-    public CombinedFluidHandler(IFluidHandler[] allTanks, IFluidHandler[] fillable, IFluidHandler[] drainable) {
-        this.delegates = allTanks;
-        this.fillable = fillable;
-        this.drainable = drainable;
-        int total = 0;
-        for (IFluidHandler handler : allTanks) {
-            total += handler.getTanks();
-        }
-        this.totalTanks = total;
-    }
-
-    private HandlerTank resolve(int tank) {
-        int offset = 0;
-        for (IFluidHandler handler : delegates) {
-            int size = handler.getTanks();
-            if (tank < offset + size) {
-                return new HandlerTank(handler, tank - offset);
+    public CombinedFluidHandler(ResourceHandler<FluidResource>[] allTanks,
+                                ResourceHandler<FluidResource>[] fillable,
+                                ResourceHandler<FluidResource>[] drainable) {
+        this.delegates = allTanks.clone();
+        this.fillable = fillable.clone();
+        this.drainable = drainable.clone();
+        for (var handler : delegates) Objects.requireNonNull(handler);
+        for (var group : java.util.List.of(this.fillable, this.drainable)) {
+            for (var handler : group) {
+                if (!allows(delegates, handler)) throw new IllegalArgumentException("Unlisted fluid delegate");
             }
-            offset += size;
         }
-        return null;
     }
 
-    @Override
-    public int getTanks() {
-        return totalTanks;
+    private boolean allows(ResourceHandler<FluidResource>[] group, ResourceHandler<FluidResource> handler) {
+        return Arrays.stream(group).anyMatch(candidate -> candidate == handler);
     }
 
-    @Override
-    public @NotNull FluidStack getFluidInTank(int tank) {
-        HandlerTank ht = resolve(tank);
-        return ht != null ? ht.handler.getFluidInTank(ht.tank) : FluidStack.EMPTY;
+    @Override public int size() {
+        int size = 0;
+        for (var handler : delegates) size = Math.addExact(size, handler.size());
+        return size;
     }
-
-    @Override
-    public int getTankCapacity(int tank) {
-        HandlerTank ht = resolve(tank);
-        return ht != null ? ht.handler.getTankCapacity(ht.tank) : 0;
-    }
-
-    @Override
-    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-        HandlerTank ht = resolve(tank);
-        return ht != null && ht.handler.isFluidValid(ht.tank, stack);
-    }
-
-    @Override
-    public int fill(@NotNull FluidStack resource, FluidAction action) {
-        if (resource.isEmpty()) return 0;
-        for (IFluidHandler handler : fillable) {
-            int filled = handler.fill(resource, action);
-            if (filled > 0) return filled;
+    private HandlerTank resolve(int index) {
+        Objects.checkIndex(index, size());
+        for (var handler : delegates) {
+            if (index < handler.size()) return new HandlerTank(handler, index);
+            index -= handler.size();
         }
-        return 0;
+        throw new IndexOutOfBoundsException(index);
     }
-
-    @Override
-    public @NotNull FluidStack drain(@NotNull FluidStack resource, FluidAction action) {
-        if (resource.isEmpty()) return FluidStack.EMPTY;
-        for (IFluidHandler handler : drainable) {
-            FluidStack drained = handler.drain(resource, action);
-            if (!drained.isEmpty()) return drained;
-        }
-        return FluidStack.EMPTY;
+    @Override public FluidResource getResource(int index) {
+        var tank = resolve(index);
+        return tank.handler().getResource(tank.index());
     }
-
-    @Override
-    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-        if (maxDrain <= 0) return FluidStack.EMPTY;
-        for (IFluidHandler handler : drainable) {
-            FluidStack drained = handler.drain(maxDrain, action);
-            if (!drained.isEmpty()) return drained;
-        }
-        return FluidStack.EMPTY;
+    @Override public long getAmountAsLong(int index) {
+        var tank = resolve(index);
+        return tank.handler().getAmountAsLong(tank.index());
     }
-
-    private record HandlerTank(IFluidHandler handler, int tank) {}
+    @Override public long getCapacityAsLong(int index, FluidResource resource) {
+        var tank = resolve(index);
+        return resource.isEmpty() || isValid(index, resource) ? tank.handler().getCapacityAsLong(tank.index(), resource) : 0;
+    }
+    @Override public boolean isValid(int index, FluidResource resource) {
+        var tank = resolve(index);
+        return allows(fillable, tank.handler()) && tank.handler().isValid(tank.index(), resource);
+    }
+    @Override public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        var tank = resolve(index);
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        return allows(fillable, tank.handler()) ? tank.handler().insert(tank.index(), resource, amount, transaction) : 0;
+    }
+    @Override public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        var tank = resolve(index);
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        return allows(drainable, tank.handler()) ? tank.handler().extract(tank.index(), resource, amount, transaction) : 0;
+    }
+    private record HandlerTank(ResourceHandler<FluidResource> handler, int index) {}
 }

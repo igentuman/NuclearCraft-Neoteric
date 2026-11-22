@@ -1,6 +1,6 @@
 package igentuman.nc.registration;
 
-import igentuman.nc.content.fuel.FuelDef;
+import igentuman.nc.api.content.FuelDef;
 import igentuman.nc.item.ItemFuel;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.TextureUtil;
@@ -71,8 +71,8 @@ public class FissionFuelEntry {
         String[] itemVariants = base.isSpecial() ? new String[]{""} : FuelDef.ITEM_VARIANTS;
         for (String v : itemVariants) {
             String fuelId = idStem + v;
-            fuelItems.put(v, ITEMS.register(fuelId, () -> new ItemFuel(new Item.Properties(), this, v)));
-            depletedItems.put(v, ITEMS.register("depleted_" + fuelId, () -> new Item(new Item.Properties())));
+            fuelItems.put(v, ITEMS.registerItem(fuelId, props -> new ItemFuel(props, this, v)));
+            depletedItems.put(v, ITEMS.registerSimpleItem("depleted_" + fuelId));
         }
 
         String nm = name.replace("-", "_");

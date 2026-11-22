@@ -1,42 +1,29 @@
 package igentuman.nc.item;
 
-import igentuman.nc.setup.ModEntries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ToolMaterial;
 
-import java.util.function.Supplier;
+import static igentuman.nc.NuclearCraft.rl;
 
 /** Defines the mod's custom tool material tiers (tough alloy, thorium) and their stats/repair ingredients. */
 public final class NCTiers {
 
     private NCTiers() {}
 
-    public static final Tier TOUGH = new NCTier(
-            10000, 12.0F, 10.0F, 22,
-            BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
-            () -> Ingredient.of(ModEntries.get("tough_alloy").materialEntry().ingot().get()));
+    public static final TagKey<Item> TOUGH_REPAIRS = TagKey.create(Registries.ITEM, rl("repairs/tough_alloy"));
+    public static final TagKey<Item> THORIUM_REPAIRS = TagKey.create(Registries.ITEM, rl("repairs/thorium"));
+    public static final TagKey<Item> QNP_REPAIRS = TagKey.create(Registries.ITEM, rl("repairs/qnp"));
+    public static final TagKey<Item> HEV_REPAIRS = TagKey.create(Registries.ITEM, rl("repairs/hev"));
 
-    public static final Tier THORIUM = new NCTier(
-            10000, 10.0F, 6.0F, 18,
-            BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
-            () -> Ingredient.of(ModEntries.get("thorium").materialEntry().ingot().get()));
+    public static final ToolMaterial TOUGH = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 10000, 12.0F, 10.0F, 22, TOUGH_REPAIRS);
 
-    public static final Tier QNP = new NCTier(
-            50000, 20.0F, 14.0F, 25,
-            BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
-            () -> Ingredient.of(ModEntries.get("lithium_ion_cell").item().get()));
+    public static final ToolMaterial THORIUM = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 10000, 10.0F, 6.0F, 18, THORIUM_REPAIRS);
 
-    private record NCTier(int uses, float speed, float attackDamageBonus, int enchantmentValue,
-                          TagKey<Block> incorrectBlocks, Supplier<Ingredient> repair) implements Tier {
-
-        @Override public int getUses() { return uses; }
-        @Override public float getSpeed() { return speed; }
-        @Override public float getAttackDamageBonus() { return attackDamageBonus; }
-        @Override public TagKey<Block> getIncorrectBlocksForDrops() { return incorrectBlocks; }
-        @Override public int getEnchantmentValue() { return enchantmentValue; }
-        @Override public Ingredient getRepairIngredient() { return repair.get(); }
-    }
+    public static final ToolMaterial QNP = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 50000, 20.0F, 14.0F, 25, QNP_REPAIRS);
 }

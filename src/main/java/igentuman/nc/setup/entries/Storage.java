@@ -1,6 +1,5 @@
 package igentuman.nc.setup.entries;
 
-import igentuman.nc.block.storage.AbstractStorageBlock;
 import igentuman.nc.block.storage.BarrelBlock;
 import igentuman.nc.block.storage.BatteryBlock;
 import igentuman.nc.block.storage.ContainerBlock;
@@ -39,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import static igentuman.nc.setup.ModEntries.ENTRIES;
 import static igentuman.nc.setup.Registers.*;
@@ -77,27 +76,28 @@ public class Storage {
 
     public static void storage() {
         for (String name : StorageDefs.BARRELS.keySet()) {
-            register(name, () -> new BarrelBlock(props(), name), BarrelBE::new, BarrelBlockItem::new);
+            register(name, props -> new BarrelBlock(props, name), BarrelBE::new, BarrelBlockItem::new);
         }
         for (String name : StorageDefs.CONTAINERS.keySet()) {
-            register(name, () -> new ContainerBlock(props(), name), ContainerBE::new, ContainerBlockItem::new);
+            register(name, props -> new ContainerBlock(props, name), ContainerBE::new, ContainerBlockItem::new);
         }
         for (String name : StorageDefs.BATTERIES.keySet()) {
-            register(name, () -> new BatteryBlock(props(), name), BatteryBE::new, BatteryBlockItem::new);
+            register(name, props -> new BatteryBlock(props, name), BatteryBE::new, BatteryBlockItem::new);
         }
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private static void register(String name, Supplier<Block> blockSupplier, StorageBEFactory beFactory,
+    private static void register(String name, Function<BlockBehaviour.Properties, Block> blockFactory, StorageBEFactory beFactory,
                                  BiFunction<Block, Item.Properties, ? extends BlockItem> itemFactory) {
-        DeferredBlock<Block> block = BLOCKS.register(name, blockSupplier);
-        DeferredItem<Item> item = ITEMS.register(name, () -> itemFactory.apply(block.get(), new Item.Properties()));
+        DeferredBlock<Block> block = BLOCKS.registerBlock(name, blockFactory, Storage::props);
+        DeferredItem<Item> item = ITEMS.<Item>registerItem(name, props -> itemFactory.apply(block.get(), props),
+                () -> new Item.Properties().useBlockDescriptionPrefix());
 
         final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>[] beHolder = new DeferredHolder[1];
         DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> beReg = BLOCK_ENTITIES.register(name,
-                () -> BlockEntityType.Builder.of(
+                () -> new BlockEntityType<>(
                         (pos, state) -> beFactory.create(beHolder[0].get(), pos, state, name),
-                        block.get()).build(null));
+                        block.get()));
         beHolder[0] = (DeferredHolder<BlockEntityType<?>, BlockEntityType<?>>) (DeferredHolder) beReg;
 
         ModEntry entry = new ModEntry(name, block, item, null, beHolder[0], false, null, null, null,
@@ -111,21 +111,22 @@ public class Storage {
             BlockEntityType<?> type = entry.blockEntity().get();
             Block block = entry.block().get();
             if (block instanceof BarrelBlock) {
-                event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, type,
+                event.registerBlockEntity(Capabilities.Fluid.BLOCK, type,
                         (be, side) -> be instanceof BarrelBE barrel ? barrel.getFluidHandler(side) : null);
                 int capacity = StorageDefs.barrelCapacityMb(entry.name());
-                event.registerItem(Capabilities.FluidHandler.ITEM,
-                        (stack, ctx) -> new BarrelItemFluidHandler(stack, capacity, () -> entry.blockEntity().get()),
+                event.registerItem(Capabilities.Fluid.ITEM,
+                        (stack, ctx) -> new BarrelItemFluidHandler(ctx, capacity, () -> entry.blockEntity().get()),
                         entry.item().get());
             } else if (block instanceof ContainerBlock) {
-                event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type,
+                event.registerBlockEntity(Capabilities.Item.BLOCK, type,
                         (be, side) -> be instanceof ContainerBE container ? container.getItemHandler(side) : null);
                 int size = StorageDefs.containerSize(entry.name());
-                event.registerItem(Capabilities.ItemHandler.ITEM,
-                        (stack, ctx) -> new UuidBackedItemHandler(size, () -> ContainerBlockItem.readUuid(stack)),
+                event.registerItem(Capabilities.Item.ITEM,
+                        (stack, ctx) -> new UuidBackedItemHandler(size, () -> ctx.getResource().is(entry.item().get())
+                                ? ContainerBlockItem.readUuid(ctx.getResource().toStack()) : null),
                         entry.item().get());
             } else if (block instanceof BatteryBlock) {
-                event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, type,
+                event.registerBlockEntity(Capabilities.Energy.BLOCK, type,
                         (be, side) -> be instanceof BatteryBE battery ? battery.getEnergyHandler(side) : null);
             }
         }

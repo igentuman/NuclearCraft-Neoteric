@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "tag": "c:ingots/baratol"
-    },
-    "S": {
-      "tag": "c:ingots/lead"
-    },
-    "T": {
-      "item": "minecraft:tnt"
-    }
+    "B": "#c:ingots/baratol",
+    "S": "#c:ingots/lead",
+    "T": "minecraft:tnt"
   },
   "pattern": [
     "STB",
@@ -18,7 +12,6 @@
     "STB"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:compression_charge"
   }
 }

@@ -8,23 +8,23 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 
 /** JEI category describing the weighted ore pools used by in-situ veins. */
-public class OreVeinRecipeCategory implements IRecipeCategory<OreVeinRecipe> {
+public class OreVeinRecipeCategory implements IRecipeCategory<RecipeHolder<OreVeinRecipe>> {
 
-    public static final RecipeType<OreVeinRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "nc_ore_veins", OreVeinRecipe.class);
+    public static final IRecipeHolderType<OreVeinRecipe> TYPE =
+            IRecipeHolderType.create(NuclearCraft.rl("nc_ore_veins"));
 
     private static final int WIDTH = 124;
     private static final int HEIGHT = 46;
@@ -38,7 +38,7 @@ public class OreVeinRecipeCategory implements IRecipeCategory<OreVeinRecipe> {
     }
 
     @Override
-    public RecipeType<OreVeinRecipe> getRecipeType() {
+    public IRecipeHolderType<OreVeinRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -63,23 +63,22 @@ public class OreVeinRecipeCategory implements IRecipeCategory<OreVeinRecipe> {
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, OreVeinRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<OreVeinRecipe> holder, IFocusGroup focuses) {
+        OreVeinRecipe recipe = holder.value();
         for (int i = 0; i < recipe.getOres().size(); i++) {
             OreVeinRecipe.OreEntry ore = recipe.getOres().get(i);
-            builder.addSlot(RecipeIngredientRole.OUTPUT, 7 + i * 20, 5)
-                    .addItemStacks(Arrays.stream(ore.ingredient().ingredient().getItems())
-                            .map(stack -> stack.copyWithCount(ore.ingredient().count()))
-                            .toList())
+            JeiRecipeSlots.addItems(builder.addSlot(RecipeIngredientRole.OUTPUT, 7 + i * 20, 5), ore.ingredient())
                     .addRichTooltipCallback((view, tooltip) -> tooltip.add(
                             Component.translatable("gui.nuclearcraft.ore_veins.weight", ore.weight())));
         }
     }
 
     @Override
-    public void draw(OreVeinRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics,
+    public void draw(RecipeHolder<OreVeinRecipe> holder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics,
                      double mouseX, double mouseY) {
+        OreVeinRecipe recipe = holder.value();
         Component name = Component.translatable("nc.ore_vein." + recipe.getId().getPath());
-        graphics.drawString(Minecraft.getInstance().font, name.copy().withStyle(ChatFormatting.DARK_GRAY),
-                4, 27, 0x404040, false);
+        graphics.text(Minecraft.getInstance().font, name.copy().withStyle(ChatFormatting.DARK_GRAY),
+                4, 27, 0xFF404040, false);
     }
 }

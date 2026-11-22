@@ -3,8 +3,8 @@ package igentuman.nc.client.multiblock;
 import igentuman.nc.network.PacketMultiblockDebug;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public final class MultiblockDebugOverlay implements LayeredDraw.Layer {
+public final class MultiblockDebugOverlay implements GuiLayer {
 
     public static final MultiblockDebugOverlay INSTANCE = new MultiblockDebugOverlay();
 
@@ -21,7 +21,7 @@ public final class MultiblockDebugOverlay implements LayeredDraw.Layer {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker deltaTracker) {
+    public void render(@NotNull GuiGraphicsExtractor graphics, @NotNull DeltaTracker deltaTracker) {
         if (!MultiblockDebugClient.isActive()) return;
         Minecraft minecraft = Minecraft.getInstance();
         HitResult hit = minecraft.hitResult;
@@ -45,7 +45,7 @@ public final class MultiblockDebugOverlay implements LayeredDraw.Layer {
         int x = 8;
         int y = graphics.guiHeight() / 2 - lines.size() * 5;
         for (String line : lines) {
-            graphics.drawString(minecraft.font, line, x, y, 0xFFFFFF55, true);
+            graphics.text(minecraft.font, line, x, y, 0xFFFFFF55, true);
             y += 10;
         }
     }

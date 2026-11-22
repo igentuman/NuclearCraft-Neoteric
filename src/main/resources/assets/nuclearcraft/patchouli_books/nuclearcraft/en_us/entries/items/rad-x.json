@@ -1,0 +1,15 @@
+{
+  "name": "Rad-Protection Potion",
+  "icon": "nuclear_radiation:rad_protection_potion",
+  "category": "nuclearcraft:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "radx",
+      "type": "items/1",
+      "header": "Rad-Protection Potion",
+      "item": "nuclear_radiation:rad_protection_potion",
+      "text": "Nuclear Radiation's $(item)Rad-Protection Potion$() reduces incoming radiation dose for five minutes. Potion II provides stronger protection for ten minutes."
+    }
+  ]
+}

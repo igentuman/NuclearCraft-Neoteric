@@ -37,7 +37,7 @@ public record PacketSideConfigToggle(BlockPos pos, int slotId, int direction)
     public static void handle(PacketSideConfigToggle packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            ServerLevel level = serverPlayer.serverLevel();
+            ServerLevel level = serverPlayer.level();
             BlockEntity be = level.getBlockEntity(packet.pos());
             if (!(be instanceof GlobalBlockEntity gbe)) return;
 

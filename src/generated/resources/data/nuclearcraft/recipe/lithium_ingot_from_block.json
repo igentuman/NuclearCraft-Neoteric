@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:storage_blocks/lithium"
-    }
+    "#c:storage_blocks/lithium"
   ],
   "result": {
     "count": 9,

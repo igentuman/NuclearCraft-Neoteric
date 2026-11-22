@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "nuclearcraft:tough"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "nuclearcraft:tough"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "nuclearcraft:tough"
+      }
+    ]
+  }
+}

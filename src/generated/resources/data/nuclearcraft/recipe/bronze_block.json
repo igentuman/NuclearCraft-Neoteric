@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_blocks",
   "ingredients": [
-    {
-      "tag": "c:ingots/bronze"
-    },
-    {
-      "tag": "c:ingots/bronze"
-    },
-    {
-      "tag": "c:ingots/bronze"
-    },
-    {
-      "tag": "c:ingots/bronze"
-    },
-    {
-      "tag": "c:ingots/bronze"
-    },
-    {
-      "tag": "c:ingots/bronze"
-    },
-    {
-      "tag": "c:ingots/bronze"
-    },
-    {
-      "tag": "c:ingots/bronze"
-    },
-    {
-      "tag": "c:ingots/bronze"
-    }
+    "#c:ingots/bronze",
+    "#c:ingots/bronze",
+    "#c:ingots/bronze",
+    "#c:ingots/bronze",
+    "#c:ingots/bronze",
+    "#c:ingots/bronze",
+    "#c:ingots/bronze",
+    "#c:ingots/bronze",
+    "#c:ingots/bronze"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:bronze_block"
   }
 }

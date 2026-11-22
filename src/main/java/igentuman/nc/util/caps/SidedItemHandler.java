@@ -1,20 +1,23 @@
 package igentuman.nc.util.caps;
 
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-/** Wraps an item handler to expose a contiguous slot range with optional insert/extract restrictions. */
-public class SidedItemHandler implements IItemHandler {
+import java.util.Objects;
 
-    private final ItemStackHandler inner;
+/** Exposes a native item slot range with insert/extract restrictions on every operation. */
+public class SidedItemHandler implements ResourceHandler<ItemResource> {
+    private final ResourceHandler<ItemResource> inner;
     private final int startSlot;
     private final int slotCount;
     private final boolean canInsert;
     private final boolean canExtract;
 
-    public SidedItemHandler(ItemStackHandler inner, int startSlot, int slotCount, boolean canInsert, boolean canExtract) {
+    public SidedItemHandler(ResourceHandler<ItemResource> inner, int startSlot, int slotCount,
+                            boolean canInsert, boolean canExtract) {
+        Objects.checkFromIndexSize(startSlot, slotCount, inner.size());
         this.inner = inner;
         this.startSlot = startSlot;
         this.slotCount = slotCount;
@@ -22,36 +25,26 @@ public class SidedItemHandler implements IItemHandler {
         this.canExtract = canExtract;
     }
 
-    @Override
-    public int getSlots() {
-        return slotCount;
+    private int slot(int index) { return startSlot + Objects.checkIndex(index, size()); }
+    @Override public int size() { return slotCount; }
+    @Override public ItemResource getResource(int index) { return inner.getResource(slot(index)); }
+    @Override public long getAmountAsLong(int index) { return inner.getAmountAsLong(slot(index)); }
+    @Override public long getCapacityAsLong(int index, ItemResource resource) {
+        int slot = slot(index);
+        return resource.isEmpty() || isValid(index, resource) ? inner.getCapacityAsLong(slot, resource) : 0;
     }
-
-    @Override
-    public @NotNull ItemStack getStackInSlot(int slot) {
-        return inner.getStackInSlot(startSlot + slot);
+    @Override public boolean isValid(int index, ItemResource resource) {
+        int slot = slot(index);
+        return canInsert && inner.isValid(slot, resource);
     }
-
-    @Override
-    public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-        if (!canInsert) return stack;
-        return inner.insertItem(startSlot + slot, stack, simulate);
+    @Override public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        int slot = slot(index);
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        return canInsert ? inner.insert(slot, resource, amount, transaction) : 0;
     }
-
-    @Override
-    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (!canExtract) return ItemStack.EMPTY;
-        return inner.extractItem(startSlot + slot, amount, simulate);
-    }
-
-    @Override
-    public int getSlotLimit(int slot) {
-        return inner.getSlotLimit(startSlot + slot);
-    }
-
-    @Override
-    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        if (!canInsert) return false;
-        return inner.isItemValid(startSlot + slot, stack);
+    @Override public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        int slot = slot(index);
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        return canExtract ? inner.extract(slot, resource, amount, transaction) : 0;
     }
 }

@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "nuclearcraft:crafting_pattern",
+    "base": {
+      "type": "minecraft:model",
+      "model": "nuclearcraft:item/crafting_pattern"
+    }
+  }
+}

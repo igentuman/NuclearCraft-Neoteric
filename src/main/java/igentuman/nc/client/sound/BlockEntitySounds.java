@@ -13,7 +13,7 @@ public final class BlockEntitySounds {
     public static Object play(Object current, SoundEvent sound, float volume, BlockPos pos) {
         SoundManager mgr = Minecraft.getInstance().getSoundManager();
         TileSoundInstance cur = (TileSoundInstance) current;
-        if (cur != null && (!cur.getLocation().equals(sound.getLocation()) || !mgr.isActive(cur))) {
+        if (cur != null && (!cur.getIdentifier().equals(sound.location()) || !mgr.isActive(cur))) {
             mgr.stop(cur);
             cur = null;
         }

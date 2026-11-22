@@ -1,32 +1,38 @@
 package igentuman.nc.client.renderer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import igentuman.nc.NuclearCraft;
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.pipeline.TextureTarget;
+import com.mojang.blaze3d.shaders.UniformType;
 import igentuman.nc.config.Common;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
 import igentuman.nc.entity.anomaly.AnomalyType;
 import igentuman.nc.entity.anomaly.GravitationalAnomalyEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.PostChain;
-import net.minecraft.client.renderer.PostPass;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Vector4f;
 
-import java.lang.reflect.Field;
-import java.util.List;
+import static igentuman.nc.NuclearCraft.rl;
 
 public class AnomalyShader {
 
     private static final double MAX_DISTANCE = 96.0D;
-    private static int currentSize = 0;
-    private static Field passesField;
+    static final RenderPipeline PIPELINE = PostEffectSupport.pipeline(rl("pipeline/anomaly"), rl("post/anomaly"))
+            .withSampler("InSampler")
+            .withSampler("DepthSampler")
+            .withUniform("AnomalyConfig", UniformType.UNIFORM_BUFFER)
+            .build();
+
+    private static final PostEffectSupport.Uniforms UNIFORMS = new PostEffectSupport.Uniforms("nc anomaly config", 48);
+    private static TextureTarget scratch;
 
     public static boolean hasWork() {
         Minecraft mc = Minecraft.getInstance();
-        if (ModShaders.anomalyPostEffect == null || mc.level == null || mc.player == null
+        if (mc.level == null || mc.player == null
                 || !Common.ANOMALY_CONFIG.SHADER.get()) {
             return false;
         }
@@ -39,7 +45,6 @@ public class AnomalyShader {
     }
 
     public static void clear() {
-        currentSize = 0;
     }
 
     private static float baseRadius(AnomalyType type) {
@@ -57,76 +62,56 @@ public class AnomalyShader {
         return type == AnomalyType.GRAVITATIONAL ? 10.025F : 1.0F;
     }
 
-    static void render(RenderLevelStageEvent event) {
+    static void render(RenderLevelStageEvent event, TextureTarget sceneDepth) {
         Minecraft mc = Minecraft.getInstance();
-        PostChain chain = ModShaders.anomalyPostEffect;
-        if (chain == null || mc.level == null) {
+        if (mc.level == null || mc.player == null) {
             return;
         }
         if (!Common.ANOMALY_CONFIG.SHADER.get()) {
             return;
         }
 
-        PostPass pass = firstPass(chain);
-        if (pass == null) {
-            return;
-        }
-
-        int dim = mc.getWindow().getWidth() + mc.getWindow().getHeight();
-        if (currentSize != dim) {
-            currentSize = dim;
-            chain.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
-            pass.getEffect().safeGetUniform("BlurDir").set(0.2f, 0.0f);
-        }
-
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthMask(false);
-
-        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+        float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        RenderTarget main = mc.getMainRenderTarget();
+        Matrix4fc view = event.getModelViewMatrix();
+        Matrix4fc projection = event.getLevelRenderState().cameraRenderState.projectionMatrix;
+        Vec3 camPos = event.getLevelRenderState().cameraRenderState.pos;
         for (Entity e : mc.level.entitiesForRendering()) {
             if (!(e instanceof AnomalyEntity anomaly)) {
                 continue;
             }
-            if (processAnomaly(mc, event, pass, anomaly, partialTick)) {
-                chain.process(partialTick);
+            GpuBuffer ubo = processAnomaly(mc, view, projection, camPos, anomaly, partialTick);
+            if (ubo == null) {
+                continue;
             }
+            scratch = PostEffectSupport.ensureTarget(scratch, "nc anomaly scratch", main, false);
+            PostEffectSupport.copyColor(main, scratch);
+            new PostEffectSupport.Draw("nc anomaly", PIPELINE)
+                    .sampler("InSampler", scratch.getColorTextureView())
+                    .sampler("DepthSampler", sceneDepth.getDepthTextureView())
+                    .uniform("AnomalyConfig", ubo)
+                    .into(main.getColorTextureView(), null);
         }
-
-        RenderSystem.depthMask(true);
-        mc.getMainRenderTarget().bindWrite(false);
-        RenderSystem.depthFunc(515);
     }
 
-    private static boolean processAnomaly(Minecraft mc, RenderLevelStageEvent event, PostPass pass, AnomalyEntity anomaly, float partialTick) {
-        if (mc.player == null) {
-            return false;
-        }
+    private static GpuBuffer processAnomaly(Minecraft mc, Matrix4fc view, Matrix4fc projection, Vec3 camPos,
+                                            AnomalyEntity anomaly, float partialTick) {
         Vec3 pos = anomaly.position().add(0.0D, 1.2D, 0.0D);
         double distance = Math.sqrt(mc.player.position().distanceToSqr(pos));
         if (distance > MAX_DISTANCE) {
-            return false;
+            return null;
         }
 
-        Matrix4f viewMatrix = event.getModelViewMatrix();
-        Matrix4f projMatrix = event.getProjectionMatrix();
-        Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
-
-        Vector4f p = new Vector4f((float)(pos.x - camPos.x), (float)(pos.y - camPos.y), (float)(pos.z - camPos.z), 1.0f);
-        p.mul(viewMatrix);
-        p.mul(projMatrix);
-        if (p.w == 0.0f) return false;
-        p.x /= p.w;
-        p.y /= p.w;
-        p.z /= p.w;
-
-        if (!(p.z > -1.0f && p.z < 1.0f)) return false;
+        Vector4f p = PostEffectSupport.project((float) (pos.x - camPos.x), (float) (pos.y - camPos.y),
+                (float) (pos.z - camPos.z), view, projection);
+        if (p == null) return null;
 
         float blurX = p.x * 0.5f + 0.5f;
         float blurY = p.y * 0.5f + 0.5f;
         float margin = 0.25f;
-        if (blurX < -margin || blurX > 1.0f + margin || blurY < -margin || blurY > 1.0f + margin) return false;
+        if (blurX < -margin || blurX > 1.0f + margin || blurY < -margin || blurY > 1.0f + margin) return null;
 
-        float normalizedDepth = (p.z + 1.0f) * 0.5f;
+        float normalizedDepth = p.w;
         float distanceFactor = (float)(10.0f / Math.max(distance, 1.0));
 
         AnomalyType type = anomaly.getAnomalyType();
@@ -136,33 +121,23 @@ public class AnomalyShader {
         }
         radius = Math.min(radius, 700.0f);
         int color = type.color();
-
-        pass.getEffect().safeGetUniform("BlurPos").set(blurX, blurY);
-        pass.getEffect().safeGetUniform("Radius").set(radius, magnification(type));
-        pass.getEffect().safeGetUniform("BlackHoleDepth").set(normalizedDepth);
         long nanoMod = System.nanoTime() % 1_000_000_000_000L;
-        pass.getEffect().safeGetUniform("Time").set((float)(nanoMod / 1_000_000_000.0));
-        pass.getEffect().safeGetUniform("AnomType").set(type.ordinal());
-        pass.getEffect().safeGetUniform("Intensity").set(Math.max(0.2f, anomaly.getIntensity()));
-        pass.getEffect().safeGetUniform("AnomColor").set(
-                ((color >> 16) & 0xFF) / 255.0f,
-                ((color >> 8) & 0xFF) / 255.0f,
-                (color & 0xFF) / 255.0f);
-        return true;
+        float time = (float) (nanoMod / 1_000_000_000.0);
+        float intensity = Math.max(0.2f, anomaly.getIntensity());
+        float finalRadius = radius;
+        return UNIFORMS.write(b -> b
+                .putVec4(((color >> 16) & 0xFF) / 255.0f, ((color >> 8) & 0xFF) / 255.0f, (color & 0xFF) / 255.0f, time)
+                .putVec2(blurX, blurY)
+                .putVec2(finalRadius, magnification(type))
+                .putFloat(normalizedDepth)
+                .putFloat(intensity)
+                .putInt(type.ordinal())
+                .putFloat(1.0f));
     }
 
-    @SuppressWarnings("unchecked")
-    private static PostPass firstPass(PostChain chain) {
-        try {
-            if (passesField == null) {
-                passesField = PostChain.class.getDeclaredField("passes");
-                passesField.setAccessible(true);
-            }
-            List<PostPass> passes = (List<PostPass>) passesField.get(chain);
-            return passes.isEmpty() ? null : passes.get(0);
-        } catch (ReflectiveOperationException e) {
-            NuclearCraft.LOGGER.error("AnomalyShader: unable to access PostChain passes; disabling", e);
-            return null;
-        }
+    static void close() {
+        UNIFORMS.close();
+        if (scratch != null) scratch.destroyBuffers();
+        scratch = null;
     }
 }

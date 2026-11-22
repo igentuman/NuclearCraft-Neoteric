@@ -19,8 +19,8 @@
       }
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "immersiveengineering:component_steel"
+      "type": "neoforge:registered",
+      "value": "immersiveengineering:component_steel"
     }
   ],
   "type": "nuclearcraft:assembler",

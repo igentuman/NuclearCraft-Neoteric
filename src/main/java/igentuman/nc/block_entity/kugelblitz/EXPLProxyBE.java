@@ -8,7 +8,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.DelegatingEnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EmptyEnergyHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class EXPLProxyBE extends GlobalBlockEntity {
@@ -21,10 +23,17 @@ public class EXPLProxyBE extends GlobalBlockEntity {
         super(ModEntries.get(name).blockEntity().get(), pos, state, name);
     }
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        destroyCore();
+    }
+
     public void setCore(EXPLBE core) {
         this.core = core;
         this.corePos = core.getBlockPos();
         setChanged();
+        if (level != null) level.invalidateCapabilities(worldPosition);
     }
 
     public BlockPos getCorePos() {
@@ -51,8 +60,18 @@ public class EXPLProxyBE extends GlobalBlockEntity {
 
     @Nullable
     @Override
-    public IEnergyStorage getEnergyHandler(@Nullable Direction side) {
-        EXPLBE c = getCoreBE();
-        return c != null ? c.getEnergyHandler(side) : null;
+    public EnergyHandler getEnergyHandler(@Nullable Direction side) {
+        if (resolveEnergyHandler(side) == null) return null;
+        return new DelegatingEnergyHandler(() -> {
+            EnergyHandler target = resolveEnergyHandler(side);
+            return target != null ? target : EmptyEnergyHandler.INSTANCE;
+        });
+    }
+
+    @Nullable
+    private EnergyHandler resolveEnergyHandler(@Nullable Direction side) {
+        if (isRemoved() || level == null || !level.hasChunkAt(corePos)) return null;
+        if (!(level.getBlockEntity(corePos) instanceof EXPLBE current) || current.isRemoved()) return null;
+        return current.getEnergyHandler(side);
     }
 }

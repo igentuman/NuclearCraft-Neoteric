@@ -8,14 +8,17 @@ import igentuman.nc.config.Multiblocks;
 import igentuman.nc.config.ParticleMachinesConfig;
 import igentuman.nc.item.ParticleSourceItem;
 import igentuman.nc.particle.ParticleSourceCatalog;
-import igentuman.nc.particle.ParticleSourceData;
+import igentuman.nc.api.particle.ParticleSourceData;
 import igentuman.nc.setup.Registers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
+/** Converts local sources to particle packets and accelerates incoming beams. */
 public class LinearAcceleratorLogic
         extends AbstractAcceleratorLogic<LinearAcceleratorCache, LinearAcceleratorControllerBE> {
 
@@ -52,26 +55,26 @@ public class LinearAcceleratorLogic
         ParticleSourceData source = ParticleSourceCatalog.sourceData(sourceStack);
         if (source == null || source.isDepleted()) return false;
 
-        ParticleSourceData.EmitResult proposed = source.emit(SOURCE_BATCH);
-        ParticleStack remainder = input.insert(0, proposed.stack(), ParticleAction.SIMULATE);
-        long accepted = proposed.stack().amount() - remainder.amount();
-        if (accepted <= 0) return false;
-        ParticleStack candidate = accepted == proposed.stack().amount() ? proposed.stack()
-                : new ParticleStack(proposed.stack().particleId(), accepted,
-                proposed.stack().meanEnergyKeV(), proposed.stack().focus());
-        ParticleStack commitRemainder = input.insert(0, candidate, ParticleAction.EXECUTE);
-        long committed = accepted - commitRemainder.amount();
-        if (committed <= 0) return false;
+        try (var transaction = Transaction.openRoot()) {
+            ParticleStack proposed = source.emit(SOURCE_BATCH).stack();
+            ParticleStack remainder = input.insert(0, proposed, transaction);
+            long accepted = proposed.amount() - remainder.amount();
+            if (accepted <= 0) return false;
 
-        ParticleSourceData remaining = source.emit(committed).remaining();
-        ItemStack updated = sourceStack.copy();
-        if (remaining.isDepleted() && !(updated.getItem() instanceof ParticleSourceItem)) {
-            updated.shrink(1);
-            updated.remove(Registers.PARTICLE_SOURCE.get());
-        } else {
-            ParticleSourceItem.setData(updated, remaining);
+            ParticleSourceData remaining = source.emit(accepted).remaining();
+            ItemStack updated = sourceStack.copy();
+            if (remaining.isDepleted() && !(updated.getItem() instanceof ParticleSourceItem)) {
+                updated.shrink(1);
+                updated.remove(ParticleSourceData.componentType());
+            } else {
+                ParticleSourceItem.setData(updated, remaining);
+            }
+            if (handler.extract(0, ItemResource.of(sourceStack), sourceStack.getCount(), transaction)
+                    != sourceStack.getCount()) return false;
+            if (!updated.isEmpty() && handler.insert(0, ItemResource.of(updated), updated.getCount(), transaction)
+                    != updated.getCount()) return false;
+            transaction.commit();
         }
-        handler.setStackInSlot(0, updated);
         return true;
     }
 
@@ -85,16 +88,10 @@ public class LinearAcceleratorLogic
         if (source == null) return false;
 
         ParticleStack candidate = source.emit(source.capacity()).stack();
-        ParticleStack remainder = input.insert(0, candidate, ParticleAction.SIMULATE);
-        if (!remainder.isEmpty()) return false;
-        FluidStack drained = handler.drainTank(sourceTank, 1, IFluidHandler.FluidAction.SIMULATE);
-        if (drained.getAmount() != 1 || drained.getFluid() != stored.getFluid()) return false;
-        FluidStack committedDrain = handler.drainTank(sourceTank, 1, IFluidHandler.FluidAction.EXECUTE);
-        if (committedDrain.getAmount() != 1 || committedDrain.getFluid() != stored.getFluid()) return false;
-        ParticleStack commitRemainder = input.insert(0, candidate, ParticleAction.EXECUTE);
-        if (!commitRemainder.isEmpty()) {
-            handler.fillTank(sourceTank, committedDrain, IFluidHandler.FluidAction.EXECUTE);
-            return false;
+        try (var transaction = Transaction.openRoot()) {
+            if (handler.extract(sourceTank, FluidResource.of(stored), 1, transaction) != 1
+                    || !input.insert(0, candidate, transaction).isEmpty()) return false;
+            transaction.commit();
         }
         return true;
     }
@@ -102,7 +99,7 @@ public class LinearAcceleratorLogic
     private void accelerate(LinearAcceleratorControllerBE controller, AcceleratorStats stats, int signal) {
         ParticleStack stack = input.snapshot(0);
         if (stack.isEmpty() || controller.energyStorage == null) return;
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(stack.particleId());
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(stack.particleId());
         if (definition == null) return;
         ParticleMachinesConfig.Accelerator config = Multiblocks.particleMachines().accelerator();
         long required;
@@ -137,7 +134,7 @@ public class LinearAcceleratorLogic
         if (outputPort == null) return;
         ParticleStack pending = pendingOutput.snapshot(0);
         ParticleDefinition definition = pending.isEmpty() ? null
-                : Registers.PARTICLE_DEFINITION_REGISTRY.get(pending.particleId());
+                : Registers.PARTICLE_DEFINITION_REGISTRY.getValue(pending.particleId());
         if (definition == null) return;
         ParticleMachinesConfig.Accelerator config = Multiblocks.particleMachines().accelerator();
         transferPendingOutput(level, controllerPos, outputPort,

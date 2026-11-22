@@ -16,9 +16,12 @@ import igentuman.nc.screen.element.FuelDropdown;
 import igentuman.nc.util.TextUtils;
 import igentuman.nc.util.builder.DesignPreviewRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
@@ -147,7 +150,7 @@ public class DesignsHubScreen extends Screen {
         hydrating.remove(id);
         if (result instanceof HubResult.Success<DesignDto> s) {
             try {
-                CompoundTag tag = TagParser.parseTag(s.value().design);
+                CompoundTag tag = TagParser.parseCompoundFully(s.value().design);
                 DesignGrid grid = DesignGrid.fromTag(tag);
                 grids.put(id, grid);
                 DesignSimulator sim = new DesignSimulator(grid);
@@ -190,21 +193,20 @@ public class DesignsHubScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
+    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTicks) {
         g.fill(0, 0, width, height, 0x80000000);
     }
 
     @Override
-    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(g, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTicks) {
         g.fill(winX, winY, winX + WIN_W, winY + WIN_H, 0xF0202020);
         drawOutline(g, winX, winY, WIN_W, WIN_H, 0xFF5A5A5A);
-        g.drawCenteredString(font, title, winX + WIN_W / 2, winY + 6, 0xFFFFFF);
+        g.centeredText(font, title, winX + WIN_W / 2, winY + 6, 0xFFFFFFFF);
 
         drawButton(g, sortBtnX, controlsY, 90, Component.translatable("screen.nuclearcraft.hub.sort", sortLabel()), mouseX, mouseY);
         int maxPage = Math.max(1, (int) Math.ceil(total / (double) PAGE_SIZE));
         drawButton(g, pagerPrevX, controlsY, 16, Component.literal("<"), mouseX, mouseY);
-        g.drawCenteredString(font, Component.translatable("screen.nuclearcraft.hub.page", page, maxPage), pagerPrevX - 55, controlsY + 4, 0xC0C0C0);
+        g.centeredText(font, Component.translatable("screen.nuclearcraft.hub.page", page, maxPage), pagerPrevX - 55, controlsY + 4, 0xFFC0C0C0);
         drawButton(g, pagerNextX, controlsY, 16, Component.literal(">"), mouseX, mouseY);
 
         fuelDropdown.draw(g, mouseX, mouseY, partialTicks);
@@ -221,17 +223,15 @@ public class DesignsHubScreen extends Screen {
         g.disableScissor();
 
         if (loading) {
-            g.drawCenteredString(font, Component.translatable("screen.nuclearcraft.hub.loading"), winX + WIN_W / 2, listY + listH / 2, 0xFFFFFF);
+            g.centeredText(font, Component.translatable("screen.nuclearcraft.hub.loading"), winX + WIN_W / 2, listY + listH / 2, 0xFFFFFFFF);
         } else if (errorMessage != null) {
-            g.drawCenteredString(font, errorMessage, winX + WIN_W / 2, listY + listH / 2, 0xFF6060);
+            g.centeredText(font, errorMessage, winX + WIN_W / 2, listY + listH / 2, 0xFFFF6060);
         } else if (items.isEmpty()) {
-            g.drawCenteredString(font, Component.translatable("screen.nuclearcraft.hub.no_designs"), winX + WIN_W / 2, listY + listH / 2, 0xC0C0C0);
+            g.centeredText(font, Component.translatable("screen.nuclearcraft.hub.no_designs"), winX + WIN_W / 2, listY + listH / 2, 0xFFC0C0C0);
         }
 
+        super.extractRenderState(g, mouseX, mouseY, partialTicks);
         fuelDropdown.drawOverlay(g, mouseX, mouseY, partialTicks);
-        for (net.minecraft.client.gui.components.Renderable renderable : renderables) {
-            renderable.render(g, mouseX, mouseY, partialTicks);
-        }
     }
 
     private Component sortLabel() {
@@ -242,18 +242,18 @@ public class DesignsHubScreen extends Screen {
         };
     }
 
-    private void drawRow(GuiGraphics g, DesignListItemDto item, int x, int y, int mouseX, int mouseY) {
+    private void drawRow(GuiGraphicsExtractor g, DesignListItemDto item, int x, int y, int mouseX, int mouseY) {
         g.fill(x, y, x + WIN_W - 16, y + ROW_H - 2, 0xFF2A2A2A);
         DesignGrid grid = grids.get(item.id);
         if (grid != null) {
             DesignPreviewRenderer.render(g, grid.cells, x + 4, y + 4, PREVIEW_SIZE, PREVIEW_SIZE);
         } else {
-            g.drawCenteredString(font, "...", x + 4 + PREVIEW_SIZE / 2, y + PREVIEW_SIZE / 2, 0x808080);
+            g.centeredText(font, "...", x + 4 + PREVIEW_SIZE / 2, y + PREVIEW_SIZE / 2, 0xFF808080);
         }
 
         int textX = x + PREVIEW_SIZE + 14;
-        g.drawString(font, item.name, textX, y + 6, 0xFFFFFF, false);
-        g.drawString(font, Component.translatable("screen.nuclearcraft.hub.author", item.author), textX, y + 20, 0x909090, false);
+        g.text(font, item.name, textX, y + 6, 0xFFFFFFFF, false);
+        g.text(font, Component.translatable("screen.nuclearcraft.hub.author", item.author), textX, y + 20, 0xFF909090, false);
 
         DesignSimulator sim = simulators.get(item.id);
         Component statsLine;
@@ -265,15 +265,15 @@ public class DesignsHubScreen extends Screen {
             statsLine = Component.translatable("screen.nuclearcraft.hub.stats",
                     TextUtils.scaledFormat(sim.energyPerTick), sim.steamPerTick, TextUtils.numberFormat(sim.netHeat));
         }
-        g.drawString(font, statsLine, textX, y + 36, 0xC0C0C0, false);
+        g.text(font, statsLine, textX, y + 36, 0xFFC0C0C0, false);
 
         Component msg = rowMessages.get(item.id);
         if (msg != null) {
-            g.drawString(font, msg, textX, y + 50, 0xFF6060, false);
+            g.text(font, msg, textX, y + 50, 0xFFFF6060, false);
         } else {
-            g.drawString(font, Component.translatable("screen.nuclearcraft.hub.score",
+            g.text(font, Component.translatable("screen.nuclearcraft.hub.score",
                             String.format("%+d", item.upvotes), String.format("%+d", -item.downvotes), String.format("%.2f", item.score)),
-                    textX, y + 50, 0x909090, false);
+                    textX, y + 50, 0xFF909090, false);
         }
 
         int btnY = y + ROW_H - 20;
@@ -285,30 +285,30 @@ public class DesignsHubScreen extends Screen {
         drawSmallButton(g, x + WIN_W - 16 - 54, btnY, 54, Component.translatable("screen.nuclearcraft.designer.load"), mouseX, mouseY);
     }
 
-    private void drawButton(GuiGraphics g, int x, int y, int w, Component text, int mouseX, int mouseY) {
+    private void drawButton(GuiGraphicsExtractor g, int x, int y, int w, Component text, int mouseX, int mouseY) {
         boolean hover = mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + 14;
         g.fill(x, y, x + w, y + 14, hover ? 0xFF505050 : 0xFF303030);
         drawOutline(g, x, y, w, 14, 0xFF5A5A5A);
         drawFittedButtonText(g, x, y, w, text);
     }
 
-    private void drawSmallButton(GuiGraphics g, int x, int y, int w, Component text, int mouseX, int mouseY) {
+    private void drawSmallButton(GuiGraphicsExtractor g, int x, int y, int w, Component text, int mouseX, int mouseY) {
         boolean hover = mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + 14;
         g.fill(x, y, x + w, y + 14, hover ? 0xFF505050 : 0xFF303030);
         drawOutline(g, x, y, w, 14, 0xFF5A5A5A);
         drawFittedButtonText(g, x, y, w, text);
     }
 
-    private void drawFittedButtonText(GuiGraphics g, int x, int y, int w, Component text) {
+    private void drawFittedButtonText(GuiGraphicsExtractor g, int x, int y, int w, Component text) {
         float scale = Math.min(1f, (w - 4f) / Math.max(1, font.width(text)));
-        g.pose().pushPose();
-        g.pose().translate(x + w / 2f, y + 7, 0);
-        g.pose().scale(scale, scale, 1);
-        g.drawCenteredString(font, text, 0, -4, 0xFFFFFF);
-        g.pose().popPose();
+        g.pose().pushMatrix();
+        g.pose().translate(x + w / 2f, y + 7);
+        g.pose().scale(scale, scale);
+        g.centeredText(font, text, 0, -4, 0xFFFFFFFF);
+        g.pose().popMatrix();
     }
 
-    private void drawOutline(GuiGraphics g, int x, int y, int w, int h, int color) {
+    private void drawOutline(GuiGraphicsExtractor g, int x, int y, int w, int h, int color) {
         g.fill(x, y, x + w, y + 1, color);
         g.fill(x, y + h - 1, x + w, y + h, color);
         g.fill(x, y, x + 1, y + h, color);
@@ -316,9 +316,11 @@ public class DesignsHubScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mx, double my, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mx = event.x();
+        double my = event.y();
         boolean wasOpen = fuelDropdown.isOpen();
-        if (fuelDropdown.mouseClicked(mx, my, button)) {
+        if (fuelDropdown.mouseClicked(event, doubleClick)) {
             return true;
         }
         if (wasOpen) {
@@ -362,7 +364,7 @@ public class DesignsHubScreen extends Screen {
                 }
             }
         }
-        return super.mouseClicked(mx, my, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     private String nextSort() {
@@ -379,7 +381,7 @@ public class DesignsHubScreen extends Screen {
         }
         voting.add(item.id);
         rowMessages.remove(item.id);
-        String playerUuid = Minecraft.getInstance().player.getGameProfile().getId().toString();
+        String playerUuid = Minecraft.getInstance().player.getGameProfile().id().toString();
         HubApiClient.vote(item.id, voteValue, playerUuid)
                 .thenAccept(result -> Minecraft.getInstance().execute(() -> onVoteResult(item, result)));
     }
@@ -450,19 +452,19 @@ public class DesignsHubScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
-        if (fuelDropdown.isFieldFocused() && fuelDropdown.keyPressed(key, scanCode, modifiers)) {
+    public boolean keyPressed(KeyEvent event) {
+        if (fuelDropdown.isFieldFocused() && fuelDropdown.keyPressed(event)) {
             return true;
         }
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char c, int modifiers) {
-        if (fuelDropdown.isFieldFocused() && fuelDropdown.charTyped(c, modifiers)) {
+    public boolean charTyped(CharacterEvent event) {
+        if (fuelDropdown.isFieldFocused() && fuelDropdown.charTyped(event)) {
             return true;
         }
-        return super.charTyped(c, modifiers);
+        return super.charTyped(event);
     }
 
     private boolean hit(int x, int y, int w, int h, double mx, double my) {

@@ -74,7 +74,7 @@ public final class SurfaceHeightCache {
             return;
         }
         int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
-        if (surface <= level.getMinBuildHeight()) {
+        if (surface <= level.getMinY()) {
             known.clear(index);
             settled.clear(index);
             return;

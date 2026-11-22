@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "tag": "c:dusts/boron"
-    },
-    "P": {
-      "item": "nuclearcraft:bioplastic"
-    }
+    "B": "#c:dusts/boron",
+    "P": "nuclearcraft:bioplastic"
   },
   "pattern": [
     "PPP",
@@ -15,7 +11,6 @@
     "PPP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:scintillator_plastic"
   }
 }

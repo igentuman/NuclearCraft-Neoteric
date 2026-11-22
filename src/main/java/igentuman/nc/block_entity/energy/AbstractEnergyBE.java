@@ -18,7 +18,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -35,9 +36,15 @@ public abstract class AbstractEnergyBE extends GlobalBlockEntity {
         this.energyStorage = LargeEnergyStorage.create(capacity, 0, capacity, this::setChanged);
     }
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        drops();
+    }
+
     @Nullable
     @Override
-    public IEnergyStorage getEnergyHandler(@Nullable Direction side) {
+    public EnergyHandler getEnergyHandler(@Nullable Direction side) {
         return energyStorage;
     }
 
@@ -51,8 +58,7 @@ public abstract class AbstractEnergyBE extends GlobalBlockEntity {
         if (name != null && !ModEntries.isEnabled(name)) return;
         int generated = generate();
         if (generated > 0) {
-            int max = energyStorage.getMaxEnergyStored();
-            energyStorage.setEnergyStored(Math.min(max, energyStorage.getEnergyStored() + generated));
+            energyStorage.addEnergy(generated);
             setChanged();
         }
         pushEnergy();
@@ -71,15 +77,11 @@ public abstract class AbstractEnergyBE extends GlobalBlockEntity {
         if (level == null || energyStorage.getEnergyStored() <= 0) return;
         int rate = energyStorage.getMaxEnergyStored();
         for (Direction direction : Direction.values()) {
-            IEnergyStorage neighbour = level.getCapability(
-                    Capabilities.EnergyStorage.BLOCK, worldPosition.relative(direction), direction.getOpposite());
+            EnergyHandler neighbour = level.getCapability(
+                    Capabilities.Energy.BLOCK, worldPosition.relative(direction), direction.getOpposite());
             if (neighbour == null) continue;
-            int canExtract = energyStorage.extractEnergy(rate, true);
-            if (canExtract <= 0) return;
-            int accepted = neighbour.receiveEnergy(canExtract, false);
-            if (accepted > 0) {
-                energyStorage.extractEnergy(accepted, false);
-            }
+            if (energyStorage.getAmountAsLong() <= 0) return;
+            EnergyHandlerUtil.move(energyStorage, neighbour, rate, null);
         }
     }
 
@@ -121,14 +123,14 @@ public abstract class AbstractEnergyBE extends GlobalBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveTagData(tag, registries);
         tag.put("Energy", energyStorage.serializeNBT(registries));
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadTagData(tag, registries);
         if (tag.contains("Energy")) {
             energyStorage.deserializeNBT(registries, tag.get("Energy"));
         }

@@ -1,19 +1,24 @@
 package igentuman.nc.block.pipe;
 
 import com.google.common.collect.ImmutableMap;
-import igentuman.nc.api.pipe.PipeNetworkManager;
+import igentuman.nc.pipe.PipeNetworkManager;
+import igentuman.nc.block.TooltipBlock;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,12 +30,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static igentuman.nc.util.TextUtils.__;
 
-public class PipeBlock extends Block {
+public class PipeBlock extends Block implements TooltipBlock {
 
     public static final BooleanProperty UP = BlockStateProperties.UP;
     public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
@@ -62,8 +67,8 @@ public class PipeBlock extends Block {
 
     private final VoxelShape[] shapeCache = new VoxelShape[64];
 
-    public PipeBlock() {
-        super(Properties.of()
+    public PipeBlock(Properties props) {
+        super(props
                 .sound(SoundType.METAL)
                 .strength(1.5f)
                 .noOcclusion()
@@ -100,7 +105,7 @@ public class PipeBlock extends Block {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction dir, BlockState neighbor, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction dir, BlockPos neighborPos, BlockState neighbor, RandomSource random) {
         return state.setValue(PROPERTY_BY_DIRECTION.get(dir), canConnectTo(neighbor));
     }
 
@@ -143,16 +148,13 @@ public class PipeBlock extends Block {
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moved) {
-        if (!level.isClientSide() && !state.is(newState.getBlock())) {
-            PipeNetworkManager.get(level.dimension()).onNodeRemoved(pos);
-        }
-        super.onRemove(state, level, pos, newState, moved);
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        PipeNetworkManager.get(level.dimension()).onNodeRemoved(pos);
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(TextUtils.applyFormat(__("block.nuclearcraft.pipe.desc"), ChatFormatting.GRAY));
+    public void addTooltip(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(TextUtils.applyFormat(__("block.nuclearcraft.pipe.desc"), ChatFormatting.GRAY));
     }
 }

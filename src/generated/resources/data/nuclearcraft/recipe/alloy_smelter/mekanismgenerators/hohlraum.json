@@ -23,8 +23,8 @@
       }
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "mekanismgenerators:hohlraum"
+      "type": "neoforge:registered",
+      "value": "mekanismgenerators:hohlraum"
     }
   ],
   "type": "nuclearcraft:alloy_smelter",

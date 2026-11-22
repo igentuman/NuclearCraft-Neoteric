@@ -4,7 +4,7 @@ import igentuman.nc.screen.element.NcPanel;
 import igentuman.nc.handler.crafter.CraftShortage;
 import igentuman.nc.util.GuiFluidRenderer;
 import igentuman.nc.util.TextUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -63,14 +63,14 @@ public class CraftDeniedScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
-        super.renderBackground(g, mouseX, mouseY, partialTicks);
+    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(g, mouseX, mouseY, partialTicks);
         NcPanel.drawPanel(g, left, top, PANEL_W, panelH);
-        NcPanel.drawCentered(g, font, title, left + PANEL_W / 2, top + 8, 0x404040);
+        NcPanel.drawCentered(g, font, title, left + PANEL_W / 2, top + 8, 0xFF404040);
 
         if (tooComplex) {
             NcPanel.drawCentered(g, font, Component.translatable("screen.nuclearcraft.crafter.denied.too_complex"),
-                    left + PANEL_W / 2, top + 32, 0x802020);
+                    left + PANEL_W / 2, top + 32, 0xFF802020);
             return;
         }
         int rowY = top + 28;
@@ -78,21 +78,21 @@ public class CraftDeniedScreen extends Screen {
         for (int i = 0; i < shown; i++) {
             if (i < items.size()) {
                 ItemStack stack = items.get(i).stack();
-                g.renderItem(stack, left + 12, rowY);
-                g.drawString(font, Component.translatable("screen.nuclearcraft.crafter.denied.entry",
-                        items.get(i).amount(), stack.getHoverName()), left + 34, rowY + 4, 0x404040, false);
+                g.item(stack, left + 12, rowY);
+                g.text(font, Component.translatable("screen.nuclearcraft.crafter.denied.entry",
+                        items.get(i).amount(), stack.getHoverName()), left + 34, rowY + 4, 0xFF404040, false);
             } else {
                 int f = i - items.size();
                 FluidStack fluid = fluids.get(f).stack();
                 GuiFluidRenderer.renderFluidTank(g, left + 12, rowY, 16, 16, fluid, Math.max(1, fluid.getAmount()));
-                g.drawString(font, Component.translatable("screen.nuclearcraft.crafter.denied.fluid_entry",
-                        TextUtils.formatLiquid(fluids.get(f).amount()), fluid.getHoverName()), left + 34, rowY + 4, 0x404040, false);
+                g.text(font, Component.translatable("screen.nuclearcraft.crafter.denied.fluid_entry",
+                        TextUtils.formatLiquid(fluids.get(f).amount()), fluid.getHoverName()), left + 34, rowY + 4, 0xFF404040, false);
             }
             rowY += ROW_H;
         }
         if (total() > MAX_ROWS) {
             NcPanel.drawCentered(g, font, Component.translatable("screen.nuclearcraft.crafter.denied.more",
-                    total() - MAX_ROWS), left + PANEL_W / 2, rowY + 2, 0x606060);
+                    total() - MAX_ROWS), left + PANEL_W / 2, rowY + 2, 0xFF606060);
         }
     }
 }

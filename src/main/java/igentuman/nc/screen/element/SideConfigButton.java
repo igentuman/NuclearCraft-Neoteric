@@ -1,5 +1,9 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.renderer.RenderPipelines;
+
+import net.minecraft.client.input.MouseButtonEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import igentuman.nc.client.model.SideConfigFaces;
 import igentuman.nc.handler.SidedContentHandler;
 import igentuman.nc.handler.SlotModePair;
@@ -7,7 +11,7 @@ import igentuman.nc.network.PacketSideConfigToggle;
 import igentuman.nc.screen.SideConfigScreen;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -32,17 +36,17 @@ public class SideConfigButton extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         SlotModePair.SlotMode mode = screen.getSlotMode(direction, slotId);
         var entry = ModEntries.get(screen.getMenu().getBlockEntity().name);
         var face = SideConfigFaces.getFace(entry, SidedContentHandler.RelativeDirection.values()[direction]);
-        guiGraphics.blit(getX(), getY(), 0, getWidth(), getHeight(), face);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, face, getX(), getY(), getWidth(), getHeight());
         guiGraphics.fill(getX(), getY(), getX() + 16, getY() + 16, mode.getColor());
 
         if (isHovered()) {
             String dirName = SidedContentHandler.RelativeDirection
                     .getDirectionName(direction);
-            guiGraphics.renderTooltip(
+            guiGraphics.setTooltipForNextFrame(
                     Minecraft.getInstance().font,
                     List.of(
                             Component.literal(dirName),
@@ -56,10 +60,13 @@ public class SideConfigButton extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         if (!isActive() || !visible) return false;
         if (mouseX >= getX() && mouseX < getX() + 16 && mouseY >= getY() && mouseY < getY() + 16) {
-            PacketDistributor.sendToServer(new PacketSideConfigToggle(
+            ClientPacketDistributor.sendToServer(new PacketSideConfigToggle(
                     screen.getMenu().getPosition(), slotId, direction));
             return true;
         }

@@ -1,12 +1,12 @@
 package igentuman.nc.handler.crafter;
 
+import igentuman.nc.api.crafting.CraftingPatternData;
 import igentuman.nc.compat.ProcessorRecipeStacks;
 import igentuman.nc.item.CraftingPatternItem;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
-import igentuman.nc.setup.Registers;
 import igentuman.nc.setup.entries.Crafter;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -26,14 +26,14 @@ public class CraftingPattern {
     private final List<FluidStack> fluidOutputs;
     private final String processor;
     @Nullable
-    private final ResourceLocation recipeId;
+    private final Identifier recipeId;
 
     public CraftingPattern(NonNullList<ItemStack> inputs, ItemStack output) {
         this(inputs, List.of(), output.isEmpty() ? List.of() : List.of(output), List.of(), "", null);
     }
 
     public CraftingPattern(NonNullList<ItemStack> inputs, List<FluidStack> fluidInputs, List<ItemStack> itemOutputs,
-                           List<FluidStack> fluidOutputs, String processor, @Nullable ResourceLocation recipeId) {
+                           List<FluidStack> fluidOutputs, String processor, @Nullable Identifier recipeId) {
         this.inputs = inputs;
         this.fluidInputs = fluidInputs;
         this.itemOutputs = itemOutputs;
@@ -73,7 +73,7 @@ public class CraftingPattern {
     }
 
     @Nullable
-    public ResourceLocation recipeId() {
+    public Identifier recipeId() {
         return recipeId;
     }
 
@@ -95,7 +95,7 @@ public class CraftingPattern {
     }
 
     public static boolean isEncoded(ItemStack stack) {
-        return isPatternItem(stack) && stack.has(Registers.CRAFTING_PATTERN.get());
+        return isPatternItem(stack) && stack.has(CraftingPatternData.componentType());
     }
 
     public static boolean isBlank(ItemStack stack) {
@@ -107,13 +107,13 @@ public class CraftingPattern {
     }
 
     public static boolean isProcessing(ItemStack stack) {
-        CraftingPatternData data = stack.get(Registers.CRAFTING_PATTERN.get());
+        CraftingPatternData data = stack.get(CraftingPatternData.componentType());
         return data != null && data.isProcessing();
     }
 
     public static ItemStack output(ItemStack stack) {
-        CraftingPatternData data = stack.get(Registers.CRAFTING_PATTERN.get());
-        return data == null ? ItemStack.EMPTY : data.output().copy();
+        CraftingPatternData data = stack.get(CraftingPatternData.componentType());
+        return data == null ? ItemStack.EMPTY : data.createOutput();
     }
 
     public static ItemStack encode(Container grid, ItemStack output) {
@@ -126,12 +126,12 @@ public class CraftingPattern {
             inputs.set(i, one);
         }
         ItemStack encoded = new ItemStack(Crafter.CRAFTING_PATTERN.get());
-        encoded.set(Registers.CRAFTING_PATTERN.get(), new CraftingPatternData(inputs, output.copy()));
+        encoded.set(CraftingPatternData.componentType(), CraftingPatternData.fromStacks(inputs, output));
         return encoded;
     }
 
     /** Encodes a processor recipe: representative item inputs with counts, fluids and every output. */
-    public static ItemStack encodeProcessing(UniversalProcessorRecipe recipe, ResourceLocation recipeId) {
+    public static ItemStack encodeProcessing(UniversalProcessorRecipe recipe, Identifier recipeId) {
         if (!ProcessorRecipes.isAllowed(recipe.getProcessorName())) return ItemStack.EMPTY;
         ProcessorRecipeStacks stacks = ProcessorRecipeStacks.of(recipe);
         List<ItemStack> inputs = new ArrayList<>();
@@ -145,34 +145,34 @@ public class CraftingPattern {
         for (FluidStack f : stacks.fluidOutputs()) fluidOut.add(f.copy());
 
         ItemStack encoded = new ItemStack(Crafter.CRAFTING_PATTERN.get());
-        encoded.set(Registers.CRAFTING_PATTERN.get(), new CraftingPatternData(
+        encoded.set(CraftingPatternData.componentType(), CraftingPatternData.fromStacks(
                 inputs, primary, recipe.getProcessorName(), Optional.ofNullable(recipeId), fluidIn, outputs, fluidOut));
         return encoded;
     }
 
     @Nullable
     public static CraftingPattern from(ItemStack stack) {
-        CraftingPatternData data = stack.get(Registers.CRAFTING_PATTERN.get());
+        CraftingPatternData data = stack.get(CraftingPatternData.componentType());
         if (!isPatternItem(stack) || data == null) return null;
 
         if (data.isProcessing()) {
             if (!ProcessorRecipes.isAllowed(data.processor())) return null;
             NonNullList<ItemStack> inputs = NonNullList.create();
-            for (ItemStack s : data.inputs()) {
-                if (!s.isEmpty()) inputs.add(s.copy());
+            for (var template : data.inputs()) {
+                template.ifPresent(value -> inputs.add(CraftingPatternData.createItem(value)));
             }
             List<ItemStack> outputs = new ArrayList<>();
-            if (!data.output().isEmpty()) outputs.add(data.output().copy());
-            for (ItemStack s : data.extraOutputs()) {
-                if (!s.isEmpty()) outputs.add(s.copy());
+            data.output().ifPresent(value -> outputs.add(CraftingPatternData.createItem(value)));
+            for (var template : data.extraOutputs()) {
+                template.ifPresent(value -> outputs.add(CraftingPatternData.createItem(value)));
             }
             List<FluidStack> fluidIn = new ArrayList<>();
-            for (FluidStack f : data.fluidInputs()) {
-                if (!f.isEmpty()) fluidIn.add(f.copy());
+            for (var template : data.fluidInputs()) {
+                template.ifPresent(value -> fluidIn.add(value.create()));
             }
             List<FluidStack> fluidOut = new ArrayList<>();
-            for (FluidStack f : data.fluidOutputs()) {
-                if (!f.isEmpty()) fluidOut.add(f.copy());
+            for (var template : data.fluidOutputs()) {
+                template.ifPresent(value -> fluidOut.add(value.create()));
             }
             if (outputs.isEmpty() && fluidOut.isEmpty()) return null;
             if (inputs.isEmpty() && fluidIn.isEmpty()) return null;
@@ -181,9 +181,9 @@ public class CraftingPattern {
 
         NonNullList<ItemStack> inputs = NonNullList.withSize(GRID_SIZE, ItemStack.EMPTY);
         for (int i = 0; i < GRID_SIZE && i < data.inputs().size(); i++) {
-            inputs.set(i, data.inputs().get(i).copy());
+            inputs.set(i, data.inputs().get(i).map(CraftingPatternData::createItem).orElse(ItemStack.EMPTY));
         }
-        ItemStack output = data.output().copy();
+        ItemStack output = data.createOutput();
         if (output.isEmpty()) return null;
         return new CraftingPattern(inputs, output);
     }

@@ -19,8 +19,8 @@
       }
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "create:rose_quartz"
+      "type": "neoforge:registered",
+      "value": "create:rose_quartz"
     }
   ],
   "type": "nuclearcraft:assembler",

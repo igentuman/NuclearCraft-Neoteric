@@ -9,23 +9,23 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public class PlacementRuleCategory implements IRecipeCategory<PlacementRuleRecipe> {
-    public static final RecipeType<PlacementRuleRecipe> HEAT_SINK =
-            RecipeType.create(NuclearCraft.MODID, "heat_sink_placement", PlacementRuleRecipe.class);
-    public static final RecipeType<PlacementRuleRecipe> COOLER =
-            RecipeType.create(NuclearCraft.MODID, "cooler_placement", PlacementRuleRecipe.class);
+    public static final IRecipeType<PlacementRuleRecipe> HEAT_SINK =
+            IRecipeType.create(NuclearCraft.MODID, "heat_sink_placement", PlacementRuleRecipe.class);
+    public static final IRecipeType<PlacementRuleRecipe> COOLER =
+            IRecipeType.create(NuclearCraft.MODID, "cooler_placement", PlacementRuleRecipe.class);
 
-    private final RecipeType<PlacementRuleRecipe> type;
+    private final IRecipeType<PlacementRuleRecipe> type;
     private final IDrawable icon;
 
-    public PlacementRuleCategory(IGuiHelper guiHelper, RecipeType<PlacementRuleRecipe> type, String iconName) {
+    public PlacementRuleCategory(IGuiHelper guiHelper, IRecipeType<PlacementRuleRecipe> type, String iconName) {
         this.type = type;
         var entry = ModEntries.get(iconName);
         ItemStack stack = entry != null && entry.hasItem() ? new ItemStack(entry.item().get()) : ItemStack.EMPTY;
@@ -36,7 +36,7 @@ public class PlacementRuleCategory implements IRecipeCategory<PlacementRuleRecip
         this.icon = guiHelper.createDrawableItemStack(stack);
     }
 
-    @Override public RecipeType<PlacementRuleRecipe> getRecipeType() { return type; }
+    @Override public IRecipeType<PlacementRuleRecipe> getRecipeType() { return type; }
     @Override public Component getTitle() {
         return Component.translatable("jei.category." + NuclearCraft.MODID + "." + type.getUid().getPath());
     }
@@ -46,21 +46,21 @@ public class PlacementRuleCategory implements IRecipeCategory<PlacementRuleRecip
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, PlacementRuleRecipe recipe, IFocusGroup focuses) {
-        builder.addInputSlot(4, 4).addItemStack(recipe.part());
+        builder.addInputSlot(4, 4).add(recipe.part());
         for (int i = 0; i < recipe.conditions().size(); i++) {
             var alternatives = recipe.conditions().get(i).alternatives();
             if (!alternatives.isEmpty()) {
-                builder.addSlot(RecipeIngredientRole.CATALYST, 4, 29 + i * 22).addItemStacks(alternatives);
+                builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 4, 29 + i * 22).addItemStacks(alternatives);
             }
         }
     }
 
     @Override
-    public void draw(PlacementRuleRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(PlacementRuleRecipe recipe, IRecipeSlotsView slots, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
         var font = Minecraft.getInstance().font;
-        graphics.drawString(font, Component.translatable("heat_sink.heat.descr", recipe.cooling()), 27, 8, 0xFFCC8A20, false);
+        graphics.text(font, Component.translatable("heat_sink.heat.descr", recipe.cooling()), 27, 8, 0xFFCC8A20, false);
         for (int i = 0; i < recipe.conditions().size(); i++) {
-            graphics.drawString(font, recipe.conditions().get(i).description(), 27, 34 + i * 22, 0xFF404040, false);
+            graphics.text(font, recipe.conditions().get(i).description(), 27, 34 + i * 22, 0xFF404040, false);
         }
     }
 }

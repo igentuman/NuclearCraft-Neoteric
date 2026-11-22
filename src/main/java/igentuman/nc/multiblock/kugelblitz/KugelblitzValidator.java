@@ -4,7 +4,7 @@ import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
 import igentuman.nc.block_entity.MultiblockPortBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,7 +57,7 @@ public class KugelblitzValidator extends AbstractMultiblockValidator<KugelblitzC
         center = null;
         if (!resolveBlocks()) {
             return fail("multiblock.kugelblitz.center_not_found", origin, rl("photon_concentrator"),
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         center = findCenter(cache, origin);
         if (center == null) {

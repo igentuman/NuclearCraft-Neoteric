@@ -1,27 +1,31 @@
 package igentuman.nc.compat.ae2;
 
 import appeng.menu.me.items.PatternEncodingTermMenu;
-import igentuman.nc.compat.ProcessorRecipeStacks;
+import appeng.crafting.pattern.AEProcessingPattern;
 import igentuman.nc.network.PacketAE2PatternTransfer;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
+import igentuman.nc.compat.jei.ContextRecipeTransferHandler;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-/** JEI transfer handler that encodes a processor recipe into an AE2 pattern encoding terminal. */
-public class JEI2PatternEncoderTransfer implements IRecipeTransferHandler<PatternEncodingTermMenu, UniversalProcessorRecipe> {
+public class JEI2PatternEncoderTransfer implements ContextRecipeTransferHandler<PatternEncodingTermMenu, RecipeHolder<UniversalProcessorRecipe>> {
 
-    private final RecipeType<UniversalProcessorRecipe> recipeType;
+    private final IRecipeHolderType<UniversalProcessorRecipe> recipeType;
+    private final IRecipeTransferHandlerHelper transferHelper;
 
-    public JEI2PatternEncoderTransfer(RecipeType<UniversalProcessorRecipe> recipeType) {
+    public JEI2PatternEncoderTransfer(IRecipeHolderType<UniversalProcessorRecipe> recipeType,
+                                      IRecipeTransferHandlerHelper transferHelper) {
         this.recipeType = recipeType;
+        this.transferHelper = transferHelper;
     }
 
     @Override
@@ -35,19 +39,22 @@ public class JEI2PatternEncoderTransfer implements IRecipeTransferHandler<Patter
     }
 
     @Override
-    public RecipeType<UniversalProcessorRecipe> getRecipeType() {
+    public IRecipeHolderType<UniversalProcessorRecipe> getRecipeType() {
         return recipeType;
     }
 
     @Override
-    public @Nullable IRecipeTransferError transferRecipe(PatternEncodingTermMenu container, UniversalProcessorRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
-        if (!doTransfer) {
-            return null;
+    public @Nullable IRecipeTransferError transfer(PatternEncodingTermMenu container, RecipeHolder<UniversalProcessorRecipe> recipe, IRecipeSlotsView recipeSlots, Player player, boolean doTransfer) {
+        UniversalProcessorRecipe value = recipe.value();
+        int inputs = value.getItemInputs().size() + value.getFluidInputs().size();
+        int outputs = value.getItemOutputs().size() + value.getFluidOutputs().size();
+        if (inputs == 0 || inputs > AEProcessingPattern.MAX_INPUT_SLOTS
+                || outputs == 0 || outputs > AEProcessingPattern.MAX_OUTPUT_SLOTS) {
+            return transferHelper.createInternalError();
         }
-
-        ProcessorRecipeStacks stacks = ProcessorRecipeStacks.of(recipe);
-        PacketDistributor.sendToServer(new PacketAE2PatternTransfer(
-                stacks.primaryItemInputs(), stacks.primaryFluidInputs(), stacks.itemOutputs(), stacks.fluidOutputs()));
+        if (doTransfer) {
+            ClientPacketDistributor.sendToServer(new PacketAE2PatternTransfer(container.containerId, recipe.id().identifier()));
+        }
         return null;
     }
 }

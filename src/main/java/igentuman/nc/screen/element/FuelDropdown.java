@@ -1,17 +1,19 @@
 package igentuman.nc.screen.element;
 
-import igentuman.nc.content.fuel.FuelDef;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import igentuman.nc.api.content.FuelDef;
 import igentuman.nc.item.FissionReactorPlanItem;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,7 @@ public class FuelDropdown extends AbstractWidget {
         search = new EditBox(Minecraft.getInstance().font, x + 2, y + 1, width - 4, height - 2, Component.empty());
         search.setMaxLength(64);
         search.setBordered(true);
-        search.setTextColor(0xFFFFFF);
+        search.setTextColor(0xFFFFFFFF);
         search.setResponder(value -> {
             if (!suppressResponder) {
                 recompute();
@@ -143,7 +145,7 @@ public class FuelDropdown extends AbstractWidget {
         }
     }
 
-    public void draw(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void draw(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         graphics.fill(getX(), getY(), getX() + width, getY() + height, 0xFF101010);
         graphics.fill(getX(), getY(), getX() + width, getY() + 1, 0xFF5A5A5A);
         graphics.fill(getX(), getY() + height - 1, getX() + width, getY() + height, 0xFF5A5A5A);
@@ -151,8 +153,8 @@ public class FuelDropdown extends AbstractWidget {
         graphics.fill(getX() + width - 1, getY(), getX() + width, getY() + height, 0xFF5A5A5A);
         search.setX(getX() + 2);
         search.setY(getY() + 1);
-        search.render(graphics, mouseX, mouseY, partialTicks);
-        graphics.drawString(Minecraft.getInstance().font, Component.literal("v"),
+        search.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+        graphics.text(Minecraft.getInstance().font, Component.literal("v"),
                 getX() + width - 7, getY() + (height - 8) / 2, 0xFFB0B0B0);
     }
 
@@ -164,12 +166,12 @@ public class FuelDropdown extends AbstractWidget {
         return Math.max(0, filtered.size() - MAX_VISIBLE_ROWS);
     }
 
-    public void drawOverlay(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawOverlay(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         if (!open) {
             return;
         }
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 300);
+        graphics.pose().pushMatrix();
+        graphics.nextStratum(); // open list covers widgets and slot items below (was z+300)
         Font font = Minecraft.getInstance().font;
         int rows = visibleRows();
         int top = getY() + height;
@@ -188,7 +190,7 @@ public class FuelDropdown extends AbstractWidget {
                 graphics.fill(getX(), rowY, getX() + width, rowY + ROW_HEIGHT, 0x60FFFFFF);
             }
             String text = font.plainSubstrByWidth(e.label(), width - 8);
-            graphics.drawString(font, text, getX() + 4, rowY + (ROW_HEIGHT - 8) / 2, 0xFFFFFF);
+            graphics.text(font, text, getX() + 4, rowY + (ROW_HEIGHT - 8) / 2, 0xFFFFFFFF);
         }
         if (filtered.size() > MAX_VISIBLE_ROWS) {
             int trackHeight = rows * ROW_HEIGHT;
@@ -197,7 +199,7 @@ public class FuelDropdown extends AbstractWidget {
             int thumbY = top + (maxScroll() == 0 ? 0 : travel * scroll / maxScroll());
             graphics.fill(getX() + width - 2, thumbY, getX() + width, thumbY + thumbHeight, 0xFFB0B0B0);
         }
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 
     protected boolean inField(double mouseX, double mouseY) {
@@ -219,7 +221,10 @@ public class FuelDropdown extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         if (inField(mouseX, mouseY)) {
             if (!open) {
                 open = true;
@@ -229,7 +234,7 @@ public class FuelDropdown extends AbstractWidget {
             search.setFocused(true);
             search.setX(getX() + 2);
             search.setY(getY() + 1);
-            search.mouseClicked(mouseX, mouseY, button);
+            search.mouseClicked(event, doubleClick);
             return true;
         }
         if (inList(mouseX, mouseY)) {
@@ -256,21 +261,21 @@ public class FuelDropdown extends AbstractWidget {
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         if (!search.isFocused()) {
             return false;
         }
-        if (key == GLFW.GLFW_KEY_ESCAPE) {
+        if (event.isEscape()) {
             return false;
         }
-        search.keyPressed(key, scanCode, modifiers);
+        search.keyPressed(event);
         return true;
     }
 
     @Override
-    public boolean charTyped(char c, int modifiers) {
+    public boolean charTyped(CharacterEvent event) {
         if (search.isFocused()) {
-            return search.charTyped(c, modifiers);
+            return search.charTyped(event);
         }
         return false;
     }
@@ -284,7 +289,7 @@ public class FuelDropdown extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         draw(graphics, mouseX, mouseY, partialTicks);
     }
 

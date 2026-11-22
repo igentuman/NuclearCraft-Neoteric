@@ -32,7 +32,7 @@ public record PacketMsrRateAdjust(BlockPos pos, int buttonId, int value) impleme
     public static void handle(PacketMsrRateAdjust packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            BlockEntity be = serverPlayer.serverLevel().getBlockEntity(packet.pos());
+            BlockEntity be = serverPlayer.level().getBlockEntity(packet.pos());
             if (be instanceof MsrControllerBE controller) {
                 controller.handleSliderUpdate(packet.buttonId(), packet.value());
             }

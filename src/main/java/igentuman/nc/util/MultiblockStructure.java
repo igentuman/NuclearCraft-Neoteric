@@ -4,8 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,39 +22,39 @@ public class MultiblockStructure {
     private String name;
     private int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
     private int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
-    private ResourceLocation location;
+    private Identifier location;
 
     public MultiblockStructure(CompoundTag nbt) {
         this.nbt = nbt;
-        if (nbt.contains("blocks", Tag.TAG_LIST)) {
-            ListTag blocksList = nbt.getList("blocks", Tag.TAG_COMPOUND);
-            ListTag palette = nbt.getList("palette", Tag.TAG_COMPOUND);
+        if (nbt.getList("blocks").isPresent()) {
+            ListTag blocksList = nbt.getListOrEmpty("blocks");
+            ListTag palette = nbt.getListOrEmpty("palette");
 
             for (int i = 0; i < blocksList.size(); i++) {
-                CompoundTag blockTag = blocksList.getCompound(i);
-                CompoundTag state = palette.getCompound(blockTag.getInt("state"));
-                if (blockTag.get("pos") instanceof ListTag posList && state.getString("Name") != null) {
+                CompoundTag blockTag = blocksList.getCompoundOrEmpty(i);
+                CompoundTag state = palette.getCompoundOrEmpty(blockTag.getIntOr("state", 0));
+                if (blockTag.get("pos") instanceof ListTag posList) {
 
                     if (posList.size() == 3) {
-                        int x = posList.getInt(0);
-                        int y = posList.getInt(1);
-                        int z = posList.getInt(2);
+                        int x = posList.getIntOr(0, 0);
+                        int y = posList.getIntOr(1, 0);
+                        int z = posList.getIntOr(2, 0);
                         
                         BlockPos pos = new BlockPos(x, y, z);
-                        String blockId = state.getString("Name");
-                        ResourceLocation rl = rlFromString(blockId);
+                        String blockId = state.getStringOr("Name", "");
+                        Identifier rl = rlFromString(blockId);
                         if (rl != null && BuiltInRegistries.BLOCK.getOptional(rl).isPresent()) {
                             Block block = BuiltInRegistries.BLOCK.getOptional(rl).get();
                             BlockState bs = block.defaultBlockState();
                             
                             // Handle block state properties if they exist
-                            if (state.contains(PROPERTIES_TAG, Tag.TAG_COMPOUND)) {
-                                CompoundTag properties = state.getCompound("Properties");
-                                for(String pKey: state.getCompound("Properties").getAllKeys()) {
+                            if (state.getCompound(PROPERTIES_TAG).isPresent()) {
+                                CompoundTag properties = state.getCompoundOrEmpty(PROPERTIES_TAG);
+                                for(String pKey: properties.keySet()) {
                                     for (net.minecraft.world.level.block.state.properties.Property<?> property : bs.getProperties()) {
                                         if (property.getName().equals(pKey)) {
                                             // Parse the string value to the appropriate property value
-                                            String valueStr = properties.getString(pKey);
+                                            String valueStr = properties.getStringOr(pKey, "");
                                             Optional<?> value = property.getValue(valueStr);
 
                                             if (value.isPresent()) {
@@ -82,7 +81,7 @@ public class MultiblockStructure {
         }
     }
 
-    public MultiblockStructure(ResourceLocation rl, CompoundTag nbt, String file) {
+    public MultiblockStructure(Identifier rl, CompoundTag nbt, String file) {
         this(nbt);
         location = rl;
         name = file;
@@ -125,7 +124,7 @@ public class MultiblockStructure {
     public int getMaxY() { return maxY; }
     public int getMaxZ() { return maxZ; }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return location;
     }
 
@@ -179,19 +178,19 @@ public class MultiblockStructure {
      * @return A new CompoundTag with air blocks removed
      */
     public static CompoundTag filterAirBlocks(CompoundTag nbt) {
-        if (nbt == null || !nbt.contains("blocks", Tag.TAG_LIST) || !nbt.contains("palette", Tag.TAG_LIST)) {
+        if (nbt == null || nbt.getList("blocks").isEmpty() || nbt.getList("palette").isEmpty()) {
             return nbt;
         }
 
         CompoundTag filteredNbt = nbt.copy();
-        ListTag blocksList = nbt.getList("blocks", Tag.TAG_COMPOUND);
-        ListTag palette = nbt.getList("palette", Tag.TAG_COMPOUND);
+        ListTag blocksList = nbt.getListOrEmpty("blocks");
+        ListTag palette = nbt.getListOrEmpty("palette");
         
         // Find air block indices in the palette
         Set<Integer> airIndices = new HashSet<>();
         for (int i = 0; i < palette.size(); i++) {
-            CompoundTag paletteEntry = palette.getCompound(i);
-            String blockName = paletteEntry.getString("Name");
+            CompoundTag paletteEntry = palette.getCompoundOrEmpty(i);
+            String blockName = paletteEntry.getStringOr("Name", "");
             if (blockName != null && (blockName.equals("minecraft:air") || 
                                       blockName.equals("minecraft:cave_air") || 
                                       blockName.equals("minecraft:void_air"))) {
@@ -202,8 +201,8 @@ public class MultiblockStructure {
         // Filter out blocks that reference air palette entries
         ListTag filteredBlocksList = new ListTag();
         for (int i = 0; i < blocksList.size(); i++) {
-            CompoundTag blockTag = blocksList.getCompound(i);
-            int stateIndex = blockTag.getInt("state");
+            CompoundTag blockTag = blocksList.getCompoundOrEmpty(i);
+            int stateIndex = blockTag.getIntOr("state", 0);
             if (!airIndices.contains(stateIndex)) {
                 filteredBlocksList.add(blockTag);
             }

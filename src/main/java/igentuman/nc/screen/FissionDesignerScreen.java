@@ -1,5 +1,6 @@
 package igentuman.nc.screen;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.client.gui.fission.designer.ClientFissionDesignCache;
 import igentuman.nc.client.gui.fission.designer.DesignBlocks;
@@ -30,8 +31,12 @@ import igentuman.nc.util.ModUtil;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -40,7 +45,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,9 +98,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     protected int fuelY, statsX, statsY;
 
     public FissionDesignerScreen(FissionDesignerContainer container, Inventory inv, Component name) {
-        super(container, inv, name);
-        this.imageWidth = 0;
-        this.imageHeight = 0;
+        super(container, inv, name, 0, 0);
         this.designerPos = container.getBlockPos();
     }
 
@@ -254,12 +256,11 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     }
 
     @Override
-    public void render(GuiGraphics g, int mouseX, int mouseY, float partial) {
+    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partial) {
         layout();
         simulator.setFuel(fuelDropdown.getSelectedFuelKey(), fuelDropdown.getSelectedVariant());
         simulator.simulateIfDirty();
-        renderBackground(g, mouseX, mouseY, partial);
-        g.drawCenteredString(font, title, width / 2, topBarY + 2, 0xFFFFFF);
+        g.centeredText(font, title, width / 2, topBarY + 2, 0xFFFFFFFF);
         drawButton(g, newBtnX, topBarY, __("screen.nuclearcraft.designer.new"), mouseX, mouseY);
         drawButton(g, saveBtnX, topBarY, __("screen.nuclearcraft.designer.save"), mouseX, mouseY);
         drawButton(g, loadBtnX, topBarY, __("screen.nuclearcraft.designer.load"), mouseX, mouseY);
@@ -267,7 +268,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             drawButton(g, hubBtnX, topBarY, __("screen.nuclearcraft.designer.hub"), mouseX, mouseY);
             drawButton(g, uploadBtnX, topBarY, uploading ? Component.literal("...") : __("screen.nuclearcraft.designer.upload"), mouseX, mouseY);
         }
-        if (ModUtil.isMbtoolLoaded()) {
+        if (canExportToMultitool()) {
             drawIconButton(g, mbtoolBtnX, topBarY, MbtoolHelper.toolIcon(), mouseX, mouseY);
         }
 
@@ -279,13 +280,14 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         fuelDropdown.drawOverlay(g, mouseX, mouseY, partial);
 
         if (newMode) {
+            g.nextStratum();
             drawNewModal(g, mouseX, mouseY);
         } else {
             drawTooltips(g, mouseX, mouseY);
         }
     }
 
-    protected void drawLayers(GuiGraphics g, int mouseX, int mouseY) {
+    protected void drawLayers(GuiGraphicsExtractor g, int mouseX, int mouseY) {
         for (int layer = 0; layer < grid.sizeY; layer++) {
             int[] o = layerGridOrigin(layer);
             if (o == null) {
@@ -293,7 +295,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             }
             int gx = o[0];
             int gy = o[1];
-            g.drawString(font, __("screen.nuclearcraft.designer.layer", layer + 1), gx, gy - LABEL_H + 2, 0xCCE0E0E0);
+            g.text(font, __("screen.nuclearcraft.designer.layer", layer + 1), gx, gy - LABEL_H + 2, 0xCCE0E0E0);
             int[] br = layerButtonRects(layer);
             if (br != null) {
                 drawSmallButton(g, br[0], br[1], "C", mouseX, mouseY);
@@ -312,7 +314,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         }
     }
 
-    protected void drawPalette(GuiGraphics g, int mouseX, int mouseY) {
+    protected void drawPalette(GuiGraphicsExtractor g, int mouseX, int mouseY) {
         int areaW = palCols * PAL_SLOT;
         int areaH = palVisibleRows * PAL_SLOT;
         g.fill(palX - 1, palY - 1, palX + areaW + 1, palY + areaH + 1, 0xFF3A3A3A);
@@ -326,30 +328,30 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             int px = palX + col * PAL_SLOT;
             int py = palY + row * PAL_SLOT;
             g.fill(px, py, px + PAL_SLOT - 1, py + PAL_SLOT - 1, 0xFF101010);
-            g.renderItem(palette.get(idx).stack, px + 1, py + 1);
+            g.item(palette.get(idx).stack, px + 1, py + 1);
             if (idx == selectedPaletteIndex) {
                 drawOutline(g, px, py, PAL_SLOT - 1, PAL_SLOT - 1, 0xFFFFD030);
             }
         }
     }
 
-    protected void drawStats(GuiGraphics g) {
+    protected void drawStats(GuiGraphicsExtractor g) {
         int y = statsY;
-        int color = 0xC0C0C0;
-        g.drawString(font, __("screen.nuclearcraft.designer.heat", fmt(simulator.heatPerTick)), statsX, y, color);
-        g.drawString(font, __("screen.nuclearcraft.designer.cooling", fmt(simulator.coolingPerTick)), statsX, y += 11, color);
-        g.drawString(font, __("screen.nuclearcraft.designer.net_heat", fmt(simulator.netHeat)), statsX, y += 11, color);
-        g.drawString(font, __("screen.nuclearcraft.designer.energy", fmt(simulator.energyPerTick)), statsX, y += 11, color);
-        g.drawString(font, __("screen.nuclearcraft.designer.steam", simulator.steamPerTick), statsX, y += 11, color);
-        g.drawString(font, __("screen.nuclearcraft.designer.irradiation", simulator.irradiation), statsX, y += 11, color);
+        int color = 0xFFC0C0C0;
+        g.text(font, __("screen.nuclearcraft.designer.heat", fmt(simulator.heatPerTick)), statsX, y, color);
+        g.text(font, __("screen.nuclearcraft.designer.cooling", fmt(simulator.coolingPerTick)), statsX, y += 11, color);
+        g.text(font, __("screen.nuclearcraft.designer.net_heat", fmt(simulator.netHeat)), statsX, y += 11, color);
+        g.text(font, __("screen.nuclearcraft.designer.energy", fmt(simulator.energyPerTick)), statsX, y += 11, color);
+        g.text(font, __("screen.nuclearcraft.designer.steam", simulator.steamPerTick), statsX, y += 11, color);
+        g.text(font, __("screen.nuclearcraft.designer.irradiation", simulator.irradiation), statsX, y += 11, color);
         String meltdown = Double.isInfinite(simulator.meltdownTimeSeconds)
                 ? "∞" : __("screen.nuclearcraft.designer.seconds", fmt(simulator.meltdownTimeSeconds)).getString();
-        g.drawString(font, __("screen.nuclearcraft.designer.meltdown", meltdown), statsX, y += 11, color);
+        g.text(font, __("screen.nuclearcraft.designer.meltdown", meltdown), statsX, y += 11, color);
     }
 
-    protected void drawTooltips(GuiGraphics g, int mouseX, int mouseY) {
-        if (ModUtil.isMbtoolLoaded() && hit(mbtoolBtnX, topBarY, BTN_H, BTN_H, mouseX, mouseY)) {
-            g.renderTooltip(font, __("screen.nuclearcraft.designer.load_multitool"), mouseX, mouseY);
+    protected void drawTooltips(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+        if (canExportToMultitool() && hit(mbtoolBtnX, topBarY, BTN_H, BTN_H, mouseX, mouseY)) {
+            g.setTooltipForNextFrame(font, __("screen.nuclearcraft.designer.load_multitool"), mouseX, mouseY);
             return;
         }
         for (int layer = 0; layer < grid.sizeY; layer++) {
@@ -358,11 +360,11 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
                 continue;
             }
             if (hit(br[0], br[1], LAYER_BTN, LAYER_BTN, mouseX, mouseY)) {
-                g.renderTooltip(font, __("screen.nuclearcraft.designer.copy_layer"), mouseX, mouseY);
+                g.setTooltipForNextFrame(font, __("screen.nuclearcraft.designer.copy_layer"), mouseX, mouseY);
                 return;
             }
             if (hit(br[2], br[3], LAYER_BTN, LAYER_BTN, mouseX, mouseY)) {
-                g.renderTooltip(font, __("screen.nuclearcraft.designer.paste_layer"), mouseX, mouseY);
+                g.setTooltipForNextFrame(font, __("screen.nuclearcraft.designer.paste_layer"), mouseX, mouseY);
                 return;
             }
         }
@@ -373,18 +375,18 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             int row = (mouseY - palY) / PAL_SLOT;
             int idx = paletteScroll * palCols + row * palCols + col;
             if (col < palCols && idx >= 0 && idx < palette.size()) {
-                g.renderComponentTooltip(font, palette.get(idx).tooltip, mouseX, mouseY);
+                g.setComponentTooltipForNextFrame(font, palette.get(idx).tooltip, mouseX, mouseY);
             }
         }
     }
 
-    protected void drawNewModal(GuiGraphics g, int mouseX, int mouseY) {
+    protected void drawNewModal(GuiGraphicsExtractor g, int mouseX, int mouseY) {
         int mw = 180, mh = 120;
         int mx = (width - mw) / 2, my = (height - mh) / 2;
         g.fill(0, 0, width, height, 0xA0000000);
         g.fill(mx, my, mx + mw, mh + my, 0xFF202020);
         drawOutline(g, mx, my, mw, mh, 0xFF5A5A5A);
-        g.drawCenteredString(font, __("screen.nuclearcraft.designer.new_design"), mx + mw / 2, my + 8, 0xFFFFFF);
+        g.centeredText(font, __("screen.nuclearcraft.designer.new_design"), mx + mw / 2, my + 8, 0xFFFFFFFF);
         drawStepper(g, "X", pendingX, mx + 20, my + 30);
         drawStepper(g, "Y", pendingY, mx + 20, my + 52);
         drawStepper(g, "Z", pendingZ, mx + 20, my + 74);
@@ -392,42 +394,42 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         drawButton(g, mx + mw - 20 - BTN_W, my + mh - 24, __("screen.nuclearcraft.designer.cancel"), mouseX, mouseY);
     }
 
-    protected void drawStepper(GuiGraphics g, String label, int value, int x, int y) {
-        g.drawString(font, label + ":", x, y + 4, 0xFFFFFF);
+    protected void drawStepper(GuiGraphicsExtractor g, String label, int value, int x, int y) {
+        g.text(font, label + ":", x, y + 4, 0xFFFFFFFF);
         g.fill(x + 20, y, x + 34, y + 14, 0xFF404040);
-        g.drawCenteredString(font, "-", x + 27, y + 3, 0xFFFFFF);
-        g.drawCenteredString(font, String.valueOf(value), x + 55, y + 3, 0xFFFFFF);
+        g.centeredText(font, "-", x + 27, y + 3, 0xFFFFFFFF);
+        g.centeredText(font, String.valueOf(value), x + 55, y + 3, 0xFFFFFFFF);
         g.fill(x + 76, y, x + 90, y + 14, 0xFF404040);
-        g.drawCenteredString(font, "+", x + 83, y + 3, 0xFFFFFF);
+        g.centeredText(font, "+", x + 83, y + 3, 0xFFFFFFFF);
     }
 
-    protected void drawButton(GuiGraphics g, int x, int y, Component text, int mouseX, int mouseY) {
+    protected void drawButton(GuiGraphicsExtractor g, int x, int y, Component text, int mouseX, int mouseY) {
         boolean hover = mouseX >= x && mouseX < x + BTN_W && mouseY >= y && mouseY < y + BTN_H;
         g.fill(x, y, x + BTN_W, y + BTN_H, hover ? 0xFF505050 : 0xFF303030);
         drawOutline(g, x, y, BTN_W, BTN_H, 0xFF5A5A5A);
         float scale = Math.min(1f, (BTN_W - 4f) / Math.max(1, font.width(text)));
-        g.pose().pushPose();
-        g.pose().translate(x + BTN_W / 2f, y + BTN_H / 2f, 0);
-        g.pose().scale(scale, scale, 1);
-        g.drawCenteredString(font, text, 0, -4, 0xFFFFFF);
-        g.pose().popPose();
+        g.pose().pushMatrix();
+        g.pose().translate(x + BTN_W / 2f, y + BTN_H / 2f);
+        g.pose().scale(scale, scale);
+        g.centeredText(font, text, 0, -4, 0xFFFFFFFF);
+        g.pose().popMatrix();
     }
 
-    protected void drawIconButton(GuiGraphics g, int x, int y, ItemStack icon, int mouseX, int mouseY) {
+    protected void drawIconButton(GuiGraphicsExtractor g, int x, int y, ItemStack icon, int mouseX, int mouseY) {
         boolean hover = mouseX >= x && mouseX < x + BTN_H && mouseY >= y && mouseY < y + BTN_H;
         g.fill(x, y, x + BTN_H, y + BTN_H, hover ? 0xFF505050 : 0xFF303030);
         drawOutline(g, x, y, BTN_H, BTN_H, 0xFF5A5A5A);
-        g.renderItem(icon, x, y);
+        g.item(icon, x, y);
     }
 
-    protected void drawSmallButton(GuiGraphics g, int x, int y, String text, int mouseX, int mouseY) {
+    protected void drawSmallButton(GuiGraphicsExtractor g, int x, int y, String text, int mouseX, int mouseY) {
         boolean hover = mouseX >= x && mouseX < x + LAYER_BTN && mouseY >= y && mouseY < y + LAYER_BTN;
         g.fill(x, y, x + LAYER_BTN, y + LAYER_BTN, hover ? 0xFF505050 : 0xFF303030);
         drawOutline(g, x, y, LAYER_BTN, LAYER_BTN, 0xFF5A5A5A);
-        g.drawCenteredString(font, text, x + LAYER_BTN / 2, y + (LAYER_BTN - 8) / 2, 0xFFFFFF);
+        g.centeredText(font, text, x + LAYER_BTN / 2, y + (LAYER_BTN - 8) / 2, 0xFFFFFFFF);
     }
 
-    protected void drawOutline(GuiGraphics g, int x, int y, int w, int h, int color) {
+    protected void drawOutline(GuiGraphicsExtractor g, int x, int y, int w, int h, int color) {
         g.fill(x, y, x + w, y + 1, color);
         g.fill(x, y + h - 1, x + w, y + h, color);
         g.fill(x, y, x + 1, y + h, color);
@@ -463,13 +465,16 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     }
 
     @Override
-    public boolean mouseClicked(double mx, double my, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mx = event.x();
+        double my = event.y();
+        int button = event.button();
         if (newMode) {
             handleNewModalClick(mx, my);
             return true;
         }
         boolean anyOpen = fuelDropdown.isOpen();
-        if (fuelDropdown.mouseClicked(mx, my, button)) {
+        if (fuelDropdown.mouseClicked(event, doubleClick)) {
             return true;
         }
         if (anyOpen) {
@@ -498,7 +503,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             onUploadClick();
             return true;
         }
-        if (ModUtil.isMbtoolLoaded() && hit(mbtoolBtnX, topBarY, BTN_H, BTN_H, mx, my)) {
+        if (canExportToMultitool() && hit(mbtoolBtnX, topBarY, BTN_H, BTN_H, mx, my)) {
             onLoadIntoMultitool();
             return true;
         }
@@ -529,7 +534,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         }
         int[] c = cellAt(mx, my);
         if (c != null) {
-            if (button == 1 || hasShiftDown()) {
+            if (button == 1 || event.hasShiftDown()) {
                 grid.clear(c[1], c[0], c[2]);
             } else {
                 grid.set(c[1], c[0], c[2], selectedBlock());
@@ -538,15 +543,15 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
             saveToCache();
             return true;
         }
-        return super.mouseClicked(mx, my, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean mouseDragged(double mx, double my, int button, double dx, double dy) {
+    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
         if (!newMode && !fuelDropdown.isOpen()) {
-            int[] c = cellAt(mx, my);
+            int[] c = cellAt(event.x(), event.y());
             if (c != null) {
-                if (button == 1 || hasShiftDown()) {
+                if (event.button() == 1 || event.hasShiftDown()) {
                     grid.clear(c[1], c[0], c[2]);
                 } else {
                     grid.set(c[1], c[0], c[2], selectedBlock());
@@ -556,7 +561,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
                 return true;
             }
         }
-        return super.mouseDragged(mx, my, button, dx, dy);
+        return super.mouseDragged(event, dx, dy);
     }
 
     @Override
@@ -582,19 +587,19 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
-        if (fuelDropdown != null && fuelDropdown.isFieldFocused() && fuelDropdown.keyPressed(key, scanCode, modifiers)) {
+    public boolean keyPressed(KeyEvent event) {
+        if (fuelDropdown != null && fuelDropdown.isFieldFocused() && fuelDropdown.keyPressed(event)) {
             return true;
         }
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char c, int modifiers) {
-        if (fuelDropdown != null && fuelDropdown.isFieldFocused() && fuelDropdown.charTyped(c, modifiers)) {
+    public boolean charTyped(CharacterEvent event) {
+        if (fuelDropdown != null && fuelDropdown.isFieldFocused() && fuelDropdown.charTyped(event)) {
             return true;
         }
-        return super.charTyped(c, modifiers);
+        return super.charTyped(event);
     }
 
     protected void handleNewModalClick(double mx, double my) {
@@ -652,13 +657,19 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         tag.putDouble(FissionReactorPlanItem.NET_HEAT_KEY, simulator.netHeat);
         tag.putInt(FissionReactorPlanItem.FE_GEN_KEY, (int) simulator.energyPerTick);
         String key = fuelDropdown.getSelectedFuelKey();
-        PacketDistributor.sendToServer(new PacketSaveFissionDesign(
+        ClientPacketDistributor.sendToServer(new PacketSaveFissionDesign(
                 tag, key == null ? "" : key, fuelDropdown.getSelectedVariant()));
     }
 
     protected void onLoad() {
-        int slot = getMinecraft().player.getInventory().selected;
-        PacketDistributor.sendToServer(new PacketLoadFissionDesign(slot));
+        int slot = getMinecraft().player.getInventory().getSelectedSlot();
+        ClientPacketDistributor.sendToServer(new PacketLoadFissionDesign(slot));
+    }
+
+    private boolean canExportToMultitool() {
+        ClientPacketListener connection = getMinecraft().getConnection();
+        return ModUtil.isMbtoolLoaded() && connection != null
+                && connection.hasChannel(PacketLoadDesignIntoMultitool.TYPE);
     }
 
     protected void onLoadIntoMultitool() {
@@ -666,7 +677,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         Vec3i size = FissionShellBuilder.getSize(planMap);
         FissionShellBuilder.fillShellBlocks(planMap, size);
         CompoundTag structureNbt = FissionShellBuilder.toStructureNbt(planMap);
-        PacketDistributor.sendToServer(new PacketLoadDesignIntoMultitool(structureNbt));
+        ClientPacketDistributor.sendToServer(new PacketLoadDesignIntoMultitool(structureNbt));
     }
 
     protected void withHubAck(Runnable action) {
@@ -733,8 +744,8 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
 
         CreateDesignRequestDto dto = new CreateDesignRequestDto();
         dto.name = name;
-        dto.author = player.getGameProfile().getName();
-        dto.playerUuid = player.getGameProfile().getId().toString();
+        dto.author = player.getGameProfile().name();
+        dto.playerUuid = player.getGameProfile().id().toString();
         dto.version = HubConfig.modVersion();
         dto.channel = HubConfig.CHANNEL;
         String fuelKey = fuelDropdown.getSelectedFuelKey();
@@ -805,8 +816,8 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
         this.simulator = new DesignSimulator(grid);
         this.layerScroll = 0;
         if (cached.contains(FissionReactorPlanItem.FUEL_KEY) && fuelDropdown != null) {
-            fuelDropdown.setSelectedFuel(cached.getString(FissionReactorPlanItem.FUEL_KEY),
-                    cached.getString(FissionReactorPlanItem.VARIANT_KEY));
+            fuelDropdown.setSelectedFuel(cached.getStringOr(FissionReactorPlanItem.FUEL_KEY, ""),
+                    cached.getStringOr(FissionReactorPlanItem.VARIANT_KEY, ""));
         }
     }
 
@@ -824,11 +835,7 @@ public class FissionDesignerScreen extends AbstractContainerScreen<FissionDesign
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-    }
-
-    @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
     }
 
     protected record PaletteEntry(Block block, ItemStack stack, List<Component> tooltip) {

@@ -1,14 +1,16 @@
 package igentuman.nc.handler.sided;
 
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
-/** Per-face view of a FluidCapabilityHandler that gates fill/drain by that side's tank modes. */
-public class FluidHandlerWrapper implements IFluidHandler {
+import java.util.Objects;
 
+/** Native per-face fluid view that rechecks configured tank permissions on every operation. */
+public class FluidHandlerWrapper implements ResourceHandler<FluidResource> {
     private final FluidCapabilityHandler handler;
     private final @Nullable Direction side;
 
@@ -17,61 +19,27 @@ public class FluidHandlerWrapper implements IFluidHandler {
         this.side = side;
     }
 
-    @Override
-    public int getTanks() {
-        return handler.getTanks();
+    @Override public int size() { return handler.getTanks(); }
+    @Override public FluidResource getResource(int index) { return handler.getInternalHandler().getResource(index); }
+    @Override public long getAmountAsLong(int index) { return handler.getInternalHandler().getAmountAsLong(index); }
+    @Override public long getCapacityAsLong(int index, FluidResource resource) {
+        Objects.checkIndex(index, size());
+        return resource.isEmpty() || isValid(index, resource) ? handler.getTankCapacity(index) : 0;
     }
-
-    @Override
-    public @NotNull FluidStack getFluidInTank(int tank) {
-        return handler.getFluidInTank(tank);
+    @Override public boolean isValid(int index, FluidResource resource) {
+        Objects.checkIndex(index, size());
+        return (side == null || handler.canInsertFromSide(index, resource.toStack(1), side))
+                && handler.getInternalHandler().isValid(index, resource);
     }
-
-    @Override
-    public int getTankCapacity(int tank) {
-        return handler.getTankCapacity(tank);
+    @Override public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        Objects.checkIndex(index, size());
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        return isValid(index, resource) ? handler.insert(index, resource, amount, transaction) : 0;
     }
-
-    @Override
-    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-        return handler.isFluidValid(tank, stack);
-    }
-
-    @Override
-    public int fill(@NotNull FluidStack resource, FluidAction action) {
-        if (resource.isEmpty()) return 0;
-        for (int tank = 0; tank < handler.getTanks(); tank++) {
-            if (side != null && !handler.canInsertFromSide(tank, resource, side)) continue;
-            if (!handler.isFluidValid(tank, resource)) continue;
-            int filled = handler.fillTank(tank, resource, action);
-            // A simulated fill must not assume later tanks still see the same contents.
-            if (filled > 0) return filled;
-        }
-        return 0;
-    }
-
-    @Override
-    public @NotNull FluidStack drain(@NotNull FluidStack resource, FluidAction action) {
-        if (resource.isEmpty()) return FluidStack.EMPTY;
-        for (int tank = 0; tank < handler.getTanks(); tank++) {
-            if (side != null && !handler.canExtractFromSide(tank, side)) continue;
-            FluidStack inTank = handler.getFluidInTank(tank);
-            if (!inTank.isEmpty() && FluidStack.isSameFluidSameComponents(resource, inTank)) {
-                return handler.drainTank(tank, resource.getAmount(), action);
-            }
-        }
-        return FluidStack.EMPTY;
-    }
-
-    @Override
-    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
-        for (int tank = 0; tank < handler.getTanks(); tank++) {
-            if (side != null && !handler.canExtractFromSide(tank, side)) continue;
-            FluidStack inTank = handler.getFluidInTank(tank);
-            if (!inTank.isEmpty()) {
-                return handler.drainTank(tank, maxDrain, action);
-            }
-        }
-        return FluidStack.EMPTY;
+    @Override public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        Objects.checkIndex(index, size());
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        return side == null || handler.canExtractFromSide(index, side)
+                ? handler.extract(index, resource, amount, transaction) : 0;
     }
 }

@@ -3,6 +3,7 @@ package igentuman.nc.block;
 import igentuman.nc.multiblock.MultiblockHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -10,10 +11,11 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-import static igentuman.nc.util.ClientUtil.TRANSPARENT_BLOCKS;
+import java.util.regex.Pattern;
 
-/** Structural multiblock block with no block entity or GUI. Marker type keeps parts out of vanilla creative tabs. */
 public class MultiblockBlock extends Block {
+
+    public static final Pattern TRANSPARENT_BLOCKS = Pattern.compile(".*glass|.*cell.*|photon.*|.*stabilizer.*");
 
     public MultiblockBlock(BlockBehaviour.Properties props) {
         super(props);
@@ -37,9 +39,9 @@ public class MultiblockBlock extends Block {
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        super.onRemove(state, level, pos, newState, movedByPiston);
-        MultiblockHandler.trackBlockChange(level, pos, state, newState);
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        MultiblockHandler.trackBlockChange(level, pos, state, level.getBlockState(pos));
     }
 
 }

@@ -53,7 +53,7 @@ public class IsotopeEntry {
         IsotopeEntry entry = new IsotopeEntry(name, radiation);
         for (String type : VARIANT_SUFFIXES) {
             String id = entry.itemId + type;
-            entry.variants.put(type, ITEMS.register(id, () -> new Item(new Item.Properties())));
+            entry.variants.put(type, ITEMS.registerSimpleItem(id));
             if (name.matches(SPECIAL_FAMILY)) break;
         }
         for (String type : entry.variants.keySet()) {

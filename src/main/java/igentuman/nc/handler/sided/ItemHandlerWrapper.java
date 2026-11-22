@@ -1,13 +1,15 @@
 package igentuman.nc.handler.sided;
 
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-/** Per-face view of an ItemCapabilityHandler that gates insert/extract by that side's slot modes. */
-public class ItemHandlerWrapper implements IItemHandler {
+import java.util.Objects;
 
+/** Native per-face item view that rechecks slot modes, GUI restrictions and insertion locks on every operation. */
+public class ItemHandlerWrapper implements ResourceHandler<ItemResource> {
     private final ItemCapabilityHandler handler;
     private final Direction side;
 
@@ -15,39 +17,26 @@ public class ItemHandlerWrapper implements IItemHandler {
         this.handler = handler;
         this.side = side;
     }
-
-    @Override
-    public int getSlots() {
-        return handler.getSlots();
+    @Override public int size() { return handler.size(); }
+    @Override public ItemResource getResource(int index) { return handler.getResource(index); }
+    @Override public long getAmountAsLong(int index) { return handler.getAmountAsLong(index); }
+    @Override public long getCapacityAsLong(int index, ItemResource resource) {
+        Objects.checkIndex(index, size());
+        return resource.isEmpty() || isValid(index, resource) ? handler.getCapacityAsLong(index, resource) : 0;
     }
-
-    @Override
-    public @NotNull ItemStack getStackInSlot(int slot) {
-        return handler.getStackInSlot(slot);
+    @Override public boolean isValid(int index, ItemResource resource) {
+        Objects.checkIndex(index, size());
+        return !handler.isSideInsertLocked() && handler.canInsertFromSide(index, resource.toStack(1), side)
+                && handler.isValid(index, resource);
     }
-
-    @Override
-    public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-        if (handler.isSideInsertLocked()) return stack;
-        if (!handler.canInsertFromSide(slot, stack, side)) return stack;
-        return handler.insertItem(slot, stack, simulate);
+    @Override public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        Objects.checkIndex(index, size());
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        return isValid(index, resource) ? handler.insert(index, resource, amount, transaction) : 0;
     }
-
-    @Override
-    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (!handler.canExtractFromSide(slot, side)) return ItemStack.EMPTY;
-        return handler.extractItem(slot, amount, simulate);
-    }
-
-    @Override
-    public int getSlotLimit(int slot) {
-        return handler.getSlotLimit(slot);
-    }
-
-    @Override
-    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        if (handler.isSideInsertLocked()) return false;
-        if (!handler.canInsertFromSide(slot, stack, side)) return false;
-        return handler.isItemValid(slot, stack);
+    @Override public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        Objects.checkIndex(index, size());
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        return handler.canExtractFromSide(index, side) ? handler.extract(index, resource, amount, transaction) : 0;
     }
 }

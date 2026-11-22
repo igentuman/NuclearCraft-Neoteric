@@ -20,9 +20,11 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.level.PistonEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -65,12 +67,21 @@ public final class MultiblockHandler {
         MultiblockWorldInput.discard(dim);
     }
 
+    /**
+     * Drains off-thread validation before the shutdown save. Instances stay registered: the
+     * final {@code saveAllChunks} runs after this event, and controllers persist their cache and
+     * logic runtime (including consumed fuel) from the registered instance.
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onServerStopping(ServerStoppingEvent event) {
-        INSTANCES.clear();
-        WATCHERS.clear();
         MultiblockWorldInput.discardAll();
         MultiblockExecutorManager.shutdown();
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        INSTANCES.clear();
+        WATCHERS.clear();
     }
 
     @SubscribeEvent
@@ -99,10 +110,10 @@ public final class MultiblockHandler {
         Map<Long, Set<MultiblockInstance>> watchers = WATCHERS.get(level.dimension());
         if (watchers == null) return;
         ChunkPos chunkPos = event.getChunk().getPos();
-        Set<MultiblockInstance> instances = watchers.get(chunkPos.toLong());
+        Set<MultiblockInstance> instances = watchers.get(chunkPos.pack());
         if (instances == null) return;
         for (MultiblockInstance instance : instances) {
-            instance.cache.invalidateChunk(chunkPos.x, chunkPos.z);
+            instance.cache.invalidateChunk(chunkPos.x(), chunkPos.z());
             instance.generation++;
             instance.dirty = true;
         }
@@ -118,7 +129,7 @@ public final class MultiblockHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+    public static void onBlockBreak(BreakBlockEvent event) {
         if (!(event.getLevel() instanceof ServerLevel serverLevel)) return;
         trackBlockChange(serverLevel, event.getPos(), event.getState(),
                 event.getState().getFluidState().createLegacyBlock());
@@ -165,7 +176,7 @@ public final class MultiblockHandler {
         if (watchers == null) return false;
         for (int x = (base.getX() - 13) >> 4; x <= (base.getX() + 13) >> 4; x++) {
             for (int z = (base.getZ() - 13) >> 4; z <= (base.getZ() + 13) >> 4; z++) {
-                if (watchers.containsKey(ChunkPos.asLong(x, z))) return true;
+                if (watchers.containsKey(ChunkPos.pack(x, z))) return true;
             }
         }
         return false;
@@ -173,7 +184,7 @@ public final class MultiblockHandler {
 
     private static boolean isWatched(ServerLevel level, BlockPos pos) {
         Map<Long, Set<MultiblockInstance>> watchers = WATCHERS.get(level.dimension());
-        return watchers != null && watchers.containsKey(ChunkPos.asLong(pos.getX() >> 4, pos.getZ() >> 4));
+        return watchers != null && watchers.containsKey(ChunkPos.pack(pos.getX() >> 4, pos.getZ() >> 4));
     }
 
     /** Initialize a new multiblock at the controller position. Validation happens on the next tick. */
@@ -193,7 +204,7 @@ public final class MultiblockHandler {
         Map<Long, MultiblockInstance> map = INSTANCES.computeIfAbsent(dim, k -> new ConcurrentHashMap<>());
         instance.cache.bind(controllerPos, instance.facing);
         instance.dirty = true;
-        watchChunk(dim, instance, ChunkPos.asLong(controllerPos.getX() >> 4, controllerPos.getZ() >> 4));
+        watchChunk(dim, instance, ChunkPos.pack(controllerPos.getX() >> 4, controllerPos.getZ() >> 4));
         BlockPos min = instance.cache.min();
         BlockPos max = instance.cache.max();
         if (min != null && max != null) watchBounds(dim, instance, min, max);
@@ -302,7 +313,7 @@ public final class MultiblockHandler {
 
     static void watchSection(ServerLevel level, MultiblockInstance instance, long sectionKey) {
         watchChunk(level.dimension(), instance,
-                ChunkPos.asLong(SectionPos.x(sectionKey), SectionPos.z(sectionKey)));
+                ChunkPos.pack(SectionPos.x(sectionKey), SectionPos.z(sectionKey)));
     }
 
     static void watchChunk(ResourceKey<Level> dim, MultiblockInstance instance, long chunkKey) {
@@ -315,7 +326,7 @@ public final class MultiblockHandler {
     static void watchBounds(ResourceKey<Level> dim, MultiblockInstance instance, BlockPos min, BlockPos max) {
         for (int x = min.getX() >> 4; x <= max.getX() >> 4; x++) {
             for (int z = min.getZ() >> 4; z <= max.getZ() >> 4; z++) {
-                watchChunk(dim, instance, ChunkPos.asLong(x, z));
+                watchChunk(dim, instance, ChunkPos.pack(x, z));
             }
         }
     }
@@ -336,7 +347,7 @@ public final class MultiblockHandler {
     private static void notifyWatchers(ServerLevel level, BlockPos pos) {
         Map<Long, Set<MultiblockInstance>> watchers = WATCHERS.get(level.dimension());
         if (watchers == null) return;
-        Set<MultiblockInstance> instances = watchers.get(ChunkPos.asLong(pos.getX() >> 4, pos.getZ() >> 4));
+        Set<MultiblockInstance> instances = watchers.get(ChunkPos.pack(pos.getX() >> 4, pos.getZ() >> 4));
         if (instances == null || instances.isEmpty()) return;
         for (MultiblockInstance instance : instances) instance.observeChange(level, pos);
     }
@@ -349,7 +360,7 @@ public final class MultiblockHandler {
     public static BlockPos getControllerForPos(ServerLevel level, BlockPos pos) {
         Map<Long, Set<MultiblockInstance>> watchers = WATCHERS.get(level.dimension());
         Set<MultiblockInstance> watching = watchers == null ? null
-                : watchers.get(ChunkPos.asLong(pos.getX() >> 4, pos.getZ() >> 4));
+                : watchers.get(ChunkPos.pack(pos.getX() >> 4, pos.getZ() >> 4));
         if (watching == null) return null;
         long key = pos.asLong();
         BlockPos match = null;
@@ -372,12 +383,19 @@ public final class MultiblockHandler {
             int i = 0;
             for (long p : positions) arr[i++] = p;
         }
-        PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(controllerPos),
+        PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(controllerPos),
                 new PacketMultiblockFormed(controllerPos, arr, aabb));
     }
 
+    static void syncControllerFormed(ServerLevel level, BlockPos controllerPos, boolean formed) {
+        if (level.hasChunkAt(controllerPos)
+                && level.getBlockEntity(controllerPos) instanceof igentuman.nc.block_entity.MultiblockControllerBE controller) {
+            controller.syncStructureFormed(formed);
+        }
+    }
+
     static void sendBroken(ServerLevel level, BlockPos controllerPos) {
-        PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(controllerPos),
+        PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(controllerPos),
                 new PacketMultiblockBroken(controllerPos));
     }
 
@@ -468,6 +486,7 @@ public final class MultiblockHandler {
                         lastResult = result;
                         if (formed) {
                             formed = false;
+                            syncControllerFormed(level, controllerPos, false);
                             logic.onBroken(level, controllerPos, abstractCache);
                             sendBroken(level, controllerPos);
                         }
@@ -482,6 +501,8 @@ public final class MultiblockHandler {
                         dirty = false;
                         lastResult = result;
                         formed = true;
+                        // Ports configure from the controller's role lists, which are empty until it is formed.
+                        syncControllerFormed(level, controllerPos, true);
                         if (!wasFormed) {
                             logic.onFormed(level, controllerPos, abstractCache);
                             sendFormed(level, controllerPos, abstractCache);

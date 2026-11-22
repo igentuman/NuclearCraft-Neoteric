@@ -7,15 +7,16 @@ import igentuman.nc.handler.crafter.AutoCraftSolver.Plan;
 import igentuman.nc.handler.crafter.ProcessorIndex.Link;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 
 
+/** Resumable crafting work with an atomic collection phase and current-format state. */
 public class CraftingJob {
 
     public enum Phase { COLLECTING, CRAFTING, DONE }
@@ -111,29 +113,25 @@ public class CraftingJob {
 
     private void collect(EngineersCrafterBE be) {
         AggregatedInventory agg = new AggregatedInventory(be.containerSlots);
-        for (Map.Entry<CraftKey, Integer> e : baseCost.entrySet()) {
-            int have = e.getKey().isFluid()
-                    ? agg.countFluid(e.getKey().sampleFluid())
-                    : agg.count(e.getKey().sampleItem());
-            if (have < e.getValue()) {
-                cancel(be);
-                return;
+        boolean complete = true;
+        try (var transaction = Transaction.openRoot()) {
+            for (Map.Entry<CraftKey, Integer> e : baseCost.entrySet()) {
+                CraftKey key = e.getKey();
+                int got = key.isFluid()
+                        ? agg.extractFluid(key.sampleFluid(), e.getValue(), transaction).getAmount()
+                        : agg.extract(key.sampleItem(), e.getValue(), transaction).getCount();
+                if (got != e.getValue()) {
+                    complete = false;
+                    break;
+                }
             }
+            if (complete) transaction.commit();
         }
-        for (Map.Entry<CraftKey, Integer> e : baseCost.entrySet()) {
-            CraftKey key = e.getKey();
-            int got;
-            if (key.isFluid()) {
-                got = agg.extractFluid(key.sampleFluid(), e.getValue(), false).getAmount();
-            } else {
-                got = agg.extract(key.sampleItem(), e.getValue(), false).getCount();
-            }
-            bufferAdd(key, got);
-            if (got < e.getValue()) {
-                cancel(be);
-                return;
-            }
+        if (!complete) {
+            cancel(be);
+            return;
         }
+        baseCost.forEach(this::bufferAdd);
         be.markUpdated();
         phase = operations.isEmpty() ? Phase.DONE : Phase.CRAFTING;
     }
@@ -313,7 +311,7 @@ public class CraftingJob {
 
     private void dropInWorld(EngineersCrafterBE be, ItemStack stack) {
         Level level = be.getLevel();
-        if (level == null || level.isClientSide) return;
+        if (level == null || level.isClientSide()) return;
         BlockPos pos = be.getBlockPos();
         Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
     }
@@ -332,9 +330,9 @@ public class CraftingJob {
     // --- NBT ---
 
     public void save(CompoundTag tag, HolderLookup.Provider provider) {
-        tag.putUUID("Id", id);
+        tag.store("Id", UUIDUtil.CODEC, id);
         tag.putString("Phase", phase.name());
-        tag.put("Target", target.save(provider));
+        tag.store("Target", ItemStack.CODEC, provider.createSerializationContext(NbtOps.INSTANCE), target);
         tag.putInt("Qty", qty);
         tag.putInt("OpIndex", opIndex);
         tag.putInt("Stall", stallTicks);
@@ -345,7 +343,7 @@ public class CraftingJob {
         ListTag taskList = new ListTag();
         for (ProcTask t : tasks) {
             CompoundTag c = new CompoundTag();
-            c.put("Pos", NbtUtils.writeBlockPos(t.pos));
+            c.store("Pos", BlockPos.CODEC, t.pos);
             c.putInt("Idle", t.idle);
             c.put("Expected", writeMap(t.expected, provider));
             taskList.add(c);
@@ -355,29 +353,38 @@ public class CraftingJob {
 
     public static CraftingJob load(CompoundTag tag, HolderLookup.Provider provider) {
         CraftingJob job = new CraftingJob();
-        if (tag.hasUUID("Id")) job.id = tag.getUUID("Id");
-        job.phase = Phase.valueOf(tag.getString("Phase"));
-        job.target = ItemStack.parseOptional(provider, tag.getCompound("Target"));
-        job.qty = tag.getInt("Qty");
-        job.opIndex = tag.getInt("OpIndex");
-        job.stallTicks = tag.getInt("Stall");
-        job.finished = tag.getBoolean("Finished");
-        if (!readOps(tag.getList("Ops", Tag.TAG_COMPOUND), job.operations, provider)) {
+        job.id = tag.read("Id", UUIDUtil.CODEC).orElseThrow(() -> new IllegalArgumentException("Missing crafting job Id"));
+        job.phase = Phase.valueOf(tag.getStringOr("Phase", ""));
+        job.target = tag.read("Target", ItemStack.CODEC, provider.createSerializationContext(NbtOps.INSTANCE))
+                .orElseThrow(() -> new IllegalArgumentException("Invalid crafting job target"));
+        job.qty = tag.getIntOr("Qty", 0);
+        job.opIndex = tag.getIntOr("OpIndex", 0);
+        job.stallTicks = tag.getIntOr("Stall", 0);
+        job.finished = tag.getBooleanOr("Finished", false);
+        if (!readOps(currentList(tag, "Ops"), job.operations, provider)) {
             // an op no longer decodes (mod removed?): abandon the plan and just return what was buffered
             job.operations.clear();
+            job.opIndex = 0;
             job.tasks.clear();
             job.phase = Phase.DONE;
         }
-        readMap(tag.getList("BaseCost", Tag.TAG_COMPOUND), job.baseCost, provider);
-        readMap(tag.getList("Buffer", Tag.TAG_COMPOUND), job.buffer, provider);
-        ListTag taskList = tag.getList("Tasks", Tag.TAG_COMPOUND);
+        readMap(currentList(tag, "BaseCost"), job.baseCost, provider);
+        readMap(currentList(tag, "Buffer"), job.buffer, provider);
+        ListTag taskList = currentList(tag, "Tasks");
         for (int i = 0; job.phase == Phase.CRAFTING && i < taskList.size(); i++) {
-            CompoundTag c = taskList.getCompound(i);
+            CompoundTag c = taskList.getCompoundOrEmpty(i);
             ProcTask t = new ProcTask();
-            t.pos = NbtUtils.readBlockPos(c, "Pos").orElse(BlockPos.ZERO);
-            t.idle = c.getInt("Idle");
-            readMap(c.getList("Expected", Tag.TAG_COMPOUND), t.expected, provider);
+            t.pos = c.read("Pos", BlockPos.CODEC)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid crafting processor position"));
+            t.idle = c.getIntOr("Idle", 0);
+            if (t.idle < 0 || job.tasks.stream().anyMatch(task -> task.pos.equals(t.pos))) {
+                throw new IllegalArgumentException("Invalid or duplicate crafting processor task");
+            }
+            readMap(currentList(c, "Expected"), t.expected, provider);
             job.tasks.add(t);
+        }
+        if (job.qty <= 0 || job.opIndex < 0 || job.opIndex > job.operations.size() || job.stallTicks < 0) {
+            throw new IllegalArgumentException("Invalid crafting job progress");
         }
         return job;
     }
@@ -400,25 +407,26 @@ public class CraftingJob {
 
     private static boolean readOps(ListTag list, List<PatternDef<CraftKey>> out, HolderLookup.Provider provider) {
         for (int i = 0; i < list.size(); i++) {
-            CompoundTag c = list.getCompound(i);
+            CompoundTag c = list.getCompoundOrEmpty(i);
             Map<CraftKey, Integer> outputs = new LinkedHashMap<>();
-            if (c.contains("Outputs")) {
-                readMap(c.getList("Outputs", Tag.TAG_COMPOUND), outputs, provider);
-            } else {
-                CraftKey outKey = readKey(c, "Out", provider);
-                if (outKey == null) return false;
-                outputs.put(outKey, c.getInt("OutN"));
-                readMap(c.getList("Extra", Tag.TAG_COMPOUND), outputs, provider);
-            }
+            readMap(currentList(c, "Outputs"), outputs, provider);
             Map<CraftKey, Integer> inputs = new LinkedHashMap<>();
-            readMap(c.getList("In", Tag.TAG_COMPOUND), inputs, provider);
-            String processor = c.getString("Proc");
-            String recipe = c.getString("Recipe");
-            // Legacy processing jobs cannot safely resume without a pinned recipe; keep their buffer for return.
-            if (!processor.isEmpty() && (recipe.isEmpty() || !ProcessorRecipes.isAllowed(processor))) return false;
-            if (outputs.isEmpty() || outputs.values().stream().anyMatch(n -> n <= 0)
-                    || inputs.isEmpty() || inputs.values().stream().anyMatch(n -> n <= 0)) return false;
-            Map<CraftKey, List<Integer>> parts = readAmounts(c.getList("Parts", Tag.TAG_COMPOUND), provider);
+            readMap(currentList(c, "In"), inputs, provider);
+            String processor = c.getStringOr("Proc", "");
+            String recipe = c.getStringOr("Recipe", "");
+            if (!processor.isEmpty() && recipe.isEmpty()) throw new IllegalArgumentException("Missing crafting processor recipe");
+            // A processing destination must still be supported before resuming its plan.
+            if (!processor.isEmpty() && !ProcessorRecipes.isAllowed(processor)) return false;
+            if (outputs.isEmpty() || inputs.isEmpty()) throw new IllegalArgumentException("Empty crafting operation");
+            Map<CraftKey, List<Integer>> parts = processor.isEmpty()
+                    ? Map.of() : readAmounts(currentList(c, "Parts"), provider);
+            if (!processor.isEmpty()) {
+                if (!parts.keySet().equals(inputs.keySet())) throw new IllegalArgumentException("Job input placements do not match inputs");
+                for (var entry : parts.entrySet()) {
+                    long amount = entry.getValue().stream().mapToLong(Integer::longValue).sum();
+                    if (amount != inputs.get(entry.getKey())) throw new IllegalArgumentException("Job input amounts do not match inputs");
+                }
+            }
             out.add(new PatternDef<>(outputs, inputs, processor, recipe, parts));
         }
         return true;
@@ -438,12 +446,16 @@ public class CraftingJob {
     private static Map<CraftKey, List<Integer>> readAmounts(ListTag list, HolderLookup.Provider provider) {
         Map<CraftKey, List<Integer>> out = new LinkedHashMap<>();
         for (int i = 0; i < list.size(); i++) {
-            CompoundTag c = list.getCompound(i);
+            CompoundTag c = list.getCompoundOrEmpty(i);
             CraftKey key = readKey(c, "Item", provider);
-            if (key == null) continue;
             List<Integer> amounts = new ArrayList<>();
-            for (int a : c.getIntArray("Amounts")) amounts.add(a);
-            out.put(key, amounts);
+            for (int amount : c.getIntArray("Amounts").orElseThrow(() -> new IllegalArgumentException("Missing job ingredient amounts"))) {
+                if (amount <= 0) throw new IllegalArgumentException("Invalid job ingredient amount");
+                amounts.add(amount);
+            }
+            if (amounts.isEmpty() || out.putIfAbsent(key, amounts) != null) {
+                throw new IllegalArgumentException("Empty or duplicate job ingredient amounts");
+            }
         }
         return out;
     }
@@ -461,26 +473,40 @@ public class CraftingJob {
 
     private static void readMap(ListTag list, Map<CraftKey, Integer> out, HolderLookup.Provider provider) {
         for (int i = 0; i < list.size(); i++) {
-            CompoundTag c = list.getCompound(i);
+            CompoundTag c = list.getCompoundOrEmpty(i);
             CraftKey key = readKey(c, "Item", provider);
-            if (key != null) out.merge(key, c.getInt("N"), Integer::sum);
+            int amount = c.getIntOr("N", 0);
+            if (amount <= 0 || out.putIfAbsent(key, amount) != null) {
+                throw new IllegalArgumentException("Invalid or duplicate crafting job resource amount");
+            }
         }
     }
 
     private static void writeKey(CompoundTag c, String name, CraftKey key, HolderLookup.Provider provider) {
         if (key.isFluid()) {
-            c.put(name + "Fluid", key.sampleFluid().save(provider));
+            c.store(name + "Fluid", FluidStack.CODEC, provider.createSerializationContext(NbtOps.INSTANCE), key.sampleFluid());
         } else {
-            c.put(name, key.sampleItem().save(provider));
+            c.store(name, ItemStack.CODEC, provider.createSerializationContext(NbtOps.INSTANCE), key.sampleItem());
         }
     }
 
-    private static CraftKey readKey(CompoundTag c, String name, HolderLookup.Provider provider) {
-        if (c.contains(name + "Fluid")) {
-            FluidStack f = FluidStack.parseOptional(provider, c.getCompound(name + "Fluid"));
-            return f.isEmpty() ? null : CraftKey.of(f);
+    private static CraftKey readKey(CompoundTag tag, String name, HolderLookup.Provider provider) {
+        var ops = provider.createSerializationContext(NbtOps.INSTANCE);
+        if (tag.contains(name + "Fluid")) {
+            if (tag.contains(name)) throw new IllegalArgumentException("Ambiguous crafting job resource");
+            return CraftKey.of(tag.read(name + "Fluid", FluidStack.CODEC, ops)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid crafting job fluid")));
         }
-        ItemStack s = ItemStack.parseOptional(provider, c.getCompound(name));
-        return s.isEmpty() ? null : CraftKey.of(s);
+        return CraftKey.of(tag.read(name, ItemStack.CODEC, ops)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid crafting job item")));
+    }
+
+    private static ListTag currentList(CompoundTag tag, String name) {
+        ListTag list = tag.getList(name)
+                .orElseThrow(() -> new IllegalArgumentException("Missing crafting job list: " + name));
+        for (var entry : list) {
+            if (!(entry instanceof CompoundTag)) throw new IllegalArgumentException("Invalid crafting job list: " + name);
+        }
+        return list;
     }
 }

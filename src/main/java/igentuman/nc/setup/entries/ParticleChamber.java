@@ -90,14 +90,14 @@ public class ParticleChamber extends ModEntries {
         initialized = true;
 
         igentuman.nc.recipe.particle.ParticleRecipes.init();
-        addMultiblockBlock("target_chamber_casing", () -> new ParticleChamberBlock(metalProps()));
-        addMultiblockBlock("target_chamber_casing_glass", () -> new ParticleChamberBlock(glassProps()));
-        addMultiblockBlock("target_chamber_camera", () -> new ParticleChamberCameraBlock(metalProps()));
-        add("silicon_tracker").block(() -> new DetectorBlock(metalProps(), SILICON_TRACKER)).build();
-        add("bubble_chamber").block(() -> new DetectorBlock(metalProps(), BUBBLE_CHAMBER)).build();
-        add("wire_chamber").block(() -> new DetectorBlock(metalProps(), WIRE_CHAMBER)).build();
-        add("em_calorimeter").block(() -> new DetectorBlock(metalProps(), EM_CALORIMETER)).build();
-        add("hadron_calorimeter").block(() -> new DetectorBlock(metalProps(), HADRON_CALORIMETER)).build();
+        addMultiblockBlock("target_chamber_casing", ParticleChamberBlock::new, ParticleChamber::metalProps);
+        addMultiblockBlock("target_chamber_casing_glass", ParticleChamberBlock::new, ParticleChamber::glassProps);
+        addMultiblockBlock("target_chamber_camera", ParticleChamberCameraBlock::new, ParticleChamber::metalProps);
+        add("silicon_tracker").block(props -> new DetectorBlock(props, SILICON_TRACKER), ParticleChamber::metalProps).build();
+        add("bubble_chamber").block(props -> new DetectorBlock(props, BUBBLE_CHAMBER), ParticleChamber::metalProps).build();
+        add("wire_chamber").block(props -> new DetectorBlock(props, WIRE_CHAMBER), ParticleChamber::metalProps).build();
+        add("em_calorimeter").block(props -> new DetectorBlock(props, EM_CALORIMETER), ParticleChamber::metalProps).build();
+        add("hadron_calorimeter").block(props -> new DetectorBlock(props, HADRON_CALORIMETER), ParticleChamber::metalProps).build();
 
         ModEntry controller = addMultiblockController("target_chamber_controller", ParticleChamberControllerBlock::new)
                 .blockEntity(ParticleChamberControllerBE::new)

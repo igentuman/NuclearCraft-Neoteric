@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "B": {
-      "item": "nuclearcraft:lithium_ion_cell"
-    },
-    "H": {
-      "item": "nuclearcraft:tough_chestplate"
-    },
-    "T": {
-      "item": "nuclearcraft:plate_extreme"
-    }
+    "B": "nuclearcraft:lithium_ion_cell",
+    "H": "nuclearcraft:tough_chestplate",
+    "T": "nuclearcraft:plate_extreme"
   },
   "pattern": [
     "THT",
@@ -18,7 +12,6 @@
     "TTT"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:hev_chestplate"
   }
 }

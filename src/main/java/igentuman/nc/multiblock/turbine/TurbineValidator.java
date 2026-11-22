@@ -10,7 +10,7 @@ import igentuman.nc.setup.entries.Turbine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -112,7 +112,7 @@ public class TurbineValidator extends AbstractCuboidValidator<TurbineCache> {
         step("turbine classified bearings={} rotorBlocks={} coils={}", bearings.size(),
                 cache.workingRotors.size(), cache.workingCoils.size());
         if (bearings.size() != 2) {
-            return fail("multiblock.turbine.bearing_count", controllerPos, rl("turbine_bearing"), (ResourceLocation) null);
+            return fail("multiblock.turbine.bearing_count", controllerPos, rl("turbine_bearing"), (Identifier) null);
         }
 
         BlockPos min = cache.workingMin();
@@ -120,11 +120,11 @@ public class TurbineValidator extends AbstractCuboidValidator<TurbineCache> {
         Direction.Axis axis = axisOf(bearings.get(0), bearings.get(1));
         if (axis == null) {
             return fail("multiblock.turbine.bearings_not_aligned", bearings.get(0), rl("aligned_turbine_bearings"),
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         if (!checkProportions(axis, min, max)) {
             return fail("multiblock.turbine.wrong_proportions", controllerPos, rl("odd_square_turbine_cross_section"),
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
 
         BlockPos center = new BlockPos((min.getX() + max.getX()) / 2, (min.getY() + max.getY()) / 2,
@@ -136,13 +136,13 @@ public class TurbineValidator extends AbstractCuboidValidator<TurbineCache> {
         if (!detectedBearings.equals(expectedBearings)) {
             return fail("multiblock.turbine.wrong_bearing_position",
                     mismatch(detectedBearings, expectedBearings, controllerPos), rl("turbine_bearing"),
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
 
         Set<Long> rotorLine = expectedRotorLine(axis, min, max, center);
         if (!cache.workingRotors.equals(rotorLine)) {
             return fail("multiblock.turbine.wrong_rotor_line", mismatch(cache.workingRotors, rotorLine, controllerPos),
-                    rl("turbine_rotor_shaft"), (ResourceLocation) null);
+                    rl("turbine_rotor_shaft"), (Identifier) null);
         }
         for (long key : rotorLine) {
             BlockPos pos = BlockPos.of(key);
@@ -156,7 +156,7 @@ public class TurbineValidator extends AbstractCuboidValidator<TurbineCache> {
         cache.workingFlow = countBlades(cache, rotorLine, axis);
         if (cache.workingBlades.size() % 4 != 0) {
             return fail("multiblock.turbine.incomplete_blade_set", controllerPos, rl("turbine_blade_set"),
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         cache.workingAxis = axis;
         return true;

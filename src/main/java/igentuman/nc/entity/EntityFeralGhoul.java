@@ -5,6 +5,7 @@ import igentuman.nc.setup.entries.Ghouls;
 import igentuman.nc.setup.level.ModBiomes;
 import igentuman.nr.radiation.storage.EntityRadiationData;
 import igentuman.nr.radiation.storage.NRAttachments;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -19,7 +20,7 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -65,7 +66,7 @@ public class EntityFeralGhoul extends Zombie {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @javax.annotation.Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @org.jetbrains.annotations.Nullable SpawnGroupData spawnGroupData) {
         return new GhoulGroupData(false, false);
     }
 
@@ -146,19 +147,19 @@ public class EntityFeralGhoul extends Zombie {
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
-        boolean result = super.doHurtTarget(target);
+    public boolean doHurtTarget(ServerLevel level, Entity target) {
+        boolean result = super.doHurtTarget(level, target);
         if (result && target instanceof Player player) {
             EntityRadiationData data = player.getData(NRAttachments.ENTITY_RADIATION.get());
             data.addSv(RADIATION_HIT_SV);
-            this.playSound(SoundEvents.GENERIC_DRINK, 0.2F, 0.8F);
+            this.playSound(SoundEvents.GENERIC_DRINK.value(), 0.2F, 0.8F);
         }
         return result;
     }
 
     public static boolean checkFeralGhoulSpawnRules(EntityType<EntityFeralGhoul> entityType,
                                                     ServerLevelAccessor level,
-                                                    MobSpawnType spawnType,
+                                                    EntitySpawnReason spawnType,
                                                     BlockPos pos,
                                                     RandomSource random) {
         if (!Monster.checkMonsterSpawnRules(entityType, level, spawnType, pos, random)) {

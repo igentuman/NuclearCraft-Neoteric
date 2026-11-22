@@ -1,15 +1,15 @@
 package igentuman.nc.client.particle;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -18,44 +18,54 @@ import org.joml.Vector3f;
 
 import static com.mojang.math.Axis.YP;
 
-/** Renders a fusion reactor energy beam as two crossed, directional translucent quads between two points. */
-public class FusionBeamParticle extends TextureSheetParticle {
+public class FusionBeamParticle extends Particle {
 
     private static final float RADIAN_45 = (float) Math.toRadians(45);
     private static final float RADIAN_90 = (float) Math.toRadians(90);
+    private static final float RED = 1.0F;
+    private static final float GREEN = 0.0F;
+    private static final float BLUE = 0.5F;
+    private static final float ALPHA = 0.11F;
+    private static final int FULL_BRIGHT = 0xF000F0;
 
     private final Direction direction;
     private final float halfLength;
+    private final float quadSize;
+    private final TextureAtlasSprite sprite;
 
-    private FusionBeamParticle(ClientLevel world, Vec3 start, Vec3 end, Direction dir, float energyScale) {
+    private FusionBeamParticle(ClientLevel world, Vec3 start, Vec3 end, Direction dir, float energyScale, TextureAtlasSprite sprite) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
         lifetime = 5;
-        rCol = 1;
-        gCol = 0;
-        bCol = 0.5f;
-        alpha = 0.11F;
         quadSize = energyScale;
         halfLength = (float) (end.distanceTo(start) / 2);
         direction = dir;
+        this.sprite = sprite;
         updateBoundingBox();
     }
 
     @Override
-    public void render(@NotNull VertexConsumer vertexBuilder, Camera renderInfo, float partialTicks) {
-        Vec3 view = renderInfo.getPosition();
+    public @NotNull ParticleRenderType getGroup() {
+        return BeamParticleGroup.TYPE;
+    }
+
+    BeamParticleGroup.Beam extract(Camera camera, float partialTicks) {
+        Vec3 view = camera.position();
         float newX = (float) (Mth.lerp(partialTicks, xo, x) - view.x());
         float newY = (float) (Mth.lerp(partialTicks, yo, y) - view.y());
         float newZ = (float) (Mth.lerp(partialTicks, zo, z) - view.z());
-        float uMin = getU0();
-        float uMax = getU1();
-        float vMin = getV0();
-        float vMax = getV1();
         Quaternionf quaternion = direction.getRotation();
         quaternion.mul(YP.rotation(RADIAN_45));
-        drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ), uMin, uMax, vMin, vMax);
+        Vector3f[] first = getResultVector(quaternion, newX, newY, newZ);
         Quaternionf quaternion2 = new Quaternionf(quaternion);
         quaternion2.mul(YP.rotation(RADIAN_90));
-        drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ), uMin, uMax, vMin, vMax);
+        Vector3f[] second = getResultVector(quaternion2, newX, newY, newZ);
+        return new BeamParticleGroup.Beam(first, second,
+                sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(),
+                RED, GREEN, BLUE, ALPHA, FULL_BRIGHT);
+    }
+
+    boolean isVisible(net.minecraft.client.renderer.culling.Frustum frustum) {
+        return frustum.isVisible(getBoundingBox());
     }
 
     private Vector3f[] getResultVector(Quaternionf quaternion, float newX, float newY, float newZ) {
@@ -70,28 +80,6 @@ public class FusionBeamParticle extends TextureSheetParticle {
             vec.add(newX, newY, newZ);
         }
         return resultVector;
-    }
-
-    private void drawComponent(VertexConsumer vertexBuilder, Vector3f[] resultVector, float uMin, float uMax, float vMin, float vMax) {
-        addVertex(vertexBuilder, resultVector[0], uMax, vMax);
-        addVertex(vertexBuilder, resultVector[1], uMax, vMin);
-        addVertex(vertexBuilder, resultVector[2], uMin, vMin);
-        addVertex(vertexBuilder, resultVector[3], uMin, vMax);
-        // Back faces
-        addVertex(vertexBuilder, resultVector[1], uMax, vMin);
-        addVertex(vertexBuilder, resultVector[0], uMax, vMax);
-        addVertex(vertexBuilder, resultVector[3], uMin, vMax);
-        addVertex(vertexBuilder, resultVector[2], uMin, vMin);
-    }
-
-    private void addVertex(VertexConsumer vertexBuilder, Vector3f pos, float u, float v) {
-        vertexBuilder.addVertex(pos.x(), pos.y(), pos.z()).setUv(u, v).setColor(rCol, gCol, bCol, alpha).setUv2(240, 240);
-    }
-
-    @NotNull
-    @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -130,13 +118,12 @@ public class FusionBeamParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(FusionBeamParticleData data, @NotNull ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(FusionBeamParticleData data, @NotNull ClientLevel world, double x, double y, double z,
+                                       double xSpeed, double ySpeed, double zSpeed, @NotNull RandomSource random) {
             Direction dir = data.direction();
             Vec3 start = new Vec3(x, y, z);
             Vec3 end = start.add(dir.getStepX() * data.distance(), dir.getStepY() * data.distance(), dir.getStepZ() * data.distance());
-            FusionBeamParticle beam = new FusionBeamParticle(world, start, end, dir, data.energyScale());
-            beam.pickSprite(this.spriteSet);
-            return beam;
+            return new FusionBeamParticle(world, start, end, dir, data.energyScale(), this.spriteSet.get(random));
         }
     }
 }

@@ -19,8 +19,8 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import igentuman.nc.handler.sided.ItemCapabilityHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 /** Menu for a machine processor: lays out its I/O slots and player inventory and exposes synced progress/redstone state. */
 public class UniversalProcessorContainer extends AbstractContainerMenu {
@@ -49,7 +49,7 @@ public class UniversalProcessorContainer extends AbstractContainerMenu {
         this.slotsLayout = entry.slotsLayout();
 
         if (blockEntity.hasInventory() && slotsLayout != null) {
-            IItemHandler inv = blockEntity.getItemHandler(null);
+            ItemCapabilityHandler inv = blockEntity.contentHandler.getItemHandler();
 
             int inputItemCount  = entry.itemCap()  != null ? entry.itemCap().inputSlots          : 0;
             int inputFluidCount = entry.fluidCap() != null ? entry.fluidCap().inputTanks.size()   : 0;
@@ -62,12 +62,12 @@ public class UniversalProcessorContainer extends AbstractContainerMenu {
             if (!internalInputs) {
                 for (int i = 0; i < inputItemCount; i++) {
                     SlotDef def = slotsLayout.slots.get(inputItemOffset + i);
-                    addSlot(new SlotItemHandler(inv, i, def.x, def.y));
+                    addSlot(new ResourceHandlerSlot(inv, inv::set, i, def.x, def.y));
                 }
             }
             for (int i = 0; i < outputItemCount; i++) {
                 SlotDef def = slotsLayout.slots.get(outputItemOffset + i);
-                addSlot(new SlotItemHandler(inv, inputItemCount + i, def.x, def.y) {
+                addSlot(new ResourceHandlerSlot(inv, inv::set, inputItemCount + i, def.x, def.y) {
                     @Override
                     public boolean mayPlace(ItemStack stack) {
                         return false;
@@ -81,16 +81,16 @@ public class UniversalProcessorContainer extends AbstractContainerMenu {
                 int catalystLayoutBase = inputItemCount + inputFluidCount + outputItemCount + outputFluidCount;
                 for (int i = 0; i < catalystSlotCount; i++) {
                     SlotDef def = slotsLayout.slots.get(catalystLayoutBase + i);
-                    addSlot(new SlotItemHandler(inv, catalystHandlerBase + i, def.x, def.y));
+                    addSlot(new ResourceHandlerSlot(inv, inv::set, catalystHandlerBase + i, def.x, def.y));
                 }
             }
         } else if (blockEntity.hasInventory()) {
-            IItemHandler inv = blockEntity.getItemHandler(null);
+            ItemCapabilityHandler inv = blockEntity.contentHandler.getItemHandler();
             for (int row = 0; row < 3; row++) {
                 for (int col = 0; col < 3; col++) {
                     int index = row * 3 + col;
                     if (index < blockEntity.slotCount) {
-                        addSlot(new SlotItemHandler(inv, index, 62 + col * 18, 17 + row * 18));
+                        addSlot(new ResourceHandlerSlot(inv, inv::set, index, 62 + col * 18, 17 + row * 18));
                     }
                 }
             }

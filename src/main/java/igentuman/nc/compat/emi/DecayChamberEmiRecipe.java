@@ -6,7 +6,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.compat.ParticleCompatUtil;
 import igentuman.nc.recipe.particle.DecayChamberRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec2;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import static igentuman.nc.util.TextUtils.formatParticleEnergy;
 
 public class DecayChamberEmiRecipe extends BasicEmiRecipe {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/accelerators/decay_chamber_controller.png");
+    private static final Identifier TEXTURE = rl("textures/gui/accelerators/decay_chamber_controller.png");
     private static final List<Vec2> OUTPUT_POSITIONS = List.of(new Vec2(91, 4), new Vec2(91, 27), new Vec2(91, 50));
 
     private static final int WIDTH = 130;
@@ -28,7 +28,7 @@ public class DecayChamberEmiRecipe extends BasicEmiRecipe {
     private final EmiIngredient particleInput;
     private final List<ParticleEmiStack> particleOutputs = new ArrayList<>();
 
-    public DecayChamberEmiRecipe(EmiRecipeCategory category, ResourceLocation id, DecayChamberRecipe recipe) {
+    public DecayChamberEmiRecipe(EmiRecipeCategory category, Identifier id, DecayChamberRecipe recipe) {
         super(category, id, WIDTH, HEIGHT);
         this.releasedEnergyKeV = recipe.releasedEnergyKeV();
 

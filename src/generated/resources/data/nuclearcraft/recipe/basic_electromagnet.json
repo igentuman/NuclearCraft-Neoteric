@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_fusion",
   "key": {
-    "B": {
-      "tag": "c:ingots/tough_alloy"
-    },
-    "C": {
-      "item": "nuclearcraft:coil_copper"
-    },
-    "S": {
-      "tag": "c:ingots/stainless_steel"
-    }
+    "B": "#c:ingots/tough_alloy",
+    "C": "nuclearcraft:coil_copper",
+    "S": "#c:ingots/stainless_steel"
   },
   "pattern": [
     "CCC",
@@ -19,7 +13,6 @@
     "CCC"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:basic_electromagnet"
   }
 }

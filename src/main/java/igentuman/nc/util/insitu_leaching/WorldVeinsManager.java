@@ -1,15 +1,24 @@
 package igentuman.nc.util.insitu_leaching;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import com.mojang.serialization.Codec;
+import igentuman.nc.util.persistence.CurrentSavedData;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
+/** Persists vein depletion independently in each dimension. */
 public class WorldVeinsManager extends SavedData {
 
     public static final String NAME = "nc_world_veins";
+    public static final Codec<WorldVeinsManager> CODEC = CurrentSavedData.strict(WorldVeinOres.CODEC.xmap(data -> {
+        WorldVeinsManager manager = new WorldVeinsManager();
+        manager.worldVeinData = data;
+        return manager;
+    }, manager -> manager.worldVeinData));
+    public static final SavedDataType<WorldVeinsManager> TYPE = new SavedDataType<>(
+            Identifier.fromNamespaceAndPath("nuclearcraft", NAME), WorldVeinsManager::new, CODEC);
 
     private WorldVeinOres worldVeinData;
 
@@ -18,36 +27,15 @@ public class WorldVeinsManager extends SavedData {
         return worldVeinData;
     }
 
-    public void setWorldVeinData(WorldVeinOres worldVeinData) {
-        this.worldVeinData = worldVeinData;
-        this.setDirty();
-    }
-
     public WorldVeinsManager() {
         worldVeinData = new WorldVeinOres();
     }
 
     public static WorldVeinsManager get(Level level) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             throw new RuntimeException("Don't access this client-side!");
         }
         ServerLevel serverLevel = (ServerLevel) level;
-        return serverLevel.getDataStorage().computeIfAbsent(
-                new SavedData.Factory<>(WorldVeinsManager::new, WorldVeinsManager::load),
-                NAME);
-    }
-
-    public static WorldVeinsManager load(CompoundTag tag, HolderLookup.Provider provider) {
-        WorldVeinsManager manager = new WorldVeinsManager();
-        if (tag.contains("depletion")) {
-            manager.worldVeinData = WorldVeinOres.deserialize(tag);
-        }
-        return manager;
-    }
-
-    @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag tag, HolderLookup.Provider provider) {
-        tag.merge(worldVeinData.serializeNBT());
-        return tag;
+        return CurrentSavedData.get(serverLevel, TYPE);
     }
 }

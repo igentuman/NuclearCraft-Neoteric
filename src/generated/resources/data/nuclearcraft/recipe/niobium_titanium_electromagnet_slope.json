@@ -3,12 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_fusion",
   "ingredients": [
-    {
-      "item": "nuclearcraft:niobium_titanium_electromagnet"
-    }
+    "nuclearcraft:niobium_titanium_electromagnet"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:niobium_titanium_electromagnet_slope"
   }
 }

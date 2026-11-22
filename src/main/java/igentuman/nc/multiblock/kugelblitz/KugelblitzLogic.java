@@ -17,11 +17,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -49,7 +54,8 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
     @Nullable
     private RecipeHolder<KugelblitzRecipe> currentRecipe;
     @Nullable
-    private ResourceLocation pendingRecipeId;
+    private Identifier pendingRecipeId;
+    private RecipeMap randomPoolRecipes;
     private boolean runtimeLoaded;
 
     private final Set<Direction> pulses = EnumSet.noneOf(Direction.class);
@@ -132,7 +138,7 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
 
     private void resolvePendingRecipe(ServerLevel level) {
         if (pendingRecipeId == null) return;
-        currentRecipe = level.getRecipeManager().byKey(pendingRecipeId)
+        currentRecipe = level.recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, pendingRecipeId))
                 .filter(holder -> holder.value() instanceof KugelblitzRecipe)
                 .map(this::cast)
                 .orElse(null);
@@ -212,11 +218,11 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
         double massRatio = Math.log10((double) MAX_MASS / Math.max(mass, MIN_MASS));
         evaporation = (int) (evaporationRate * Multiblocks.kugelblitzEvaporationMultiplier * massRatio);
 
-        if (stability < 20 && level.random.nextDouble() < 0.1) {
-            evaporation += (int) (mass * 0.0001 * (level.random.nextDouble() - 0.5) * 2);
+        if (stability < 20 && level.getRandom().nextDouble() < 0.1) {
+            evaporation += (int) (mass * 0.0001 * (level.getRandom().nextDouble() - 0.5) * 2);
         }
-        if (stability < 10 && level.random.nextDouble() < 0.1) {
-            evaporation += (int) (mass * 0.0005 * level.random.nextDouble() * 20D / Math.max(1, stability));
+        if (stability < 10 && level.getRandom().nextDouble() < 0.1) {
+            evaporation += (int) (mass * 0.0005 * level.getRandom().nextDouble() * 20D / Math.max(1, stability));
         }
     }
 
@@ -225,8 +231,8 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
             stability = 100;
             return;
         }
-        if (level.getGameTime() % 5 != 0 || level.random.nextInt(96) < cache.stabilizers) return;
-        if (level.random.nextDouble() > 0.98D) {
+        if (level.getGameTime() % 5 != 0 || level.getRandom().nextInt(96) < cache.stabilizers) return;
+        if (level.getRandom().nextDouble() > 0.98D) {
             stability = Math.min(100, stability + 1);
             return;
         }
@@ -235,10 +241,10 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
         double distanceFromOptimal = Math.abs(normalizedMass - 0.5) * 2.0;
         double decreaseChance = 0.05 + (distanceFromOptimal * 0.1);
         if (mass > MAX_MASS * 0.9) decreaseChance += 0.1;
-        if (level.random.nextDouble() < decreaseChance) {
+        if (level.getRandom().nextDouble() < decreaseChance) {
             stability = Math.max(0, stability - 1);
         }
-        if (distanceFromOptimal < 0.3 && level.random.nextDouble() < 0.02) {
+        if (distanceFromOptimal < 0.3 && level.getRandom().nextDouble() < 0.02) {
             stability = Math.min(100, stability + 1);
         }
     }
@@ -265,15 +271,15 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
             spawnBlackhole(level, center);
             return;
         }
-        stability = Math.min(100, stability + 50 + level.random.nextInt(50));
-        mass += (level.random.nextInt(200) + 200) * 10000L;
+        stability = Math.min(100, stability + 50 + level.getRandom().nextInt(50));
+        mass += (level.getRandom().nextInt(200) + 200) * 10000L;
         gotLaserBurst = false;
     }
 
     private void spawnBlackhole(ServerLevel level, @Nullable BlockPos center) {
         if (center == null) return;
         level.setBlockAndUpdate(center, ModEntries.get("black_hole").block().get().defaultBlockState());
-        mass = (long) (MIN_MASS * (1 + level.random.nextDouble()));
+        mass = (long) (MIN_MASS * (1 + level.getRandom().nextDouble()));
         gotLaserBurst = false;
     }
 
@@ -316,11 +322,16 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
         }
         RecipeHolder<KugelblitzRecipe> recipe = findRecipe(level, terminal, input);
         if (recipe != null) {
+            int amount = recipe.value().input().count();
+            if (amount <= 0) return;
+            try (var transaction = Transaction.openRoot()) {
+                if (inventory.extract(0, ItemResource.of(input), amount, transaction) != amount) return;
+                transaction.commit();
+            }
             currentRecipe = recipe;
             ticksProcessed = 0;
             ticksNeeded = recipe.value().getBaseTime();
             processEnergy = recipe.value().getEnergy();
-            inventory.extractItem(0, recipe.value().input().count(), false);
         } else {
             currentRecipe = null;
             ticksNeeded = 0;
@@ -329,8 +340,7 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
 
     @Nullable
     private RecipeHolder<KugelblitzRecipe> findRecipe(ServerLevel level, ChamberTerminalBE terminal, ItemStack input) {
-        for (RecipeHolder<KugelblitzRecipe> holder : level.getRecipeManager()
-                .getAllRecipesFor(KugelblitzRecipes.KUGELBLITZ_TYPE.get())) {
+        for (RecipeHolder<KugelblitzRecipe> holder : level.recipeAccess().recipeMap().byType(KugelblitzRecipes.KUGELBLITZ_TYPE.get())) {
             KugelblitzRecipe recipe = holder.value();
             if (recipe.input().test(input) && terminal.frequency == targetFrequency(level, recipe.getResultStack())) {
                 return holder;
@@ -345,15 +355,9 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
             currentRecipe = null;
             return;
         }
-        ItemStack existing = inventory.getStackInSlot(1);
-        if (existing.isEmpty()) {
-            inventory.setStackInSlot(1, output.copy());
-        } else if (ItemStack.isSameItemSameComponents(existing, output)
-                && existing.getCount() + output.getCount() <= existing.getMaxStackSize()) {
-            existing.grow(output.getCount());
-            inventory.setStackInSlot(1, existing);
-        } else {
-            return;
+        try (var transaction = Transaction.openRoot()) {
+            if (inventory.insert(1, ItemResource.of(output), output.getCount(), transaction) != output.getCount()) return;
+            transaction.commit();
         }
         currentRecipe = null;
         ticksProcessed = 0;
@@ -363,7 +367,7 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
 
     private ItemStack resolveOutput(ServerLevel level, KugelblitzRecipe recipe) {
         ItemStack result = recipe.getResultStack();
-        ItemStack input = recipe.getInputStack();
+        ItemStack input = recipe.getInputStack(level);
         if (!result.is(input.getItem())) return result;
         buildRandomPool(level);
         int id = ingredientId(result);
@@ -378,11 +382,14 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
     }
 
     private void buildRandomPool(ServerLevel level) {
-        if (!orderedOutputs.isEmpty()) return;
-        for (RecipeHolder<KugelblitzRecipe> holder : level.getRecipeManager()
-                .getAllRecipesFor(KugelblitzRecipes.KUGELBLITZ_TYPE.get())) {
+        RecipeMap current = level.recipeAccess().recipeMap();
+        if (current == randomPoolRecipes) return;
+        randomPoolRecipes = current;
+        allowedRandomInputs.clear();
+        orderedOutputs.clear();
+        for (RecipeHolder<KugelblitzRecipe> holder : level.recipeAccess().recipeMap().byType(KugelblitzRecipes.KUGELBLITZ_TYPE.get())) {
             KugelblitzRecipe recipe = holder.value();
-            ItemStack in = recipe.getInputStack();
+            ItemStack in = recipe.getInputStack(level);
             if (recipe.getResultStack().is(in.getItem())) allowedRandomInputs.add(in);
         }
         orderedOutputs.addAll(allowedRandomInputs.stream().map(ItemStack::copy).toList());
@@ -403,22 +410,22 @@ public class KugelblitzLogic extends AbstractMultiblockLogic<KugelblitzCache> {
         tag.putInt("ticksProcessed", ticksProcessed);
         tag.putInt("ticksNeeded", ticksNeeded);
         tag.putInt("processEnergy", processEnergy);
-        ResourceLocation recipeId = currentRecipe != null ? currentRecipe.id() : pendingRecipeId;
+        Identifier recipeId = currentRecipe != null ? currentRecipe.id().identifier() : pendingRecipeId;
         if (recipeId != null) tag.putString("recipe", recipeId.toString());
     }
 
     @Override
     public void loadRuntime(CompoundTag tag, HolderLookup.Provider registries) {
         if (!tag.contains("mass")) return;
-        mass = Math.max(0, tag.getLong("mass"));
-        feeding = tag.getLong("feeding");
-        evaporation = tag.getInt("evaporation");
-        stability = tag.getInt("blackholeStability");
-        energyPerTick = tag.getInt("energyPerTick");
-        ticksProcessed = tag.getInt("ticksProcessed");
-        ticksNeeded = tag.getInt("ticksNeeded");
-        processEnergy = tag.getInt("processEnergy");
-        pendingRecipeId = tag.contains("recipe") ? ResourceLocation.tryParse(tag.getString("recipe")) : null;
+        mass = Math.max(0, tag.getLongOr("mass", 0L));
+        feeding = tag.getLongOr("feeding", 0L);
+        evaporation = tag.getIntOr("evaporation", 0);
+        stability = tag.getIntOr("blackholeStability", 0);
+        energyPerTick = tag.getIntOr("energyPerTick", 0);
+        ticksProcessed = tag.getIntOr("ticksProcessed", 0);
+        ticksNeeded = tag.getIntOr("ticksNeeded", 0);
+        processEnergy = tag.getIntOr("processEnergy", 0);
+        pendingRecipeId = tag.contains("recipe") ? Identifier.tryParse(tag.getStringOr("recipe", "")) : null;
         currentRecipe = null;
         runtimeLoaded = true;
     }

@@ -1,12 +1,13 @@
 package igentuman.nc.recipe.particle;
 
+import igentuman.nc.recipe.RecipeIngredientCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import igentuman.nc.api.particle.ParticleIngredient;
 import igentuman.nc.api.particle.ParticleStack;
-import igentuman.nc.recipe.FluidOutput;
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.api.recipe.FluidOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -16,12 +17,13 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.List;
 
-public final class TargetChamberRecipeSerializer implements RecipeSerializer<TargetChamberRecipe> {
+/** JSON and network codecs for {@link TargetChamberRecipe}. */
+public final class TargetChamberRecipeSerializer {
 
     private static final MapCodec<TargetChamberRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            SizedIngredient.FLAT_CODEC.listOf().optionalFieldOf("item_inputs", List.of())
+            RecipeIngredientCodecs.ITEM.listOf().optionalFieldOf("item_inputs", List.of())
                     .forGetter(TargetChamberRecipe::itemInputs),
-            SizedFluidIngredient.FLAT_CODEC.listOf().optionalFieldOf("fluid_inputs", List.of())
+            RecipeIngredientCodecs.FLUID.listOf().optionalFieldOf("fluid_inputs", List.of())
                     .forGetter(TargetChamberRecipe::fluidInputs),
             ParticleIngredient.CODEC.fieldOf("particle_input").forGetter(TargetChamberRecipe::particleInput),
             ItemOutput.CODEC.listOf().optionalFieldOf("item_outputs", List.of())
@@ -76,13 +78,9 @@ public final class TargetChamberRecipeSerializer implements RecipeSerializer<Tar
         }
     };
 
-    @Override
-    public MapCodec<TargetChamberRecipe> codec() {
-        return CODEC;
-    }
+    private TargetChamberRecipeSerializer() {}
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, TargetChamberRecipe> streamCodec() {
-        return STREAM_CODEC;
+    public static RecipeSerializer<TargetChamberRecipe> create() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

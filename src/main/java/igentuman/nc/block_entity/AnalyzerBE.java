@@ -20,7 +20,6 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Analyzer processor BE; converts paper/maps/crystals into analyzed variants with vein NBT injected onto outputs. */
 public class AnalyzerBE extends UniversalProcessorBE {
 
     protected final Map<Long, OreVeinRecipe> veinsCache = new HashMap<>();
@@ -52,7 +51,6 @@ public class AnalyzerBE extends UniversalProcessorBE {
         }
     }
 
-    /** Injects vein name, position, and analysis flag NBT onto output items when the recipe completes. */
     protected void handleRecipeOutput() {
         if (!(recipeInfo.lastRecipe instanceof UniversalProcessorRecipe upr)) return;
         if (upr.getItemInputs().isEmpty()) return;
@@ -82,6 +80,7 @@ public class AnalyzerBE extends UniversalProcessorBE {
         tag.putLong("pos", worldPosition.asLong());
         tag.putBoolean("is_nc_analyzed", true);
         output.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        contentHandler.getItemHandler().setStackInSlot(outputSlot, output);
     }
 
     private void handleCrystalOutput(int outputSlot) {
@@ -89,6 +88,7 @@ public class AnalyzerBE extends UniversalProcessorBE {
         if (output.isEmpty() || !(output.getItem() instanceof ResoniteCrystalItem)) return;
         if (!ResoniteCrystalItem.isAnalyzed(output) && level != null) {
             CrystalAnalysis.applyAnalysis(output, level.getRandom());
+            contentHandler.getItemHandler().setStackInSlot(outputSlot, output);
             setChanged();
         }
     }
@@ -102,16 +102,16 @@ public class AnalyzerBE extends UniversalProcessorBE {
         CompoundTag tag = output.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         tag.putBoolean("is_nc_analyzed", true);
         output.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        contentHandler.getItemHandler().setStackInSlot(outputSlot, output);
         savedInput = ItemStack.EMPTY;
     }
 
-    /** Queries the OreVeinProvider for this chunk's vein, using a cache to avoid repeated lookups. */
     protected OreVeinRecipe getVein() {
         if (!(level instanceof ServerLevel serverLevel)) return null;
-        long pos = ChunkPos.asLong(worldPosition);
+        long pos = ChunkPos.pack(worldPosition);
         if (!veinsCache.containsKey(pos)) {
-            ChunkPos chunkPos = new ChunkPos(worldPosition);
-            veinsCache.put(pos, OreVeinProvider.get(serverLevel).getVeinForChunk(chunkPos.x, chunkPos.z));
+            ChunkPos chunkPos = ChunkPos.containing(worldPosition);
+            veinsCache.put(pos, OreVeinProvider.get(serverLevel).getVeinForChunk(chunkPos.x(), chunkPos.z()));
         }
         return veinsCache.get(pos);
     }

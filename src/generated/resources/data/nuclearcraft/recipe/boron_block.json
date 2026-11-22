@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_blocks",
   "ingredients": [
-    {
-      "tag": "c:ingots/boron"
-    },
-    {
-      "tag": "c:ingots/boron"
-    },
-    {
-      "tag": "c:ingots/boron"
-    },
-    {
-      "tag": "c:ingots/boron"
-    },
-    {
-      "tag": "c:ingots/boron"
-    },
-    {
-      "tag": "c:ingots/boron"
-    },
-    {
-      "tag": "c:ingots/boron"
-    },
-    {
-      "tag": "c:ingots/boron"
-    },
-    {
-      "tag": "c:ingots/boron"
-    }
+    "#c:ingots/boron",
+    "#c:ingots/boron",
+    "#c:ingots/boron",
+    "#c:ingots/boron",
+    "#c:ingots/boron",
+    "#c:ingots/boron",
+    "#c:ingots/boron",
+    "#c:ingots/boron",
+    "#c:ingots/boron"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:boron_block"
   }
 }

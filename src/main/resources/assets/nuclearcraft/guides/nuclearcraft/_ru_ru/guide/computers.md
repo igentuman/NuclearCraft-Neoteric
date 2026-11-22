@@ -20,10 +20,10 @@ navigation:
 Ускоритель, кольцевой ускоритель, камеры частиц и разветвитель луча предоставляют два метода
 для управления портами луча во время работы:
 
-- `getBeamPortsInfo()` → list | nil — по одной записи на каждый порт луча, отсортированы по позиции.
+- `getBeamPortsInfo()` → list | nil - по одной записи на каждый порт луча, отсортированы по позиции.
   Каждая запись - таблица: `id` (int), `x` / `y` / `z` (int), `mode` (`"input"`, `"output"` или
   `"disabled"`) и `particle` (таблица с `energy` / `focus` / `amount` / `particle`, либо nil).
-- `setBeamPortMode(id, mode)` → boolean — задать порту `id` режим `"input"`, `"output"` или
+- `setBeamPortMode(id, mode)` → boolean - задать порту `id` режим `"input"`, `"output"` или
   `"disabled"` (без учёта регистра). Возвращает `false`, если мультиблок не собран или аргументы
   неверны.
 

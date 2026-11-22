@@ -5,18 +5,19 @@ import igentuman.nc.handler.crafter.AutoCraftSolver.PatternDef;
 import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import igentuman.nc.handler.sided.ItemCapabilityHandler;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Internal processor access; a placement is simulated once and reused for insertion and rollback. */
-public record ProcessorTransfer(IItemHandler items, FluidStackHandler fluids,
+/** Internal processor access with atomic native input placement and output collection. */
+public record ProcessorTransfer(ItemCapabilityHandler items, FluidStackHandler fluids,
                                 int inputSlots, int outputSlots, int inputTanks, int outputTanks) {
 
     public static ProcessorTransfer of(UniversalProcessorBE proc) {
@@ -44,7 +45,7 @@ public record ProcessorTransfer(IItemHandler items, FluidStackHandler fluids,
     }
 
     public InputPlan plan(PatternDef<CraftKey> pattern, int requested) {
-        if (!inputsEmpty()) return null;
+        if (requested <= 0 || !inputsEmpty()) return null;
         int operations = requested;
         boolean[] usedSlots = new boolean[inputSlots];
         boolean[] usedTanks = new boolean[inputTanks];
@@ -56,7 +57,10 @@ public record ProcessorTransfer(IItemHandler items, FluidStackHandler fluids,
                 if (slot < 0) return null;
                 (key.isFluid() ? usedTanks : usedSlots)[slot] = true;
                 int wanted = (int) Math.min(Integer.MAX_VALUE, (long) perOperation * operations);
-                int accepted = insert(new Placement(key, slot, perOperation), wanted, true);
+                int accepted;
+                try (var transaction = Transaction.openRoot()) {
+                    accepted = insert(new Placement(key, slot, perOperation), wanted, transaction);
+                }
                 operations = Math.min(operations, accepted / perOperation);
                 if (operations <= 0) return null;
                 placements.add(new Placement(key, slot, perOperation));
@@ -75,43 +79,41 @@ public record ProcessorTransfer(IItemHandler items, FluidStackHandler fluids,
         return -1;
     }
 
-    private int insert(Placement placement, int amount, boolean simulate) {
-        if (placement.key().isFluid()) {
-            return fluids.fillTank(placement.slot(), placement.key().sampleFluid(amount),
-                    simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE);
-        }
-        ItemStack stack = placement.key().sampleItem().copyWithCount(amount);
-        return amount - items.insertItem(placement.slot(), stack, simulate).getCount();
+    private int insert(Placement placement, int amount, TransactionContext transaction) {
+        return placement.key().isFluid()
+                ? fluids.insert(placement.slot(), FluidResource.of(placement.key().sampleFluid()), amount, transaction)
+                : items.insert(placement.slot(), ItemResource.of(placement.key().sampleItem()), amount, transaction);
     }
 
-    /** All inputs are committed together; refusal rolls back every insertion before the processor can tick. */
+    /** A refusal aborts every input insertion, including notifications, before the processor can tick. */
     public boolean insert(InputPlan plan) {
-        List<Integer> accepted = new ArrayList<>();
-        for (Placement placement : plan.placements()) {
-            int wanted = placement.amountPerOperation() * plan.operations();
-            int inserted = insert(placement, wanted, false);
-            accepted.add(inserted);
-            if (inserted != wanted) {
-                for (int i = accepted.size() - 1; i >= 0; i--) {
-                    Placement rollback = plan.placements().get(i);
-                    if (rollback.key().isFluid()) fluids.drainTank(rollback.slot(), accepted.get(i), FluidAction.EXECUTE);
-                    else items.extractItem(rollback.slot(), accepted.get(i), false);
-                }
-                return false;
+        if (plan.operations() <= 0 || !inputsEmpty()) return false;
+        try (var transaction = Transaction.openRoot()) {
+            for (Placement placement : plan.placements()) {
+                int wanted = Math.multiplyExact(placement.amountPerOperation(), plan.operations());
+                if (insert(placement, wanted, transaction) != wanted) return false;
             }
+            transaction.commit();
         }
         return true;
     }
 
     public Map<CraftKey, Integer> collectOutputs() {
         Map<CraftKey, Integer> collected = new LinkedHashMap<>();
-        for (int s = inputSlots; s < inputSlots + outputSlots; s++) {
-            ItemStack stack = items.extractItem(s, Integer.MAX_VALUE, false);
-            if (!stack.isEmpty()) collected.merge(CraftKey.of(stack), stack.getCount(), Integer::sum);
-        }
-        for (int t = inputTanks; t < inputTanks + outputTanks; t++) {
-            FluidStack fluid = fluids.drainTank(t, Integer.MAX_VALUE, FluidAction.EXECUTE);
-            if (!fluid.isEmpty()) collected.merge(CraftKey.of(fluid), fluid.getAmount(), Integer::sum);
+        try (var transaction = Transaction.openRoot()) {
+            for (int s = inputSlots; s < inputSlots + outputSlots; s++) {
+                ItemResource resource = items.getResource(s);
+                if (resource.isEmpty()) continue;
+                int extracted = items.extract(s, resource, Integer.MAX_VALUE, transaction);
+                if (extracted > 0) collected.merge(CraftKey.of(resource.toStack(1)), extracted, Math::addExact);
+            }
+            for (int t = inputTanks; t < inputTanks + outputTanks; t++) {
+                FluidResource resource = fluids.getResource(t);
+                if (resource.isEmpty()) continue;
+                int extracted = fluids.extract(t, resource, Integer.MAX_VALUE, transaction);
+                if (extracted > 0) collected.merge(CraftKey.of(resource.toStack(1)), extracted, Math::addExact);
+            }
+            transaction.commit();
         }
         return collected;
     }

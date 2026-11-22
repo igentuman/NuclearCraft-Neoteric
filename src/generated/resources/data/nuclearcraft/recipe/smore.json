@@ -2,21 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "nuclearcraft:graham_cracker"
-    },
-    {
-      "item": "nuclearcraft:graham_cracker"
-    },
-    {
-      "item": "nuclearcraft:milk_chocolate"
-    },
-    {
-      "item": "nuclearcraft:marshmallow"
-    }
+    "nuclearcraft:graham_cracker",
+    "nuclearcraft:graham_cracker",
+    "nuclearcraft:milk_chocolate",
+    "nuclearcraft:marshmallow"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:smore"
   }
 }

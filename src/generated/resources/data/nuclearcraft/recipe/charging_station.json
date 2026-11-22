@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft",
   "key": {
-    "B": {
-      "item": "nuclearcraft:basic_barrel"
-    },
-    "S": {
-      "item": "minecraft:iron_bars"
-    },
-    "T": {
-      "item": "nuclearcraft:advanced_voltaic_pile"
-    }
+    "B": "nuclearcraft:basic_barrel",
+    "S": "minecraft:iron_bars",
+    "T": "nuclearcraft:advanced_voltaic_pile"
   },
   "pattern": [
     "SBS",
@@ -19,7 +13,6 @@
     "STS"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:charging_station"
   }
 }

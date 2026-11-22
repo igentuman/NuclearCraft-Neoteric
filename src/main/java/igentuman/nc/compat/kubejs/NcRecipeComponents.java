@@ -7,14 +7,18 @@ import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentTypeRegistry;
+import dev.latvian.mods.kubejs.recipe.component.SizedFluidIngredientComponent;
+import dev.latvian.mods.kubejs.recipe.component.SizedIngredientComponent;
+import igentuman.nc.recipe.RecipeIngredientCodecs;
+import net.minecraft.resources.ResourceKey;
 import dev.latvian.mods.kubejs.util.JsonUtils;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import igentuman.nc.api.particle.ParticleIngredient;
 import igentuman.nc.api.particle.ParticleStack;
-import igentuman.nc.recipe.FluidOutput;
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.api.recipe.FluidOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -28,25 +32,44 @@ public final class NcRecipeComponents {
 
     private static final int DEFAULT_FLUID_AMOUNT = 1000;
 
-    public static final RecipeComponentType<ItemOutput> ITEM_OUTPUT = RecipeComponentType.unit(rl("item_output"),
-            type -> new CodecComponent<>(type, ItemOutput.CODEC, ItemOutput.class, NcRecipeComponents::itemOutput));
+    public static final ResourceKey<RecipeComponentType<?>> ITEM_OUTPUT_TYPE = RecipeComponentType.key(rl("item_output"));
+    public static final ResourceKey<RecipeComponentType<?>> FLUID_OUTPUT_TYPE = RecipeComponentType.key(rl("fluid_output"));
+    public static final ResourceKey<RecipeComponentType<?>> PARTICLE_STACK_TYPE = RecipeComponentType.key(rl("particle_stack"));
+    public static final ResourceKey<RecipeComponentType<?>> PARTICLE_INGREDIENT_TYPE = RecipeComponentType.key(rl("particle_ingredient"));
+    public static final ResourceKey<RecipeComponentType<?>> FLAT_SIZED_INGREDIENT_TYPE = RecipeComponentType.key(rl("flat_sized_ingredient"));
+    public static final ResourceKey<RecipeComponentType<?>> FLAT_SIZED_FLUID_INGREDIENT_TYPE = RecipeComponentType.key(rl("flat_sized_fluid_ingredient"));
 
-    public static final RecipeComponentType<FluidOutput> FLUID_OUTPUT = RecipeComponentType.unit(rl("fluid_output"),
-            type -> new CodecComponent<>(type, FluidOutput.CODEC, FluidOutput.class, NcRecipeComponents::fluidOutput));
+    public static final RecipeComponent<ItemOutput> ITEM_OUTPUT =
+            new CodecComponent<>(ITEM_OUTPUT_TYPE, ItemOutput.CODEC, ItemOutput.class, NcRecipeComponents::itemOutput);
 
-    public static final RecipeComponentType<ParticleStack> PARTICLE_STACK = RecipeComponentType.unit(rl("particle_stack"),
-            type -> new CodecComponent<>(type, ParticleStack.CODEC, ParticleStack.class, (cx, from) -> null));
+    public static final RecipeComponent<FluidOutput> FLUID_OUTPUT =
+            new CodecComponent<>(FLUID_OUTPUT_TYPE, FluidOutput.CODEC, FluidOutput.class, NcRecipeComponents::fluidOutput);
 
-    public static final RecipeComponentType<ParticleIngredient> PARTICLE_INGREDIENT = RecipeComponentType.unit(rl("particle_ingredient"),
-            type -> new CodecComponent<>(type, ParticleIngredient.CODEC, ParticleIngredient.class, (cx, from) -> null));
+    public static final RecipeComponent<ParticleStack> PARTICLE_STACK =
+            new CodecComponent<>(PARTICLE_STACK_TYPE, ParticleStack.CODEC, ParticleStack.class, (cx, from) -> null);
+
+    public static final RecipeComponent<ParticleIngredient> PARTICLE_INGREDIENT =
+            new CodecComponent<>(PARTICLE_INGREDIENT_TYPE, ParticleIngredient.CODEC, ParticleIngredient.class, (cx, from) -> null);
+
+    // The native codecs enforce positive sizes. A valid tag can resolve to no entries
+    // in the current pack, and recipes using that tag still need to be editable by scripts.
+    /** Sized item input using NuclearCraft's flat {@code {"item"|"tag", "count"}} JSON. */
+    public static final SizedIngredientComponent FLAT_SIZED_INGREDIENT =
+            new SizedIngredientComponent(FLAT_SIZED_INGREDIENT_TYPE, RecipeIngredientCodecs.ITEM, true);
+
+    /** Sized fluid input using NuclearCraft's flat {@code {"fluid"|"tag", "amount"}} JSON. */
+    public static final SizedFluidIngredientComponent FLAT_SIZED_FLUID_INGREDIENT =
+            new SizedFluidIngredientComponent(FLAT_SIZED_FLUID_INGREDIENT_TYPE, RecipeIngredientCodecs.FLUID, true);
 
     private NcRecipeComponents() {}
 
     public static void register(RecipeComponentTypeRegistry registry) {
-        registry.register(ITEM_OUTPUT);
-        registry.register(FLUID_OUTPUT);
-        registry.register(PARTICLE_STACK);
-        registry.register(PARTICLE_INGREDIENT);
+        registry.unit(ITEM_OUTPUT);
+        registry.unit(FLUID_OUTPUT);
+        registry.unit(PARTICLE_STACK);
+        registry.unit(PARTICLE_INGREDIENT);
+        registry.unit(FLAT_SIZED_INGREDIENT);
+        registry.unit(FLAT_SIZED_FLUID_INGREDIENT);
     }
 
     @Nullable
@@ -67,7 +90,7 @@ public final class NcRecipeComponents {
         return stack == null || stack.isEmpty() ? null : FluidOutput.of(stack.getFluid(), stack.getAmount());
     }
 
-    private record CountedTag(ResourceLocation id, int count) {
+    private record CountedTag(Identifier id, int count) {
         @Nullable
         static CountedTag parse(Object from, int defaultCount) {
             if (!(from instanceof CharSequence text)) return null;
@@ -78,11 +101,11 @@ public final class NcRecipeComponents {
                 count = Integer.parseInt(value.substring(0, separator).trim());
                 value = value.substring(separator + 2);
             }
-            return value.startsWith("#") ? new CountedTag(ResourceLocation.parse(value.substring(1)), count) : null;
+            return value.startsWith("#") ? new CountedTag(Identifier.parse(value.substring(1)), count) : null;
         }
     }
 
-    private record CodecComponent<T>(RecipeComponentType<?> type, Codec<T> codec, Class<T> valueClass,
+    private record CodecComponent<T>(ResourceKey<RecipeComponentType<?>> type, Codec<T> codec, Class<T> valueClass,
                                      BiFunction<RecipeScriptContext, Object, T> shorthand)
             implements RecipeComponent<T> {
 
@@ -98,12 +121,12 @@ public final class NcRecipeComponents {
             if (value != null) return value;
             JsonElement json = JsonUtils.of(cx.cx(), from);
             return codec.parse(cx.ops().json(), json).getOrThrow(message ->
-                    new KubeRuntimeException("Invalid " + type.id() + " '" + json + "': " + message));
+                    new KubeRuntimeException("Invalid " + type.identifier() + " '" + json + "': " + message));
         }
 
         @Override
         public String toString() {
-            return type.toString();
+            return type.identifier().toString();
         }
     }
 }

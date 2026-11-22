@@ -1,0 +1,28 @@
+{
+  "name": "Field Guide",
+  "icon": "nuclearcraft:resonite_crystal",
+  "category": "nuclearcraft:anomalies",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "intro",
+      "type": "text",
+      "text": "$(o)Anomalies$() are stationary environmental hazards found only in the $(l)Wasteland$(). They are not animals, and they take no interest in you personally - they simply do what they do to anything inside their radius."
+    },
+    {
+      "type": "text",
+      "title": "Rules of the Zone",
+      "text": "You $(o)cannot$() kill them - weapons, explosions, fire, and falls all register as nothing. Each is removed only by its own $(o)counterplay$(). $(br)Placement is fixed per world seed, they never move on or despawn, and once cleared they stay cleared."
+    },
+    {
+      "type": "text",
+      "title": "Read the Air",
+      "text": "Every variant announces itself with an ambient sound, a particle haze, and a shimmer. The effect reaches well past the visible core, so scout the edge before committing. $(br)If the air is humming, crackling, or warping - stop walking."
+    },
+    {
+      "type": "text",
+      "title": "Spoils",
+      "text": "Clearing an anomaly through its counterplay drops $(item)Resonite Shards$() - the raw material for crystals. The reward survives the collapse blast. $(br)Radioactive anomalies have no counterplay, so they drop nothing; mark them, route around them, move on."
+    }
+  ]
+}

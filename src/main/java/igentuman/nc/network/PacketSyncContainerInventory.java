@@ -1,6 +1,6 @@
 package igentuman.nc.network;
 
-import igentuman.nc.NuclearCraft;
+import net.minecraft.resources.Identifier;
 import igentuman.nc.client.storage.ClientContainerInventory;
 import igentuman.nc.handler.storage.StoredInventory;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -15,12 +15,15 @@ public record PacketSyncContainerInventory(UUID uuid, int size, StoredInventory 
         implements CustomPacketPayload {
 
     public static final Type<PacketSyncContainerInventory> TYPE =
-            new Type<>(NuclearCraft.rl("sync_container_inventory"));
+            new Type<>(Identifier.fromNamespaceAndPath("nuclearcraft", "sync_container_inventory"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketSyncContainerInventory> STREAM_CODEC =
             StreamCodec.of(PacketSyncContainerInventory::encode, PacketSyncContainerInventory::decode);
 
     public PacketSyncContainerInventory {
+        if (inventory == null ? size != 0 : size <= 0 || inventory.size() != size) {
+            throw new IllegalArgumentException("Invalid Container snapshot size");
+        }
         if (inventory != null) {
             StoredInventory snapshot = new StoredInventory(size);
             for (int slot = 0; slot < size; slot++) {
@@ -57,11 +60,18 @@ public record PacketSyncContainerInventory(UUID uuid, int size, StoredInventory 
     private static PacketSyncContainerInventory decode(RegistryFriendlyByteBuf buf) {
         UUID uuid = buf.readUUID();
         int size = buf.readVarInt();
-        StoredInventory inv = new StoredInventory(size);
         int count = buf.readVarInt();
+        if (count < 0 || count > size) throw new IllegalArgumentException("Invalid Container snapshot entry count");
+        // A zero-sized snapshot clears the cache for a UUID with no backing inventory yet.
+        if (size == 0) return new PacketSyncContainerInventory(uuid, 0, null);
+        StoredInventory inv = new StoredInventory(size);
         for (int i = 0; i < count; i++) {
             int slot = buf.readVarInt();
+            if (slot < 0 || slot >= size || !inv.get(slot).isEmpty()) {
+                throw new IllegalArgumentException("Invalid or duplicate Container snapshot slot");
+            }
             ItemStack stack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
+            if (stack.isEmpty()) throw new IllegalArgumentException("Empty Container snapshot entry");
             inv.set(slot, stack);
         }
         return new PacketSyncContainerInventory(uuid, size, inv);

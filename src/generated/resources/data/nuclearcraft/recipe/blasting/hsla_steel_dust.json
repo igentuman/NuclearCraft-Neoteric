@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/hsla_steel"
-  },
+  "ingredient": "#c:dusts/hsla_steel",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:hsla_steel_ingot"
   }
 }

@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:storage_blocks/silver"
-    }
+    "#c:storage_blocks/silver"
   ],
   "result": {
     "count": 9,

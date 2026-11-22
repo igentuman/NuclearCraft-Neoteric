@@ -1,8 +1,9 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -58,27 +59,27 @@ public class LayerDropdown extends AbstractWidget {
         open = false;
     }
 
-    public void draw(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void draw(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         Font font = Minecraft.getInstance().font;
         graphics.fill(getX(), getY(), getX() + width, getY() + height, 0xFF101010);
         graphics.fill(getX(), getY(), getX() + width, getY() + 1, 0xFF5A5A5A);
         graphics.fill(getX(), getY() + height - 1, getX() + width, getY() + height, 0xFF5A5A5A);
         graphics.fill(getX(), getY(), getX() + 1, getY() + height, 0xFF5A5A5A);
         graphics.fill(getX() + width - 1, getY(), getX() + width, getY() + height, 0xFF5A5A5A);
-        graphics.drawString(font, label(selectedIndex), getX() + 4, getY() + (height - 8) / 2, 0xFFFFFF);
-        graphics.drawString(font, Component.literal("v"), getX() + width - 7, getY() + (height - 8) / 2, 0xFFB0B0B0);
+        graphics.text(font, label(selectedIndex), getX() + 4, getY() + (height - 8) / 2, 0xFFFFFFFF);
+        graphics.text(font, Component.literal("v"), getX() + width - 7, getY() + (height - 8) / 2, 0xFFB0B0B0);
     }
 
     protected int visibleRows() {
         return Math.min(layerCount, MAX_VISIBLE_ROWS);
     }
 
-    public void drawOverlay(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawOverlay(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         if (!open) {
             return;
         }
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 300);
+        graphics.pose().pushMatrix();
+        graphics.nextStratum(); // open list covers widgets and slot items below (was z+300)
         Font font = Minecraft.getInstance().font;
         int rows = visibleRows();
         int top = getY() + height;
@@ -91,9 +92,9 @@ public class LayerDropdown extends AbstractWidget {
             if (hovered) {
                 graphics.fill(getX(), rowY, getX() + width, rowY + ROW_HEIGHT, 0x60FFFFFF);
             }
-            graphics.drawString(font, label(i), getX() + 4, rowY + (ROW_HEIGHT - 8) / 2, 0xFFFFFF);
+            graphics.text(font, label(i), getX() + 4, rowY + (ROW_HEIGHT - 8) / 2, 0xFFFFFFFF);
         }
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 
     protected boolean inButton(double mouseX, double mouseY) {
@@ -101,7 +102,10 @@ public class LayerDropdown extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         if (inButton(mouseX, mouseY)) {
             open = !open;
             return true;
@@ -126,7 +130,7 @@ public class LayerDropdown extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         draw(graphics, mouseX, mouseY, partialTicks);
     }
 

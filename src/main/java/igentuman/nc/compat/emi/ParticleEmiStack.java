@@ -6,10 +6,10 @@ import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.setup.Registers;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,14 +55,14 @@ public class ParticleEmiStack extends EmiStack {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return particleStack.isEmpty() ? rl("empty") : rl("particle/" + particleStack.particleId().getPath());
     }
 
     @Override
-    public void render(GuiGraphics graphics, int x, int y, float delta, int flags) {
+    public void render(GuiGraphicsExtractor graphics, int x, int y, float delta, int flags) {
         if (particleStack.isEmpty()) return;
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(particleStack.particleId());
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(particleStack.particleId());
         if (definition == null) return;
         graphics.blit(definition.textureId(), x, y, 0, 0, 16, 16, 16, 16);
     }
@@ -71,7 +71,7 @@ public class ParticleEmiStack extends EmiStack {
     public List<Component> getTooltipText() {
         List<Component> tooltip = new ArrayList<>();
         if (particleStack.isEmpty()) return tooltip;
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(particleStack.particleId());
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(particleStack.particleId());
         tooltip.add(definition == null
                 ? Component.literal(particleStack.particleId().getPath())
                 : Component.translatable(definition.translationKey()));
@@ -93,7 +93,7 @@ public class ParticleEmiStack extends EmiStack {
     @Override
     public Component getName() {
         if (particleStack.isEmpty()) return Component.literal("Empty");
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(particleStack.particleId());
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(particleStack.particleId());
         return definition == null ? Component.literal(particleStack.particleId().getPath()) : Component.translatable(definition.translationKey());
     }
 

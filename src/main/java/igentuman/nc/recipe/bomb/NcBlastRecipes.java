@@ -14,8 +14,8 @@ public final class NcBlastRecipes {
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<NuclearBlastRecipe>> TYPE =
             RECIPE_TYPES.register("nuclear_blast", () -> RecipeType.simple(rl("nuclear_blast")));
-    public static final DeferredHolder<RecipeSerializer<?>, NuclearBlastRecipeSerializer> SERIALIZER =
-            RECIPE_SERIALIZERS.register("nuclear_blast", NuclearBlastRecipeSerializer::new);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<NuclearBlastRecipe>> SERIALIZER =
+            RECIPE_SERIALIZERS.register("nuclear_blast", NuclearBlastRecipeSerializer::create);
 
     public static void init() {}
 }

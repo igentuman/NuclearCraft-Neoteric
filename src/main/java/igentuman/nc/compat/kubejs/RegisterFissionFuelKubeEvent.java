@@ -1,8 +1,8 @@
 package igentuman.nc.compat.kubejs;
 
 import dev.latvian.mods.kubejs.event.KubeEvent;
-import igentuman.nc.content.fuel.FuelDef;
-import igentuman.nc.setup.entries.FissionFuel;
+import igentuman.nc.api.content.ContentRegistration;
+import igentuman.nc.api.content.FuelDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +27,12 @@ public class RegisterFissionFuelKubeEvent implements KubeEvent {
 
     /** Disables a built-in fuel (registry objects cannot be removed, so it is hidden/inert). */
     public void remove(String group, String name) {
-        FissionFuel.remove(group, name);
+        ContentRegistration.removeFissionFuel(group, name);
     }
 
     /** Overrides parameters of an existing fuel in place. */
     public void override(String group, String name, Consumer<FuelDef> mutator) {
-        FissionFuel.override(group, name, mutator);
+        ContentRegistration.overrideFissionFuel(group, name, mutator);
     }
 
     public List<FuelDef> getCollected() {

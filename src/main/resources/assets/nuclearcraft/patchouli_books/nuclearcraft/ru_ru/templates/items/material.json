@@ -1,0 +1,57 @@
+{
+  "components": [
+    {
+      "type": "patchouli:header",
+      "text": "#anchor->fcapital",
+      "x": -1,
+      "y": -1
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#ingot",
+      "framed": true,
+      "link_recipe": true,
+      "x": 40,
+      "y": 15,
+      "guard": "#singleItem->exists->inv"
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#dust",
+      "framed": true,
+      "link_recipe": true,
+      "x": 60,
+      "y": 15,
+      "guard": "#singleItem->exists->inv"
+    },
+    {
+      "type": "patchouli:item",
+      "item": "#item",
+      "framed": true,
+      "link_recipe": true,
+      "x": 50,
+      "y": 15,
+      "guard": "#singleItem"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Symbol: $(l)#symbol#$()$(br)Atomic Number: $(l)#num#$()",
+      "guard": "#isElement",
+      "x": 0,
+      "y": 40
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Formula: $(l)#formula#$()",
+      "guard": "#isCompound",
+      "x": 0,
+      "y": 40
+    },
+    {
+      "type": "patchouli:text",
+      "text": "#text",
+      "x": 0,
+      "y": 60
+    }
+  ]
+}

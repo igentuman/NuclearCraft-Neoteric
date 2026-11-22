@@ -1,5 +1,6 @@
 package igentuman.nc.block_entity.bomb;
 
+import net.minecraft.world.entity.EntitySpawnReason;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.entity.PrimedFissionBombEntity;
@@ -51,7 +52,7 @@ public class Pu239BombBE extends GlobalBlockEntity {
 
     @Override
     public void serverTick() {
-        if (level == null || level.isClientSide) return;
+        if (level == null || level.isClientSide()) return;
 
         if (!placedChecked) {
             placedChecked = true;
@@ -95,11 +96,11 @@ public class Pu239BombBE extends GlobalBlockEntity {
 
     private void forceChunk(boolean force) {
         if (!(level instanceof ServerLevel server) || isRemoved()) return;
-        ChunkPos cp = new ChunkPos(getBlockPos());
+        ChunkPos cp = ChunkPos.containing(getBlockPos());
         try {
-            boolean result = TICKET_CONTROLLER.forceChunk(server, getBlockPos(), cp.x, cp.z, force, true);
+            boolean result = TICKET_CONTROLLER.forceChunk(server, getBlockPos(), cp.x(), cp.z(), force, true);
             chunkForced = force;
-            NuclearCraft.LOGGER.info("[Bomb] forceChunk({}, {}, {}) = {} pos={}", cp.x, cp.z, force, result, getBlockPos());
+            NuclearCraft.LOGGER.info("[Bomb] forceChunk({}, {}, {}) = {} pos={}", cp.x(), cp.z(), force, result, getBlockPos());
         } catch (IllegalArgumentException e) {
             NuclearCraft.LOGGER.warn("[Bomb] ticket controller not registered; skipping forceChunk for {}", getBlockPos());
         }
@@ -111,7 +112,7 @@ public class Pu239BombBE extends GlobalBlockEntity {
             return;
         }
         EntityType<PrimedFissionBombEntity> type = PRIMED_FISSION_BOMB.get();
-        PrimedFissionBombEntity primed = type.create(server);
+        PrimedFissionBombEntity primed = type.create(server, EntitySpawnReason.TRIGGERED);
         if (primed != null) {
             primed.setPos(epicenter.getX() + 0.5, epicenter.getY() + 0.5, epicenter.getZ() + 0.5);
             int hR = Math.max(16, igentuman.nc.config.Bomb.RADIUS_HORIZONTAL.get());

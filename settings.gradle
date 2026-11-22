@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        mavenLocal()
         gradlePluginPortal()
         maven { url = 'https://maven.neoforged.net/releases' }
     }
@@ -9,8 +10,29 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
-if (file('../NuclearRadiation').exists()) {
-    includeBuild '../NuclearRadiation'
-} else if (file('NuclearRadiation').exists()) {
-    includeBuild 'NuclearRadiation'
+// CI can supply a checkout explicitly; local development auto-detects the 26.1 sibling.
+// -PusePublishedRadiation=true bypasses composite substitution to verify the release artifact.
+def usePublishedRadiation = providers.gradleProperty('usePublishedRadiation').map { it.toBoolean() }.getOrElse(false)
+def configuredRadiationBuild = providers.gradleProperty('radiationProjectDir').orNull
+if (usePublishedRadiation && configuredRadiationBuild != null) {
+    throw new GradleException('Choose radiationProjectDir or usePublishedRadiation, not both.')
+}
+def radiationBuild = null
+if (!usePublishedRadiation) {
+    if (configuredRadiationBuild != null) {
+        radiationBuild = file(configuredRadiationBuild)
+        if (!new File(radiationBuild, 'settings.gradle').isFile()) {
+            throw new GradleException("radiationProjectDir is not a Gradle build: ${radiationBuild}")
+        }
+    } else {
+        radiationBuild = ['../Nuclear-Radiation-26.1', 'Nuclear-Radiation-26.1']
+                .collect { file(it) }.find { new File(it, 'settings.gradle').isFile() }
+    }
+}
+if (radiationBuild != null) {
+    includeBuild(radiationBuild) {
+        dependencySubstitution {
+            substitute module('maven.modrinth:nuclear-radiation') using project(':')
+        }
+    }
 }

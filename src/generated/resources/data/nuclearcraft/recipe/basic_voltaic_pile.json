@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": {
-      "tag": "c:storage_blocks/magnesium"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "S": {
-      "item": "nuclearcraft:coil_copper"
-    }
+    "M": "#c:storage_blocks/magnesium",
+    "P": "nuclearcraft:plate_basic",
+    "S": "nuclearcraft:coil_copper"
   },
   "pattern": [
     "PSP",
@@ -18,7 +12,6 @@
     "PSP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:basic_voltaic_pile"
   }
 }

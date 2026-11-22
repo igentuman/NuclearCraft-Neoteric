@@ -92,7 +92,7 @@ public class ParticleChamberBeamPortBE extends ParticleChamberPortBE implements 
     }
 
     private void updateModeBlockState() {
-        if (level == null || level.isClientSide || !getBlockState().hasProperty(ParticleChamberBeamPortBlock.PORT_MODE)
+        if (level == null || level.isClientSide() || !getBlockState().hasProperty(ParticleChamberBeamPortBlock.PORT_MODE)
                 || getBlockState().getValue(ParticleChamberBeamPortBlock.PORT_MODE) == particlePort.mode()) return;
         level.setBlock(worldPosition, getBlockState().setValue(ParticleChamberBeamPortBlock.PORT_MODE,
                 particlePort.mode()), UPDATE_CLIENTS);
@@ -100,15 +100,15 @@ public class ParticleChamberBeamPortBE extends ParticleChamberPortBE implements 
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveTagData(tag, registries);
         tag.putString("particlePortMode", particlePort.mode().getSerializedName());
         tag.putInt("particlePortChannel", particlePort.channel());
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        particlePort.load(tag.getString("particlePortMode"), tag.getInt("particlePortChannel"));
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadTagData(tag, registries);
+        particlePort.load(tag.getStringOr("particlePortMode", ""), tag.getIntOr("particlePortChannel", 0));
     }
 }

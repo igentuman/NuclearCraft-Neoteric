@@ -15,13 +15,13 @@ public final class FusionRecipes {
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<FusionRecipe>> FUSION_TYPE =
             RECIPE_TYPES.register("fusion_reactor", () -> RecipeType.simple(rl("fusion_reactor")));
-    public static final DeferredHolder<RecipeSerializer<?>, FusionRecipeSerializer> FUSION_SERIALIZER =
-            RECIPE_SERIALIZERS.register("fusion_reactor", FusionRecipeSerializer::new);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FusionRecipe>> FUSION_SERIALIZER =
+            RECIPE_SERIALIZERS.register("fusion_reactor", FusionRecipeSerializer::create);
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<FusionCoolantRecipe>> COOLANT_TYPE =
             RECIPE_TYPES.register("fusion_coolant", () -> RecipeType.simple(rl("fusion_coolant")));
-    public static final DeferredHolder<RecipeSerializer<?>, FusionCoolantRecipeSerializer> COOLANT_SERIALIZER =
-            RECIPE_SERIALIZERS.register("fusion_coolant", FusionCoolantRecipeSerializer::new);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FusionCoolantRecipe>> COOLANT_SERIALIZER =
+            RECIPE_SERIALIZERS.register("fusion_coolant", FusionCoolantRecipeSerializer::create);
 
     public static void init() {}
 }

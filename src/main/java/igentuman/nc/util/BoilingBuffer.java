@@ -51,10 +51,10 @@ public class BoilingBuffer implements NBTSerializable {
     }
 
     public void load(CompoundTag tag) {
-        capacity = tag.getDouble("capacity");
-        boilingRate = tag.getDouble("boilingRate");
-        maxBoilingRate = tag.getDouble("maxBoilingRate");
-        coolantAmount = tag.getDouble("coolantAmount");
-        hotCoolantAmount = tag.getDouble("hotCoolantAmount");
+        capacity = tag.getDoubleOr("capacity", 0D);
+        boilingRate = tag.getDoubleOr("boilingRate", 0D);
+        maxBoilingRate = tag.getDoubleOr("maxBoilingRate", 0D);
+        coolantAmount = tag.getDoubleOr("coolantAmount", 0D);
+        hotCoolantAmount = tag.getDoubleOr("hotCoolantAmount", 0D);
     }
 }

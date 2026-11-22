@@ -1,7 +1,8 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -36,7 +37,7 @@ public class Checkbox extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
         int w = getWidth();
@@ -57,13 +58,16 @@ public class Checkbox extends AbstractWidget {
         if (isHovered && tooltipSupplier != null) {
             List<Component> tooltips = tooltipSupplier.get();
             if (tooltips != null && !tooltips.isEmpty()) {
-                graphics.renderComponentTooltip(Minecraft.getInstance().font, tooltips, mouseX, mouseY);
+                graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, tooltips, mouseX, mouseY);
             }
         }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         if (!isActive() || !visible) return false;
         if (mouseX >= getX() && mouseX < getX() + getWidth() && mouseY >= getY() && mouseY < getY() + getHeight()) {
             checked = !checked;

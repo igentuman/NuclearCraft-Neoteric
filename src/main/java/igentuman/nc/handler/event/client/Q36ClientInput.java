@@ -1,5 +1,6 @@
 package igentuman.nc.handler.event.client;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.item.Q36Item;
 import igentuman.nc.network.PacketQ36Fire;
@@ -13,7 +14,6 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber(modid = NuclearCraft.MODID, value = Dist.CLIENT)
 public class Q36ClientInput {
@@ -37,7 +37,7 @@ public class Q36ClientInput {
         if (!holdsQ36()) return;
         if (!mc.options.keyAttack.isDown()) return;
         if (!clientReady(mc.player)) return;
-        PacketDistributor.sendToServer(new PacketQ36Fire());
+        ClientPacketDistributor.sendToServer(new PacketQ36Fire());
         Q36HandRenderer.triggerRecoil(Q36Item.getMode(mc.player.getMainHandItem()));
     }
 
@@ -58,7 +58,7 @@ public class Q36ClientInput {
     @SubscribeEvent
     public static void onAttackEntity(AttackEntityEvent event) {
         Player p = event.getEntity();
-        if (!p.level().isClientSide) return;
+        if (!p.level().isClientSide()) return;
         if (!(p.getMainHandItem().getItem() instanceof Q36Item)) return;
         event.setCanceled(true);
     }

@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:nuggets/zinc"
-    },
-    {
-      "tag": "c:nuggets/zinc"
-    },
-    {
-      "tag": "c:nuggets/zinc"
-    },
-    {
-      "tag": "c:nuggets/zinc"
-    },
-    {
-      "tag": "c:nuggets/zinc"
-    },
-    {
-      "tag": "c:nuggets/zinc"
-    },
-    {
-      "tag": "c:nuggets/zinc"
-    },
-    {
-      "tag": "c:nuggets/zinc"
-    },
-    {
-      "tag": "c:nuggets/zinc"
-    }
+    "#c:nuggets/zinc",
+    "#c:nuggets/zinc",
+    "#c:nuggets/zinc",
+    "#c:nuggets/zinc",
+    "#c:nuggets/zinc",
+    "#c:nuggets/zinc",
+    "#c:nuggets/zinc",
+    "#c:nuggets/zinc",
+    "#c:nuggets/zinc"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:zinc_ingot"
   }
 }

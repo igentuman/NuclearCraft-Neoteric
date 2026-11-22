@@ -34,7 +34,7 @@ public class TagOutputResolver {
     }
 
     public static ItemStack resolveItem(TagKey<Item> tag, int count) {
-        Optional<HolderSet.Named<Item>> set = BuiltInRegistries.ITEM.getTag(tag);
+        Optional<HolderSet.Named<Item>> set = BuiltInRegistries.ITEM.get(tag);
         if (set.isEmpty()) return ItemStack.EMPTY;
         Item best = null;
         int bestRank = Integer.MAX_VALUE;
@@ -50,7 +50,7 @@ public class TagOutputResolver {
     }
 
     public static List<ItemStack> membersItem(TagKey<Item> tag, int count) {
-        Optional<HolderSet.Named<Item>> set = BuiltInRegistries.ITEM.getTag(tag);
+        Optional<HolderSet.Named<Item>> set = BuiltInRegistries.ITEM.get(tag);
         if (set.isEmpty()) return List.of();
         List<Item> items = new ArrayList<>();
         for (Holder<Item> holder : set.get()) {
@@ -65,7 +65,7 @@ public class TagOutputResolver {
     }
 
     public static FluidStack resolveFluid(TagKey<Fluid> tag, int amount) {
-        Optional<HolderSet.Named<Fluid>> set = BuiltInRegistries.FLUID.getTag(tag);
+        Optional<HolderSet.Named<Fluid>> set = BuiltInRegistries.FLUID.get(tag);
         if (set.isEmpty()) return FluidStack.EMPTY;
         Fluid best = null;
         int bestRank = Integer.MAX_VALUE;
@@ -81,7 +81,7 @@ public class TagOutputResolver {
     }
 
     public static List<FluidStack> membersFluid(TagKey<Fluid> tag, int amount) {
-        Optional<HolderSet.Named<Fluid>> set = BuiltInRegistries.FLUID.getTag(tag);
+        Optional<HolderSet.Named<Fluid>> set = BuiltInRegistries.FLUID.get(tag);
         if (set.isEmpty()) return List.of();
         List<Fluid> fluids = new ArrayList<>();
         for (Holder<Fluid> holder : set.get()) {

@@ -1,44 +1,37 @@
 package igentuman.nc.client.renderer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import igentuman.nc.NuclearCraft;
-import net.minecraft.client.Camera;
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.pipeline.TextureTarget;
+import com.mojang.blaze3d.shaders.UniformType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.PostChain;
-import net.minecraft.client.renderer.PostPass;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Vector4f;
 
-import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Applies a screen-space lens distortion ({@code shaders/post/distort.json}) around one or more
- * world positions. Generic: register any {@link DistortionSource} keyed by an arbitrary object
- * (a {@link net.minecraft.core.BlockPos}, entity UUID, etc.) and remove it when no longer needed.
- *
- * <pre>{@code
- * // when the effect should appear:
- * DistortShader.add(blockPos, partialTick -> Vec3.atCenterOf(blockPos));
- * // when it should stop:
- * DistortShader.remove(blockPos);
- * }</pre>
- */
+import static igentuman.nc.NuclearCraft.rl;
+
 public class DistortShader {
 
-    /** Master toggle - bind to your own config if desired. */
     public static boolean enabled = true;
 
+    static final RenderPipeline PIPELINE = PostEffectSupport.pipeline(rl("pipeline/distort"), rl("post/distort"))
+            .withSampler("InSampler")
+            .withSampler("DepthSampler")
+            .withUniform("DistortConfig", UniformType.UNIFORM_BUFFER)
+            .build();
+
     private static final Map<Object, DistortionSource> SOURCES = new ConcurrentHashMap<>();
-    private static int currentSize = 0;
-    private static Field passesField;
+    private static final PostEffectSupport.Uniforms UNIFORMS = new PostEffectSupport.Uniforms("nc distort config", 64);
+    private static TextureTarget scratch;
 
     public static boolean hasWork() {
-        if (!enabled || SOURCES.isEmpty() || ModShaders.distortPostEffect == null) return false;
+        if (!enabled || SOURCES.isEmpty()) return false;
         SOURCES.entrySet().removeIf(e -> !e.getValue().isActive());
         return !SOURCES.isEmpty();
     }
@@ -57,13 +50,8 @@ public class DistortShader {
 
     public static void clear() {
         SOURCES.clear();
-        currentSize = 0;
     }
 
-    /**
-     * A point in the world that distorts the screen around it. Provide a position; override the
-     * defaults to tune the look or gate the effect.
-     */
     public interface DistortionSource {
 
         /** World-space center of the distortion. Return {@code null} to skip this frame. */
@@ -89,100 +77,63 @@ public class DistortShader {
         }
     }
 
-    static void render(RenderLevelStageEvent event) {
+    static void render(RenderLevelStageEvent event, TextureTarget sceneDepth) {
         if (!hasWork()) return;
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) return;
 
-        PostChain chain = ModShaders.distortPostEffect;
-        if (chain == null) return;
-        PostPass pass = firstPass(chain);
-        if (pass == null) return;
-
-        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
-
-        int size = mc.getWindow().getWidth() + mc.getWindow().getHeight();
-        if (currentSize != size) {
-            currentSize = size;
-            chain.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
-            pass.getEffect().safeGetUniform("BlurDir").set(0.2F, 0.0F);
-        }
-
-        // Sample depth so geometry in front of the source occludes the effect, but don't write depth.
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthMask(false);
+        float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        RenderTarget main = mc.getMainRenderTarget();
+        Matrix4fc view = event.getModelViewMatrix();
+        Matrix4fc projection = event.getLevelRenderState().cameraRenderState.projectionMatrix;
+        Vec3 camPos = event.getLevelRenderState().cameraRenderState.pos;
 
         for (DistortionSource source : SOURCES.values()) {
-            if (processSource(mc, event, pass, source, partialTick)) {
-                chain.process(partialTick);
-            }
+            Vector4f screen = processSource(mc, view, projection, camPos, source, partialTick);
+            if (screen == null) continue;
+            // Each source reads a copy of the current frame and writes the lens back into main.
+            scratch = PostEffectSupport.ensureTarget(scratch, "nc distort scratch", main, false);
+            PostEffectSupport.copyColor(main, scratch);
+            float distanceFactor = screen.z;
+            GpuBuffer ubo = UNIFORMS.write(b -> b
+                    .putVec2(screen.x, screen.y)
+                    .putVec2(0.2F, 0.0F)
+                    .putVec2(source.radius() * distanceFactor, source.magnification())
+                    .putFloat(screen.w));
+            new PostEffectSupport.Draw("nc distort", PIPELINE)
+                    .sampler("InSampler", scratch.getColorTextureView())
+                    .sampler("DepthSampler", sceneDepth.getDepthTextureView())
+                    .uniform("DistortConfig", ubo)
+                    .into(main.getColorTextureView(), null);
         }
-
-        // The chain's last pass outputs to minecraft:main; rebind it for the rest of level rendering.
-        mc.getMainRenderTarget().bindWrite(false);
-        RenderSystem.depthMask(true);
-        RenderSystem.depthFunc(515); // GL_LEQUAL
     }
 
-    private static boolean processSource(Minecraft mc, RenderLevelStageEvent event, PostPass pass, DistortionSource source, float partialTick) {
-        if (!source.isActive()) return false;
+    private static Vector4f processSource(Minecraft mc, Matrix4fc view, Matrix4fc projection, Vec3 camPos,
+                                          DistortionSource source, float partialTick) {
+        if (!source.isActive()) return null;
         Vec3 pos = source.position(partialTick);
-        if (pos == null) return false;
+        if (pos == null) return null;
 
         double distance = mc.player.position().distanceTo(pos);
-        if (distance > source.maxDistance()) return false;
+        if (distance > source.maxDistance()) return null;
 
-        Matrix4f viewMatrix = event.getModelViewMatrix();
-        Matrix4f projectionMatrix = event.getProjectionMatrix();
-        Camera camera = mc.gameRenderer.getMainCamera();
-        Vec3 camPos = camera.getPosition();
-
-        // Project the camera-relative world position to clip space.
-        Vector4f clip = new Vector4f((float) (pos.x - camPos.x), (float) (pos.y - camPos.y), (float) (pos.z - camPos.z), 1.0F);
-        clip.mul(viewMatrix);
-        clip.mul(projectionMatrix);
-        if (clip.w == 0.0F) return false;
-        clip.x /= clip.w;
-        clip.y /= clip.w;
-        clip.z /= clip.w;
-
-        // Behind the camera or outside the depth range -> skip.
-        if (!(clip.z > -1.0F && clip.z < 1.0F)) return false;
+        Vector4f clip = PostEffectSupport.project((float) (pos.x - camPos.x), (float) (pos.y - camPos.y),
+                (float) (pos.z - camPos.z), view, projection);
+        if (clip == null) return null;
 
         float blurX = clip.x * 0.5F + 0.5F;
         float blurY = clip.y * 0.5F + 0.5F;
         float margin = 0.1F;
-        if (blurX < -margin || blurX > 1.0F + margin || blurY < -margin || blurY > 1.0F + margin) return false;
+        if (blurX < -margin || blurX > 1.0F + margin || blurY < -margin || blurY > 1.0F + margin) return null;
 
-        float normalizedDepth = (clip.z + 1.0F) * 0.5F;
         float distanceFactor = (float) (7D / distance);
-        float radius = source.radius() * distanceFactor;
-
-        pass.getEffect().safeGetUniform("BlurPos").set(blurX, blurY);
-        pass.getEffect().safeGetUniform("Radius").set(radius, source.magnification());
-        pass.getEffect().safeGetUniform("EffectDepth").set(normalizedDepth);
-        return true;
+        return new Vector4f(blurX, blurY, distanceFactor, clip.w);
     }
 
-    /**
-     * {@link PostChain#passes} is private in 1.21 with no public accessor, so reach it reflectively
-     * (the field name is stable at runtime under Mojang mappings). Disables the effect on failure
-     * rather than spamming exceptions from the render loop.
-     */
-    @SuppressWarnings("unchecked")
-    private static PostPass firstPass(PostChain chain) {
-        try {
-            if (passesField == null) {
-                passesField = PostChain.class.getDeclaredField("passes");
-                passesField.setAccessible(true);
-            }
-            List<PostPass> passes = (List<PostPass>) passesField.get(chain);
-            return passes.isEmpty() ? null : passes.get(0);
-        } catch (ReflectiveOperationException e) {
-            NuclearCraft.LOGGER.error("DistortShader: unable to access PostChain passes; disabling effect", e);
-            enabled = false;
-            return null;
-        }
+    static void close() {
+        UNIFORMS.close();
+        if (scratch != null) scratch.destroyBuffers();
+        scratch = null;
     }
 }

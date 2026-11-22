@@ -49,22 +49,13 @@ public class EXPLProxyBlock extends BaseEntityBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer
                 && level.getBlockEntity(pos) instanceof EXPLProxyBE proxy) {
             EXPLBE core = proxy.getCoreBE();
             if (core != null) {
                 serverPlayer.openMenu(core, core.getBlockPos());
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
-    }
-
-    @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock()) && !level.isClientSide
-                && level.getBlockEntity(pos) instanceof EXPLProxyBE proxy) {
-            proxy.destroyCore();
-        }
-        super.onRemove(state, level, pos, newState, movedByPiston);
+        return InteractionResult.SUCCESS;
     }
 }

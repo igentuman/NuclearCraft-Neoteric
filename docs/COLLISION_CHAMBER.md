@@ -5,7 +5,7 @@ particles. Use it for light-nucleus reactions, matter-antimatter collisions,
 and the production of heavier particles. It consumes Forge Energy (FE); reaction
 energy becomes energy carried by the output particles, not generated FE.
 
-This guide describes the NeoForge 1.21.1 implementation with default settings.
+This guide describes the NeoForge 26.1.2 implementation with default settings.
 Check JEI or EMI for the recipes available in your modpack.
 
 ## Blocks and dimensions

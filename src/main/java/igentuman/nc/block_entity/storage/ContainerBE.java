@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,7 +17,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.RangedResourceHandler;
+import net.neoforged.neoforge.transfer.DelegatingResourceHandler;
+import net.neoforged.neoforge.transfer.EmptyResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -61,9 +68,10 @@ public class ContainerBE extends AbstractStorageBE implements MenuProvider {
 
     @Nullable
     @Override
-    public IItemHandler getItemHandler(@Nullable Direction side) {
+    public ResourceHandler<ItemResource> getItemHandler(@Nullable Direction side) {
         if (side != null && getSideMode(side) == SideMode.DISABLED) return null;
-        return inventory;
+        return new DelegatingResourceHandler<>(() -> isRemoved() || side != null && getSideMode(side) == SideMode.DISABLED
+                ? EmptyResourceHandler.instance() : inventory);
     }
 
     @Override
@@ -79,8 +87,8 @@ public class ContainerBE extends AbstractStorageBE implements MenuProvider {
         for (Direction direction : Direction.values()) {
             SideMode mode = getSideMode(direction);
             if (mode == SideMode.DEFAULT || mode == SideMode.DISABLED) continue;
-            IItemHandler neighbour = level.getCapability(
-                    Capabilities.ItemHandler.BLOCK, worldPosition.relative(direction), direction.getOpposite());
+            ResourceHandler<ItemResource> neighbour = level.getCapability(
+                    Capabilities.Item.BLOCK, worldPosition.relative(direction), direction.getOpposite());
             if (neighbour == null) continue;
 
             if (mode == SideMode.OUT) {
@@ -92,17 +100,16 @@ public class ContainerBE extends AbstractStorageBE implements MenuProvider {
         return changed;
     }
 
-    private static boolean moveItems(IItemHandler from, IItemHandler to) {
-        for (int i = 0; i < from.getSlots(); i++) {
-            ItemStack stack = from.extractItem(i, 64, true);
-            if (stack.isEmpty()) continue;
-            for (int j = 0; j < to.getSlots(); j++) {
-                ItemStack leftover = to.insertItem(j, stack, true);
-                int moved = stack.getCount() - leftover.getCount();
-                if (moved > 0) {
-                    ItemStack extracted = from.extractItem(i, moved, false);
-                    to.insertItem(j, extracted, false);
-                    return true;
+    private static boolean moveItems(ResourceHandler<ItemResource> from, ResourceHandler<ItemResource> to) {
+        for (int i = 0; i < from.size(); i++) {
+            var source = RangedResourceHandler.ofSingleIndex(from, i);
+            for (int j = 0; j < to.size(); j++) {
+                var target = RangedResourceHandler.ofSingleIndex(to, j);
+                try (var tx = Transaction.openRoot()) {
+                    if (ResourceHandlerUtil.move(source, target, resource -> true, 64, tx) > 0) {
+                        tx.commit();
+                        return true;
+                    }
                 }
             }
         }
@@ -125,15 +132,15 @@ public class ContainerBE extends AbstractStorageBE implements MenuProvider {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        if (uuid != null) tag.putUUID("uuid", uuid);
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveTagData(tag, registries);
+        if (uuid != null) tag.store("uuid", UUIDUtil.CODEC, uuid);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        if (tag.hasUUID("uuid")) uuid = tag.getUUID("uuid");
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadTagData(tag, registries);
+        uuid = tag.read("uuid", UUIDUtil.CODEC).orElse(null);
     }
 
     @Override

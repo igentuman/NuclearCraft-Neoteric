@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:raw_materials/lithium"
-  },
+  "ingredient": "#c:raw_materials/lithium",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:lithium_ingot"
   }
 }

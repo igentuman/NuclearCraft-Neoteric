@@ -15,13 +15,13 @@ public final class FissionRecipes {
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<FissionFuelRecipe>> FUEL_TYPE =
             RECIPE_TYPES.register("fission_reactor", () -> RecipeType.simple(rl("fission_reactor")));
-    public static final DeferredHolder<RecipeSerializer<?>, FissionFuelRecipeSerializer> FUEL_SERIALIZER =
-            RECIPE_SERIALIZERS.register("fission_reactor", FissionFuelRecipeSerializer::new);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FissionFuelRecipe>> FUEL_SERIALIZER =
+            RECIPE_SERIALIZERS.register("fission_reactor", FissionFuelRecipeSerializer::create);
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<BoilingRecipe>> BOILING_TYPE =
             RECIPE_TYPES.register("fission_boiling", () -> RecipeType.simple(rl("fission_boiling")));
-    public static final DeferredHolder<RecipeSerializer<?>, BoilingRecipeSerializer> BOILING_SERIALIZER =
-            RECIPE_SERIALIZERS.register("fission_boiling", BoilingRecipeSerializer::new);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BoilingRecipe>> BOILING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("fission_boiling", BoilingRecipeSerializer::create);
 
     public static void init() {}
 }

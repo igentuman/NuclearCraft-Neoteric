@@ -8,57 +8,47 @@ import igentuman.nc.datagen.tag.ModBlockTagProvider;
 import igentuman.nc.datagen.tag.ModFluidTagProvider;
 import igentuman.nc.datagen.tag.ModItemTagProvider;
 import igentuman.nc.datagen.tag.ModPoiTypeTagProvider;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.PackOutput;
+import igentuman.nc.datagen.tag.ModVillagerTradeTagProvider;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.loot.LootTableProvider.SubProviderEntry;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.minecraft.data.loot.LootTableProvider.SubProviderEntry;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.MODID;
 import static java.util.Collections.emptySet;
 
-/** Registers all data providers (tags, recipes, models, lang, loot) on the datagen event. */
-@EventBusSubscriber(modid = MODID)
+/**
+ * Registers all data providers (tags, recipes, models, lang, loot) on the datagen event. The
+ * {@code data} run uses {@code clientData()}, so the client event emits both assets and data.
+ */
+@EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class ModDataGenerators {
 
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
-        DataGenerator generator = event.getGenerator();
-        PackOutput packOutput = generator.getPackOutput();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-
-        ModBlockTagProvider blockTagProvider = new ModBlockTagProvider(packOutput, lookupProvider, existingFileHelper);
-        generator.addProvider(event.includeServer(), blockTagProvider);
-        generator.addProvider(event.includeServer(), new ModItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter(), existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModFluidTagProvider(packOutput, lookupProvider, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModPoiTypeTagProvider(packOutput, lookupProvider, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModDatapackProvider(packOutput, lookupProvider));
-        generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
-        generator.addProvider(event.includeServer(), new CompatProcessorRecipeProvider(packOutput));
-        generator.addProvider(event.includeClient(), new ModLanguageProvider(generator, "en_us"));
-        generator.addProvider(event.includeClient(), new ModBlockStateProvider(packOutput, existingFileHelper));
-        generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
-
-        generator.addProvider(
-                event.includeServer(),
-                new LootTableProvider(
-                        packOutput,
-                        emptySet(),
-                        List.of(
-                                new SubProviderEntry(ModBlockLootTableProvider::new, LootContextParamSets.BLOCK),
-                                new SubProviderEntry(ModEntityLootTableProvider::new, LootContextParamSets.ENTITY)
-                        ),
-                        lookupProvider
-                )
-        );
+    public static void gatherData(GatherDataEvent.Client event) {
+        event.createBlockAndItemTags(ModBlockTagProvider::new, ModItemTagProvider::new);
+        event.createProvider(ModFluidTagProvider::new);
+        event.createProvider(ModPoiTypeTagProvider::new);
+        ModDatapackProvider datapackProvider = event.createProvider(ModDatapackProvider::new);
+        event.createProvider(output -> new ModVillagerTradeTagProvider(output, datapackProvider.getRegistryProvider()));
+        event.createProvider(ModRecipeProvider.Runner::new);
+        event.createProvider(CompatProcessorRecipeProvider::new);
+        event.createProvider(output -> new ModLanguageProvider(output, "en_us"));
+        event.createProvider(output -> new ModModelProvider(output, event.getResourceManager(PackType.CLIENT_RESOURCES)));
+        event.createProvider((output, lookup) -> new LootTableProvider(
+                output,
+                emptySet(),
+                List.of(
+                        new SubProviderEntry(ModBlockLootTableProvider::new, LootContextParamSets.BLOCK),
+                        new SubProviderEntry(ModEntityLootTableProvider::new, LootContextParamSets.ENTITY)
+                ),
+                lookup
+        ));
     }
 }

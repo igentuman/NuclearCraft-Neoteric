@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_kugelblitz",
   "key": {
-    "C": {
-      "item": "nuclearcraft:basic_electric_circuit"
-    },
-    "N": {
-      "item": "nuclearcraft:neutronium_frame"
-    }
+    "C": "nuclearcraft:basic_electric_circuit",
+    "N": "nuclearcraft:neutronium_frame"
   },
   "pattern": [
     "NCN",
@@ -16,7 +12,6 @@
     "NCN"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:chamber_port"
   }
 }

@@ -1,5 +1,8 @@
 package igentuman.nc.item;
 
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.PowerParticleOption;
+import net.minecraft.core.particles.ColorParticleOption;
 import igentuman.nc.entity.Q36EnergyFlash;
 import igentuman.nc.entity.Q36PulseProjectile;
 import igentuman.nc.entity.anomaly.AnomalyEntity;
@@ -16,7 +19,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +29,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.ClipContext;
@@ -34,11 +38,11 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.setup.entries.Parts.Q36_ENERGY_FLASH;
@@ -93,7 +97,7 @@ public class Q36Item extends Item {
     }
 
     public static FireMode getMode(ItemStack stack) {
-        int idx = readCustomData(stack).getInt(TAG_MODE);
+        int idx = readCustomData(stack).getIntOr(TAG_MODE, 0);
         FireMode[] values = FireMode.values();
         if (idx < 0 || idx >= values.length) idx = 0;
         return values[idx];
@@ -107,7 +111,7 @@ public class Q36Item extends Item {
     public static int getCharge(ItemStack stack) {
         CompoundTag tag = readCustomData(stack);
         if (!tag.contains(TAG_CHARGE)) return MAX_CHARGE;
-        return tag.getInt(TAG_CHARGE);
+        return tag.getIntOr(TAG_CHARGE, 0);
     }
 
     public static void setCharge(ItemStack stack, int qc) {
@@ -123,7 +127,7 @@ public class Q36Item extends Item {
     }
 
     public static boolean isReady(ItemStack stack, Level level) {
-        long end = readCustomData(stack).getLong(TAG_COOLDOWN_END);
+        long end = readCustomData(stack).getLongOr(TAG_COOLDOWN_END, 0L);
         return level.getGameTime() >= end;
     }
 
@@ -136,23 +140,23 @@ public class Q36Item extends Item {
     }
 
     public static boolean isFxActive(ItemStack stack, Level level) {
-        return level.getGameTime() < readCustomData(stack).getLong(TAG_FX_END);
+        return level.getGameTime() < readCustomData(stack).getLongOr(TAG_FX_END, 0L);
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (hand != InteractionHand.MAIN_HAND) {
-            return InteractionResultHolder.pass(stack);
+            return InteractionResult.PASS;
         }
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             cycleMode(stack);
             FireMode mode = getMode(stack);
-            player.displayClientMessage(__("tooltip.nc.q36_mode", __("tooltip.nc.q36_mode." + mode.key())).withStyle(ChatFormatting.AQUA), true);
+            player.sendOverlayMessage(__("tooltip.nc.q36_mode", __("tooltip.nc.q36_mode." + mode.key())).withStyle(ChatFormatting.AQUA));
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.LEVER_CLICK, SoundSource.PLAYERS, 0.5F, 1.6F);
         }
-        return InteractionResultHolder.success(stack);
+        return InteractionResult.SUCCESS;
     }
 
     public static void serverFire(ServerPlayer player) {
@@ -183,9 +187,9 @@ public class Q36Item extends Item {
             Vec3 right = new Vec3(look.z, 0.0D, -look.x).normalize();
             double side = (player.getMainArm() == HumanoidArm.RIGHT ? -1.0D : 1.0D) * 0.3D;
             Vec3 muzzle = player.getEyePosition(1.0F).add(0, -0.3, 0).add(right.scale(side)).add(look.scale(1.05D));
-            sl.sendParticles(net.minecraft.core.particles.ParticleTypes.FLASH, muzzle.x, muzzle.y, muzzle.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
-            sl.sendParticles(net.minecraft.core.particles.ParticleTypes.DRAGON_BREATH, muzzle.x, muzzle.y, muzzle.z, 6, 0.08D, 0.08D, 0.08D, 0.01D);
-            sl.sendParticles(net.minecraft.core.particles.ParticleTypes.ELECTRIC_SPARK, muzzle.x, muzzle.y, muzzle.z, 8, 0.05D, 0.05D, 0.05D, 0.15D);
+            sl.sendParticles(ColorParticleOption.create(ParticleTypes.FLASH, 1.0F, 1.0F, 1.0F), muzzle.x, muzzle.y, muzzle.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+            sl.sendParticles(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F), muzzle.x, muzzle.y, muzzle.z, 6, 0.08D, 0.08D, 0.08D, 0.01D);
+            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, muzzle.x, muzzle.y, muzzle.z, 8, 0.05D, 0.05D, 0.05D, 0.15D);
         }
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 NCSounds.Q36_PULSE_SHOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -206,7 +210,7 @@ public class Q36Item extends Item {
 
         AABB box = player.getBoundingBox().expandTowards(look.scale(range)).inflate(1.0D);
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(level, player, start, blockEnd, box,
-                e -> !e.isSpectator() && e.isPickable() && e != player);
+                e -> !e.isSpectator() && e.isPickable() && e != player, 0.3F);
 
         Vec3 end = blockEnd;
         if (entityHit != null) {
@@ -215,7 +219,7 @@ public class Q36Item extends Item {
             if (target instanceof AnomalyEntity anomaly) {
                 anomaly.onQ36Hit(player);
             } else {
-                target.hurt(NCDamageSources.of(level, NCDamageSources.Q36), mode.damage());
+                target.hurtServer(level, NCDamageSources.of(level, NCDamageSources.Q36), mode.damage());
                 if (target instanceof LivingEntity living) {
                     Vec3 push = look.scale(0.9D);
                     living.setDeltaMovement(living.getDeltaMovement().add(push.x, 0.2D, push.z));
@@ -254,19 +258,19 @@ public class Q36Item extends Item {
         for (int i = 0; i <= steps; i++) {
             double t = Math.min(i * step, len);
             Vec3 p = start.add(dir.scale(t));
-            level.sendParticles(net.minecraft.core.particles.ParticleTypes.DRAGON_BREATH, p.x, p.y, p.z, 1, 0.05D, 0.05D, 0.05D, 0.0D);
+            level.sendParticles(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F), p.x, p.y, p.z, 1, 0.05D, 0.05D, 0.05D, 0.0D);
         }
     }
 
     private static void spawnImpactParticles(ServerLevel level, Vec3 center, double radius) {
-        level.sendParticles(net.minecraft.core.particles.ParticleTypes.DRAGON_BREATH,
+        level.sendParticles(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F),
                 center.x, center.y, center.z, 60, radius * 0.5D, radius * 0.5D, radius * 0.5D, 0.1D);
-        level.sendParticles(net.minecraft.core.particles.ParticleTypes.FLASH, center.x, center.y, center.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+        level.sendParticles(ColorParticleOption.create(ParticleTypes.FLASH, 1.0F, 1.0F, 1.0F), center.x, center.y, center.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
     }
 
     private static void spawnMuzzleFlash(ServerLevel level, Vec3 pos) {
-        level.sendParticles(net.minecraft.core.particles.ParticleTypes.FLASH, pos.x, pos.y, pos.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
-        level.sendParticles(net.minecraft.core.particles.ParticleTypes.DRAGON_BREATH, pos.x, pos.y, pos.z, 8, 0.1D, 0.1D, 0.1D, 0.02D);
+        level.sendParticles(ColorParticleOption.create(ParticleTypes.FLASH, 1.0F, 1.0F, 1.0F), pos.x, pos.y, pos.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+        level.sendParticles(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F), pos.x, pos.y, pos.z, 8, 0.1D, 0.1D, 0.1D, 0.02D);
     }
 
     private static void damageEntitiesAt(ServerLevel level, Vec3 center, double radius, FireMode mode, ServerPlayer shooter, Entity skip) {
@@ -278,7 +282,7 @@ public class Q36Item extends Item {
             double dist = e.position().distanceTo(center);
             if (dist * dist > r2) continue;
             float dmg = (float) (modeDamage / (4.0D * Math.max(1.0D, dist)));
-            e.hurt(NCDamageSources.of(level, NCDamageSources.Q36), dmg);
+            e.hurtServer(level, NCDamageSources.of(level, NCDamageSources.Q36), dmg);
         }
     }
 
@@ -295,12 +299,12 @@ public class Q36Item extends Item {
                     double dxC = bx - center.x, dyC = by - center.y, dzC = bz - center.z;
                     double d = Math.sqrt(dxC * dxC + dyC * dyC + dzC * dzC);
                     if (d > rOuter) continue;
-                    if (d > rCore && level.random.nextFloat() < (d - rCore) / (rOuter - rCore)) continue;
+                    if (d > rCore && level.getRandom().nextFloat() < (d - rCore) / (rOuter - rCore)) continue;
                     BlockPos pos = new BlockPos((int) Math.floor(bx), (int) Math.floor(by), (int) Math.floor(bz));
                     BlockState state = level.getBlockState(pos);
                     if (state.isAir()) continue;
                     if (state.getDestroySpeed(level, pos) < 0) continue;
-                    BlockEvent.BreakEvent breakEvent = new BlockEvent.BreakEvent(level, pos, state, shooter);
+                    BreakBlockEvent breakEvent = new BreakBlockEvent(level, pos, state, shooter);
                     if (NeoForge.EVENT_BUS.post(breakEvent).isCanceled()) continue;
                     level.destroyBlock(pos, true);
                 }
@@ -309,13 +313,13 @@ public class Q36Item extends Item {
     }
 
     @Override
-    public boolean canAttackBlock(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player) {
+    public boolean canDestroyBlock(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull LivingEntity user) {
         return false;
     }
 
     @Override
-    public @NotNull net.minecraft.world.item.UseAnim getUseAnimation(@NotNull ItemStack stack) {
-        return net.minecraft.world.item.UseAnim.NONE;
+    public @NotNull net.minecraft.world.item.ItemUseAnimation getUseAnimation(@NotNull ItemStack stack) {
+        return net.minecraft.world.item.ItemUseAnimation.NONE;
     }
 
     @Override
@@ -336,27 +340,17 @@ public class Q36Item extends Item {
     }
 
     @Override
-    public boolean isRepairable(@NotNull ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public boolean isEnchantable(@NotNull ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, @NotNull TooltipFlag flag) {
         FireMode mode = getMode(stack);
-        tooltip.add(__("tooltip.nc.q36_mode", __("tooltip.nc.q36_mode." + mode.key())).withStyle(ChatFormatting.AQUA));
-        tooltip.add(__("tooltip.nc.q36_charge", getCharge(stack), MAX_CHARGE).withStyle(ChatFormatting.GREEN));
+        tooltip.accept(__("tooltip.nc.q36_mode", __("tooltip.nc.q36_mode." + mode.key())).withStyle(ChatFormatting.AQUA));
+        tooltip.accept(__("tooltip.nc.q36_charge", getCharge(stack), MAX_CHARGE).withStyle(ChatFormatting.GREEN));
         Level level = context.level();
         if (level != null) {
-            long remaining = readCustomData(stack).getLong(TAG_COOLDOWN_END) - level.getGameTime();
+            long remaining = readCustomData(stack).getLongOr(TAG_COOLDOWN_END, 0L) - level.getGameTime();
             if (remaining > 0) {
-                tooltip.add(__("tooltip.nc.q36_cooldown", remaining).withStyle(ChatFormatting.GRAY));
+                tooltip.accept(__("tooltip.nc.q36_cooldown", remaining).withStyle(ChatFormatting.GRAY));
             }
         }
-        tooltip.add(__("tooltip.nc.q36_hint").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.accept(__("tooltip.nc.q36_hint").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

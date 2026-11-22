@@ -9,7 +9,9 @@ import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.multiblock.fusion.FusionReactorLogic;
 import igentuman.nc.multiblock.fusion.FusionReactorCache;
+import igentuman.nc.recipe.fusion.FusionCoolantRecipe;
 import igentuman.nc.recipe.fusion.FusionRecipe;
+import igentuman.nc.recipe.RecipeSources;
 import igentuman.nc.recipe.fusion.FusionRecipes;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCSounds;
@@ -25,12 +27,15 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -38,7 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Controller block entity for the fusion reactor; manages the core cage, runs the reaction, and emits beam particles. */
 public class FusionReactorControllerBE extends MultiblockControllerBE implements OutputLevelSource {
 
     public static final int MODE_ENERGY = 0;
@@ -47,9 +51,9 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
     public static final int MODE_COUNT = 3;
     public static final String[] MODE_KEYS = {"energy", "heat", "efficiency"};
 
-    private static int fuelRecipeVersion;
-    private int installedFuelRecipeVersion = -1;
+    private RecipeMap fuelRecipeMap;
     private final Map<Fluid, List<FusionRecipe>> fuelRecipesByFluid = new HashMap<>();
+    private final List<SizedFluidIngredient> coolantInputs = new ArrayList<>();
     private CompoundTag reactionRuntime;
 
     @NBTField(syncToClient = true) public int functionalBlocksCharge;
@@ -88,33 +92,38 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
 
     @Nullable
     @Override
-    public IFluidHandler getFluidHandler(@Nullable Direction side) {
-        if (level instanceof ServerLevel serverLevel) ensureFluidValidators(serverLevel);
+    public ResourceHandler<FluidResource> getFluidHandler(@Nullable Direction side) {
+        ensureFluidValidators();
         return super.getFluidHandler(side);
     }
 
-    public static void invalidateFuelRecipes() {
-        fuelRecipeVersion++;
-    }
-
-    private void ensureFluidValidators(ServerLevel level) {
-        if (installedFuelRecipeVersion == fuelRecipeVersion) return;
+    private void ensureFluidValidators() {
+        if (level == null) return;
+        RecipeMap current = RecipeSources.recipes(level);
+        if (fuelRecipeMap == current) return;
         FluidStackHandler tanks = fluidTanks();
         if (tanks == null) return;
         fuelRecipesByFluid.clear();
-        for (RecipeHolder<FusionRecipe> holder : level.getRecipeManager().getAllRecipesFor(FusionRecipes.FUSION_TYPE.get())) {
+        for (RecipeHolder<FusionRecipe> holder : current.byType(FusionRecipes.FUSION_TYPE.get())) {
             FusionRecipe recipe = holder.value();
             indexFuel(recipe.inputA().ingredient(), recipe);
             indexFuel(recipe.inputB().ingredient(), recipe);
         }
+        coolantInputs.clear();
+        for (RecipeHolder<FusionCoolantRecipe> holder : current.byType(FusionRecipes.COOLANT_TYPE.get())) {
+            coolantInputs.add(holder.value().input());
+        }
         tanks.setTankValidator(0, fs -> acceptsFuel(0, fs));
         tanks.setTankValidator(1, fs -> acceptsFuel(1, fs));
-        installedFuelRecipeVersion = fuelRecipeVersion;
+        // Fuel overflowing into the coolant tank would block cooling until meltdown.
+        tanks.setTankValidator(FusionReactorContainer.TANK_COOLANT,
+                fs -> coolantInputs.stream().anyMatch(input -> input.ingredient().test(fs)));
+        fuelRecipeMap = current;
     }
 
     private void indexFuel(FluidIngredient ingredient, FusionRecipe recipe) {
-        for (FluidStack stack : ingredient.getStacks()) {
-            fuelRecipesByFluid.computeIfAbsent(stack.getFluid(), fluid -> new ArrayList<>()).add(recipe);
+        for (var holder : ingredient.fluids()) {
+            fuelRecipesByFluid.computeIfAbsent(holder.value(), fluid -> new ArrayList<>()).add(recipe);
         }
     }
 
@@ -160,7 +169,6 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
         setChanged();
     }
 
-    /** GUI slider (1..100) tuning the amplification ratio. */
     public void setAmplificationAdjustment(int value) {
         int clamped = Math.clamp(value, 1, 100);
         if (clamped != amplificationAdjustment) {
@@ -178,10 +186,10 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveTagData(tag, registries);
         if (tag.contains("runtime")) {
-            reactionRuntime = tag.getCompound("runtime").copy();
+            reactionRuntime = tag.getCompoundOrEmpty("runtime").copy();
         } else if (reactionRuntime != null) {
             tag.put("runtime", reactionRuntime.copy());
         }
@@ -190,6 +198,7 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
     @Override
     public void clientTick() {
         super.clientTick();
+        ensureFluidValidators();
         if (!formed) {
             stopSound();
             return;
@@ -213,7 +222,7 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
     @Override
     public void serverTick() {
         if (!(level instanceof ServerLevel serverLevel)) return;
-        ensureFluidValidators(serverLevel);
+        ensureFluidValidators();
         tickMultiblock(serverLevel);
         boolean newFormed = mbInstance != null && mbInstance.formed;
         if (formed != newFormed) {
@@ -241,7 +250,6 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
         amplifierCount = fc.amplifierCount;
     }
 
-    /** Emits four beam particles tracing the plasma ring, one per edge of the square. */
     public void renderBeam(ServerLevel level, int size) {
         BlockPos mid = worldPosition.above();
         float beamLength = size * 2 + 4;
@@ -258,11 +266,10 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
     private void sendBeamData(ServerLevel level, FusionBeamParticleData data, BlockPos from) {
         Vec3 vec = Vec3.atCenterOf(from);
         for (ServerPlayer player : level.players()) {
-            level.sendParticles(player, data, true, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0);
+            level.sendParticles(player, data, true, false, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0);
         }
     }
 
-    /** Strongest redstone signal touching any cell of the 3x3x3 core cage. Drives amplification. */
     public void updateRedstoneInput(ServerLevel level) {
         int signal = level.getBestNeighborSignal(worldPosition);
         for (int y = 0; y < 3; y++) {
@@ -293,7 +300,6 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
         return inputRedstoneSignal > 0;
     }
 
-    /** Cycles the comparator output source (energy -> heat -> efficiency). Called from a cage cell. */
     public void toggleRedstoneMode() {
         redstoneMode = (redstoneMode + 1) % MODE_COUNT;
         markDirty();
@@ -302,7 +308,6 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
         }
     }
 
-    /** Comparator strength (0-15) for the given output mode. */
     public int comparatorSignal(int mode) {
         return OutputLevelSource.comparatorSignal(outputLevel(mode));
     }
@@ -378,9 +383,8 @@ public class FusionReactorControllerBE extends MultiblockControllerBE implements
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        if (!tag.contains("runtime") && tag.contains("Reaction")) tag.put("runtime", tag.getCompound("Reaction"));
-        super.loadAdditional(tag, registries);
-        reactionRuntime = tag.contains("runtime") ? tag.getCompound("runtime").copy() : null;
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadTagData(tag, registries);
+        reactionRuntime = tag.contains("runtime") ? tag.getCompoundOrEmpty("runtime").copy() : null;
     }
 }

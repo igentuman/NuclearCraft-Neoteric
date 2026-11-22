@@ -2,11 +2,11 @@
 navigation:
   title: HEV Suit
   parent: items.md
-  icon: hev_chest
+  icon: hev_chestplate
 item_ids:
   - nuclearcraft:hev_helmet
-  - nuclearcraft:hev_chest
-  - nuclearcraft:hev_pants
+  - nuclearcraft:hev_chestplate
+  - nuclearcraft:hev_leggings
   - nuclearcraft:hev_boots
 ---
 
@@ -16,8 +16,8 @@ item_ids:
 
 <Row>
   <ItemImage id="hev_helmet" />
-  <ItemImage id="hev_chest" />
-  <ItemImage id="hev_pants" />
+  <ItemImage id="hev_chestplate" />
+  <ItemImage id="hev_leggings" />
   <ItemImage id="hev_boots" />
 </Row>
 

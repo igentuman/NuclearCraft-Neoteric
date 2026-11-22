@@ -9,7 +9,7 @@ import igentuman.nc.registration.ToolSetEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCJukeboxSongs;
 import igentuman.nc.setup.entries.Particles;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
 import static igentuman.nc.NuclearCraft.MODID;
@@ -17,8 +17,8 @@ import static igentuman.nc.util.TextUtils.convertToName;
 
 /** Generates the en_us language file: display names for blocks, items, fluids, and GUI labels. */
 public class ModLanguageProvider  extends LanguageProvider {
-    public ModLanguageProvider(DataGenerator gen, String locale) {
-        super(gen.getPackOutput(), MODID, locale);
+    public ModLanguageProvider(PackOutput output, String locale) {
+        super(output, MODID, locale);
     }
 
     @Override
@@ -368,7 +368,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("msr.depletion", "Depletion: %s%%");
         add("msr.overheat", "Overheat: %ss");
         add("msr.input_rate.tooltip", "Molten salt input rate (buckets/tick). Cold FLiBe drawn into the reactor each tick.");
-        add("msr.output_rate.tooltip", "Hot molten salt output rate (buckets/tick). Pumped out each tick — the reactor's only cooling. Run it too low and the core overheats.");
+        add("msr.output_rate.tooltip", "Hot molten salt output rate (buckets/tick). Pumped out each tick - the reactor's only cooling. Run it too low and the core overheats.");
         add("reactor.fuel_cells", "Fuel Cells: %s");
         add("reactor.heating", "Heat Gen: %s H/t");
         add("gui.nc.msr.void_pebbles.tooltip", "Void fuel pebbles");
@@ -644,6 +644,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("emi.category.nuclearcraft.fusion_reactor", "Fusion Reactor");
         add("emi.category.nuclearcraft.fusion_coolant", "Fusion Reactor Coolant");
         add("emi.category.nuclearcraft.kugelblitz_chamber", "Kugelblitz Chamber");
+        add("emi.category.nuclearcraft.msr_fuel", "MSR Fuel");
         add("emi.category.nuclearcraft.nc_ore_veins", "Ore Veins");
         add("emi.category.nuclearcraft.turbine", "Steam Turbine");
         add("block.nuclearcraft.heat_exchanger_radiator.desc", "Vents %s H/t from the heat buffer. Passive: cools whenever the multiblock is formed.");
@@ -701,7 +702,7 @@ public class ModLanguageProvider  extends LanguageProvider {
 
         add("message.nc.multitool.connected_to_tnt", "Linked to TNT at (%1$s, %2$s, %3$s)");
         add("message.nc.multitool.connected_to_bomb", "Linked to bomb at (%1$s, %2$s, %3$s)");
-        add("message.nc.multitool.not_your_project", "Not your bomb — placement ownership required.");
+        add("message.nc.multitool.not_your_project", "Not your bomb - placement ownership required.");
         add("message.nc.multitool.armed_confirm", "Armed. Press again within 60 ticks to detonate.");
         add("message.nc.multitool.tnt_detonated", "Triggered TNT at (%1$s, %2$s, %3$s)");
         add("message.nc.multitool.bomb_detonated", "Triggered bomb at (%1$s, %2$s, %3$s)");

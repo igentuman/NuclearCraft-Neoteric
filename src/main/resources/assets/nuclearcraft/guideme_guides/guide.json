@@ -2,12 +2,14 @@
   "item_settings": {
     "display_name": {
       "type": "translatable",
-      "translate": "nc.guide_book.name"
+      "translate": "nc.guide_book.name",
+      "fallback": "NuclearCraft Guide"
     },
     "tooltip_lines": [
       {
         "type": "translatable",
-        "translate": "nc.guide_book.desc"
+        "translate": "nc.guide_book.desc",
+        "fallback": "Basics and advanced topics about NuclearCraft"
       }
     ],
     "model": "nuclearcraft:item/patchouli_book"

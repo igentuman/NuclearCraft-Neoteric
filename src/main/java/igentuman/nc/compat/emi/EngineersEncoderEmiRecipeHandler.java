@@ -9,12 +9,12 @@ import igentuman.nc.container.EngineersEncoderContainer;
 import igentuman.nc.handler.crafter.ProcessorRecipes;
 import igentuman.nc.network.PacketEncoderFillGrid;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.List;
 
@@ -42,30 +42,26 @@ public class EngineersEncoderEmiRecipeHandler implements StandardRecipeHandler<E
 
     @Override
     public boolean craft(EmiRecipe recipe, EmiCraftContext<EngineersEncoderContainer> context) {
-        ResourceLocation id = resolveId(recipe);
+        Identifier id = resolveId(recipe);
         if (id == null) return false;
-        PacketDistributor.sendToServer(new PacketEncoderFillGrid(context.getScreenHandler().getBlockPos(), id));
+        ClientPacketDistributor.sendToServer(new PacketEncoderFillGrid(context.getScreenHandler().getBlockPos(), id));
         return true;
     }
 
     @Override
     public void render(EmiRecipe recipe, EmiCraftContext<EngineersEncoderContainer> context,
-                       List<Widget> widgets, GuiGraphics graphics) {
+                       List<Widget> widgets, GuiGraphicsExtractor graphics) {
         // Ghost template: no items are required, so skip the missing-ingredient overlay.
     }
 
-    private static ResourceLocation resolveId(EmiRecipe recipe) {
+    private static Identifier resolveId(EmiRecipe recipe) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return null;
         if (recipe instanceof ProcessorEmiRecipe per) {
-            return ProcessorRecipes.idOf(mc.level.getRecipeManager(), per.recipe());
+            Identifier id = per.holder().id().identifier();
+            return ProcessorRecipes.byId(mc.level, id) == null ? null : id;
         }
-        ResourceLocation id = recipe.getId();
-        if (id == null) return null;
-        return mc.level.getRecipeManager().byKey(id)
-                .map(RecipeHolder::value)
-                .filter(r -> r instanceof CraftingRecipe)
-                .map(r -> id)
-                .orElse(null);
+        RecipeHolder<CraftingRecipe> holder = EngineersCrafterEmiRecipeHandler.craftingHolder(recipe);
+        return holder == null ? null : holder.id().identifier();
     }
 }

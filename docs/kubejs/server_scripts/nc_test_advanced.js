@@ -14,7 +14,7 @@ ServerEvents.recipes(event => {
   ).id('kubejs:nc_test/target_chamber')
 
   event.recipes.nuclearcraft.decay_chamber(
-    neutron, [proton], 0.5, 0, 100
+    neutron, [proton], 0.5
   ).id('kubejs:nc_test/decay_chamber')
 
   event.recipes.nuclearcraft.collision_chamber(

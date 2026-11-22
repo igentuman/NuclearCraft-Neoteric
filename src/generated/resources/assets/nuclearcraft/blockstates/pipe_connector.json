@@ -11,7 +11,7 @@
         "x": 270
       },
       "when": {
-        "up": "pipe|machine"
+        "up": "machine|pipe"
       }
     },
     {
@@ -20,7 +20,7 @@
         "x": 90
       },
       "when": {
-        "down": "pipe|machine"
+        "down": "machine|pipe"
       }
     },
     {
@@ -28,7 +28,7 @@
         "model": "nuclearcraft:block/pipe/arm_z"
       },
       "when": {
-        "north": "pipe|machine"
+        "north": "machine|pipe"
       }
     },
     {
@@ -37,7 +37,7 @@
         "y": 180
       },
       "when": {
-        "south": "pipe|machine"
+        "south": "machine|pipe"
       }
     },
     {
@@ -46,7 +46,7 @@
         "y": 90
       },
       "when": {
-        "east": "pipe|machine"
+        "east": "machine|pipe"
       }
     },
     {
@@ -55,7 +55,7 @@
         "y": 270
       },
       "when": {
-        "west": "pipe|machine"
+        "west": "machine|pipe"
       }
     },
     {

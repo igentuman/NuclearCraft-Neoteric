@@ -1,5 +1,5 @@
 {
   "variants": {
-    "": { "model": "nuclearcraft:block/elite_voltaic_pile" }
+    "": { "type": "nuclearcraft:battery", "side": "nuclearcraft:block/energy/voltaic_pile/elite/side", "top": "nuclearcraft:block/energy/voltaic_pile/elite/top" }
   }
 }

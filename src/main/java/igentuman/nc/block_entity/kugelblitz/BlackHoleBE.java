@@ -1,5 +1,7 @@
 package igentuman.nc.block_entity.kugelblitz;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.particles.PowerParticleOption;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.setup.ModEntries;
@@ -65,8 +67,8 @@ public class BlackHoleBE extends GlobalBlockEntity {
             spawnDelay--;
             return;
         }
-        if (level.random.nextBoolean()) {
-            for (int i = 0; i < level.random.nextInt(3); i++) {
+        if (level.getRandom().nextBoolean()) {
+            for (int i = 0; i < level.getRandom().nextInt(3); i++) {
                 spawnParticle();
             }
         }
@@ -85,11 +87,11 @@ public class BlackHoleBE extends GlobalBlockEntity {
         float x = worldPosition.getX() + 0.5F + randomDistance();
         float y = worldPosition.getY() + 0.5F + randomDistance();
         float z = worldPosition.getZ() + 0.5F + randomDistance();
-        level.addParticle(ParticleTypes.DRAGON_BREATH, x, y, z, 0, 0, 0);
+        level.addParticle(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F), x, y, z, 0, 0, 0);
     }
 
     private float randomDistance() {
-        return level.random.nextFloat() + level.random.nextInt(8) - 4;
+        return level.getRandom().nextFloat() + level.getRandom().nextInt(8) - 4;
     }
 
     public float getFormationAge(float partialTick) {
@@ -161,8 +163,8 @@ public class BlackHoleBE extends GlobalBlockEntity {
     private void consumeEntity(Entity entity) {
         if (entity instanceof ItemEntity) {
             entity.remove(Entity.RemovalReason.CHANGED_DIMENSION);
-        } else if (entity instanceof LivingEntity) {
-            entity.kill();
+        } else if (entity instanceof LivingEntity && level instanceof ServerLevel serverLevel) {
+            entity.kill(serverLevel);
         }
     }
 

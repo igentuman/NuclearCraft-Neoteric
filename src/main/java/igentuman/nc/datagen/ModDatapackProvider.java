@@ -1,6 +1,7 @@
 package igentuman.nc.datagen;
 
 import igentuman.nc.setup.NCJukeboxSongs;
+import igentuman.nc.setup.NCTrades;
 import igentuman.nc.setup.level.*;
 import igentuman.nc.util.NCDamageSources;
 import net.minecraft.core.HolderLookup;
@@ -15,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static igentuman.nc.NuclearCraft.MODID;
 
-/** Generates built-in datapack entries: damage types, worldgen features, biomes, and dimensions. */
+/** Generates built-in datapack entries: damage types, worldgen features, biomes, dimensions and villager trades. */
 public class ModDatapackProvider extends DatapackBuiltinEntriesProvider {
     public ModDatapackProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> event) {
         super(output, event, BUILDER, Set.of(MODID));
@@ -30,5 +31,7 @@ public class ModDatapackProvider extends DatapackBuiltinEntriesProvider {
             .add(Registries.BIOME, ModBiomes::bootstrap)
             .add(Registries.DIMENSION_TYPE, ModDimensions::bootstrapType)
             .add(Registries.LEVEL_STEM, ModDimensions::bootstrapStem)
-            .add(Registries.NOISE_SETTINGS, ModDimensions::bootstrapNoise);
+            .add(Registries.NOISE_SETTINGS, ModDimensions::bootstrapNoise)
+            .add(Registries.VILLAGER_TRADE, NCTrades::bootstrapTrades)
+            .add(Registries.TRADE_SET, NCTrades::bootstrapTradeSets);
 }

@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_msr",
   "key": {
-    "B": {
-      "item": "minecraft:bucket"
-    },
-    "G": {
-      "tag": "c:glass_blocks"
-    },
-    "T": {
-      "tag": "c:ingots/tough_alloy"
-    }
+    "B": "minecraft:bucket",
+    "G": "#c:glass_blocks",
+    "T": "#c:ingots/tough_alloy"
   },
   "pattern": [
     "TGT",
@@ -19,7 +13,6 @@
     "TGT"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:msr_fuel_cell"
   }
 }

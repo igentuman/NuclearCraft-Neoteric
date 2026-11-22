@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_machines",
   "key": {
-    "C": {
-      "item": "minecraft:cartography_table"
-    },
-    "M": {
-      "item": "nuclearcraft:motor"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "Y": {
-      "item": "minecraft:ender_eye"
-    }
+    "C": "minecraft:cartography_table",
+    "M": "nuclearcraft:motor",
+    "P": "nuclearcraft:plate_basic",
+    "Y": "minecraft:ender_eye"
   },
   "pattern": [
     "PYP",
@@ -22,7 +14,6 @@
     "PMP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:analyzer"
   }
 }

@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_solar_panels",
   "key": {
-    "C": {
-      "item": "nuclearcraft:coil_copper"
-    },
-    "G": {
-      "tag": "c:dusts/quartz"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    },
-    "S": {
-      "item": "nuclearcraft:solar_panel_basic"
-    }
+    "C": "nuclearcraft:coil_copper",
+    "G": "#c:dusts/quartz",
+    "P": "nuclearcraft:plate_advanced",
+    "S": "nuclearcraft:solar_panel_basic"
   },
   "pattern": [
     "PGP",
@@ -22,7 +14,6 @@
     "PCP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:solar_panel_advanced"
   }
 }

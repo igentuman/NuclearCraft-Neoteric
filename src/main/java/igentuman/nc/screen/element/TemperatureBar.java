@@ -2,7 +2,7 @@ package igentuman.nc.screen.element;
 
 import igentuman.nc.util.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -28,7 +28,7 @@ public class TemperatureBar extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
         int w = width;
@@ -54,7 +54,7 @@ public class TemperatureBar extends AbstractWidget {
         }
 
         if (isHovered) {
-            graphics.renderComponentTooltip(
+            graphics.setComponentTooltipForNextFrame(
                     Minecraft.getInstance().font,
                     List.of(__("screen.nuclearcraft.fusion.temperature",
                             TextUtils.formatHeat(stored) + " / " + TextUtils.formatHeat(max))),

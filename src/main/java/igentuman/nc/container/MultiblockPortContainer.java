@@ -18,9 +18,11 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import igentuman.nc.handler.item.CustomInventoryHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 /** Menu opened from a multiblock port; mirrors the controller's inventory slots and exposes the redstone mode. */
 public class MultiblockPortContainer extends AbstractContainerMenu {
@@ -58,13 +60,18 @@ public class MultiblockPortContainer extends AbstractContainerMenu {
                 int outputItemCount = controllerEntry.itemCap().outputSlots;
 
                 MultiblockControllerBE controller = controllerForLookup;
-                IItemHandler inv;
+                ResourceHandler<ItemResource> inv;
+                IndexModifier<ItemResource> modifier;
                 boolean hasInventory;
                 if (controller != null) {
-                    inv = controller.getItemHandler(null);
+                    var items = controller.contentHandler.getItemHandler();
+                    inv = items;
+                    modifier = (index, resource, amount) -> items.set(index, resource, amount);
                     hasInventory = controller.hasInventory();
                 } else {
-                    inv = new ItemStackHandler(inputItemCount + outputItemCount);
+                    var items = new CustomInventoryHandler(inputItemCount + outputItemCount);
+                    inv = items;
+                    modifier = items::set;
                     hasInventory = true;
                 }
 
@@ -75,21 +82,21 @@ public class MultiblockPortContainer extends AbstractContainerMenu {
 
                         for (int i = 0; i < inputItemCount; i++) {
                             SlotDef def = slotsLayout.slots.get(inputItemOffset + i);
-                            addSlot(new SlotItemHandler(inv, i, def.x, def.y));
+                            addSlot(new ResourceHandlerSlot(inv, modifier, i, def.x, def.y));
                             beSlots++;
                         }
                         for (int i = 0; i < outputItemCount; i++) {
                             SlotDef def = slotsLayout.slots.get(outputItemOffset + i);
-                            addSlot(new SlotItemHandler(inv, inputItemCount + i, def.x, def.y));
+                            addSlot(new ResourceHandlerSlot(inv, modifier, inputItemCount + i, def.x, def.y));
                             beSlots++;
                         }
                     } else {
                         for (int i = 0; i < inputItemCount; i++) {
-                            addSlot(new SlotItemHandler(inv, i, 44 + (i % 3) * 18, 26 + (i / 3) * 18));
+                            addSlot(new ResourceHandlerSlot(inv, modifier, i, 44 + (i % 3) * 18, 26 + (i / 3) * 18));
                             beSlots++;
                         }
                         for (int i = 0; i < outputItemCount; i++) {
-                            addSlot(new SlotItemHandler(inv, inputItemCount + i, 116 + (i % 3) * 18, 26 + (i / 3) * 18));
+                            addSlot(new ResourceHandlerSlot(inv, modifier, inputItemCount + i, 116 + (i % 3) * 18, 26 + (i / 3) * 18));
                             beSlots++;
                         }
                     }

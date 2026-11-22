@@ -1,0 +1,13 @@
+{
+  "gives": {
+    "count": 2,
+    "id": "nuclearcraft:calcium_sulfate_dust"
+  },
+  "max_uses": 7.0,
+  "reputation_discount": 0.02,
+  "wants": {
+    "count": 20.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 15.0
+}

@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
-    "B": {
-      "item": "nuclearcraft:empty_cooler"
-    },
-    "I": {
-      "tag": "c:dusts/manganese"
-    }
+    "B": "nuclearcraft:empty_cooler",
+    "I": "#c:dusts/manganese"
   },
   "pattern": [
     " I ",
@@ -16,7 +12,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:manganese_cooler"
   }
 }

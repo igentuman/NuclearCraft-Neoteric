@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "nuclearcraft:basic_processor"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    },
-    "T": {
-      "tag": "c:ingots/tungsten"
-    }
+    "B": "nuclearcraft:basic_processor",
+    "S": "#c:ingots/steel",
+    "T": "#c:ingots/tungsten"
   },
   "pattern": [
     "STS",

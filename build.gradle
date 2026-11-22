@@ -1,8 +1,10 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.1.25'
+    id 'idea'
+    id 'net.neoforged.moddev' version '2.0.148'
 }
+
 
 tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
@@ -15,7 +17,7 @@ sourceSets.main.resources {
     srcDir('src/generated/resources')
 
     exclude("**/*.bbmodel") // BlockBench project files
-    exclude("src/generated/**/.cache") // datagen cache files
+    exclude("**/.cache/**") // datagen cache files
 }
 
 repositories {
@@ -71,144 +73,195 @@ base {
     archivesName = "NuclearCraft-${minecraft_version}"
 }
 
-// Mojang ships Java 21 to end users in 1.21.1, so mods should target Java 21.
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
-//minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
-//minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
+def devProfile = providers.gradleProperty('devProfile').getOrElse('core')
+if (!(devProfile in ['core', 'integrations', 'full'])) {
+    throw new GradleException("Unknown devProfile '${devProfile}'; use core, integrations or full.")
+}
+def withEmi = providers.gradleProperty('withEmi').map { it.toBoolean() }.getOrElse(false)
 
-subsystems.conventions.sourceSets.shouldMainSourceSetBeAutomaticallyAddedToRuns = false
+configurations {
+    integrationMods {
+        canBeResolved = false
+        canBeConsumed = false
+    }
+    developmentMods {
+        canBeResolved = false
+        canBeConsumed = false
+    }
+    emiMods {
+        canBeResolved = false
+        canBeConsumed = false
+    }
+    compileOnly.extendsFrom integrationMods
+    testCompileOnly.extendsFrom integrationMods
+    if (devProfile != 'core') {
+        runtimeOnly.extendsFrom integrationMods
+    }
+    if (devProfile == 'full') {
+        runtimeOnly.extendsFrom developmentMods
+    }
+    if (withEmi) {
+        runtimeOnly.extendsFrom emiMods
+    }
+}
 
 sourceSets {
+    test {
+        if (devProfile == 'core') {
+            java.exclude 'igentuman/nc/compat/**'
+        }
+    }
     datagen {
-        output.classesDirs.setFrom(main.output.classesDirs)
-        output.resourcesDir = main.output.resourcesDir
-        output.builtBy tasks.named('classes')
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+    gametest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
     }
 }
 
-configurations.datagenCompileClasspath.extendsFrom configurations.compileClasspath
-
-configurations.datagenRuntimeClasspath {
-    extendsFrom configurations.runtimeClasspath
-    // These optional mods fail registry initialization or require their own datagen libraries.
-    exclude group: 'curse.maven', module: 'applied-energistics-2-223794'
-    exclude group: 'curse.maven', module: 'create-328085'
-    exclude group: 'curse.maven', module: 'tis-3d-238603'
-    exclude group: 'curse.maven', module: 'ex-deorum-901420'
-}
-
-runs {
-    configureEach {
-        systemProperty 'forge.logging.markers', 'REGISTRIES'
-        systemProperty 'forge.logging.console.level', 'debug'
-        workingDirectory project.layout.projectDirectory.dir('run').dir(name)
-        modSource name == 'data' ? project.sourceSets.datagen : project.sourceSets.main
-    }
-
-    client {
-        arguments.addAll '--width', '1920', '--height', '1080'
-    }
-
-    server {
-    }
-
-    data {
-        // workingDirectory project.file('run-data')
-        arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-    }
+sourceSets.main.java {
+    exclude 'igentuman/nc/compat/create/**'
+    exclude 'igentuman/nc/compat/ie/**'
+    exclude 'igentuman/nc/compat/tis3d/**'
 }
 
 configurations {
-    runtimeClasspath.extendsFrom localRuntime
+    datagenImplementation.extendsFrom implementation
+    datagenCompileOnly.extendsFrom compileOnly
+    datagenRuntimeOnly.extendsFrom runtimeOnly
+    gametestImplementation.extendsFrom implementation
+    gametestRuntimeOnly.extendsFrom runtimeOnly
+    datagenRuntimeClasspath {
+        exclude group: 'curse.maven', module: 'applied-energistics-2-223794'
+        exclude group: 'curse.maven', module: 'create-328085'
+        exclude group: 'curse.maven', module: 'tis-3d-238603'
+        exclude group: 'curse.maven', module: 'ex-deorum-901420'
+    }
+}
+
+neoForge {
+    version = project.neo_version
+    addModdingDependenciesTo(sourceSets.datagen)
+    addModdingDependenciesTo(sourceSets.gametest)
+    addModdingDependenciesTo(sourceSets.test)
+
+    // accessTransformers.add('src/main/resources/META-INF/accesstransformer.cfg')
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+        nc_gametest {
+            sourceSet(sourceSets.gametest)
+        }
+    }
+
+    runs {
+        client {
+            client()
+
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        gameTestServer {
+            type = "gameTestServer"
+            sourceSet = sourceSets.gametest
+            loadedMods = [mods."${mod_id}", mods.nc_gametest]
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'nc_gametest'
+            programArguments.addAll '--tests', 'nc_gametest:*', '--report', 'gametest.xml'
+        }
+
+        data {
+            clientData()
+            sourceSet = sourceSets.datagen
+
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        configureEach {
+            loadedMods.convention([mods."${mod_id}"])
+            gameDirectory = layout.projectDirectory.dir("run/${name}")
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
 }
 
 dependencies {
+    compileOnly "org.jetbrains:annotations:${jetbrains_annotations_version}"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
 
-    implementation "net.neoforged:neoforge:${neo_version}"
+    // Required in every profile. Explicit substitution is configured in settings.gradle.
+    implementation("maven.modrinth:nuclear-radiation:${radiation_version}") { transitive = false }
 
-    compileOnly("cc.tweaked:cc-tweaked-1.21.1-common-api:1.118.0")
-    runtimeOnly("cc.tweaked:cc-tweaked-1.21.1-forge:1.118.0")
+    compileOnly "cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cct_version}"
+    integrationMods "cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cct_version}"
+    integrationMods "curse.maven:opencomputers-ii-modern-1657848:9291036"
+    implementation "curse.maven:jei-238222:9384706"
+    implementation "curse.maven:kubejs-238086:9396057"
+    implementation "curse.maven:rhino-416294:8463898"
+    implementation "curse.maven:applied-energistics-2-223794:9022271"
+    implementation "curse.maven:guideme-1173950:9366331"
+    implementation "curse.maven:curios-309927:8463519"
+    implementation "curse.maven:the-one-probe-245211:8797594"
+    implementation "curse.maven:multi-builder-tool-827020:8502117"
+    implementation "curse.maven:patchouli-306770:8404543"
+    implementation "curse.maven:ex-deorum-901420:8096345"
+    integrationMods "curse.maven:refined-storage-243076:8211383"
 
-    implementation "curse.maven:oc2-437654:9091466"
-    implementation "curse.maven:markdownmanual-502485:8960338"
+    def emi = "curse.maven:pf-emi-1654612:9587229"
+    compileOnly emi
+    emiMods emi
 
-    compileOnly "curse.maven:emi-580555:8081408"
-    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-    implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-    // Local NuclearRadiation checkout is substituted via includeBuild (settings.gradle), otherwise pull release from Modrinth
-    def nrLocal = file('../NuclearRadiation').exists() || file('NuclearRadiation').exists()
-    implementation(nrLocal ? "igentuman.nr:NuclearRadiation:1.0.18" : "maven.modrinth:nuclear-radiation:1.0.18") { transitive = false }
-    compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
-    implementation "curse.maven:multi-builder-tool-827020:9330890"
-    implementation "curse.maven:immersive-engineering-231951:6733669"
-    localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
-    compileOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE:api")
-    runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
-    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cct_version}")
-    runtimeOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cct_version}")
-    implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
-    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
-    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
-    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:additions")// Mekanism: Additions
-    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
-    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:tools")// Mekanism: Tools
+    def ponder = "net.createmod.ponder:ponder-neoforge:1.0.52+mc26.1.2"
+    implementation ponder
+    jarJar ponder
+    jarJar "net.createmod.catnip:catnip-neoforge:1.0.52+mc26.1.2"
+    jarJar "dev.engine-room.flywheel:flywheel-neoforge:1.0.6-mc26.1-7"
 
-    implementation "curse.maven:ex-deorum-901420:8384464"
+    def iris = "curse.maven:irisshaders-455508:8868960"
+    def sodium = "curse.maven:sodium-394468:8859590"
+    compileOnly iris
+    compileOnly sodium
+    developmentMods iris
+    developmentMods sodium
+    implementation "curse.maven:spark-361579:8918574"
+    implementation "curse.maven:better-advanced-tooltips-1637623:9148547"
+    implementation "curse.maven:architectury-api-419699:9651460"
+    implementation "curse.maven:ftb-teams-forge-404468:9405340"
+    implementation "curse.maven:ftb-quests-forge-289412:9456215"
+    implementation "curse.maven:ftb-library-forge-404465:9456005"
 
-    runtimeOnly "curse.maven:spark-361579:6225208"
-    //runtimeOnly "curse.maven:large-ore-deposits-318833:8595420"
-    //runtimeOnly "curse.maven:forgeendertech-244844:8714321"
-
-    implementation "curse.maven:sodium-394468:6382651"
-
-    implementation "curse.maven:applied-energistics-2-223794:7027323"
-    implementation "curse.maven:guideme-1173950:7127444"
-
-    implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}")
-    jarJar("net.createmod.ponder:ponder-neoforge:${ponder_version}") {
-        version {
-            strictly("[1.0,2.0)")
-            prefer("${ponder_version}")
-        }
-    }
-
-    implementation("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
-    jarJar("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}") {
-        version {
-            strictly("[1.0,2.0)")
-            prefer("${flywheel_version}")
-        }
-    }
-
-    implementation("curse.maven:create-328085:7963363")
-
-    compileOnly("top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1")
-    implementation "curse.maven:architectury-api-419699:8492726"
-
-    compileOnly "curse.maven:refined-storage-243076:8211701"
-    implementation "curse.maven:tis-3d-238603:8737736"
-
-    implementation ("curse.maven:irisshaders-455508:6661598") {
-        transitive = false
-    }
-
-    implementation "curse.maven:ftb-teams-forge-404468:8724782"
-    implementation "curse.maven:ftb-quests-forge-289412:8885017"
-    implementation "curse.maven:ftb-library-forge-404465:9008089"
-    //compileOnly "curse.maven:gregtechceu-modern-890405:6766269"
 }
 
-jarJar.enable()
-
-tasks.named('jar', Jar).configure {
-    archiveClassifier = 'slim'
-}
-
-tasks.named('jarJar', Jar).configure {
-    archiveClassifier = ''
+def portingClasspaths = files(configurations.compileClasspath, configurations.runtimeClasspath,
+        configurations.datagenRuntimeClasspath, configurations.testCompileClasspath,
+        configurations.testRuntimeClasspath)
+def portingJava = javaToolchains.launcherFor(java.toolchain)
+tasks.register('preparePortingEnvironment') {
+    group = 'build setup'
+    description = 'Resolves the porting toolchain and dependency artifacts, and expands mod metadata.'
+    dependsOn tasks.named('processResources')
+    inputs.files(portingClasspaths)
+    inputs.property('devProfile', devProfile)
+    doLast {
+        logger.lifecycle("Porting profile: ${devProfile}")
+        logger.lifecycle("Java toolchain: ${portingJava.get().metadata.installationPath}")
+        logger.lifecycle("Resolved ${portingClasspaths.files.size()} classpath artifacts")
+    }
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -216,6 +269,8 @@ tasks.withType(ProcessResources).configureEach {
             minecraft_version      : minecraft_version,
             minecraft_version_range: minecraft_version_range,
             neo_version            : neo_version,
+            neo_version_range      : neo_version_range,
+            radiation_version_range: radiation_version_range,
             loader_version_range   : loader_version_range,
             mod_id                 : mod_id,
             mod_name               : mod_name,
@@ -237,7 +292,7 @@ publishing {
     }
     repositories {
         maven {
-            url "file://${project.projectDir}/repo"
+            url = layout.projectDirectory.dir('repo').asFile.toURI()
         }
     }
 }

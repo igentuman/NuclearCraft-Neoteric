@@ -2,7 +2,7 @@ package igentuman.nc.datagen.recipe.processors;
 
 import igentuman.nc.datagen.recipe.UniversalProcessorRecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
@@ -25,7 +25,7 @@ public class IrradiatorRecipes {
                 .save(out, "cobblestone_to_netherrack");
 
         UniversalProcessorRecipeBuilder.processor(id)
-                .itemInput(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "sands")))
+                .itemInput(ItemTags.create(Identifier.fromNamespaceAndPath("c", "sands")))
                 .itemOutput(Items.GLOWSTONE)
                 .processTime(TIME * 3)
                 .save(out, "sand_to_glowstone");

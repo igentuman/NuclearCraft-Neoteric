@@ -48,9 +48,9 @@ public class HeatBuffer implements NBTSerializable {
     }
 
     public void load(CompoundTag tag) {
-        capacity = tag.getDouble("capacity");
-        currentHeat = tag.getDouble("currentHeat");
-        heatPerTick = tag.getDouble("heatPerTick");
-        cooldownPerTick = tag.getDouble("cooldownPerTick");
+        capacity = tag.getDoubleOr("capacity", 0D);
+        currentHeat = tag.getDoubleOr("currentHeat", 0D);
+        heatPerTick = tag.getDoubleOr("heatPerTick", 0D);
+        cooldownPerTick = tag.getDoubleOr("cooldownPerTick", 0D);
     }
 }

@@ -8,7 +8,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.recipe.bomb.NuclearBlastRecipe;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -20,12 +20,12 @@ public class NuclearBlastEmiRecipe implements EmiRecipe {
     private static final int HEIGHT = 40;
 
     private final EmiRecipeCategory category;
-    private final ResourceLocation id;
+    private final Identifier id;
     private final NuclearBlastRecipe recipe;
     private final EmiIngredient input;
     private final EmiStack output;
 
-    public NuclearBlastEmiRecipe(EmiRecipeCategory category, ResourceLocation id, NuclearBlastRecipe recipe) {
+    public NuclearBlastEmiRecipe(EmiRecipeCategory category, Identifier id, NuclearBlastRecipe recipe) {
         this.category = category;
         this.id = id;
         this.recipe = recipe;
@@ -39,7 +39,7 @@ public class NuclearBlastEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public @Nullable Identifier getId() {
         return id;
     }
 

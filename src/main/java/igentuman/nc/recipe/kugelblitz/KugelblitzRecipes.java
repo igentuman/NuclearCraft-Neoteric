@@ -14,8 +14,8 @@ public final class KugelblitzRecipes {
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<KugelblitzRecipe>> KUGELBLITZ_TYPE =
             RECIPE_TYPES.register("kugelblitz_chamber", () -> RecipeType.simple(rl("kugelblitz_chamber")));
-    public static final DeferredHolder<RecipeSerializer<?>, KugelblitzRecipeSerializer> KUGELBLITZ_SERIALIZER =
-            RECIPE_SERIALIZERS.register("kugelblitz_chamber", KugelblitzRecipeSerializer::new);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<KugelblitzRecipe>> KUGELBLITZ_SERIALIZER =
+            RECIPE_SERIALIZERS.register("kugelblitz_chamber", KugelblitzRecipeSerializer::create);
 
     public static void init() {}
 }

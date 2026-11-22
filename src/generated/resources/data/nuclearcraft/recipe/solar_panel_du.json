@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_solar_panels",
   "key": {
-    "C": {
-      "item": "nuclearcraft:coil_magnesium_diboride"
-    },
-    "G": {
-      "tag": "c:dusts/energetic_blend"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_du"
-    },
-    "S": {
-      "item": "nuclearcraft:solar_panel_advanced"
-    }
+    "C": "nuclearcraft:coil_magnesium_diboride",
+    "G": "#c:dusts/energetic_blend",
+    "P": "nuclearcraft:plate_du",
+    "S": "nuclearcraft:solar_panel_advanced"
   },
   "pattern": [
     "PGP",
@@ -22,7 +14,6 @@
     "PCP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:solar_panel_du"
   }
 }

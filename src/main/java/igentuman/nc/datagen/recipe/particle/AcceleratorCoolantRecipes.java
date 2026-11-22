@@ -1,9 +1,10 @@
 package igentuman.nc.datagen.recipe.particle;
 
-import igentuman.nc.recipe.FluidOutput;
+import igentuman.nc.datagen.recipe.RecipeGen;
+import igentuman.nc.api.recipe.FluidOutput;
 import igentuman.nc.recipe.particle.AcceleratorCoolantRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -31,6 +32,6 @@ public final class AcceleratorCoolantRecipes {
         if (in == null || output == null) return;
         AcceleratorCoolantRecipe recipe = new AcceleratorCoolantRecipe(
                 SizedFluidIngredient.of(in, inAmount), FluidOutput.of(output, outAmount), heatPerMb, null);
-        out.accept(ResourceLocation.fromNamespaceAndPath(MODID, "accelerator_coolant/" + name), recipe, null);
+        out.accept(RecipeGen.key("accelerator_coolant/" + name), recipe, null);
     }
 }

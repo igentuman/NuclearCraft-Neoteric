@@ -6,7 +6,7 @@ muon/antimuon pairs. Detectors improve reaction yield and add to the chamber's
 Forge Energy (FE) cost.
 
 Values below describe the default configuration and recipes in the NeoForge
-1.21.1 port. Use JEI or EMI for crafting recipes and the particle recipes
+26.1.2 port. Use JEI or EMI for crafting recipes and the particle recipes
 available in your modpack.
 
 ## Building the multiblock

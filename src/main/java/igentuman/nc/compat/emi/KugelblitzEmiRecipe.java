@@ -8,11 +8,10 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.recipe.kugelblitz.KugelblitzRecipe;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static igentuman.nc.util.TextUtils.scaledFormat;
@@ -24,26 +23,22 @@ public class KugelblitzEmiRecipe implements EmiRecipe {
     private static final int HEIGHT = 46;
 
     private final EmiRecipeCategory category;
-    private final ResourceLocation id;
+    private final Identifier id;
     private final KugelblitzRecipe recipe;
     private final EmiIngredient input;
     private final EmiIngredient outputIngredient;
     private final EmiStack output;
 
-    public KugelblitzEmiRecipe(EmiRecipeCategory category, ResourceLocation id, KugelblitzRecipe recipe) {
+    public KugelblitzEmiRecipe(EmiRecipeCategory category, Identifier id, KugelblitzRecipe recipe) {
         this.category = category;
         this.id = id;
         this.recipe = recipe;
         this.input = recipe.input().ingredient().test(recipe.getResultStack())
                 ? EmiStack.of(ModEntries.get("unknown_ingredient").item().get())
-                : EmiIngredient.of(Arrays.stream(recipe.input().ingredient().getItems())
-                        .map(stack -> (EmiIngredient) EmiStack.of(stack.copyWithCount(recipe.input().count())))
-                        .toList());
+                : EmiIngredients.items(recipe.input());
         List<ItemStack> members = recipe.output().members();
-        this.outputIngredient = EmiIngredient.of(members.stream()
-                .map(stack -> (EmiIngredient) EmiStack.of(stack))
-                .toList());
-        this.output = members.isEmpty() ? EmiStack.EMPTY : EmiStack.of(members.getFirst());
+        this.outputIngredient = EmiIngredients.itemMembers(members);
+        this.output = EmiIngredients.firstItem(members);
     }
 
     @Override
@@ -52,7 +47,7 @@ public class KugelblitzEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public @Nullable Identifier getId() {
         return id;
     }
 

@@ -2,7 +2,7 @@ package igentuman.nc.api.multiblock;
 
 import igentuman.nc.block_entity.MultiblockPortBE;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 
 import static igentuman.nc.NuclearCraft.rl;
@@ -72,7 +72,7 @@ public abstract class AbstractCuboidValidator<C extends AbstractMultiblockCache>
 
     private boolean unresolved(BlockPos origin) {
         return fail("multiblock.validation.dimensions_unresolved", origin, rl("valid_dimensions"),
-                (ResourceLocation) null);
+                (Identifier) null);
     }
 
     private int scan(C cache, BlockPos origin, int dx, int dy, int dz, int maxSteps) {

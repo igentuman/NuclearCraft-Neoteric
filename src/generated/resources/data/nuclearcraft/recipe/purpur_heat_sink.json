@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_fission",
   "key": {
-    "B": {
-      "item": "nuclearcraft:empty_heat_sink"
-    },
-    "I": {
-      "tag": "c:dusts/purpur"
-    }
+    "B": "nuclearcraft:empty_heat_sink",
+    "I": "#c:dusts/purpur"
   },
   "pattern": [
     " I ",
@@ -16,7 +12,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:purpur_heat_sink"
   }
 }

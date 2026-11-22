@@ -115,7 +115,7 @@ public class ParticleChamberControllerBE extends MultiblockControllerBE {
                 energy[i] = 0;
                 focus[i] = 0;
             } else {
-                var definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(stack.particleId());
+                var definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(stack.particleId());
                 regId[i] = definition != null ? Registers.PARTICLE_DEFINITION_REGISTRY.getId(definition) : -1;
                 amount[i] = (int) Math.min(Integer.MAX_VALUE, stack.amount());
                 energy[i] = (int) Math.min(Integer.MAX_VALUE, stack.meanEnergyKeV());

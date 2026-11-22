@@ -6,7 +6,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +19,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 
 import static igentuman.nc.util.TextUtils.formatLiquid;
 
@@ -61,28 +60,28 @@ public class BarrelBlock extends AbstractStorageBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hit) {
         if (tryWrench(stack, level, pos, player, hit)) {
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof BarrelBE barrel) {
-            if (!level.isClientSide) {
-                boolean handled = FluidUtil.interactWithFluidHandler(player, hand, barrel.fluidTank);
+            if (!level.isClientSide()) {
+                boolean handled = FluidUtil.interactWithFluidHandler(player, hand, pos, barrel.fluidTank, null);
                 if (!handled) sendInfo(player, barrel);
             }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof BarrelBE barrel) {
+        if (!level.isClientSide() && level.getBlockEntity(pos) instanceof BarrelBE barrel) {
             sendInfo(player, barrel);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     private void sendInfo(Player player, BarrelBE barrel) {
@@ -93,7 +92,7 @@ public class BarrelBlock extends AbstractStorageBlock {
                     formatLiquid(capacity)).withStyle(ChatFormatting.BLUE));
         } else {
             player.sendSystemMessage(Component.translatable("tooltip.nuclearcraft.liquid_stored",
-                    fluid.getHoverName(), formatLiquid(fluid.getAmount()), formatLiquid(capacity)).withStyle(ChatFormatting.BLUE));
+                    fluid.getFluidType().getDescription(fluid), formatLiquid(fluid.getAmount()), formatLiquid(capacity)).withStyle(ChatFormatting.BLUE));
         }
     }
 }

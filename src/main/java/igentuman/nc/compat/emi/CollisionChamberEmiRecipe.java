@@ -6,7 +6,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.compat.ParticleCompatUtil;
 import igentuman.nc.recipe.particle.CollisionChamberRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec2;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import static igentuman.nc.util.TextUtils.formatParticleEnergy;
 
 public class CollisionChamberEmiRecipe extends BasicEmiRecipe {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/accelerators/collision_chamber_controller.png");
+    private static final Identifier TEXTURE = rl("textures/gui/accelerators/collision_chamber_controller.png");
     private static final List<Vec2> OUTPUT_POSITIONS = List.of(new Vec2(39, 4), new Vec2(101, 4), new Vec2(101, 66), new Vec2(39, 66));
 
     private static final int WIDTH = 150;
@@ -29,7 +29,7 @@ public class CollisionChamberEmiRecipe extends BasicEmiRecipe {
     private final EmiIngredient particleInputB;
     private final List<ParticleEmiStack> particleOutputs = new ArrayList<>();
 
-    public CollisionChamberEmiRecipe(EmiRecipeCategory category, ResourceLocation id, CollisionChamberRecipe recipe) {
+    public CollisionChamberEmiRecipe(EmiRecipeCategory category, Identifier id, CollisionChamberRecipe recipe) {
         super(category, id, WIDTH, HEIGHT);
         this.releasedEnergyKeV = recipe.releasedEnergyKeV();
 

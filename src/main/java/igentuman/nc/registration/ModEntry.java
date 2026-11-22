@@ -1,6 +1,6 @@
 package igentuman.nc.registration;
 
-import igentuman.nc.block_entity.catalyst.CatalystType;
+import igentuman.nc.api.catalyst.CatalystType;
 import igentuman.nc.config.Entries;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.util.SlotsLayout;
@@ -75,6 +75,9 @@ public record ModEntry (
         linkedMultiblocks = linkedMultiblocks == null
                 ? new LinkedHashSet<>()
                 : new LinkedHashSet<>(linkedMultiblocks);
+        supportedCatalysts = supportedCatalysts == null
+                ? Set.of()
+                : Collections.unmodifiableSet(new LinkedHashSet<>(supportedCatalysts));
     }
 
     public boolean hasBlockEntity() {
@@ -116,7 +119,25 @@ public record ModEntry (
     }
 
     public boolean hasCatalysts() {
-        return supportedCatalysts != null && !supportedCatalysts.isEmpty();
+        return !supportedCatalysts.isEmpty();
+    }
+
+    /** Returns a startup entry with the additional types appended in iteration order. */
+    public ModEntry withAdditionalCatalysts(Set<CatalystType> types) {
+        Set<CatalystType> combined = new LinkedHashSet<>(supportedCatalysts);
+        if (!combined.addAll(types)) return this;
+
+        ItemCapDefinition cap = ItemCapDefinition.create()
+                .inputs(itemCap.inputSlots)
+                .outputs(itemCap.outputSlots)
+                .global(itemCap.globalSlots)
+                .hidden(itemCap.hiddenSlots)
+                .internalInputs(itemCap.internalInputs)
+                .catalyst(combined.size());
+        SlotsLayout layout = slotsLayout.withCatalysts(supportedCatalysts.size(), combined.size());
+        return new ModEntry(name, block, item, menu, blockEntity, hasRecipes, recipeType, recipeSerializer,
+                recipeFamily, materialEntry, cap, fluidCap, energyCap, layout, progressBar, toolSetEntry,
+                armorSetEntry, linkedMultiblocks, combined, customModel);
     }
 
     public DeferredBlock<Block> block() {

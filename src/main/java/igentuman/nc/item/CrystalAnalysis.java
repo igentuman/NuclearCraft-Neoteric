@@ -5,7 +5,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -21,12 +21,12 @@ public final class CrystalAnalysis {
     private CrystalAnalysis() {
     }
 
-    private static volatile List<ResourceLocation> cachedPool;
+    private static volatile List<Identifier> cachedPool;
     private static volatile List<? extends String> cachedBlacklist;
 
     public static void applyAnalysis(ItemStack out, RandomSource rng) {
         ShardRarity rarity = ShardRarity.roll(rng);
-        ResourceLocation effectId = pickEffect(rng);
+        Identifier effectId = pickEffect(rng);
         CompoundTag tag = getTag(out);
         tag.putBoolean(ResoniteCrystalItem.TAG_ANALYZED, true);
         tag.putByte(ResoniteCrystalItem.TAG_RARITY, (byte) rarity.ordinal());
@@ -35,25 +35,25 @@ public final class CrystalAnalysis {
         out.set(DataComponents.RARITY, rarity.vanilla);
     }
 
-    public static ResourceLocation pickEffect(RandomSource rng) {
-        List<ResourceLocation> pool = pool();
+    public static Identifier pickEffect(RandomSource rng) {
+        List<Identifier> pool = pool();
         if (pool.isEmpty()) {
             return BuiltInRegistries.MOB_EFFECT.getKey(MobEffects.LUCK.value());
         }
         return pool.get(rng.nextInt(pool.size()));
     }
 
-    private static synchronized List<ResourceLocation> pool() {
+    private static synchronized List<Identifier> pool() {
         List<? extends String> blacklist = Common.ANOMALY_CONFIG.BUFF_EFFECT_BLACKLIST.get();
         if (cachedPool != null && blacklist.equals(cachedBlacklist)) {
             return cachedPool;
         }
-        List<ResourceLocation> pool = new ArrayList<>();
+        List<Identifier> pool = new ArrayList<>();
         for (MobEffect effect : BuiltInRegistries.MOB_EFFECT) {
             if (effect.getCategory() != MobEffectCategory.BENEFICIAL) {
                 continue;
             }
-            ResourceLocation id = BuiltInRegistries.MOB_EFFECT.getKey(effect);
+            Identifier id = BuiltInRegistries.MOB_EFFECT.getKey(effect);
             if (id == null || blacklist.contains(id.toString())) {
                 continue;
             }

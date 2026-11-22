@@ -1,7 +1,7 @@
 package igentuman.nc.screen.element;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -37,7 +37,7 @@ public class AcceleratorThermalBar extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
         int w = width;
@@ -69,7 +69,7 @@ public class AcceleratorThermalBar extends AbstractWidget {
             if (overheated.getAsBoolean()) {
                 tooltip.add(__("screen.nuclearcraft.accelerator.overheated", overheatCooldownTicks.getAsInt()));
             }
-            graphics.renderComponentTooltip(Minecraft.getInstance().font, tooltip, mouseX, mouseY);
+            graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, tooltip, mouseX, mouseY);
         }
     }
 

@@ -4,7 +4,7 @@ import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.particle.ParticleSourceCatalog;
 import igentuman.nc.setup.Registers;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -13,7 +13,7 @@ import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 
-public record ParticleSourceRecipe(ResourceLocation id, ItemStack item, FluidStack fluid, ParticleStack output) {
+public record ParticleSourceRecipe(Identifier id, ItemStack item, FluidStack fluid, ParticleStack output) {
 
     public static List<ParticleSourceRecipe> all() {
         List<ParticleSourceRecipe> recipes = new ArrayList<>();
@@ -42,7 +42,7 @@ public record ParticleSourceRecipe(ResourceLocation id, ItemStack item, FluidSta
         return recipes;
     }
 
-    private static ResourceLocation recipeId(String kind, ResourceLocation source) {
+    private static Identifier recipeId(String kind, Identifier source) {
         return rl("particle_source/" + kind + "/" + source.getNamespace() + "/" + source.getPath());
     }
 }

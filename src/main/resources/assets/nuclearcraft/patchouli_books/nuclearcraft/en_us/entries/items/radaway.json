@@ -1,0 +1,16 @@
+{
+  "name": "Radaway",
+  "icon": "nuclear_radiation:radaway",
+  "category": "nuclearcraft:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "radaway",
+      "type": "items/2",
+      "header": "Radaway",
+      "item1": "nuclear_radiation:radaway",
+      "item2": "nuclear_radiation:anti_rad_injection",
+      "text": "Nuclear Radiation's $(item)Radaway$() immediately reduces accumulated dose and grants temporary Radiation Protection and Purge. The $(item)Anti-Rad Injection$() grants strong Purge to clear internal contamination and lung pollution."
+    }
+  ]
+}

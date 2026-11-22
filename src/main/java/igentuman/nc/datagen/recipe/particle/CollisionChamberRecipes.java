@@ -1,10 +1,11 @@
 package igentuman.nc.datagen.recipe.particle;
 
+import igentuman.nc.datagen.recipe.RecipeGen;
 import igentuman.nc.api.particle.ParticleIngredient;
 import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.recipe.particle.CollisionChamberRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.Set;
@@ -117,7 +118,7 @@ public final class CollisionChamberRecipes {
         ParticleIngredient inputB = new ParticleIngredient(Set.of(rl(speciesB)), 1, minimumEnergyKeV, maximumEnergyKeV, 1.0);
         CollisionChamberRecipe recipe = new CollisionChamberRecipe(List.of(inputA, inputB), List.of(outputs),
                 crossSection, releasedEnergyKeV, false, 0);
-        out.accept(ResourceLocation.fromNamespaceAndPath(MODID, "collision_chamber/" + id), recipe, null);
+        out.accept(RecipeGen.key("collision_chamber/" + id), recipe, null);
     }
 
     private static ParticleStack stack(String species) {

@@ -1,53 +1,45 @@
 package igentuman.nc.handler.fluid;
 
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-/** Manual container access to one tank, allowing input recovery but never filling outputs. */
-public record ContainerFluidHandler(FluidCapabilityHandler handler, int tank) implements IFluidHandler {
+import java.util.Objects;
 
+/** Native manual access to one tank, allowing input recovery but never filling outputs. */
+public record ContainerFluidHandler(FluidCapabilityHandler handler, int tank) implements ResourceHandler<FluidResource> {
     public ContainerFluidHandler {
-        if (tank < 0 || tank >= handler.getTanks()) throw new IllegalArgumentException("Invalid tank: " + tank);
+        Objects.checkIndex(tank, handler.getTanks());
     }
-
-    @Override
-    public int getTanks() {
-        return 1;
+    private void checkIndex(int index) { Objects.checkIndex(index, 1); }
+    @Override public int size() { return 1; }
+    @Override public FluidResource getResource(int index) {
+        checkIndex(index);
+        return handler.getInternalHandler().getResource(tank);
     }
-
-    @Override
-    public FluidStack getFluidInTank(int tank) {
-        return tank == 0 ? handler.getFluidInTank(this.tank) : FluidStack.EMPTY;
+    @Override public long getAmountAsLong(int index) {
+        checkIndex(index);
+        return handler.getInternalHandler().getAmountAsLong(tank);
     }
-
-    @Override
-    public int getTankCapacity(int tank) {
-        return tank == 0 ? handler.getTankCapacity(this.tank) : 0;
+    @Override public long getCapacityAsLong(int index, FluidResource resource) {
+        checkIndex(index);
+        return resource.isEmpty() || isValid(index, resource) ? handler.getTankCapacity(tank) : 0;
     }
-
-    @Override
-    public boolean isFluidValid(int tank, FluidStack stack) {
-        return tank == 0 && (this.tank < handler.inputSlots
-                || this.tank >= handler.inputSlots + handler.outputSlots)
-                && handler.isFluidValid(this.tank, stack);
+    @Override public boolean isValid(int index, FluidResource resource) {
+        checkIndex(index);
+        return (tank < handler.inputSlots || tank >= handler.inputSlots + handler.outputSlots)
+                && handler.getInternalHandler().isValid(tank, resource);
     }
-
-    @Override
-    public int fill(FluidStack resource, FluidAction action) {
-        return isFluidValid(0, resource) ? handler.fillTank(tank, resource, action) : 0;
+    @Override public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        checkIndex(index);
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        return isValid(index, resource) ? handler.insert(tank, resource, amount, transaction) : 0;
     }
-
-    @Override
-    public FluidStack drain(FluidStack resource, FluidAction action) {
-        if (resource.isEmpty() || !FluidStack.isSameFluidSameComponents(resource, handler.getFluidInTank(tank))) {
-            return FluidStack.EMPTY;
-        }
-        return drain(resource.getAmount(), action);
-    }
-
-    @Override
-    public FluidStack drain(int maxDrain, FluidAction action) {
-        return handler.drainTank(tank, maxDrain, action);
+    @Override public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        checkIndex(index);
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        return handler.extract(tank, resource, amount, transaction);
     }
 }

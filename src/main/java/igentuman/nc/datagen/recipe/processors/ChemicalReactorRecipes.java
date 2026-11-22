@@ -1,6 +1,6 @@
 package igentuman.nc.datagen.recipe.processors;
 
-import igentuman.nc.content.fuel.FuelDef;
+import igentuman.nc.api.content.FuelDef;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.data.recipes.RecipeOutput;

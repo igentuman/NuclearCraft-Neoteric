@@ -1,14 +1,13 @@
 package igentuman.nc.screen.element;
 
-import igentuman.nc.api.ILongEnergyStorage;
+import igentuman.nc.handler.energy.ILongEnergyStorage;
 import igentuman.nc.block_entity.UniversalProcessorBE;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -38,7 +37,7 @@ public class ProcessorEnergyBar extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         ILongEnergyStorage energy = processorBE.energyStorage;
         if (energy == null) return;
 
@@ -71,7 +70,7 @@ public class ProcessorEnergyBar extends AbstractWidget {
         if (isHovered) {
             int safeStored = energy.getEnergyStored();
             int safeMax = energy.getMaxEnergyStored();
-            graphics.renderComponentTooltip(
+            graphics.setComponentTooltipForNextFrame(
                     Minecraft.getInstance().font,
                     List.of(
                             Component.literal(TextUtils.formatEnergy(safeStored) + " / " + TextUtils.formatEnergy(safeMax)),

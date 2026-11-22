@@ -1,19 +1,21 @@
 package igentuman.nc.recipe.kugelblitz;
 
+import igentuman.nc.recipe.RecipeIngredientCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
-public class KugelblitzRecipeSerializer implements RecipeSerializer<KugelblitzRecipe> {
+/** JSON and network codecs for {@link KugelblitzRecipe}. */
+public final class KugelblitzRecipeSerializer {
 
     private static final MapCodec<KugelblitzRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            SizedIngredient.FLAT_CODEC.fieldOf("input").forGetter(KugelblitzRecipe::input),
+            RecipeIngredientCodecs.ITEM.fieldOf("input").forGetter(KugelblitzRecipe::input),
             ItemOutput.CODEC.fieldOf("output").forGetter(KugelblitzRecipe::output),
             Codec.DOUBLE.optionalFieldOf("time_modifier", 1.0).forGetter(KugelblitzRecipe::timeModifier),
             Codec.DOUBLE.optionalFieldOf("power_modifier", 1.0).forGetter(KugelblitzRecipe::powerModifier)
@@ -27,13 +29,9 @@ public class KugelblitzRecipeSerializer implements RecipeSerializer<KugelblitzRe
                     ByteBufCodecs.DOUBLE, KugelblitzRecipe::powerModifier,
                     KugelblitzRecipe::new);
 
-    @Override
-    public MapCodec<KugelblitzRecipe> codec() {
-        return CODEC;
-    }
+    private KugelblitzRecipeSerializer() {}
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, KugelblitzRecipe> streamCodec() {
-        return STREAM_CODEC;
+    public static RecipeSerializer<KugelblitzRecipe> create() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

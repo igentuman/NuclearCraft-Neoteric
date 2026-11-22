@@ -1,9 +1,9 @@
 {
-  "loader": "nuclearcraft:battery_model",
-  "parent": "minecraft:block/block",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "particle": "nuclearcraft:block/energy/voltaic_pile/basic/top",
-    "down": "nuclearcraft:block/energy/voltaic_pile/basic/side",
-    "up": "nuclearcraft:block/energy/voltaic_pile/basic/top"
+    "particle": "nuclearcraft:block/energy/voltaic_pile/basic/side",
+    "bottom": "nuclearcraft:block/energy/voltaic_pile/basic/side",
+    "side": "nuclearcraft:block/energy/voltaic_pile/basic/side",
+    "top": "nuclearcraft:block/energy/voltaic_pile/basic/top"
   }
 }

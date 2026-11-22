@@ -5,5 +5,6 @@ public enum RecipeSchemaKind {
     ACCELERATOR_COOLANT,
     TARGET_CHAMBER,
     DECAY_CHAMBER,
-    COLLISION_CHAMBER
+    COLLISION_CHAMBER,
+    ORE_VEIN
 }

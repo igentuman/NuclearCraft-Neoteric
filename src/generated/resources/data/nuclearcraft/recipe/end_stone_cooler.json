@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
-    "B": {
-      "item": "nuclearcraft:empty_cooler"
-    },
-    "I": {
-      "tag": "c:dusts/end_stone"
-    }
+    "B": "nuclearcraft:empty_cooler",
+    "I": "#c:dusts/end_stone"
   },
   "pattern": [
     " I ",
@@ -16,7 +12,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:end_stone_cooler"
   }
 }

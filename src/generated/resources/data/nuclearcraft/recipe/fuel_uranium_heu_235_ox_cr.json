@@ -3,33 +3,15 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "item": "nuclearcraft:uranium_235_ox"
-    },
-    {
-      "item": "nuclearcraft:uranium_235_ox"
-    },
-    {
-      "item": "nuclearcraft:uranium_235_ox"
-    },
-    {
-      "item": "nuclearcraft:uranium_238_ox"
-    },
-    {
-      "item": "nuclearcraft:uranium_238_ox"
-    },
-    {
-      "item": "nuclearcraft:uranium_238_ox"
-    },
-    {
-      "item": "nuclearcraft:uranium_238_ox"
-    },
-    {
-      "item": "nuclearcraft:uranium_238_ox"
-    },
-    {
-      "item": "nuclearcraft:uranium_238_ox"
-    }
+    "nuclearcraft:uranium_235_ox",
+    "nuclearcraft:uranium_235_ox",
+    "nuclearcraft:uranium_235_ox",
+    "nuclearcraft:uranium_238_ox",
+    "nuclearcraft:uranium_238_ox",
+    "nuclearcraft:uranium_238_ox",
+    "nuclearcraft:uranium_238_ox",
+    "nuclearcraft:uranium_238_ox",
+    "nuclearcraft:uranium_238_ox"
   ],
   "result": {
     "count": 3,

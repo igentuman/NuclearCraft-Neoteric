@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft_machines",
   "key": {
-    "A": {
-      "item": "nuclearcraft:actuator"
-    },
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "H": {
-      "tag": "c:ingots/hard_carbon"
-    },
-    "M": {
-      "item": "nuclearcraft:motor"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    }
+    "A": "nuclearcraft:actuator",
+    "C": "nuclearcraft:chassis",
+    "H": "#c:ingots/hard_carbon",
+    "M": "nuclearcraft:motor",
+    "P": "nuclearcraft:plate_basic"
   },
   "pattern": [
     "PHP",
@@ -25,7 +15,6 @@
     "PMP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:assembler"
   }
 }

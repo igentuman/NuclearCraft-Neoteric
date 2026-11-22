@@ -1,5 +1,8 @@
 package igentuman.nc.screen;
 
+import net.minecraft.client.input.MouseButtonEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.block_entity.fission.MsrControllerBE;
 import igentuman.nc.container.MsrControllerContainer;
 import igentuman.nc.container.MultiblockControllerContainer;
@@ -9,11 +12,12 @@ import igentuman.nc.screen.element.MsrVoidFuelButton;
 import igentuman.nc.screen.element.TemperatureBar;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.GuiFluidRenderer;
+import igentuman.nc.util.GuiText;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -29,7 +33,7 @@ import static igentuman.nc.util.TextUtils.scaledFormat;
 
 public class MsrControllerScreen extends MultiblockControllerScreen {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/fission/msr_controller.png");
+    private static final Identifier TEXTURE = rl("textures/gui/fission/msr_controller.png");
     private static final int SHEET = 256;
     private static final int WINDOW_X = 127;
     private static final int WINDOW_Y = 19;
@@ -39,10 +43,7 @@ public class MsrControllerScreen extends MultiblockControllerScreen {
     private MsrRateSlider outputSlider;
 
     public MsrControllerScreen(MultiblockControllerContainer menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        imageWidth = 176;
-        imageHeight = 176;
-        this.inventoryLabelY = this.imageHeight - 94;
+        super(menu, playerInventory, title, 176, 176);
     }
 
     private MsrControllerContainer msr() {
@@ -80,21 +81,21 @@ public class MsrControllerScreen extends MultiblockControllerScreen {
 
         addRenderableWidget(new MsrVoidFuelButton(leftPos + 156, topPos + 70,
                 ModEntries.get("msr_fuel_cell").block().toStack(),
-                () -> PacketDistributor.sendToServer(new PacketMsrVoidFuel(menu.getPosition())),
+                () -> ClientPacketDistributor.sendToServer(new PacketMsrVoidFuel(menu.getPosition())),
                 () -> List.of(__("gui.nc.msr.void_pebbles.tooltip"))));
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void extractPanel(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight, SHEET, SHEET);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight, SHEET, SHEET);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         drawCenteredString(guiGraphics, this.font, this.title, this.imageWidth / 2, this.titleLabelY, 0xFFFFFF);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x404040, false);
+        guiGraphics.text(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0xFF404040, false);
 
         MsrControllerContainer c = msr();
         if (!menu.isFormed()) return;
@@ -103,16 +104,16 @@ public class MsrControllerScreen extends MultiblockControllerScreen {
         renderStats(guiGraphics, c);
     }
 
-    private void renderFuelWindow(GuiGraphics g, MsrControllerContainer c, int mouseX, int mouseY) {
+    private void renderFuelWindow(GuiGraphicsExtractor g, MsrControllerContainer c, int mouseX, int mouseY) {
         FluidStack cold = c.fluid(MsrControllerContainer.TANK_COLD);
         int coldCap = c.capacity(MsrControllerContainer.TANK_COLD);
         int hotCap = c.capacity(MsrControllerContainer.TANK_HOT);
         GuiFluidRenderer.renderFluidTank(g, WINDOW_X + 3, WINDOW_Y + 3, 36, 36, cold, coldCap);
 
-        g.pose().pushPose();
-        g.pose().translate(0, 0, 200);
+        g.pose().pushMatrix();
+        g.pose().translate(0, 0);
         Random rnd = new Random(200);
-        g.pose().scale(0.5f, 0.5f, 0.5f);
+        g.pose().scale(0.5f, 0.5f);
         double cx = 17.0, cy = 17.0, r = 17.0;
         int qty = Math.min(PEBBLE_RENDER_CAP, c.getPebblesQty());
         int placed = 0;
@@ -121,44 +122,44 @@ public class MsrControllerScreen extends MultiblockControllerScreen {
             int py = rnd.nextInt(33);
             double dx = px - cx, dy = py - cy;
             if (dx * dx + dy * dy > r * r) continue;
-            g.blit(TEXTURE, (WINDOW_X + 2 + px) * 2, (WINDOW_Y + 5 + py) * 2, 250, 0, 5, 5, SHEET, SHEET);
+            g.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (WINDOW_X + 2 + px) * 2, (WINDOW_Y + 5 + py) * 2, 250, 0, 5, 5, SHEET, SHEET);
             placed++;
         }
-        g.pose().scale(2f, 2f, 2f);
-        g.blit(TEXTURE, WINDOW_X, WINDOW_Y, 178, 0, 52, 50, SHEET, SHEET);
-        g.pose().popPose();
+        g.pose().scale(2f, 2f);
+        g.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, WINDOW_X, WINDOW_Y, 178, 0, 52, 50, SHEET, SHEET);
+        g.pose().popMatrix();
 
         GuiFluidRenderer.renderFluidTooltip(g, mouseX, mouseY, WINDOW_X + 3, WINDOW_Y + 3, 32, 32, cold, coldCap);
     }
 
-    private void renderStats(GuiGraphics g, MsrControllerContainer c) {
-        g.pose().pushPose();
-        g.pose().scale(0.7f, 0.7f, 0.7f);
+    private void renderStats(GuiGraphicsExtractor g, MsrControllerContainer c) {
+        g.pose().pushMatrix();
+        g.pose().scale(0.7f, 0.7f);
         int y = 30;
         MutableComponent status = c.getFuelCellsCount() == 0
                 ? __("msr.non_functional")
                 : (c.isCritical() ? __("msr.critical") : __("msr.subcritical"));
-        g.drawString(font, __("msr.reactivity", numberFormat(c.getReactivity())), 18, y, 0x00ff00, false);
-        g.drawString(font, __("msr.status", status), 18, y + 12,
-                c.isCritical() ? 0x00ff00 : ChatFormatting.WHITE.getColor(), false);
-        g.drawString(font, __("msr.temperature", scaledFormat(c.getTemperature())), 18, y + 22,
-                c.getTemperature() < MsrControllerBE.MAX_TEMPERATURE ? 0x00ff00 : 0xff0000, false);
-        g.drawString(font, __("msr.depletion", numberFormat(c.getDepletion())), 18, y + 32, 0x00ff00, false);
+        g.text(font, __("msr.reactivity", numberFormat(c.getReactivity())), 18, y, 0xFF00FF00, false);
+        g.text(font, __("msr.status", status), 18, y + 12,
+                GuiText.legacy(c.isCritical() ? 0x00ff00 : ChatFormatting.WHITE.getColor()), false);
+        g.text(font, __("msr.temperature", scaledFormat(c.getTemperature())), 18, y + 22,
+                c.getTemperature() < MsrControllerBE.MAX_TEMPERATURE ? 0xFF00FF00 : 0xFFFF0000, false);
+        g.text(font, __("msr.depletion", numberFormat(c.getDepletion())), 18, y + 32, 0xFF00FF00, false);
         if (c.getOverheatTimer() > 0) {
-            g.drawString(font, __("msr.overheat", roundFormat((600 - c.getOverheatTimer()) / 20.0)),
-                    18, y + 42, 0xff0000, false);
+            g.text(font, __("msr.overheat", roundFormat((600 - c.getOverheatTimer()) / 20.0)),
+                    18, y + 42, 0xFFFF0000, false);
         }
-        g.pose().popPose();
+        g.pose().popMatrix();
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
         if (inputSlider != null && inputSlider.isSliderDragging()) {
-            return inputSlider.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+            return inputSlider.mouseDragged(event, dragX, dragY);
         }
         if (outputSlider != null && outputSlider.isSliderDragging()) {
-            return outputSlider.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+            return outputSlider.mouseDragged(event, dragX, dragY);
         }
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return super.mouseDragged(event, dragX, dragY);
     }
 }

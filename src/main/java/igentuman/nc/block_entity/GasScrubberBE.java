@@ -74,17 +74,17 @@ public class GasScrubberBE extends UniversalProcessorBE {
     }
 
     private void clearAirContamination(ServerLevel server) {
-        ChunkPos center = new ChunkPos(worldPosition);
+        ChunkPos center = ChunkPos.containing(worldPosition);
         long now = server.getGameTime();
         for (int dx = -CLEAN_RADIUS_CHUNKS; dx <= CLEAN_RADIUS_CHUNKS; dx++) {
             for (int dz = -CLEAN_RADIUS_CHUNKS; dz <= CLEAN_RADIUS_CHUNKS; dz++) {
-                LevelChunk chunk = server.getChunkSource().getChunkNow(center.x + dx, center.z + dz);
+                LevelChunk chunk = server.getChunkSource().getChunkNow(center.x() + dx, center.z() + dz);
                 if (chunk == null) continue;
                 ChunkRadiationData data = chunk.getData(NRAttachments.CHUNK_RADIATION.get());
                 if (data.air().isEmpty()) continue;
                 data.setAir(RadiationProfile.empty());
                 data.setLastDecayTick(now);
-                chunk.setUnsaved(true);
+                chunk.markUnsaved();
             }
         }
     }

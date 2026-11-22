@@ -1,7 +1,7 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
-	"parent": "minecraft:block/cube_all",
+	"parent": "minecraft:block/block",
     "render_type": "minecraft:translucent",
 	"ambientocclusion": false,
 	"texture_size": [64, 64],

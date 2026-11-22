@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft_machines",
   "key": {
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "H": {
-      "item": "minecraft:hopper"
-    },
-    "L": {
-      "item": "minecraft:lapis_lazuli"
-    },
-    "M": {
-      "item": "nuclearcraft:motor"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    }
+    "C": "nuclearcraft:chassis",
+    "H": "minecraft:hopper",
+    "L": "minecraft:lapis_lazuli",
+    "M": "nuclearcraft:motor",
+    "P": "nuclearcraft:plate_advanced"
   },
   "pattern": [
     "PHP",
@@ -25,7 +15,6 @@
     "PMP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:fluid_enricher"
   }
 }

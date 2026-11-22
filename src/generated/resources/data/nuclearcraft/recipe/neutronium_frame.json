@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_kugelblitz",
   "key": {
-    "N": {
-      "item": "nuclearcraft:neutronium_ingot"
-    },
-    "T": {
-      "item": "nuclearcraft:tough_alloy_ingot"
-    }
+    "N": "nuclearcraft:neutronium_ingot",
+    "T": "nuclearcraft:tough_alloy_ingot"
   },
   "pattern": [
     "NTN",

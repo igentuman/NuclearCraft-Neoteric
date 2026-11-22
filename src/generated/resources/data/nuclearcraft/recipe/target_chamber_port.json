@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_particle_chamber",
   "key": {
-    "F": {
-      "item": "nuclearcraft:steel_frame"
-    },
-    "H": {
-      "item": "minecraft:hopper"
-    },
-    "T": {
-      "tag": "c:ingots/tungsten"
-    },
-    "V": {
-      "item": "nuclearcraft:servo"
-    }
+    "F": "nuclearcraft:steel_frame",
+    "H": "minecraft:hopper",
+    "T": "#c:ingots/tungsten",
+    "V": "nuclearcraft:servo"
   },
   "pattern": [
     "THT",

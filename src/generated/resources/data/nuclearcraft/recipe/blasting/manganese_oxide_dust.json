@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/manganese_oxide"
-  },
+  "ingredient": "#c:dusts/manganese_oxide",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:manganese_oxide_ingot"
   }
 }

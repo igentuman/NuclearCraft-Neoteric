@@ -1,6 +1,6 @@
 package igentuman.nc.item;
 
-import igentuman.nc.content.fuel.FuelDef;
+import igentuman.nc.api.content.FuelDef;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -8,8 +8,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.util.TextUtils.__;
 
@@ -30,14 +31,14 @@ public class ItemFuel extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
         FuelDef def = def();
         if (variant.equals("_tr")) {
-            tooltip.add(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.criticality", def.criticality), ChatFormatting.RED));
+            tooltip.accept(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.criticality", def.criticality), ChatFormatting.RED));
         } else {
-            tooltip.add(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.forge_energy", TextUtils.formatEnergy(def.forgeEnergy)), ChatFormatting.BLUE));
+            tooltip.accept(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.forge_energy", TextUtils.formatEnergy(def.forgeEnergy)), ChatFormatting.BLUE));
         }
-        tooltip.add(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.heat", TextUtils.numberFormat(def.heat)), ChatFormatting.GOLD));
-        tooltip.add(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.depletion", TextUtils.formatTime(def.depletion)), ChatFormatting.GREEN));
+        tooltip.accept(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.heat", TextUtils.numberFormat(def.heat)), ChatFormatting.GOLD));
+        tooltip.accept(TextUtils.applyFormat(__("tooltip.nuclearcraft.fuel.depletion", TextUtils.formatTime(def.depletion)), ChatFormatting.GREEN));
     }
 }

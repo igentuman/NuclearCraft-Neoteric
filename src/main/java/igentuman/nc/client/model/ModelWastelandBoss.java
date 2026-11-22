@@ -2,7 +2,7 @@ package igentuman.nc.client.model;
 
 import igentuman.nc.client.model.animation.BossAnimation;
 import igentuman.nc.client.model.animation.BossAnimations;
-import igentuman.nc.entity.EntityWastelandBoss;
+import igentuman.nc.client.renderer.WastelandBossRenderState;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -14,11 +14,10 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
-import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
 
-public class ModelWastelandBoss extends HumanoidModel<EntityWastelandBoss> {
+public class ModelWastelandBoss extends HumanoidModel<WastelandBossRenderState> {
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(rl("wasteland_boss"), "main");
 
@@ -89,7 +88,8 @@ public class ModelWastelandBoss extends HumanoidModel<EntityWastelandBoss> {
                         .addBox(-15.0F, -2.0F, -5.0F, 32.0F, 16.0F, 15.0F, deformation),
                 PartPose.offsetAndRotation(0.0F, -17.0F, -4.0F, 0.2182F, 0.0F, 0.0F));
 
-        root.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.offset(0.25F, -17.0F, 0.25F));
+        // 26.1: HumanoidModel looks up "hat" as a child of "head" (empty placeholder).
+        head.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
 
         PartDefinition leftArm = root.addOrReplaceChild("left_arm", CubeListBuilder.create(), PartPose.offset(17.7934F, -6.2538F, 4.75F));
         leftArm.addOrReplaceChild("lower", CubeListBuilder.create().texOffs(56, 59)
@@ -125,9 +125,13 @@ public class ModelWastelandBoss extends HumanoidModel<EntityWastelandBoss> {
     }
 
     @Override
-    public void setupAnim(EntityWastelandBoss entity, float limbSwing, float limbSwingAmount,
-                          float ageInTicks, float netHeadYaw, float headPitch) {
-        root.getAllParts().forEach(ModelPart::resetPose);
+    public void setupAnim(WastelandBossRenderState state) {
+        resetPose();
+        float limbSwing = state.walkAnimationPos;
+        float limbSwingAmount = state.walkAnimationSpeed;
+        float ageInTicks = state.ageInTicks;
+        float netHeadYaw = state.yRot;
+        float headPitch = state.xRot;
 
         head.yRot = netHeadYaw * Mth.DEG_TO_RAD * 0.5F;
         head.xRot = headPitch * Mth.DEG_TO_RAD * 0.5F;
@@ -140,20 +144,10 @@ public class ModelWastelandBoss extends HumanoidModel<EntityWastelandBoss> {
         body.zRot = Mth.sin(ageInTicks * 0.05F) * 0.05F * (1.0F - walkAmount);
         body.xRot += Mth.sin(ageInTicks * 0.1F) * 0.025F;
 
-        BossAnimation animation = BossAnimations.forEvent(entity.getAnimationEvent());
-        float animationTime = ageInTicks - entity.getAnimationStartTick();
+        BossAnimation animation = BossAnimations.forEvent(state.animationEvent);
+        float animationTime = ageInTicks - state.animationStartTick;
         if (animation != null && animationTime >= 0.0F && animationTime <= animation.durationTicks()) {
             animation.apply(this, animationTime);
         }
-    }
-
-    @Override
-    protected Iterable<ModelPart> headParts() {
-        return List.of(head);
-    }
-
-    @Override
-    protected Iterable<ModelPart> bodyParts() {
-        return List.of(body, rightArm, leftArm, rightLeg, leftLeg);
     }
 }

@@ -35,8 +35,8 @@ public record PacketFissionDesignData(CompoundTag designTag) implements CustomPa
             if (design == null || design.isEmpty()) return;
             if (Minecraft.getInstance().screen instanceof FissionDesignerScreen screen) {
                 screen.applyLoadedDesign(DesignGrid.fromTag(design),
-                        design.getString(FissionReactorPlanItem.FUEL_KEY),
-                        design.getString(FissionReactorPlanItem.VARIANT_KEY));
+                        design.getStringOr(FissionReactorPlanItem.FUEL_KEY, ""),
+                        design.getStringOr(FissionReactorPlanItem.VARIANT_KEY, ""));
             } else if (Minecraft.getInstance().screen instanceof MultiblockBuilderScreen screen) {
                 screen.applyLoadedDesign(DesignGrid.fromTag(design));
             }

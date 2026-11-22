@@ -35,15 +35,15 @@ public record PacketProcessorButtonPress(BlockPos pos, int buttonId)
     public static void handle(PacketProcessorButtonPress packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            BlockEntity be = serverPlayer.serverLevel().getBlockEntity(packet.pos());
+            BlockEntity be = serverPlayer.level().getBlockEntity(packet.pos());
             if (packet.buttonId() == REDSTONE_BTN_ID && be instanceof UniversalProcessorBE processor) {
                 processor.toggleRedstoneMode();
                 be.setChanged();
-                serverPlayer.serverLevel().sendBlockUpdated(packet.pos(), be.getBlockState(), be.getBlockState(), 3);
+                serverPlayer.level().sendBlockUpdated(packet.pos(), be.getBlockState(), be.getBlockState(), 3);
             } else if (packet.buttonId() == REDSTONE_BTN_ID && be instanceof ChargingStationBE charger) {
                 charger.toggleRedstoneMode();
                 be.setChanged();
-                serverPlayer.serverLevel().sendBlockUpdated(packet.pos(), be.getBlockState(), be.getBlockState(), 3);
+                serverPlayer.level().sendBlockUpdated(packet.pos(), be.getBlockState(), be.getBlockState(), 3);
             }
         });
     }

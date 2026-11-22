@@ -4,7 +4,7 @@ import igentuman.nc.util.BoilingBuffer;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -38,7 +38,7 @@ public class BoilingBar extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         BoilingBuffer boilingBuffer = boilingBufferSupplier.get();
         if (boilingBuffer == null) return;
 
@@ -66,7 +66,7 @@ public class BoilingBar extends AbstractWidget {
         }
 
         if (isHovered) {
-            graphics.renderComponentTooltip(
+            graphics.setComponentTooltipForNextFrame(
                     Minecraft.getInstance().font,
                     List.of(
                             __("screen.nuclearcraft.boiling.capacity").append(": ").append(TextUtils.formatLiquid((int) boilingBuffer.capacity)),

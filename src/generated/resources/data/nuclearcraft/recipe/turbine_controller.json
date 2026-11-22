@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_turbine",
   "key": {
-    "B": {
-      "item": "minecraft:bucket"
-    },
-    "C": {
-      "item": "nuclearcraft:turbine_casing"
-    },
-    "G": {
-      "item": "nuclearcraft:basic_electric_circuit"
-    }
+    "B": "minecraft:bucket",
+    "C": "nuclearcraft:turbine_casing",
+    "G": "nuclearcraft:basic_electric_circuit"
   },
   "pattern": [
     "GCG",
@@ -19,7 +13,6 @@
     "GCG"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:turbine_controller"
   }
 }

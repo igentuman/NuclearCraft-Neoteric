@@ -33,7 +33,7 @@ public record PacketKugelblitzSliderAdjust(BlockPos pos, int buttonId, int value
     public static void handle(PacketKugelblitzSliderAdjust packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            BlockEntity be = serverPlayer.serverLevel().getBlockEntity(packet.pos());
+            BlockEntity be = serverPlayer.level().getBlockEntity(packet.pos());
             if (be instanceof ChamberTerminalBE controller) {
                 controller.handleSliderUpdate(packet.buttonId(), packet.value());
             }

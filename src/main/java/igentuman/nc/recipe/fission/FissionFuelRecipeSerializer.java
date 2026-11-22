@@ -1,9 +1,10 @@
 package igentuman.nc.recipe.fission;
 
+import igentuman.nc.recipe.RecipeIngredientCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,10 +12,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /** Codec and stream codec for reading and syncing {@link FissionFuelRecipe} instances. */
-public class FissionFuelRecipeSerializer implements RecipeSerializer<FissionFuelRecipe> {
+public final class FissionFuelRecipeSerializer {
 
     private static final MapCodec<FissionFuelRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            Ingredient.CODEC.fieldOf("input").forGetter(FissionFuelRecipe::input),
+            RecipeIngredientCodecs.INGREDIENT.fieldOf("input").forGetter(FissionFuelRecipe::input),
             ItemOutput.CODEC.fieldOf("output").forGetter(FissionFuelRecipe::output),
             Codec.INT.fieldOf("process_time").forGetter(FissionFuelRecipe::processTime),
             Codec.INT.fieldOf("power").forGetter(FissionFuelRecipe::power),
@@ -30,13 +31,9 @@ public class FissionFuelRecipeSerializer implements RecipeSerializer<FissionFuel
                     ByteBufCodecs.VAR_INT, FissionFuelRecipe::heat,
                     FissionFuelRecipe::new);
 
-    @Override
-    public MapCodec<FissionFuelRecipe> codec() {
-        return CODEC;
-    }
+    private FissionFuelRecipeSerializer() {}
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, FissionFuelRecipe> streamCodec() {
-        return STREAM_CODEC;
+    public static RecipeSerializer<FissionFuelRecipe> create() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

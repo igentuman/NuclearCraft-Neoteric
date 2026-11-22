@@ -10,7 +10,7 @@ temperature while keeping reactor heat below its limit**. These are different
 readings: hotter plasma is useful up to a point, but hot hardware loses efficiency
 and can cause an explosion.
 
-This guide describes the current NeoForge 1.21.1 implementation. Use JEI or EMI
+This guide describes the current NeoForge 26.1.2 implementation. Use JEI or EMI
 for crafting, fuel pairs, optimal temperatures, and coolant recipes in your pack.
 
 ## Building the ring

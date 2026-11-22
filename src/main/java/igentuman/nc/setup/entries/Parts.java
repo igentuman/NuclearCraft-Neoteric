@@ -1,6 +1,10 @@
 package igentuman.nc.setup.entries;
 
-import igentuman.nc.block_entity.catalyst.CatalystType;
+import igentuman.nc.api.catalyst.Catalyst;
+import igentuman.nc.api.catalyst.CatalystDef;
+import igentuman.nc.api.catalyst.CatalystFactory;
+import igentuman.nc.api.catalyst.CatalystRegistry;
+import igentuman.nc.api.catalyst.CatalystType;
 import igentuman.nc.block_entity.catalyst.EnergyCatalyst;
 import igentuman.nc.block_entity.catalyst.QuantumCatalyst;
 import igentuman.nc.block_entity.catalyst.SpeedCatalyst;
@@ -11,16 +15,16 @@ import igentuman.nc.item.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.PickaxeItem;
 import igentuman.nc.registration.ArmorMaterialEntry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.NCJukeboxSongs;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.component.Unbreakable;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.util.Unit;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import static igentuman.nc.registration.ModEntryBuilder.*;
@@ -75,8 +79,12 @@ public class Parts extends ModEntries {
             addItem(name).build();
         }
 
-        addItem("research_paper", () -> new ResearchPaperItem(new Item.Properties())).build();
-        addItem("fission_reactor_plan", () -> new FissionReactorPlanItem(new Item.Properties().stacksTo(1))).build();
+        var researchPaper = addItem("research_paper", ResearchPaperItem::new).build().item();
+        // The Leacher handles ore-source items itself.
+        CatalystFactory oreSource = host -> new Catalyst(CatalystType.ORE_SOURCE, host) {};
+        CatalystRegistry.register(new CatalystDef(researchPaper, CatalystType.ORE_SOURCE, oreSource));
+        CatalystRegistry.register(new CatalystDef(() -> Items.FILLED_MAP, CatalystType.ORE_SOURCE, oreSource));
+        addItem("fission_reactor_plan", props -> new FissionReactorPlanItem(props.stacksTo(1))).build();
 
         String[] collectors = {
                 "water_collector",
@@ -97,23 +105,23 @@ public class Parts extends ModEntries {
 
     public static final ModEntry ENERGY_UPGRADE =
             addCatalyst("energy_upgrade", CatalystType.ENERGY, EnergyCatalyst::new,
-                    () -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.ENERGY, new Item.Properties()));
+                    props -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.ENERGY, props));
 
     public static final ModEntry SPEED_UPGRADE =
             addCatalyst("speed_upgrade", CatalystType.SPEED, SpeedCatalyst::new,
-                    () -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.SPEED, new Item.Properties()));
+                    props -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.SPEED, props));
 
     public static final ModEntry STACK_UPGRADE =
             addCatalyst("stack_upgrade", CatalystType.SPEED, StackCatalyst::new,
-                    () -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.STACK, new Item.Properties()));
+                    props -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.STACK, props));
 
     public static final ModEntry QUANTUM_UPGRADE =
             addCatalyst("quantum_upgrade", CatalystType.SPEED, QuantumCatalyst::new,
-                    () -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.QUANTUM, new Item.Properties()));
+                    props -> new ProcessorUpgradeItem(ProcessorUpgradeItem.Type.QUANTUM, props));
 
     public static void records() {
         for (String name : NCJukeboxSongs.RECORDS.keySet()) {
-            addItem(name, () -> new Item(new Item.Properties().stacksTo(1).jukeboxPlayable(NCJukeboxSongs.key(name)))).build();
+            addItem(name, props -> new Item(props.stacksTo(1).jukeboxPlayable(NCJukeboxSongs.key(name)))).build();
         }
     }
 
@@ -134,26 +142,25 @@ public class Parts extends ModEntries {
 
     public static void q36() {
         addItem("q36_quantite_disruptor",
-                () -> new Q36Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)))
+                props -> new Q36Item(props.stacksTo(1).rarity(Rarity.EPIC)))
                 .build();
     }
 
     public static void tools() {
         add("spaxelhoe_tough")
-                .item(() -> new PaxelItem(NCTiers.TOUGH,
-                        new Item.Properties().stacksTo(1).durability(9000).fireResistant()))
+                .item(props -> new PaxelItem(NCTiers.TOUGH,
+                        props.stacksTo(1).fireResistant()))
                 .build();
         add("spaxelhoe_thorium")
-                .item(() -> new PaxelItem(NCTiers.THORIUM,
-                        new Item.Properties().stacksTo(1).durability(5000).fireResistant()))
+                .item(props -> new PaxelItem(NCTiers.THORIUM,
+                        props.stacksTo(1).fireResistant()))
                 .build();
         add("multitool")
-                .item(() -> new MultitoolItem(new Item.Properties().stacksTo(1)))
+                .item(props -> new MultitoolItem(props.stacksTo(1)))
                 .build();
         add("qnp")
-                .item(() -> new QNPItem(NCTiers.QNP,
-                        new Item.Properties().stacksTo(1)
-                                .attributes(PickaxeItem.createAttributes(NCTiers.QNP, 11, 2F))))
+                .item(props -> new QNPItem(NCTiers.QNP,
+                        props.stacksTo(1)))
                 .build();
     }
 
@@ -165,7 +172,7 @@ public class Parts extends ModEntries {
                 .equipSound(SoundEvents.ARMOR_EQUIP_DIAMOND)
                 .toughness(3.5f)
                 .knockbackResistance(0.2f)
-                .repairItem(() -> Ingredient.of(get("tough_alloy").materialEntry().ingot().get()))
+                .repairItem(NCTiers.TOUGH_REPAIRS)
                 .build();
         addArmorSet("tough", tough).build();
 
@@ -176,11 +183,12 @@ public class Parts extends ModEntries {
                 .equipSound(SoundEvents.ARMOR_EQUIP_NETHERITE)
                 .toughness(4.0f)
                 .knockbackResistance(0.3f)
-                .repairItem(() -> Ingredient.of(get("plate_extreme").item().get()))
+                .repairItem(NCTiers.HEV_REPAIRS)
                 .build();
         addArmorSet("hev", hev)
                 .armorFactory((material, type, props) ->
-                        new HEVItem(material, type, props.component(DataComponents.UNBREAKABLE, new Unbreakable(false))))
+                        new HEVItem(material, type, props.component(DataComponents.UNBREAKABLE, Unit.INSTANCE)
+                                .component(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.UNBREAKABLE, true))))
                 .build();
     }
 }

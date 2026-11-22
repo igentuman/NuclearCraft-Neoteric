@@ -3,7 +3,6 @@ package igentuman.nc.network;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.block_entity.crafter.EngineersCrafterBE;
 import igentuman.nc.container.EngineersCrafterContainer;
-import igentuman.nc.handler.crafter.AggregatedInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -11,7 +10,12 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.item.CarriedSlotWrapper;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public record PacketCrafterExtract(BlockPos pos, ItemStack sample, boolean single, boolean toInventory)
         implements CustomPacketPayload {
@@ -41,29 +45,19 @@ public record PacketCrafterExtract(BlockPos pos, ItemStack sample, boolean singl
             if (packet.sample() == null || packet.sample().isEmpty()) return;
 
             EngineersCrafterBE be = menu.blockEntity;
-            AggregatedInventory agg = new AggregatedInventory(be.containerSlots);
+            var storage = be.getItemHandler(null);
+            var resource = ItemResource.of(packet.sample());
             int amount = packet.single() ? 1 : packet.sample().getMaxStackSize();
-            ItemStack got = agg.extract(packet.sample(), amount, false);
-            if (got.isEmpty()) return;
-
-            if (packet.toInventory()) {
-                player.getInventory().add(got);
-                if (!got.isEmpty()) {
-                    ItemStack back = agg.insert(got, false);
-                    if (!back.isEmpty()) player.drop(back, false);
-                }
-            } else {
-                ItemStack cur = menu.getCarried();
-                if (cur.isEmpty()) {
-                    menu.setCarried(got);
-                } else if (ItemStack.isSameItemSameComponents(cur, got)
-                        && cur.getCount() + got.getCount() <= cur.getMaxStackSize()) {
-                    cur.grow(got.getCount());
-                    menu.setCarried(cur);
+            try (var transaction = Transaction.openRoot()) {
+                if (packet.toInventory()) {
+                    int moved = ResourceHandlerUtil.move(storage, PlayerInventoryWrapper.of(player),
+                            resource::equals, amount, transaction);
+                    if (moved == 0) return;
                 } else {
-                    ItemStack back = agg.insert(got, false);
-                    if (!back.isEmpty()) player.drop(back, false);
+                    int extracted = storage.extract(resource, amount, transaction);
+                    if (extracted == 0 || CarriedSlotWrapper.of(menu).insert(resource, extracted, transaction) != extracted) return;
                 }
+                transaction.commit();
             }
 
             be.markUpdated();

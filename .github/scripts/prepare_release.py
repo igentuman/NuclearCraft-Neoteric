@@ -52,7 +52,7 @@ curseforge = {
     "changelog": changelog,
     "changelogType": "markdown",
     "displayName": f"NuclearCraft-{minecraft_version}-{version}",
-    "gameVersionNames": [minecraft_version, "NeoForge", "Client", "Server", "Java 21"],
+    "gameVersionNames": [minecraft_version, "NeoForge", "Client", "Server", "Java 25"],
     "releaseType": release_type,
     "relations": {"projects": [{"slug": "nuclear-radiation", "projectID": 1148833, "type": "requiredDependency"}]},
 }

@@ -10,6 +10,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -22,19 +23,21 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.redstone.ExperimentalRedstoneUtils;
+import net.minecraft.world.level.redstone.Orientation;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.function.Consumer;
 
-public class RedstoneDimmerBlock extends HorizontalDirectionalBlock {
+public class RedstoneDimmerBlock extends HorizontalDirectionalBlock implements TooltipBlock {
 
-    public static final MapCodec<RedstoneDimmerBlock> CODEC = simpleCodec(properties -> new RedstoneDimmerBlock());
+    public static final MapCodec<RedstoneDimmerBlock> CODEC = simpleCodec(RedstoneDimmerBlock::new);
     public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL;
     public static final BooleanProperty LEFT = BooleanProperty.create("left");
     public static final BooleanProperty RIGHT = BooleanProperty.create("right");
 
-    public RedstoneDimmerBlock() {
-        super(Properties.of()
+    public RedstoneDimmerBlock(Properties props) {
+        super(props
                 .mapColor(MapColor.METAL)
                 .sound(SoundType.METAL)
                 .strength(2.0f)
@@ -77,8 +80,8 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
-        if (!level.isClientSide && !level.getBlockTicks().willTickThisTick(pos, this)) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, @Nullable Orientation orientation, boolean movedByPiston) {
+        if (!level.isClientSide() && !level.getBlockTicks().willTickThisTick(pos, this)) {
             level.scheduleTick(pos, this, 1);
         }
     }
@@ -105,14 +108,15 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock {
     private void updateOutput(Level level, BlockPos pos, BlockState state) {
         Direction facing = state.getValue(FACING);
         BlockPos target = pos.relative(facing.getOpposite());
-        level.neighborChanged(target, this, pos);
-        level.updateNeighborsAtExceptFromFacing(target, this, facing);
+        Orientation orientation = ExperimentalRedstoneUtils.initialOrientation(level, facing.getOpposite(), Direction.UP);
+        level.neighborChanged(target, this, orientation);
+        level.updateNeighborsAtExceptFromFacing(target, this, facing, orientation);
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!movedByPiston && !state.is(newState.getBlock())) {
-            super.onRemove(state, level, pos, newState, movedByPiston);
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        if (!movedByPiston) {
+            super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
             updateOutput(level, pos, state);
         }
     }
@@ -138,7 +142,7 @@ public class RedstoneDimmerBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("block.nuclearcraft.redstone_dimmer.desc").withStyle(ChatFormatting.AQUA));
+    public void addTooltip(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(Component.translatable("block.nuclearcraft.redstone_dimmer.desc").withStyle(ChatFormatting.AQUA));
     }
 }

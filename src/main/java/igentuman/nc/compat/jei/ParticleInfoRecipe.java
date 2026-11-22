@@ -2,27 +2,27 @@ package igentuman.nc.compat.jei;
 
 import igentuman.nc.api.particle.ParticleDefinition;
 import igentuman.nc.api.particle.ParticleStack;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import static igentuman.nc.NuclearCraft.rl;
 
 public class ParticleInfoRecipe {
 
-    private final ResourceLocation particleId;
+    private final Identifier particleId;
     private final ParticleDefinition definition;
     private final ParticleStack stack;
 
-    public ParticleInfoRecipe(ResourceLocation particleId, ParticleDefinition definition) {
+    public ParticleInfoRecipe(Identifier particleId, ParticleDefinition definition) {
         this.particleId = particleId;
         this.definition = definition;
         this.stack = new ParticleStack(particleId, 1, 0, 0);
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return rl("particle_info_" + particleId.getPath());
     }
 
-    public ResourceLocation getParticleId() {
+    public Identifier getParticleId() {
         return particleId;
     }
 

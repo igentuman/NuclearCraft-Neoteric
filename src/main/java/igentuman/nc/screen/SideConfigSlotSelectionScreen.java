@@ -1,16 +1,17 @@
 package igentuman.nc.screen;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.element.SlotWidget;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.SlotsLayout;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +19,9 @@ import java.util.List;
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.util.TextUtils.__;
 
-/** Popup screen listing a machine's slots so the player picks one to open its per-face side configuration. */
 public class SideConfigSlotSelectionScreen extends Screen {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/window_no_inventory.png");
+    private static final Identifier TEXTURE = rl("textures/gui/window_no_inventory.png");
 
     private static final int WIN_W = 180;
     private static final int WIN_H = 140;
@@ -99,10 +99,10 @@ public class SideConfigSlotSelectionScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.blit(TEXTURE, winX, winY, 0, 0, WIN_W, WIN_H, 256, 256);
-        guiGraphics.drawCenteredString(font, this.title, winX + WIN_W / 2, winY + 6, 0x404040);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, winX, winY, 0, 0, WIN_W, WIN_H, 256, 256);
+        guiGraphics.centeredText(font, this.title, winX + WIN_W / 2, winY + 6, 0xFF404040);
     }
 
     @Override

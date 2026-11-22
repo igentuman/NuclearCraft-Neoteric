@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
-    "S": {
-      "tag": "c:plates/cobalt"
-    },
-    "T": {
-      "tag": "c:ingots/tough_alloy"
-    }
+    "S": "#c:plates/cobalt",
+    "T": "#c:ingots/tough_alloy"
   },
   "pattern": [
     "STS",

@@ -3,7 +3,7 @@ package igentuman.nc.client.gui.fission.designer;
 import igentuman.nc.config.Common;
 import igentuman.nc.block.fission.HeatSinkBlock;
 import igentuman.nc.config.Multiblocks;
-import igentuman.nc.content.fuel.FuelDef;
+import igentuman.nc.api.content.FuelDef;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;

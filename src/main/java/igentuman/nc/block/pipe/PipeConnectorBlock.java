@@ -1,9 +1,11 @@
 package igentuman.nc.block.pipe;
 
 import com.google.common.collect.ImmutableMap;
+import igentuman.nc.api.pipe.PipeConnection;
+import igentuman.nc.block.TooltipBlock;
 import igentuman.nc.block_entity.pipe.PipeConnectorBE;
 import igentuman.nc.api.pipe.ConnectorMode;
-import igentuman.nc.api.pipe.PipeNetworkManager;
+import igentuman.nc.pipe.PipeNetworkManager;
 import igentuman.nc.api.pipe.RedstoneMode;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.TextUtils;
@@ -11,16 +13,20 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -37,12 +43,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static igentuman.nc.util.TextUtils.__;
 
-public class PipeConnectorBlock extends Block implements EntityBlock {
+public class PipeConnectorBlock extends Block implements EntityBlock, TooltipBlock {
 
     public static final EnumProperty<PipeConnection> UP = EnumProperty.create("up", PipeConnection.class);
     public static final EnumProperty<PipeConnection> DOWN = EnumProperty.create("down", PipeConnection.class);
@@ -74,8 +80,8 @@ public class PipeConnectorBlock extends Block implements EntityBlock {
 
     private final VoxelShape[] shapeCache = new VoxelShape[64];
 
-    public PipeConnectorBlock() {
-        super(Properties.of()
+    public PipeConnectorBlock(Properties props) {
+        super(props
                 .sound(SoundType.METAL)
                 .strength(1.5f)
                 .noOcclusion()
@@ -94,16 +100,16 @@ public class PipeConnectorBlock extends Block implements EntityBlock {
         builder.add(UP, DOWN, NORTH, SOUTH, EAST, WEST);
     }
 
-    private PipeConnection connectionFor(LevelAccessor level, BlockPos pos, Direction dir) {
+    private PipeConnection connectionFor(LevelReader level, BlockPos pos, Direction dir) {
         BlockPos np = pos.relative(dir);
         if (PipeNetworkManager.isPipeNode(level.getBlockState(np))) {
             return PipeConnection.PIPE;
         }
         if (level instanceof Level lvl) {
             Direction opp = dir.getOpposite();
-            if (lvl.getCapability(Capabilities.ItemHandler.BLOCK, np, opp) != null
-                    || lvl.getCapability(Capabilities.FluidHandler.BLOCK, np, opp) != null
-                    || lvl.getCapability(Capabilities.EnergyStorage.BLOCK, np, opp) != null) {
+            if (lvl.getCapability(Capabilities.Item.BLOCK, np, opp) != null
+                    || lvl.getCapability(Capabilities.Fluid.BLOCK, np, opp) != null
+                    || lvl.getCapability(Capabilities.Energy.BLOCK, np, opp) != null) {
                 return PipeConnection.MACHINE;
             }
         }
@@ -123,7 +129,7 @@ public class PipeConnectorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction dir, BlockState neighbor, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction dir, BlockPos neighborPos, BlockState neighbor, RandomSource random) {
         return state.setValue(PROPERTY_BY_DIRECTION.get(dir), connectionFor(level, pos, dir));
     }
 
@@ -185,30 +191,27 @@ public class PipeConnectorBlock extends Block implements EntityBlock {
                 if (player.isShiftKeyDown()) {
                     if (hit.getDirection() == Direction.DOWN) {
                         RedstoneMode rMode = connector.cycleRedstoneMode();
-                        player.displayClientMessage(Component.literal("Pipe connector redstone: " + rMode), true);
+                        player.sendOverlayMessage(Component.literal("Pipe connector redstone: " + rMode));
                     } else {
                         ConnectorMode next = connector.cycleMode();
-                        player.displayClientMessage(Component.literal("Pipe connector mode: " + next), true);
+                        player.sendOverlayMessage(Component.literal("Pipe connector mode: " + next));
                     }
                     return InteractionResult.CONSUME;
                 }
                 serverPlayer.openMenu(connector, pos);
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moved) {
-        if (!level.isClientSide() && !state.is(newState.getBlock())) {
-            PipeNetworkManager.get(level.dimension()).onNodeRemoved(pos);
-        }
-        super.onRemove(state, level, pos, newState, moved);
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        PipeNetworkManager.get(level.dimension()).onNodeRemoved(pos);
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(TextUtils.applyFormat(__("block.nuclearcraft.pipe_connector.desc"), ChatFormatting.GRAY));
+    public void addTooltip(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(TextUtils.applyFormat(__("block.nuclearcraft.pipe_connector.desc"), ChatFormatting.GRAY));
     }
 }

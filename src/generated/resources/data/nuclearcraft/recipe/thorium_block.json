@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_blocks",
   "ingredients": [
-    {
-      "tag": "c:ingots/thorium"
-    },
-    {
-      "tag": "c:ingots/thorium"
-    },
-    {
-      "tag": "c:ingots/thorium"
-    },
-    {
-      "tag": "c:ingots/thorium"
-    },
-    {
-      "tag": "c:ingots/thorium"
-    },
-    {
-      "tag": "c:ingots/thorium"
-    },
-    {
-      "tag": "c:ingots/thorium"
-    },
-    {
-      "tag": "c:ingots/thorium"
-    },
-    {
-      "tag": "c:ingots/thorium"
-    }
+    "#c:ingots/thorium",
+    "#c:ingots/thorium",
+    "#c:ingots/thorium",
+    "#c:ingots/thorium",
+    "#c:ingots/thorium",
+    "#c:ingots/thorium",
+    "#c:ingots/thorium",
+    "#c:ingots/thorium",
+    "#c:ingots/thorium"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:thorium_block"
   }
 }

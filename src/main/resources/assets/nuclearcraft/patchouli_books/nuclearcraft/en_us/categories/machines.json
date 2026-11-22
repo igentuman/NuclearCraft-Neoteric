@@ -1,0 +1,6 @@
+{
+  "name": "Machines",
+  "description": "$(l)Like a well-oiled machine.",
+  "icon": "nuclearcraft:manufactory",
+  "sortnum": 1
+}

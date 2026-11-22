@@ -2,7 +2,8 @@ package igentuman.nc.entity.anomaly;
 
 import igentuman.nc.config.Common;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -78,7 +79,7 @@ public class TeleportingAnomalyEntity extends AnomalyEntity {
             if (!serverLevel.hasChunkAt(new BlockPos(tx, 0, tz))) {
                 continue;
             }
-            int ty = serverLevel.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, tx, tz) + serverLevel.random.nextInt(14);
+            int ty = serverLevel.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, tx, tz) + serverLevel.getRandom().nextInt(14);
             BlockPos dest = new BlockPos(tx, ty, tz);
             if (isSafeDestination(serverLevel, dest)) {
                 victim.teleportTo(tx + 0.5D, ty, tz + 0.5D);
@@ -89,7 +90,7 @@ public class TeleportingAnomalyEntity extends AnomalyEntity {
     }
 
     private boolean isSafeDestination(ServerLevel serverLevel, BlockPos dest) {
-        if (dest.getY() <= serverLevel.getMinBuildHeight() + 1 || dest.getY() >= serverLevel.getMaxBuildHeight() - 2) {
+        if (dest.getY() <= serverLevel.getMinY() + 1 || dest.getY() >= serverLevel.getMaxY() - 1) {
             return false;
         }
         if (!serverLevel.getFluidState(dest).is(FluidTags.LAVA)
@@ -126,23 +127,24 @@ public class TeleportingAnomalyEntity extends AnomalyEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putInt("BlinkTimer", blinkTimer);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("BlinkTimer", blinkTimer);
         if (hasAnchor) {
-            tag.putDouble("AnchorX", anchorX);
-            tag.putDouble("AnchorZ", anchorZ);
+            output.putDouble("AnchorX", anchorX);
+            output.putDouble("AnchorZ", anchorZ);
         }
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        if (tag.contains("BlinkTimer")) {
-            blinkTimer = tag.getInt("BlinkTimer");
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        var keys = input.keySet();
+        if (keys.contains("BlinkTimer")) {
+            blinkTimer = input.getIntOr("BlinkTimer", 0);
         }
-        if (tag.contains("AnchorX") && tag.contains("AnchorZ")) {
-            setAnchor(tag.getDouble("AnchorX"), tag.getDouble("AnchorZ"));
+        if (keys.contains("AnchorX") && keys.contains("AnchorZ")) {
+            setAnchor(input.getDoubleOr("AnchorX", 0.0D), input.getDoubleOr("AnchorZ", 0.0D));
         }
     }
 }

@@ -4,6 +4,7 @@ import igentuman.nc.block_entity.MultiblockControllerBE;
 import igentuman.nc.block_entity.UniversalProcessorBE;
 import igentuman.nc.block_entity.accelerator.AbstractAcceleratorControllerBE;
 import igentuman.nc.block_entity.accelerator.BeamDiverterControllerBE;
+import igentuman.nc.block_entity.crafter.EngineersCrafterBE;
 import igentuman.nc.block_entity.fission.FissionReactorControllerBE;
 import igentuman.nc.block_entity.fission.MsrControllerBE;
 import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
@@ -26,16 +27,18 @@ import igentuman.nc.compat.computer.ProcessorApi;
 import igentuman.nc.compat.computer.TurbineApi;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
-import igentuman.nc.setup.entries.Crafter;
 import li.cil.oc2.api.bus.device.Device;
 import li.cil.oc2.api.bus.device.object.ObjectDevice;
-import li.cil.oc2.api.neoforge.Capabilities;
+import li.cil.oc2.common.capabilities.Capabilities;
+import li.cil.oc2.platform.NeoForgeCapabilityRegistrar;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.compat.computer.ComputerErrors.DEFAULT;
 
+/** Registers NuclearCraft RPC devices on the OpenComputers II block device bus. */
 public class OC2CompatHandler {
 
     public static void register(IEventBus modEventBus) {
@@ -43,22 +46,22 @@ public class OC2CompatHandler {
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        var registrar = new NeoForgeCapabilityRegistrar(event);
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (!entry.hasBlockEntity()) continue;
-            event.registerBlockEntity(Capabilities.Device.BLOCK, entry.blockEntity().get(),
-                    (be, side) -> device(api(be)));
+            registrar.registerBlock(Capabilities.Device.BLOCK,
+                    (level, pos, state, be, side) -> device(be), entry.block().get());
         }
-        event.registerBlockEntity(Capabilities.Device.BLOCK, Crafter.ENGINEERS_CRAFTING_TABLE_BE.get(),
-                (be, side) -> device(new EngineersCrafterApi(be, DEFAULT)));
     }
 
     @Nullable
-    private static Device device(@Nullable ComputerApi<?> api) {
+    private static Device device(@Nullable BlockEntity be) {
+        ComputerApi<?> api = api(be);
         return api == null ? null : new ObjectDevice(api, api.typeName());
     }
 
     @Nullable
-    private static ComputerApi<?> api(Object be) {
+    private static ComputerApi<?> api(@Nullable BlockEntity be) {
         return switch (be) {
             case FissionReactorControllerBE c -> new FissionReactorApi(c, DEFAULT);
             case MsrControllerBE c -> new MsrApi(c, DEFAULT);
@@ -71,7 +74,8 @@ public class OC2CompatHandler {
             case ParticleChamberControllerBE c -> new ParticleChamberApi(c, DEFAULT);
             case MultiblockControllerBE c -> new ControllerApi<>(c, DEFAULT);
             case UniversalProcessorBE p -> new ProcessorApi(p, DEFAULT);
-            default -> null;
+            case EngineersCrafterBE c -> new EngineersCrafterApi(c, DEFAULT);
+            case null, default -> null;
         };
     }
 }

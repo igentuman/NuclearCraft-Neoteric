@@ -1,80 +1,43 @@
 package igentuman.nc.handler.crafter;
 
 import igentuman.nc.item.ContainerBlockItem;
+import igentuman.nc.util.caps.RoutingItemHandler;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
+import java.util.function.BooleanSupplier;
 
-public class AggregatedItemHandler implements IItemHandler {
-
-    private final IItemHandler containers;
-
-    public AggregatedItemHandler(IItemHandler containers) {
-        this.containers = containers;
+/** Live native view of the crafter's linked item storage, sharing the caller's transaction. */
+public class AggregatedItemHandler extends RoutingItemHandler {
+    public AggregatedItemHandler(ResourceHandler<ItemResource> containers) {
+        this(containers, () -> true);
     }
 
-    private List<IItemHandler> sources() {
-        List<IItemHandler> out = new ArrayList<>();
-        for (int i = 0; i < containers.getSlots(); i++) {
-            ItemStack stack = containers.getStackInSlot(i);
+    public AggregatedItemHandler(ResourceHandler<ItemResource> containers, BooleanSupplier available) {
+        super(() -> available.getAsBoolean() ? sources(containers).stream()
+                .map(handler -> new Endpoint(handler, true, true)).toList() : List.of());
+    }
+
+    static List<ResourceHandler<ItemResource>> sources(ResourceHandler<ItemResource> containers) {
+        List<ResourceHandler<ItemResource>> out = new ArrayList<>();
+        var seen = new HashSet<UUID>();
+        for (int i = 0; i < containers.size(); i++) {
+            ItemStack stack = containers.getResource(i).toStack(containers.getAmountAsInt(i));
             if (stack.isEmpty() || !(stack.getItem() instanceof ContainerBlockItem)) continue;
-            IItemHandler handler = stack.getCapability(Capabilities.ItemHandler.ITEM);
+            // UUID aliases share one inventory; count and visit that storage only once.
+            UUID uuid = ContainerBlockItem.readUuid(stack);
+            if (uuid != null && !seen.add(uuid)) continue;
+            var access = ItemAccess.forHandlerIndexStrict(containers, i);
+            var handler = access.getCapability(Capabilities.Item.ITEM);
             if (handler != null) out.add(handler);
         }
         return out;
-    }
-
-    private record Loc(IItemHandler handler, int slot) {}
-
-    @Nullable
-    private Loc locate(int slot) {
-        for (IItemHandler h : sources()) {
-            int n = h.getSlots();
-            if (slot < n) return new Loc(h, slot);
-            slot -= n;
-        }
-        return null;
-    }
-
-    @Override
-    public int getSlots() {
-        int total = 0;
-        for (IItemHandler h : sources()) total += h.getSlots();
-        return total;
-    }
-
-    @Override
-    public @NotNull ItemStack getStackInSlot(int slot) {
-        Loc l = locate(slot);
-        return l == null ? ItemStack.EMPTY : l.handler.getStackInSlot(l.slot);
-    }
-
-    @Override
-    public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-        Loc l = locate(slot);
-        return l == null ? stack : l.handler.insertItem(l.slot, stack, simulate);
-    }
-
-    @Override
-    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-        Loc l = locate(slot);
-        return l == null ? ItemStack.EMPTY : l.handler.extractItem(l.slot, amount, simulate);
-    }
-
-    @Override
-    public int getSlotLimit(int slot) {
-        Loc l = locate(slot);
-        return l == null ? 0 : l.handler.getSlotLimit(l.slot);
-    }
-
-    @Override
-    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        Loc l = locate(slot);
-        return l != null && l.handler.isItemValid(l.slot, stack);
     }
 }

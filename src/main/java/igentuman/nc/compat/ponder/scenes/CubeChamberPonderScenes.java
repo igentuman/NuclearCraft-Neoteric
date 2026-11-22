@@ -3,12 +3,12 @@ package igentuman.nc.compat.ponder.scenes;
 import igentuman.nc.block.accelerator.BeamPortMode;
 import igentuman.nc.block.particle.ParticleChamberBeamPortBlock;
 import igentuman.nc.setup.ModEntries;
-import net.createmod.catnip.math.Pointing;
-import net.createmod.ponder.api.PonderPalette;
-import net.createmod.ponder.api.scene.SceneBuilder;
-import net.createmod.ponder.api.scene.SceneBuildingUtil;
+import net.createmod.catnip.api.math.Pointing;
+import net.createmod.ponder.api.client.PonderPalette;
+import net.createmod.ponder.api.client.scene.SceneBuilder;
+import net.createmod.ponder.api.client.scene.SceneBuildingUtil;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -19,7 +19,7 @@ final class CubeChamberPonderScenes {
     private CubeChamberPonderScenes() {
     }
 
-    static void create(SceneBuilder scene, SceneBuildingUtil util, ResourceLocation id, String name,
+    static void create(SceneBuilder scene, SceneBuildingUtil util, Identifier id, String name,
                        String controllerName) {
         scene.title(id.getPath(), "Creating a " + name);
         scene.configureBasePlate(0, 0, 5);

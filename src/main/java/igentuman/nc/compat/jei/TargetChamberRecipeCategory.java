@@ -3,8 +3,8 @@ package igentuman.nc.compat.jei;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.compat.ParticleCompatUtil;
 import igentuman.nc.compat.jei.particle.ParticleType;
-import igentuman.nc.recipe.FluidOutput;
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.api.recipe.FluidOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import igentuman.nc.recipe.particle.TargetChamberRecipe;
 import igentuman.nc.setup.ModEntries;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -13,13 +13,14 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -35,12 +36,12 @@ import static igentuman.nc.util.TextUtils.formatParticleEnergy;
 import static igentuman.nc.util.TextUtils.numberFormat;
 
 @SuppressWarnings("removal")
-public class TargetChamberRecipeCategory implements IRecipeCategory<TargetChamberRecipe> {
+public class TargetChamberRecipeCategory implements IRecipeCategory<RecipeHolder<TargetChamberRecipe>> {
 
-    public static final RecipeType<TargetChamberRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "target_chamber", TargetChamberRecipe.class);
+    public static final IRecipeHolderType<TargetChamberRecipe> TYPE =
+            IRecipeHolderType.create(NuclearCraft.rl("target_chamber"));
 
-    public static final ResourceLocation TEXTURE = rl("textures/gui/accelerators/target_chamber_controller.png");
+    public static final Identifier TEXTURE = rl("textures/gui/accelerators/target_chamber_controller.png");
 
     private static final int WIDTH = 160;
     private static final int HEIGHT = 107;
@@ -55,7 +56,7 @@ public class TargetChamberRecipeCategory implements IRecipeCategory<TargetChambe
     }
 
     @Override
-    public RecipeType<TargetChamberRecipe> getRecipeType() {
+    public IRecipeHolderType<TargetChamberRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -64,10 +65,6 @@ public class TargetChamberRecipeCategory implements IRecipeCategory<TargetChambe
         return __("block." + NuclearCraft.MODID + ".target_chamber_controller");
     }
 
-    @Override
-    public IDrawable getBackground() {
-        return background;
-    }
 
     @Override
     public @Nullable IDrawable getIcon() {
@@ -85,21 +82,17 @@ public class TargetChamberRecipeCategory implements IRecipeCategory<TargetChambe
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, TargetChamberRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<TargetChamberRecipe> holder, IFocusGroup focuses) {
+        TargetChamberRecipe recipe = holder.value();
         int x = 43;
         for (SizedIngredient si : recipe.itemInputs()) {
-            builder.addSlot(RecipeIngredientRole.INPUT, x, 28)
-                    .addItemStacks(java.util.Arrays.stream(si.ingredient().getItems())
-                            .map(stack -> stack.copyWithCount(si.count()))
-                            .toList());
+            JeiRecipeSlots.addItems(builder.addSlot(RecipeIngredientRole.INPUT, x, 28), si);
             x += 18;
         }
         int fluidX = 43;
         for (SizedFluidIngredient sfi : recipe.fluidInputs()) {
             var slot = builder.addSlot(RecipeIngredientRole.INPUT, fluidX, 45);
-            for (FluidStack fs : sfi.getFluids()) {
-                slot.addFluidStack(fs.getFluid(), sfi.amount());
-            }
+            JeiRecipeSlots.addFluids(slot, sfi);
             slot.setFluidRenderer(sfi.amount(), false, 16, 16);
             fluidX += 18;
         }
@@ -115,7 +108,7 @@ public class TargetChamberRecipeCategory implements IRecipeCategory<TargetChambe
             var members = out.members();
             int amount = members.isEmpty() ? 0 : members.getFirst().getAmount();
             for (FluidStack fs : members) {
-                slot.addFluidStack(fs.getFluid(), fs.getAmount());
+                JeiRecipeSlots.addFluid(slot, fs);
             }
             if (amount > 0) slot.setFluidRenderer(amount, false, 16, 16);
             fluidOutX += 18;
@@ -130,24 +123,26 @@ public class TargetChamberRecipeCategory implements IRecipeCategory<TargetChambe
             if (byproduct.isEmpty() || i >= byproductPositions.size()) { i++; continue; }
             Vec2 pos = byproductPositions.get(i);
             builder.addSlot(RecipeIngredientRole.OUTPUT, (int) pos.x, (int) pos.y)
-                    .addIngredient(ParticleType.PARTICLE, byproduct);
+                    .add(ParticleType.PARTICLE, byproduct);
             i++;
         }
     }
 
     @Override
-    public void draw(TargetChamberRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<TargetChamberRecipe> holder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
+        TargetChamberRecipe recipe = holder.value();
+        background.draw(graphics);
         var font = Minecraft.getInstance().font;
         var input = recipe.particleInput();
-        graphics.drawString(font, __("tooltip.nuclearcraft.particlestack.focus", numberFormat(input.minimumFocus())),
-                0, 77, 0x404040, false);
-        graphics.drawString(font, __("label.nuclearcraft.cross_section",
+        graphics.text(font, __("tooltip.nuclearcraft.particlestack.focus", numberFormat(input.minimumFocus())),
+                0, 77, 0xFF404040, false);
+        graphics.text(font, __("label.nuclearcraft.cross_section",
                 String.format(Locale.ROOT, "%.1f", recipe.crossSection() * 100)),
-                0, 87, 0x404040, false);
+                0, 87, 0xFF404040, false);
         var energyLabel = input.minimumEnergyKeV() == input.maximumEnergyKeV()
                 ? __("label.nuclearcraft.energy", formatParticleEnergy(input.minimumEnergyKeV()))
                 : __("label.nuclearcraft.energy_range", formatParticleEnergy(input.minimumEnergyKeV()),
                         formatParticleEnergy(input.maximumEnergyKeV()));
-        graphics.drawString(font, energyLabel, 0, 97, 0x404040, false);
+        graphics.text(font, energyLabel, 0, 97, 0xFF404040, false);
     }
 }

@@ -4,8 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 
 import java.util.HashMap;
@@ -65,7 +64,7 @@ public class DesignGrid {
         ListTag list = new ListTag();
         for (var entry : cells.entrySet()) {
             BlockPos pos = entry.getKey();
-            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(entry.getValue());
+            Identifier id = BuiltInRegistries.BLOCK.getKey(entry.getValue());
             if (id == null) {
                 continue;
             }
@@ -82,15 +81,15 @@ public class DesignGrid {
 
     public static DesignGrid fromTag(CompoundTag tag) {
         DesignGrid grid = new DesignGrid(
-                Math.max(1, tag.getInt("sizeX")),
-                Math.max(1, tag.getInt("sizeY")),
-                Math.max(1, tag.getInt("sizeZ")));
-        ListTag list = tag.getList("cells", Tag.TAG_COMPOUND);
+                Math.max(1, tag.getIntOr("sizeX", 0)),
+                Math.max(1, tag.getIntOr("sizeY", 0)),
+                Math.max(1, tag.getIntOr("sizeZ", 0)));
+        ListTag list = tag.getListOrEmpty("cells");
         for (int i = 0; i < list.size(); i++) {
-            CompoundTag cell = list.getCompound(i);
-            Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(cell.getString("block")));
+            CompoundTag cell = list.getCompoundOrEmpty(i);
+            Block block = BuiltInRegistries.BLOCK.getValue(Identifier.parse(cell.getStringOr("block", "")));
             if (block != null) {
-                grid.set(cell.getInt("x"), cell.getInt("y"), cell.getInt("z"), block);
+                grid.set(cell.getIntOr("x", 0), cell.getIntOr("y", 0), cell.getIntOr("z", 0), block);
             }
         }
         return grid;

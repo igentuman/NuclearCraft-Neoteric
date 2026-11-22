@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "nuclearcraft:item/resonite_crystal",
+    "tints": [
+      {
+        "type": "nuclearcraft:resonite_crystal"
+      }
+    ]
+  }
+}

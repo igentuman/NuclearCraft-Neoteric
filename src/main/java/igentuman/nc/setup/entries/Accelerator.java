@@ -34,7 +34,7 @@ import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.Registers;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -92,12 +92,12 @@ public class Accelerator extends ModEntries {
         HighEnergyComponents.highEnergyComponents();
         igentuman.nc.recipe.particle.ParticleRecipes.init();
         registerParticleSources();
-        addMultiblockBlock("accelerator_casing", () -> new AcceleratorBlock(metalProps()));
-        addMultiblockBlock("accelerator_casing_glass", () -> new AcceleratorBlock(glassProps()));
-        addMultiblockBlock("electromagnet_yoke", () -> new AcceleratorBlock(metalProps()));
-        addMultiblockBlock("particle_beam", () -> new AcceleratorBlock(glassProps()));
+        addMultiblockBlock("accelerator_casing", AcceleratorBlock::new, Accelerator::metalProps);
+        addMultiblockBlock("accelerator_casing_glass", AcceleratorBlock::new, Accelerator::glassProps);
+        addMultiblockBlock("electromagnet_yoke", AcceleratorBlock::new, Accelerator::metalProps);
+        addMultiblockBlock("particle_beam", AcceleratorBlock::new, Accelerator::glassProps);
         for (String cooler : COOLERS) {
-            addMultiblockBlock(cooler, () -> new CoolerBlock(metalProps(), CoolerDef.get(cooler)));
+            addMultiblockBlock(cooler, props -> new CoolerBlock(props, CoolerDef.get(cooler)), Accelerator::metalProps);
         }
 
         ModEntry controller = addMultiblockController("linear_accelerator_controller", AcceleratorControllerBlock::new)
@@ -170,9 +170,14 @@ public class Accelerator extends ModEntries {
 
     private static void registerParticleSources() {
         for (String name : Particles.ITEM_SOURCES) {
-            ResourceLocation id = igentuman.nc.NuclearCraft.rl(name);
-            addItem(name, () -> new ParticleSourceItem(new Item.Properties().stacksTo(1)
-                    .component(Registers.PARTICLE_SOURCE.get(), ParticleSourceCatalog.itemSources().get(id))))
+            Identifier id = igentuman.nc.NuclearCraft.rl(name);
+            addItem(name, props -> {
+                var source = ParticleSourceCatalog.itemSources().get(id);
+                if (source != null) {
+                    props.component(Registers.PARTICLE_SOURCE.get(), source);
+                }
+                return new ParticleSourceItem(props.stacksTo(1));
+            })
                     .withoutRecipes()
                     .build();
         }

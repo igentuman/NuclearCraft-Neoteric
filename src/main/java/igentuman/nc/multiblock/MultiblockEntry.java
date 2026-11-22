@@ -7,7 +7,7 @@ import igentuman.nc.registration.ModEntry;
 import igentuman.nc.util.MultiblockStructure;
 import igentuman.nc.util.MultiblocksProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -78,7 +78,7 @@ public class MultiblockEntry {
                 return false;
             }
             if (block == null || block == Blocks.AIR) return false;
-            ResourceLocation key = BuiltInRegistries.BLOCK.getKey(block);
+            Identifier key = BuiltInRegistries.BLOCK.getKey(block);
             if (key == null || !BuiltInRegistries.BLOCK.containsKey(key)) return false;
         }
         return true;
@@ -91,7 +91,7 @@ public class MultiblockEntry {
      */
     public MultiblockStructure getExampleStructure() {
         for (MultiblockStructure s : MultiblocksProvider.getStructures()) {
-            ResourceLocation id = s.getId();
+            Identifier id = s.getId();
             if (id != null && id.getPath().endsWith("/" + name + ".nbt")) return s;
         }
         return MultiblocksProvider.loadStructureFromClasspath(name);

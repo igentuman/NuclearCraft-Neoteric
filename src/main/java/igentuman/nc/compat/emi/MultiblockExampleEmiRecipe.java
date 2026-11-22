@@ -11,7 +11,7 @@ import igentuman.nc.util.MultiblockStructure;
 import igentuman.nc.util.StructurePreviewRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class MultiblockExampleEmiRecipe implements EmiRecipe {
     private static final int HEIGHT = 100;
 
     private final EmiRecipeCategory category;
-    private final ResourceLocation id;
+    private final Identifier id;
     private final MultiblockEntry entry;
     private final MultiblockStructure structure;
 
@@ -38,7 +38,7 @@ public class MultiblockExampleEmiRecipe implements EmiRecipe {
     public EmiRecipeCategory getCategory() { return category; }
 
     @Override
-    public @Nullable ResourceLocation getId() { return id; }
+    public @Nullable Identifier getId() { return id; }
 
     @Override
     public List<EmiIngredient> getInputs() { return List.of(); }

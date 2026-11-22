@@ -8,16 +8,17 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-import javax.annotation.Nullable;
-import java.util.List;
+import org.jetbrains.annotations.Nullable;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static igentuman.nc.util.TextUtils.__;
 import static igentuman.nc.util.TextUtils.formatEnergy;
@@ -47,19 +48,19 @@ public class ResoniteCrystalItem extends Item {
     public static boolean isAnalyzed(ItemStack stack) {
         CustomData cd = stack.get(DataComponents.CUSTOM_DATA);
         if (cd == null) return false;
-        return cd.copyTag().getBoolean(TAG_ANALYZED);
+        return cd.copyTag().getBooleanOr(TAG_ANALYZED, false);
     }
 
     public static ShardRarity getShardRarity(ItemStack stack) {
         CustomData cd = stack.get(DataComponents.CUSTOM_DATA);
         if (cd == null) return ShardRarity.COMMON;
-        return ShardRarity.byOrdinal(cd.copyTag().getByte(TAG_RARITY));
+        return ShardRarity.byOrdinal(cd.copyTag().getByteOr(TAG_RARITY, (byte) 0));
     }
 
     public static String getEffectId(ItemStack stack) {
         CustomData cd = stack.get(DataComponents.CUSTOM_DATA);
         if (cd == null) return "";
-        return cd.copyTag().getString(TAG_EFFECT);
+        return cd.copyTag().getStringOr(TAG_EFFECT, "");
     }
 
     @Nullable
@@ -67,10 +68,10 @@ public class ResoniteCrystalItem extends Item {
         if (!isAnalyzed(stack)) return null;
         String id = getEffectId(stack);
         if (id.isEmpty()) return null;
-        ResourceLocation rl = ResourceLocation.tryParse(id);
+        Identifier rl = Identifier.tryParse(id);
         if (rl == null) return null;
         var key = ResourceKey.create(Registries.MOB_EFFECT, rl);
-        return BuiltInRegistries.MOB_EFFECT.getHolder(key).orElse(null);
+        return BuiltInRegistries.MOB_EFFECT.get(key).orElse(null);
     }
 
     public static int feOutput(ItemStack stack) {
@@ -83,29 +84,29 @@ public class ResoniteCrystalItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
         if (!isAnalyzed(stack)) {
-            tooltip.add(__("tooltip.nc.resonite_crystal.raw").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            tooltip.accept(__("tooltip.nc.resonite_crystal.raw").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
             return;
         }
         ShardRarity r = getShardRarity(stack);
-        tooltip.add(__("tooltip.nc.resonite_crystal.rarity",
+        tooltip.accept(__("tooltip.nc.resonite_crystal.rarity",
                 __("tooltip.nc.resonite_rarity." + r.name().toLowerCase()))
                 .withStyle(style -> style.withColor(TextColor.fromRgb(r.color))));
 
         Holder<MobEffect> eff = getEffect(stack);
         if (eff != null) {
-            tooltip.add(__("tooltip.nc.resonite_crystal.effect",
+            tooltip.accept(__("tooltip.nc.resonite_crystal.effect",
                     Component.translatable(eff.value().getDescriptionId()))
                     .withStyle(ChatFormatting.AQUA));
         }
 
-        tooltip.add(__("tooltip.nc.resonite_crystal.fe", formatEnergy(r.fePerTick))
+        tooltip.accept(__("tooltip.nc.resonite_crystal.fe", formatEnergy(r.fePerTick))
                 .withStyle(ChatFormatting.BLUE));
 
         String patron = PATRON_BY_EFFECT.get(getEffectId(stack));
         if (patron != null) {
-            tooltip.add(__("tooltip.nc.resonite_crystal.patron." + patron)
+            tooltip.accept(__("tooltip.nc.resonite_crystal.patron." + patron)
                     .withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC));
         }
     }

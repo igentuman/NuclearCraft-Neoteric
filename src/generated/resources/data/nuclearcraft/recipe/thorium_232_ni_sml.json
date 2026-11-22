@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "item": "nuclearcraft:thorium_232_ni"
-  },
+  "ingredient": "nuclearcraft:thorium_232_ni",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:thorium_232"
   }
 }

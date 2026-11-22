@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_particle_chamber",
   "key": {
-    "S": {
-      "tag": "c:plates/netherite"
-    },
-    "T": {
-      "tag": "c:ingots/tungsten"
-    }
+    "S": "#c:plates/netherite",
+    "T": "#c:ingots/tungsten"
   },
   "pattern": [
     "STS",

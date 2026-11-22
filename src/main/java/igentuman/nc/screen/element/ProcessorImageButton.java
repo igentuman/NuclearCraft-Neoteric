@@ -1,11 +1,13 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.function.IntSupplier;
@@ -16,7 +18,7 @@ import static igentuman.nc.NuclearCraft.rl;
 /** Image button blitted from the widgets atlas at supplier-driven UV coords, running a callback on click. */
 public class ProcessorImageButton extends AbstractWidget {
 
-    private static final ResourceLocation WIDGETS = rl("textures/gui/widgets.png");
+    private static final Identifier WIDGETS = rl("textures/gui/widgets.png");
 
     private final IntSupplier uSupplier;
     private final IntSupplier vSupplier;
@@ -41,19 +43,22 @@ public class ProcessorImageButton extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blit(WIDGETS, getX(), getY(), uSupplier.getAsInt(), vSupplier.getAsInt(), 18, 18, 256, 256);
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, WIDGETS, getX(), getY(), uSupplier.getAsInt(), vSupplier.getAsInt(), 18, 18, 256, 256);
         if (isHovered) {
             graphics.fill(getX(), getY(), getX() + 18, getY() + 18, 0x40FFFFFF);
             List<Component> tips = tooltipSupplier.get();
             if (!tips.isEmpty()) {
-                graphics.renderComponentTooltip(Minecraft.getInstance().font, tips, mouseX, mouseY);
+                graphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, tips, mouseX, mouseY);
             }
         }
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         onPress.run();
     }
 

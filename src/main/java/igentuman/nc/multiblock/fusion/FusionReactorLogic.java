@@ -11,17 +11,19 @@ import igentuman.nc.recipe.fusion.FusionRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import java.util.List;
 import java.util.Random;
-
-import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 
 /** Runs the fusion reactor's per-tick reaction: charge, plasma amplification, energy output, cooling, and meltdown. */
 public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCache> {
@@ -45,9 +47,10 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
 
     private FuelMatch currentMatch;
     private FusionCoolantRecipe coolantRecipe;
+    private RecipeMap coolantRecipeMap;
     private double ticksProcessed;
     private boolean fuelConsumed;
-    private ResourceLocation pendingRecipeId;
+    private Identifier pendingRecipeId;
     private boolean ignitionComplete;
     private long prevAmplification;
     private double lastHeatDeviationMult = 1;
@@ -115,8 +118,7 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
 
                     ticksProcessed += Math.max(0, be.efficiency * 4);
                     if (recipe.processTime() > 0 && ticksProcessed >= recipe.processTime()
-                            && canFitOutputs(be, recipe)) {
-                        produceOutputs(be, recipe);
+                            && produceOutputs(be, recipe)) {
                         ticksProcessed = 0;
                         fuelConsumed = false;
                         currentMatch = null;
@@ -302,9 +304,14 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         int actualOps = Math.min(possibleOps, Math.min(heatOps, outputOps));
         if (actualOps <= 0) return;
 
+        int consumed = coolantPerOp * actualOps;
+        int produced = output.getAmount() * actualOps;
+        try (var transaction = Transaction.openRoot()) {
+            if (tanks.extract(TANK_COOLANT, FluidResource.of(coolant), consumed, transaction) != consumed
+                    || tanks.insert(TANK_HOT_COOLANT, FluidResource.of(output), produced, transaction) != produced) return;
+            transaction.commit();
+        }
         changeHeat(-coolingPerOp * actualOps);
-        tanks.drainTank(TANK_COOLANT, coolantPerOp * actualOps, EXECUTE);
-        tanks.fillTank(TANK_HOT_COOLANT, output.copyWithAmount(output.getAmount() * actualOps), EXECUTE);
     }
 
     private void meltdown(FusionReactorControllerBE be, FusionReactorCache fc, Level level) {
@@ -327,28 +334,16 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         return be.getBlockPos().offset(x, 1, z);
     }
 
-    private record FuelMatch(FusionRecipe recipe, boolean swapped, ResourceLocation id) {}
+    private record FuelMatch(FusionRecipe recipe, boolean swapped, Identifier id) {}
 
     private void restoreActiveRecipe(FusionReactorControllerBE be) {
         if (!fuelConsumed || currentMatch != null) return;
         if (be.getLevel() instanceof ServerLevel level) {
-            // Older saves only recorded the active recipe's optimal temperature.
-            RecipeHolder<FusionRecipe> legacyMatch = null;
-            for (RecipeHolder<FusionRecipe> holder : level.getRecipeManager().getAllRecipesFor(FusionRecipes.FUSION_TYPE.get())) {
-                if (pendingRecipeId != null && holder.id().equals(pendingRecipeId)) {
-                    currentMatch = new FuelMatch(holder.value(), false, holder.id());
+            for (RecipeHolder<FusionRecipe> holder : level.recipeAccess().recipeMap().byType(FusionRecipes.FUSION_TYPE.get())) {
+                if (pendingRecipeId != null && holder.id().identifier().equals(pendingRecipeId)) {
+                    currentMatch = new FuelMatch(holder.value(), false, holder.id().identifier());
                     break;
                 }
-                if (pendingRecipeId == null && holder.value().optimalTemperature() == lastKnownOptimalTemp) {
-                    if (legacyMatch != null) {
-                        legacyMatch = null;
-                        break;
-                    }
-                    legacyMatch = holder;
-                }
-            }
-            if (currentMatch == null && legacyMatch != null) {
-                currentMatch = new FuelMatch(legacyMatch.value(), false, legacyMatch.id());
             }
         }
         pendingRecipeId = null;
@@ -362,12 +357,12 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         FluidStack a = tanks.getFluidInTank(TANK_FUEL_A);
         FluidStack b = tanks.getFluidInTank(TANK_FUEL_B);
         if (a.isEmpty() || b.isEmpty()) return null;
-        for (RecipeHolder<FusionRecipe> holder : sl.getRecipeManager().getAllRecipesFor(FusionRecipes.FUSION_TYPE.get())) {
+        for (RecipeHolder<FusionRecipe> holder : sl.recipeAccess().recipeMap().byType(FusionRecipes.FUSION_TYPE.get())) {
             FusionRecipe r = holder.value();
             if (r.inputA().test(a) && r.inputB().test(b)) {
-                if (canFitOutputs(be, r)) return new FuelMatch(r, false, holder.id());
+                if (canFitOutputs(be, r)) return new FuelMatch(r, false, holder.id().identifier());
             } else if (r.inputA().test(b) && r.inputB().test(a) && canFitOutputs(be, r)) {
-                return new FuelMatch(r, true, holder.id());
+                return new FuelMatch(r, true, holder.id().identifier());
             }
         }
         return null;
@@ -379,37 +374,45 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         FusionRecipe recipe = match.recipe();
         int aAmt = match.swapped() ? recipe.inputB().amount() : recipe.inputA().amount();
         int bAmt = match.swapped() ? recipe.inputA().amount() : recipe.inputB().amount();
-        if (tanks.getFluidInTank(TANK_FUEL_A).getAmount() < aAmt) return false;
-        if (tanks.getFluidInTank(TANK_FUEL_B).getAmount() < bAmt) return false;
-        tanks.drainTank(TANK_FUEL_A, aAmt, EXECUTE);
-        tanks.drainTank(TANK_FUEL_B, bAmt, EXECUTE);
+        FluidStack a = tanks.getFluidInTank(TANK_FUEL_A);
+        FluidStack b = tanks.getFluidInTank(TANK_FUEL_B);
+        if (aAmt <= 0 || bAmt <= 0 || a.isEmpty() || b.isEmpty()) return false;
+        if (!(match.swapped() ? recipe.inputB().test(a) && recipe.inputA().test(b)
+                : recipe.inputA().test(a) && recipe.inputB().test(b))) return false;
+        try (var transaction = Transaction.openRoot()) {
+            if (tanks.extract(TANK_FUEL_A, FluidResource.of(a), aAmt, transaction) != aAmt
+                    || tanks.extract(TANK_FUEL_B, FluidResource.of(b), bAmt, transaction) != bAmt) return false;
+            transaction.commit();
+        }
         return true;
     }
 
     private boolean canFitOutputs(FusionReactorControllerBE be, FusionRecipe recipe) {
         FluidStackHandler tanks = be.fluidTanks();
         if (tanks == null) return false;
-        List<?> outputs = recipe.outputs();
-        if (outputs.isEmpty() || outputs.size() > TANK_HOT_COOLANT - TANK_PRODUCT_FIRST) return false;
-        int count = Math.min(outputs.size(), TANK_HOT_COOLANT - TANK_PRODUCT_FIRST);
-        for (int i = 0; i < count; i++) {
-            FluidStack out = recipe.outputs().get(i).resolve();
-            if (out.isEmpty() || out.getAmount() <= 0) return false;
-            int tank = TANK_PRODUCT_FIRST + i;
-            if (availableOutputOperations(tanks, tank, out) < 1) return false;
+        try (var transaction = Transaction.openRoot()) {
+            return insertOutputs(tanks, recipe, transaction);
+        }
+    }
+
+    private boolean produceOutputs(FusionReactorControllerBE be, FusionRecipe recipe) {
+        FluidStackHandler tanks = be.fluidTanks();
+        if (tanks == null) return false;
+        try (var transaction = Transaction.openRoot()) {
+            if (!insertOutputs(tanks, recipe, transaction)) return false;
+            transaction.commit();
         }
         return true;
     }
 
-    private void produceOutputs(FusionReactorControllerBE be, FusionRecipe recipe) {
-        FluidStackHandler tanks = be.fluidTanks();
-        if (tanks == null) return;
-        int count = Math.min(recipe.outputs().size(), TANK_HOT_COOLANT - TANK_PRODUCT_FIRST);
-        for (int i = 0; i < count; i++) {
+    private boolean insertOutputs(FluidStackHandler tanks, FusionRecipe recipe, TransactionContext transaction) {
+        if (recipe.outputs().isEmpty() || recipe.outputs().size() > TANK_HOT_COOLANT - TANK_PRODUCT_FIRST) return false;
+        for (int i = 0; i < recipe.outputs().size(); i++) {
             FluidStack out = recipe.outputs().get(i).resolve();
-            int tank = TANK_PRODUCT_FIRST + i;
-            tanks.fillTank(tank, out.copy(), EXECUTE);
+            if (out.isEmpty() || tanks.insert(TANK_PRODUCT_FIRST + i, FluidResource.of(out),
+                    out.getAmount(), transaction) != out.getAmount()) return false;
         }
+        return true;
     }
 
     private int availableOutputOperations(FluidStackHandler tanks, int tank, FluidStack output) {
@@ -421,9 +424,14 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
     }
 
     private FusionCoolantRecipe findCoolant(FusionReactorControllerBE be, FluidStack coolant) {
-        if (coolantRecipe != null && coolantRecipe.input().test(coolant)) return coolantRecipe;
         if (!(be.getLevel() instanceof ServerLevel sl)) return null;
-        for (RecipeHolder<FusionCoolantRecipe> holder : sl.getRecipeManager().getAllRecipesFor(FusionRecipes.COOLANT_TYPE.get())) {
+        RecipeMap current = sl.recipeAccess().recipeMap();
+        if (current != coolantRecipeMap) {
+            coolantRecipe = null;
+            coolantRecipeMap = current;
+        }
+        if (coolantRecipe != null && coolantRecipe.input().test(coolant)) return coolantRecipe;
+        for (RecipeHolder<FusionCoolantRecipe> holder : sl.recipeAccess().recipeMap().byType(FusionRecipes.COOLANT_TYPE.get())) {
             if (holder.value().input().test(coolant)) {
                 coolantRecipe = holder.value();
                 return coolantRecipe;
@@ -454,7 +462,7 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
         tag.putLong("chargeAmount", chargeAmount);
         tag.putDouble("ticksProcessed", ticksProcessed);
         tag.putBoolean("fuelConsumed", fuelConsumed);
-        ResourceLocation activeRecipeId = currentMatch != null ? currentMatch.id() : pendingRecipeId;
+        Identifier activeRecipeId = currentMatch != null ? currentMatch.id() : pendingRecipeId;
         if (fuelConsumed && activeRecipeId != null) tag.putString("activeRecipe", activeRecipeId.toString());
         tag.putBoolean("ignitionComplete", ignitionComplete);
         tag.putLong("prevAmplification", prevAmplification);
@@ -465,18 +473,17 @@ public class FusionReactorLogic extends AbstractMultiblockLogic<FusionReactorCac
     @Override
     public void loadRuntime(CompoundTag tag, HolderLookup.Provider registries) {
         if (tag.contains("reactorHeat")) {
-            reactorHeat = Math.max(0, tag.getDouble("reactorHeat"));
-            plasmaTemperature = Math.max(0, tag.getLong("plasmaTemperature"));
-            chargeAmount = Math.max(0, tag.getLong("chargeAmount"));
+            reactorHeat = Math.max(0, tag.getDoubleOr("reactorHeat", 0D));
+            plasmaTemperature = Math.max(0, tag.getLongOr("plasmaTemperature", 0L));
+            chargeAmount = Math.max(0, tag.getLongOr("chargeAmount", 0L));
             runtimeLoaded = true;
         }
-        ticksProcessed = tag.getDouble("ticksProcessed");
-        fuelConsumed = tag.getBoolean("fuelConsumed");
-        pendingRecipeId = tag.contains("activeRecipe") ? ResourceLocation.tryParse(tag.getString("activeRecipe")) : null;
-        if (tag.contains("lastKnownOptimalTemp")) lastKnownOptimalTemp = tag.getDouble("lastKnownOptimalTemp");
-        ignitionComplete = tag.contains("ignitionComplete") ? tag.getBoolean("ignitionComplete")
-                : plasmaTemperature >= lastKnownOptimalTemp;
-        prevAmplification = tag.getLong("prevAmplification");
-        if (tag.contains("lastHeatDeviationMult")) lastHeatDeviationMult = tag.getDouble("lastHeatDeviationMult");
+        ticksProcessed = tag.getDoubleOr("ticksProcessed", 0D);
+        fuelConsumed = tag.getBooleanOr("fuelConsumed", false);
+        pendingRecipeId = tag.contains("activeRecipe") ? Identifier.tryParse(tag.getStringOr("activeRecipe", "")) : null;
+        if (tag.contains("lastKnownOptimalTemp")) lastKnownOptimalTemp = tag.getDoubleOr("lastKnownOptimalTemp", 0D);
+        ignitionComplete = tag.getBooleanOr("ignitionComplete", false);
+        prevAmplification = tag.getLongOr("prevAmplification", 0L);
+        if (tag.contains("lastHeatDeviationMult")) lastHeatDeviationMult = tag.getDoubleOr("lastHeatDeviationMult", 0D);
     }
 }

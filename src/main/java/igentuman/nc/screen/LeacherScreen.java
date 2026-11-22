@@ -1,9 +1,10 @@
 package igentuman.nc.screen;
 
+import igentuman.nc.util.GuiTooltips;
 import igentuman.nc.block_entity.LeacherBE;
 import igentuman.nc.block_entity.PumpBE;
 import igentuman.nc.container.UniversalProcessorContainer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -29,21 +30,21 @@ public class LeacherScreen extends UniversalProcessorScreen {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        super.renderLabels(graphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        super.extractLabels(graphics, mouseX, mouseY);
         LeacherBE be = (LeacherBE) getMenu().getBlockEntity();
         switch (be.leacherState) {
-            case WRONG_POSITION -> graphics.drawString(font, __("nc.label.leacher_wrong_position"), 30, 16, 0xFF0000);
-            case NO_SOURCE      -> graphics.drawString(font, __("nc.label.leacher_no_source"), 30, 16, 0xFF0000);
-            case NO_ACID        -> graphics.drawString(font, __("nc.label.leacher_no_acid"), 30, 16, 0xFF0000);
-            case PUMPS_ERROR    -> graphics.drawString(font, __("nc.label.leacher_pumps_error"), 30, 16, 0xFF0000);
+            case WRONG_POSITION -> graphics.text(font, __("nc.label.leacher_wrong_position"), 30, 16, 0xFFFF0000);
+            case NO_SOURCE      -> graphics.text(font, __("nc.label.leacher_no_source"), 30, 16, 0xFFFF0000);
+            case NO_ACID        -> graphics.text(font, __("nc.label.leacher_no_acid"), 30, 16, 0xFFFF0000);
+            case PUMPS_ERROR    -> graphics.text(font, __("nc.label.leacher_pumps_error"), 30, 16, 0xFFFF0000);
         }
         renderPumpIndicators(graphics, mouseX, mouseY);
     }
 
-    private void renderPumpIndicators(GuiGraphics graphics, int mouseX, int mouseY) {
+    private void renderPumpIndicators(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         PumpBE[] pumps = getPumps();
-        graphics.drawString(font, __("nc.label.leacher_pumps"), PUMP_X0, PUMP_Y - 10, 0x404040, false);
+        graphics.text(font, __("nc.label.leacher_pumps"), PUMP_X0, PUMP_Y - 10, 0xFF404040, false);
         int relX = mouseX - leftPos;
         int relY = mouseY - topPos;
         for (int i = 0; i < 4; i++) {
@@ -53,7 +54,7 @@ public class LeacherScreen extends UniversalProcessorScreen {
             graphics.fill(x, PUMP_Y, x + PUMP_SIZE, PUMP_Y + PUMP_SIZE, valid ? COLOR_VALID : COLOR_INVALID);
             if (relX >= x && relX < x + PUMP_SIZE && relY >= PUMP_Y && relY < PUMP_Y + PUMP_SIZE) {
                 String key = valid ? "leacher.tooltip.valid_pump" : "leacher.tooltip.invalid_pump";
-                graphics.renderTooltip(font, __(key), relX, relY);
+                GuiTooltips.component(graphics, __(key), relX, relY);
             }
         }
     }

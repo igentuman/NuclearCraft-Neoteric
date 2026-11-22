@@ -6,7 +6,7 @@ import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
 import igentuman.nc.multiblock.accelerator.AcceleratorSlice.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -19,10 +19,10 @@ import static igentuman.nc.multiblock.MultiblockDebug.step;
 
 public class LinearAcceleratorValidator extends AbstractMultiblockValidator<LinearAcceleratorCache> {
 
-    private static final ResourceLocation EXPECTED_CASING = rl("accelerator_casing");
-    private static final ResourceLocation EXPECTED_ENDPOINT = rl("accelerator_beam_endpoint");
-    private static final ResourceLocation EXPECTED_BEAM = rl("particle_beam");
-    private static final ResourceLocation EXPECTED_SLICE = rl("accelerator_slice");
+    private static final Identifier EXPECTED_CASING = rl("accelerator_casing");
+    private static final Identifier EXPECTED_ENDPOINT = rl("accelerator_beam_endpoint");
+    private static final Identifier EXPECTED_BEAM = rl("particle_beam");
+    private static final Identifier EXPECTED_SLICE = rl("accelerator_slice");
     private static final int CROSS_SECTION = AcceleratorComponents.CROSS_SECTION;
     private static final int PREFETCH_SECTIONS = 32;
 
@@ -66,7 +66,7 @@ public class LinearAcceleratorValidator extends AbstractMultiblockValidator<Line
         BlockPos controllerPos = cache.controllerPos();
         if (!resolveBlocks()) {
             return fail("multiblock.validation.dimensions_unresolved", controllerPos, rl("valid_dimensions"),
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         Direction facing = cache.facing();
         if (!facing.getAxis().isHorizontal()) {
@@ -104,16 +104,16 @@ public class LinearAcceleratorValidator extends AbstractMultiblockValidator<Line
 
         if (width < CROSS_SECTION || width > maximumLong || height != CROSS_SECTION
                 || depth < CROSS_SECTION || depth > maximumLong) {
-            return fail("multiblock.discovery.wrong_size", controllerPos, EXPECTED_CASING, (ResourceLocation) null);
+            return fail("multiblock.discovery.wrong_size", controllerPos, EXPECTED_CASING, (Identifier) null);
         }
         if (width != CROSS_SECTION && depth != CROSS_SECTION) {
             return fail("multiblock.discovery.expected_linear_tube", controllerPos, EXPECTED_CASING,
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         length = Math.max(width, depth);
         if (length < range[0]) {
             return fail("multiblock.discovery.expected_linear_tube", controllerPos, EXPECTED_CASING,
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         forward = width == CROSS_SECTION ? inward : wallRight;
         right = width == CROSS_SECTION ? wallRight : inward;
@@ -188,11 +188,11 @@ public class LinearAcceleratorValidator extends AbstractMultiblockValidator<Line
     protected boolean validateRelations(LinearAcceleratorCache cache) {
         if (controllerCount != 1) {
             return fail("multiblock.linear.controller_count", cache.controllerPos(),
-                    rl("linear_accelerator_controller"), (ResourceLocation) null);
+                    rl("linear_accelerator_controller"), (Identifier) null);
         }
         if (ionSourceCount > 1 || beamPortCount + ionSourceCount != 2 || beamPortCount == 0) {
             return fail("multiblock.linear.endpoint_count", cache.controllerPos(), EXPECTED_ENDPOINT,
-                    (ResourceLocation) null);
+                    (Identifier) null);
         }
         if (ionSourceCount == 1) {
             for (int index = 0; index < endpoints.length; index++) {
@@ -267,7 +267,7 @@ public class LinearAcceleratorValidator extends AbstractMultiblockValidator<Line
 
     private boolean tooLarge(BlockPos from, Direction direction, int limit) {
         return fail("multiblock.discovery.too_large", from.relative(direction, limit + 1),
-                EXPECTED_CASING, (ResourceLocation) null);
+                EXPECTED_CASING, (Identifier) null);
     }
 
     private BlockPos localOrigin(BlockPos min, BlockPos max) {

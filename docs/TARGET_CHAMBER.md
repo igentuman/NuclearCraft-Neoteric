@@ -5,7 +5,7 @@ on the recipe, it produces a new material, outgoing particles, or both. Detector
 increase reaction efficiency and consume Forge Energy (FE). A redstone signal
 enables processing.
 
-This guide describes the NeoForge 1.21.1 implementation and default settings.
+This guide describes the NeoForge 26.1.2 implementation and default settings.
 Use JEI or EMI for crafting recipes, target materials, beam species, energy
 windows, focus requirements, and products available in your modpack.
 

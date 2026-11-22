@@ -7,20 +7,20 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.compat.ProcessorCategoryLayout;
 import igentuman.nc.compat.ProcessorCategoryLayout.Slot;
-import igentuman.nc.recipe.FluidOutput;
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.api.recipe.FluidOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.screen.element.ProgressBar;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static igentuman.nc.NuclearCraft.rl;
@@ -28,11 +28,11 @@ import static igentuman.nc.NuclearCraft.rl;
 /** EMI recipe display for a universal processor recipe, laid out to match the in-game GUI. */
 public class ProcessorEmiRecipe implements EmiRecipe {
 
-    private static final ResourceLocation SLOTS_TEX = rl("textures/gui/slots.png");
-    private static final ResourceLocation PROGRESS_TEX = rl("textures/gui/progress_bars.png");
+    private static final Identifier SLOTS_TEX = rl("textures/gui/slots.png");
+    private static final Identifier PROGRESS_TEX = rl("textures/gui/progress_bars.png");
 
     private final EmiRecipeCategory category;
-    private final ResourceLocation id;
+    private final RecipeHolder<UniversalProcessorRecipe> holder;
     private final UniversalProcessorRecipe recipe;
     private final ProcessorCategoryLayout layout;
     private final int processTime;
@@ -40,26 +40,17 @@ public class ProcessorEmiRecipe implements EmiRecipe {
     private final List<EmiStack> outputs = new ArrayList<>();
     private final List<EmiIngredient> outputIngredients = new ArrayList<>();
 
-    public ProcessorEmiRecipe(EmiRecipeCategory category, ResourceLocation id, UniversalProcessorRecipe recipe, ModEntry entry) {
+    public ProcessorEmiRecipe(EmiRecipeCategory category, RecipeHolder<UniversalProcessorRecipe> holder, ModEntry entry) {
         this.category = category;
-        this.id = id;
-        this.recipe = recipe;
+        this.holder = holder;
+        this.recipe = holder.value();
         this.layout = new ProcessorCategoryLayout(entry);
         this.processTime = recipe.getProcessTime();
 
         List<SizedIngredient> itemInputs = recipe.getItemInputs();
         for (int i = 0; i < layout.itemInputCount; i++) {
             if (i < itemInputs.size()) {
-                SizedIngredient si = itemInputs.get(i);
-                inputs.add(EmiIngredient.of(
-                    Arrays.stream(si.ingredient().getItems())
-                        .map(stack -> {
-                            ItemStack copy = stack.copy();
-                            copy.setCount(si.count());
-                            return (EmiIngredient) EmiStack.of(copy);
-                        })
-                        .toList()
-                ));
+                inputs.add(EmiIngredients.items(itemInputs.get(i)));
             } else {
                 inputs.add(EmiIngredient.of(List.of()));
             }
@@ -68,12 +59,7 @@ public class ProcessorEmiRecipe implements EmiRecipe {
         List<SizedFluidIngredient> fluidInputs = recipe.getFluidInputs();
         for (int i = 0; i < layout.fluidInputCount; i++) {
             if (i < fluidInputs.size()) {
-                SizedFluidIngredient sfi = fluidInputs.get(i);
-                inputs.add(EmiIngredient.of(
-                    Arrays.stream(sfi.getFluids())
-                        .map(fs -> (EmiIngredient) EmiStack.of(fs.getFluid(), sfi.amount()))
-                        .toList()
-                ));
+                inputs.add(EmiIngredients.fluids(fluidInputs.get(i)));
             } else {
                 inputs.add(EmiIngredient.of(List.of()));
             }
@@ -83,10 +69,8 @@ public class ProcessorEmiRecipe implements EmiRecipe {
         for (int i = 0; i < layout.itemOutputCount; i++) {
             if (i < itemOutputs.size()) {
                 List<ItemStack> members = itemOutputs.get(i).members();
-                outputs.add(members.isEmpty() ? EmiStack.EMPTY : EmiStack.of(members.getFirst()));
-                outputIngredients.add(ingredientOf(members.stream()
-                        .map(s -> (EmiStack) EmiStack.of(s))
-                        .toList()));
+                outputs.add(EmiIngredients.firstItem(members));
+                outputIngredients.add(EmiIngredients.itemMembers(members));
             } else {
                 outputs.add(EmiStack.EMPTY);
                 outputIngredients.add(EmiStack.EMPTY);
@@ -97,12 +81,8 @@ public class ProcessorEmiRecipe implements EmiRecipe {
         for (int i = 0; i < layout.fluidOutputCount; i++) {
             if (i < fluidOutputs.size()) {
                 List<FluidStack> members = fluidOutputs.get(i).members();
-                outputs.add(members.isEmpty()
-                        ? EmiStack.EMPTY
-                        : EmiStack.of(members.getFirst().getFluid(), members.getFirst().getAmount()));
-                outputIngredients.add(ingredientOf(members.stream()
-                        .map(fs -> (EmiStack) EmiStack.of(fs.getFluid(), fs.getAmount()))
-                        .toList()));
+                outputs.add(EmiIngredients.firstFluid(members));
+                outputIngredients.add(EmiIngredients.fluidMembers(members));
             } else {
                 outputs.add(EmiStack.EMPTY);
                 outputIngredients.add(EmiStack.EMPTY);
@@ -114,14 +94,23 @@ public class ProcessorEmiRecipe implements EmiRecipe {
         return recipe;
     }
 
+    public RecipeHolder<UniversalProcessorRecipe> holder() {
+        return holder;
+    }
+
+    @Override
+    public RecipeHolder<?> getBackingRecipe() {
+        return holder;
+    }
+
     @Override
     public EmiRecipeCategory getCategory() {
         return category;
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
-        return id;
+    public @Nullable Identifier getId() {
+        return holder.id().identifier();
     }
 
     @Override
@@ -163,11 +152,5 @@ public class ProcessorEmiRecipe implements EmiRecipe {
             widgets.addAnimatedTexture(PROGRESS_TEX, layout.arrowX, layout.arrowY, ProcessorCategoryLayout.BAR_W, layout.barH,
                     bar[0], bar[1] - layout.barH - 1, Math.max(1, processTime) * 50, true, false, false);
         }
-    }
-
-    private static EmiIngredient ingredientOf(List<EmiStack> stacks) {
-        if (stacks.isEmpty()) return EmiStack.EMPTY;
-        if (stacks.size() == 1) return stacks.get(0);
-        return EmiIngredient.of(stacks.stream().map(s -> (EmiIngredient) s).toList());
     }
 }

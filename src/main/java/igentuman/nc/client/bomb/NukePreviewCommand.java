@@ -31,7 +31,7 @@ public final class NukePreviewCommand {
 
     @SubscribeEvent
     public static void register(RegisterClientCommandsEvent event) {
-        if (FMLEnvironment.production) return;
+        if (FMLEnvironment.isProduction()) return;
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         dispatcher.register(Commands.literal("nukepreview")
                 .then(Commands.literal("spawn")
@@ -95,6 +95,6 @@ public final class NukePreviewCommand {
 
     private static void message(String text) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null) mc.player.displayClientMessage(Component.literal(text), false);
+        if (mc.player != null) mc.player.sendSystemMessage(Component.literal(text));
     }
 }

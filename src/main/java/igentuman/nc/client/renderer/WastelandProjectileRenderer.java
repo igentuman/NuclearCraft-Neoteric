@@ -4,42 +4,54 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import igentuman.nc.entity.EntityBlockProjectile;
 import igentuman.nc.setup.ModEntries;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.BlockModelResolver;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.state.BlockState;
 
-public class WastelandProjectileRenderer extends EntityRenderer<EntityBlockProjectile> {
+public class WastelandProjectileRenderer extends EntityRenderer<EntityBlockProjectile, WastelandProjectileRenderer.State> {
 
-    private final BlockRenderDispatcher blockRenderer;
+    private static final BlockDisplayContext DISPLAY = BlockDisplayContext.create();
+
+    private final BlockModelResolver blockModelResolver;
 
     public WastelandProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
-        blockRenderer = context.getBlockRenderDispatcher();
+        blockModelResolver = context.getBlockModelResolver();
         shadowRadius = 0.25F;
     }
 
     @Override
-    public void render(EntityBlockProjectile entity, float entityYaw, float partialTick, PoseStack poseStack,
-                       MultiBufferSource buffer, int packedLight) {
-        BlockState state = ModEntries.get("wasteland_earth").block().get().defaultBlockState();
-        float age = entity.tickCount + partialTick;
+    public State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public void extractRenderState(EntityBlockProjectile entity, State state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        blockModelResolver.update(state.block,
+                ModEntries.get("wasteland_earth").block().get().defaultBlockState(), DISPLAY);
+    }
+
+    @Override
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        float age = state.ageInTicks;
         poseStack.pushPose();
         poseStack.scale(0.5F, 0.5F, 0.5F);
         poseStack.mulPose(Axis.YP.rotationDegrees(age * 6.0F));
         poseStack.mulPose(Axis.ZN.rotationDegrees(age * 12.0F));
         poseStack.translate(-0.5D, -0.25D, -0.5D);
-        blockRenderer.renderSingleBlock(state, poseStack, buffer, packedLight, OverlayTexture.NO_OVERLAY);
+        state.block.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
         poseStack.popPose();
-        super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+        super.submit(state, poseStack, collector, camera);
     }
 
-    @Override
-    public ResourceLocation getTextureLocation(EntityBlockProjectile entity) {
-        return TextureAtlas.LOCATION_BLOCKS;
+    public static class State extends EntityRenderState {
+        public final BlockModelRenderState block = new BlockModelRenderState();
     }
 }

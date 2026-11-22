@@ -14,8 +14,8 @@ public final class HeatExchangerRecipes {
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<HeatExchangerRecipe>> HX_TYPE =
             RECIPE_TYPES.register("heat_exchanger", () -> RecipeType.simple(rl("heat_exchanger")));
-    public static final DeferredHolder<RecipeSerializer<?>, HeatExchangerRecipeSerializer> HX_SERIALIZER =
-            RECIPE_SERIALIZERS.register("heat_exchanger", HeatExchangerRecipeSerializer::new);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<HeatExchangerRecipe>> HX_SERIALIZER =
+            RECIPE_SERIALIZERS.register("heat_exchanger", HeatExchangerRecipeSerializer::create);
 
     public static void init() {}
 }

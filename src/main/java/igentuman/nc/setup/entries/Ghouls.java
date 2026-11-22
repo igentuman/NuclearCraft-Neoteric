@@ -7,7 +7,7 @@ import igentuman.nc.setup.ModEntries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.common.DeferredSpawnEggItem;
+import net.minecraft.world.item.SpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import static igentuman.nc.registration.ModEntryBuilder.addEntityType;
@@ -19,14 +19,16 @@ public class Ghouls extends ModEntries {
     public static final DeferredHolder<EntityType<?>, EntityType<EntityFeralGhoul>> FERAL_GHOUL =
             addEntityType("feral_ghoul",
                     EntityType.Builder.<EntityFeralGhoul>of(EntityFeralGhoul::new, MobCategory.MONSTER)
-                            .sized(0.6f, 1.95f));
+                            .sized(0.6f, 1.95f)
+                            .notInPeaceful());
 
     public static final DeferredHolder<EntityType<?>, EntityType<EntityWastelandBoss>> FERAL_GHOUL_BOSS =
             addEntityType("feral_ghoul_boss",
                     EntityType.Builder.<EntityWastelandBoss>of(EntityWastelandBoss::new, MobCategory.MONSTER)
                             .sized(1.95F, 4.35F)
                             .fireImmune()
-                            .clientTrackingRange(12));
+                            .clientTrackingRange(12)
+                            .notInPeaceful());
 
     public static final DeferredHolder<EntityType<?>, EntityType<EntityBlockProjectile>> WASTELAND_PROJECTILE =
             addEntityType("wasteland_projectile",
@@ -37,10 +39,10 @@ public class Ghouls extends ModEntries {
 
     public static void ghouls() {
         addItem("feral_ghoul_spawn_egg",
-                () -> new DeferredSpawnEggItem(FERAL_GHOUL, 0x7e9680, 0xc5d1c5, new Item.Properties()))
+                props -> new SpawnEggItem(props.spawnEgg(FERAL_GHOUL.get())))
                 .build();
         addItem("feral_ghoul_boss_spawn_egg",
-                () -> new DeferredSpawnEggItem(FERAL_GHOUL_BOSS, 0x344c38, 0x9bcf67, new Item.Properties()))
+                props -> new SpawnEggItem(props.spawnEgg(FERAL_GHOUL_BOSS.get())))
                 .build();
     }
 }

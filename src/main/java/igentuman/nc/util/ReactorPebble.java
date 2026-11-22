@@ -2,6 +2,7 @@ package igentuman.nc.util;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 
 public class ReactorPebble {
@@ -53,17 +54,17 @@ public class ReactorPebble {
         tag.putDouble("heat", heat);
         tag.putDouble("irradiation", irradiation);
         tag.putDouble("gamma", gamma);
-        tag.put("outputStack", outputStack.saveOptional(provider));
+        tag.store("outputStack", ItemStack.OPTIONAL_CODEC, provider.createSerializationContext(NbtOps.INSTANCE), outputStack);
         return tag;
     }
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
-        ticks = tag.getInt("ticks");
-        ticksProcessed = tag.getDouble("ticksProcessed");
-        criticality = tag.getDouble("criticality");
-        heat = tag.getDouble("heat");
-        irradiation = tag.getDouble("irradiation");
-        gamma = tag.contains("gamma") ? tag.getDouble("gamma") : 2.0;
-        outputStack = ItemStack.parseOptional(provider, tag.getCompound("outputStack"));
+        ticks = tag.getIntOr("ticks", 0);
+        ticksProcessed = tag.getDoubleOr("ticksProcessed", 0D);
+        criticality = tag.getDoubleOr("criticality", 0D);
+        heat = tag.getDoubleOr("heat", 0D);
+        irradiation = tag.getDoubleOr("irradiation", 0D);
+        gamma = tag.contains("gamma") ? tag.getDoubleOr("gamma", 0D) : 2.0;
+        outputStack = tag.read("outputStack", ItemStack.OPTIONAL_CODEC, provider.createSerializationContext(NbtOps.INSTANCE)).orElse(ItemStack.EMPTY);
     }
 }

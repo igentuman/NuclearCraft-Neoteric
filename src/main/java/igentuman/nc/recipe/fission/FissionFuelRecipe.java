@@ -1,19 +1,17 @@
 package igentuman.nc.recipe.fission;
 
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.recipe.MachineRecipe;
+import igentuman.nc.api.recipe.ItemOutput;
 import igentuman.nc.recipe.ProcessorRecipeInput;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 /** Fission fuel recipe: a fuel item burned over a process time, producing power and heat and yielding a depleted item. */
 public record FissionFuelRecipe(Ingredient input, ItemOutput output, int processTime, int power, int heat)
-        implements Recipe<ProcessorRecipeInput> {
+        implements MachineRecipe<ProcessorRecipeInput> {
 
     @Override
     public boolean matches(ProcessorRecipeInput in, Level level) {
@@ -23,39 +21,17 @@ public record FissionFuelRecipe(Ingredient input, ItemOutput output, int process
     }
 
     @Override
-    public ItemStack assemble(ProcessorRecipeInput in, HolderLookup.Provider registries) {
+    public ItemStack assemble(ProcessorRecipeInput in) {
         return output.resolve();
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return output.resolve();
-    }
-
-    @Override
-    public NonNullList<Ingredient> getIngredients() {
-        NonNullList<Ingredient> list = NonNullList.create();
-        list.add(input);
-        return list;
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return true;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<FissionFuelRecipe> getSerializer() {
         return FissionRecipes.FUEL_SERIALIZER.get();
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<FissionFuelRecipe> getType() {
         return FissionRecipes.FUEL_TYPE.get();
     }
 }

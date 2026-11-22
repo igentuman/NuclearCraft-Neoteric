@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "item": "nuclearcraft:boron_10_ni"
-  },
+  "ingredient": "nuclearcraft:boron_10_ni",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:boron_10"
   }
 }

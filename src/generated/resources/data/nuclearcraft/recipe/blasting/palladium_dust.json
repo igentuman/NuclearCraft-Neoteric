@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/palladium"
-  },
+  "ingredient": "#c:dusts/palladium",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:palladium_ingot"
   }
 }

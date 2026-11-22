@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_blocks",
   "ingredients": [
-    {
-      "tag": "c:ingots/uranium"
-    },
-    {
-      "tag": "c:ingots/uranium"
-    },
-    {
-      "tag": "c:ingots/uranium"
-    },
-    {
-      "tag": "c:ingots/uranium"
-    },
-    {
-      "tag": "c:ingots/uranium"
-    },
-    {
-      "tag": "c:ingots/uranium"
-    },
-    {
-      "tag": "c:ingots/uranium"
-    },
-    {
-      "tag": "c:ingots/uranium"
-    },
-    {
-      "tag": "c:ingots/uranium"
-    }
+    "#c:ingots/uranium",
+    "#c:ingots/uranium",
+    "#c:ingots/uranium",
+    "#c:ingots/uranium",
+    "#c:ingots/uranium",
+    "#c:ingots/uranium",
+    "#c:ingots/uranium",
+    "#c:ingots/uranium",
+    "#c:ingots/uranium"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:uranium_block"
   }
 }

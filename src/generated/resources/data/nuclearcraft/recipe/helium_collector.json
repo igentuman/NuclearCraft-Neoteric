@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft",
   "key": {
-    "B": {
-      "tag": "c:plates/thorium"
-    },
-    "I": {
-      "tag": "c:ingots/thorium"
-    },
-    "M": {
-      "item": "nuclearcraft:motor"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    }
+    "B": "#c:plates/thorium",
+    "I": "#c:ingots/thorium",
+    "M": "nuclearcraft:motor",
+    "P": "nuclearcraft:plate_advanced"
   },
   "pattern": [
     "PIP",
@@ -22,7 +14,6 @@
     "PIP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:helium_collector"
   }
 }

@@ -19,10 +19,10 @@ turbines, processors, kugelblitz - see the `COMPUTERS.md` reference shipped with
 The accelerator, ring accelerator, particle chambers and beam diverter all expose two beam-port
 methods used to route particles at runtime:
 
-- `getBeamPortsInfo()` → list | nil — one entry per beam port, sorted by position. Each entry is a
+- `getBeamPortsInfo()` → list | nil - one entry per beam port, sorted by position. Each entry is a
   table: `id` (int), `x` / `y` / `z` (int), `mode` (`"input"`, `"output"`, or `"disabled"`), and
   `particle` (a table with `energy` / `focus` / `amount` / `particle`, or nil).
-- `setBeamPortMode(id, mode)` → boolean — set port `id` to `"input"`, `"output"`, or `"disabled"`
+- `setBeamPortMode(id, mode)` → boolean - set port `id` to `"input"`, `"output"`, or `"disabled"`
   (case-insensitive). Returns `false` if the multiblock is not formed or the arguments are invalid.
 
 Both run on the server thread (`mainThread = true` on ComputerCraft, `synchronize = true` on

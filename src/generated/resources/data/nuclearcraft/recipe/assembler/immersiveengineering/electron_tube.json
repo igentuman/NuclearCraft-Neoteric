@@ -33,8 +33,8 @@
       }
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "immersiveengineering:electron_tube"
+      "type": "neoforge:registered",
+      "value": "immersiveengineering:electron_tube"
     }
   ],
   "type": "nuclearcraft:assembler",

@@ -3,12 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_particle_chamber",
   "ingredients": [
-    {
-      "item": "nuclearcraft:target_chamber_casing_glass"
-    }
+    "nuclearcraft:target_chamber_casing_glass"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:target_chamber_casing"
   }
 }

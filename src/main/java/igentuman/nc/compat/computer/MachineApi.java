@@ -8,7 +8,7 @@ import igentuman.nc.handler.sided.ItemCapabilityHandler;
 import igentuman.nc.setup.Registers;
 import li.cil.oc2.api.bus.device.object.Callback;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -61,7 +61,7 @@ public abstract class MachineApi<T extends GlobalBlockEntity> extends ComputerAp
         return be.recipeInfo.energyPerTick;
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final @Nullable Map<String, Object> getEnergy() {
         if (!be.hasEnergyStorage()) return null;
@@ -71,7 +71,7 @@ public abstract class MachineApi<T extends GlobalBlockEntity> extends ComputerAp
         return result;
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final Map<String, Object> list() {
         Map<Integer, Map<String, Object>> items = new HashMap<>();
@@ -86,7 +86,8 @@ public abstract class MachineApi<T extends GlobalBlockEntity> extends ComputerAp
         if (be.hasFluidTanks()) {
             FluidCapabilityHandler handler = be.contentHandler.getFluidHandler();
             for (int i = 0; i < handler.getTanks(); i++) {
-                if (!handler.getFluidInTank(i).isEmpty()) fluids.put(i + 1, tankInfo(handler, i));
+                FluidStack fluid = handler.getFluidInTank(i);
+                if (!fluid.isEmpty()) fluids.put(i + 1, tankInfo(fluid, handler.getTankCapacity(i)));
             }
         }
         Map<String, Object> result = new HashMap<>();
@@ -95,7 +96,7 @@ public abstract class MachineApi<T extends GlobalBlockEntity> extends ComputerAp
         return result;
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final @Nullable Map<String, Object> getItem(int slot) {
         if (!be.hasInventory()) return null;
@@ -108,7 +109,7 @@ public abstract class MachineApi<T extends GlobalBlockEntity> extends ComputerAp
         return item;
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final Map<Integer, Map<String, Object>> tanks() {
         Map<Integer, Map<String, Object>> result = new HashMap<>();
@@ -120,7 +121,7 @@ public abstract class MachineApi<T extends GlobalBlockEntity> extends ComputerAp
         return result;
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     @Callback
     public final @Nullable Map<String, Object> getTank(int index) {
         if (!be.hasFluidTanks()) return null;
@@ -159,9 +160,12 @@ public abstract class MachineApi<T extends GlobalBlockEntity> extends ComputerAp
     }
 
     private static Map<String, Object> tankInfo(FluidCapabilityHandler handler, int tank) {
-        FluidStack fluid = handler.getFluidInTank(tank);
+        return tankInfo(handler.getFluidInTank(tank), handler.getTankCapacity(tank));
+    }
+
+    private static Map<String, Object> tankInfo(FluidStack fluid, int capacity) {
         Map<String, Object> info = new HashMap<>();
-        info.put("capacity", handler.getTankCapacity(tank));
+        info.put("capacity", capacity);
         info.put("name", fluid.isEmpty() ? "" : BuiltInRegistries.FLUID.getKey(fluid.getFluid()).toString());
         info.put("amount", fluid.getAmount());
         return info;
@@ -170,7 +174,7 @@ public abstract class MachineApi<T extends GlobalBlockEntity> extends ComputerAp
     @Nullable
     protected static Map<String, Object> particleInfo(int registryId, long amount, long energyKeV, double focus) {
         ParticleDefinition definition = registryId < 0 ? null : Registers.PARTICLE_DEFINITION_REGISTRY.byId(registryId);
-        ResourceLocation id = definition == null ? null : Registers.PARTICLE_DEFINITION_REGISTRY.getKey(definition);
+        Identifier id = definition == null ? null : Registers.PARTICLE_DEFINITION_REGISTRY.getKey(definition);
         if (id == null || amount <= 0) return null;
         Map<String, Object> info = new HashMap<>();
         info.put("particle", id.toString());

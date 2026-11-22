@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:storage_blocks/magnesium"
-    }
+    "#c:storage_blocks/magnesium"
   ],
   "result": {
     "count": 9,

@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "item": "nuclearcraft:rhodochrosite_dust"
-  },
+  "ingredient": "nuclearcraft:rhodochrosite_dust",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:manganese_oxide_dust"
   }
 }

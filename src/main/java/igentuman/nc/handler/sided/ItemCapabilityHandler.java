@@ -1,6 +1,7 @@
 package igentuman.nc.handler.sided;
 
 import igentuman.nc.handler.SlotModePair;
+import igentuman.nc.handler.item.CustomInventoryHandler;
 import igentuman.nc.handler.SidedContentHandler.RelativeDirection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -8,9 +9,12 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.RangedResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -18,9 +22,9 @@ import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 
 /** Sided item handler backing an internal inventory, enforcing per-face access and auto push/pull. */
-public class ItemCapabilityHandler extends AbstractCapabilityHandler implements IItemHandlerModifiable {
+public class ItemCapabilityHandler extends AbstractCapabilityHandler implements ResourceHandler<ItemResource> {
 
-    private final ItemStackHandler internal;
+    private final CustomInventoryHandler internal;
     private final Map<Direction, ItemHandlerWrapper> wrappers = new EnumMap<>(Direction.class);
     private final Predicate<ItemStack>[] validators;
     private IntConsumer slotChangeListener;
@@ -36,7 +40,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         for (int i = 0; i < total; i++) {
             this.validators[i] = s -> true;
         }
-        this.internal = new ItemStackHandler(total) {
+        this.internal = new CustomInventoryHandler(total) {
             @Override
             protected void onContentsChanged(int slot) {
                 if (tile != null) tile.setChanged();
@@ -53,12 +57,14 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
 
     /** Restricts which items a slot accepts. A null validator clears the restriction. */
     public void setSlotValidator(int slot, Predicate<ItemStack> validator) {
+        internal.checkDirectMutation();
         if (slot >= 0 && slot < validators.length) {
             validators[slot] = validator == null ? s -> true : validator;
         }
     }
 
     public void setGuiOnlySlot(int slot, boolean guiOnly) {
+        internal.checkDirectMutation();
         if (slot >= 0 && slot < guiOnlySlots.length) {
             guiOnlySlots[slot] = guiOnly;
         }
@@ -73,6 +79,7 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
     }
 
     public void setSideInsertLocked(boolean locked) {
+        internal.checkDirectMutation();
         this.sideInsertLocked = locked;
     }
 
@@ -80,11 +87,11 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
         return sideInsertLocked;
     }
 
-    public ItemStackHandler getInternalHandler() {
+    public CustomInventoryHandler getInternalHandler() {
         return internal;
     }
 
-    public IItemHandler getCapability(Direction side) {
+    public ResourceHandler<ItemResource> getCapability(Direction side) {
         if (side == null) return this;
         return wrappers.computeIfAbsent(side, d -> new ItemHandlerWrapper(this, d));
     }
@@ -109,104 +116,77 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
                 || mode == SlotModePair.SlotMode.DEFAULT;
     }
 
-    @Override
     public void setStackInSlot(int slot, ItemStack stack) {
         internal.setStackInSlot(slot, stack);
     }
 
-    @Override
+    public void set(int index, ItemResource resource, int amount) { internal.set(index, resource, amount); }
+
     public int getSlots() {
         return internal.getSlots();
     }
 
-    @Override
     public ItemStack getStackInSlot(int slot) {
         return internal.getStackInSlot(slot);
     }
 
-    @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return internal.insertItem(slot, stack, simulate);
     }
 
-    @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return internal.extractItem(slot, amount, simulate);
     }
 
-    @Override
     public int getSlotLimit(int slot) {
         return internal.getSlotLimit(slot);
     }
 
-    @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         return internal.isItemValid(slot, stack);
     }
 
-    public void pushItems(Direction absoluteDir) {
-        if (tile == null || tile.getLevel() == null || tile.getLevel().isClientSide()) return;
-        BlockPos neighborPos = tile.getBlockPos().relative(absoluteDir);
-        IItemHandler neighbor = tile.getLevel().getCapability(
-                Capabilities.ItemHandler.BLOCK, neighborPos, absoluteDir.getOpposite());
-        if (neighbor == null) return;
-
-        Direction facing = getFacing();
-        RelativeDirection relDir = RelativeDirection.toRelative(absoluteDir, facing);
-        if (relDir == null) return;
-        SlotModePair[] pairs = sideMap.get(relDir.ordinal());
-        if (pairs == null) return;
-
-        for (SlotModePair pair : pairs) {
-            if (pair.getMode() != SlotModePair.SlotMode.PUSH) continue;
-            int slot = pair.getSlot();
-            if (slot < inputSlots) continue;
-            ItemStack inSlot = internal.getStackInSlot(slot);
-            if (inSlot.isEmpty()) continue;
-
-            for (int neighborSlot = 0; neighborSlot < neighbor.getSlots(); neighborSlot++) {
-                ItemStack remaining = neighbor.insertItem(neighborSlot, inSlot.copy(), true);
-                if (remaining.getCount() < inSlot.getCount()) {
-                    int toMove = inSlot.getCount() - remaining.getCount();
-                    neighbor.insertItem(neighborSlot, inSlot.copyWithCount(toMove), false);
-                    internal.extractItem(slot, toMove, false);
-                    break;
-                }
-            }
-        }
+    @Override public int size() { return internal.size(); }
+    @Override public ItemResource getResource(int index) { return internal.getResource(index); }
+    @Override public long getAmountAsLong(int index) { return internal.getAmountAsLong(index); }
+    @Override public long getCapacityAsLong(int index, ItemResource resource) { return internal.getCapacityAsLong(index, resource); }
+    @Override public boolean isValid(int index, ItemResource resource) { return internal.isValid(index, resource); }
+    @Override public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        return internal.insert(index, resource, amount, transaction);
+    }
+    @Override public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        return internal.extract(index, resource, amount, transaction);
     }
 
-    public void pullItems(Direction absoluteDir) {
-        if (tile == null || tile.getLevel() == null || tile.getLevel().isClientSide()) return;
-        BlockPos neighborPos = tile.getBlockPos().relative(absoluteDir);
-        IItemHandler neighbor = tile.getLevel().getCapability(
-                Capabilities.ItemHandler.BLOCK, neighborPos, absoluteDir.getOpposite());
-        if (neighbor == null) return;
+    public void pushItems(Direction absoluteDir) { transferItems(absoluteDir, true); }
+    public void pullItems(Direction absoluteDir) { transferItems(absoluteDir, false); }
 
-        Direction facing = getFacing();
-        RelativeDirection relDir = RelativeDirection.toRelative(absoluteDir, facing);
+    private void transferItems(Direction absoluteDir, boolean push) {
+        if (tile == null || tile.isRemoved() || tile.getLevel() == null || tile.getLevel().isClientSide()) return;
+        BlockPos neighborPos = tile.getBlockPos().relative(absoluteDir);
+        ResourceHandler<ItemResource> neighbor = tile.getLevel().getCapability(
+                Capabilities.Item.BLOCK, neighborPos, absoluteDir.getOpposite());
+        if (neighbor == null) return;
+        RelativeDirection relDir = RelativeDirection.toRelative(absoluteDir, getFacing());
         if (relDir == null) return;
         SlotModePair[] pairs = sideMap.get(relDir.ordinal());
         if (pairs == null) return;
-
+        ResourceHandler<ItemResource> sided = getCapability(absoluteDir);
         for (SlotModePair pair : pairs) {
-            if (pair.getMode() != SlotModePair.SlotMode.PULL) continue;
+            if (pair.getMode() != (push ? SlotModePair.SlotMode.PUSH : SlotModePair.SlotMode.PULL)) continue;
             int slot = pair.getSlot();
-            if (slot >= inputSlots) continue;
-
-            for (int neighborSlot = 0; neighborSlot < neighbor.getSlots(); neighborSlot++) {
-                ItemStack extracted = neighbor.extractItem(neighborSlot, 64, true);
-                if (extracted.isEmpty()) continue;
-                ItemStack remaining = internal.insertItem(slot, extracted.copy(), true);
-                if (remaining.getCount() < extracted.getCount()) {
-                    int toMove = extracted.getCount() - remaining.getCount();
-                    ItemStack toInsert = extracted.copyWithCount(toMove);
-                    ItemStack actualRemaining = internal.insertItem(slot, toInsert, false);
-                    int moved = toMove - actualRemaining.getCount();
+            if (slot < 0 || slot >= size() || (push ? slot < inputSlots : slot >= inputSlots)) continue;
+            var local = RangedResourceHandler.ofSingleIndex(sided, slot);
+            // Retain first accepting neighbour slot and the original 64-item pull ceiling.
+            for (int neighborSlot = 0; neighborSlot < neighbor.size(); neighborSlot++) {
+                var remote = RangedResourceHandler.ofSingleIndex(neighbor, neighborSlot);
+                try (var transaction = Transaction.openRoot()) {
+                    int moved = ResourceHandlerUtil.move(push ? local : remote, push ? remote : local,
+                            resource -> true, push ? (int) internal.getAmountAsLong(slot) : 64, transaction);
                     if (moved > 0) {
-                        neighbor.extractItem(neighborSlot, moved, false);
+                        transaction.commit();
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -221,13 +201,10 @@ public class ItemCapabilityHandler extends AbstractCapabilityHandler implements 
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("Items")) {
-            internal.deserializeNBT(provider, tag.getCompound("Items"));
-            if (internal.getSlots() != getTotalSlots()) {
-                internal.setSize(getTotalSlots());
-            }
+            internal.deserializeNBT(provider, tag.getCompound("Items").orElseThrow());
         }
         if (tag.contains("SideMap")) {
-            deserializeSideMap(tag.getCompound("SideMap"));
+            deserializeSideMap(tag.getCompound("SideMap").orElseThrow());
             invalidateWrappers();
         }
     }

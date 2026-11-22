@@ -1,5 +1,6 @@
 package igentuman.nc.block;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import com.mojang.serialization.MapCodec;
 import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.block_entity.UniversalProcessorBE;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,25 +36,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static igentuman.nc.util.TextUtils.__;
 
-/** Facing, power-lit block entity block for machine processors; opens its menu and ticks the backing BE. */
-public class UniversalProcessorBlock extends BaseEntityBlock {
+public class UniversalProcessorBlock extends BaseEntityBlock implements TooltipBlock {
 
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static MapCodec<UniversalProcessorBlock> CODEC;
     private final String name;
 
-    public UniversalProcessorBlock(String name) {
-        super(BlockBehaviour.Properties.of()
+    public UniversalProcessorBlock(Properties props, String name) {
+        super(props
                 .mapColor(MapColor.METAL)
                 .strength(3.5f)
                 .requiresCorrectToolForDrops()
@@ -86,7 +87,7 @@ public class UniversalProcessorBlock extends BaseEntityBlock {
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         if(CODEC == null) {
-            CODEC = simpleCodec((BlockBehaviour.Properties props) -> new UniversalProcessorBlock(name));
+            CODEC = simpleCodec((BlockBehaviour.Properties props) -> new UniversalProcessorBlock(props, name));
         }
         return CODEC;
     }
@@ -114,30 +115,30 @@ public class UniversalProcessorBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+    protected VoxelShape getOcclusionShape(BlockState state) {
         if (isCustomModel()) return Shapes.empty();
-        return super.getOcclusionShape(state, level, pos);
+        return super.getOcclusionShape(state);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                 Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
             if (!ModEntries.isEnabled(name)) {
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
             }
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof UniversalProcessorBE) {
                 serverPlayer.openMenu((UniversalProcessorBE) be, pos);
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return (lvl, pos, st, be) -> {
                 if (be instanceof GlobalBlockEntity gBE) {
                     gBE.clientTick();
@@ -153,18 +154,7 @@ public class UniversalProcessorBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock())) {
-            BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof GlobalBlockEntity gBE) {
-                gBE.drops();
-            }
-        }
-        super.onRemove(state, level, pos, newState, movedByPiston);
-    }
-
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        tooltipComponents.add(__("processor.description." + asItem().builtInRegistryHolder().getKey().location().getPath()).withStyle(ChatFormatting.GOLD));
+    public void addTooltip(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        tooltipComponents.accept(__("processor.description." + BuiltInRegistries.ITEM.getKey(asItem()).getPath()).withStyle(ChatFormatting.GOLD));
     }
 }

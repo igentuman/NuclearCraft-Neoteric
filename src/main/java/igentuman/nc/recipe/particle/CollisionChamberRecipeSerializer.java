@@ -12,7 +12,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import java.util.List;
 
-public final class CollisionChamberRecipeSerializer implements RecipeSerializer<CollisionChamberRecipe> {
+/** JSON and network codecs for {@link CollisionChamberRecipe}. */
+public final class CollisionChamberRecipeSerializer {
 
     private static final MapCodec<CollisionChamberRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             ParticleIngredient.CODEC.listOf().fieldOf("particle_inputs").forGetter(CollisionChamberRecipe::particleInputs),
@@ -52,13 +53,9 @@ public final class CollisionChamberRecipeSerializer implements RecipeSerializer<
         }
     };
 
-    @Override
-    public MapCodec<CollisionChamberRecipe> codec() {
-        return CODEC;
-    }
+    private CollisionChamberRecipeSerializer() {}
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, CollisionChamberRecipe> streamCodec() {
-        return STREAM_CODEC;
+    public static RecipeSerializer<CollisionChamberRecipe> create() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

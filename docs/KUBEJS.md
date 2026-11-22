@@ -1,6 +1,6 @@
 # KubeJS support
 
-Reference for NuclearCraft: Neoteric on NeoForge 1.21.1, based on the integration in this repository. Covers the NuclearCraft event API and recipe functions; general KubeJS APIs are outside its scope. Examples are illustrative and have not been run in game.
+NuclearCraft: Neoteric targets Minecraft 26.1.2 on NeoForge. The optional scripting integration is compiled against KubeJS 26.1.2-8.0.8 and Rhino 2101.2.8-build.91. The examples are pending in-game verification.
 
 ## Script locations
 
@@ -9,7 +9,7 @@ Reference for NuclearCraft: Neoteric on NeoForge 1.21.1, based on the integratio
 | `kubejs/startup_scripts/` | Register or change fuels, heat sinks, and particle sources | Restart the game/server |
 | `kubejs/server_scripts/` | Add, remove, and replace recipes inside `ServerEvents.recipes` | Reload server recipes, for example with `/reload` |
 
-The startup events are posted after startup scripts load, in this order: fuels, heat sinks, particle sources. New fuels and heat sinks collected by each event are registered after its callbacks finish. Keep the returned definition when configuring a newly registered entry; `override` looks up already registered entries.
+The startup events run once per process after startup scripts load, in the order fuels, heat sinks, then particle sources. New fuels and heat sinks collected by each event are registered after its callbacks finish. Keep the returned definition when configuring a newly registered entry. `override` looks up already registered entries. Install the same startup scripts on the server and clients when they add registered content.
 
 Use lowercase registry-safe names. Fuel groups, fuel names, and heat sink names are local names, not namespaced IDs. Item/fluid arguments use full IDs such as `minecraft:iron_ingot`. Particle source methods also accept particle names without a namespace and assume `nuclearcraft`.
 
@@ -57,9 +57,9 @@ All configuration functions return the same definition for chaining.
 
 The numeric fuel parameters default to zero, and isotopes default to `[0, 0]`. Set the operating parameters explicitly for new fuels. The fields `forgeEnergy`, `heat`, `criticality`, `depletion`, `efficiency`, `isotopes`, `timeModifier`, `powerModifier`, and `radiationModifier` are also public. `group` and `name` are final. Recipe modifiers are metadata, not a request to generate recipes.
 
-A normal family creates fuel and depleted items for the base, `_ox` (oxide), `_ni` (nitride), `_za` (zirconium alloy), and `_tr` (TRISO) variants. All except TRISO also get fluid forms. Special families get only the base item/fluid forms. Variant statistics are derived automatically; `override` recalculates them from the base.
+A normal family creates fuel and depleted items for the base, `_ox` (oxide), `_ni` (nitride), `_za` (zirconium alloy), and `_tr` (TRISO) variants. All except TRISO also get fluid forms. Special families get only the base item/fluid forms. Variant statistics are derived automatically. `override` recalculates them from the base. Solid-fuel fission power, heat and burn time come from the loaded `nuclearcraft:fission_reactor` recipe. Change that recipe in a server script to apply those changes to a solid-fuel burn.
 
-Item IDs follow `nuclearcraft:fuel_<group>_<name>`, replacing hyphens in the fuel name with underscores. Depleted item IDs add `depleted_` before `fuel_`; variant suffixes come last. Registration supplies content entries; provide the recipes, models, textures, and translations needed by your pack separately. Disabling a family preserves registry IDs and hides it from the creative listing; remove unwanted recipes separately.
+Item IDs follow `nuclearcraft:fuel_<group>_<name>`, replacing hyphens in the fuel name with underscores. Depleted item IDs add `depleted_` before `fuel_`. Variant suffixes come last. Script-defined fuels get fallback models, bucket definitions and English names. Provide the recipes for your pack separately. Disabling a family preserves registry IDs and hides it from the creative listing. Remove unwanted recipes separately.
 
 ```js
 // kubejs/startup_scripts/nc_fuels.js
@@ -106,7 +106,7 @@ For the `register(def)` overload, create a definition with `Java.loadClass('igen
 
 `name`, `heat`, and `rules` are public fields. Keep the registered name stable. Validator helpers `.blockLines()` and `.blocks()` expose Java maps of parsed conditions and resolved blocks; these are inspection helpers, not additional registration functions. Configure rules during startup before querying the validator, which caches its parsed rules.
 
-The block/item ID is `nuclearcraft:<name>_heat_sink`. Use the name without `_heat_sink` in event methods. Unknown names in `remove`/`override` are ignored; registering a name already present does not override it. Provide assets and crafting recipes for a new heat sink separately.
+The block/item ID is `nuclearcraft:<name>_heat_sink`. Use the name without `_heat_sink` in event methods. `remove` and `override` ignore unknown names. Use `override` to change an existing sink. New sinks get the reactor interior tag, mining tags, a fallback model and an English name. Supply crafting recipes separately.
 
 ### Placement rule syntax
 
@@ -287,12 +287,12 @@ These are the five additional explicitly registered recipe functions. Names belo
 | Function | Arguments / keys in order |
 |---|---|
 | `target_chamber` | `particle_input`, `cross_section`, `item_outputs = []`, `fluid_outputs = []`, `particle_outputs = []`, `item_inputs = []`, `fluid_inputs = []`, `released_energy_kev = 0`, `priority = 0` |
-| `decay_chamber` | `particle_input`, `particle_outputs = []`, `cross_section`, `released_energy_kev = 0`, `priority = 0` |
-| `collision_chamber` | `particle_inputs`, `particle_outputs = []`, `cross_section`, `released_energy_kev = 0`, `ordered_inputs = false`, `priority = 0` |
+| `decay_chamber` | `particle_input`, `particle_outputs`, `cross_section`, `released_energy_kev = 0`, `priority = 0` |
+| `collision_chamber` | `particle_inputs`, `particle_outputs`, `cross_section`, `released_energy_kev = 0`, `ordered_inputs = false`, `priority = 0` |
 | `accelerator_coolant` | `input_fluid`, `output_fluid`, `heat_per_mb`, `minimum_temperature_k` (optional) |
 | `kugelblitz_chamber` | `input`, `output`, `time_modifier = 1.0`, `power_modifier = 1.0` |
 
-For raw `event.custom` decay/collision recipes, include `particle_outputs` explicitly: their serializers require the array even though the KubeJS schemas default it to `[]`. Collision recipes require exactly two particle inputs; `ordered_inputs: false` accepts either beam order. Particle recipe priority is an integer; cross section is a double and released energy is a long in keV. Accelerator coolant `heat_per_mb` and optional temperature in kelvin are longs; omitting the temperature leaves it unspecified. Kugelblitz `input` is a sized item ingredient and `output` is an item output.
+Decay and collision recipes require an explicit `particle_outputs` array. Pass `[]` for a reaction with no particle products. Collision recipes require exactly two particle inputs, and `ordered_inputs: false` accepts either beam order. Particle recipe priority is an integer, cross section is a double, and released energy is a long in keV. Accelerator coolant `heat_per_mb` and optional temperature in kelvin are longs. Kugelblitz `input` is a sized item ingredient and `output` is an item output.
 
 ### Particle value formats
 
@@ -434,4 +434,4 @@ ServerEvents.recipes(event => {
 
 ## Recipe components and source reference
 
-The plugin registers four recipe component IDs: `nuclearcraft:item_output`, `nuclearcraft:fluid_output`, `nuclearcraft:particle_stack`, and `nuclearcraft:particle_ingredient`. These define value conversion for schemas; they are not additional global JavaScript functions.
+The plugin registers six recipe components for schema value conversion. Their IDs use the `nuclearcraft` namespace with paths `item_output`, `fluid_output`, `particle_stack`, `particle_ingredient`, `flat_sized_ingredient` and `flat_sized_fluid_ingredient`.

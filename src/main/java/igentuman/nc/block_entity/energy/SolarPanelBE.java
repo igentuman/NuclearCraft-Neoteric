@@ -18,7 +18,7 @@ public class SolarPanelBE extends AbstractEnergyBE {
     protected int generate() {
         if (level == null) return 0;
         BlockPos above = worldPosition.above();
-        if (level.isDay() && level.canSeeSky(above) && !level.isRainingAt(above)) {
+        if (level.isBrightOutside() && level.canSeeSky(above) && !level.isRainingAt(above)) {
             return generation;
         }
         return 0;

@@ -3,28 +3,22 @@ package igentuman.nc.multiblock.turbine;
 import igentuman.nc.config.Common;
 import igentuman.nc.api.multiblock.AbstractMultiblockLogic;
 import igentuman.nc.block_entity.turbine.TurbineControllerBE;
-import igentuman.nc.compat.create.CreateTurbine;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.handler.energy.LargeEnergyStorage;
 import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.recipe.turbine.TurbineRecipe;
 import igentuman.nc.recipe.turbine.TurbineRecipes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.fluids.FluidStack;
-
-import static net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public class TurbineLogic extends AbstractMultiblockLogic<TurbineCache> {
-
-    private static final boolean CREATE_LOADED = ModList.get().isLoaded("create");
-    private static final float MAX_KINETIC_SPEED = 256;
 
     private float rotationSpeed;
 
@@ -58,10 +52,18 @@ public class TurbineLogic extends AbstractMultiblockLogic<TurbineCache> {
                 int inputAmount = Math.min(requestedInput, inputForOutputRoom);
                 int outputAmount = consumedPerOp > 0 ? (int) ((long) inputAmount * producedPerOp / consumedPerOp) : 0;
                 if (inputAmount > 0 && outputAmount > 0) {
-                    realFlow = inputAmount;
-                    genPerTick = generateEnergy(be.energyStorage, tc, realFlow, powerMod);
-                    tanks.drainTank(0, inputAmount, EXECUTE);
-                    tanks.fillTank(1, output.copyWithAmount(outputAmount), EXECUTE);
+                    boolean converted = false;
+                    try (var transaction = Transaction.openRoot()) {
+                        if (tanks.extract(0, FluidResource.of(in), inputAmount, transaction) == inputAmount
+                                && tanks.insert(1, FluidResource.of(output), outputAmount, transaction) == outputAmount) {
+                            transaction.commit();
+                            converted = true;
+                        }
+                    }
+                    if (converted) {
+                        realFlow = inputAmount;
+                        genPerTick = generateEnergy(be.energyStorage, tc, realFlow, powerMod);
+                    }
                 }
             }
             maxGen = (int) computeEnergy(tc, maxFlow, powerMod);
@@ -70,7 +72,7 @@ public class TurbineLogic extends AbstractMultiblockLogic<TurbineCache> {
         float newSpeed = (float) ((rotationSpeed * 4 + realFlow / (Math.max(1, tc.flow) * Multiblocks.turbineBladeFlow)) / 5f);
         rotationSpeed = newSpeed < 0.001f ? 0f : newSpeed;
         be.setPowered(realFlow > 0);
-        if (CREATE_LOADED) driveBearings(level, tc, maxFlow, realFlow);
+        // Create kinetic output is deferred; the core FE and rotation display remain active.
         be.updateRuntimeDisplay(tc, rotationSpeed, (int) Math.min(realFlow, maxFlow), (int) maxFlow, genPerTick, maxGen);
     }
 
@@ -78,17 +80,6 @@ public class TurbineLogic extends AbstractMultiblockLogic<TurbineCache> {
         return tc.coilsEfficiency > 0
                 ? Math.max(1, 100.0 / tc.coilsEfficiency * Math.log(Math.log10(tc.activeCoils + 4) + 2))
                 : 1;
-    }
-
-    private void driveBearings(ServerLevel level, TurbineCache tc, double maxFlow, double realFlow) {
-        Direction.Axis axis = tc.axis;
-        if (axis == null) return;
-        double divisor = Math.max(1, Math.log(Math.max(1, tc.activeCoils) / coilsDrag(tc)) + 1);
-        float speed = (float) Math.min(MAX_KINETIC_SPEED, rotationSpeed * 5000 / divisor * Multiblocks.turbineKineticConversion);
-        float capacity = (float) ((Math.log1p(maxFlow) + Math.log1p(realFlow)) * 5);
-        for (BlockPos bearing : new BlockPos[]{tc.bearingPos1, tc.bearingPos2}) {
-            if (bearing != null) CreateTurbine.driveBearing(level, bearing, axis, speed, capacity);
-        }
     }
 
     private static double computeEnergy(TurbineCache tc, double flowValue, double powerModifier) {
@@ -109,7 +100,7 @@ public class TurbineLogic extends AbstractMultiblockLogic<TurbineCache> {
     }
 
     private static TurbineRecipe findRecipe(ServerLevel level, FluidStack in) {
-        for (RecipeHolder<TurbineRecipe> holder : level.getRecipeManager().getAllRecipesFor(TurbineRecipes.TURBINE_TYPE.get())) {
+        for (RecipeHolder<TurbineRecipe> holder : level.recipeAccess().recipeMap().byType(TurbineRecipes.TURBINE_TYPE.get())) {
             if (holder.value().input().test(in)) return holder.value();
         }
         return null;
@@ -134,6 +125,6 @@ public class TurbineLogic extends AbstractMultiblockLogic<TurbineCache> {
 
     @Override
     public void loadRuntime(CompoundTag tag, HolderLookup.Provider registries) {
-        rotationSpeed = Math.max(0f, tag.getFloat("rotationSpeed"));
+        rotationSpeed = Math.max(0f, tag.getFloatOr("rotationSpeed", 0F));
     }
 }

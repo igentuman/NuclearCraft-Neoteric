@@ -2,7 +2,7 @@ package igentuman.nc.world.structure;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
@@ -13,9 +13,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 
 public class WastelandTemplateFeature extends TemplateFeature {
 
-    private final ResourceLocation templateId;
+    private final Identifier templateId;
 
-    public WastelandTemplateFeature(Codec<NoneFeatureConfiguration> codec, ResourceLocation templateId) {
+    public WastelandTemplateFeature(Codec<NoneFeatureConfiguration> codec, Identifier templateId) {
         super(codec);
         this.templateId = templateId;
     }

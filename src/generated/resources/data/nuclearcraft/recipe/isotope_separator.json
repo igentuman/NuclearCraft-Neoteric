@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_machines",
   "key": {
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "M": {
-      "item": "nuclearcraft:motor"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    }
+    "C": "nuclearcraft:chassis",
+    "M": "nuclearcraft:motor",
+    "P": "nuclearcraft:plate_basic",
+    "R": "#c:dusts/redstone"
   },
   "pattern": [
     "PMP",
@@ -22,7 +14,6 @@
     "PMP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:isotope_separator"
   }
 }

@@ -4,9 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import igentuman.nc.block_entity.kugelblitz.BlackHoleBE;
 import igentuman.nc.client.renderer.ModRenderType;
-import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -27,36 +26,46 @@ public final class BlackHoleGeometryRenderer {
     }
 
     public static float bodyRadius(BlackHoleBE be, float partialTick) {
-        float growth = Math.min(be.getFormationAge(partialTick) / 0.45F, 1F);
-        return 0.7F * (0.85F + be.getBlackholeScale() * 0.5F) * (0.25F + 0.75F * growth) * 0.75F;
+        return bodyRadius(be.getFormationAge(partialTick), be.getBlackholeScale());
     }
 
-    public static void render(BlackHoleBE be, float partialTick, PoseStack poseStack, MultiBufferSource buffer) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) return;
-        Camera camera = mc.gameRenderer.getMainCamera();
-        float age = be.getFormationAge(partialTick);
+    public static float bodyRadius(float formationAge, float blackholeScale) {
+        float growth = Math.min(formationAge / 0.45F, 1F);
+        return 0.7F * (0.85F + blackholeScale * 0.5F) * (0.25F + 0.75F * growth) * 0.75F;
+    }
+
+    /**
+     * Submits the core sphere, accretion disk and photon ring.
+     *
+     * @param formationAge   {@link BlackHoleBE#getFormationAge(float)} at the frame's partial tick
+     * @param blackholeScale {@link BlackHoleBE#getBlackholeScale()}
+     * @param time           animation time in seconds (level game time + partial tick, / 20)
+     * @param center         world-space block centre
+     */
+    public static void submit(float formationAge, float blackholeScale, float time, Vec3 center,
+                              PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        float age = formationAge;
         float formation = Math.min(age / 2.5F, 1F);
         float wobble = (1F - formation) * (1F - formation);
-        float body = bodyRadius(be, partialTick);
-        float time = ((mc.level.getGameTime() % 240000L) + partialTick) / 20F;
+        float body = bodyRadius(formationAge, blackholeScale);
 
         Vector3f normal = new Vector3f(0.18F + wobble * 0.25F * Mth.sin(age * 11F), 1F,
                 0.25F + wobble * 0.2F * Mth.cos(age * 9F)).normalize();
         Vector3f axis = new Vector3f(1F, -normal.x / normal.y, 0F).normalize();
         Vector3f bitangent = new Vector3f(normal).cross(axis).normalize();
-        Vec3 center = Vec3.atCenterOf(be.getBlockPos());
-        Vector3f toCamera = camera.getPosition().subtract(center).toVector3f();
+        Vector3f toCamera = camera.pos.subtract(center).toVector3f();
         if (toCamera.lengthSquared() < 1.0E-6F) toCamera.set(0F, 0F, 1F);
         toCamera.normalize();
+        Quaternionf facing = new Quaternionf(camera.orientation);
 
         poseStack.pushPose();
         poseStack.translate(0.5D, 0.5D, 0.5D);
-        Matrix4f pose = poseStack.last().pose();
-        renderCore(buffer.getBuffer(ModRenderType.BLACK_HOLE_CORE), pose, body, age, wobble);
-        VertexConsumer additive = buffer.getBuffer(ModRenderType.BLACK_HOLE_DISK);
-        renderDisk(additive, pose, body, axis, bitangent, normal, toCamera, time);
-        renderPhotonRing(additive, pose, body, camera.rotation());
+        collector.submitCustomGeometry(poseStack, ModRenderType.BLACK_HOLE_CORE,
+                (pose, buffer) -> renderCore(buffer, pose.pose(), body, age, wobble));
+        collector.submitCustomGeometry(poseStack, ModRenderType.BLACK_HOLE_DISK, (pose, buffer) -> {
+            renderDisk(buffer, pose.pose(), body, axis, bitangent, normal, toCamera, time);
+            renderPhotonRing(buffer, pose.pose(), body, facing);
+        });
         poseStack.popPose();
     }
 

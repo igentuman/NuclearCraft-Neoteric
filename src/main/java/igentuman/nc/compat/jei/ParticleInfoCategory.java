@@ -10,11 +10,11 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,8 +26,8 @@ import static igentuman.nc.util.TextUtils.scaledFormat;
 
 public class ParticleInfoCategory implements IRecipeCategory<ParticleInfoRecipe> {
 
-    public static final RecipeType<ParticleInfoRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "particle_info", ParticleInfoRecipe.class);
+    public static final IRecipeType<ParticleInfoRecipe> TYPE =
+            IRecipeType.create(NuclearCraft.MODID, "particle_info", ParticleInfoRecipe.class);
 
     private static final int WIDTH = 160;
     private static final int HEIGHT = 120;
@@ -39,7 +39,7 @@ public class ParticleInfoCategory implements IRecipeCategory<ParticleInfoRecipe>
     }
 
     @Override
-    public RecipeType<ParticleInfoRecipe> getRecipeType() {
+    public IRecipeType<ParticleInfoRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -65,26 +65,26 @@ public class ParticleInfoCategory implements IRecipeCategory<ParticleInfoRecipe>
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ParticleInfoRecipe recipe, IFocusGroup focuses) {
-        builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addIngredient(ParticleType.PARTICLE, recipe.getStack());
-        builder.addSlot(RecipeIngredientRole.INPUT, 2, 2).addIngredient(ParticleType.PARTICLE, recipe.getStack());
+        builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).add(ParticleType.PARTICLE, recipe.getStack());
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 2).add(ParticleType.PARTICLE, recipe.getStack());
     }
 
     @Override
-    public void draw(ParticleInfoRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+    public void draw(ParticleInfoRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
         Font font = Minecraft.getInstance().font;
         DecimalFormat df = new DecimalFormat("#.##");
         ParticleDefinition definition = recipe.getDefinition();
 
-        graphics.drawString(font, __(definition.translationKey()), 20, 2, 0xFFFFFFFF);
-        graphics.pose().pushPose();
-        graphics.pose().scale(0.7F, 0.7F, 1F);
-        graphics.drawWordWrap(font, __("gui.nuclearcraft.jei.particle.mass",
+        graphics.text(font, __(definition.translationKey()), 20, 2, 0xFFFFFFFF);
+        graphics.pose().pushMatrix();
+        graphics.pose().scale(0.7F, 0.7F);
+        graphics.textWithWordWrap(font, __("gui.nuclearcraft.jei.particle.mass",
                 scaledFormat(definition.massMeV()) + " MeV/c^2"), 0, 30, 220, 0xFF404040);
-        graphics.drawWordWrap(font, __("gui.nuclearcraft.jei.particle.charge", df.format(definition.charge())), 0, 40, 220, 0xFF404040);
-        graphics.drawWordWrap(font, __("gui.nuclearcraft.jei.particle.spin", df.format(definition.spin())), 0, 50, 220, 0xFF404040);
-        graphics.drawWordWrap(font, __("gui.nuclearcraft.jei.particle.colour", recipe.interactsWithStrong()), 0, 60, 220, 0xFF404040);
-        graphics.drawWordWrap(font, __("gui.nuclearcraft.jei.particle.weak", recipe.interactsWithWeak()), 0, 70, 220, 0xFF404040);
-        graphics.drawWordWrap(font, __("nuclearcraft.particle." + recipe.getParticleId().getPath() + ".desc"), 0, 90, 220, 0xFF404040);
-        graphics.pose().popPose();
+        graphics.textWithWordWrap(font, __("gui.nuclearcraft.jei.particle.charge", df.format(definition.charge())), 0, 40, 220, 0xFF404040);
+        graphics.textWithWordWrap(font, __("gui.nuclearcraft.jei.particle.spin", df.format(definition.spin())), 0, 50, 220, 0xFF404040);
+        graphics.textWithWordWrap(font, __("gui.nuclearcraft.jei.particle.colour", recipe.interactsWithStrong()), 0, 60, 220, 0xFF404040);
+        graphics.textWithWordWrap(font, __("gui.nuclearcraft.jei.particle.weak", recipe.interactsWithWeak()), 0, 70, 220, 0xFF404040);
+        graphics.textWithWordWrap(font, __("nuclearcraft.particle." + recipe.getParticleId().getPath() + ".desc"), 0, 90, 220, 0xFF404040);
+        graphics.pose().popMatrix();
     }
 }

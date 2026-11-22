@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "nuclearcraft:advanced_processor"
-    },
-    "C": {
-      "item": "nuclearcraft:empty_detector"
-    },
-    "W": {
-      "item": "nuclearcraft:wire_gold_tungsten"
-    }
+    "A": "nuclearcraft:advanced_processor",
+    "C": "nuclearcraft:empty_detector",
+    "W": "nuclearcraft:wire_gold_tungsten"
   },
   "pattern": [
     "WWW",
@@ -18,7 +12,6 @@
     "WWW"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:wire_chamber_casing"
   }
 }

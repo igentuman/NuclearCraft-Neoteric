@@ -1,0 +1,18 @@
+{
+  "name": "Радиационная защита",
+  "icon": "nuclear_radiation:rad_shielding_medium",
+  "category": "nuclearcraft:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "hazmat",
+      "type": "items/4",
+      "header": "Радиационная защита",
+      "item1": "nuclear_radiation:rad_shielding_light",
+      "item2": "nuclear_radiation:rad_shielding_medium",
+      "item3": "nuclear_radiation:rad_shielding_heavy",
+      "item4": "nuclear_radiation:rad_shielding_dps",
+      "text": "$(item)Радиационную защиту$() можно добавить к броне для повышения её радиационной стойкости. Уровень получаемой защиты зависит от типа используемой накладки. При установке нескольких слоёв их эффекты суммируются."
+    }
+  ]
+}

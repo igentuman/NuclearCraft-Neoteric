@@ -1,9 +1,10 @@
 package igentuman.nc.recipe.fusion;
 
+import igentuman.nc.recipe.RecipeIngredientCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import igentuman.nc.recipe.FluidOutput;
+import igentuman.nc.api.recipe.FluidOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,10 +12,10 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 /** Codec and stream codec for reading and syncing {@link FusionCoolantRecipe} instances. */
-public class FusionCoolantRecipeSerializer implements RecipeSerializer<FusionCoolantRecipe> {
+public final class FusionCoolantRecipeSerializer {
 
     private static final MapCodec<FusionCoolantRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            SizedFluidIngredient.FLAT_CODEC.fieldOf("input_fluid").forGetter(FusionCoolantRecipe::input),
+            RecipeIngredientCodecs.FLUID.fieldOf("input_fluid").forGetter(FusionCoolantRecipe::input),
             FluidOutput.CODEC.fieldOf("output_fluid").forGetter(FusionCoolantRecipe::output),
             Codec.INT.fieldOf("cooling_rate").forGetter(FusionCoolantRecipe::coolingRate)
     ).apply(inst, FusionCoolantRecipe::new));
@@ -26,13 +27,9 @@ public class FusionCoolantRecipeSerializer implements RecipeSerializer<FusionCoo
                     ByteBufCodecs.VAR_INT, FusionCoolantRecipe::coolingRate,
                     FusionCoolantRecipe::new);
 
-    @Override
-    public MapCodec<FusionCoolantRecipe> codec() {
-        return CODEC;
-    }
+    private FusionCoolantRecipeSerializer() {}
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, FusionCoolantRecipe> streamCodec() {
-        return STREAM_CODEC;
+    public static RecipeSerializer<FusionCoolantRecipe> create() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

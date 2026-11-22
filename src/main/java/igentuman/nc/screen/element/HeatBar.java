@@ -3,7 +3,7 @@ package igentuman.nc.screen.element;
 import igentuman.nc.util.HeatBuffer;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -36,7 +36,7 @@ public class HeatBar extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         HeatBuffer heatBuffer = heatBufferSupplier.get();
         if (heatBuffer == null) return;
 
@@ -67,7 +67,7 @@ public class HeatBar extends AbstractWidget {
         }
 
         if (isHovered) {
-            graphics.renderComponentTooltip(
+            graphics.setComponentTooltipForNextFrame(
                     Minecraft.getInstance().font,
                     List.of(
                             __("screen.nuclearcraft.heat").append(": ").append(TextUtils.formatHeat(heatBuffer.currentHeat) + " / " + TextUtils.formatHeat(heatBuffer.capacity)),

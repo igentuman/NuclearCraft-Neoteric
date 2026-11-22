@@ -6,14 +6,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 public record ParticleIngredient(
-        Set<ResourceLocation> species,
+        Set<Identifier> species,
         long amount,
         long minimumEnergyKeV,
         long maximumEnergyKeV,
@@ -55,7 +55,7 @@ public record ParticleIngredient(
         return candidate.focus() >= minimumFocus;
     }
 
-    private static final Codec<List<ResourceLocation>> SPECIES_LIST_CODEC = ParticleStack.PARTICLE_ID_CODEC.listOf().comapFlatMap(
+    private static final Codec<List<Identifier>> SPECIES_LIST_CODEC = ParticleStack.PARTICLE_ID_CODEC.listOf().comapFlatMap(
             list -> list.isEmpty()
                     ? DataResult.error(() -> "Particle ingredient requires at least one species")
                     : DataResult.success(list),
@@ -72,7 +72,7 @@ public record ParticleIngredient(
             new ParticleIngredient(new LinkedHashSet<>(species), amount, minEnergy, maxEnergy, minFocus)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ParticleIngredient> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), i -> List.copyOf(i.species()),
+            Identifier.STREAM_CODEC.apply(ByteBufCodecs.list()), i -> List.copyOf(i.species()),
             ByteBufCodecs.VAR_LONG, ParticleIngredient::amount,
             ByteBufCodecs.VAR_LONG, ParticleIngredient::minimumEnergyKeV,
             ByteBufCodecs.VAR_LONG, ParticleIngredient::maximumEnergyKeV,

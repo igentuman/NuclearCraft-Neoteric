@@ -1,5 +1,8 @@
 package igentuman.nc.block_entity;
 
+import igentuman.nc.handler.energy.ItemEnergyTransfer;
+import igentuman.nc.handler.fluid.ContainerFluidHandler;
+import igentuman.nc.setup.Registers;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.ItemCapabilityHandler;
 import igentuman.nc.item.HEVItem;
@@ -15,10 +18,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 public class ChargingStationBE extends GlobalBlockEntity implements MenuProvider {
@@ -35,6 +39,12 @@ public class ChargingStationBE extends GlobalBlockEntity implements MenuProvider
 
     public ChargingStationBE(BlockPos pos, BlockState state, String name) {
         super(ModEntries.get(name).blockEntity().get(), pos, state, name);
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        drops();
     }
 
     public void toggleRedstoneMode() {
@@ -76,13 +86,17 @@ public class ChargingStationBE extends GlobalBlockEntity implements MenuProvider
         if (stack.isEmpty()) return false;
         if (stack.getItem() instanceof Q36Item) return true;
         if (stack.getItem() instanceof HEVItem) return true;
-        if (stack.getCapability(Capabilities.EnergyStorage.ITEM) != null) return true;
-        IFluidHandlerItem fluidCap = stack.getCapability(Capabilities.FluidHandler.ITEM);
-        if (fluidCap != null) {
-            net.minecraft.world.level.material.Fluid quantite = ModEntries.fluidOf("quantite_energy");
-            if (quantite != null) {
-                FluidStack probe = new FluidStack(quantite, 1);
-                return fluidCap.fill(probe, IFluidHandler.FluidAction.SIMULATE) > 0;
+        if (ItemAccess.forStack(stack).getCapability(Capabilities.Energy.ITEM) != null) return true;
+        var fluidCap = ItemAccess.forStack(stack).getCapability(Capabilities.Fluid.ITEM);
+        var quantite = ModEntries.fluidOf("quantite_energy");
+        if (fluidCap != null && quantite != null) {
+            var resource = FluidResource.of(quantite);
+            for (int tank = 0; tank < fluidCap.size(); tank++) {
+                var stored = fluidCap.getResource(tank);
+                if ((stored.isEmpty() || stored.getFluid() == quantite)
+                        && fluidCap.isValid(tank, resource) && fluidCap.getCapacityAsLong(tank, resource) > 0) {
+                    return true;
+                }
             }
         }
         return false;
@@ -100,86 +114,70 @@ public class ChargingStationBE extends GlobalBlockEntity implements MenuProvider
         if (!hasFluid && !hasEnergy) return;
 
         if (stack.getItem() instanceof Q36Item) {
-            chargeQ36(stack, tanks);
+            chargeQuantite(tanks, false);
             return;
         }
 
         if (stack.getItem() instanceof HEVItem) {
-            chargeHEV(stack, tanks);
-            chargeEnergy(stack);
+            chargeQuantite(tanks, true);
+            chargeEnergy();
             return;
         }
 
-        IFluidHandlerItem itemFluid = stack.getCapability(Capabilities.FluidHandler.ITEM);
+        var access = ItemAccess.forHandlerIndexStrict(items, 0);
+        var itemFluid = access.getCapability(Capabilities.Fluid.ITEM);
         if (itemFluid != null && tanks != null) {
-            fillFluidItem(stack, itemFluid, tanks, items);
+            try (var transaction = Transaction.openRoot()) {
+                if (ResourceHandlerUtil.moveFirst(new ContainerFluidHandler(tanks, 0), itemFluid,
+                        resource -> true, FLUID_PER_TICK, transaction) != null) {
+                    transaction.commit();
+                }
+            }
             return;
         }
 
-        chargeEnergy(stack);
+        chargeEnergy();
     }
 
-    private void chargeEnergy(ItemStack stack) {
-        IEnergyStorage itemEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-        if (itemEnergy != null && energyStorage != null) {
-            int possible = Math.min(CHARGE_PER_TICK, energyStorage.getEnergyStored());
-            if (possible <= 0) return;
-            int received = itemEnergy.receiveEnergy(possible, false);
-            if (received > 0) {
-                energyStorage.extractEnergy(received, false);
-                setChanged();
-            }
-        }
+    private void chargeEnergy() {
+        if (energyStorage == null || energyStorage.getAmountAsLong() <= 0) return;
+        ItemCapabilityHandler items = contentHandler.getItemHandler();
+        var access = ItemAccess.forHandlerIndexStrict(items, 0);
+        ItemEnergyTransfer.charge(energyStorage, access, CHARGE_PER_TICK, null);
     }
 
-    private void chargeQ36(ItemStack stack, @Nullable FluidCapabilityHandler tanks) {
+    private void chargeQuantite(@Nullable FluidCapabilityHandler tanks, boolean hev) {
         if (tanks == null) return;
-        int current = Q36Item.getCharge(stack);
-        int space = Q36Item.MAX_CHARGE - current;
-        if (space <= 0) return;
-        int fluidAvail = tanks.getFluidInTank(0).getAmount();
-        if (fluidAvail <= 0) return;
-        int fluidNeeded = (int) Math.ceil((double) space / Q36_QC_PER_FLUID);
-        int fluidToUse = Math.min(Q36_FLUID_PER_TICK, Math.min(fluidAvail, fluidNeeded));
-        if (fluidToUse <= 0) return;
-        int qcGained = Math.min(space, fluidToUse * Q36_QC_PER_FLUID);
-        FluidStack drained = tanks.drainTank(0, fluidToUse, IFluidHandler.FluidAction.EXECUTE);
-        if (!drained.isEmpty()) {
-            Q36Item.setCharge(stack, current + qcGained);
-            contentHandler.getItemHandler().setStackInSlot(0, stack);
-            setChanged();
-        }
-    }
-
-    private void chargeHEV(ItemStack stack, @Nullable FluidCapabilityHandler tanks) {
-        if (tanks == null) return;
-        int missing = HEVItem.MAX_QE_CHARGE - HEVItem.getQeCharge(stack);
+        var quantite = ModEntries.fluidOf("quantite_energy");
+        var fluid = tanks.getInternalHandler().getResource(0);
+        if (quantite == null || fluid.isEmpty() || fluid.getFluid() != quantite) return;
+        var access = ItemAccess.forHandlerIndexStrict(contentHandler.getItemHandler(), 0);
+        var resource = access.getResource();
+        int count = access.getAmount();
+        if (count <= 0) return;
+        int current = hev ? HEVItem.getQeCharge(resource.toStack()) : Q36Item.getCharge(resource.toStack());
+        int capacity = hev ? HEVItem.MAX_QE_CHARGE : Q36Item.MAX_CHARGE;
+        int missing = capacity - current;
         if (missing <= 0) return;
-        int fluidAvail = tanks.getFluidInTank(0).getAmount();
-        if (fluidAvail <= 0) return;
-        int fluidNeeded = (int) Math.ceil((double) missing / Q36_QC_PER_FLUID);
-        int fluidToUse = Math.min(Q36_FLUID_PER_TICK, Math.min(fluidAvail, fluidNeeded));
-        if (fluidToUse <= 0) return;
-        int qeGained = Math.min(missing, fluidToUse * Q36_QC_PER_FLUID);
-        FluidStack drained = tanks.drainTank(0, fluidToUse, IFluidHandler.FluidAction.EXECUTE);
-        if (!drained.isEmpty()) {
-            HEVItem.setQeCharge(stack, HEVItem.getQeCharge(stack) + qeGained);
-            contentHandler.getItemHandler().setStackInSlot(0, stack);
-            setChanged();
+        long totalMissing = (long) missing * count;
+        int needed = (int) Math.min(Q36_FLUID_PER_TICK,
+                (totalMissing + Q36_QC_PER_FLUID - 1) / Q36_QC_PER_FLUID);
+        int fluidToUse = Math.min(needed, tanks.getInternalHandler().getAmountAsInt(0));
+        int chargePerItem = (int) Math.min(missing, (long) fluidToUse * Q36_QC_PER_FLUID / count);
+        if (chargePerItem <= 0) return;
+        // Round up the fluid cost for the actual per-item charge, including a final partial mB.
+        fluidToUse = (int) (((long) chargePerItem * count + Q36_QC_PER_FLUID - 1) / Q36_QC_PER_FLUID);
+        var charged = resource.toStack();
+        if (hev) {
+            HEVItem.setQeCharge(charged, current + chargePerItem);
+        } else {
+            Q36Item.setCharge(charged, current + chargePerItem);
         }
-    }
-
-    private void fillFluidItem(ItemStack stack, IFluidHandlerItem itemFluid,
-                                FluidCapabilityHandler tanks, ItemCapabilityHandler items) {
-        FluidStack drained = tanks.drainTank(0, FLUID_PER_TICK, IFluidHandler.FluidAction.SIMULATE);
-        if (drained.isEmpty()) return;
-        int accepted = itemFluid.fill(drained, IFluidHandler.FluidAction.SIMULATE);
-        if (accepted <= 0) return;
-        FluidStack actual = tanks.drainTank(0, accepted, IFluidHandler.FluidAction.EXECUTE);
-        if (actual.isEmpty()) return;
-        itemFluid.fill(actual, IFluidHandler.FluidAction.EXECUTE);
-        items.setStackInSlot(0, itemFluid.getContainer());
-        setChanged();
+        try (var transaction = Transaction.openRoot()) {
+            if (tanks.extract(0, fluid, fluidToUse, transaction) != fluidToUse) return;
+            if (access.exchange(ItemResource.of(charged), count, transaction) != count) return;
+            transaction.commit();
+        }
     }
 
     @Override

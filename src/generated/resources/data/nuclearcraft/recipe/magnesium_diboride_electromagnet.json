@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "nuclearcraft_fusion",
   "key": {
-    "B": {
-      "item": "nuclearcraft:basic_electromagnet"
-    },
-    "C": {
-      "item": "nuclearcraft:coil_magnesium_diboride"
-    },
-    "S": {
-      "tag": "c:ingots/stainless_steel"
-    }
+    "B": "nuclearcraft:basic_electromagnet",
+    "C": "nuclearcraft:coil_magnesium_diboride",
+    "S": "#c:ingots/stainless_steel"
   },
   "pattern": [
     "CCC",
@@ -19,7 +13,6 @@
     "CCC"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:magnesium_diboride_electromagnet"
   }
 }

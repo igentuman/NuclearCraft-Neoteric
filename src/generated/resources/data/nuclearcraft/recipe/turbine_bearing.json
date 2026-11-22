@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_turbine",
   "key": {
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "S": {
-      "tag": "c:ingots/hsla_steel"
-    }
+    "G": "#c:ingots/gold",
+    "S": "#c:ingots/hsla_steel"
   },
   "pattern": [
     "GGG",

@@ -1,10 +1,11 @@
 package igentuman.nc.datagen.recipe.particle;
 
+import igentuman.nc.datagen.recipe.RecipeGen;
 import igentuman.nc.api.particle.ParticleIngredient;
 import igentuman.nc.api.particle.ParticleStack;
 import igentuman.nc.recipe.particle.DecayChamberRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.Set;
@@ -107,7 +108,7 @@ public final class DecayChamberRecipes {
                 minimumEnergyKeV, maximumEnergyKeV, 1.0);
         DecayChamberRecipe recipe = new DecayChamberRecipe(particleInput, List.of(outputs),
                 crossSection, releasedEnergyKeV, 0);
-        out.accept(ResourceLocation.fromNamespaceAndPath(MODID, "decay_chamber/" + id), recipe, null);
+        out.accept(RecipeGen.key("decay_chamber/" + id), recipe, null);
     }
 
     private static ParticleStack stack(String species) {

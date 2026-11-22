@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_nuggets",
   "ingredients": [
-    {
-      "tag": "c:ingots/lead"
-    }
+    "#c:ingots/lead"
   ],
   "result": {
     "count": 9,

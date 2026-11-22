@@ -1,16 +1,19 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.api.particle.ParticleDefinition;
 import igentuman.nc.setup.Registers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,7 +24,7 @@ import java.util.function.Consumer;
 /** Searchable particle dropdown used by the creative particle source. */
 public class ParticleSelector extends AbstractWidget {
 
-    private record Entry(ResourceLocation id, ParticleDefinition definition, Component label, String searchKey) {
+    private record Entry(Identifier id, ParticleDefinition definition, Component label, String searchKey) {
     }
 
     private static final int ROW_HEIGHT = 16;
@@ -31,8 +34,8 @@ public class ParticleSelector extends AbstractWidget {
     private final EditBox search;
     private final List<Entry> all = new ArrayList<>();
     private final List<Entry> filtered = new ArrayList<>();
-    private Consumer<ResourceLocation> onSelect;
-    private ResourceLocation selected;
+    private Consumer<Identifier> onSelect;
+    private Identifier selected;
     private int scrollOffset;
     private boolean open;
     private boolean suppressResponder;
@@ -43,7 +46,7 @@ public class ParticleSelector extends AbstractWidget {
                 width - ICON_WIDTH - 2, height - 2, Component.empty());
         search.setMaxLength(64);
         search.setBordered(true);
-        search.setTextColor(0xFFFFFF);
+        search.setTextColor(0xFFFFFFFF);
         search.setResponder(value -> {
             if (!suppressResponder) recompute();
         });
@@ -55,7 +58,7 @@ public class ParticleSelector extends AbstractWidget {
         all.clear();
         Registers.PARTICLE_DEFINITION_REGISTRY.entrySet().stream()
                 .map(entry -> {
-                    ResourceLocation id = entry.getKey().location();
+                    Identifier id = entry.getKey().identifier();
                     ParticleDefinition definition = entry.getValue();
                     Component label = Component.translatable(definition.translationKey());
                     String searchKey = (label.getString() + " " + id).toLowerCase(Locale.ROOT);
@@ -72,18 +75,18 @@ public class ParticleSelector extends AbstractWidget {
         scrollOffset = 0;
     }
 
-    public ParticleSelector setOnSelect(Consumer<ResourceLocation> consumer) {
+    public ParticleSelector setOnSelect(Consumer<Identifier> consumer) {
         onSelect = consumer;
         return this;
     }
 
-    public ParticleSelector setSelected(ResourceLocation particleId) {
+    public ParticleSelector setSelected(Identifier particleId) {
         selected = particleId;
         setSearchValue(selectedLabel());
         return this;
     }
 
-    public ResourceLocation getSelected() {
+    public Identifier getSelected() {
         return selected;
     }
 
@@ -95,11 +98,8 @@ public class ParticleSelector extends AbstractWidget {
         return search.isFocused();
     }
 
-    public void clearFieldFocus() {
-        search.setFocused(false);
-    }
-
     public void close() {
+        if (!open) return;
         open = false;
         search.setFocused(false);
         setSearchValue(selectedLabel());
@@ -113,7 +113,7 @@ public class ParticleSelector extends AbstractWidget {
 
     private String selectedLabel() {
         if (selected == null) return "";
-        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.get(selected);
+        ParticleDefinition definition = Registers.PARTICLE_DEFINITION_REGISTRY.getValue(selected);
         return definition == null ? selected.toString() : Component.translatable(definition.translationKey()).getString();
     }
 
@@ -126,25 +126,25 @@ public class ParticleSelector extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         graphics.fill(getX(), getY(), getX() + width, getY() + height, 0xFF101010);
         graphics.fill(getX(), getY(), getX() + width, getY() + 1, 0xFF5A5A5A);
         graphics.fill(getX(), getY() + height - 1, getX() + width, getY() + height, 0xFF5A5A5A);
 
-        ParticleDefinition definition = selected == null ? null : Registers.PARTICLE_DEFINITION_REGISTRY.get(selected);
+        ParticleDefinition definition = selected == null ? null : Registers.PARTICLE_DEFINITION_REGISTRY.getValue(selected);
         if (definition != null) {
-            graphics.blit(definition.textureId(), getX() + 1, getY() + (height - 16) / 2,
+            graphics.blit(RenderPipelines.GUI_TEXTURED, definition.textureId(), getX() + 1, getY() + (height - 16) / 2,
                     0, 0, 16, 16, 16, 16);
         }
         search.setX(getX() + ICON_WIDTH);
         search.setY(getY() + 1);
-        search.render(graphics, mouseX, mouseY, partialTick);
+        search.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
-    public void renderOverlay(GuiGraphics graphics, int mouseX, int mouseY) {
+    public void renderOverlay(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (!open) return;
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 300);
+        graphics.pose().pushMatrix();
+        graphics.nextStratum(); // open list covers widgets and slot items below (was z+300)
         int top = getY() + height;
         int rows = visibleRows();
         int bottom = top + rows * ROW_HEIGHT;
@@ -160,9 +160,9 @@ public class ParticleSelector extends AbstractWidget {
             if (mouseX >= getX() && mouseX < getX() + width && mouseY >= rowY && mouseY < rowY + ROW_HEIGHT) {
                 graphics.fill(getX(), rowY, getX() + width, rowY + ROW_HEIGHT, 0x60FFFFFF);
             }
-            graphics.blit(entry.definition().textureId(), getX() + 1, rowY, 0, 0, 16, 16, 16, 16);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, entry.definition().textureId(), getX() + 1, rowY, 0, 0, 16, 16, 16, 16);
             String label = font.plainSubstrByWidth(entry.label().getString(), width - ICON_WIDTH - 4);
-            graphics.drawString(font, label, getX() + ICON_WIDTH, rowY + 4, 0xFFFFFF, false);
+            graphics.text(font, label, getX() + ICON_WIDTH, rowY + 4, 0xFFFFFFFF, false);
         }
 
         if (filtered.size() > VISIBLE_ROWS) {
@@ -172,7 +172,7 @@ public class ParticleSelector extends AbstractWidget {
             int thumbY = top + (maxScroll() == 0 ? 0 : travel * scrollOffset / maxScroll());
             graphics.fill(getX() + width - 2, thumbY, getX() + width, thumbY + thumbHeight, 0xFFB0B0B0);
         }
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 
     private boolean inField(double mouseX, double mouseY) {
@@ -186,7 +186,14 @@ public class ParticleSelector extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return isActive() && (inField(mouseX, mouseY) || inList(mouseX, mouseY));
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
         if (inField(mouseX, mouseY)) {
             if (!open) {
                 open = true;
@@ -194,7 +201,7 @@ public class ParticleSelector extends AbstractWidget {
                 recompute();
             }
             search.setFocused(true);
-            search.mouseClicked(mouseX, mouseY, button);
+            search.mouseClicked(event, doubleClick);
             return true;
         }
         if (inList(mouseX, mouseY)) {
@@ -219,15 +226,15 @@ public class ParticleSelector extends AbstractWidget {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (!search.isFocused() || keyCode == GLFW.GLFW_KEY_ESCAPE) return false;
-        search.keyPressed(keyCode, scanCode, modifiers);
+    public boolean keyPressed(KeyEvent event) {
+        if (!search.isFocused() || event.isEscape()) return false;
+        search.keyPressed(event);
         return true;
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        return search.isFocused() && search.charTyped(codePoint, modifiers);
+    public boolean charTyped(CharacterEvent event) {
+        return search.isFocused() && search.charTyped(event);
     }
 
     @Override

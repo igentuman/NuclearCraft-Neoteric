@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/hafnium"
-  },
+  "ingredient": "#c:dusts/hafnium",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:hafnium_ingot"
   }
 }

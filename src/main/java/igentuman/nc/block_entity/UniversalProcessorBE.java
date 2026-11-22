@@ -1,24 +1,23 @@
 package igentuman.nc.block_entity;
 
+import igentuman.nc.api.catalyst.Catalyst;
+import igentuman.nc.api.catalyst.CatalystDef;
+import igentuman.nc.api.catalyst.CatalystRegistry;
+import igentuman.nc.api.catalyst.CatalystType;
 import igentuman.nc.block.UniversalProcessorBlock;
-import igentuman.nc.block_entity.catalyst.Catalyst;
-import igentuman.nc.block_entity.catalyst.CatalystDef;
-import igentuman.nc.block_entity.catalyst.CatalystRegistry;
-import igentuman.nc.block_entity.catalyst.CatalystType;
 import igentuman.nc.block_entity.catalyst.EnergyCatalyst;
 import igentuman.nc.container.UniversalProcessorContainer;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.handler.sided.ItemCapabilityHandler;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
+import igentuman.nc.recipe.RecipeSources;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.NBTField;
 import igentuman.nc.util.caps.ItemCapDefinition;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,15 +26,13 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.SequencedMap;
 
 /** Block entity for single-block processing machines; runs recipes with redstone control and catalyst modifiers. */
 public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvider {
@@ -48,8 +45,8 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
     public long enrgyPerTick = 1;
     protected double energyMultiplier = 1;
 
-    private final Map<CatalystType, Catalyst> activeCatalysts = new EnumMap<>(CatalystType.class);
-    private boolean validatorsInstalled = false;
+    private final SequencedMap<CatalystType, Catalyst> activeCatalysts = new LinkedHashMap<>();
+    private RecipeMap validatorRecipes;
     private boolean catalystListenerInstalled = false;
     private boolean catalystsDirty = true;
 
@@ -59,8 +56,21 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
             contentHandler.getFluidHandler().getInternalHandler().setFixedCapacities();
         }
         if (contentHandler.hasItemCapability()) {
-            contentHandler.getItemHandler().setSideInsertLocked(true);
+            var handler = contentHandler.getItemHandler();
+            handler.setSideInsertLocked(true);
+            ModEntry entry = ModEntries.get(name);
+            ItemCapDefinition cap = entry.itemCap();
+            int slot = cap.inputSlots + cap.outputSlots + cap.globalSlots;
+            for (CatalystType type : entry.supportedCatalysts()) {
+                handler.setSlotValidator(slot++, stack -> findDef(type, stack) != null);
+            }
         }
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        drops();
     }
 
     @Override
@@ -71,14 +81,14 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
         if (redstoneMode == 1 && level != null && !level.hasNeighborSignal(worldPosition)) return;
         refreshCatalysts();
         recipeInfo.resetCatalystModifiers();
-        for (Catalyst c : activeCatalysts.values()) c.preTick();
+        for (Catalyst catalyst : activeCatalysts.values()) catalyst.preTick();
         updateUpgradeMultipliers();
         if (recipeInfo.multiplier > 0) {
             recipeInfo.energyPerTick = (int) (recipeInfo.energyPerTick * energyMultiplier / recipeInfo.multiplier);
         }
         enrgyPerTick = (long) recipeInfo.energyPerTick * recipeInfo.multiplier;
         super.serverTick();
-        for (Catalyst c : activeCatalysts.values()) c.postTick();
+        for (Catalyst catalyst : activeCatalysts.values()) catalyst.postTick();
         updatePoweredState();
     }
 
@@ -93,7 +103,7 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
     }
 
     protected void updatePoweredState() {
-        if (level == null || level.isClientSide) return;
+        if (level == null || level.isClientSide()) return;
         BlockState state = getBlockState();
         if (!state.hasProperty(UniversalProcessorBlock.POWERED)) return;
         boolean powered = recipeInfo.active;
@@ -121,7 +131,7 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
 
     /** Rebuilds {@link #activeCatalysts} from the per-type catalyst slots and refreshes each power. */
     private void refreshCatalysts() {
-        if(!catalystsDirty) return;
+        if (!catalystsDirty) return;
         catalystsDirty = false;
         ModEntry entry = ModEntries.get(name);
         if (entry == null || !entry.hasCatalysts()) return;
@@ -130,17 +140,9 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
         if (cap == null) return;
 
         var handler = contentHandler.getItemHandler();
-        Set<CatalystType> supported = entry.supportedCatalysts();
-        int base = cap.inputSlots + cap.outputSlots + cap.globalSlots;
-        int i = 0;
-        for (CatalystType type : supported) {
-            int slot = base + i;
-            i++;
-            ItemStack stack = handler.getStackInSlot(slot);
-            if (stack.isEmpty()) {
-                activeCatalysts.remove(type);
-                continue;
-            }
+        int slot = cap.inputSlots + cap.outputSlots + cap.globalSlots;
+        for (CatalystType type : entry.supportedCatalysts()) {
+            ItemStack stack = handler.getStackInSlot(slot++);
             CatalystDef def = findDef(type, stack);
             if (def == null) {
                 activeCatalysts.remove(type);
@@ -150,9 +152,9 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
             if (catalyst == null || catalyst.item != stack.getItem()) {
                 catalyst = def.factory().create(this);
                 catalyst.item = stack.getItem();
-                activeCatalysts.put(type, catalyst);
             }
             catalyst.power = stack.getCount();
+            activeCatalysts.putLast(type, catalyst);
         }
         Catalyst energy = activeCatalysts.get(CatalystType.ENERGY);
         int energyPower = energy == null ? 0 : energy.power;
@@ -174,80 +176,48 @@ public class UniversalProcessorBE extends GlobalBlockEntity implements MenuProvi
     }
 
     private void installSlotValidators() {
-        if (validatorsInstalled || level == null) return;
+        if (level == null) return;
+        RecipeMap current = RecipeSources.recipes(level);
+        if (validatorRecipes == current) return;
         ModEntry entry = ModEntries.get(name);
         if (entry == null) return;
-        if (entry.hasRecipes() && recipeInfo.getRecipes().isEmpty()) return;
+        List<SizedIngredient> itemInputs = new ArrayList<>();
+        List<SizedFluidIngredient> fluidInputs = new ArrayList<>();
+        for (var value : recipeInfo.getRecipes().values()) {
+            if (value instanceof UniversalProcessorRecipe recipe) {
+                itemInputs.addAll(recipe.getItemInputs());
+                fluidInputs.addAll(recipe.getFluidInputs());
+            }
+        }
 
         if (contentHandler.hasItemCapability() && entry.itemCap() != null) {
             ItemCapDefinition cap = entry.itemCap();
             ItemCapabilityHandler handler = contentHandler.getItemHandler();
-            List<Item> allowedInputs = collectAllowedInputItems();
             for (int i = 0; i < cap.inputSlots; i++) {
-                handler.setSlotValidator(i, stack -> allowedInputs.isEmpty() || allowedInputs.contains(stack.getItem()));
-            }
-            if (entry.hasCatalysts()) {
-                int base = cap.inputSlots + cap.outputSlots + cap.globalSlots;
-                int i = 0;
-                for (CatalystType type : entry.supportedCatalysts()) {
-                    List<Item> catItems = catalystItems(type);
-                    handler.setSlotValidator(base + i, stack -> catItems.contains(stack.getItem()));
-                    i++;
-                }
+                handler.setSlotValidator(i, stack -> !entry.hasRecipes()
+                        || itemInputs.stream().anyMatch(input -> input.ingredient().test(stack)));
             }
         }
 
         if (contentHandler.hasFluidCapability() && entry.fluidCap() != null) {
             FluidCapabilityHandler fh = contentHandler.getFluidHandler();
             int inputTanks = entry.fluidCap().inputTanks.size();
-            List<Fluid> allowedFluids = collectAllowedInputFluids();
             for (int t = 0; t < inputTanks; t++) {
                 fh.getInternalHandler().setTankValidator(t,
-                        fs -> allowedFluids.isEmpty() || allowedFluids.contains(fs.getFluid()));
+                        stack -> !entry.hasRecipes()
+                                || fluidInputs.stream().anyMatch(input -> input.ingredient().test(stack)));
             }
         }
 
         if (contentHandler.hasItemCapability()) {
             contentHandler.getItemHandler().setSideInsertLocked(false);
         }
-        validatorsInstalled = true;
+        validatorRecipes = current;
     }
 
-    private List<Item> collectAllowedInputItems() {
-        List<Item> items = new ArrayList<>();
-        for (Recipe<?> r : recipeInfo.getRecipes().values()) {
-            if (!(r instanceof UniversalProcessorRecipe recipe)) continue;
-            for (SizedIngredient si : recipe.getItemInputs()) {
-                for (ItemStack st : si.ingredient().getItems()) {
-                    if (!items.contains(st.getItem())) items.add(st.getItem());
-                }
-            }
-        }
-        return items;
-    }
-
-    private List<Fluid> collectAllowedInputFluids() {
-        List<Fluid> fluids = new ArrayList<>();
-        for (Recipe<?> r : recipeInfo.getRecipes().values()) {
-            if (!(r instanceof UniversalProcessorRecipe recipe)) continue;
-            for (SizedFluidIngredient sfi : recipe.getFluidInputs()) {
-                for (FluidStack fs : sfi.getFluids()) {
-                    if (!fluids.contains(fs.getFluid())) fluids.add(fs.getFluid());
-                }
-            }
-        }
-        return fluids;
-    }
-
-    private List<Item> catalystItems(CatalystType type) {
-        List<Item> items = new ArrayList<>();
-        for (CatalystDef def : CatalystRegistry.byType(type)) {
-            items.add(def.item().get());
-        }
-        return items;
-    }
-
-    private CatalystDef findDef(CatalystType type, ItemStack stack) {
+    @Nullable
+    private static CatalystDef findDef(CatalystType type, ItemStack stack) {
+        if (stack.isEmpty()) return null;
         for (CatalystDef def : CatalystRegistry.byType(type)) {
             if (def.item().get() == stack.getItem()) return def;
         }

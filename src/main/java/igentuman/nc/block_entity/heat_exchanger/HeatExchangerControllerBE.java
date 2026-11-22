@@ -4,21 +4,20 @@ import igentuman.nc.block_entity.MultiblockControllerBE;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.handler.fluid.FluidStackHandler;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
-import igentuman.nc.recipe.heat_exchanger.HeatExchangerRecipe;
+import igentuman.nc.recipe.RecipeSources;
 import igentuman.nc.recipe.heat_exchanger.HeatExchangerRecipes;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.HeatBuffer;
 import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import static net.minecraft.world.level.block.Block.UPDATE_CLIENTS;
 
@@ -42,7 +41,7 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
     @NBTField(syncToClient = true)
     public final HeatBuffer heatBuffer = new HeatBuffer();
 
-    private boolean validatorsReady = false;
+    private RecipeMap validatorRecipes;
 
     public HeatExchangerControllerBE(BlockPos pos, BlockState state, String name) {
         super(ModEntries.get(name).blockEntity().get(), pos, state, name);
@@ -51,6 +50,7 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
     @Override
     public void serverTick() {
         if (!(level instanceof ServerLevel serverLevel)) return;
+        ensureValidators();
         tickMultiblock(serverLevel);
         boolean newFormed = mbInstance != null && mbInstance.formed && !mbInstance.dirty;
         if (formed != newFormed) {
@@ -110,7 +110,7 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
         return fh != null ? fh.getInternalHandler() : null;
     }
 
-    public IFluidHandler portFluidHandler(boolean hot) {
+    public ResourceHandler<FluidResource> portFluidHandler(boolean hot) {
         FluidStackHandler internal = fluidTanks();
         if (internal == null) return null;
         ensureValidators();
@@ -120,25 +120,29 @@ public class HeatExchangerControllerBE extends MultiblockControllerBE {
     }
 
     public void ensureValidators() {
-        if (validatorsReady) return;
-        if (!(level instanceof ServerLevel sl)) return;
+        if (level == null) return;
+        RecipeMap current = RecipeSources.recipes(level);
+        if (validatorRecipes == current) return;
         FluidStackHandler internal = fluidTanks();
         if (internal == null) return;
-        Set<Fluid> hotInputs = collectInputs(sl, true);
-        Set<Fluid> coldInputs = collectInputs(sl, false);
-        internal.setTankValidator(TANK_HOT_IN, fs -> hotInputs.contains(fs.getFluid()));
-        internal.setTankValidator(TANK_COLD_IN, fs -> coldInputs.contains(fs.getFluid()));
-        validatorsReady = true;
+        List<FluidIngredient> hotInputs = collectInputs(current, true);
+        List<FluidIngredient> coldInputs = collectInputs(current, false);
+        internal.setTankValidator(TANK_HOT_IN, stack -> hotInputs.stream().anyMatch(input -> input.test(stack)));
+        internal.setTankValidator(TANK_COLD_IN, stack -> coldInputs.stream().anyMatch(input -> input.test(stack)));
+        validatorRecipes = current;
     }
 
-    private Set<Fluid> collectInputs(ServerLevel sl, boolean hot) {
-        Set<Fluid> fluids = new HashSet<>();
-        for (RecipeHolder<HeatExchangerRecipe> holder : sl.getRecipeManager().getAllRecipesFor(HeatExchangerRecipes.HX_TYPE.get())) {
-            HeatExchangerRecipe r = holder.value();
-            if (hot ? !r.isHot() : !r.isCold()) continue;
-            for (FluidStack fs : r.input().getFluids()) fluids.add(fs.getFluid());
-        }
-        return fluids;
+    private List<FluidIngredient> collectInputs(RecipeMap recipes, boolean hot) {
+        return recipes.byType(HeatExchangerRecipes.HX_TYPE.get()).stream()
+                .map(holder -> holder.value())
+                .filter(recipe -> hot ? recipe.isHot() : recipe.isCold())
+                .map(recipe -> recipe.input().ingredient()).toList();
+    }
+
+    @Override
+    public void clientTick() {
+        super.clientTick();
+        ensureValidators();
     }
 
     @Override

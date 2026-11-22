@@ -13,7 +13,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.DelegatingEnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EmptyEnergyHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class BatteryBE extends AbstractStorageBE {
@@ -31,9 +34,11 @@ public class BatteryBE extends AbstractStorageBE {
 
     @Nullable
     @Override
-    public IEnergyStorage getEnergyHandler(@Nullable Direction side) {
+    public EnergyHandler getEnergyHandler(@Nullable Direction side) {
         if (side != null && getSideMode(side) == SideMode.DISABLED) return null;
-        return energyStorage;
+        return new DelegatingEnergyHandler(() -> isRemoved()
+                || side != null && getSideMode(side) == SideMode.DISABLED
+                ? EmptyEnergyHandler.INSTANCE : energyStorage);
     }
 
     @Override
@@ -44,27 +49,14 @@ public class BatteryBE extends AbstractStorageBE {
         for (Direction direction : Direction.values()) {
             SideMode mode = getSideMode(direction);
             if (mode == SideMode.DEFAULT || mode == SideMode.DISABLED) continue;
-            IEnergyStorage neighbour = level.getCapability(
-                    Capabilities.EnergyStorage.BLOCK, worldPosition.relative(direction), direction.getOpposite());
+            EnergyHandler neighbour = level.getCapability(
+                    Capabilities.Energy.BLOCK, worldPosition.relative(direction), direction.getOpposite());
             if (neighbour == null) continue;
 
-            if (mode == SideMode.OUT) {
-                int canExtract = energyStorage.extractEnergy(rate, true);
-                if (canExtract <= 0) continue;
-                int accepted = neighbour.receiveEnergy(canExtract, false);
-                if (accepted > 0) {
-                    energyStorage.extractEnergy(accepted, false);
-                    changed = true;
-                }
-            } else if (mode == SideMode.IN) {
-                int canReceive = energyStorage.receiveEnergy(rate, true);
-                if (canReceive <= 0) continue;
-                int provided = neighbour.extractEnergy(canReceive, false);
-                if (provided > 0) {
-                    energyStorage.receiveEnergy(provided, false);
-                    changed = true;
-                }
-            }
+            int moved = mode == SideMode.OUT
+                    ? EnergyHandlerUtil.move(energyStorage, neighbour, rate, null)
+                    : EnergyHandlerUtil.move(neighbour, energyStorage, rate, null);
+            changed |= moved > 0;
         }
         return changed;
     }
@@ -96,14 +88,14 @@ public class BatteryBE extends AbstractStorageBE {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveTagData(tag, registries);
         tag.put("Energy", energyStorage.serializeNBT(registries));
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadTagData(tag, registries);
         if (tag.contains("Energy")) {
             energyStorage.deserializeNBT(registries, tag.get("Energy"));
         }

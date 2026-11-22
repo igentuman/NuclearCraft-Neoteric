@@ -4,17 +4,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import igentuman.nc.entity.anomaly.GravitationalAnomalyEntity;
 import igentuman.nc.setup.ModEntries;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelResolver;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Random;
 
-public class GravitationalAnomalyRenderer extends AnomalyRenderer<GravitationalAnomalyEntity> {
+public class GravitationalAnomalyRenderer extends AbstractAnomalyRenderer<GravitationalAnomalyEntity, GravitationalAnomalyRenderState> {
+
+    private static final BlockDisplayContext DISPLAY = BlockDisplayContext.create();
 
     private static final int BLOCKS_PER_ORBITER = 8;
     private static final int MAX_ORBITERS = 36;
@@ -23,8 +27,28 @@ public class GravitationalAnomalyRenderer extends AnomalyRenderer<GravitationalA
     private static final float[] BELT_TILT   = {15.0F, -35.0F, 60.0F};
     private static final float[] BELT_SPEED  = {3.5F, -2.4F, 1.8F};
 
+    private final BlockModelResolver blockModelResolver;
+
     public GravitationalAnomalyRenderer(EntityRendererProvider.Context context) {
         super(context);
+        this.blockModelResolver = context.getBlockModelResolver();
+    }
+
+    @Override
+    public GravitationalAnomalyRenderState createRenderState() {
+        return new GravitationalAnomalyRenderState();
+    }
+
+    @Override
+    public void extractRenderState(GravitationalAnomalyEntity entity, GravitationalAnomalyRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.orbiters = Math.min(MAX_ORBITERS, entity.getAbsorbedBlocks() / BLOCKS_PER_ORBITER);
+        state.mass = (float) entity.massFactor();
+        if (state.orbiters > 0) {
+            blockModelResolver.update(state.debris, getDebrisBlock(), DISPLAY);
+        } else {
+            state.debris.clear();
+        }
     }
 
     @Override
@@ -38,18 +62,17 @@ public class GravitationalAnomalyRenderer extends AnomalyRenderer<GravitationalA
     }
 
     @Override
-    public void render(GravitationalAnomalyEntity entity, float entityYaw, float partialTick,
-                       PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
+    public void submit(GravitationalAnomalyRenderState state, PoseStack poseStack,
+                       SubmitNodeCollector collector, CameraRenderState camera) {
+        super.submit(state, poseStack, collector, camera);
 
-        int total = Math.min(MAX_ORBITERS, entity.getAbsorbedBlocks() / BLOCKS_PER_ORBITER);
-        if (total <= 0) {
+        int total = state.orbiters;
+        if (total <= 0 || state.debris.isEmpty()) {
             return;
         }
 
-        BlockState debris = getDebrisBlock();
-        float age = entity.tickCount + partialTick;
-        float mass = (float) entity.massFactor();
+        float age = state.ageInTicks;
+        float mass = state.mass;
         float orbiterScale = 0.45F;
         int belts = BELT_RADIUS.length;
 
@@ -86,8 +109,7 @@ public class GravitationalAnomalyRenderer extends AnomalyRenderer<GravitationalA
                 poseStack.scale(scale, scale, scale);
                 poseStack.mulPose(Axis.XP.rotationDegrees(age * 4.0F % 360.0F));
                 poseStack.translate(-0.5D, -0.5D, -0.5D);
-                Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
-                        debris, poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+                state.debris.submit(poseStack, collector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
                 poseStack.popPose();
             }
             poseStack.popPose();

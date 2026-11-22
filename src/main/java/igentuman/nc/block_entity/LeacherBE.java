@@ -1,7 +1,5 @@
 package igentuman.nc.block_entity;
 
-import igentuman.nc.compat.ie.IEMineralVein;
-import igentuman.nc.config.Common;
 import igentuman.nc.item.ResearchPaperItem;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.registration.ModEntry;
@@ -10,10 +8,9 @@ import igentuman.nc.util.NBTField;
 import igentuman.nc.util.insitu_leaching.WorldVeinsManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -24,12 +21,12 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 
-/** Leacher processor BE; extracts ore from virtual veins or physical blocks using aqua regia acid and a catalyst. */
 public class LeacherBE extends UniversalProcessorBE {
 
     public static final byte NO_ACID = 0;
@@ -38,7 +35,7 @@ public class LeacherBE extends UniversalProcessorBE {
     public static final byte NO_SOURCE = 3;
     public static final byte PUMPS_ERROR = 4;
 
-    private static final TagKey<Block> ORES_TAG = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "ores"));
+    private static final TagKey<Block> ORES_TAG = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "ores"));
 
     @NBTField
     public BlockPos currentMiningPos = null;
@@ -93,10 +90,9 @@ public class LeacherBE extends UniversalProcessorBE {
         }
     }
 
-    /** Checks the four chunk-corner positions for valid PumpBE instances. */
     public void validatePumps() {
         if (level == null) return;
-        ChunkPos chunkPos = new ChunkPos(getBlockPos());
+        ChunkPos chunkPos = ChunkPos.containing(getBlockPos());
         pumpsAreValid = isPumpValid(chunkPos.getMinBlockX(), worldPosition.getY() + 1, chunkPos.getMinBlockZ(), 0);
         if (!isPumpValid(chunkPos.getMinBlockX(), worldPosition.getY() + 1, chunkPos.getMaxBlockZ(), 1)) pumpsAreValid = false;
         if (!isPumpValid(chunkPos.getMaxBlockX(), worldPosition.getY() + 1, chunkPos.getMaxBlockZ(), 2)) pumpsAreValid = false;
@@ -139,7 +135,6 @@ public class LeacherBE extends UniversalProcessorBE {
         return !contentHandler.getFluidHandler().getFluidInTank(0).isEmpty();
     }
 
-    /** Dispatches ore gathering to the appropriate catalyst mode (research paper, map, or IE core sample). */
     protected void gatherOre() {
         if (!contentHandler.hasItemCapability()) return;
         if (!contentHandler.getItemHandler().getStackInSlot(0).isEmpty()) return;
@@ -149,50 +144,47 @@ public class LeacherBE extends UniversalProcessorBE {
             leacherState = NO_ACID;
             return;
         }
-        ItemStack ore = ItemStack.EMPTY;
         if (cat.getItem() instanceof ResearchPaperItem) {
-            ore = useResearchPaper();
+            useResearchPaper();
         } else if (cat.is(Items.FILLED_MAP)) {
-            ore = useMapCatalyst();
-        } else if (isIECoreSample(cat)) {
-            ore = useIECoreSample();
-        }
-        if (!ore.isEmpty()) {
-            contentHandler.getItemHandler().insertItem(0, ore, false);
+            useMapCatalyst();
         }
     }
 
-    /** Reads vein NBT from a research paper and pulls ore from the virtual vein via WorldVeinsManager. */
-    protected ItemStack useResearchPaper() {
+    protected void useResearchPaper() {
         CompoundTag tag = catalyst.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        if (!tag.contains("pos") || !tag.contains("vein")) {
+        if (tag.getLong("pos").isEmpty() || tag.getString("vein").isEmpty()) {
             leacherState = NO_SOURCE;
-            return ItemStack.EMPTY;
+            return;
         }
-        BlockPos mapPos = BlockPos.of(tag.getLong("pos"));
-        ChunkPos chunkPos = new ChunkPos(mapPos);
-        if (!chunkPos.equals(new ChunkPos(getBlockPos()))) {
+        BlockPos mapPos = BlockPos.of(tag.getLong("pos").orElseThrow());
+        ChunkPos chunkPos = ChunkPos.containing(mapPos);
+        if (!chunkPos.equals(ChunkPos.containing(getBlockPos()))) {
             leacherState = WRONG_POSITION;
-            return ItemStack.EMPTY;
+            return;
         }
-        if (!(level instanceof ServerLevel serverLevel)) return ItemStack.EMPTY;
-        return WorldVeinsManager.get(serverLevel)
-                .getWorldVeinData(serverLevel)
-                .gatherRandomOre(chunkPos.x, chunkPos.z);
+        if (!(level instanceof ServerLevel serverLevel)) return;
+        try (var transaction = Transaction.openRoot()) {
+            ItemStack ore = WorldVeinsManager.get(serverLevel).getWorldVeinData(serverLevel)
+                    .gatherRandomOre(chunkPos.x(), chunkPos.z(), transaction);
+            if (ore.isEmpty()) return;
+            if (contentHandler.getItemHandler().insert(0, ItemResource.of(ore), ore.getCount(), transaction)
+                    != ore.getCount()) return;
+            transaction.commit();
+        }
     }
 
-    /** Scans the chunk below for ore blocks, destroys the first minable one, and inserts it into the input slot. */
-    protected ItemStack useMapCatalyst() {
+    protected void useMapCatalyst() {
         if (currentMiningTimeout > 0) {
             currentMiningTimeout--;
-            return ItemStack.EMPTY;
+            return;
         }
-        if (level == null) return ItemStack.EMPTY;
-        ChunkPos chunkPos = new ChunkPos(getBlockPos());
+        if (!(level instanceof ServerLevel)) return;
+        ChunkPos chunkPos = ChunkPos.containing(getBlockPos());
         int minX = chunkPos.getMinBlockX();
         int minZ = chunkPos.getMinBlockZ();
         int startY = getBlockPos().getY() - 1;
-        for (int y = startY; y >= level.getMinBuildHeight(); y--) {
+        for (int y = startY; y >= level.getMinY(); y--) {
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
                     BlockPos pos = new BlockPos(minX + x, y, minZ + z);
@@ -200,19 +192,21 @@ public class LeacherBE extends UniversalProcessorBE {
                     if (!state.is(ORES_TAG)) continue;
                     ItemStack toMine = new ItemStack(state.getBlock());
                     if (!isMinable(toMine)) continue;
-                    if (contentHandler.getItemHandler().insertItem(0, toMine, true).isEmpty()) {
-                        level.destroyBlock(pos, false);
-                        contentHandler.getItemHandler().insertItem(0, toMine, false);
-                        currentMiningTimeout = 20;
-                        currentMiningPos = pos;
-                        setChanged();
-                        return ItemStack.EMPTY;
+                    try (var transaction = Transaction.openRoot()) {
+                        if (toMine.isEmpty() || contentHandler.getItemHandler().insert(0, ItemResource.of(toMine),
+                                toMine.getCount(), transaction) != toMine.getCount()) continue;
+                        // Reserve inventory space before the irreversible world edit; refusal aborts the insertion.
+                        if (!level.destroyBlock(pos, false)) continue;
+                        transaction.commit();
                     }
+                    currentMiningTimeout = 20;
+                    currentMiningPos = pos;
+                    setChanged();
+                    return;
                 }
             }
         }
         currentMiningTimeout = 20;
-        return ItemStack.EMPTY;
     }
 
     private boolean isMinable(ItemStack stack) {
@@ -226,38 +220,9 @@ public class LeacherBE extends UniversalProcessorBE {
         return false;
     }
 
-    /** Validates chunk + dimension match against an IE core sample and gets ore from IE's mineral vein system. */
-    protected ItemStack useIECoreSample() {
-        if (!ModList.get().isLoaded("immersiveengineering")) return ItemStack.EMPTY;
-        if (!(level instanceof ServerLevel serverLevel)) return ItemStack.EMPTY;
-        ChunkPos sampleChunk = IEMineralVein.getChunkPos(catalyst);
-        if (sampleChunk == null) {
-            leacherState = NO_SOURCE;
-            return ItemStack.EMPTY;
-        }
-        if (!sampleChunk.equals(new ChunkPos(getBlockPos()))) {
-            leacherState = WRONG_POSITION;
-            return ItemStack.EMPTY;
-        }
-        var sampleDim = IEMineralVein.getDimension(catalyst);
-        if (sampleDim == null || !level.dimension().equals(sampleDim)) {
-            leacherState = WRONG_POSITION;
-            return ItemStack.EMPTY;
-        }
-        ItemStack ore = IEMineralVein.getNextVeinItem(serverLevel, catalyst, this::isMinable);
-        if (ore.isEmpty()) leacherState = NO_SOURCE;
-        return ore;
-    }
-
-    private boolean isIECoreSample(ItemStack stack) {
-        if (!Common.IN_SITU_ALLOW_IE_VEINS.get()) return false;
-        if (!ModList.get().isLoaded("immersiveengineering")) return false;
-        return BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals("immersiveengineering:coresample");
-    }
-
     @Override
     @Nullable
-    public IItemHandler getItemHandler(@Nullable Direction side) {
+    public ResourceHandler<ItemResource> getItemHandler(@Nullable Direction side) {
         if (side != null) return null;
         return super.getItemHandler(null);
     }

@@ -1,9 +1,9 @@
 package igentuman.nc.api.multiblock.part;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record DetectorDef(
-        ResourceLocation id,
+        Identifier id,
         double efficiency,
         long energyPerTick,
         int maximumDistance

@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:nuggets/platinum"
-    },
-    {
-      "tag": "c:nuggets/platinum"
-    },
-    {
-      "tag": "c:nuggets/platinum"
-    },
-    {
-      "tag": "c:nuggets/platinum"
-    },
-    {
-      "tag": "c:nuggets/platinum"
-    },
-    {
-      "tag": "c:nuggets/platinum"
-    },
-    {
-      "tag": "c:nuggets/platinum"
-    },
-    {
-      "tag": "c:nuggets/platinum"
-    },
-    {
-      "tag": "c:nuggets/platinum"
-    }
+    "#c:nuggets/platinum",
+    "#c:nuggets/platinum",
+    "#c:nuggets/platinum",
+    "#c:nuggets/platinum",
+    "#c:nuggets/platinum",
+    "#c:nuggets/platinum",
+    "#c:nuggets/platinum",
+    "#c:nuggets/platinum",
+    "#c:nuggets/platinum"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:platinum_ingot"
   }
 }

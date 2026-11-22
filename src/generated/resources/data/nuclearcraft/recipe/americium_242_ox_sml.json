@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "item": "nuclearcraft:americium_242_ox"
-  },
+  "ingredient": "nuclearcraft:americium_242_ox",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:americium_242"
   }
 }

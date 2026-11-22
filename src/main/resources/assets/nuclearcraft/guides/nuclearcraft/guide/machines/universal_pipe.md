@@ -23,16 +23,16 @@ Connect pipes together and they merge into one network. Every connector on that 
 
 ## Transport Media
 
-A fresh connector transports nothing. Tick **Items**, **Fluids**, or **Energy** to permit each medium independently — all three stay inert until authorized. (The safety interlock nobody reads.)
+A fresh connector transports nothing. Tick **Items**, **Fluids**, or **Energy** to permit each medium independently - all three stay inert until authorized. (The safety interlock nobody reads.)
 
 ## Direction
 
 Cycle the transfer direction:
 
-- **Disabled** — no transfer.
-- **Pull** — draw out of the attached block.
-- **Push** — feed into the attached block.
-- **Auto** — let the block decide.
+- **Disabled** - no transfer.
+- **Pull** - draw out of the attached block.
+- **Push** - feed into the attached block.
+- **Auto** - let the block decide.
 
 ## Redstone
 

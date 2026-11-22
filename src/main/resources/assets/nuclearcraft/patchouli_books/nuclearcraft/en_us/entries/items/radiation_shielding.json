@@ -1,0 +1,18 @@
+{
+  "name": "Radiation Shielding",
+  "icon": "nuclear_radiation:rad_shielding_medium",
+  "category": "nuclearcraft:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "hazmat",
+      "type": "items/4",
+      "header": "Radiation Shielding",
+      "item1": "nuclear_radiation:rad_shielding_light",
+      "item2": "nuclear_radiation:rad_shielding_medium",
+      "item3": "nuclear_radiation:rad_shielding_heavy",
+      "item4": "nuclear_radiation:rad_shielding_dps",
+      "text": "$(item)Radiation Shielding$() can be added to armour to give it radiation resistance. The amount of radiation resistance added to the armor depends on the type of shielding used. When adding shielding to armour, the radiation resistance from each piece stacks."
+    }
+  ]
+}

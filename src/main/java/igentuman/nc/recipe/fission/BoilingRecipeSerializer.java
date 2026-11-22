@@ -1,9 +1,10 @@
 package igentuman.nc.recipe.fission;
 
+import igentuman.nc.recipe.RecipeIngredientCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import igentuman.nc.recipe.FluidOutput;
+import igentuman.nc.api.recipe.FluidOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,10 +12,10 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 /** Codec and stream codec for reading and syncing {@link BoilingRecipe} instances. */
-public class BoilingRecipeSerializer implements RecipeSerializer<BoilingRecipe> {
+public final class BoilingRecipeSerializer {
 
     private static final MapCodec<BoilingRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            SizedFluidIngredient.FLAT_CODEC.fieldOf("input_fluid").forGetter(BoilingRecipe::input),
+            RecipeIngredientCodecs.FLUID.fieldOf("input_fluid").forGetter(BoilingRecipe::input),
             FluidOutput.CODEC.fieldOf("output_fluid").forGetter(BoilingRecipe::output),
             Codec.INT.fieldOf("heat_required").forGetter(BoilingRecipe::heatRequired)
     ).apply(inst, BoilingRecipe::new));
@@ -26,13 +27,9 @@ public class BoilingRecipeSerializer implements RecipeSerializer<BoilingRecipe> 
                     ByteBufCodecs.VAR_INT, BoilingRecipe::heatRequired,
                     BoilingRecipe::new);
 
-    @Override
-    public MapCodec<BoilingRecipe> codec() {
-        return CODEC;
-    }
+    private BoilingRecipeSerializer() {}
 
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, BoilingRecipe> streamCodec() {
-        return STREAM_CODEC;
+    public static RecipeSerializer<BoilingRecipe> create() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

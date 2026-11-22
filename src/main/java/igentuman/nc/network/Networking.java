@@ -118,7 +118,7 @@ public class Networking {
                 PacketCrafterOpenEncoder::handle
         );
         if (ModUtil.isAe2Loaded()) {
-            registrar.playToServer(
+            registrar.versioned("2").playToServer(
                     PacketAE2PatternTransfer.TYPE,
                     PacketAE2PatternTransfer.STREAM_CODEC,
                     PacketAE2PatternTransfer::handle
@@ -195,7 +195,7 @@ public class Networking {
                 PacketMultiblockBuilt::handle
         );
         if (ModUtil.isMbtoolLoaded()) {
-            registrar.playToServer(
+            registrar.optional().playToServer(
                     PacketLoadDesignIntoMultitool.TYPE,
                     PacketLoadDesignIntoMultitool.STREAM_CODEC,
                     PacketLoadDesignIntoMultitool::handle

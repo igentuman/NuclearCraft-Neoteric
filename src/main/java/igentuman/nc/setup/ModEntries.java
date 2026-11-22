@@ -1,5 +1,6 @@
 package igentuman.nc.setup;
 
+import igentuman.nc.api.catalyst.CatalystType;
 import igentuman.nc.recipe.bomb.NcBlastRecipes;
 import igentuman.nc.registration.FluidDefinition;
 import igentuman.nc.registration.FissionFuelEntry;
@@ -18,12 +19,17 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static igentuman.nc.registration.ModEntryBuilder.add;
 import static igentuman.nc.registration.ModEntryBuilder.addItem;
@@ -73,6 +79,31 @@ public class ModEntries {
     public static BlockBehaviour.Properties COMMON_BLOCK_PROPS = BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f).requiresCorrectToolForDrops();
     public static final int DEFAULT_COLOR = 0xFFFFFFFF;
 
+    private static final Map<String, Set<CatalystType>> ADDON_CATALYSTS = new LinkedHashMap<>();
+    private static boolean catalystSlotsFinalized;
+
+    public static void addProcessorCatalyst(String processor, CatalystType type) {
+        if (catalystSlotsFinalized) {
+            throw new IllegalStateException("Register processor catalyst slots during NewRegistryEvent");
+        }
+        ModEntry entry = get(processor);
+        if (entry == null || !entry.hasCatalysts() || entry.slotsLayout() == null) {
+            throw new IllegalArgumentException("Processor does not support catalyst slots: " + processor);
+        }
+        if (!entry.supportedCatalysts().contains(type)) {
+            ADDON_CATALYSTS.computeIfAbsent(processor, key -> new TreeSet<>(Comparator.comparing(CatalystType::id)))
+                    .add(type);
+        }
+    }
+
+    /** Applies addon slot declarations after all NewRegistryEvent listeners have run. */
+    public static void finalizeCatalystSlots() {
+        ADDON_CATALYSTS.forEach((name, types) ->
+                ENTRIES.computeIfPresent(name, (key, entry) -> entry.withAdditionalCatalysts(types)));
+        ADDON_CATALYSTS.clear();
+        catalystSlotsFinalized = true;
+    }
+
     public static void init() {
         materials();
         isotopes();
@@ -116,12 +147,12 @@ public class ModEntries {
     }
 
     public static void deco(String name, BlockBehaviour.Properties props) {
-        add(name).block(() -> new Block(props)).build();
+        add(name).block(Block::new, () -> props).build();
     }
 
     private static void food() {
         mat("unsweetened_chocolate", 0xFF2C0A08)
-                .item(() -> new Item(new Item.Properties()))
+                .item(Item::new)
                 .fluid(FluidDefinition.liquid().setName("unsweetened_chocolate").setTemperature(400)).build();
         foodItem("dark_chocolate", 1).material(0xFF2C0B06)
                 .fluid(FluidDefinition.liquid().setName("dark_chocolate").setTemperature(400)).build();
@@ -138,7 +169,7 @@ public class ModEntries {
     }
 
     private static ModEntryBuilder foodItem(String name, int nutrition) {
-        return addItem(name, () -> new Item(new Item.Properties().food(
+        return addItem(name, props -> new Item(props.food(
                 new FoodProperties.Builder().nutrition(nutrition).saturationModifier(nutrition).build())));
     }
 
@@ -234,9 +265,9 @@ public class ModEntries {
         return PARTICLE_ENTRIES.getOrDefault(name, null);
     }
 
-    /** Resolves the source {@link net.minecraft.world.level.material.Fluid} registered for a material
+    /** Resolves the source {@link Fluid} registered for a material
      *  by its entry name ({@code water} maps to vanilla water). Null when the material has no fluid. */
-    public static net.minecraft.world.level.material.Fluid fluidOf(String name) {
+    public static Fluid fluidOf(String name) {
         if (name.equals("water")) return net.minecraft.world.level.material.Fluids.WATER;
         ModEntry e = get(name);
         return (e != null && e.materialEntry() != null && e.materialEntry().hasFluid())

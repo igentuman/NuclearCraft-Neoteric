@@ -1,88 +1,22 @@
 package igentuman.nc.client.renderer;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import igentuman.nc.NuclearCraft;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.PostChain;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RegisterShadersEvent;
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 
-import java.io.IOException;
-import java.util.function.Supplier;
-
-import static igentuman.nc.NuclearCraft.rl;
-
-/**
- * Registers the mod's custom render shaders and post-processing chains.
- *
- * <ul>
- *   <li>{@link #BILLBOARD} - core shader backing {@link ModRenderType#BILLBOARD}.</li>
- *   <li>{@link #distortPostEffect} - screen-space lens distortion used by {@link DistortShader}.</li>
- * </ul>
- */
 @EventBusSubscriber(modid = NuclearCraft.MODID, value = Dist.CLIENT)
 public class ModShaders {
 
-    public static final ShaderTracker BILLBOARD = new ShaderTracker();
-
-    public static PostChain distortPostEffect;
-    public static PostChain anomalyPostEffect;
-
     @SubscribeEvent
-    public static void registerShaders(RegisterShadersEvent event) throws IOException {
-        event.registerShader(
-                new ShaderInstance(event.getResourceProvider(), rl("rendertype_billboard"), DefaultVertexFormat.POSITION_TEX_COLOR),
-                BILLBOARD::setInstance
-        );
-
-        BlackHoleShader.reload(event.getResourceProvider());
-        NukeVolumeRenderer.reload(event.getResourceProvider());
-
-        Minecraft mc = Minecraft.getInstance();
-        distortPostEffect = new PostChain(
-                mc.getTextureManager(),
-                mc.getResourceManager(),
-                mc.getMainRenderTarget(),
-                rl("shaders/post/distort.json")
-        );
-        distortPostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
-
-        anomalyPostEffect = new PostChain(
-                mc.getTextureManager(),
-                mc.getResourceManager(),
-                mc.getMainRenderTarget(),
-                rl("shaders/post/anomaly.json")
-        );
-        anomalyPostEffect.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
-    }
-
-    /**
-     * Holds a loaded {@link ShaderInstance} and exposes a {@link RenderStateShard.ShaderStateShard}
-     * so it can be wired into a {@link net.minecraft.client.renderer.RenderType}.
-     */
-    public static class ShaderTracker implements Supplier<ShaderInstance> {
-
-        private ShaderInstance instance;
-        private final RenderStateShard.ShaderStateShard shard = new RenderStateShard.ShaderStateShard(this);
-
-        private ShaderTracker() {
-        }
-
-        private void setInstance(ShaderInstance instance) {
-            this.instance = instance;
-        }
-
-        public RenderStateShard.ShaderStateShard shard() {
-            return shard;
-        }
-
-        @Override
-        public ShaderInstance get() {
-            return instance;
-        }
+    public static void registerPipelines(RegisterRenderPipelinesEvent event) {
+        ModRenderType.PIPELINES.forEach(event::registerPipeline);
+        event.registerPipeline(DistortShader.PIPELINE);
+        event.registerPipeline(AnomalyShader.PIPELINE);
+        event.registerPipeline(BlackHoleShader.PIPELINE);
+        event.registerPipeline(NukeVolumeRenderer.THERMAL_PIPELINE);
+        event.registerPipeline(NukeVolumeRenderer.VOLUME_PIPELINE);
+        event.registerPipeline(NukeVolumeRenderer.COMPOSITE_PIPELINE);
     }
 }

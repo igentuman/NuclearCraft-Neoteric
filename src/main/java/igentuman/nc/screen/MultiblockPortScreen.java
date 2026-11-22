@@ -1,5 +1,6 @@
 package igentuman.nc.screen;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
 import igentuman.nc.multiblock.MultiblockEntry;
@@ -11,10 +12,10 @@ import igentuman.nc.screen.element.FluidSlotWidget;
 import igentuman.nc.util.GuiFluidRenderer;
 import igentuman.nc.util.SlotDef;
 import igentuman.nc.util.SlotsLayout;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
@@ -25,15 +26,12 @@ import static igentuman.nc.NuclearCraft.rl;
 /** GUI screen for a multiblock I/O port: renders the controller's slots and tanks plus a redstone-mode button. */
 public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPortContainer> {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/processor.png");
+    private static final Identifier TEXTURE = rl("textures/gui/processor.png");
     protected final List<SlotWidget> slotWidgets = new ArrayList<>();
     protected RedstoneModeButton redstoneButton;
 
     public MultiblockPortScreen(MultiblockPortContainer menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        imageWidth = 180;
-        imageHeight = 180;
-        this.inventoryLabelY = this.imageHeight - 94;
+        super(menu, playerInventory, title, 180, 180);
     }
 
     @Override
@@ -112,8 +110,8 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractLabels(guiGraphics, mouseX, mouseY);
         var controller = menu.getBlockEntity().controller();
         if (controller != null) {
             if (controller.hasFluidTanks()) {
@@ -124,7 +122,7 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
         }
     }
 
-    private void renderFluidTanks(GuiGraphics guiGraphics, int x, int y,
+    private void renderFluidTanks(GuiGraphicsExtractor guiGraphics, int x, int y,
                                    FluidCapabilityHandler tanks, boolean tooltip, int mouseX, int mouseY) {
         SlotsLayout layout = menu.getLayout();
         MultiblockEntry mbEntry = resolveMultiblockEntry();
@@ -189,15 +187,11 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, a);
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
     }
 
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderTooltip(guiGraphics, mouseX, mouseY);
-    }
 }

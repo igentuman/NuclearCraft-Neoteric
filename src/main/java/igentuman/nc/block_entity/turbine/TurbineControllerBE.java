@@ -116,11 +116,6 @@ public class TurbineControllerBE extends MultiblockControllerBE {
     }
 
     @Override
-    protected CompoundTag legacyRuntime(CompoundTag tag) {
-        return tag.contains("rotationSpeed") ? tag : null;
-    }
-
-    @Override
     public void clientTick() {
         super.clientTick();
         if (formed && rotationSpeed > 0f) {
@@ -162,9 +157,9 @@ public class TurbineControllerBE extends MultiblockControllerBE {
         double vz = axis == Direction.Axis.Z ? mag * vent.getStepZ() : 0;
         for (BlockPos corner : cornerOffsets(center, axis)) {
             for (int i = 0; i < 2; i++) {
-                double x = corner.getX() + 0.5 + level.random.nextGaussian() * 0.2;
-                double y = corner.getY() + 0.5 + level.random.nextGaussian() * 0.2;
-                double z = corner.getZ() + 0.5 + level.random.nextGaussian() * 0.2;
+                double x = corner.getX() + 0.5 + level.getRandom().nextGaussian() * 0.2;
+                double y = corner.getY() + 0.5 + level.getRandom().nextGaussian() * 0.2;
+                double z = corner.getZ() + 0.5 + level.getRandom().nextGaussian() * 0.2;
                 level.addParticle(ParticleTypes.CLOUD, x, y, z, vx, vy, vz);
             }
         }

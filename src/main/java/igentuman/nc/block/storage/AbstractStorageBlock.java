@@ -11,11 +11,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -62,14 +62,14 @@ public abstract class AbstractStorageBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
         BlockEntity be = level.getBlockEntity(pos);
         return be instanceof AbstractStorageBE sbe ? sbe.getComparatorSignal() : 0;
     }
 
     protected boolean tryWrench(ItemStack stack, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!WrenchUtil.isWrench(stack)) return false;
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof AbstractStorageBE sbe) {
                 Direction dir = hit.getDirection();
@@ -87,12 +87,12 @@ public abstract class AbstractStorageBlock extends BaseEntityBlock {
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!level.isClientSide && !player.isCreative()) {
+        if (!level.isClientSide() && !player.isCreative()) {
             ItemStack drop = new ItemStack(this);
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof AbstractStorageBE sbe && persistOnDrop(sbe)) {
                 CompoundTag data = be.saveWithoutMetadata(level.registryAccess());
-                BlockItem.setBlockEntityData(drop, be.getType(), data);
+                drop.set(DataComponents.BLOCK_ENTITY_DATA, TypedEntityData.of(be.getType(), data));
             }
             popResource(level, pos, drop);
         }
@@ -102,7 +102,7 @@ public abstract class AbstractStorageBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return (lvl, pos, st, be) -> {
                 if (be instanceof GlobalBlockEntity gbe) gbe.clientTick();
             };

@@ -2,16 +2,17 @@ package igentuman.nc.compat.jei;
 
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.api.particle.ParticleStack;
+import igentuman.nc.compat.PlacementRuleRecipe;
+import igentuman.nc.compat.ProcessorCategoryLayout;
 import igentuman.nc.compat.ae2.JEI2PatternEncoderTransfer;
 import igentuman.nc.compat.refinedstorage.RSJeiPatternTransfer;
-import igentuman.nc.compat.PlacementRuleRecipe;
 import igentuman.nc.compat.jei.particle.ParticleIngredientHelper;
 import igentuman.nc.compat.jei.particle.ParticleIngredientRenderer;
 import igentuman.nc.compat.jei.particle.ParticleType;
+import igentuman.nc.handler.crafter.ProcessorRecipes;
 import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.recipe.UniversalProcessorRecipe;
-import igentuman.nc.recipe.UniversalProcessorRecipeSerializer;
 import igentuman.nc.recipe.fission.FissionRecipes;
 import igentuman.nc.recipe.fusion.FusionRecipes;
 import igentuman.nc.recipe.kugelblitz.KugelblitzRecipes;
@@ -21,6 +22,7 @@ import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
+import igentuman.nc.registration.RecipeSchemaKind;
 import igentuman.nc.screen.UniversalProcessorScreen;
 import igentuman.nc.setup.entries.Crafter;
 import igentuman.nc.setup.ModEntries;
@@ -33,39 +35,42 @@ import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.neoforge.NeoForgeTypes;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
+import igentuman.nc.recipe.RecipeSources;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-/** JEI plugin registering processor, multiblock, and specialized recipe categories plus AE2 and Refined Storage recipe transfer. */
+/** Registers NuclearCraft recipe categories and transfer handlers for Engineer's menus and storage mods. */
 @JeiPlugin
 public class ModJeiPlugin implements IModPlugin {
 
-    private final Map<String, RecipeType<UniversalProcessorRecipe>> recipeTypes = new HashMap<>();
+    private final Map<String, IRecipeHolderType<UniversalProcessorRecipe>> recipeTypes = new HashMap<>();
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return NuclearCraft.rl("jei_plugin");
     }
 
     private boolean isProcessorEntry(ModEntry entry) {
         return entry.hasRecipes() && entry.isEnabled()
-                && entry.recipeSerializer().get() instanceof UniversalProcessorRecipeSerializer;
+                && entry.recipeFamily() != null
+                && entry.recipeFamily().schemaKind() == RecipeSchemaKind.UNIVERSAL_PROCESSOR;
     }
 
-    private RecipeType<UniversalProcessorRecipe> getOrCreateRecipeType(ModEntry entry) {
+    private IRecipeHolderType<UniversalProcessorRecipe> getOrCreateRecipeType(ModEntry entry) {
         return recipeTypes.computeIfAbsent(entry.name(), name ->
-                RecipeType.create(NuclearCraft.MODID, name, UniversalProcessorRecipe.class));
+                IRecipeHolderType.create(NuclearCraft.rl(ProcessorCategoryLayout.categoryName(name))));
     }
 
     @Override
@@ -82,7 +87,7 @@ public class ModJeiPlugin implements IModPlugin {
 
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (!isProcessorEntry(entry)) continue;
-            RecipeType<UniversalProcessorRecipe> jeiType = getOrCreateRecipeType(entry);
+            IRecipeHolderType<UniversalProcessorRecipe> jeiType = getOrCreateRecipeType(entry);
             registration.addRecipeCategories(new ProcessorRecipeCategory(guiHelper, entry, jeiType));
         }
 
@@ -111,18 +116,17 @@ public class ModJeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (!isProcessorEntry(entry) || !entry.hasItem()) continue;
-            RecipeType<UniversalProcessorRecipe> jeiType = getOrCreateRecipeType(entry);
-            registration.addRecipeCatalyst(new ItemStack(entry.item().get()), jeiType);
+            IRecipeHolderType<UniversalProcessorRecipe> jeiType = getOrCreateRecipeType(entry);
+            registration.addCraftingStation(jeiType, entry.item().get());
         }
         ModEntry controller = ModEntries.get("fission_reactor_controller");
         if (controller != null && controller.hasItem()) {
-            ItemStack stack = new ItemStack(controller.item().get());
-            registration.addRecipeCatalyst(stack, FissionFuelRecipeCategory.TYPE);
-            registration.addRecipeCatalyst(stack, BoilingRecipeCategory.TYPE);
+            registration.addCraftingStation(FissionFuelRecipeCategory.TYPE, controller.item().get());
+            registration.addCraftingStation(BoilingRecipeCategory.TYPE, controller.item().get());
         }
         ModEntry hxController = ModEntries.get("heat_exchanger_controller");
         if (hxController != null && hxController.hasItem()) {
-            registration.addRecipeCatalyst(new ItemStack(hxController.item().get()), HeatExchangerRecipeCategory.TYPE);
+            registration.addCraftingStation(HeatExchangerRecipeCategory.TYPE, hxController.item().get());
         }
         addSpecialRecipeCatalyst(registration, "fusion_reactor_core",
                 FusionRecipeCategory.TYPE, FusionCoolantRecipeCategory.TYPE);
@@ -133,19 +137,17 @@ public class ModJeiPlugin implements IModPlugin {
         addSpecialRecipeCatalyst(registration, "target_chamber_controller", TargetChamberRecipeCategory.TYPE);
         addSpecialRecipeCatalyst(registration, "decay_chamber_controller", DecayChamberRecipeCategory.TYPE);
         addSpecialRecipeCatalyst(registration, "collision_chamber_controller", CollisionChamberRecipeCategory.TYPE);
-        registration.addRecipeCatalyst(new ItemStack(Crafter.ENGINEERS_CRAFTING_TABLE_ITEM.get()), RecipeTypes.CRAFTING);
+        registration.addCraftingStation(RecipeTypes.CRAFTING, Crafter.ENGINEERS_CRAFTING_TABLE_ITEM.get());
         addSpecialRecipeCatalyst(registration, "fission_reactor_controller", PlacementRuleCategory.HEAT_SINK);
         addSpecialRecipeCatalyst(registration, "ring_accelerator_controller", PlacementRuleCategory.COOLER);
     }
 
-    @SafeVarargs
-    private final void addSpecialRecipeCatalyst(IRecipeCatalystRegistration registration, String entryName,
-                                                RecipeType<?>... types) {
+    private void addSpecialRecipeCatalyst(IRecipeCatalystRegistration registration, String entryName,
+                                          IRecipeType<?>... types) {
         ModEntry entry = ModEntries.get(entryName);
         if (entry == null || !entry.hasItem()) return;
-        ItemStack stack = new ItemStack(entry.item().get());
-        for (RecipeType<?> type : types) {
-            registration.addRecipeCatalyst(stack, type);
+        for (IRecipeType<?> type : types) {
+            registration.addCraftingStation(type, entry.item().get());
         }
     }
 
@@ -157,30 +159,35 @@ public class ModJeiPlugin implements IModPlugin {
         boolean refinedStorage = ModList.get().isLoaded("refinedstorage");
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (!isProcessorEntry(entry)) continue;
-            RecipeType<UniversalProcessorRecipe> jeiType = getOrCreateRecipeType(entry);
-            registration.addRecipeTransferHandler(
-                    new EngineersEncoderProcessorTransferHandler(jeiType, registration.getTransferHelper()), jeiType);
-            if (ae2) registration.addRecipeTransferHandler(new JEI2PatternEncoderTransfer(jeiType), jeiType);
-            if (refinedStorage) registration.addRecipeTransferHandler(new RSJeiPatternTransfer(jeiType), jeiType);
+            IRecipeHolderType<UniversalProcessorRecipe> jeiType = getOrCreateRecipeType(entry);
+            if (ProcessorRecipes.isProcessorEntry(entry)) {
+                registration.addRecipeTransferHandler(
+                        new EngineersEncoderProcessorTransferHandler(jeiType, registration.getTransferHelper()), jeiType);
+            }
+            if (ae2) {
+                registration.addRecipeTransferHandler(new JEI2PatternEncoderTransfer(jeiType, registration.getTransferHelper()), jeiType);
+            }
+            if (refinedStorage) {
+                registration.addRecipeTransferHandler(new RSJeiPatternTransfer(jeiType, registration.getTransferHelper()), jeiType);
+            }
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
+        RecipeMap recipeMap = RecipeSources.recipes(Minecraft.getInstance().level);
 
         for (ModEntry entry : ModEntries.ENTRIES.values()) {
             if (!isProcessorEntry(entry)) continue;
 
-            RecipeType<UniversalProcessorRecipe> jeiType = getOrCreateRecipeType(entry);
+            IRecipeHolderType<UniversalProcessorRecipe> jeiType = getOrCreateRecipeType(entry);
             net.minecraft.world.item.crafting.RecipeType<?> mcType = entry.recipeType().get();
 
-            List<UniversalProcessorRecipe> recipes = recipeManager
-                    .getAllRecipesFor((net.minecraft.world.item.crafting.RecipeType<UniversalProcessorRecipe>) mcType)
+            List<RecipeHolder<UniversalProcessorRecipe>> recipes = recipeMap
+                    .byType((net.minecraft.world.item.crafting.RecipeType<UniversalProcessorRecipe>) mcType)
                     .stream()
-                    .map(RecipeHolder::value)
-                    .filter(UniversalProcessorRecipe::isComplete)
+                    .filter(holder -> holder.value().isComplete())
                     .toList();
 
             registration.addRecipes(jeiType, recipes);
@@ -198,38 +205,28 @@ public class ModJeiPlugin implements IModPlugin {
         }
 
         registration.addRecipes(FissionFuelRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(FissionRecipes.FUEL_TYPE.get())
-                        .stream().map(RecipeHolder::value).toList());
+                List.copyOf(recipeMap.byType(FissionRecipes.FUEL_TYPE.get())));
         registration.addRecipes(BoilingRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(FissionRecipes.BOILING_TYPE.get())
-                        .stream().map(RecipeHolder::value).toList());
+                List.copyOf(recipeMap.byType(FissionRecipes.BOILING_TYPE.get())));
         registration.addRecipes(HeatExchangerRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(igentuman.nc.recipe.heat_exchanger.HeatExchangerRecipes.HX_TYPE.get())
-                        .stream().map(RecipeHolder::value).toList());
+                List.copyOf(recipeMap.byType(igentuman.nc.recipe.heat_exchanger.HeatExchangerRecipes.HX_TYPE.get())));
         registration.addRecipes(NuclearBlastRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(igentuman.nc.recipe.bomb.NcBlastRecipes.TYPE.get())
-                        .stream().map(RecipeHolder::value).toList());
+                List.copyOf(recipeMap.byType(igentuman.nc.recipe.bomb.NcBlastRecipes.TYPE.get())));
         registration.addRecipes(FusionRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(FusionRecipes.FUSION_TYPE.get())
-                        .stream().map(RecipeHolder::value).toList());
+                List.copyOf(recipeMap.byType(FusionRecipes.FUSION_TYPE.get())));
         registration.addRecipes(FusionCoolantRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(FusionRecipes.COOLANT_TYPE.get())
-                        .stream().map(RecipeHolder::value).toList());
+                List.copyOf(recipeMap.byType(FusionRecipes.COOLANT_TYPE.get())));
         registration.addRecipes(TurbineRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(TurbineRecipes.TURBINE_TYPE.get())
-                        .stream().map(RecipeHolder::value).toList());
+                List.copyOf(recipeMap.byType(TurbineRecipes.TURBINE_TYPE.get())));
         registration.addRecipes(KugelblitzRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(KugelblitzRecipes.KUGELBLITZ_TYPE.get())
-                        .stream().map(RecipeHolder::value).filter(r -> r.isComplete()).toList());
+                recipeMap.byType(KugelblitzRecipes.KUGELBLITZ_TYPE.get())
+                        .stream().filter(holder -> holder.value().isComplete()).toList());
         registration.addRecipes(TargetChamberRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(ParticleRecipes.TARGET_CHAMBER_TYPE.get())
-                        .stream().map(RecipeHolder::value).toList());
+                List.copyOf(recipeMap.byType(ParticleRecipes.TARGET_CHAMBER_TYPE.get())));
         registration.addRecipes(DecayChamberRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(ParticleRecipes.DECAY_CHAMBER_TYPE.get())
-                        .stream().map(RecipeHolder::value).toList());
+                List.copyOf(recipeMap.byType(ParticleRecipes.DECAY_CHAMBER_TYPE.get())));
         registration.addRecipes(CollisionChamberRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(ParticleRecipes.COLLISION_CHAMBER_TYPE.get())
-                        .stream().map(RecipeHolder::value).toList());
+                List.copyOf(recipeMap.byType(ParticleRecipes.COLLISION_CHAMBER_TYPE.get())));
         ModEntry oreVeins = ModEntries.get("nc_ore_veins");
         if (oreVeins != null && oreVeins.hasRecipes()) {
             @SuppressWarnings("unchecked")
@@ -237,7 +234,7 @@ public class ModJeiPlugin implements IModPlugin {
                     (net.minecraft.world.item.crafting.RecipeType<igentuman.nc.recipe.OreVeinRecipe>)
                             oreVeins.recipeType().get();
             registration.addRecipes(OreVeinRecipeCategory.TYPE,
-                    recipeManager.getAllRecipesFor(oreVeinType).stream().map(RecipeHolder::value).toList());
+                    List.copyOf(recipeMap.byType(oreVeinType)));
         }
 
         registration.addRecipes(FuelInfoCategory.TYPE, fuelInfoRecipes());
@@ -278,6 +275,11 @@ public class ModJeiPlugin implements IModPlugin {
         JeiHelper.setRuntime(jeiRuntime);
         JeiHelper.setRecipeTypes(recipeTypes);
         hideFuelAndIsotopeVariants(jeiRuntime);
+    }
+
+    @Override
+    public void onRuntimeUnavailable() {
+        JeiHelper.clearRuntime();
     }
 
     private static final String[] FUEL_VARIANT_SUFFIXES = {"_ox", "_ni", "_za", "_tr"};
@@ -348,7 +350,7 @@ public class ModJeiPlugin implements IModPlugin {
                 if (name == null || name.contains("creative")) {
                     return List.of();
                 }
-                RecipeType<UniversalProcessorRecipe> type = recipeTypes.getOrDefault(name, null);
+                IRecipeHolderType<UniversalProcessorRecipe> type = recipeTypes.get(name);
                 if (type == null) return List.of();
                 return List.of(IGuiClickableArea.createBasic(112, 74, 18, 18, type));
             }

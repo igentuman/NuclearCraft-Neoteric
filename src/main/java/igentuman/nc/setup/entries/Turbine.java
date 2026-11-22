@@ -7,7 +7,6 @@ import igentuman.nc.block.turbine.TurbineRotorBlock;
 import igentuman.nc.block_entity.turbine.TurbineControllerBE;
 import igentuman.nc.block_entity.turbine.TurbinePortBE;
 import igentuman.nc.block_entity.turbine.TurbineRotorBE;
-import igentuman.nc.compat.create.CreateTurbine;
 import igentuman.nc.multiblock.MultiblockEntryBuilder;
 import igentuman.nc.multiblock.ValidationScheduler;
 import igentuman.nc.api.multiblock.part.BladeDef;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
@@ -88,22 +86,19 @@ public class Turbine extends ModEntries {
         addMultiblockBlock("turbine_casing");
         addMultiblockBlock("turbine_glass", glassProps());
         addMultiblockPart("turbine_port", TurbinePortBE::new);
-        if (ModList.get().isLoaded("create")) {
-            CreateTurbine.registerBearing("turbine_bearing");
-        } else {
-            addMultiblockBlock("turbine_bearing");
-        }
+        // Keep the core bearing and its ID while the Create integration is deferred.
+        addMultiblockBlock("turbine_bearing");
 
         add("turbine_rotor_shaft")
-                .block(name -> new TurbineRotorBlock(rotorProps(), name))
+                .block(TurbineRotorBlock::new, Turbine::rotorProps)
                 .blockEntity(TurbineRotorBE::new)
                 .build();
 
         for (String blade : BLADES) {
-            add(blade).block(name -> new TurbineBladeBlock(bladeProps())).build();
+            add(blade).block(TurbineBladeBlock::new, Turbine::bladeProps).build();
         }
 
-        add("dummy_turbine_blade").block(name -> new TurbineDummyBladeBlock(bladeProps())).build();
+        add("dummy_turbine_blade").block(TurbineDummyBladeBlock::new, Turbine::bladeProps).build();
 
         register(new TurbineCoilDef("copper").efficiency(110).rules("turbine_gold_coil"));
         register(new TurbineCoilDef("magnesium").efficiency(86).rules("turbine_bearing"));
@@ -115,7 +110,7 @@ public class Turbine extends ModEntries {
 
         for (String coil : COILS) {
             addMultiblockBlock("turbine_" + coil + "_coil",
-                    () -> new TurbineCoilBlock(coilProps(), ModEntries.TURBINE_COILS.get(coil)));
+                    props -> new TurbineCoilBlock(props, ModEntries.TURBINE_COILS.get(coil)), Turbine::coilProps);
         }
 
         ModEntries.COIL_SCHEDULE = computeSchedule();

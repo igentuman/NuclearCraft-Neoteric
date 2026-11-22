@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_nuggets",
   "ingredients": [
-    {
-      "tag": "c:ingots/uranium"
-    }
+    "#c:ingots/uranium"
   ],
   "result": {
     "count": 9,

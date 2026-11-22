@@ -48,7 +48,7 @@ public class NCDamageSources {
     /** Resolves a registered damage type into a usable {@link DamageSource} for the given level. */
     public static DamageSource of(Level level, ResourceKey<DamageType> key) {
         return new DamageSource(
-                level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key)
+                level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(key)
         );
     }
 

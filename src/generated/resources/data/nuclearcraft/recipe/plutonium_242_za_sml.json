@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "item": "nuclearcraft:plutonium_242_za"
-  },
+  "ingredient": "nuclearcraft:plutonium_242_za",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:plutonium_242"
   }
 }

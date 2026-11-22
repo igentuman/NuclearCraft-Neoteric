@@ -44,16 +44,15 @@ public final class BlockClassifier {
 
     public static void initializeRecipesMap(ServerLevel server) {
         Map<Block, List<Transformation>> tempMap = new HashMap<>();
-        for (RecipeHolder<NuclearBlastRecipe> holder : server.getRecipeManager().getAllRecipesFor(NcBlastRecipes.TYPE.get())) {
+        for (RecipeHolder<NuclearBlastRecipe> holder : server.recipeAccess().recipeMap().byType(NcBlastRecipes.TYPE.get())) {
             NuclearBlastRecipe recipe = holder.value();
             ItemStack outputStack = recipe.output().resolve();
             if (outputStack.isEmpty()) continue;
             Block outputBlock = Block.byItem(outputStack.getItem());
             if (outputBlock == Blocks.AIR) continue;
             Transformation transformation = new Transformation(outputBlock.defaultBlockState(), recipe.chance());
-            for (ItemStack inputStack : recipe.input().getItems()) {
-                if (inputStack.isEmpty()) continue;
-                Block inputBlock = Block.byItem(inputStack.getItem());
+            for (var input : recipe.input().items().toList()) {
+                Block inputBlock = Block.byItem(input.value());
                 if (inputBlock == Blocks.AIR) continue;
                 tempMap.computeIfAbsent(inputBlock, k -> new ArrayList<>()).add(transformation);
             }

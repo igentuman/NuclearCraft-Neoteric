@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_blocks",
   "ingredients": [
-    {
-      "tag": "c:ingots/aluminum"
-    },
-    {
-      "tag": "c:ingots/aluminum"
-    },
-    {
-      "tag": "c:ingots/aluminum"
-    },
-    {
-      "tag": "c:ingots/aluminum"
-    },
-    {
-      "tag": "c:ingots/aluminum"
-    },
-    {
-      "tag": "c:ingots/aluminum"
-    },
-    {
-      "tag": "c:ingots/aluminum"
-    },
-    {
-      "tag": "c:ingots/aluminum"
-    },
-    {
-      "tag": "c:ingots/aluminum"
-    }
+    "#c:ingots/aluminum",
+    "#c:ingots/aluminum",
+    "#c:ingots/aluminum",
+    "#c:ingots/aluminum",
+    "#c:ingots/aluminum",
+    "#c:ingots/aluminum",
+    "#c:ingots/aluminum",
+    "#c:ingots/aluminum",
+    "#c:ingots/aluminum"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:aluminum_block"
   }
 }

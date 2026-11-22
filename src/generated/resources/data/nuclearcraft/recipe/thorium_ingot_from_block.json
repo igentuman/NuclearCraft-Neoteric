@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:storage_blocks/thorium"
-    }
+    "#c:storage_blocks/thorium"
   ],
   "result": {
     "count": 9,

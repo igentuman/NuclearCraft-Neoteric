@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:nuggets/bronze"
-    },
-    {
-      "tag": "c:nuggets/bronze"
-    },
-    {
-      "tag": "c:nuggets/bronze"
-    },
-    {
-      "tag": "c:nuggets/bronze"
-    },
-    {
-      "tag": "c:nuggets/bronze"
-    },
-    {
-      "tag": "c:nuggets/bronze"
-    },
-    {
-      "tag": "c:nuggets/bronze"
-    },
-    {
-      "tag": "c:nuggets/bronze"
-    },
-    {
-      "tag": "c:nuggets/bronze"
-    }
+    "#c:nuggets/bronze",
+    "#c:nuggets/bronze",
+    "#c:nuggets/bronze",
+    "#c:nuggets/bronze",
+    "#c:nuggets/bronze",
+    "#c:nuggets/bronze",
+    "#c:nuggets/bronze",
+    "#c:nuggets/bronze",
+    "#c:nuggets/bronze"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:bronze_ingot"
   }
 }

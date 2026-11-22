@@ -1,11 +1,11 @@
 package igentuman.nc.screen.element;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class ProgressBar extends AbstractWidget {
     public int bar = 0;
     private double progress;
 
-    protected static ResourceLocation ATLAS = rl("textures/gui/progress_bars.png");
+    protected static Identifier ATLAS = rl("textures/gui/progress_bars.png");
 
     public static List<int[]> bars = List.of(
             new int[] {0, 16},
@@ -68,12 +68,11 @@ public class ProgressBar extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        RenderSystem.setShaderTexture(0, ATLAS);
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int texOffset = bars.get(bar)[0];
         int teyOffset = bars.get(bar)[1];
-        graphics.blit(ATLAS, x, y, texOffset, teyOffset,  width, height);
-        graphics.blit(ATLAS, x, y, texOffset, teyOffset-height-1, (int) (progress*width), height);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, ATLAS, x, y, texOffset, teyOffset,  width, height, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, ATLAS, x, y, texOffset, teyOffset-height-1, (int) (progress*width), height, 256, 256);
     }
 
     @Override

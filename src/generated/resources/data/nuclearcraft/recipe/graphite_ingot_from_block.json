@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:storage_blocks/graphite"
-    }
+    "#c:storage_blocks/graphite"
   ],
   "result": {
     "count": 9,

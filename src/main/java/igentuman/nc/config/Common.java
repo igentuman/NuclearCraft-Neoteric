@@ -62,7 +62,7 @@ public class Common {
         MOD_TAG_PRIORITY = BUILDER
                 .comment("Mod id priority for resolving tag-based recipe outputs.",
                         "Earlier entries win; namespaces not listed rank last (tiebreak = tag order).")
-                .defineList("mod_tag_priority", List.of("minecraft", "nuclearcraft", "mekanism", "immersiveengineering"), o -> o instanceof String);
+                .defineList("mod_tag_priority", List.of("minecraft", "nuclearcraft", "mekanism", "immersiveengineering"), () -> "", o -> o instanceof String);
         BUILDER.pop();
 
         BUILDER.push("misc");
@@ -117,7 +117,9 @@ public class Common {
                 .define("enable_veins", true);
         IN_SITU_VEIN_BLOCKS_AMOUNT = BUILDER
                 .comment("Min/max blocks per vein")
-                .defineList("blocks_per_vein", List.of(50000, 1000000), o -> o instanceof Integer);
+                // Fixed min/max pair: no "add" button, same non-empty size rule as before.
+                .defineList(List.of("blocks_per_vein"), () -> List.of(50000, 1000000), null, o -> o instanceof Integer,
+                        ModConfigSpec.Range.of(1, Integer.MAX_VALUE));
         IN_SITU_VEINS_RARITY = BUILDER
                 .comment("Higher = less veins (1-5000)")
                 .defineInRange("veins_rarity", 70, 1, 5000);
@@ -373,7 +375,7 @@ public class Common {
             BUFF_DURATION_TICKS     = builder.comment("Duration of the applied buff effect").defineInRange("buff_duration_ticks", 240, 1, 24000);
             BUFF_EFFECT_BLACKLIST   = builder.comment("Effect ids excluded from crystal buff pool").defineList("buff_effect_blacklist",
                     Arrays.asList("minecraft:hero_of_the_village", "minecraft:dolphins_grace", "minecraft:conduit_power"),
-                    o -> o instanceof String);
+                    () -> "", o -> o instanceof String);
             builder.pop();
 
             builder.pop();

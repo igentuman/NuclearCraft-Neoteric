@@ -6,6 +6,8 @@ import igentuman.nc.client.bomb.DebrisFireEmitter;
 import igentuman.nc.client.bomb.GroundSmokeEmitter;
 import igentuman.nc.client.bomb.ShockwaveDebrisEmitter;
 import igentuman.nc.client.multiblock.MultiblockDebugClient;
+import igentuman.nc.client.render.builder.MultiblockBuilderRenderer;
+import igentuman.nc.client.render.builder.StructurePreviewPipRenderer;
 import igentuman.nc.client.renderer.ScenePostEffects;
 import igentuman.nc.client.storage.ClientContainerInventory;
 import net.neoforged.api.distmarker.Dist;
@@ -27,6 +29,8 @@ public final class ClientWorldCleanup {
         DebrisFireEmitter.clear();
         ShockwaveDebrisEmitter.clear();
         MultiblockDebugClient.clear();
+        MultiblockBuilderRenderer.clear();
+        StructurePreviewPipRenderer.clearCache();
         ClientContainerInventory.clear();
     }
 }

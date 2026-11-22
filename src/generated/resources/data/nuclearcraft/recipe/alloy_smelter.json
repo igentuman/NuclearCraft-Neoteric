@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft_processors",
   "key": {
-    "F": {
-      "tag": "c:dusts/redstone"
-    },
-    "L": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "P": {
-      "item": "minecraft:blast_furnace"
-    },
-    "S": {
-      "item": "nuclearcraft:coil_copper"
-    },
-    "X": {
-      "tag": "c:bricks"
-    }
+    "F": "#c:dusts/redstone",
+    "L": "nuclearcraft:plate_basic",
+    "P": "minecraft:blast_furnace",
+    "S": "nuclearcraft:coil_copper",
+    "X": "#c:bricks"
   },
   "pattern": [
     "LFL",
@@ -25,7 +15,6 @@
     "LSL"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:alloy_smelter"
   }
 }

@@ -1,8 +1,9 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -46,7 +47,7 @@ public class ScrollableItemGrid extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
         refresh();
         Font font = Minecraft.getInstance().font;
         for (int r = 0; r < rows; r++) {
@@ -61,18 +62,17 @@ public class ScrollableItemGrid extends AbstractWidget {
                     g.fill(ix, iy, ix + 16, iy + 16, 0x4033AAFF);
                 }
                 if (!cell.stack().isEmpty()) {
-                    g.renderItem(cell.stack(), ix, iy);
+                    g.item(cell.stack(), ix, iy);
                 }
                 if (cell.stored() > 0) {
                     String s = fmt(cell.stored());
-                    g.pose().pushPose();
-                    g.pose().translate(0, 0, 200);
+                    g.pose().pushMatrix();
                     float scale = 0.75f;
-                    g.pose().scale(scale, scale, 1f);
+                    g.pose().scale(scale, scale);
                     int tx = Math.round((ix + 17 - font.width(s) * scale) / scale);
                     int ty = Math.round((iy + 17 - font.lineHeight * scale) / scale);
-                    g.drawString(font, s, tx, ty, 0xFFFFFF, true);
-                    g.pose().popPose();
+                    g.text(font, s, tx, ty, 0xFFFFFFFF, true);
+                    g.pose().popMatrix();
                 }
             }
         }
@@ -86,11 +86,11 @@ public class ScrollableItemGrid extends AbstractWidget {
         }
     }
 
-    private void drawScrollbar(GuiGraphics g) {
+    private void drawScrollbar(GuiGraphicsExtractor g) {
         drawScrollbar(g, getX() + cols * 18 + 2, getY(), rows * 18, scrollRow, maxScroll());
     }
 
-    public static void drawScrollbar(GuiGraphics g, int barX, int barY, int barH, int scroll, int max) {
+    public static void drawScrollbar(GuiGraphicsExtractor g, int barX, int barY, int barH, int scroll, int max) {
         int barW = SCROLLBAR_WIDTH - 2;
         g.fill(barX, barY, barX + barW, barY + barH, 0xFF373737);
         int thumbH = max == 0 ? barH : Math.max(12, barH - max * 6);
@@ -124,7 +124,10 @@ public class ScrollableItemGrid extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mx, double my, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mx = event.x();
+        double my = event.y();
+        int button = event.button();
         return false;
     }
 

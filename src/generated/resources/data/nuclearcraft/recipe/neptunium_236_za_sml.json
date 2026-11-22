@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "item": "nuclearcraft:neptunium_236_za"
-  },
+  "ingredient": "nuclearcraft:neptunium_236_za",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:neptunium_236"
   }
 }

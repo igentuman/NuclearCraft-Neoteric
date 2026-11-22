@@ -1,14 +1,11 @@
 package igentuman.nc.recipe.particle;
 
+import igentuman.nc.recipe.MachineRecipe;
 import igentuman.nc.api.particle.ParticleIngredient;
 import igentuman.nc.api.particle.ParticleStack;
-import igentuman.nc.recipe.FluidOutput;
-import igentuman.nc.recipe.ItemOutput;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
+import igentuman.nc.api.recipe.FluidOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -27,7 +24,7 @@ public record TargetChamberRecipe(
         double crossSection,
         long releasedEnergyKeV,
         int priority
-) implements Recipe<ParticleRecipeInput> {
+) implements MachineRecipe<ParticleRecipeInput> {
 
     @Override
     public boolean matches(ParticleRecipeInput in, Level level) {
@@ -41,37 +38,17 @@ public record TargetChamberRecipe(
     }
 
     @Override
-    public ItemStack assemble(ParticleRecipeInput in, HolderLookup.Provider registries) {
+    public ItemStack assemble(ParticleRecipeInput in) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.create();
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return true;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<TargetChamberRecipe> getSerializer() {
         return ParticleRecipes.TARGET_CHAMBER_SERIALIZER.get();
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<TargetChamberRecipe> getType() {
         return ParticleRecipes.TARGET_CHAMBER_TYPE.get();
     }
 }

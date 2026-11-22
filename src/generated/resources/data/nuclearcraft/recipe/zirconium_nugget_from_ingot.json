@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_nuggets",
   "ingredients": [
-    {
-      "tag": "c:ingots/zirconium"
-    }
+    "#c:ingots/zirconium"
   ],
   "result": {
     "count": 9,

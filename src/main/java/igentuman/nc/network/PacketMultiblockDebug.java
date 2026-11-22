@@ -6,13 +6,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.Nullable;
 
 public record PacketMultiblockDebug(
         BlockPos controllerPos,
-        ResourceLocation machineId,
+        Identifier machineId,
         String phase,
         String status,
         String diagnosticKey,
@@ -21,8 +21,8 @@ public record PacketMultiblockDebug(
         @Nullable BlockPos start,
         @Nullable BlockPos end,
         @Nullable BlockPos failingPosition,
-        @Nullable ResourceLocation expected,
-        @Nullable ResourceLocation actual,
+        @Nullable Identifier expected,
+        @Nullable Identifier actual,
         long completed,
         long total,
         long elapsedNanos
@@ -36,7 +36,7 @@ public record PacketMultiblockDebug(
 
     private static void encode(FriendlyByteBuf buf, PacketMultiblockDebug packet) {
         BlockPos.STREAM_CODEC.encode(buf, packet.controllerPos);
-        buf.writeResourceLocation(packet.machineId);
+        buf.writeIdentifier(packet.machineId);
         buf.writeUtf(packet.phase);
         buf.writeUtf(packet.status);
         buf.writeUtf(packet.diagnosticKey);
@@ -55,7 +55,7 @@ public record PacketMultiblockDebug(
     private static PacketMultiblockDebug decode(FriendlyByteBuf buf) {
         return new PacketMultiblockDebug(
                 BlockPos.STREAM_CODEC.decode(buf),
-                buf.readResourceLocation(),
+                buf.readIdentifier(),
                 buf.readUtf(),
                 buf.readUtf(),
                 buf.readUtf(),
@@ -81,14 +81,14 @@ public record PacketMultiblockDebug(
         return buf.readBoolean() ? BlockPos.STREAM_CODEC.decode(buf) : null;
     }
 
-    private static void writeNullableId(FriendlyByteBuf buf, @Nullable ResourceLocation id) {
+    private static void writeNullableId(FriendlyByteBuf buf, @Nullable Identifier id) {
         buf.writeBoolean(id != null);
-        if (id != null) buf.writeResourceLocation(id);
+        if (id != null) buf.writeIdentifier(id);
     }
 
     @Nullable
-    private static ResourceLocation readNullableId(FriendlyByteBuf buf) {
-        return buf.readBoolean() ? buf.readResourceLocation() : null;
+    private static Identifier readNullableId(FriendlyByteBuf buf) {
+        return buf.readBoolean() ? buf.readIdentifier() : null;
     }
 
     @Override

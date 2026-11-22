@@ -1,0 +1,17 @@
+{
+  "additional_wants": {
+    "count": 8.0,
+    "id": "nuclearcraft:zinc_ingot"
+  },
+  "gives": {
+    "count": 2,
+    "id": "nuclearcraft:neutronium_ingot"
+  },
+  "max_uses": 7.0,
+  "reputation_discount": 0.02,
+  "wants": {
+    "count": 16.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 30.0
+}

@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft_processors",
   "key": {
-    "F": {
-      "item": "minecraft:hopper"
-    },
-    "L": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "P": {
-      "item": "nuclearcraft:chassis"
-    },
-    "S": {
-      "tag": "c:ingots/tough_alloy"
-    },
-    "X": {
-      "tag": "c:ingots/ferroboron"
-    }
+    "F": "minecraft:hopper",
+    "L": "nuclearcraft:plate_basic",
+    "P": "nuclearcraft:chassis",
+    "S": "#c:ingots/tough_alloy",
+    "X": "#c:ingots/ferroboron"
   },
   "pattern": [
     "LFL",
@@ -25,7 +15,6 @@
     "LSL"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:ingot_former"
   }
 }

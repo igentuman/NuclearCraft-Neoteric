@@ -29,7 +29,7 @@ public record PacketHeatExchangerToggleRadiators(BlockPos pos) implements Custom
     public static void handle(PacketHeatExchangerToggleRadiators packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            BlockEntity be = serverPlayer.serverLevel().getBlockEntity(packet.pos());
+            BlockEntity be = serverPlayer.level().getBlockEntity(packet.pos());
             if (be instanceof HeatExchangerControllerBE controller) {
                 controller.toggleRadiators();
             }

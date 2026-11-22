@@ -1,7 +1,8 @@
 package igentuman.nc.client.model;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
@@ -14,12 +15,13 @@ public final class ClientQuadTools {
         return new Vec3(x, y, z);
     }
 
-    public static BakedQuad createQuad(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, TextureAtlasSprite sprite) {
+    public static BakedQuad createQuad(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, Material.Baked material) {
         Vec3 normal = v3.subtract(v2).cross(v1.subtract(v2)).normalize();
+        TextureAtlasSprite sprite = material.sprite();
 
         QuadBakingVertexConsumer consumer = new QuadBakingVertexConsumer();
-        consumer.setSprite(sprite);
-        consumer.setDirection(Direction.getNearest(normal.x, normal.y, normal.z));
+        consumer.setSprite(material);
+        consumer.setDirection(Direction.getApproximateNearest(normal.x, normal.y, normal.z));
         consumer.setTintIndex(-1);
 
         putVertex(consumer, normal, v1, 0f, 0f, sprite);

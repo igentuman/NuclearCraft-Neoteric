@@ -54,7 +54,7 @@ public class BeamControllerApi<T extends MultiblockControllerBE> extends Control
         MultiblockHandler.MultiblockInstance instance = MultiblockHandler.getInstance(level, be.getBlockPos());
         if (instance == null || !instance.formed) return ports;
         instance.cache.getStructurePositions().stream().sorted().map(BlockPos::of)
-                .filter(level::hasChunkAt)
+                .filter(level::isLoaded)
                 .map(level::getBlockEntity)
                 .forEach(blockEntity -> {
                     if (blockEntity instanceof IBeamPort port && port.controller() == be) ports.add(port);

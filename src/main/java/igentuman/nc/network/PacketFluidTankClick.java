@@ -11,10 +11,17 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.fluids.FluidActionResult;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.resource.ResourceStack;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public record PacketFluidTankClick(int containerId, int tank, boolean flush) implements CustomPacketPayload {
 
@@ -56,16 +63,32 @@ public record PacketFluidTankClick(int containerId, int tank, boolean flush) imp
                 if (!carried.isEmpty()) return;
                 fluids.getInternalHandler().voidTank(packet.tank());
             } else {
+                if (carried.isEmpty()) return;
                 var tank = new ContainerFluidHandler(fluids, packet.tank());
-                var inventory = new PlayerMainInvWrapper(player.getInventory());
-                FluidActionResult result = FluidUtil.tryEmptyContainerAndStow(
-                        carried, tank, inventory, Integer.MAX_VALUE, player, true);
-                if (!result.isSuccess()) {
-                    result = FluidUtil.tryFillContainerAndStow(
-                            carried, tank, inventory, Integer.MAX_VALUE, player, true);
+                ItemAccess access;
+                if (player.hasInfiniteMaterials()) {
+                    // Let buckets change item type in a temporary slot while retaining the creative cursor.
+                    var temporarySlot = new ItemStacksResourceHandler(1);
+                    temporarySlot.set(0, ItemResource.of(carried), 1);
+                    access = ItemAccess.forHandlerIndexStrict(temporarySlot, 0);
+                } else {
+                    access = ItemAccess.forPlayerCursor(player, menu).oneByOne();
                 }
-                if (!result.isSuccess()) return;
-                menu.setCarried(result.getResult());
+                var item = access.getCapability(Capabilities.Fluid.ITEM);
+                if (item == null) return;
+                boolean pickup = false;
+                ResourceStack<FluidResource> moved;
+                try (var transaction = Transaction.openRoot()) {
+                    moved = ResourceHandlerUtil.moveFirst(item, tank, resource -> true, Integer.MAX_VALUE, transaction);
+                    if (moved == null) {
+                        pickup = true;
+                        moved = ResourceHandlerUtil.moveFirst(tank, item, resource -> true, Integer.MAX_VALUE, transaction);
+                    }
+                    if (moved == null) return;
+                    transaction.commit();
+                }
+                FluidUtil.triggerSoundAndGameEvent(moved.resource(), player.level(),
+                        Vec3.atCenterOf(be.getBlockPos()), player, pickup);
             }
             be.setChanged();
             be.getLevel().sendBlockUpdated(be.getBlockPos(), be.getBlockState(), be.getBlockState(), 3);

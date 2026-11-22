@@ -3,36 +3,17 @@
   "category": "misc",
   "group": "nuclearcraft_blocks",
   "ingredients": [
-    {
-      "tag": "c:ingots/magnesium"
-    },
-    {
-      "tag": "c:ingots/magnesium"
-    },
-    {
-      "tag": "c:ingots/magnesium"
-    },
-    {
-      "tag": "c:ingots/magnesium"
-    },
-    {
-      "tag": "c:ingots/magnesium"
-    },
-    {
-      "tag": "c:ingots/magnesium"
-    },
-    {
-      "tag": "c:ingots/magnesium"
-    },
-    {
-      "tag": "c:ingots/magnesium"
-    },
-    {
-      "tag": "c:ingots/magnesium"
-    }
+    "#c:ingots/magnesium",
+    "#c:ingots/magnesium",
+    "#c:ingots/magnesium",
+    "#c:ingots/magnesium",
+    "#c:ingots/magnesium",
+    "#c:ingots/magnesium",
+    "#c:ingots/magnesium",
+    "#c:ingots/magnesium",
+    "#c:ingots/magnesium"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:magnesium_block"
   }
 }

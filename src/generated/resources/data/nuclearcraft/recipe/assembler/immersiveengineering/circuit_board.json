@@ -19,8 +19,8 @@
       }
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "immersiveengineering:circuit_board"
+      "type": "neoforge:registered",
+      "value": "immersiveengineering:circuit_board"
     }
   ],
   "type": "nuclearcraft:assembler",

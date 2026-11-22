@@ -19,12 +19,12 @@
       }
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "ae2:logic_processor"
+      "type": "neoforge:registered",
+      "value": "ae2:logic_processor"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "ae2:formation_core"
+      "type": "neoforge:registered",
+      "value": "ae2:formation_core"
     }
   ],
   "type": "nuclearcraft:assembler",

@@ -2,6 +2,7 @@ package igentuman.nc.block.fusion;
 
 import igentuman.nc.block.MultiblockBlock;
 import igentuman.nc.api.multiblock.part.ElectromagnetDef;
+import igentuman.nc.block.TooltipBlock;
 import igentuman.nc.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -9,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
@@ -16,17 +18,16 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import static net.minecraft.network.chat.Component.translatable;
 
-/** Horizontally-facing electromagnet block; shows power, magnetic field, efficiency and heat stats. */
-public class ElectromagnetBlock extends MultiblockBlock {
+public class ElectromagnetBlock extends MultiblockBlock implements TooltipBlock {
 
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public ElectromagnetBlock(Properties props) {
         super(props);
@@ -59,22 +60,22 @@ public class ElectromagnetBlock extends MultiblockBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void addTooltip(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
         ElectromagnetDef def = ElectromagnetDef.get(stack.getItem().toString().replace("nuclearcraft:", ""));
         if (def == null) return;
-        tooltip.add(TextUtils.applyFormat(
+        tooltip.accept(TextUtils.applyFormat(
                 translatable("tooltip.nuclearcraft.rf_amplifier.power", TextUtils.numberFormat(def.power)),
                 ChatFormatting.DARK_AQUA));
-        tooltip.add(TextUtils.applyFormat(
+        tooltip.accept(TextUtils.applyFormat(
                 translatable("tooltip.nuclearcraft.electromagnet.magnetic_field", TextUtils.numberFormat(def.magneticField)),
                 ChatFormatting.DARK_BLUE));
-        tooltip.add(TextUtils.applyFormat(
+        tooltip.accept(TextUtils.applyFormat(
                 translatable("tooltip.nuclearcraft.electromagnet.efficiency", TextUtils.numberFormat(def.efficiency)),
                 ChatFormatting.AQUA));
-        tooltip.add(TextUtils.applyFormat(
+        tooltip.accept(TextUtils.applyFormat(
                 translatable("tooltip.nuclearcraft.electromagnet.heat", TextUtils.numberFormat(def.heat)),
                 ChatFormatting.YELLOW));
-        tooltip.add(TextUtils.applyFormat(
+        tooltip.accept(TextUtils.applyFormat(
                 translatable("tooltip.nuclearcraft.electromagnet.max_temp", TextUtils.numberFormat((double) def.maxTemp / 1000)),
                 ChatFormatting.RED));
     }

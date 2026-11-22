@@ -1,13 +1,15 @@
 package igentuman.nc.screen;
 
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.block_entity.kugelblitz.ChamberTerminalBE;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.screen.element.KugelblitzSlider;
 import igentuman.nc.screen.element.ProgressBar;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.Objects;
@@ -19,17 +21,15 @@ import static igentuman.nc.util.TextUtils.scaledFormat;
 /** Kugelblitz chamber terminal screen: energy-conversion + quantum-frequency sliders and black-hole readouts. */
 public class ChamberTerminalScreen extends MultiblockControllerScreen {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/kugelblitz_controller.png");
-    private static final int TEXT = 0xFFFFFF;
+    private static final Identifier TEXTURE = rl("textures/gui/kugelblitz_controller.png");
+    private static final int TEXT = 0xFFFFFFFF;
     private static final float SCALE = 0.75f;
 
     private KugelblitzSlider rateSlider;
     private KugelblitzSlider frequencySlider;
 
     public ChamberTerminalScreen(MultiblockControllerContainer menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        imageWidth = 214;
-        imageHeight = 186;
+        super(menu, playerInventory, title, 214, 186);
         this.inventoryLabelX = 27;
         this.inventoryLabelY = 95;
     }
@@ -63,15 +63,15 @@ public class ChamberTerminalScreen extends MultiblockControllerScreen {
         return menu.getBlockEntity() instanceof ChamberTerminalBE be ? be : null;
     }
 
-    private void drawScaled(GuiGraphics g, Component text, int x, int y) {
-        g.pose().pushPose();
-        g.pose().scale(SCALE, SCALE, 1f);
-        g.drawString(this.font, text, Math.round(x / SCALE), Math.round(y / SCALE), TEXT, false);
-        g.pose().popPose();
+    private void drawScaled(GuiGraphicsExtractor g, Component text, int x, int y) {
+        g.pose().pushMatrix();
+        g.pose().scale(SCALE, SCALE);
+        g.text(this.font, text, Math.round(x / SCALE), Math.round(y / SCALE), TEXT, false);
+        g.pose().popMatrix();
     }
 
     @Override
-    protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor g, int mouseX, int mouseY) {
         drawCenteredString(g, this.font, this.title, imageWidth / 2, 7, TEXT);
         if (!(be() instanceof ChamberTerminalBE be)) return;
 
@@ -90,21 +90,21 @@ public class ChamberTerminalScreen extends MultiblockControllerScreen {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
         if (rateSlider != null && rateSlider.isSliderDragging()) {
-            return rateSlider.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+            return rateSlider.mouseDragged(event, dragX, dragY);
         }
         if (frequencySlider != null && frequencySlider.isSliderDragging()) {
-            return frequencySlider.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+            return frequencySlider.mouseDragged(event, dragX, dragY);
         }
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return super.mouseDragged(event, dragX, dragY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
+    protected void extractPanel(GuiGraphicsExtractor g, int mouseX, int mouseY, float a) {
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        g.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        g.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         progressBar.setProgress(menu.getProgress());
     }
 }

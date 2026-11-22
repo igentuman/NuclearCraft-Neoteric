@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
-    "T": {
-      "tag": "c:ingots/tungsten"
-    },
-    "W": {
-      "item": "nuclearcraft:wire_gold_tungsten"
-    }
+    "T": "#c:ingots/tungsten",
+    "W": "nuclearcraft:wire_gold_tungsten"
   },
   "pattern": [
     "TTT",
@@ -16,7 +12,6 @@
     "TTT"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:tungsten_filament"
   }
 }

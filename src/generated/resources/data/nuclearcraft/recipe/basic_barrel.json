@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:plates/steel"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    }
+    "G": "#c:plates/steel",
+    "P": "nuclearcraft:plate_basic"
   },
   "pattern": [
     "GPG",
@@ -15,7 +11,6 @@
     "GPG"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:basic_barrel"
   }
 }

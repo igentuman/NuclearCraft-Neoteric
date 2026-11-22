@@ -1,0 +1,18 @@
+{
+  "name": "Защитный костюм",
+  "icon": "nuclear_radiation:hazmat_helmet",
+  "category": "nuclearcraft:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "anchor": "hazmat",
+      "type": "items/4",
+      "header": "Защитный костюм",
+      "item1": "nuclear_radiation:hazmat_helmet",
+      "item2": "nuclear_radiation:hazmat_chestplate",
+      "item3": "nuclear_radiation:hazmat_leggings",
+      "item4": "nuclear_radiation:hazmat_boots",
+      "text": "$(item)Защитный костюм$() снижает воздействие радиации на носителя. У каждой части комплекта собственная радиационная стойкость, и именно она определяет итоговый уровень защиты."
+    }
+  ]
+}

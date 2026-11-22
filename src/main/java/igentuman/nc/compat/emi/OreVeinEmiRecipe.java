@@ -7,11 +7,10 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.recipe.OreVeinRecipe;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /** EMI display for an in-situ ore vein's weighted output pool. */
@@ -21,23 +20,20 @@ public class OreVeinEmiRecipe implements EmiRecipe {
     private static final int HEIGHT = 46;
 
     private final EmiRecipeCategory category;
-    private final ResourceLocation id;
+    private final Identifier id;
     private final OreVeinRecipe recipe;
     private final List<EmiStack> outputs = new ArrayList<>();
     private final List<EmiIngredient> outputIngredients = new ArrayList<>();
 
-    public OreVeinEmiRecipe(EmiRecipeCategory category, ResourceLocation id, OreVeinRecipe recipe) {
+    public OreVeinEmiRecipe(EmiRecipeCategory category, Identifier id, OreVeinRecipe recipe) {
         this.category = category;
         this.id = id;
         this.recipe = recipe;
         for (OreVeinRecipe.OreEntry ore : recipe.getOres()) {
-            List<EmiStack> members = Arrays.stream(ore.ingredient().ingredient().getItems())
-                    .map(stack -> EmiStack.of(stack.copyWithCount(ore.ingredient().count())))
-                    .toList();
+            List<EmiStack> members = EmiIngredients.itemOptions(ore.ingredient().ingredient(), ore.ingredient().count())
+                    .stream().map(EmiStack::of).toList();
             outputs.add(members.isEmpty() ? EmiStack.EMPTY : members.getFirst());
-            outputIngredients.add(EmiIngredient.of(members.stream()
-                    .map(stack -> (EmiIngredient) stack)
-                    .toList()));
+            outputIngredients.add(EmiIngredients.ingredientOf(members));
         }
     }
 
@@ -47,7 +43,7 @@ public class OreVeinEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public @Nullable Identifier getId() {
         return id;
     }
 

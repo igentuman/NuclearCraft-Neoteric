@@ -2,6 +2,13 @@ package igentuman.nc.container;
 
 import igentuman.nc.block_entity.crafter.EngineersCrafterBE;
 import igentuman.nc.handler.crafter.CraftingPattern;
+import igentuman.nc.handler.crafter.EncoderRecipePreview;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.RecipeMap;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+import igentuman.nc.setup.ModEntries;
 import igentuman.nc.handler.crafter.ProcessorRecipes;
 import igentuman.nc.handler.crafter.RecipeGridLayout;
 import igentuman.nc.network.PacketEncoderSync;
@@ -9,13 +16,13 @@ import igentuman.nc.recipe.UniversalProcessorRecipe;
 import igentuman.nc.setup.entries.Crafter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
@@ -27,8 +34,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import igentuman.nc.handler.item.CustomInventoryHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/** Pattern encoder menu backed by native pattern and blank inventories. */
 public class EngineersEncoderContainer extends AbstractContainerMenu {
 
     public static final int ENCODE_BTN = 0;
@@ -80,7 +91,11 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     private boolean synced;
 
     @Nullable
-    private ResourceLocation clientRecipeId;
+    private Identifier clientRecipeId;
+    @Nullable
+    private EncoderRecipePreview clientPreview;
+    @Nullable
+    private RecipeMap recipeMap;
 
     public EngineersEncoderContainer(int windowId, BlockPos pos, Inventory inv) {
         super(Crafter.ENGINEERS_ENCODER_MENU.get(), windowId);
@@ -118,7 +133,7 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
         for (int col = 0; col < 9; col++) {
             addSlot(new Slot(inv, col, 8 + col * 18, PLAYER_Y + 58));
         }
-        addSlot(new SlotItemHandler(blockEntity.encoderBlanks, 0, BLANK_X, BLANK_Y));
+        addSlot(new ResourceHandlerSlot(blockEntity.encoderBlanks, blockEntity.encoderBlanks::set, 0, BLANK_X, BLANK_Y));
     }
 
     // --- state ---
@@ -132,37 +147,49 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     }
 
     @Nullable
-    public ResourceLocation selectedRecipeId() {
-        if (level.isClientSide) return clientRecipeId;
-        return selected == null ? null : selected.id();
+    public Identifier selectedRecipeId() {
+        if (level.isClientSide()) return clientRecipeId;
+        return selected == null ? null : selected.id().identifier();
     }
 
     @Nullable
-    public UniversalProcessorRecipe selectedRecipe() {
-        if (level.isClientSide) {
-            return clientRecipeId == null ? null : ProcessorRecipes.byId(level.getRecipeManager(), clientRecipeId);
-        }
-        return selected == null ? null : selected.value();
+    public EncoderRecipePreview selectedPreview() {
+        return level.isClientSide() ? clientPreview : selected == null ? null : EncoderRecipePreview.of(selected.value());
     }
 
-    public void applySync(int mode, @Nullable ResourceLocation recipeId) {
+    public void applySync(int mode, @Nullable Identifier recipeId, @Nullable EncoderRecipePreview preview) {
         this.mode = mode;
         this.clientRecipeId = recipeId;
+        this.clientPreview = preview;
     }
 
     private void sync() {
         if (player instanceof ServerPlayer sp) {
-            PacketDistributor.sendToPlayer(sp, new PacketEncoderSync(mode, selected == null ? null : selected.id()));
+            PacketDistributor.sendToPlayer(sp, new PacketEncoderSync(containerId, mode, selectedRecipeId(), selectedPreview()));
         }
     }
 
     @Override
     public void broadcastChanges() {
-        super.broadcastChanges();
-        if (!synced && !level.isClientSide) {
-            synced = true;
-            sync();
+        if (level instanceof ServerLevel serverLevel) {
+            RecipeMap current = serverLevel.recipeAccess().recipeMap();
+            if (recipeMap != current) {
+                recipeMap = current;
+                if (selected != null) {
+                    Identifier id = selected.id().identifier();
+                    UniversalProcessorRecipe value = ProcessorRecipes.byId(level, id);
+                    selected = value == null ? null : new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), value);
+                }
+                if (mode == MODE_PROCESSING && selected == null) searchProcessingRecipe();
+                updateResult();
+                sync();
+                synced = true;
+            } else if (!synced) {
+                sync();
+                synced = true;
+            }
         }
+        super.broadcastChanges();
     }
 
     // --- recipe resolution ---
@@ -170,7 +197,7 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     @Override
     public void slotsChanged(@NotNull Container container) {
         super.slotsChanged(container);
-        if (!level.isClientSide && container == craftSlots) {
+        if (!level.isClientSide() && container == craftSlots) {
             if (mode == MODE_PROCESSING && !suppressSearch) {
                 searchProcessingRecipe();
             }
@@ -181,7 +208,7 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     private void searchProcessingRecipe() {
         List<ItemStack> ghosts = new ArrayList<>(9);
         for (int i = 0; i < 9; i++) ghosts.add(craftSlots.getItem(i));
-        RecipeHolder<UniversalProcessorRecipe> found = ProcessorRecipes.matchByItems(level.getRecipeManager(), ghosts);
+        RecipeHolder<UniversalProcessorRecipe> found = ProcessorRecipes.matchByItems(level, ghosts);
         if (found != selected) {
             selected = found;
             sync();
@@ -190,17 +217,20 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
 
     private Optional<RecipeHolder<CraftingRecipe>> craftingRecipe() {
         CraftingInput input = craftSlots.asCraftInput();
-        return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level);
+        return level instanceof ServerLevel serverLevel
+                ? serverLevel.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, serverLevel)
+                : Optional.empty();
     }
 
     private void updateResult() {
+        if (!(level instanceof ServerLevel)) return;
         ItemStack result;
         if (mode == MODE_PROCESSING) {
-            result = selected == null ? ItemStack.EMPTY : selected.value().getResultItem(level.registryAccess());
+            result = selected == null ? ItemStack.EMPTY : selected.value().getResultItem();
         } else {
             CraftingInput input = craftSlots.asCraftInput();
             result = craftingRecipe()
-                    .map(r -> r.value().assemble(input, level.registryAccess()))
+                    .map(r -> r.value().assemble(input))
                     .orElse(ItemStack.EMPTY);
         }
         resultSlots.setItem(0, result);
@@ -209,11 +239,11 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     @Override
     public boolean clickMenuButton(@NotNull Player p, int id) {
         if (id == ENCODE_BTN) {
-            if (!level.isClientSide) encode();
+            if (!level.isClientSide()) encode();
             return true;
         }
         if (id == MODE_BTN) {
-            if (!level.isClientSide) toggleMode();
+            if (!level.isClientSide()) toggleMode();
             return true;
         }
         return false;
@@ -232,29 +262,35 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
         ItemStack encoded;
         if (mode == MODE_PROCESSING) {
             if (selected == null) return;
-            encoded = CraftingPattern.encodeProcessing(selected.value(), selected.id());
+            encoded = CraftingPattern.encodeProcessing(selected.value(), selected.id().identifier());
         } else {
             CraftingInput input = craftSlots.asCraftInput();
             Optional<RecipeHolder<CraftingRecipe>> recipe = craftingRecipe();
             if (recipe.isEmpty()) return;
-            ItemStack output = recipe.get().value().assemble(input, level.registryAccess());
+            ItemStack output = recipe.get().value().assemble(input);
             if (output.isEmpty()) return;
             encoded = CraftingPattern.encode(craftSlots, output);
         }
         if (CraftingPattern.from(encoded) == null) return;
         if (!CraftingPattern.isBlank(blockEntity.encoderBlanks.getStackInSlot(0))) return;
 
-        blockEntity.encoderBlanks.extractItem(0, 1, false);
-        for (int i = 0; i < blockEntity.patterns.getSlots(); i++) {
-            if (blockEntity.patterns.getStackInSlot(i).isEmpty()) {
-                blockEntity.patterns.setStackInSlot(i, encoded);
-                clearSelection();
-                broadcastChanges();
-                return;
+        int patternSlot = -1;
+        for (int i = 0; i < blockEntity.patterns.size(); i++) {
+            if (blockEntity.patterns.getResource(i).isEmpty()) {
+                patternSlot = i;
+                break;
             }
         }
-        if (!player.getInventory().add(encoded)) {
-            player.drop(encoded, false);
+        try (var transaction = Transaction.openRoot()) {
+            var blank = blockEntity.encoderBlanks.getResource(0);
+            if (blockEntity.encoderBlanks.extract(0, blank, 1, transaction) != 1) return;
+            var resource = ItemResource.of(encoded);
+            if (patternSlot >= 0) {
+                if (blockEntity.patterns.insert(patternSlot, resource, encoded.getCount(), transaction) != encoded.getCount()) return;
+            } else {
+                PlayerInventoryWrapper.of(player).placeItemBackInInventory(resource, encoded.getCount(), transaction);
+            }
+            transaction.commit();
         }
         clearSelection();
         broadcastChanges();
@@ -270,9 +306,9 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public void clicked(int slotId, int button, @NotNull ClickType clickType, @NotNull Player p) {
+    public void clicked(int slotId, int button, @NotNull ContainerInput clickType, @NotNull Player p) {
         if (slotId >= CRAFT_START && slotId < CRAFT_END
-                && (clickType == ClickType.PICKUP || clickType == ClickType.PICKUP_ALL)) {
+                && (clickType == ContainerInput.PICKUP || clickType == ContainerInput.PICKUP_ALL)) {
             ItemStack carried = getCarried();
             if (carried.isEmpty()) {
                 craftSlots.setItem(slotId - CRAFT_START, ItemStack.EMPTY);
@@ -336,18 +372,20 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     }
 
     public void fillGhostGrid(CraftingRecipe recipe) {
+        if (!(level instanceof ServerLevel)) return;
+        Ingredient[] layout = RecipeGridLayout.layout(recipe);
+        if (layout == null) return;
         mode = MODE_CRAFTING;
         selected = null;
         suppressSearch = true;
-        Ingredient[] layout = RecipeGridLayout.layout(recipe);
         for (int i = 0; i < 9; i++) {
             Ingredient ing = layout[i];
             if (ing == null || ing.isEmpty()) {
                 craftSlots.setItem(i, ItemStack.EMPTY);
                 continue;
             }
-            ItemStack[] items = ing.getItems();
-            ItemStack rep = items.length > 0 ? items[0].copy() : ItemStack.EMPTY;
+            ItemStack rep = ing.display().resolveForStacks(SlotDisplayContext.fromLevel(level)).stream()
+                    .filter(ing::test).findFirst().map(ItemStack::copy).orElse(ItemStack.EMPTY);
             if (!rep.isEmpty()) rep.setCount(1);
             craftSlots.setItem(i, rep);
         }
@@ -357,7 +395,8 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     }
 
     public void setProcessingRecipe(RecipeHolder<UniversalProcessorRecipe> holder) {
-        if (!ProcessorRecipes.isAllowed(holder.value().getProcessorName())) return;
+        if (!(level instanceof ServerLevel) || !holder.value().isComplete()
+                || !ProcessorRecipes.isProcessorEntry(ModEntries.get(holder.value().getProcessorName()))) return;
         mode = MODE_PROCESSING;
         selected = holder;
         suppressSearch = true;
@@ -365,9 +404,9 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
         int i = 0;
         for (var si : holder.value().getItemInputs()) {
             if (i >= 9) break;
-            ItemStack[] items = si.ingredient().getItems();
-            if (items.length == 0) continue;
-            ItemStack rep = items[0].copy();
+            ItemStack rep = si.ingredient().display().resolveForStacks(SlotDisplayContext.fromLevel(level)).stream()
+                    .filter(si.ingredient()::test).findFirst().map(ItemStack::copy).orElse(ItemStack.EMPTY);
+            if (rep.isEmpty()) continue;
             rep.setCount(1);
             craftSlots.setItem(i++, rep);
         }
@@ -385,11 +424,11 @@ public class EngineersEncoderContainer extends AbstractContainerMenu {
     }
 
     // Visibility is toggled client-side by the screen when the pattern grid is scrolled
-    public static class PatternSlot extends SlotItemHandler {
+    public static class PatternSlot extends ResourceHandlerSlot {
         public boolean visible = true;
 
-        PatternSlot(IItemHandler handler, int index, int x, int y) {
-            super(handler, index, x, y);
+        PatternSlot(CustomInventoryHandler handler, int index, int x, int y) {
+            super(handler, handler::set, index, x, y);
         }
 
         @Override

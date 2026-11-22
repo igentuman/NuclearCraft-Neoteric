@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:dusts/graphite"
-    },
-    "L": {
-      "tag": "c:ingots/lead"
-    }
+    "G": "#c:dusts/graphite",
+    "L": "#c:ingots/lead"
   },
   "pattern": [
     "LG",

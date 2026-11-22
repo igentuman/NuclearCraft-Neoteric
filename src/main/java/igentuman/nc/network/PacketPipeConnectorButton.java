@@ -36,7 +36,7 @@ public record PacketPipeConnectorButton(BlockPos pos, int buttonId) implements C
     public static void handle(PacketPipeConnectorButton packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            BlockEntity be = serverPlayer.serverLevel().getBlockEntity(packet.pos());
+            BlockEntity be = serverPlayer.level().getBlockEntity(packet.pos());
             if (!(be instanceof PipeConnectorBE connector)) return;
             switch (packet.buttonId()) {
                 case PipeConnectorContainer.BTN_MODE -> connector.cycleMode();

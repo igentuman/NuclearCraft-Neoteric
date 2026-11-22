@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "L": {
-      "tag": "c:dusts/lapis"
-    },
-    "P": {
-      "item": "minecraft:heavy_weighted_pressure_plate"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    }
+    "L": "#c:dusts/lapis",
+    "P": "minecraft:heavy_weighted_pressure_plate",
+    "R": "#c:dusts/redstone"
   },
   "pattern": [
     "LRL",
@@ -18,7 +12,6 @@
     "LRL"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:speed_upgrade"
   }
 }

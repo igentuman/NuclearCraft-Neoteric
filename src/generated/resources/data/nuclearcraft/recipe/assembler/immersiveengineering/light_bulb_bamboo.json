@@ -12,8 +12,8 @@
       }
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "minecraft:bamboo"
+      "type": "neoforge:registered",
+      "value": "minecraft:bamboo"
     },
     {
       "type": "neoforge:not",
@@ -23,8 +23,8 @@
       }
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "immersiveengineering:light_bulb"
+      "type": "neoforge:registered",
+      "value": "immersiveengineering:light_bulb"
     }
   ],
   "type": "nuclearcraft:assembler",

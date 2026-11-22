@@ -1,5 +1,6 @@
 package igentuman.nc.datagen.loot;
 
+import igentuman.nc.block.storage.AbstractStorageBlock;
 import igentuman.nc.registration.HeatSinkEntry;
 import igentuman.nc.registration.MaterialEntry;
 import igentuman.nc.registration.ModEntry;
@@ -30,7 +31,7 @@ public class ModBlockLootTableProvider  extends BlockLootSubProvider {
             if (entry.hasBlock()) {
                 if (entry.name().equals("fusion_reactor_core_proxy") || entry.name().equals("expl_proxy")) {
                     add(entry.block().get(), LootTable.lootTable()); // auto-placed body cell - never drops
-                } else if (entry.block().get() instanceof igentuman.nc.block.storage.AbstractStorageBlock) {
+                } else if (entry.block().get() instanceof AbstractStorageBlock) {
                     add(entry.block().get(), LootTable.lootTable());
                 } else {
                     dropSelf(entry.block().get());

@@ -1,12 +1,13 @@
 package igentuman.nc.datagen.recipe.processors;
 
-import igentuman.nc.content.fuel.FuelDef;
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.datagen.recipe.RecipeGen;
+import igentuman.nc.api.content.FuelDef;
+import igentuman.nc.api.recipe.ItemOutput;
 import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import igentuman.nc.registration.FissionFuelEntry;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -33,7 +34,7 @@ public class FissionFuelRecipes {
                 FissionFuelRecipe recipe = new FissionFuelRecipe(
                         Ingredient.of(fuel), ItemOutput.of(depleted, 1), time, power, heat);
                 String path = "fission_reactor/" + fe.group + "_" + fe.name.replace('-', '_') + v;
-                out.accept(ResourceLocation.fromNamespaceAndPath(MODID, path), recipe, null);
+                out.accept(RecipeGen.key(path), recipe, null);
             }
         }
     }

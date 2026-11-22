@@ -1,5 +1,6 @@
 package igentuman.nc.screen;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import igentuman.nc.container.EngineersCrafterContainer;
 import igentuman.nc.client.crafter.PendingCraftDenied;
 import igentuman.nc.handler.crafter.AggregatedInventory;
@@ -14,23 +15,25 @@ import igentuman.nc.screen.element.NcPanel;
 import igentuman.nc.screen.element.ScrollableItemGrid;
 import igentuman.nc.screen.element.ScrollableItemGrid.Cell;
 import igentuman.nc.screen.element.SlotMover;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
+import igentuman.nc.handler.item.CustomInventoryHandler;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -64,11 +67,11 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
     private int gridRows = GRID_ROWS;
     private int contentShift = 0;
     private int appliedSlotShift = 0;
+    /** Window height including the extra grid rows; {@code imageHeight} is final and stays at the base height. */
+    private int dynHeight = BASE_IMAGE_HEIGHT;
 
     public EngineersCrafterScreen(EngineersCrafterContainer menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
-        this.imageWidth = 194;
-        this.imageHeight = BASE_IMAGE_HEIGHT;
+        super(menu, inventory, title, 194, BASE_IMAGE_HEIGHT);
     }
 
     @Override
@@ -77,9 +80,10 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
                 : Mth.clamp((height - BASE_IMAGE_HEIGHT - SECTION_MARGIN - VERTICAL_MARGIN * 2) / 18, 0, MAX_EXTRA_ROWS);
         gridRows = GRID_ROWS + extraRows;
         contentShift = extraRows * 18 + SECTION_MARGIN;
-        imageHeight = BASE_IMAGE_HEIGHT + contentShift;
+        dynHeight = BASE_IMAGE_HEIGHT + contentShift;
 
         super.init();
+        topPos = (height - dynHeight) / 2;
 
         if (contentShift != appliedSlotShift) {
             shiftSlots(contentShift - appliedSlotShift);
@@ -105,11 +109,11 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
         addRenderableWidget(modeButton);
 
         WidgetSprites encoderSprites = new WidgetSprites(
-                ResourceLocation.withDefaultNamespace("recipe_book/button"),
-                ResourceLocation.withDefaultNamespace("recipe_book/button_highlighted"));
+                Identifier.withDefaultNamespace("recipe_book/button"),
+                Identifier.withDefaultNamespace("recipe_book/button_highlighted"));
         ImageButton encoderButton = new ImageButton(leftPos + EngineersCrafterContainer.ENCODER_BTN_X,
                 topPos + 92 + contentShift, 20, 18, encoderSprites,
-                b -> PacketDistributor.sendToServer(new PacketCrafterOpenEncoder(menu.getBlockPos())),
+                b -> ClientPacketDistributor.sendToServer(new PacketCrafterOpenEncoder(menu.getBlockPos())),
                 Component.translatable("screen.nuclearcraft.crafter.encoder"));
         encoderButton.setTooltip(Tooltip.create(Component.translatable("screen.nuclearcraft.crafter.encoder")));
         addRenderableWidget(encoderButton);
@@ -153,7 +157,7 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
 
     /** Processor name of the first processing pattern producing this item, or null for grid patterns. */
     private String processorFor(ItemStack stack) {
-        ItemStackHandler patterns = menu.blockEntity.patterns;
+        CustomInventoryHandler patterns = menu.blockEntity.patterns;
         for (int i = 0; i < patterns.getSlots(); i++) {
             CraftingPattern p = CraftingPattern.from(patterns.getStackInSlot(i));
             if (p == null || !p.isProcessing()) continue;
@@ -166,7 +170,7 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
 
     private LinkedHashMap<ItemKey, ItemStack> craftableOutputs() {
         LinkedHashMap<ItemKey, ItemStack> map = new LinkedHashMap<>();
-        ItemStackHandler patterns = menu.blockEntity.patterns;
+        CustomInventoryHandler patterns = menu.blockEntity.patterns;
         for (int i = 0; i < patterns.getSlots(); i++) {
             CraftingPattern p = CraftingPattern.from(patterns.getStackInSlot(i));
             if (p == null) continue;
@@ -179,14 +183,13 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
     }
 
     @Override
-    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTicks) {
         var denied = PendingCraftDenied.take();
         if (denied != null) {
             minecraft.setScreen(new CraftDeniedScreen(this, denied.items(), denied.fluids(), denied.tooComplex()));
             return;
         }
-        super.render(g, mouseX, mouseY, partialTicks);
-        renderTooltip(g, mouseX, mouseY);
+        super.extractRenderState(g, mouseX, mouseY, partialTicks);
         if (grid.isInBounds(mouseX, mouseY)) {
             Cell cell = grid.hovered(mouseX, mouseY);
             if (cell != null && !cell.stack().isEmpty()) {
@@ -202,14 +205,15 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
                                 Component.translatable("block.nuclearcraft." + proc)));
                     }
                 }
-                g.renderComponentTooltip(font, tip, mouseX, mouseY);
+                g.setComponentTooltipForNextFrame(font, tip, mouseX, mouseY);
             }
         }
     }
 
     @Override
-    protected void renderBg(GuiGraphics g, float partialTicks, int mouseX, int mouseY) {
-        NcPanel.drawPanel(g, leftPos, topPos, imageWidth, imageHeight);
+    public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(g, mouseX, mouseY, partialTicks);
+        NcPanel.drawPanel(g, leftPos, topPos, imageWidth, dynHeight);
         for (Slot s : menu.slots) {
             if (s instanceof ResultSlot) {
                 NcPanel.drawOutputSlot(g, leftPos + s.x, topPos + s.y);
@@ -228,50 +232,70 @@ public class EngineersCrafterScreen extends AbstractContainerScreen<EngineersCra
     }
 
     @Override
-    protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
-        g.drawString(font, title, (imageWidth - font.width(title)) / 2, 5, 0x404040, false);
+    protected void extractLabels(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+        g.text(font, title, (imageWidth - font.width(title)) / 2, 5, 0xFF404040, false);
     }
 
     @Override
-    public boolean mouseClicked(double mx, double my, int button) {
-        if (!searchBox.isMouseOver(mx, my)) setFocused(null);
-        if (grid.isInBounds(mx, my)) {
-            handleGridClick(mx, my, button);
-            return true;
-        }
-        return super.mouseClicked(mx, my, button);
+    public int getImageHeight() {
+        return dynHeight;
     }
 
-    private void handleGridClick(double mx, double my, int button) {
+    @Override
+    protected boolean hasClickedOutside(double mx, double my, int xo, int yo) {
+        return mx < xo || my < yo || mx >= xo + imageWidth || my >= yo + dynHeight;
+    }
+
+    @Override
+    public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
+        if (grid.isMouseOver(x, y) && grid.mouseScrolled(x, y, scrollX, scrollY)) {
+            return true;
+        }
+        return super.mouseScrolled(x, y, scrollX, scrollY);
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mx = event.x();
+        double my = event.y();
+        if (!searchBox.isMouseOver(mx, my)) setFocused(null);
+        if (grid.isInBounds(mx, my)) {
+            handleGridClick(mx, my, event.button(), event.hasShiftDown());
+            return true;
+        }
+        return super.mouseClicked(event, doubleClick);
+    }
+
+    private void handleGridClick(double mx, double my, int button, boolean shift) {
         BlockPos pos = menu.getBlockPos();
         if (!menu.getCarried().isEmpty()) {
-            PacketDistributor.sendToServer(new PacketCrafterInsert(pos, button == 1));
+            ClientPacketDistributor.sendToServer(new PacketCrafterInsert(pos, button == 1));
             return;
         }
         Cell cell = grid.hovered(mx, my);
         if (cell == null || cell.stack().isEmpty()) return;
         if (cell.stored() > 0) {
-            PacketDistributor.sendToServer(new PacketCrafterExtract(pos, cell.stack().copy(), button == 1, hasShiftDown()));
+            ClientPacketDistributor.sendToServer(new PacketCrafterExtract(pos, cell.stack().copy(), button == 1, shift));
         } else if (cell.craftable()) {
             minecraft.setScreen(new CraftConfirmScreen(this, pos, cell.stack().copy()));
         }
     }
 
     @Override
-    public boolean keyPressed(int key, int scan, int mods) {
-        if (key == 256) return super.keyPressed(key, scan, mods);
+    public boolean keyPressed(KeyEvent event) {
+        if (event.isEscape()) return super.keyPressed(event);
         if (searchBox.isFocused()) {
-            searchBox.keyPressed(key, scan, mods);
+            searchBox.keyPressed(event);
             // swallow everything else so inventory/hotbar keybinds don't fire while typing
             return true;
         }
-        return super.keyPressed(key, scan, mods);
+        return super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char c, int mods) {
-        if (searchBox.isFocused() && searchBox.charTyped(c, mods)) return true;
-        return super.charTyped(c, mods);
+    public boolean charTyped(CharacterEvent event) {
+        if (searchBox.isFocused() && searchBox.charTyped(event)) return true;
+        return super.charTyped(event);
     }
 
     private Component modeLabelShort() {

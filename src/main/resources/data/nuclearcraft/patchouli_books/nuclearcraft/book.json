@@ -1,0 +1,10 @@
+{
+  "name": "NuclearCraft Guide",
+  "landing_text": "Basics and advanced topics about NuclearCraft",
+  "subtitle": "Neoteric Edition",
+  "version": 1,
+  "show_progress": false,
+  "creative_tab": "minecraft:tools_and_utilities",
+  "use_resource_pack": true,
+  "model": "nuclearcraft:patchouli_book"
+}

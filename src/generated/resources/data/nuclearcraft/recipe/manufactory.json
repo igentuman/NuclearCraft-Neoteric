@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "nuclearcraft_processors",
   "key": {
-    "F": {
-      "item": "minecraft:flint"
-    },
-    "L": {
-      "tag": "c:ingots/lead"
-    },
-    "P": {
-      "item": "minecraft:piston"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
-    "S": {
-      "item": "nuclearcraft:coil_copper"
-    }
+    "F": "minecraft:flint",
+    "L": "#c:ingots/lead",
+    "P": "minecraft:piston",
+    "R": "#c:dusts/redstone",
+    "S": "nuclearcraft:coil_copper"
   },
   "pattern": [
     "LRL",
@@ -25,7 +15,6 @@
     "LSL"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:manufactory"
   }
 }

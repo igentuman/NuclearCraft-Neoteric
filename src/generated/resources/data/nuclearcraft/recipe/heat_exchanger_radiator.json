@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "nuclearcraft_heat_exchanger",
   "key": {
-    "A": {
-      "tag": "c:plates/aluminum"
-    },
-    "T": {
-      "tag": "c:ingots/copper"
-    }
+    "A": "#c:plates/aluminum",
+    "T": "#c:ingots/copper"
   },
   "pattern": [
     "AAA",

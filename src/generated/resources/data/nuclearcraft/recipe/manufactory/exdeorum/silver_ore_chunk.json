@@ -5,8 +5,8 @@
       "modid": "exdeorum"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "exdeorum:silver_ore_chunk"
+      "type": "neoforge:registered",
+      "value": "exdeorum:silver_ore_chunk"
     },
     {
       "type": "neoforge:not",

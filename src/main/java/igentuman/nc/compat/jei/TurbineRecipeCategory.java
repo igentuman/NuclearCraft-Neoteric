@@ -11,23 +11,24 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 /** JEI category for multiblock turbine fluid conversion recipes. */
-public class TurbineRecipeCategory implements IRecipeCategory<TurbineRecipe> {
+public class TurbineRecipeCategory implements IRecipeCategory<RecipeHolder<TurbineRecipe>> {
 
-    public static final RecipeType<TurbineRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "turbine", TurbineRecipe.class);
+    public static final IRecipeHolderType<TurbineRecipe> TYPE =
+            IRecipeHolderType.create(NuclearCraft.rl("turbine"));
 
     private static final int WIDTH = 124;
     private static final int HEIGHT = 46;
@@ -44,7 +45,7 @@ public class TurbineRecipeCategory implements IRecipeCategory<TurbineRecipe> {
     }
 
     @Override
-    public RecipeType<TurbineRecipe> getRecipeType() {
+    public IRecipeHolderType<TurbineRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -69,17 +70,16 @@ public class TurbineRecipeCategory implements IRecipeCategory<TurbineRecipe> {
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, TurbineRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<TurbineRecipe> holder, IFocusGroup focuses) {
+        TurbineRecipe recipe = holder.value();
         IRecipeSlotBuilder input = builder.addSlot(RecipeIngredientRole.INPUT, 7, 5);
-        for (FluidStack stack : recipe.input().getFluids()) {
-            input.addFluidStack(stack.getFluid(), recipe.input().amount());
-        }
+        JeiRecipeSlots.addFluids(input, recipe.input());
         input.setFluidRenderer(Math.max(1, recipe.input().amount()), false, 16, 16);
 
         IRecipeSlotBuilder output = builder.addSlot(RecipeIngredientRole.OUTPUT, WIDTH - 23, 5);
         List<FluidStack> members = recipe.output().members();
         for (FluidStack stack : members) {
-            output.addFluidStack(stack.getFluid(), stack.getAmount());
+            JeiRecipeSlots.addFluid(output, stack);
         }
         if (!members.isEmpty()) {
             output.setFluidRenderer(Math.max(1, members.getFirst().getAmount()), false, 16, 16);
@@ -87,14 +87,15 @@ public class TurbineRecipeCategory implements IRecipeCategory<TurbineRecipe> {
     }
 
     @Override
-    public void draw(TurbineRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics,
+    public void draw(RecipeHolder<TurbineRecipe> holder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics,
                      double mouseX, double mouseY) {
+        TurbineRecipe recipe = holder.value();
         slot.draw(graphics, 6, 4);
         slot.draw(graphics, WIDTH - 24, 4);
-        graphics.drawString(Minecraft.getInstance().font, Component.literal("→"), WIDTH / 2 - 3, 8,
-                0x404040, false);
-        graphics.drawString(Minecraft.getInstance().font,
+        graphics.text(Minecraft.getInstance().font, Component.literal("→"), WIDTH / 2 - 3, 8,
+                0xFF404040, false);
+        graphics.text(Minecraft.getInstance().font,
                 Component.translatable("gui.nuclearcraft.turbine.power", Math.round(recipe.powerModifier() * 100) + "%")
-                        .withStyle(ChatFormatting.DARK_GRAY), 4, 27, 0x404040, false);
+                        .withStyle(ChatFormatting.DARK_GRAY), 4, 27, 0xFF404040, false);
     }
 }

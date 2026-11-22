@@ -5,20 +5,20 @@
       "modid": "ae2"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "ae2:printed_logic_processor"
+      "type": "neoforge:registered",
+      "value": "ae2:printed_logic_processor"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "ae2:printed_silicon"
+      "type": "neoforge:registered",
+      "value": "ae2:printed_silicon"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "minecraft:redstone"
+      "type": "neoforge:registered",
+      "value": "minecraft:redstone"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "ae2:logic_processor"
+      "type": "neoforge:registered",
+      "value": "ae2:logic_processor"
     }
   ],
   "type": "nuclearcraft:assembler",

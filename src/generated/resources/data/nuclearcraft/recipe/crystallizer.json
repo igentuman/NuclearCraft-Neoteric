@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft",
   "key": {
-    "C": {
-      "item": "nuclearcraft:chassis"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_advanced"
-    },
-    "S": {
-      "item": "nuclearcraft:coil_copper"
-    },
-    "U": {
-      "item": "minecraft:cauldron"
-    }
+    "C": "nuclearcraft:chassis",
+    "P": "nuclearcraft:plate_advanced",
+    "S": "nuclearcraft:coil_copper",
+    "U": "minecraft:cauldron"
   },
   "pattern": [
     "PSP",
@@ -22,7 +14,6 @@
     "PUP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:crystallizer"
   }
 }

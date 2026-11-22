@@ -3,18 +3,10 @@
   "category": "misc",
   "group": "nuclearcraft_accelerator",
   "key": {
-    "B": {
-      "item": "nuclearcraft:basic_processor"
-    },
-    "E": {
-      "tag": "c:ingots/extreme"
-    },
-    "F": {
-      "item": "nuclearcraft:accelerator_casing"
-    },
-    "P": {
-      "item": "nuclearcraft:plate_elite"
-    }
+    "B": "nuclearcraft:basic_processor",
+    "E": "#c:ingots/extreme",
+    "F": "nuclearcraft:accelerator_casing",
+    "P": "nuclearcraft:plate_elite"
   },
   "pattern": [
     "PEP",
@@ -22,7 +14,6 @@
     "PEP"
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:linear_accelerator_controller"
   }
 }

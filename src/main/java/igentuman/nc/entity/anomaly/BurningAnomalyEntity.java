@@ -1,8 +1,10 @@
 package igentuman.nc.entity.anomaly;
 
+import net.minecraft.server.level.ServerLevel;
 import igentuman.nc.config.Common;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
@@ -44,7 +46,7 @@ public class BurningAnomalyEntity extends AnomalyEntity {
                 living.igniteForSeconds(5);
                 double dist = Math.sqrt(living.position().distanceToSqr(center));
                 float frac = (float) Mth.clamp(dist / Math.max(radius, 0.001D), 0.0D, 1.0D);
-                living.hurt(damageSources().inFire(), 6.0F - 4.0F * frac);
+                living.hurtServer((ServerLevel) level(), damageSources().inFire(), 6.0F - 4.0F * frac);
             }
             if (Common.ANOMALY_CONFIG.BURN_BLOCK_IGNITE.get()) {
                 igniteSomeBlocks(radius);
@@ -84,7 +86,7 @@ public class BurningAnomalyEntity extends AnomalyEntity {
             }
             BlockState above = level().getBlockState(pos);
             BlockState below = level().getBlockState(pos.below());
-            if (above.isAir() && below.isSolidRender(level(), pos.below())) {
+            if (above.isAir() && below.isSolidRender()) {
                 level().setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
             }
         }
@@ -112,16 +114,17 @@ public class BurningAnomalyEntity extends AnomalyEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putInt("ExplosionTimer", explosionTimer);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("ExplosionTimer", explosionTimer);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        if (tag.contains("ExplosionTimer")) {
-            explosionTimer = tag.getInt("ExplosionTimer");
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        var keys = input.keySet();
+        if (keys.contains("ExplosionTimer")) {
+            explosionTimer = input.getIntOr("ExplosionTimer", 0);
         }
     }
 }

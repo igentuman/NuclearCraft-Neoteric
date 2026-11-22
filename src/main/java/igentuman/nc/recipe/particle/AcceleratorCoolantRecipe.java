@@ -1,12 +1,9 @@
 package igentuman.nc.recipe.particle;
 
-import igentuman.nc.recipe.FluidOutput;
+import igentuman.nc.recipe.MachineRecipe;
+import igentuman.nc.api.recipe.FluidOutput;
 import igentuman.nc.recipe.ProcessorRecipeInput;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -18,7 +15,7 @@ public record AcceleratorCoolantRecipe(
         FluidOutput output,
         long heatPerMb,
         @Nullable Long minimumTemperatureK
-) implements Recipe<ProcessorRecipeInput> {
+) implements MachineRecipe<ProcessorRecipeInput> {
 
     @Override
     public boolean matches(ProcessorRecipeInput in, Level level) {
@@ -28,37 +25,17 @@ public record AcceleratorCoolantRecipe(
     }
 
     @Override
-    public ItemStack assemble(ProcessorRecipeInput in, HolderLookup.Provider registries) {
+    public ItemStack assemble(ProcessorRecipeInput in) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.create();
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return true;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<AcceleratorCoolantRecipe> getSerializer() {
         return ParticleRecipes.ACCELERATOR_COOLANT_SERIALIZER.get();
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<AcceleratorCoolantRecipe> getType() {
         return ParticleRecipes.ACCELERATOR_COOLANT_TYPE.get();
     }
 }

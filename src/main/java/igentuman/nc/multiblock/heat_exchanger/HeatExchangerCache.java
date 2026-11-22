@@ -39,7 +39,7 @@ public class HeatExchangerCache extends AbstractMultiblockCache {
 
     @Override
     protected void loadData(CompoundTag tag) {
-        heatExchangers = tag.getInt("heatExchangers");
-        radiators = tag.getInt("radiators");
+        heatExchangers = tag.getIntOr("heatExchangers", 0);
+        radiators = tag.getIntOr("radiators", 0);
     }
 }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "B": {
-      "item": "nuclearcraft:lithium_ion_cell"
-    },
-    "H": {
-      "item": "nuclearcraft:tough_helmet"
-    },
-    "T": {
-      "item": "nuclearcraft:plate_extreme"
-    }
+    "B": "nuclearcraft:lithium_ion_cell",
+    "H": "nuclearcraft:tough_helmet",
+    "T": "nuclearcraft:plate_extreme"
   },
   "pattern": [
     " T ",
@@ -18,7 +12,6 @@
     " B "
   ],
   "result": {
-    "count": 1,
     "id": "nuclearcraft:hev_helmet"
   }
 }

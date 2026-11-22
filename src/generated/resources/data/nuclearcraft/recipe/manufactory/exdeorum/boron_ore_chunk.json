@@ -5,8 +5,8 @@
       "modid": "exdeorum"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "exdeorum:boron_ore_chunk"
+      "type": "neoforge:registered",
+      "value": "exdeorum:boron_ore_chunk"
     },
     {
       "type": "neoforge:not",

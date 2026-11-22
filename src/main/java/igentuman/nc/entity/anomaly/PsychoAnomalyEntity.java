@@ -6,7 +6,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -48,9 +48,9 @@ public class PsychoAnomalyEntity extends AnomalyEntity {
                         && p.position().distanceToSqr(position()) <= r2);
         for (Player player : players) {
             player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, duration, amplifier, false, false));
-            player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, duration, amplifier, false, false));
+            player.addEffect(new MobEffectInstance(MobEffects.NAUSEA, duration, amplifier, false, false));
             player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, duration, amplifier, false, false));
-            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, duration, amplifier, false, false));
+            player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, duration, amplifier, false, false));
         }
     }
 
@@ -104,7 +104,7 @@ public class PsychoAnomalyEntity extends AnomalyEntity {
         if (!(level() instanceof ServerLevel server)) {
             return;
         }
-        Vex vex = EntityType.VEX.create(server);
+        Vex vex = EntityType.VEX.create(server, EntitySpawnReason.MOB_SUMMONED);
         if (vex == null) {
             return;
         }
@@ -113,9 +113,9 @@ public class PsychoAnomalyEntity extends AnomalyEntity {
         double x = getX() + Math.cos(angle) * dist;
         double z = getZ() + Math.sin(angle) * dist;
         double y = getY() + random.nextDouble() * 2.0;
-        vex.moveTo(x, y, z, random.nextFloat() * 360.0F, 0.0F);
+        vex.snapTo(x, y, z, random.nextFloat() * 360.0F, 0.0F);
         vex.finalizeSpawn(server, server.getCurrentDifficultyAt(vex.blockPosition()),
-                MobSpawnType.MOB_SUMMONED, null);
+                EntitySpawnReason.MOB_SUMMONED, null);
         int lifetime = Common.ANOMALY_CONFIG.PSYCHO_VEX_LIFETIME.get();
         if (lifetime > 0) {
             vex.setLimitedLife(lifetime);

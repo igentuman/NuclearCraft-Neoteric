@@ -6,6 +6,7 @@ import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.setup.ModEntries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -21,12 +22,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
 
 public class TurbineRotorBlock extends BaseEntityBlock {
 
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final BooleanProperty ACTIVE = BlockStateProperties.POWERED;
 
     private MapCodec<TurbineRotorBlock> codec;
@@ -95,7 +96,7 @@ public class TurbineRotorBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return (lvl, pos, st, be) -> {
                 if (be instanceof GlobalBlockEntity g) g.clientTick();
             };
@@ -112,8 +113,8 @@ public class TurbineRotorBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!level.isClientSide && !newState.is(this) && state.hasProperty(FACING)) {
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        if (state.hasProperty(FACING)) {
             Direction.Axis axis = state.getValue(FACING).getAxis();
             for (Direction dir : Direction.values()) {
                 if (dir.getAxis() == axis) continue;
@@ -128,8 +129,8 @@ public class TurbineRotorBlock extends BaseEntityBlock {
                 }
             }
         }
-        super.onRemove(state, level, pos, newState, movedByPiston);
-        MultiblockHandler.trackBlockChange(level, pos, state, newState);
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        MultiblockHandler.trackBlockChange(level, pos, state, level.getBlockState(pos));
     }
 
 }

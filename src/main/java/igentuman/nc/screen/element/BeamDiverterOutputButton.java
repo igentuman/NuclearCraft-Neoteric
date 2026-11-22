@@ -1,10 +1,12 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.input.MouseButtonEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import igentuman.nc.container.MultiblockControllerContainer;
 import igentuman.nc.network.PacketBeamDiverterCycleOutput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -29,7 +31,7 @@ public class BeamDiverterOutputButton extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int channel = synced("selectedOutputChannel");
         boolean incompatible = synced("incompatibleTurn") != 0;
         int x = getX();
@@ -40,21 +42,24 @@ public class BeamDiverterOutputButton extends AbstractWidget {
 
         Font font = Minecraft.getInstance().font;
         String label = __("screen.nuclearcraft.beam_diverter.output", channel).getString();
-        graphics.drawString(font, label, x + (WIDTH - font.width(label)) / 2, y + 4, 0xFFFFFFFF, true);
+        graphics.text(font, label, x + (WIDTH - font.width(label)) / 2, y + 4, 0xFFFFFFFF, true);
 
         if (isHovered()) {
             Component tooltip = incompatible
                     ? __("screen.nuclearcraft.beam_diverter.incompatible_turn")
                     : __("screen.nuclearcraft.beam_diverter.output_tooltip");
-            graphics.renderTooltip(font, tooltip, mouseX, mouseY);
+            graphics.setTooltipForNextFrame(font, tooltip, mouseX, mouseY);
         }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         if (!isActive() || !visible) return false;
         if (mouseX >= getX() && mouseX < getX() + WIDTH && mouseY >= getY() && mouseY < getY() + HEIGHT) {
-            PacketDistributor.sendToServer(new PacketBeamDiverterCycleOutput(menu.getPosition()));
+            ClientPacketDistributor.sendToServer(new PacketBeamDiverterCycleOutput(menu.getPosition()));
             playDownSound(Minecraft.getInstance().getSoundManager());
             return true;
         }

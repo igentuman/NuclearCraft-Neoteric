@@ -5,9 +5,9 @@ import igentuman.nc.block_entity.crafter.EngineersCrafterBE;
 import igentuman.nc.container.EngineersCrafterContainer;
 import igentuman.nc.container.EngineersEncoderContainer;
 import igentuman.nc.item.CraftingPatternItem;
+import igentuman.nc.item.NCBlockItem;
 import igentuman.nc.registration.ModEntry;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -35,18 +35,19 @@ public class Crafter {
     public static final List<ModEntry> CRAFTER_ENTRIES = new ArrayList<>();
 
     public static final DeferredItem<Item> CRAFTING_PATTERN =
-            ITEMS.register("crafting_pattern", () -> new CraftingPatternItem(new Item.Properties()));
+            ITEMS.registerItem("crafting_pattern", CraftingPatternItem::new);
 
     public static final DeferredBlock<Block> ENGINEERS_CRAFTING_TABLE_BLOCK =
-            BLOCKS.register("engineers_crafting_table", () -> new EngineersCrafterBlock(props()));
+            BLOCKS.registerBlock("engineers_crafting_table", EngineersCrafterBlock::new, Crafter::props);
 
     public static final DeferredItem<Item> ENGINEERS_CRAFTING_TABLE_ITEM =
-            ITEMS.register("engineers_crafting_table",
-                    () -> new BlockItem(ENGINEERS_CRAFTING_TABLE_BLOCK.get(), new Item.Properties()));
+            ITEMS.<Item>registerItem("engineers_crafting_table",
+                    props -> new NCBlockItem(ENGINEERS_CRAFTING_TABLE_BLOCK.get(), props),
+                    () -> new Item.Properties().useBlockDescriptionPrefix());
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EngineersCrafterBE>> ENGINEERS_CRAFTING_TABLE_BE =
             BLOCK_ENTITIES.register("engineers_crafting_table",
-                    () -> BlockEntityType.Builder.of(EngineersCrafterBE::new, ENGINEERS_CRAFTING_TABLE_BLOCK.get()).build(null));
+                    () -> new BlockEntityType<>(EngineersCrafterBE::new, ENGINEERS_CRAFTING_TABLE_BLOCK.get()));
 
     @SuppressWarnings("unchecked")
     public static final DeferredHolder<MenuType<?>, MenuType<EngineersCrafterContainer>> ENGINEERS_CRAFTING_TABLE_MENU =
@@ -88,9 +89,9 @@ public class Crafter {
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         BlockEntityType<EngineersCrafterBE> type = ENGINEERS_CRAFTING_TABLE_BE.get();
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type,
+        event.registerBlockEntity(Capabilities.Item.BLOCK, type,
                 (be, side) -> be instanceof EngineersCrafterBE crafter ? crafter.getItemHandler(side) : null);
-        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, type,
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, type,
                 (be, side) -> be instanceof EngineersCrafterBE crafter ? crafter.getEnergyHandler(side) : null);
     }
 }

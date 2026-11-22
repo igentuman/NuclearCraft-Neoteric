@@ -29,7 +29,7 @@ public record PacketExplBurst(BlockPos pos) implements CustomPacketPayload {
     public static void handle(PacketExplBurst packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            BlockEntity be = serverPlayer.serverLevel().getBlockEntity(packet.pos());
+            BlockEntity be = serverPlayer.level().getBlockEntity(packet.pos());
             if (be instanceof EXPLBE expl) {
                 expl.triggerBurst();
             }

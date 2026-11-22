@@ -1,5 +1,7 @@
 package igentuman.nc.screen;
 
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
 import igentuman.nc.container.FusionReactorContainer;
 import igentuman.nc.container.MultiblockControllerContainer;
@@ -8,9 +10,9 @@ import igentuman.nc.screen.element.FluidTankBar;
 import igentuman.nc.screen.element.FusionAmplifierSlider;
 import igentuman.nc.screen.element.TemperatureBar;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
@@ -23,8 +25,8 @@ import static igentuman.nc.util.TextUtils.scaledFormat;
 /** Fusion reactor core screen with coolant/temperature/fuel/product bars, an amplifier slider and status readouts. */
 public class FusionReactorScreen extends MultiblockControllerScreen {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/fusion_reactor.png");
-    private static final int PANEL_TEXT = 0xFFFFFF;
+    private static final Identifier TEXTURE = rl("textures/gui/fusion_reactor.png");
+    private static final int PANEL_TEXT = 0xFFFFFFFF;
 
     private static final int BAR_WIDTH = 8;
     private static final int BAR_HEIGHT = 70;
@@ -36,9 +38,9 @@ public class FusionReactorScreen extends MultiblockControllerScreen {
     private FusionAmplifierSlider amplifierSlider;
 
     public FusionReactorScreen(MultiblockControllerContainer menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        imageWidth = 214;
-        imageHeight = 186;
+        super(menu, playerInventory, title, 214, 186);
+        // Kept from the 180x180 base layout the label position was derived from.
+        this.inventoryLabelY = 180 - 94;
     }
 
     @Override
@@ -132,18 +134,18 @@ public class FusionReactorScreen extends MultiblockControllerScreen {
 
     private static final float PANEL_SCALE = 0.75f;
 
-    private void drawScaled(GuiGraphics guiGraphics, Component text, int cx, int y) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(PANEL_SCALE, PANEL_SCALE, 1f);
+    private void drawScaled(GuiGraphicsExtractor guiGraphics, Component text, int cx, int y) {
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(PANEL_SCALE, PANEL_SCALE);
         drawCenteredString(guiGraphics, this.font, text, Math.round(cx / PANEL_SCALE), Math.round(y / PANEL_SCALE), PANEL_TEXT);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         int cx = imageWidth / 2 + 20;
         drawScaled(guiGraphics, __("screen.nuclearcraft.fusion_reactor"), cx, this.titleLabelY);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY+8, 4210752, false);
+        guiGraphics.text(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY+8, 0xFF404040, false);
 
         if (!(be() instanceof FusionReactorControllerBE be)) return;
 
@@ -159,17 +161,17 @@ public class FusionReactorScreen extends MultiblockControllerScreen {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
         if (amplifierSlider != null && amplifierSlider.isSliderDragging()) {
-            return amplifierSlider.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+            return amplifierSlider.mouseDragged(event, dragX, dragY);
         }
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return super.mouseDragged(event, dragX, dragY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void extractPanel(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
     }
 }

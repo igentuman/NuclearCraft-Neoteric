@@ -77,24 +77,24 @@ public class Kugelblitz extends ModEntries {
         addMultiblockBlock("event_horizon_stabilizer", glassProps());
 
         add("photon_concentrator")
-                .block(name -> new KugelblitzEntityBlock(glassProps(), name, true))
+                .block((props, name) -> new KugelblitzEntityBlock(props, name, true), Kugelblitz::glassProps)
                 .blockEntity(PhotonConcentratorBE::new)
                 .build();
 
         add("black_hole")
-                .block(name -> new BlackHoleBlock(blackHoleProps(), name))
+                .block(BlackHoleBlock::new, Kugelblitz::blackHoleProps)
                 .blockEntity(BlackHoleBE::new)
                 .build();
 
         add("expl")
-                .block(name -> new EXPLBlock(explProps(), name))
+                .block(EXPLBlock::new, Kugelblitz::explProps)
                 .blockEntity(EXPLBE::new)
                 .withEnergy(10_000_000, 0, 2_048_000_000)
                 .menu(EXPLContainer::new)
                 .build();
 
         add("expl_proxy")
-                .block(name -> new EXPLProxyBlock(explProps(), name))
+                .block(EXPLProxyBlock::new, Kugelblitz::explProps)
                 .blockEntity(EXPLProxyBE::new)
                 .withEnergy(0, 0, 0)
                 .build();

@@ -6,7 +6,6 @@ import igentuman.nc.setup.entries.Crafter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.util.TextUtils.__;
@@ -39,7 +37,7 @@ public class EngineersCrafterBlock extends Block implements EntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer
                 && level.getBlockEntity(pos) instanceof EngineersCrafterBE) {
             serverPlayer.openMenu(new MenuProvider() {
                 @Override
@@ -53,25 +51,7 @@ public class EngineersCrafterBlock extends Block implements EntityBlock {
                 }
             }, buf -> buf.writeBlockPos(pos));
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.is(newState.getBlock())) {
-            if (level.getBlockEntity(pos) instanceof EngineersCrafterBE crafter) {
-                dropHandler(level, pos, crafter.containerSlots);
-                dropHandler(level, pos, crafter.patterns);
-                dropHandler(level, pos, crafter.encoderBlanks);
-            }
-        }
-        super.onRemove(state, level, pos, newState, moved);
-    }
-
-    private static void dropHandler(Level level, BlockPos pos, ItemStackHandler handler) {
-        for (int i = 0; i < handler.getSlots(); i++) {
-            Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
-        }
+        return InteractionResult.SUCCESS;
     }
 
     @Nullable

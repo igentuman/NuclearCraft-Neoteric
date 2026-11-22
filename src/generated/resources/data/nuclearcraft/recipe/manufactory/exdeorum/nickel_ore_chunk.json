@@ -5,8 +5,8 @@
       "modid": "exdeorum"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "exdeorum:nickel_ore_chunk"
+      "type": "neoforge:registered",
+      "value": "exdeorum:nickel_ore_chunk"
     },
     {
       "type": "neoforge:not",

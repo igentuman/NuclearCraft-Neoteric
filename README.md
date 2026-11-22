@@ -1,23 +1,21 @@
 # NuclearCraft-Neoteric
 
-Re-creation of the classic NuclearCraft mod for modern Minecraft (Forge 1.21.1, Java 21).
+Re-creation of the classic NuclearCraft mod for modern Minecraft (NeoForge) 26.1.2 / Java 25 port;
 NuclearCraft-Neoteric brings a full nuclear-tech progression chain to the game: ore processing,
 fission reactors with configurable fuels and heat sinks, molten salt reactors, fusion cores,
 particle accelerators, target chambers, kugelblitz (black-hole) reactors, steam turbines,
 in-situ leaching, and a chunk-based world radiation system that actually rewards (and punishes)
 how you build.
 
-[![Build Mod Job](https://github.com/igentuman/NuclearCraft-Neoteric/actions/workflows/gradle.yml/badge.svg?branch=1.21)](https://github.com/igentuman/NuclearCraft-Neoteric/actions/workflows/gradle.yml)
+[![Build Mod Job](https://github.com/igentuman/NuclearCraft-Neoteric/actions/workflows/build.yml/badge.svg?branch=26.1.2)](https://github.com/igentuman/NuclearCraft-Neoteric/actions/workflows/build.yml)
 [![Downloads](https://cf.way2muchnoise.eu/full_840010_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric)
 [![MC Versions](https://cf.way2muchnoise.eu/versions/840010.svg)](https://www.curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric)
 
 ## Overview
 
 - **Mod id:** `nuclearcraft`
-- **Minecraft:** 1.21.1 (Forge)
+- **Target Minecraft:** 26.1.2 (NeoForge 26.1.2.129, Java 25)
 - **Energy:** Forge Energy (FE/RF); Mekanism and GregTech CE: Unofficial interop where present
-- **Integrations:** JEI, EMI, KubeJS, ComputerCraft, OpenComputers v2, AE2, Refined Storage, Mekanism, TIS-3D, Patchouli, Ponder
-- **In-game guide:** Patchouli Operator's Handbook
 - **Downloads:** https://curseforge.com/minecraft/mc-mods/nuclearcraft-neoteric
 - **Dev builds:** GitHub Actions tab → latest artifact
 
@@ -25,7 +23,7 @@ how you build.
 - [Mod configuration](docs/CONFIGURATION.md)
 - [KubeJS events and recipes](docs/KUBEJS.md)
 - [Engineer's Crafting Table and autocrafting](docs/ENGINEERS_CRAFTING_TABLE.md)
-- [Radiation](https://github.com/igentuman/Nuclear-Radiation/blob/1.21.1/README.md)
+- [Radiation](https://github.com/igentuman/Nuclear-Radiation/blob/26.1.2/README.md)
 - [Armor, tools, weapons and bomb](docs/ARMOR_TOOLS_WEAPONS_AND_BOMB.md)
 - [World generation](docs/WORLD_GENERATION.md)
 - [Processors](docs/PROCESSORS.md)
@@ -86,3 +84,20 @@ endleon tiozae
 Ethan Tabler
 PersonBelow Rocks
 ```
+
+## Development setup
+
+Use the checked-in Gradle 9.9.0 wrapper. Java 25 is selected by the toolchain;
+set the IDE project SDK to 25 and delegate builds/runs to Gradle.
+
+```bash
+./gradlew preparePortingEnvironment   # resolve toolchain/artifacts and expand metadata, no NC compilation
+./gradlew build                      # requires the Java API port
+./gradlew runClient                  # also runServer, runGameTestServer, runData after porting
+```
+
+The default `core` runtime includes Nuclear Radiation. Use `-PdevProfile=integrations`
+to load optional integration mods or `-PdevProfile=full` for performance/modpack tools too.
+Available optional APIs remain on the compile classpath in every profile.
+A sibling `../Nuclear-Radiation-26.1` checkout is substituted automatically; CI can use
+`-PradiationProjectDir=<path>`. Use `-PusePublishedRadiation=true` to resolve the pinned release.

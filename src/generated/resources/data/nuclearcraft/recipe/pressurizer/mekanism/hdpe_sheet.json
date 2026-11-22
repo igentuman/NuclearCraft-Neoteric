@@ -5,12 +5,12 @@
       "modid": "mekanism"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "mekanism:hdpe_pellet"
+      "type": "neoforge:registered",
+      "value": "mekanism:hdpe_pellet"
     },
     {
-      "type": "neoforge:item_exists",
-      "item": "mekanism:hdpe_sheet"
+      "type": "neoforge:registered",
+      "value": "mekanism:hdpe_sheet"
     }
   ],
   "type": "nuclearcraft:pressurizer",

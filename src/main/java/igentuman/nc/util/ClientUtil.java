@@ -5,9 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.regex.Pattern;
-
-/** Client-side helpers for accessing the local level and player, plus transparent-block matching. */
+/** Client-only helpers for accessing the local level and player. Do not reference from common code. */
 public class ClientUtil {
     @Nullable
     public static Level tryGetClientWorld() {
@@ -18,7 +16,4 @@ public class ClientUtil {
     public static Player tryGetClientPlayer() {
         return Minecraft.getInstance().player;
     }
-
-    public static final Pattern TRANSPARENT_BLOCKS = Pattern.compile(".*glass|.*cell.*|photon.*|.*stabilizer.*");
-
 }

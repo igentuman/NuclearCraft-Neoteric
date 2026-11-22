@@ -1,8 +1,9 @@
 package igentuman.nc.screen.element;
 
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -46,21 +47,21 @@ public class ScaleDropdown extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         graphics.fill(getX(), getY(), getX() + width, getY() + height, 0xFF101010);
         graphics.fill(getX(), getY(), getX() + width, getY() + 1, 0xFF5A5A5A);
         graphics.fill(getX(), getY() + height - 1, getX() + width, getY() + height, 0xFF5A5A5A);
         graphics.fill(getX(), getY(), getX() + 1, getY() + height, 0xFF5A5A5A);
         graphics.fill(getX() + width - 1, getY(), getX() + width, getY() + height, 0xFF5A5A5A);
         Font font = Minecraft.getInstance().font;
-        graphics.drawString(font, SCALES[selectedIndex], getX() + 4, getY() + (height - 8) / 2, 0xFFFFFF, false);
-        graphics.drawString(font, "v", getX() + width - 7, getY() + (height - 8) / 2, 0xFFB0B0B0, false);
+        graphics.text(font, SCALES[selectedIndex], getX() + 4, getY() + (height - 8) / 2, 0xFFFFFFFF, false);
+        graphics.text(font, "v", getX() + width - 7, getY() + (height - 8) / 2, 0xFFB0B0B0, false);
     }
 
-    public void renderOverlay(GuiGraphics graphics, int mouseX, int mouseY) {
+    public void renderOverlay(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (!open) return;
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 300);
+        graphics.pose().pushMatrix();
+        graphics.nextStratum(); // open list covers widgets and slot items below (was z+300)
         int top = getY() + height;
         int bottom = top + SCALES.length * ROW_HEIGHT;
         graphics.fill(getX() - 1, top - 1, getX() + width + 1, bottom + 1, 0xFF5A5A5A);
@@ -71,28 +72,37 @@ public class ScaleDropdown extends AbstractWidget {
             if (mouseX >= getX() && mouseX < getX() + width && mouseY >= rowY && mouseY < rowY + ROW_HEIGHT) {
                 graphics.fill(getX(), rowY, getX() + width, rowY + ROW_HEIGHT, 0x60FFFFFF);
             }
-            graphics.drawString(font, SCALES[index], getX() + 4, rowY + 3, 0xFFFFFF, false);
+            graphics.text(font, SCALES[index], getX() + 4, rowY + 3, 0xFFFFFFFF, false);
         }
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (isMouseOver(mouseX, mouseY)) {
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return super.isMouseOver(mouseX, mouseY) || (isActive() && inList(mouseX, mouseY));
+    }
+
+    private boolean inList(double mouseX, double mouseY) {
+        int top = getY() + height;
+        return open && mouseX >= getX() && mouseX < getX() + width
+                && mouseY >= top && mouseY < top + SCALES.length * ROW_HEIGHT;
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        if (super.isMouseOver(mouseX, mouseY)) {
             open = !open;
             return true;
         }
-        if (open) {
-            int top = getY() + height;
-            if (mouseX >= getX() && mouseX < getX() + width
-                    && mouseY >= top && mouseY < top + SCALES.length * ROW_HEIGHT) {
-                selectedIndex = (int) ((mouseY - top) / ROW_HEIGHT);
-                open = false;
-                if (onSelect != null) onSelect.accept(selectedIndex);
-                return true;
-            }
+        if (inList(mouseX, mouseY)) {
+            selectedIndex = (int) ((mouseY - getY() - height) / ROW_HEIGHT);
             close();
+            if (onSelect != null) onSelect.accept(selectedIndex);
+            return true;
         }
+        close();
         return false;
     }
 

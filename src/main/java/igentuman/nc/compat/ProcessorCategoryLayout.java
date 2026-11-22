@@ -11,6 +11,7 @@ import java.util.List;
 /** Shared slot and progress-bar geometry for the JEI and EMI processor recipe categories. */
 public class ProcessorCategoryLayout {
 
+    public static final String MSR_FUEL_CATEGORY = "msr_fuel";
     public static final int SLOT = 18;
     public static final int STRIDE = 20;
     public static final int FALLBACK_GAP = 44;
@@ -54,9 +55,19 @@ public class ProcessorCategoryLayout {
     public final int arrowX;
     public final int arrowY;
 
+    public static boolean isMsrFuel(String entryName) {
+        return entryName.equals("msr_controller");
+    }
+
+    public static String categoryName(String entryName) {
+        return isMsrFuel(entryName) ? MSR_FUEL_CATEGORY : entryName;
+    }
+
     public ProcessorCategoryLayout(ModEntry entry) {
+        boolean msrFuel = isMsrFuel(entry.name());
         ItemCapDefinition itemCap = entry.itemCap();
-        FluidCapDefinition fluidCap = entry.fluidCap();
+        // MSR fuel recipes consume and produce items. The controller tanks circulate coolant.
+        FluidCapDefinition fluidCap = msrFuel ? null : entry.fluidCap();
         itemInputCount   = itemCap  != null ? itemCap.inputSlots         : 0;
         fluidInputCount  = fluidCap != null ? fluidCap.inputTanks.size()  : 0;
         itemOutputCount  = itemCap  != null ? itemCap.outputSlots         : 0;
@@ -75,7 +86,7 @@ public class ProcessorCategoryLayout {
         // Raw ingredient positions (pre-shift). Use the in-game layout when available.
         int[] rawX = new int[n];
         int[] rawY = new int[n];
-        SlotsLayout layout = entry.slotsLayout();
+        SlotsLayout layout = msrFuel ? null : entry.slotsLayout();
         int totalInputs = itemInputCount + fluidInputCount;
         if (layout != null && layout.slots.size() >= n) {
             for (int i = 0; i < n; i++) {

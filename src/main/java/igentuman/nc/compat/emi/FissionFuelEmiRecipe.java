@@ -8,7 +8,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.recipe.fission.FissionFuelRecipe;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -20,12 +20,12 @@ public class FissionFuelEmiRecipe implements EmiRecipe {
     private static final int HEIGHT = 46;
 
     private final EmiRecipeCategory category;
-    private final ResourceLocation id;
+    private final Identifier id;
     private final FissionFuelRecipe recipe;
     private final EmiIngredient input;
     private final EmiStack output;
 
-    public FissionFuelEmiRecipe(EmiRecipeCategory category, ResourceLocation id, FissionFuelRecipe recipe) {
+    public FissionFuelEmiRecipe(EmiRecipeCategory category, Identifier id, FissionFuelRecipe recipe) {
         this.category = category;
         this.id = id;
         this.recipe = recipe;
@@ -39,7 +39,7 @@ public class FissionFuelEmiRecipe implements EmiRecipe {
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public @Nullable Identifier getId() {
         return id;
     }
 

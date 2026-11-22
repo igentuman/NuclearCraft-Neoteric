@@ -1,0 +1,13 @@
+{
+  "gives": {
+    "count": 2,
+    "id": "nuclearcraft:plutonium_238"
+  },
+  "max_uses": 7.0,
+  "reputation_discount": 0.02,
+  "wants": {
+    "count": 32.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 15.0
+}

@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 1.0,
-  "ingredient": {
-    "tag": "c:dusts/silicon_carbide"
-  },
+  "ingredient": "#c:dusts/silicon_carbide",
   "result": {
-    "count": 1,
     "id": "nuclearcraft:silicon_carbide_ingot"
   }
 }

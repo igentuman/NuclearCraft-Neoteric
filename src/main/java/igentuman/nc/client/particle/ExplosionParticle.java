@@ -3,18 +3,18 @@ package igentuman.nc.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
-public class ExplosionParticle extends TextureSheetParticle {
+public class ExplosionParticle extends SingleQuadParticle {
 
     private final SpriteSet sprites;
 
     private ExplosionParticle(ClientLevel level, double x, double y, double z, double quadSizeMultiplier, SpriteSet sprites) {
-        super(level, x, y, z, 0.0D, 0.0D, 0.0D);
+        super(level, x, y, z, 0.0D, 0.0D, 0.0D, sprites.first());
         this.lifetime = 6 + this.random.nextInt(4);
         float f = this.random.nextFloat() * 0.6F + 0.4F;
         this.rCol = f;
@@ -26,7 +26,7 @@ public class ExplosionParticle extends TextureSheetParticle {
     }
 
     @Override
-    public int getLightColor(float partialTick) {
+    protected int getLightCoords(float partialTick) {
         return 15728880;
     }
 
@@ -43,8 +43,8 @@ public class ExplosionParticle extends TextureSheetParticle {
     }
 
     @Override
-    public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_LIT;
+    protected SingleQuadParticle.@NotNull Layer getLayer() {
+        return SingleQuadParticle.Layer.OPAQUE;
     }
 
     public static class Factory implements ParticleProvider<SimpleParticleType> {
@@ -56,7 +56,7 @@ public class ExplosionParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel level, double x, double y, double z, double vx, double vy, double vz) {
+        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel level, double x, double y, double z, double vx, double vy, double vz, @NotNull RandomSource random) {
             return new ExplosionParticle(level, x, y, z, vx, this.sprites);
         }
     }

@@ -1,9 +1,10 @@
 package igentuman.nc.datagen.recipe.processors;
 
-import igentuman.nc.recipe.FluidOutput;
+import igentuman.nc.datagen.recipe.RecipeGen;
+import igentuman.nc.api.recipe.FluidOutput;
 import igentuman.nc.recipe.turbine.TurbineRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -22,6 +23,6 @@ public class TurbineRecipes {
         if (in == null || output == null) return;
         TurbineRecipe recipe = new TurbineRecipe(
                 SizedFluidIngredient.of(in, 10), FluidOutput.of(output, 10), powerModifier);
-        out.accept(ResourceLocation.fromNamespaceAndPath(MODID, "turbine/" + name), recipe, null);
+        out.accept(RecipeGen.key("turbine/" + name), recipe, null);
     }
 }

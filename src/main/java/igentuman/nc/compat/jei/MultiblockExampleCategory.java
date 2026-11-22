@@ -1,5 +1,6 @@
 package igentuman.nc.compat.jei;
 
+import net.minecraft.client.Minecraft;
 import igentuman.nc.NuclearCraft;
 import igentuman.nc.util.StructurePreviewRenderer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -7,9 +8,9 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -17,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 /** JEI category rendering an interactive 3D preview of a multiblock's example structure. */
 public class MultiblockExampleCategory implements IRecipeCategory<MultiblockStructureRecipe> {
 
-    public static final RecipeType<MultiblockStructureRecipe> TYPE =
-            RecipeType.create(NuclearCraft.MODID, "multiblock_examples", MultiblockStructureRecipe.class);
+    public static final IRecipeType<MultiblockStructureRecipe> TYPE =
+            IRecipeType.create(NuclearCraft.MODID, "multiblock_examples", MultiblockStructureRecipe.class);
 
     private static final int WIDTH = 140;
     private static final int HEIGHT = 140;
@@ -38,7 +39,7 @@ public class MultiblockExampleCategory implements IRecipeCategory<MultiblockStru
     }
 
     @Override
-    public RecipeType<MultiblockStructureRecipe> getRecipeType() { return TYPE; }
+    public IRecipeType<MultiblockStructureRecipe> getRecipeType() { return TYPE; }
 
     @Override
     public Component getTitle() { return title; }
@@ -58,9 +59,9 @@ public class MultiblockExampleCategory implements IRecipeCategory<MultiblockStru
 
     @Override
     public void draw(MultiblockStructureRecipe recipe, IRecipeSlotsView recipeSlotsView,
-                     GuiGraphics graphics, double mouseX, double mouseY) {
+                     GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
         Component name = Component.translatable("multiblock." + NuclearCraft.MODID + "." + recipe.getName());
-        graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, name, 2, 2, 0xFFFFFF, false);
+        graphics.text(net.minecraft.client.Minecraft.getInstance().font, name, 2, 2, 0xFFFFFFFF, false);
 
         if (recipe.getStructure() != null) {
             StructurePreviewRenderer.render(graphics, recipe.getStructure(), 0, 12, WIDTH, HEIGHT - 14, mouseX, mouseY);
@@ -69,9 +70,9 @@ public class MultiblockExampleCategory implements IRecipeCategory<MultiblockStru
                     recipe.getStructure().getWidth() + "x" +
                     recipe.getStructure().getHeight() + "x" +
                     recipe.getStructure().getDepth());
-            graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, dims,
+            graphics.text(net.minecraft.client.Minecraft.getInstance().font, dims,
                     WIDTH - net.minecraft.client.Minecraft.getInstance().font.width(dims) - 2,
-                    HEIGHT - 10, 0xAAAAAA, false);
+                    HEIGHT - 10, 0xFFAAAAAA, false);
         }
     }
 }

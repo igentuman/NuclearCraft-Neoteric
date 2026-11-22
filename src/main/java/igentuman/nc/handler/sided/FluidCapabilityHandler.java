@@ -3,13 +3,19 @@ package igentuman.nc.handler.sided;
 import igentuman.nc.handler.SlotModePair;
 import igentuman.nc.handler.SidedContentHandler.RelativeDirection;
 import igentuman.nc.handler.fluid.FluidStackHandler;
-import net.minecraft.core.BlockPos;
+import igentuman.nc.handler.fluid.FluidTransferBudget;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.RangedResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -25,9 +31,8 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler {
     private IntSupplier sharedFreeVolume;
     private int limitedFillTank = -1;
     private int limitedDrainTank = -1;
-    private long transferTick = Long.MIN_VALUE;
-    private int filledThisTick;
-    private int drainedThisTick;
+    private final FluidTransferBudget fillBudget = new FluidTransferBudget();
+    private final FluidTransferBudget drainBudget = new FluidTransferBudget();
 
     public FluidCapabilityHandler(int inputTanks, int outputTanks, int extraTanks, int[] capacities) {
         super(inputTanks, outputTanks, extraTanks);
@@ -44,7 +49,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler {
         return internal;
     }
 
-    public IFluidHandler getCapability(Direction side) {
+    public ResourceHandler<FluidResource> getCapability(Direction side) {
         if (side == null) return new FluidHandlerWrapper(this, null);
         return wrappers.computeIfAbsent(side, d -> new FluidHandlerWrapper(this, d));
     }
@@ -52,6 +57,7 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler {
     /** Limits external transfer through capabilities and automatic push/pull; internal tank operations are unaffected. */
     public void setTransferLimits(int fillTank, IntSupplier fillRate, IntSupplier sharedFreeVolume,
                                   int drainTank, IntSupplier drainRate) {
+        if (fillBudget.isInTransaction() || drainBudget.isInTransaction()) throw new IllegalStateException("Cannot change fluid limits during transfer");
         this.limitedFillTank = fillTank;
         this.fillRate = fillRate;
         this.sharedFreeVolume = sharedFreeVolume;
@@ -59,14 +65,8 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler {
         this.drainRate = drainRate;
     }
 
-    private void refreshTransferTick() {
-        if (tile == null || tile.getLevel() == null) return;
-        long now = tile.getLevel().getGameTime();
-        if (transferTick != now) {
-            transferTick = now;
-            filledThisTick = 0;
-            drainedThisTick = 0;
-        }
+    private long transferTick() {
+        return tile == null || tile.getLevel() == null ? Long.MIN_VALUE : tile.getLevel().getGameTime();
     }
 
     public void invalidateWrappers() {
@@ -103,95 +103,46 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler {
         return internal.isFluidValid(tank, stack);
     }
 
-    public int fillTank(int tank, FluidStack resource, IFluidHandler.FluidAction action) {
+    public int insert(int tank, FluidResource resource, int amount, TransactionContext transaction) {
+        java.util.Objects.checkIndex(tank, getTanks());
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         if (limitedFillTank >= 0 && tank == limitedDrainTank) return 0;
-        if (tank == limitedFillTank) {
-            refreshTransferTick();
-            int allowed = Math.min(resource.getAmount(), Math.max(0, fillRate.getAsInt() - filledThisTick));
-            allowed = Math.min(allowed, Math.max(0, sharedFreeVolume.getAsInt()));
-            if (allowed <= 0) return 0;
-            int filled = internal.fillTank(tank, resource.copyWithAmount(allowed), action);
-            if (action.execute()) filledThisTick += filled;
-            return filled;
-        }
-        return internal.fillTank(tank, resource, action);
+        if (tank != limitedFillTank) return internal.insert(tank, resource, amount, transaction);
+        int allowed = Math.min(amount, Math.max(0, sharedFreeVolume.getAsInt()));
+        return fillBudget.transfer(transferTick(), fillRate.getAsInt(), allowed, transaction,
+                available -> internal.insert(tank, resource, available, transaction));
     }
 
-    public FluidStack drainTank(int tank, int maxDrain, IFluidHandler.FluidAction action) {
-        if (limitedDrainTank >= 0 && tank == limitedFillTank) return FluidStack.EMPTY;
-        if (tank == limitedDrainTank) {
-            refreshTransferTick();
-            maxDrain = Math.min(maxDrain, Math.max(0, drainRate.getAsInt() - drainedThisTick));
-            if (maxDrain <= 0) return FluidStack.EMPTY;
-            FluidStack drained = internal.drainTank(tank, maxDrain, action);
-            if (action.execute()) drainedThisTick += drained.getAmount();
-            return drained;
-        }
-        return internal.drainTank(tank, maxDrain, action);
+    public int extract(int tank, FluidResource resource, int amount, TransactionContext transaction) {
+        java.util.Objects.checkIndex(tank, getTanks());
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        if (limitedDrainTank >= 0 && tank == limitedFillTank) return 0;
+        if (tank != limitedDrainTank) return internal.extract(tank, resource, amount, transaction);
+        return drainBudget.transfer(transferTick(), drainRate.getAsInt(), amount, transaction,
+                available -> internal.extract(tank, resource, available, transaction));
     }
 
-    public void pushFluids(Direction absoluteDir) {
+    public void pushFluids(Direction absoluteDir) { moveFluids(absoluteDir, true); }
+    public void pullFluids(Direction absoluteDir) { moveFluids(absoluteDir, false); }
+
+    private void moveFluids(Direction direction, boolean push) {
         if (tile == null || tile.getLevel() == null || tile.getLevel().isClientSide()) return;
-        BlockPos neighborPos = tile.getBlockPos().relative(absoluteDir);
-        IFluidHandler neighbor = tile.getLevel().getCapability(
-                Capabilities.FluidHandler.BLOCK, neighborPos, absoluteDir.getOpposite());
+        ResourceHandler<FluidResource> neighbor = tile.getLevel().getCapability(
+                Capabilities.Fluid.BLOCK, tile.getBlockPos().relative(direction), direction.getOpposite());
         if (neighbor == null) return;
-
-        Direction facing = getFacing();
-        RelativeDirection relDir = RelativeDirection.toRelative(absoluteDir, facing);
-        if (relDir == null) return;
-        SlotModePair[] pairs = sideMap.get(relDir.ordinal());
+        RelativeDirection relative = RelativeDirection.toRelative(direction, getFacing());
+        if (relative == null) return;
+        SlotModePair[] pairs = sideMap.get(relative.ordinal());
         if (pairs == null) return;
-
         for (SlotModePair pair : pairs) {
-            if (pair.getMode() != SlotModePair.SlotMode.PUSH) continue;
+            if (pair.getMode() != (push ? SlotModePair.SlotMode.PUSH : SlotModePair.SlotMode.PULL)) continue;
             int tank = pair.getSlot();
-            if (tank < inputSlots) continue;
-            FluidStack inTank = internal.getFluidInTank(tank);
-            if (inTank.isEmpty()) continue;
-
-            FluidStack available = drainTank(tank, inTank.getAmount(), IFluidHandler.FluidAction.SIMULATE);
-            if (available.isEmpty()) continue;
-            int filled = neighbor.fill(available, IFluidHandler.FluidAction.SIMULATE);
-            if (filled > 0) {
-                FluidStack drained = drainTank(tank, filled, IFluidHandler.FluidAction.EXECUTE);
-                if (!drained.isEmpty()) neighbor.fill(drained, IFluidHandler.FluidAction.EXECUTE);
-            }
-        }
-    }
-
-    public void pullFluids(Direction absoluteDir) {
-        if (tile == null || tile.getLevel() == null || tile.getLevel().isClientSide()) return;
-        BlockPos neighborPos = tile.getBlockPos().relative(absoluteDir);
-        IFluidHandler neighbor = tile.getLevel().getCapability(
-                Capabilities.FluidHandler.BLOCK, neighborPos, absoluteDir.getOpposite());
-        if (neighbor == null) return;
-
-        Direction facing = getFacing();
-        RelativeDirection relDir = RelativeDirection.toRelative(absoluteDir, facing);
-        if (relDir == null) return;
-        SlotModePair[] pairs = sideMap.get(relDir.ordinal());
-        if (pairs == null) return;
-
-        for (SlotModePair pair : pairs) {
-            if (pair.getMode() != SlotModePair.SlotMode.PULL) continue;
-            int tank = pair.getSlot();
-            if (tank >= inputSlots) continue;
-
-            int capacity = internal.getTankCapacity(tank);
-            FluidStack inTank = internal.getFluidInTank(tank);
-            int space = capacity - inTank.getAmount();
-            if (space <= 0) continue;
-
-            FluidStack drained = neighbor.drain(space, IFluidHandler.FluidAction.SIMULATE);
-            if (drained.isEmpty()) continue;
-
-            int filled = fillTank(tank, drained, IFluidHandler.FluidAction.SIMULATE);
-            if (filled > 0) {
-                FluidStack actualDrained = neighbor.drain(drained.copyWithAmount(filled), IFluidHandler.FluidAction.EXECUTE);
-                if (!actualDrained.isEmpty()) {
-                    fillTank(tank, actualDrained, IFluidHandler.FluidAction.EXECUTE);
-                }
+            if (push ? tank < inputSlots : tank >= inputSlots) continue;
+            var local = RangedResourceHandler.ofSingleIndex(getCapability(direction), tank);
+            try (var transaction = Transaction.openRoot()) {
+                ResourceHandlerUtil.move(push ? local : neighbor, push ? neighbor : local,
+                        resource -> true, Integer.MAX_VALUE, transaction);
+                transaction.commit();
             }
         }
     }
@@ -205,10 +156,10 @@ public class FluidCapabilityHandler extends AbstractCapabilityHandler {
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("Fluids")) {
-            internal.deserializeNBT(provider, tag.getCompound("Fluids"));
+            internal.deserializeNBT(provider, tag.getCompound("Fluids").orElseThrow());
         }
         if (tag.contains("SideMap")) {
-            deserializeSideMap(tag.getCompound("SideMap"));
+            deserializeSideMap(tag.getCompound("SideMap").orElseThrow());
             invalidateWrappers();
         }
     }

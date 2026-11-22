@@ -1,0 +1,17 @@
+{
+  "additional_wants": {
+    "count": 4.0,
+    "id": "nuclearcraft:cobalt_ingot"
+  },
+  "gives": {
+    "count": 2,
+    "id": "nuclearcraft:fuel_americium_hea_242"
+  },
+  "max_uses": 7.0,
+  "reputation_discount": 0.02,
+  "wants": {
+    "count": 16.0,
+    "id": "nuclearcraft:platinum_ingot"
+  },
+  "xp": 20.0
+}

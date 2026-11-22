@@ -1,4 +1,4 @@
-// Restart the client after changing this file.
+// Restart after changing this file. Use the same startup script on the server and clients.
 NuclearCraftEvents.registerFissionFuel(event => {
   event.register('kubejs', 'test-235')
     .forgeEnergy(300).heat(55).criticality(100)
@@ -8,7 +8,8 @@ NuclearCraftEvents.registerFissionFuel(event => {
   event.override('uranium', 'leu-235', fuel => {
     fuel.forgeEnergy(280).heat(45)
   })
-  console.info('[NC test] Fuel registered; LEU-235 overridden to 280 FE / 45 heat')
+  // Solid-fuel fission uses the loaded recipe. This override changes the fuel definition.
+  console.info('[NC test] Fuel registered; LEU-235 definition overridden to 280 FE / 45 heat')
 })
 
 NuclearCraftEvents.registerHeatSink(event => {

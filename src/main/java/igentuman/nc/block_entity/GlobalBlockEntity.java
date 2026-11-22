@@ -15,6 +15,7 @@ import igentuman.nc.util.NBTSerializable;
 import igentuman.nc.util.caps.EnergyCapDefinition;
 import igentuman.nc.util.caps.FluidCapDefinition;
 import igentuman.nc.util.caps.ItemCapDefinition;
+import igentuman.nc.util.persistence.TagDataIO;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -30,10 +31,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -101,7 +105,7 @@ public class GlobalBlockEntity extends BlockEntity {
     protected Object currentSound;
 
     protected void playSound(SoundEvent sound, float volume) {
-        if (level == null || !level.isClientSide) return;
+        if (level == null || !level.isClientSide()) return;
         currentSound = igentuman.nc.client.sound.BlockEntitySounds.play(currentSound, sound, volume, worldPosition);
     }
 
@@ -114,7 +118,7 @@ public class GlobalBlockEntity extends BlockEntity {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (level != null && level.isClientSide) stopSound();
+        if (level != null && level.isClientSide()) stopSound();
     }
 
     public boolean hasInventory() {
@@ -138,29 +142,29 @@ public class GlobalBlockEntity extends BlockEntity {
     }
 
     /**
-     * Returns the side-aware IItemHandler for the given side.
+     * Returns the native side-aware item handler for the given side.
      * Applies slot mode filtering per side configuration.
      */
     @Nullable
-    public IItemHandler getItemHandler(@Nullable Direction side) {
+    public ResourceHandler<ItemResource> getItemHandler(@Nullable Direction side) {
         return contentHandler.getItemCapability(side);
     }
 
     /**
-     * Returns the side-aware IFluidHandler for the given side.
+     * Returns the native side-aware fluid handler for the given side.
      * Applies tank mode filtering per side configuration.
      */
     @Nullable
-    public IFluidHandler getFluidHandler(@Nullable Direction side) {
+    public ResourceHandler<FluidResource> getFluidHandler(@Nullable Direction side) {
         return contentHandler.getFluidCapability(side);
     }
 
     /**
-     * Returns the IEnergyStorage for the given side.
+     * Returns the EnergyHandler for the given side.
      * Energy is accessible from all sides.
      */
     @Nullable
-    public IEnergyStorage getEnergyHandler(@Nullable Direction side) {
+    public EnergyHandler getEnergyHandler(@Nullable Direction side) {
         return energyStorage;
     }
 
@@ -405,68 +409,70 @@ public class GlobalBlockEntity extends BlockEntity {
         try {
             for(Field f: directionFields) {
                 if (tag.contains(f.getName())) {
-                    f.set(this, Direction.byName(tag.getString(f.getName())));
+                    f.set(this, Direction.byName(tag.getStringOr(f.getName(), "")));
                 }
             }
             for(Field f: blockPosFields) {
                 if (tag.contains(f.getName())) {
-                    f.set(this, BlockPos.of(tag.getLong(f.getName())));
+                    f.set(this, BlockPos.of(tag.getLongOr(f.getName(), 0L)));
                 }
             }
             for(Field f: booleanFields) {
                 if (tag.contains(f.getName())) {
-                    f.setBoolean(this, tag.getBoolean(f.getName()));
+                    f.setBoolean(this, tag.getBooleanOr(f.getName(), false));
                 }
             }
             for(Field f: intFields) {
                 if (tag.contains(f.getName())) {
-                    f.setInt(this, tag.getInt(f.getName()));
+                    f.setInt(this, tag.getIntOr(f.getName(), 0));
                 }
             }
             for(Field f: stringFields) {
                 if (tag.contains(f.getName())) {
-                    f.set(this, tag.getString(f.getName()));
+                    f.set(this, tag.getStringOr(f.getName(), ""));
                 }
             }
             for(Field f: doubleFields) {
                 if (tag.contains(f.getName())) {
-                    f.setDouble(this, tag.getDouble(f.getName()));
+                    f.setDouble(this, tag.getDoubleOr(f.getName(), 0.0D));
                 }
             }
             for(Field f: floatFields) {
                 if (tag.contains(f.getName())) {
-                    f.setFloat(this, tag.getFloat(f.getName()));
+                    f.setFloat(this, tag.getFloatOr(f.getName(), 0.0F));
                 }
             }
             for(Field f: byteFields) {
                 if (tag.contains(f.getName())) {
-                    f.setByte(this, tag.getByte(f.getName()));
+                    f.setByte(this, tag.getByteOr(f.getName(), (byte) 0));
                 }
             }
             for(Field f: longFields) {
                 if (tag.contains(f.getName())) {
-                    f.setLong(this, tag.getLong(f.getName()));
+                    f.setLong(this, tag.getLongOr(f.getName(), 0L));
                 }
             }
             for(Field f: bufferFields) {
                 if (tag.contains(f.getName())) {
                     NBTSerializable buffer = (NBTSerializable) f.get(this);
                     if (buffer != null) {
-                        buffer.load(tag.getCompound(f.getName()));
+                        buffer.load(tag.getCompoundOrEmpty(f.getName()));
                     }
                 }
             }
             for(Field f: intArrayFields) {
                 if (tag.contains(f.getName())) {
-                    f.set(this, tag.getIntArray(f.getName()));
+                    f.set(this, tag.getIntArray(f.getName()).orElseGet(() -> new int[0]));
                 }
             }
             for(Field f: stringArrayFields) {
                 if (tag.contains(f.getName())) {
-                    ListTag tagList = tag.getList(f.getName(), 8);
+                    ListTag tagList = tag.getList(f.getName())
+                            .filter(list -> list.stream().allMatch(StringTag.class::isInstance))
+                            .orElseGet(ListTag::new);
                     String[] stringArray = new String[tagList.size()];
                     for (int i = 0; i < tagList.size(); i++) {
-                        stringArray[i] = tagList.getString(i);
+                        stringArray[i] = tagList.getStringOr(i, "");
                     }
                     f.set(this, stringArray);
                 }
@@ -574,8 +580,23 @@ public class GlobalBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected final void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        TagDataIO.write(output, this::saveTagData);
+    }
+
+    @Override
+    protected final void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        // Registry-aware raw handlers remain below this boundary.
+        TagDataIO.read(input, (tag, registries) -> {
+            loadTagData(tag, registries);
+            return tag;
+        });
+    }
+
+    /** Writes the existing raw-tag schema below the vanilla Value I/O boundary. */
+    protected void saveTagData(CompoundTag tag, HolderLookup.Provider registries) {
         saveFullTagData(tag);
         tag.put("ContentHandler", contentHandler.serializeNBT(registries));
         if (energyStorage != null) {
@@ -586,26 +607,23 @@ public class GlobalBlockEntity extends BlockEntity {
         }
     }
 
-    @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    /** Reads disk saves and client update tags with the same legacy field layout. */
+    protected void loadTagData(CompoundTag tag, HolderLookup.Provider registries) {
         readTagData(tag);
         if (tag.contains("ContentHandler")) {
-            contentHandler.deserializeNBT(registries, tag.getCompound("ContentHandler"));
+            contentHandler.deserializeNBT(registries, tag.getCompoundOrEmpty("ContentHandler"));
         }
         if (energyStorage != null && tag.contains("Energy")) {
             energyStorage.deserializeNBT(registries, tag.get("Energy"));
         }
         if (supportRecipes() && tag.contains("RecipeInfo")) {
-            recipeInfo.load(tag.getCompound("RecipeInfo"));
+            recipeInfo.load(tag.getCompoundOrEmpty("RecipeInfo"));
         }
     }
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = super.getUpdateTag(registries);
-        saveAdditional(tag, registries);
-        return tag;
+        return saveCustomOnly(registries);
     }
 
     @Override

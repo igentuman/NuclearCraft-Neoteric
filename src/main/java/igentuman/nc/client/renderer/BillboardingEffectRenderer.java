@@ -3,9 +3,9 @@ package igentuman.nc.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -13,30 +13,16 @@ import org.joml.Vector3f;
 
 import java.util.function.Supplier;
 
-/**
- * Renders a {@link CustomEffect} as a camera-facing (billboarded) animated quad at a world position.
- * Generic: works for any texture/position, not bound to a specific block or entity.
- *
- * <p>Call {@link #submit(CustomEffect)} every frame for each effect you want drawn (e.g. from a
- * {@link net.minecraft.client.renderer.blockentity.BlockEntityRenderer} or a client tick). The
- * actual draw is deferred to {@link DelayedRenderHandler} so all billboards batch together and
- * depth-sort correctly against translucent geometry.
- */
 public final class BillboardingEffectRenderer {
 
     private BillboardingEffectRenderer() {
     }
 
-    /** Submit an effect for this frame, using its own texture. */
     public static void submit(CustomEffect effect) {
         submit(effect.getTexture(), () -> effect);
     }
 
-    /**
-     * Submit an effect for this frame under an explicit texture. The effect is resolved lazily at
-     * draw time so callers may share a render type across multiple effects of the same texture.
-     */
-    public static void submit(ResourceLocation texture, Supplier<CustomEffect> lazyEffect) {
+    public static void submit(Identifier texture, Supplier<CustomEffect> lazyEffect) {
         DelayedRenderHandler.addTransparentRenderer(ModRenderType.BILLBOARD.apply(texture), new DelayedRenderHandler.LazyRender() {
             @Override
             public void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick) {
@@ -65,11 +51,6 @@ public final class BillboardingEffectRenderer {
                 minU, maxU, minV, maxV, color[0], color[1], color[2], color[3]);
     }
 
-    /**
-     * Emit one camera-facing quad centered on {@code pos}. Writes every vertex element the
-     * {@link ModRenderType#BILLBOARD} variants may need (uv, color, overlay, lightmap, normal);
-     * elements absent from the active vertex format are ignored by the buffer.
-     */
     public static void quad(Camera camera, VertexConsumer buffer, PoseStack poseStack, Vec3 pos, float scale,
                             float minU, float maxU, float minV, float maxV, int r, int g, int b, int a) {
         Quaternionf quaternion = camera.rotation();
@@ -95,7 +76,7 @@ public final class BillboardingEffectRenderer {
                 .setColor(r, g, b, a)
                 .setUv(u, v)
                 .setOverlay(OverlayTexture.NO_OVERLAY)
-                .setLight(LightTexture.FULL_BRIGHT)
+                .setLight(LightCoordsUtil.FULL_BRIGHT)
                 .setNormal(normal.x(), normal.y(), normal.z());
     }
 }

@@ -6,7 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 public class HeatExchangerColdPortBE extends MultiblockPortBE {
@@ -17,11 +18,12 @@ public class HeatExchangerColdPortBE extends MultiblockPortBE {
 
     @Nullable
     @Override
-    public IFluidHandler getFluidHandler(@Nullable Direction side) {
+    protected ResourceHandler<FluidResource> resolveFluidHandler(@Nullable Direction side) {
+        if (isRemoved()) return null;
         MultiblockControllerBE c = controller();
         if (c instanceof HeatExchangerControllerBE hx) {
             return hx.portFluidHandler(false);
         }
-        return super.getFluidHandler(side);
+        return super.resolveFluidHandler(side);
     }
 }

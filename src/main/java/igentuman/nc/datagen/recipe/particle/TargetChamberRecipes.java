@@ -1,13 +1,14 @@
 package igentuman.nc.datagen.recipe.particle;
 
+import igentuman.nc.datagen.recipe.RecipeGen;
 import igentuman.nc.api.particle.ParticleIngredient;
 import igentuman.nc.api.particle.ParticleStack;
-import igentuman.nc.recipe.FluidOutput;
-import igentuman.nc.recipe.ItemOutput;
+import igentuman.nc.api.recipe.FluidOutput;
+import igentuman.nc.api.recipe.ItemOutput;
 import igentuman.nc.recipe.particle.TargetChamberRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -650,7 +651,7 @@ public final class TargetChamberRecipes {
                 List.of(ItemOutput.of(productItem, 1)), List.of(),
                 List.of(new ParticleStack(rl("photon"), 1, 1, 1.0)),
                 crossSection, releasedEnergyKeV, 0);
-        out.accept(ResourceLocation.fromNamespaceAndPath(MODID, "target_chamber/proton_" + name), recipe, null);
+        out.accept(RecipeGen.key("target_chamber/proton_" + name), recipe, null);
     }
 
     private static void targetItem(RecipeOutput out, String id, String inputSpecies, Item targetItem,
@@ -693,12 +694,12 @@ public final class TargetChamberRecipes {
                 minimumEnergyKeV, maximumEnergyKeV, minimumFocus);
         TargetChamberRecipe recipe = new TargetChamberRecipe(itemInputs, fluidInputs, particleInput,
                 itemOutputs, fluidOutputs, particleOutputs, crossSection, releasedEnergyKeV, 0);
-        out.accept(ResourceLocation.fromNamespaceAndPath(MODID, "target_chamber/" + id), recipe, null);
+        out.accept(RecipeGen.key("target_chamber/" + id), recipe, null);
     }
 
     private static SizedIngredient materialIngredient(Item item) {
         TagKey<Item> tag = materialTag(item);
-        return tag == null ? SizedIngredient.of(item, 1) : SizedIngredient.of(tag, 1);
+        return tag == null ? SizedIngredient.of(item, 1) : RecipeGen.sized(tag, 1);
     }
 
     private static ParticleStack stack(String species) {

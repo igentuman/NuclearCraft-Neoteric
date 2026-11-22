@@ -16,7 +16,7 @@ public final class AnomalyPlacement {
     }
 
     public static long cellId(int cx, int cz) {
-        return ChunkPos.asLong(cx, cz);
+        return ChunkPos.pack(cx, cz);
     }
 
     public static long mix(long worldSeed, int cx, int cz) {

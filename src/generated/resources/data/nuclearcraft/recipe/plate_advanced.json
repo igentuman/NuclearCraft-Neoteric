@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "nuclearcraft:plate_basic"
-    },
-    "R": {
-      "item": "minecraft:redstone"
-    },
-    "T": {
-      "tag": "c:ingots/tough_alloy"
-    }
+    "P": "nuclearcraft:plate_basic",
+    "R": "minecraft:redstone",
+    "T": "#c:ingots/tough_alloy"
   },
   "pattern": [
     " P ",

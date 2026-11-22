@@ -1,19 +1,10 @@
 package igentuman.nc.handler.storage;
 
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
-public class UuidBackedSlot extends SlotItemHandler {
-
-    private final UuidBackedItemHandler handler;
-
+/** Native menu slot writing through the linked inventory's shared backing store. */
+public class UuidBackedSlot extends ResourceHandlerSlot {
     public UuidBackedSlot(UuidBackedItemHandler handler, int index, int x, int y) {
-        super(handler, index, x, y);
-        this.handler = handler;
-    }
-
-    @Override
-    public void setChanged() {
-        super.setChanged();
-        handler.contentsChanged();
+        super(handler, handler::set, index, x, y);
     }
 }

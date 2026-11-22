@@ -3,33 +3,15 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "item": "nuclearcraft:xenorium_298"
-    },
-    {
-      "item": "nuclearcraft:xenorium_298"
-    },
-    {
-      "item": "nuclearcraft:xenorium_298"
-    },
-    {
-      "item": "nuclearcraft:xenorium_298"
-    },
-    {
-      "item": "nuclearcraft:xenorium_298"
-    },
-    {
-      "item": "nuclearcraft:xenorium_298"
-    },
-    {
-      "item": "nuclearcraft:xenorium_298"
-    },
-    {
-      "item": "nuclearcraft:xenorium_298"
-    },
-    {
-      "item": "nuclearcraft:xenorium_298"
-    }
+    "nuclearcraft:xenorium_298",
+    "nuclearcraft:xenorium_298",
+    "nuclearcraft:xenorium_298",
+    "nuclearcraft:xenorium_298",
+    "nuclearcraft:xenorium_298",
+    "nuclearcraft:xenorium_298",
+    "nuclearcraft:xenorium_298",
+    "nuclearcraft:xenorium_298",
+    "nuclearcraft:xenorium_298"
   ],
   "result": {
     "count": 3,

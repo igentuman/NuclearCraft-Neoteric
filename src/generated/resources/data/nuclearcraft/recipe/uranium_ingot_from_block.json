@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "nuclearcraft_ingots",
   "ingredients": [
-    {
-      "tag": "c:storage_blocks/uranium"
-    }
+    "#c:storage_blocks/uranium"
   ],
   "result": {
     "count": 9,

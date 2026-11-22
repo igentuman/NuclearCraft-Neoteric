@@ -2,7 +2,7 @@ package igentuman.nc.compat.jei;
 
 import igentuman.nc.registration.IsotopeEntry;
 import igentuman.nc.setup.ModEntries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -20,7 +20,7 @@ public class IsotopeInfoRecipe {
             "fuel.variant.oxide", "fuel.variant.nitride"
     };
 
-    private final ResourceLocation id;
+    private final Identifier id;
     private final String name;
     private final List<Variant> variants;
 
@@ -44,7 +44,7 @@ public class IsotopeInfoRecipe {
         return out;
     }
 
-    public ResourceLocation getId() { return id; }
+    public Identifier getId() { return id; }
     public String getName() { return name; }
     public List<Variant> getVariants() { return variants; }
     public ItemStack getBaseItem() { return variants.isEmpty() ? ItemStack.EMPTY : variants.get(0).item; }

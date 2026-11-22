@@ -4,30 +4,31 @@ import igentuman.nc.block_entity.GlobalBlockEntity;
 import igentuman.nc.block_entity.crafter.EngineersCrafterBE;
 import igentuman.nc.config.Common;
 import igentuman.nc.handler.crafter.ProcessorRecipes;
-import igentuman.nc.util.ClientUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import igentuman.nc.registration.ModEntry;
+import igentuman.nc.registration.RecipeSchemaKind;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.caps.ItemCapDefinition;
 import igentuman.nc.util.caps.FluidCapDefinition;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static igentuman.nc.NuclearCraft.rlFromString;
@@ -45,12 +46,15 @@ public class RecipeInfo {
     public int energyPerTick = 0;
     public final GlobalBlockEntity be;
     private String recipeId;
+    /** Set by load(): the saved batch's recipe is resolved on the first tick, once the level's recipe map exists. */
+    private boolean recipePending = false;
     public int multiplier = 1;
     public int parallelLimit = 1;
     public int parallelProcessing = 1;
     public Recipe<?> recipe;
     public Recipe<?> lastRecipe;
-    private HashMap<String, Recipe<?>> allRecipes = new HashMap<>();
+    private final HashMap<String, Recipe<?>> allRecipes = new HashMap<>();
+    private RecipeMap cachedRecipeMap;
     private ProcessingOrder craftingOrder;
 
     public RecipeInfo(GlobalBlockEntity be) {
@@ -69,6 +73,7 @@ public class RecipeInfo {
             return;
         }
         if (!validateCraftingOwner()) return;
+        resolvePendingRecipe();
 
         if (stuck) {
             if (!produceOutputs()) {
@@ -144,83 +149,11 @@ public class RecipeInfo {
         if (lastRecipe == null) return true;
         if (!(lastRecipe instanceof UniversalProcessorRecipe upr)) return true;
 
-        ModEntry entry = ModEntries.get(be.name);
-        if (entry == null) return true;
-
-        ItemCapDefinition itemCap = entry.itemCap();
-        FluidCapDefinition fluidCap = entry.fluidCap();
-
-        int itemOutputSize = upr.getItemOutputs().size();
-        int fluidOutputSize = upr.getFluidOutputs().size();
-
-        // Determine output slot range: output slots start right after input slots
-        int outputSlotStart = (itemCap != null) ? itemCap.inputSlots : 0;
-        int outputSlotCount = (itemCap != null) ? itemCap.outputSlots : 0;
-
-        // Determine output tank range: output tanks start right after input tanks
-        int outputTankStart = (fluidCap != null) ? fluidCap.inputTanks.size() : 0;
-        int outputTankCount = (fluidCap != null) ? fluidCap.outputTanks.size() : 0;
-
-        // Check if all item outputs can fit (tags resolved to concrete stacks here)
-        if (be.contentHandler.hasItemCapability()) {
-            var itemHandler = be.contentHandler.getItemHandler();
-            for (int i = 0; i < itemOutputSize; i++) {
-                if (i >= outputSlotCount) return false;
-                ItemStack output = scaled(upr.getOutputStack(i), parallelProcessing);
-                if (output.isEmpty()) return false;
-                int slot = outputSlotStart + i;
-                ItemStack existing = itemHandler.getStackInSlot(slot);
-                if (!existing.isEmpty()) {
-                    if (!ItemStack.isSameItemSameComponents(existing, output)) return false;
-                    int limit = Math.min(existing.getMaxStackSize(), itemHandler.getSlotLimit(slot));
-                    if ((long) existing.getCount() + output.getCount() > limit) return false;
-                } else if (output.getCount() > Math.min(output.getMaxStackSize(), itemHandler.getSlotLimit(slot))) {
-                    return false;
-                }
-            }
-        } else if (itemOutputSize > 0) {
-            return false;
+        if (ModEntries.get(be.name) == null) return true;
+        try (var transaction = Transaction.openRoot()) {
+            if (!insertOutputs(upr, parallelProcessing, transaction)) return false;
+            transaction.commit();
         }
-
-        // Check if all fluid outputs can fit
-        if (be.contentHandler.hasFluidCapability()) {
-            var fluidHandler = be.contentHandler.getFluidHandler();
-            for (int i = 0; i < fluidOutputSize; i++) {
-                if (i >= outputTankCount) return false;
-                int tankIdx = outputTankStart + i;
-                FluidStack output = scaled(upr.getOutputFluidStack(i), parallelProcessing);
-                if (output.isEmpty()) return false;
-                int filled = fluidHandler.fillTank(tankIdx, output, IFluidHandler.FluidAction.SIMULATE);
-                if (filled < output.getAmount()) return false;
-            }
-        } else if (fluidOutputSize > 0) {
-            return false;
-        }
-
-        // All checks passed - place outputs
-        if (be.contentHandler.hasItemCapability()) {
-            var itemHandler = be.contentHandler.getItemHandler();
-            for (int i = 0; i < itemOutputSize; i++) {
-                int slot = outputSlotStart + i;
-                ItemStack output = scaled(upr.getOutputStack(i), parallelProcessing);
-                ItemStack existing = itemHandler.getStackInSlot(slot);
-                if (existing.isEmpty()) {
-                    itemHandler.setStackInSlot(slot, output);
-                } else {
-                    existing.grow(output.getCount());
-                }
-            }
-        }
-
-        // Place fluid outputs
-        if (be.contentHandler.hasFluidCapability()) {
-            var fluidHandler = be.contentHandler.getFluidHandler();
-            for (int i = 0; i < fluidOutputSize; i++) {
-                int tankIdx = outputTankStart + i;
-                fluidHandler.fillTank(tankIdx, scaled(upr.getOutputFluidStack(i), parallelProcessing), IFluidHandler.FluidAction.EXECUTE);
-            }
-        }
-
         return true;
     }
 
@@ -233,12 +166,14 @@ public class RecipeInfo {
             }
             return;
         }
-        if(lastRecipe != null) {
+        // Refresh before reusing an idle recipe; an active batch retains its consumed-input snapshot.
+        var recipes = getRecipes();
+        if(lastRecipe != null && recipes.containsValue(lastRecipe)) {
             if (tryStartRecipe(lastRecipe)) {
                 return;
             }
         }
-        for (Recipe<?> r : getRecipes().values()) {
+        for (Recipe<?> r : recipes.values()) {
             if (tryStartRecipe(r)) {
                 return;
             }
@@ -257,6 +192,7 @@ public class RecipeInfo {
         int[] itemAssignment = itemInputAssignment(upr, batchSize);
         int[] fluidAssignment = fluidInputAssignment(upr, batchSize);
         if (itemAssignment == null || fluidAssignment == null) return false;
+        if (!consumeInputs(upr, batchSize, itemAssignment, fluidAssignment)) return false;
 
         this.recipe = recipe;
         this.lastRecipe = null;
@@ -272,7 +208,6 @@ public class RecipeInfo {
         clear();
         this.ticksNeeded = upr.getProcessTime();
         this.energyPerTick = upr.getEnergyPerTick();
-        consumeInputs(upr, batchSize, itemAssignment, fluidAssignment);
         return true;
     }
 
@@ -408,6 +343,13 @@ public class RecipeInfo {
     }
 
     private boolean canFitOutputs(UniversalProcessorRecipe recipe, int batchSize) {
+        try (var transaction = Transaction.openRoot()) {
+            return insertOutputs(recipe, batchSize, transaction);
+        }
+    }
+
+    /** Stages all outputs together; callers either commit the batch or discard the capacity probe. */
+    private boolean insertOutputs(UniversalProcessorRecipe recipe, int batchSize, TransactionContext transaction) {
         ModEntry entry = ModEntries.get(be.name);
         ItemCapDefinition itemCap = entry != null ? entry.itemCap() : null;
         FluidCapDefinition fluidCap = entry != null ? entry.fluidCap() : null;
@@ -418,19 +360,10 @@ public class RecipeInfo {
             var handler = be.contentHandler.getItemHandler();
             for (int i = 0; i < recipe.getItemOutputs().size(); i++) {
                 ItemStack output = scaled(recipe.getOutputStack(i), batchSize);
-                if (output.isEmpty()) return false;
-                int slot = itemCap.inputSlots + i;
-                ItemStack existing = handler.getStackInSlot(slot);
-                int limit = Math.min(output.getMaxStackSize(), handler.getSlotLimit(slot));
-                if (!existing.isEmpty()) {
-                    if (!ItemStack.isSameItemSameComponents(existing, output)) return false;
-                    if ((long) existing.getCount() + output.getCount() > limit) return false;
-                } else if (output.getCount() > limit) {
-                    return false;
-                }
+                if (output.isEmpty() || handler.insert(itemCap.inputSlots + i, ItemResource.of(output),
+                        output.getCount(), transaction) != output.getCount()) return false;
             }
         }
-
         if (!recipe.getFluidOutputs().isEmpty()) {
             if (!be.contentHandler.hasFluidCapability() || fluidCap == null
                     || recipe.getFluidOutputs().size() > fluidCap.outputTanks.size()) return false;
@@ -438,31 +371,42 @@ public class RecipeInfo {
             int start = fluidCap.inputTanks.size();
             for (int i = 0; i < recipe.getFluidOutputs().size(); i++) {
                 FluidStack output = scaled(recipe.getOutputFluidStack(i), batchSize);
-                if (output.isEmpty()) return false;
-                if (handler.fillTank(start + i, output, IFluidHandler.FluidAction.SIMULATE) < output.getAmount()) {
-                    return false;
-                }
+                if (output.isEmpty() || handler.insert(start + i, FluidResource.of(output),
+                        output.getAmount(), transaction) != output.getAmount()) return false;
             }
         }
         return true;
     }
 
-    private void consumeInputs(UniversalProcessorRecipe recipe, int batchSize,
-                               int[] itemAssignment, int[] fluidAssignment) {
-        if (be.shouldConsumeItemInputs() && be.contentHandler.hasItemCapability()) {
-            var handler = be.contentHandler.getItemHandler();
-            for (int i = 0; i < itemAssignment.length; i++) {
-                handler.extractItem(itemAssignment[i], recipe.getItemInputs().get(i).count() * batchSize, false);
+    private boolean consumeInputs(UniversalProcessorRecipe recipe, int batchSize,
+                                  int[] itemAssignment, int[] fluidAssignment) {
+        try (var transaction = Transaction.openRoot()) {
+            if (be.shouldConsumeItemInputs() && be.contentHandler.hasItemCapability()) {
+                var handler = be.contentHandler.getItemHandler();
+                for (int i = 0; i < itemAssignment.length; i++) {
+                    int slot = itemAssignment[i];
+                    var ingredient = recipe.getItemInputs().get(i);
+                    int amount = scaledAmount(ingredient.count(), batchSize);
+                    ItemStack input = handler.getStackInSlot(slot);
+                    if (input.isEmpty() || amount <= 0 || !ingredient.ingredient().test(input)
+                            || handler.extract(slot, ItemResource.of(input), amount, transaction) != amount) return false;
+                }
             }
-        }
-        if (be.contentHandler.hasFluidCapability()) {
-            var handler = be.contentHandler.getFluidHandler();
-            for (int i = 0; i < fluidAssignment.length; i++) {
-                handler.drainTank(fluidAssignment[i], recipe.getFluidInputs().get(i).amount() * batchSize,
-                        IFluidHandler.FluidAction.EXECUTE);
+            if (be.contentHandler.hasFluidCapability()) {
+                var handler = be.contentHandler.getFluidHandler();
+                for (int i = 0; i < fluidAssignment.length; i++) {
+                    int tank = fluidAssignment[i];
+                    var ingredient = recipe.getFluidInputs().get(i);
+                    int amount = scaledAmount(ingredient.amount(), batchSize);
+                    FluidStack input = handler.getFluidInTank(tank);
+                    if (input.isEmpty() || amount <= 0 || !ingredient.ingredient().test(input)
+                            || handler.extract(tank, FluidResource.of(input), amount, transaction) != amount) return false;
+                }
             }
+            transaction.commit();
         }
         changed = true;
+        return true;
     }
 
     private static int scaledAmount(int amount, int multiplier) {
@@ -486,6 +430,23 @@ public class RecipeInfo {
         return ((Recipe<ProcessorRecipeInput>) recipe).matches(be.inputs(), getLevel());
     }
 
+    /**
+     * Restores the in-progress (or stuck) batch saved by {@link #save()}. Its inputs were
+     * consumed before the save, so it must resume rather than start a new batch. Block entities
+     * load before they get a level, when no recipe map is reachable, so this waits for the first
+     * tick. A recipe removed by a datapack since the save leaves the machine idle.
+     */
+    private void resolvePendingRecipe() {
+        if (!recipePending || getLevel() == null) return;
+        recipePending = false;
+        Recipe<?> loadedRecipe = recipeId == null || recipeId.isEmpty() ? null : getRecipeFromTag(recipeId);
+        if (stuck) {
+            lastRecipe = loadedRecipe;
+        } else {
+            recipe = loadedRecipe;
+        }
+    }
+
     private boolean hasRecipe() {
         return recipe != null;
     }
@@ -502,6 +463,7 @@ public class RecipeInfo {
     }
 
     public Recipe<?> recipe() {
+        if (getLevel() != null && getLevel().isClientSide()) getRecipes();
         if(recipe == null && recipeId != null && !recipeId.isEmpty()) {
             recipe = getRecipeFromTag(recipeId);
         }
@@ -510,44 +472,39 @@ public class RecipeInfo {
 
     @SuppressWarnings("unchecked")
     public HashMap<String, Recipe<?>> getRecipes() {
-        if(allRecipes.isEmpty()) {
-            Level level = getLevel();
-            if (level != null) {
-                ModEntry entry = ModEntries.get(be.name);
-                if (entry != null) {
-                    var recipeType = (RecipeType<UniversalProcessorRecipe>) entry.recipeType().get();
-                    level.getRecipeManager().getAllRecipesFor(recipeType).forEach(r -> {
-                        if (r.value().isComplete()) {
-                            allRecipes.put(r.id().toString(), r.value());
-                        }
-                    });
-                }
+        RecipeMap current = RecipeSources.recipes(getLevel());
+        if (cachedRecipeMap != current) {
+            allRecipes.clear();
+            cachedRecipeMap = current;
+            if (getLevel() != null && getLevel().isClientSide()) {
+                recipe = null;
+                lastRecipe = null;
+            }
+            ModEntry entry = ModEntries.get(be.name);
+            if (entry != null && entry.recipeType() != null && entry.recipeFamily() != null
+                    && entry.recipeFamily().schemaKind() == RecipeSchemaKind.UNIVERSAL_PROCESSOR) {
+                var recipeType = (RecipeType<UniversalProcessorRecipe>) entry.recipeType().get();
+                current.byType(recipeType).forEach(holder -> {
+                    if (holder.value().isComplete()) {
+                        allRecipes.put(holder.id().identifier().toString(), holder.value());
+                    }
+                });
             }
         }
         return allRecipes;
     }
 
     private Recipe<?> getRecipeFromTag(String recipe) {
-        Recipe<?> cachedRecipe = getRecipes().getOrDefault(recipe, null);
-        if(cachedRecipe != null) {
-            return cachedRecipe;
-        }
-        ResourceLocation id = rlFromString(recipe);
-        if(getLevel() == null) return null;
-        try {
-            return getLevel().getRecipeManager().byKey(id).get().value();
-        } catch (NoSuchElementException e) {
-            return null;
-        }
+        Recipe<?> cachedRecipe = getRecipes().get(recipe);
+        if (cachedRecipe != null) return cachedRecipe;
+        Identifier id = Identifier.tryParse(recipe);
+        if (id == null) return null;
+        return RecipeSources.byId(getLevel(), id)
+                .map(holder -> holder.value()).orElse(null);
     }
 
-    private Level getLevel()
-    {
-        if(be != null) return be.getLevel();
-        return switch (FMLEnvironment.dist) {
-            case CLIENT -> ClientUtil.tryGetClientWorld();
-            case DEDICATED_SERVER -> ServerLifecycleHooks.getCurrentServer().overworld();
-        };
+    private Level getLevel() {
+        return be.getLevel();
     }
 
     public Tag save() {
@@ -558,7 +515,7 @@ public class RecipeInfo {
         data.putInt("parallelProcessing", parallelProcessing);
         data.putBoolean("stuck", stuck);
         if (craftingOrder != null) data.put("CraftingOrder", craftingOrder.save());
-        if((recipe != null || stuck) && recipeId != null) {
+        if((recipe != null || stuck || recipePending) && recipeId != null && !recipeId.isEmpty()) {
             data.putString("recipe", recipeId);
         }
         return data;
@@ -567,22 +524,16 @@ public class RecipeInfo {
     public void load(Tag nbt) {
         if(nbt instanceof CompoundTag) {
             craftingOrder = ((CompoundTag) nbt).contains("CraftingOrder")
-                    ? ProcessingOrder.load(((CompoundTag) nbt).getCompound("CraftingOrder")) : null;
-            ticks = ((CompoundTag) nbt).getInt("ticks");
-            ticksNeeded = ((CompoundTag) nbt).getInt("ticksNeeded");
-            energyPerTick = ((CompoundTag) nbt).getInt("energyPerTick");
-            parallelProcessing = Math.max(1, ((CompoundTag) nbt).getInt("parallelProcessing"));
-            stuck = ((CompoundTag) nbt).getBoolean("stuck");
-            recipeId = ((CompoundTag) nbt).getString("recipe");
+                    ? ProcessingOrder.load(((CompoundTag) nbt).getCompoundOrEmpty("CraftingOrder")) : null;
+            ticks = ((CompoundTag) nbt).getIntOr("ticks", 0);
+            ticksNeeded = ((CompoundTag) nbt).getIntOr("ticksNeeded", 0);
+            energyPerTick = ((CompoundTag) nbt).getIntOr("energyPerTick", 0);
+            parallelProcessing = Math.max(1, ((CompoundTag) nbt).getIntOr("parallelProcessing", 0));
+            stuck = ((CompoundTag) nbt).getBooleanOr("stuck", false);
+            recipeId = ((CompoundTag) nbt).getStringOr("recipe", "");
             recipe = null;
-            if(!recipeId.isEmpty()) {
-                Recipe<?> loadedRecipe = getRecipeFromTag(recipeId);
-                if (stuck) {
-                    lastRecipe = loadedRecipe;
-                } else {
-                    recipe = loadedRecipe;
-                }
-            }
+            recipePending = !recipeId.isEmpty();
+            resolvePendingRecipe();
         }
     }
 }

@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -35,6 +36,23 @@ public class ChargingStationBE extends GlobalBlockEntity implements MenuProvider
 
     public ChargingStationBE(BlockPos pos, BlockState state, String name) {
         super(ModEntries.get(name).blockEntity().get(), pos, state, name);
+            // If you don't want your Quantite Energy tank to be able to be filled by water:
+        if (contentHandler.hasFluidCapability()) {
+            contentHandler.getFluidHandler().getInternalHandler()
+                    .setTankValidator(0, ChargingStationBE::isQuantiteEnergy);
+        }
+    }
+
+    /** True when the stack is non-empty Quantite Energy. */
+    public static boolean isQuantiteEnergy(FluidStack stack) {
+        if (stack == null || stack.isEmpty()) return false;
+        Fluid quantite = ModEntries.fluidOf("quantite_energy");
+        return quantite != null && stack.getFluid().isSame(quantite);
+    }
+
+    /** True when the station's tank currently holds usable Quantite Energy. */
+    private static boolean hasQuantiteEnergy(@Nullable FluidCapabilityHandler tanks) {
+        return tanks != null && isQuantiteEnergy(tanks.getFluidInTank(0));
     }
 
     public void toggleRedstoneMode() {
@@ -95,7 +113,9 @@ public class ChargingStationBE extends GlobalBlockEntity implements MenuProvider
         if (stack.isEmpty()) return;
 
         FluidCapabilityHandler tanks = contentHandler.getFluidHandler();
-        boolean hasFluid = tanks != null && tanks.getFluidInTank(0).getAmount() > 0;
+        // Make sure only Quantite Energy counts as "fluid charge"; any other fluid left over in the tank
+        // (i.e. from worlds saved before this tank validator existed) is ignored.
+        boolean hasFluid = hasQuantiteEnergy(tanks);
         boolean hasEnergy = energyStorage != null && energyStorage.getEnergyStored() > 0;
         if (!hasFluid && !hasEnergy) return;
 
@@ -133,7 +153,7 @@ public class ChargingStationBE extends GlobalBlockEntity implements MenuProvider
     }
 
     private void chargeQ36(ItemStack stack, @Nullable FluidCapabilityHandler tanks) {
-        if (tanks == null) return;
+        if (!hasQuantiteEnergy(tanks)) return; // Again, make sure it's QE.
         int current = Q36Item.getCharge(stack);
         int space = Q36Item.MAX_CHARGE - current;
         if (space <= 0) return;
@@ -152,7 +172,7 @@ public class ChargingStationBE extends GlobalBlockEntity implements MenuProvider
     }
 
     private void chargeHEV(ItemStack stack, @Nullable FluidCapabilityHandler tanks) {
-        if (tanks == null) return;
+        if (!hasQuantiteEnergy(tanks)) return; // And again...
         int missing = HEVItem.MAX_QE_CHARGE - HEVItem.getQeCharge(stack);
         if (missing <= 0) return;
         int fluidAvail = tanks.getFluidInTank(0).getAmount();
@@ -171,6 +191,7 @@ public class ChargingStationBE extends GlobalBlockEntity implements MenuProvider
 
     private void fillFluidItem(ItemStack stack, IFluidHandlerItem itemFluid,
                                 FluidCapabilityHandler tanks, ItemCapabilityHandler items) {
+        if (!hasQuantiteEnergy(tanks)) return; // And yet again, just to be safe...
         FluidStack drained = tanks.drainTank(0, FLUID_PER_TICK, IFluidHandler.FluidAction.SIMULATE);
         if (drained.isEmpty()) return;
         int accepted = itemFluid.fill(drained, IFluidHandler.FluidAction.SIMULATE);

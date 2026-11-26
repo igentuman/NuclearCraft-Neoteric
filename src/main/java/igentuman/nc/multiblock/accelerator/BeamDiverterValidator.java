@@ -2,6 +2,7 @@ package igentuman.nc.multiblock.accelerator;
 
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
+import igentuman.nc.api.multiblock.StructureSizeRange;
 import igentuman.nc.api.multiblock.part.ElectromagnetDef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,6 +41,11 @@ public class BeamDiverterValidator extends AbstractMultiblockValidator<BeamDiver
     private final BlockPos[] beamPorts = new BlockPos[4];
     private ElectromagnetDef upMagnet;
     private ElectromagnetDef downMagnet;
+
+    @Override
+    public StructureSizeRange structureSizeRange() {
+        return StructureSizeRange.cube(SIZE, SIZE);
+    }
 
     @Override
     protected boolean findBounds(BeamDiverterCache cache) {

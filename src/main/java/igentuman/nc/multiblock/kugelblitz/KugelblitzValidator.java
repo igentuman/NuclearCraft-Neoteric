@@ -1,6 +1,7 @@
 package igentuman.nc.multiblock.kugelblitz;
 
 import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
+import igentuman.nc.api.multiblock.StructureSizeRange;
 import igentuman.nc.block_entity.MultiblockPortBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,8 +18,10 @@ import static igentuman.nc.multiblock.MultiblockDebug.step;
 
 public class KugelblitzValidator extends AbstractMultiblockValidator<KugelblitzCache> {
 
+    private static final int RADIUS = 5;
     private static final int[][] AXES = {
-            {0, 5, 0}, {0, -5, 0}, {-5, 0, 0}, {5, 0, 0}, {0, 0, -5}, {0, 0, 5}
+            {0, RADIUS, 0}, {0, -RADIUS, 0}, {-RADIUS, 0, 0},
+            {RADIUS, 0, 0}, {0, 0, -RADIUS}, {0, 0, RADIUS}
     };
     private static final int[][] RINGS = {
             {0, 4, 0}, {0, -4, 0}, {-4, 0, 0}, {4, 0, 0}, {0, 0, -4}, {0, 0, 4}
@@ -35,6 +38,12 @@ public class KugelblitzValidator extends AbstractMultiblockValidator<KugelblitzC
     private boolean resolved;
 
     private BlockPos center;
+
+    @Override
+    public StructureSizeRange structureSizeRange() {
+        int side = 2 * RADIUS + 1;
+        return StructureSizeRange.cube(side, side);
+    }
 
     private boolean resolveBlocks() {
         if (resolved) return true;
@@ -65,7 +74,7 @@ public class KugelblitzValidator extends AbstractMultiblockValidator<KugelblitzC
                     cache.getBlockState(origin));
         }
         cache.setWorkingCenter(center);
-        cache.setWorkingBounds(center.offset(-5, -5, -5), center.offset(5, 5, 5));
+        cache.setWorkingBounds(center.offset(-RADIUS, -RADIUS, -RADIUS), center.offset(RADIUS, RADIUS, RADIUS));
         return true;
     }
 

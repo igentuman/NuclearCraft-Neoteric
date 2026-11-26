@@ -3,9 +3,11 @@ package igentuman.nc.multiblock.accelerator;
 import igentuman.nc.api.multiblock.part.CoolerDef;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
+import igentuman.nc.api.multiblock.StructureSizeRange;
 import igentuman.nc.multiblock.accelerator.AcceleratorSlice.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,6 +49,13 @@ public class LinearAcceleratorValidator extends AbstractMultiblockValidator<Line
     private int ionSourceCount;
     private final Component[] slice = new Component[AcceleratorSlice.OFFSETS.length];
     private final Map<BlockPos, CoolerDef> coolers = new HashMap<>();
+
+    @Override
+    public StructureSizeRange structureSizeRange() {
+        int[] range = AcceleratorComponents.linearSizeRange();
+        return new StructureSizeRange(new Vec3i(CROSS_SECTION, CROSS_SECTION, range[0]),
+                new Vec3i(CROSS_SECTION, CROSS_SECTION, range[1]));
+    }
 
     @Override
     protected boolean findBounds(LinearAcceleratorCache cache) {

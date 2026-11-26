@@ -2748,6 +2748,7 @@
   "tooltip.nc.resonite_rarity.rare": "稀有",
   "tooltip.nc.shift_rbm_to_change": "潜行+右键以更改",
   "tooltip.nc.use_in_leacher": "在此位置用于浸出机",
+  "tooltip.structure.sizes": "结构尺寸：最小 %s，最大 %s",
   "tooltip.nuclearcraft.collision_chamber.progress": "反应缓冲：%s%%",
   "tooltip.nuclearcraft.content_saved": "被破坏时内容物会保留",
   "tooltip.nuclearcraft.cooler.description": "用于加速器的冷却",

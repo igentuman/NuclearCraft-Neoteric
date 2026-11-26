@@ -1,11 +1,13 @@
 package igentuman.nc.multiblock.particle_chamber;
 
+import igentuman.nc.api.multiblock.StructureSizeRange;
 import igentuman.nc.block.accelerator.BeamPortMode;
 import igentuman.nc.block.particle.ParticleChamberBeamPortBlock;
 import igentuman.nc.config.Multiblocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
@@ -46,6 +48,16 @@ public class CubeChamberValidator extends AbstractChamberValidator {
 
     private int maximum() {
         return Math.max(minimumSize.getAsInt(), maximumSize.getAsInt());
+    }
+
+    @Override
+    @Nullable
+    public StructureSizeRange structureSizeRange() {
+        int min = minimum();
+        int max = maximum();
+        if (min % 2 == 0) min++;
+        if (max % 2 == 0) max--;
+        return min <= max ? StructureSizeRange.cube(min, max) : null;
     }
 
     @Override

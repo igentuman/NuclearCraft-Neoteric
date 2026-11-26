@@ -4,6 +4,7 @@ import igentuman.nc.block_entity.MultiblockPortBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import static igentuman.nc.NuclearCraft.rl;
 import static igentuman.nc.multiblock.MultiblockDebug.step;
@@ -15,6 +16,14 @@ public abstract class AbstractCuboidValidator<C extends AbstractMultiblockCache>
     protected abstract int minSize();
 
     protected abstract int maxSize();
+
+    @Override
+    @Nullable
+    public StructureSizeRange structureSizeRange() {
+        int min = minSize();
+        int max = maxSize();
+        return min <= max ? StructureSizeRange.cube(min, max) : null;
+    }
 
     protected abstract boolean isController(BlockState state);
 

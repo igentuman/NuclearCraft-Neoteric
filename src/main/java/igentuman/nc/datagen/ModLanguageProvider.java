@@ -439,6 +439,7 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("screen.nuclearcraft.hub.no", "No");
         add("screen.nuclearcraft.hub.ok", "OK");
         add("tooltip.nc.fission_reactor_designer", "Design and simulate fission reactor layouts.");
+        add("tooltip.structure.sizes", "Structure sizes: Min %s - Max: %s");
         add("tooltip.nc.fission_reactor_plan.blank", "Empty plan - design one in the Fission Reactor Designer.");
         add("tooltip.nc.fission_reactor_plan.size", "Size: %sx%sx%s");
         add("tooltip.nc.fission_reactor_plan.fuel", "Fuel: %s");

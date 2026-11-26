@@ -1,8 +1,10 @@
 package igentuman.nc.multiblock.particle_chamber;
 
+import igentuman.nc.api.multiblock.StructureSizeRange;
 import igentuman.nc.config.Multiblocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashSet;
@@ -38,6 +40,14 @@ public class CollisionChamberValidator extends AbstractChamberValidator {
 
     private static int maximumLength() {
         return Math.max(Multiblocks.collisionChamberMinLength, Multiblocks.collisionChamberMaxLength);
+    }
+
+    @Override
+    public StructureSizeRange structureSizeRange() {
+        int min = minimumTransverse();
+        int max = maximumTransverse();
+        return new StructureSizeRange(new Vec3i(min, min, minimumLength()),
+                new Vec3i(max, max, maximumLength()));
     }
 
     @Override

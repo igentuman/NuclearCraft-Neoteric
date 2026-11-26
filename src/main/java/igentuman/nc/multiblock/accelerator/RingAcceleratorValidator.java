@@ -3,10 +3,12 @@ package igentuman.nc.multiblock.accelerator;
 import igentuman.nc.api.multiblock.part.CoolerDef;
 import igentuman.nc.config.Multiblocks;
 import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
+import igentuman.nc.api.multiblock.StructureSizeRange;
 import igentuman.nc.multiblock.accelerator.AcceleratorSlice.Component;
 import igentuman.nc.api.multiblock.part.ElectromagnetDef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -59,6 +61,13 @@ public class RingAcceleratorValidator extends AbstractMultiblockValidator<RingAc
     private final CornerDipole[] corners = new CornerDipole[4];
     private final Component[] slice = new Component[AcceleratorSlice.OFFSETS.length];
     private final Map<BlockPos, CoolerDef> coolers = new HashMap<>();
+
+    @Override
+    public StructureSizeRange structureSizeRange() {
+        int[] range = AcceleratorComponents.ringSizeRange();
+        return new StructureSizeRange(new Vec3i(range[0], HEIGHT, range[0]),
+                new Vec3i(range[1], HEIGHT, range[1]));
+    }
 
     @Override
     protected boolean findBounds(RingAcceleratorCache cache) {

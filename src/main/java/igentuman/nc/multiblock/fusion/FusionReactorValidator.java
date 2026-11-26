@@ -1,10 +1,12 @@
 package igentuman.nc.multiblock.fusion;
 
 import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
+import igentuman.nc.api.multiblock.StructureSizeRange;
 import igentuman.nc.api.multiblock.part.ElectromagnetDef;
 import igentuman.nc.api.multiblock.part.RFAmplifierDef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -20,7 +22,10 @@ import static igentuman.nc.multiblock.MultiblockDebug.step;
 public class FusionReactorValidator extends AbstractMultiblockValidator<FusionReactorCache> {
 
     private static final int MAX_SIZE = 32;
+    private static final int MIN_CONNECTOR_DISTANCE = 1;
     private static final int MAX_CONNECTOR_DISTANCE = MAX_SIZE / 2 + 1;
+    private static final int OUTER_WALL_OFFSET = 3;
+    private static final int HEIGHT = 3;
     private static final List<Direction> SIDES = List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
     private static final ResourceLocation EXPECTED_CASING = rl("fusion_reactor_casing");
     private static final ResourceLocation EXPECTED_CONNECTOR = rl("fusion_reactor_connector");
@@ -29,6 +34,13 @@ public class FusionReactorValidator extends AbstractMultiblockValidator<FusionRe
     private Block connector;
     private Block proxy;
     private int size;
+
+    @Override
+    public StructureSizeRange structureSizeRange() {
+        int min = 2 * (MIN_CONNECTOR_DISTANCE + OUTER_WALL_OFFSET) + 1;
+        int max = 2 * (MAX_CONNECTOR_DISTANCE + OUTER_WALL_OFFSET) + 1;
+        return new StructureSizeRange(new Vec3i(min, HEIGHT, min), new Vec3i(max, HEIGHT, max));
+    }
 
     private boolean resolveBlocks() {
         if (connector == null) connector = blockOf("fusion_reactor_connector");
@@ -43,11 +55,11 @@ public class FusionReactorValidator extends AbstractMultiblockValidator<FusionRe
         if (!resolveBlocks()) {
             return fail("multiblock.fusion.size_unresolved", core, EXPECTED_CONNECTOR, cache.getBlockState(core.above()));
         }
-        int reach = MAX_CONNECTOR_DISTANCE + 3;
-        cache.prefetch(core.offset(-reach, 0, -reach), core.offset(reach, 2, reach));
+        int reach = MAX_CONNECTOR_DISTANCE + OUTER_WALL_OFFSET;
+        cache.prefetch(core.offset(-reach, 0, -reach), core.offset(reach, HEIGHT - 1, reach));
         BlockPos mid = core.above();
-        size = 1;
-        for (int dist = 2; dist <= MAX_CONNECTOR_DISTANCE; dist++) {
+        size = MIN_CONNECTOR_DISTANCE;
+        for (int dist = MIN_CONNECTOR_DISTANCE + 1; dist <= MAX_CONNECTOR_DISTANCE; dist++) {
             BlockPos missing = null;
             int count = 0;
             for (Direction side : SIDES) {
@@ -64,8 +76,8 @@ public class FusionReactorValidator extends AbstractMultiblockValidator<FusionRe
             }
             break;
         }
-        int radius = size + 3;
-        cache.setWorkingBounds(core.offset(-radius, 0, -radius), core.offset(radius, 2, radius));
+        int radius = size + OUTER_WALL_OFFSET;
+        cache.setWorkingBounds(core.offset(-radius, 0, -radius), core.offset(radius, HEIGHT - 1, radius));
         step("fusion ring validation size={}", size);
         return true;
     }
@@ -88,7 +100,7 @@ public class FusionReactorValidator extends AbstractMultiblockValidator<FusionRe
         for (BlockPos pos : ring(mid, size + 1, true)) {
             if (!casing(cache, pos, "multiblock.fusion.wrong_inner_wall")) return false;
         }
-        for (BlockPos pos : ring(mid, size + 3, false)) {
+        for (BlockPos pos : ring(mid, size + OUTER_WALL_OFFSET, false)) {
             if (!casing(cache, pos, "multiblock.fusion.wrong_outer_wall")) return false;
         }
         for (BlockPos pos : ring(mid.below(), size + 2, true)) {

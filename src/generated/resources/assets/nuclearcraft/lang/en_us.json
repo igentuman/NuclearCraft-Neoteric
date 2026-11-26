@@ -2945,5 +2945,6 @@
   "tooltip.nuclearcraft.upgrade.speed_bonus": "Speed multiplier: %sx",
   "tooltip.nuclearcraft.upgrade.stack.description": "Increases speed and processes one parallel recipe per four upgrades.",
   "tooltip.nuclearcraft.use_wrench": "Use a wrench to configure sides",
-  "tooltip.nuclearcraft.wait": "Wait: %ss"
+  "tooltip.nuclearcraft.wait": "Wait: %ss",
+  "tooltip.structure.sizes": "Structure sizes: Min %s - Max: %s"
 }

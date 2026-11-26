@@ -39,6 +39,11 @@ public abstract class AbstractMultiblockValidator<C extends AbstractMultiblockCa
     private ResourceLocation expected;
     private ResourceLocation actual;
 
+    @Nullable
+    public StructureSizeRange structureSizeRange() {
+        return null;
+    }
+
     public final Result run(C cache) {
         errorKey = null;
         errorPos = null;

@@ -1,16 +1,25 @@
 package igentuman.nc.block;
 
 import com.mojang.serialization.MapCodec;
+import igentuman.nc.api.multiblock.AbstractMultiblockValidator;
+import igentuman.nc.api.multiblock.StructureSizeRange;
 import igentuman.nc.block_entity.MultiblockControllerBE;
+import igentuman.nc.multiblock.MultiblockEntry;
 import igentuman.nc.multiblock.MultiblockHandler;
+import igentuman.nc.multiblock.MultiblockRegistry;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -30,7 +39,10 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Supplier;
+
+import static igentuman.nc.util.TextUtils.__;
 
 /** Facing block entity block for a multiblock controller; opens its menu, ticks the BE and handles form/break. */
 public class MultiblockControllerBlock extends BaseEntityBlock {
@@ -41,6 +53,7 @@ public class MultiblockControllerBlock extends BaseEntityBlock {
 
     private final String multiblockName;
     private final Supplier<BlockEntityType<? extends MultiblockControllerBE>> beTypeSupplier;
+    private AbstractMultiblockValidator<?> tooltipValidator;
 
     public MultiblockControllerBlock(BlockBehaviour.Properties props, String multiblockName,
                                       Supplier<BlockEntityType<? extends MultiblockControllerBE>> beTypeSupplier) {
@@ -52,6 +65,25 @@ public class MultiblockControllerBlock extends BaseEntityBlock {
 
     public String getMultiblockName() {
         return multiblockName;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltip, flag);
+        if (tooltipValidator == null) {
+            MultiblockEntry entry = MultiblockRegistry.getByController(multiblockName);
+            if (entry == null) return;
+            tooltipValidator = entry.validatorSupplier().get();
+        }
+        StructureSizeRange range = tooltipValidator.structureSizeRange();
+        if (range != null) {
+            tooltip.add(__("tooltip.structure.sizes",
+                    formatDimensions(range.minimum()), formatDimensions(range.maximum())).withStyle(ChatFormatting.ITALIC));
+        }
+    }
+
+    private static String formatDimensions(Vec3i size) {
+        return size.getX() + "x" + size.getY() + "x" + size.getZ();
     }
 
     @Override

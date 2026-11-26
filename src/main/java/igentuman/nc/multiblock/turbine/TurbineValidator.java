@@ -1,6 +1,7 @@
 package igentuman.nc.multiblock.turbine;
 
 import igentuman.nc.api.multiblock.AbstractCuboidValidator;
+import igentuman.nc.api.multiblock.StructureSizeRange;
 import igentuman.nc.api.multiblock.part.BladeDef;
 import igentuman.nc.api.multiblock.part.TurbineCoilDef;
 import igentuman.nc.block.turbine.TurbineRotorBlock;
@@ -9,10 +10,12 @@ import igentuman.nc.setup.ModEntries;
 import igentuman.nc.setup.entries.Turbine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,6 +71,18 @@ public class TurbineValidator extends AbstractCuboidValidator<TurbineCache> {
     @Override
     protected int maxSize() {
         return Multiblocks.turbineMaxSize;
+    }
+
+    @Override
+    @Nullable
+    public StructureSizeRange structureSizeRange() {
+        int min = minSize();
+        int max = maxSize();
+        int minCrossSection = min % 2 == 0 ? min + 1 : min;
+        int maxCrossSection = max % 2 == 0 ? max - 1 : max;
+        if (minCrossSection > maxCrossSection) return null;
+        return new StructureSizeRange(new Vec3i(minCrossSection, minCrossSection, min),
+                new Vec3i(maxCrossSection, maxCrossSection, max));
     }
 
     @Override

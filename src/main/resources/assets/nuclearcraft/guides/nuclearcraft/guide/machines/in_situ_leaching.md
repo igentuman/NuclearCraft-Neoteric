@@ -26,7 +26,10 @@ This is the perfect way of getting resources from ores without having to mine th
   <BlockImage id="analyzer" />
 </Column>
 
-The Leacher operates in 2 modes. The first mode requires an analyzed map; in this mode it pumps real resources from the ground. The second mode requires a research paper containing mineral vein information. Use the Analyzer to analyze chunks; if a chunk contains a mineral vein, that information is written onto the research paper. In this mode, the Leacher pulls resources from deep underground and must be placed in the exact chunk containing the vein.
+The **Leacher** accepts two sources:
+
+- A **filled Minecraft map** lets the Leacher extract supported ore blocks below it in its own chunk.
+- A **Research Paper** from an **Analyzer** identifies a virtual ore vein. Put Paper in the Analyzer to survey its chunk, then place the Leacher in the chunk recorded on the Research Paper.
 
 ## Placement
 

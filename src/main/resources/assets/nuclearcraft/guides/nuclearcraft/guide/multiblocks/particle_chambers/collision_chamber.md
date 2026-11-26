@@ -21,7 +21,7 @@ Unlike the other chambers, the Collision Chamber is not a cube. It is a long box
 
 ## Beam Axis
 
-Down the long axis runs a line of Particle Beam blocks holding at least 2 Particle Chamber Cameras. Both ends of that axis are capped by Particle Chamber Beam Ports set to input mode — the two beams enter here and meet in the middle.
+Down the long axis runs a line of Particle Beam blocks holding at least 2 **Target Chamber Camera** blocks. Both ends of that axis are capped by Particle Chamber Beam Ports set to input mode — the two beams enter here and meet in the middle.
 
 ## Outputs
 

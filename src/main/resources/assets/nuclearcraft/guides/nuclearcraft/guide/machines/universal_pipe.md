@@ -1,6 +1,6 @@
 ---
 navigation:
-  title: Universal Pipe
+  title: Pipe
   parent: machines.md
   icon: pipe
 item_ids:
@@ -8,14 +8,14 @@ item_ids:
   - nuclearcraft:pipe_connector
 ---
 
-# Universal Pipe
+# Pipe
 
 <Row>
   <BlockImage id="pipe" />
   <BlockImage id="pipe_connector" />
 </Row>
 
-The **Universal Pipe** is a single conduit that carries items, fluids, and energy through one network at the same time. Pipes only move the network around; a **Pipe Connector** is what actually talks to an adjacent block.
+The **Pipe** is a single conduit that carries items, fluids, and energy through one network at the same time. Pipes only move the network around; a **Pipe Connector** is what actually talks to an adjacent block.
 
 ## Networks
 
@@ -32,8 +32,8 @@ Cycle the transfer direction:
 - **Disabled** — no transfer.
 - **Pull** — draw out of the attached block.
 - **Push** — feed into the attached block.
-- **Auto** — let the block decide.
+- **Default** — transfer according to the attached block’s available inputs and outputs.
 
 ## Redstone
 
-Set **Redstone: Ignored** to always run, or **Redstone: Required** to run only while a signal is present.
+Set **Redstone: Always** to always run, or **Redstone: On Signal** to run only while a signal is present.

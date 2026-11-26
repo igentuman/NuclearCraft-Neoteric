@@ -1,39 +1,37 @@
 ---
 navigation:
-  title: Synchrotron Accelerator
+  title: Ring Accelerator
   parent: multiblocks/accelerators.md
   icon: ring_accelerator_controller
 item_ids:
   - nuclearcraft:ring_accelerator_controller
 ---
 
-# Synchrotron Accelerator
+# Ring Accelerator
 
 <GameScene zoom={2}>
   <ImportStructure src="/structures/ring_accelerator.nbt" />
 </GameScene>
 
-Synchrotron Accelerators accelerate particles put into them to much higher energies than [Linear Accelerators](linear_accelerator.md), but cannot be the start of an accelerator system. The start must be a linear accelerator with an [ion source](linear_accelerator.md#ion_source). **Synchrotrons have a minimum input particle energy** - this is usually 5 MeV but can be changed in the configs.
-
-Example Synchrotron Accelerator.
+Ring Accelerators (synchrotrons) accelerate particles put into them to much higher energies than [Linear Accelerators](linear_accelerator.md), but cannot be the start of an accelerator system. The start must be a linear accelerator with an [Accelerator Ion Source Port](linear_accelerator.md#ion-source). **Synchrotrons have a minimum input particle energy** - this is usually 5 MeV but can be changed in the configs.
 
 ## Construction
 
-Synchrotron Accelerators are a square torus of Accelerator Casings or Glass that must be 5 wide. Power, coolant, redstone and computer access all run through the dedicated **Ring Accelerator Port** — the linear Accelerator Port and Ion Source Port will not validate on a ring. Particle input and output use [Accelerator Beam Ports](general.md#construction). There must be a continuous ring of Accelerator Beam Blocks down the center. Any beam port must be connected to the central beam ring with a beam block. Example shown on the opposite page.
+Build a square ring with a **5 × 5 cross-section** using **Accelerator Casing** and **Accelerator Casing Glass**. Install one **Ring Accelerator Controller** and use the shared **Accelerator Port** for FE, coolant, redstone, and computers.
 
-At each corner and beam port intersection there must be a [dipole magnet](general.md#dipole). So a synchrotron has a minimum of 4 dipoles. The example above will require at least 5 dipoles.
+Build a continuous loop of **Particle Beam** blocks at mid-height. Install at least two outward-facing **Accelerator Beam Ports** on the outside walls at the same height, and connect each to the loop with Particle Beam blocks. Put a vertical [dipole magnet](general.md#dipole-magnets) at each of the four turns.
 
-Lastly, the inside corners of the accelerator must not be accelerator casing or accelerator glass. That area can instead be used to place certain coolers. Example below.
+Keep casing and glass out of the three interior layers of each inside corner.
 
 ## Operation
 
-A Synchrotron Accelerator functions the same as any other [accelerator](general.md#operation), requiring power and coolant. It requires an existing particle beam to be piped in at a minimum energy of 5 MeV (by default). Synchrotrons can have multiple beam ports but only one can be an input and one an output at any given time. Switching beam ports can be done automatically with redstone or Open Computers.
+Supply FE, coolant, and an incoming beam with at least 5 MeV by default. Configure one Accelerator Beam Port as input and connect an output to the next machine. To route the beam through a different output, use the Multitool or computer controls to set the port modes.
 
 ## Redstone Control
 
-Just like the [Linear Accelerator](linear_accelerator.md#redstone), a redstone signal applied to the controller (or input redstone port) will turn it on, and the output particle energy will be `E = Eₓ·Sᵣ/15`.
+Just like the [Linear Accelerator](linear_accelerator.md#redstone-control), a redstone signal applied to the controller (or Accelerator Port) will turn it on, and the output particle energy will be `E = Eₓ·Sᵣ/15`.
 
-Also like linear accelerators, the output particle energy can be controlled with Open Computers - see the Open Computers section for more information.
+See [Accelerator computer integration](../../computers/accelerator.md) for computer control of output energy.
 
 ## Particle Energy
 
@@ -46,11 +44,3 @@ The maximum energy (in GeV) from the dipole strength is `Eᵩ = (q·B₂·R)² /
 ## Max From Radiation
 
 The maximum energy (in GeV) from radiation losses is `Eᵣ = m·(3VR/|q|)^0.25` where `V` is the accelerator's voltage (in kV). For light particles like the electron, this is the major concern.
-
-## Synchrotron Ports
-
-Synchrotron accelerators can have a special port installed: the Accelerator Synchrotron Port. This port lets out synchrotron radiation (high energy photons). The same position rules as beam ports apply to Synchrotron ports. Only one can be installed.
-
-The amount of pu/t of photons produced is equal to the amount of pu/t of particles going through the synchrotron; the focus is the same as the particles going through the synchrotron; and the energy (in MeV) is `Eᵧ = E³ / (2πR(1000m)³)` where `E` is the energy (in MeV) of the particle outputted by the synchrotron.
-
-Because the energy is proportional to `1/m³`, light particles like electrons give much higher energy.

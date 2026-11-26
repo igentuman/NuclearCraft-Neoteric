@@ -158,7 +158,7 @@ If a reactor part's placement rule requires a non-fuel-cell block - for example,
   <BlockImage id="irradiator" />
 </Row>
 
-When placed at the end of a [Moderator](general.md#moderator) line, **Irradiators** will use the radiative flux to transform items in the Irradiation Chamber. Irradiation speed depends on the number of irradiation lines in the reactor.
+Place a **Fission Reactor Irradiation Chamber** inside the reactor at the end of a moderator line that starts at a fuel cell. Place the **Irradiator** in the shell and load the recipe ingredients there. Its speed depends on the number of irradiation lines.
 
 ## Irradiation Line
 

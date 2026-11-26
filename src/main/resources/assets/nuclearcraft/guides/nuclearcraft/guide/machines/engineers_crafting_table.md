@@ -1,6 +1,6 @@
 ---
 navigation:
-  title: Engineer's Crafting Table
+  title: Engineers Crafting Table
   parent: machines.md
   icon: engineers_crafting_table
 item_ids:
@@ -8,7 +8,7 @@ item_ids:
   - nuclearcraft:crafting_pattern
 ---
 
-# Engineer's Crafting Table
+# Engineers Crafting Table
 
 <Column alignItems="center" fullWidth={true}>
   <BlockImage id="engineers_crafting_table" />
@@ -24,7 +24,7 @@ Fluids are never listed in the terminal grid; they are consumed and produced sil
 
 ## Pattern Encoder
 
-Open the **Pattern Encoder** to record a recipe onto a **Blank Pattern**. Up to **72** patterns can be loaded at once, and the solver chains them to craft intermediate parts automatically. The encoder has two modes, switched with the button under the blank-pattern slot:
+Open the **Pattern Encoder** to record a recipe onto a blank **Crafting Pattern**. Up to **72** patterns can be loaded at once, and the solver chains them to craft intermediate parts automatically. The encoder has two modes, switched with the button under the blank-pattern slot:
 
 - **Crafting mode** (crafting table icon) records a 3x3 grid recipe. Place ghost items in the grid, or press **+** on a recipe in JEI/EMI.
 - **Processing mode** (furnace icon) records a machine recipe together with the processor that runs it. Press **+** on any processor recipe in JEI/EMI, or place the recipe's item inputs in the grid and the encoder picks the first matching recipe. The preview shows the processor, fluid inputs, and every secondary output.
@@ -33,7 +33,7 @@ Encoded patterns carry a small crafting-table or furnace badge so the two kinds 
 
 ## Processing Patterns
 
-A processing pattern only counts as craftable while a processor of the right type is reachable. The table finds processors through **Universal Pipes**:
+A processing pattern only counts as craftable while a processor of the right type is reachable. The table finds processors through **Pipe** networks:
 
 1. Put a **Pipe Connector** against the table.
 2. Put a connector against each processor you want the table to use, and enable **Items** and/or **Fluids** on it. A connector that only has **Energy** enabled is ignored; the table will not use that processor.

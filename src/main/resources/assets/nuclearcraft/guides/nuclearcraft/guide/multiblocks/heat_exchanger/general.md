@@ -18,7 +18,7 @@ item_ids:
   <ImportStructure src="/structures/heat_exchanger.nbt" />
 </GameScene>
 
-The **Heat Exchanger** runs two coolant loops around a shared **heat buffer**. The **hot loop** cools a hot coolant and banks the heat; the **cold loop** spends that banked heat to condense spent steam back into water. Run both at once and the waste heat from one job pays for the other.
+The **Heat Exchanger** runs two coolant loops around a shared **heat buffer**. The **hot loop** cools a hot coolant and banks the heat; the **cold loop** spends that banked heat to boil water. Run both at once and the waste heat from one job pays for the other.
 
 ## Heat Exchanger Casing
 
@@ -42,7 +42,7 @@ Place exactly one **Controller** anywhere in the shell to form the multiblock. I
   <BlockImage id="heat_exchanger_hot_coolant_port" />
 </Column>
 
-**Hot Coolant Ports** handle the hot loop: pipe a hot coolant in (such as Hot Helium or Hot FLiBe Molten Salt) and collect it cooled. Each operation **adds heat to the buffer**. When the buffer is full, the hot loop stalls.
+Use a **Heat Exchanger Hot Coolant Port** to cool Hot Helium or FLiBe Hot Molten Salt, or to condense Exhaust Steam or Low Quality Steam. Each operation **adds heat to the buffer**. When the buffer is full, the hot loop stalls.
 
 ## Cold Coolant Port
 
@@ -50,7 +50,7 @@ Place exactly one **Controller** anywhere in the shell to form the multiblock. I
   <BlockImage id="heat_exchanger_cold_coolant_port" />
 </Column>
 
-**Cold Coolant Ports** handle the cold loop: pipe spent steam in (such as Exhaust Steam or Low-Quality Steam) and collect condensed water. Each operation **draws heat from the buffer**. When the buffer is empty, the cold loop stalls. Hot and cold fluids keep to their own ports.
+Use a **Heat Exchanger Cold Coolant Port** to turn Water into Steam or Technical Water into High Pressure Steam. Each operation **draws heat from the buffer**. When the buffer is empty, the cold loop stalls. Hot and cold fluids keep to their own ports.
 
 ## Radiator
 

@@ -63,10 +63,6 @@ A black hole loses its mass during evaporation. To feed the black hole you need 
 
 In JEI you can see which items can be produced by the quantum transformation process. Those products are also allowed as inputs. To start the transformation, you need to find the correct quantum frequency. The player has to discover which items can be produced by the process. Transformation pairs are bound to the world seed.
 
-## Simple Reactor
+## Example Chamber
 
-This is a simple chamber design. It is a good starting point. Best fuel for this chamber is HEU-235.
-
-## Design Considerations
-
-When designing a reactor, the usage of a [reactor planner](https://github.com/ThizThizzyDizzy/nc-reactor-generator/releases) is recommended. Reactor planners assist with the design of the reactor, providing feedback on design rules, heat control, and predicted output.
+The preview shows a Kugelblitz Chamber surrounded by six EXPLs. Supply **Subliquid Matter** through a **Chamber Port** to feed the black hole after ignition.

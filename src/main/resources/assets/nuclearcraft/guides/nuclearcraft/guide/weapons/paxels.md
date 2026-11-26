@@ -15,4 +15,4 @@ item_ids:
   <ItemImage id="spaxelhoe_tough" />
 </Row>
 
-A **Paxel** combines pickaxe, axe, shovel, sword, and hoe in one durable tool. The **Thorium Paxel** is the mid-tier option; the **Tough Paxel** is end-game grade - higher damage, much more durability. Field maintenance crews carry one each; field maintenance crews are never lightly armed.
+A **Paxel** combines pickaxe, axe, shovel, sword, and hoe in one durable tool. The **Spaxelhoe Thorium** is the mid-tier option; the **Spaxelhoe Tough** is end-game grade - higher damage, much more durability. Field maintenance crews carry one each; field maintenance crews are never lightly armed.

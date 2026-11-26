@@ -5,7 +5,6 @@ navigation:
   icon: multiblock_builder
 item_ids:
   - nuclearcraft:multiblock_builder
-  - nuclearcraft:fission_reactor_plan
 ---
 
 # Reactor Builder

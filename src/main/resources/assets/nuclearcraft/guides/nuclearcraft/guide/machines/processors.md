@@ -42,7 +42,7 @@ The **Manufactory** is a machine that has many uses, mainly in processing materi
   <BlockImage id="isotope_separator" />
 </Column>
 
-The **Separator** separates materials into their constituent parts.
+The **Isotope Separator** separates materials into their constituent parts.
 
 ## Decay Hastener
 
@@ -148,13 +148,13 @@ The **Crystallizer** precipitates solids from a fluid.
 
 The **Fluid Enricher** adds materials to fluids.
 
-## Fluid Extractor
+## Extractor
 
 <Column alignItems="center" fullWidth={true}>
   <BlockImage id="extractor" />
 </Column>
 
-The **Fluid Extractor** extracts fluids from materials.
+The **Extractor** extracts fluids from materials.
 
 ## Centrifuge
 

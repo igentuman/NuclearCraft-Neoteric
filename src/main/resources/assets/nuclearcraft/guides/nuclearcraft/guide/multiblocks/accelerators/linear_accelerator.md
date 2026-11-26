@@ -21,19 +21,13 @@ Example Linear Accelerator.
 
 ## Construction
 
-Linear accelerators, like all [Accelerators](general.md#construction), are constructed out of casing or glass and require a Coolant Vent in both input and output modes and an Energy Port. They are 5 blocks wide and tall, by at least 6 blocks long. They must have a continuous line of Accelerator Beam blocks down the center.
+Build a horizontal tube **5 blocks wide and 5 blocks tall**, at least 6 blocks long by default. Use **Accelerator Casing** on all edges. Fill the centerline with **Particle Beam** blocks and place the **Linear Accelerator Controller** in a side wall. Use an **Accelerator Port** for power and coolant.
 
-Where the beam blocks meet the casing there must be an Accelerator Ion Source at one end and an Accelerator Beam Port in output mode at the other. Example of an empty linear accelerator below.
-
-Alternatively, the Ion Source can be replaced by a beam port in input mode to use an already existing beam. Example shown below.
+Place an outward-facing endpoint at the center of each end wall. To produce a new beam, use one **Accelerator Ion Source Port** and one **Accelerator Beam Port**. The Beam Port becomes the output. To boost an existing beam, use two Accelerator Beam Ports and check which is set to input before connecting the upstream accelerator.
 
 ## Ion source
 
-At the start of any accelerator system there will be a linear accelerator with an ion source. Ion sources are used to create new particle beams with either fluids or ion source items. These fluids and ion source items can be found in JEI by looking at the Accelerator Ion Source block's uses. Fluids can be piped directly into the ion source, or through an Accelerator Ion Source Port in the casing of the accelerator.
-
-Items can also be piped in and out of the ion source, or through an Accelerator Ion Source Port. The ion source also has a GUI viewed by right-clicking the block. This GUI allows for manual item access and can be used to void the current fluid by shift left-clicking the tank in the GUI.
-
-By default there are 2 types of ion sources: the normal Accelerator Ion Source and the Accelerator Laser Ion Source. Each ion source has different stats which can be viewed on their block's tooltips. Base Power is how much power the source adds to the [component power](general.md#power) of the accelerator; Particle Output Multiplier multiplies the amount of particles outputted by an ion source recipe; and Output Focus is the [focus particles start with](general.md#focus).
+Feed a compatible source item or fluid into the **Accelerator Ion Source Port**. For example, Hydrogen produces protons and a Tungsten Filament produces electrons. The port feeds the controller's source slot and source-fluid tank. The coolant tanks are separate.
 
 ## Operation
 
@@ -41,12 +35,12 @@ Linear accelerators function and have the same requirements as all [accelerators
 
 ## Particle Energy
 
-The maximum outputted Particle Energy is calculated using `Eₓ = E₀ + |q|·V` where `E₀` is the starting energy (normally 0 for an ion source), `q` is the particle's charge, and `V` is the accelerator's voltage - the sum of all the RF Cavities' voltages (the structure, not the block), which can be seen in the accelerator's GUI.
+The maximum outputted Particle Energy is calculated using `Eₓ = E₀ + |q|·V` where `E₀` is the starting energy (normally 0 for an ion source), `q` is the particle's charge, and `V` is the accelerator's voltage - the sum of all the RF amplifier rings' voltages (the structure, not the block), which can be seen in the accelerator's GUI.
 
 ## Redstone Control
 
-The output particle energy can be controlled with the strength of the redstone signal according to `E = Eₓ·Sᵣ/15` where `Sᵣ` is the redstone strength. If a redstone strength of 15 (max) is applied to the controller (or input redstone port) it will output the maximum energy. Anything less than 15 will output the corresponding fraction of the maximum energy - for example, a redstone strength of 2 is `2/15 = 13.3%` of the max energy.
+The output particle energy can be controlled with the strength of the redstone signal according to `E = Eₓ·Sᵣ/15` where `Sᵣ` is the redstone strength. If a redstone strength of 15 (max) is applied to the controller (or Accelerator Port) it will output the maximum energy. Anything less than 15 will output the corresponding fraction of the maximum energy - for example, a redstone strength of 2 is `2/15 = 13.3%` of the max energy.
 
 ## Computer Control
 
-The output particle energy can also be controlled with Open Computers. See the Open Computers section for more information.
+See [Accelerator computer integration](../../computers/accelerator.md) for computer control of output energy.

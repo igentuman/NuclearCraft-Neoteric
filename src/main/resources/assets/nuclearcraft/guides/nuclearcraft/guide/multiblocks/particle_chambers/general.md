@@ -12,24 +12,15 @@ Particle Chambers are the multiblocks where you actually do things with particle
 
 ## Construction
 
-The outside (casing) of all particle chambers is made out of Particle Chamber Casing or Particle Chamber Glass. In the casing you need:
+Build the shell from **Particle Chamber Casing**. Use **Particle Chamber Glass** on faces if desired. Install the controller for your chamber type. For automated energy, item, or fluid transfer, add a **Particle Chamber Port**. The same block provides access to whichever resources the controller supports.
 
-- The Particle Chamber's controller
-- At least one Particle Chamber Energy Port
-
-Inside particle chambers there are particle chamber beam blocks and the particle chamber block itself.
-
-The arrangement of these depends on the type of particle chamber. Detector blocks can be placed around them.
-
-Below: a typical arrangement of a target chamber with 3 output beam ports.
+Use **Target Chamber Camera**, **Particle Beam**, and **Particle Chamber Beam Port** blocks for the beam paths in all three chambers. The arrangement depends on the chamber type.
 
 ## Detectors
 
 Detectors are placed inside particle chambers to increase the chamber's efficiency. The chamber's efficiency affects how the particle chamber works. Generally, the higher the efficiency, the faster items are crafted and the more particles are output. There are different types of detectors; each increases the efficiency and the power usage of the chamber as specified on their tooltips.
 
-They must be placed a certain distance from a particle chamber block to work, as shown on their tooltip.
-
-Below: a typical arrangement of a target chamber with detectors.
+They must be placed a certain distance from a Target Chamber Camera to work, as shown on their tooltip.
 
 You can check if detectors are in valid positions by sneak right-clicking the controller of a formed particle chamber multiblock with the multitool.
 

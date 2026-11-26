@@ -81,7 +81,5 @@ public class KugelblitzEmiRecipe implements EmiRecipe {
         widgets.addSlot(input, 6, 4);
         widgets.addText(Component.literal("→"), WIDTH / 2 - 3, 8, 0xFF404040, false);
         widgets.addSlot(outputIngredient, WIDTH - 24, 4).recipeContext(this);
-        widgets.addText(Component.translatable("gui.nuclearcraft.kugelblitz.energy",
-                scaledFormat(recipe.getEnergy())), 4, 27, 0xFF404040, false);
     }
 }

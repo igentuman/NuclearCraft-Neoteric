@@ -135,7 +135,7 @@ dependencies {
     implementation "curse.maven:oc2-437654:9091466"
     implementation "curse.maven:markdownmanual-502485:8960338"
 
-    compileOnly "curse.maven:emi-580555:8081408"
+    implementation "curse.maven:emi-580555:8081408"
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     // Local NuclearRadiation checkout is substituted via includeBuild (settings.gradle), otherwise pull release from Modrinth
@@ -143,7 +143,7 @@ dependencies {
     implementation(nrLocal ? "igentuman.nr:NuclearRadiation:1.0.18" : "maven.modrinth:nuclear-radiation:1.0.18") { transitive = false }
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     implementation "curse.maven:multi-builder-tool-827020:9330890"
-    implementation "curse.maven:immersive-engineering-231951:6733669"
+    compileOnly "curse.maven:immersive-engineering-231951:6733669"
     localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
     compileOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE:api")
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE")
@@ -151,9 +151,9 @@ dependencies {
     runtimeOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cct_version}")
     implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
-    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
+    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")// Mekanism
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:additions")// Mekanism: Additions
-    implementation("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
+    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:generators")// Mekanism: Generators
     compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:tools")// Mekanism: Tools
 
     implementation "curse.maven:ex-deorum-901420:8384464"

@@ -12,7 +12,7 @@ public class PlacementRuleEmiRecipe extends BasicEmiRecipe {
     private final PlacementRuleRecipe rule;
 
     public PlacementRuleEmiRecipe(EmiRecipeCategory category, PlacementRuleRecipe rule) {
-        super(category, rule.id(), 176, 122);
+        super(category, EmiHelper.syntheticRecipeId(category, rule.id()), 176, 122);
         this.rule = rule;
         this.inputs.add(EmiStack.of(rule.part()));
         for (var condition : rule.conditions()) {

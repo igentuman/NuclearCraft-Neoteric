@@ -641,6 +641,11 @@ public class ModLanguageProvider  extends LanguageProvider {
         add("gui.nuclearcraft.ore_veins.weight", "Weight: %s");
         add("gui.nuclearcraft.recipe.time", "Process time: %s ticks");
         add("gui.nuclearcraft.turbine.power", "Power modifier: %s");
+        add("emi.category.nuclearcraft.multiblock_examples", "Multiblock Examples");
+        add("emi.category.nuclearcraft.heat_exchanger", "Heat Exchanger");
+        add("emi.category.nuclearcraft.nuclear_blast", "Nuclear Blast");
+        add("emi.category.nuclearcraft.fission_fuel", "Fission Reactor: Fuel");
+        add("emi.category.nuclearcraft.fission_boiling", "Fission Reactor: Boiling");
         add("emi.category.nuclearcraft.fusion_reactor", "Fusion Reactor");
         add("emi.category.nuclearcraft.fusion_coolant", "Fusion Reactor Coolant");
         add("emi.category.nuclearcraft.kugelblitz_chamber", "Kugelblitz Chamber");

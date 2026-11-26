@@ -19,7 +19,7 @@ public class IsotopeInfoEmiRecipe extends BasicEmiRecipe {
     private final IsotopeInfoRecipe recipe;
 
     public IsotopeInfoEmiRecipe(EmiRecipeCategory category, IsotopeInfoRecipe recipe) {
-        super(category, recipe.getId(), WIDTH, HEADER + SLOT_SIZE + LABEL_GAP + 4);
+        super(category, EmiHelper.syntheticRecipeId(category, recipe.getId()), WIDTH, HEADER + SLOT_SIZE + LABEL_GAP + 4);
         this.recipe = recipe;
 
         for (IsotopeInfoRecipe.Variant v : recipe.getVariants()) {

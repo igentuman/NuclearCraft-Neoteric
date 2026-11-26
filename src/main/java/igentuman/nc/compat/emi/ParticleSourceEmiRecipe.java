@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 public class ParticleSourceEmiRecipe extends BasicEmiRecipe {
 
     public ParticleSourceEmiRecipe(EmiRecipeCategory category, ParticleSourceRecipe recipe) {
-        super(category, recipe.id(), 90, 40);
+        super(category, EmiHelper.syntheticRecipeId(category, recipe.id()), 90, 40);
         inputs.add(recipe.item().isEmpty()
                 ? EmiStack.of(recipe.fluid().getFluid(), recipe.fluid().getAmount())
                 : EmiStack.of(recipe.item()));

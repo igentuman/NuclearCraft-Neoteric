@@ -18,7 +18,7 @@ public class FuelInfoEmiRecipe extends BasicEmiRecipe {
     private final FuelInfoRecipe recipe;
 
     public FuelInfoEmiRecipe(EmiRecipeCategory category, FuelInfoRecipe recipe) {
-        super(category, recipe.getId(), WIDTH, HEADER + recipe.getVariants().size() * ROW_HEIGHT + 16);
+        super(category, EmiHelper.syntheticRecipeId(category, recipe.getId()), WIDTH, HEADER + recipe.getVariants().size() * ROW_HEIGHT + 16);
         this.recipe = recipe;
 
         for (FuelInfoRecipe.Variant v : recipe.getVariants()) {

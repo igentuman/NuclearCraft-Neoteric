@@ -6,6 +6,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import igentuman.nc.compat.ParticleCompatUtil;
+import igentuman.nc.compat.TargetChamberRecipeLayout;
 import igentuman.nc.recipe.FluidOutput;
 import igentuman.nc.recipe.ItemOutput;
 import igentuman.nc.recipe.particle.TargetChamberRecipe;
@@ -19,18 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static igentuman.nc.NuclearCraft.rl;
-import static igentuman.nc.util.TextUtils.__;
-import static igentuman.nc.util.TextUtils.formatParticleEnergy;
+import static igentuman.nc.compat.TargetChamberRecipeLayout.*;
 
 public class TargetChamberEmiRecipe extends BasicEmiRecipe {
 
-    private static final ResourceLocation TEXTURE = rl("textures/gui/accelerators/target_chamber_controller.png");
-
-    private static final int WIDTH = 160;
-    private static final int HEIGHT = 107;
-
-    private final long releasedEnergyKeV;
+    private final TargetChamberRecipe recipe;
     private final List<EmiIngredient> itemInputWidgets = new ArrayList<>();
     private final List<EmiIngredient> fluidInputWidgets = new ArrayList<>();
     private final List<EmiStack> itemOutputWidgets = new ArrayList<>();
@@ -38,11 +32,9 @@ public class TargetChamberEmiRecipe extends BasicEmiRecipe {
     private final EmiIngredient beamInput;
     private final List<ParticleEmiStack> byproducts = new ArrayList<>();
 
-    private static final List<Vec2> BYPRODUCT_POSITIONS = List.of(new Vec2(76, 5), new Vec2(136, 36), new Vec2(76, 68));
-
     public TargetChamberEmiRecipe(EmiRecipeCategory category, ResourceLocation id, TargetChamberRecipe recipe) {
         super(category, id, WIDTH, HEIGHT);
-        this.releasedEnergyKeV = recipe.releasedEnergyKeV();
+        this.recipe = recipe;
 
         for (SizedIngredient si : recipe.itemInputs()) {
             itemInputWidgets.add(EmiIngredient.of(Arrays.stream(si.ingredient().getItems())
@@ -66,7 +58,6 @@ public class TargetChamberEmiRecipe extends BasicEmiRecipe {
                 .map(stack -> (EmiIngredient) ParticleEmiStack.of(stack))
                 .toList());
         for (var byproduct : recipe.particleOutputs()) {
-            if (byproduct.isEmpty()) continue;
             byproducts.add(ParticleEmiStack.of(byproduct));
         }
 
@@ -76,43 +67,44 @@ public class TargetChamberEmiRecipe extends BasicEmiRecipe {
         this.outputs.addAll(itemOutputWidgets);
         this.outputs.addAll(fluidOutputWidgets);
         for (ParticleEmiStack byproduct : byproducts) {
-            this.outputs.add(byproduct);
+            if (!byproduct.isEmpty()) this.outputs.add(byproduct);
         }
     }
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        widgets.addTexture(TEXTURE, 0, 0, WIDTH, HEIGHT, 10, 10);
+        widgets.addDrawable(0, 0, WIDTH, HEIGHT, (graphics, mouseX, mouseY, delta) ->
+                TargetChamberRecipeLayout.draw(graphics, recipe));
 
-        int x = 43;
+        int x = INPUT_X;
         for (EmiIngredient in : itemInputWidgets) {
-            widgets.addSlot(in, x, 28);
-            x += 18;
+            widgets.addSlot(in, x - 1, ITEM_Y - 1).drawBack(false);
+            x += SLOT_SPACING;
         }
-        int fluidX = 43;
+        int fluidX = INPUT_X;
         for (EmiIngredient in : fluidInputWidgets) {
-            widgets.addSlot(in, fluidX, 45);
-            fluidX += 18;
+            widgets.addSlot(in, fluidX - 1, FLUID_Y - 1).drawBack(false);
+            fluidX += SLOT_SPACING;
         }
 
-        int outX = 101;
+        int outX = OUTPUT_X;
         for (EmiStack out : itemOutputWidgets) {
-            widgets.addSlot(out, outX, 28).recipeContext(this);
-            outX += 18;
+            widgets.addSlot(out, outX - 1, ITEM_Y - 1).drawBack(false).recipeContext(this);
+            outX += SLOT_SPACING;
         }
-        int fluidOutX = 101;
+        int fluidOutX = OUTPUT_X;
         for (EmiStack out : fluidOutputWidgets) {
-            widgets.addSlot(out, fluidOutX, 45).recipeContext(this);
-            fluidOutX += 18;
+            widgets.addSlot(out, fluidOutX - 1, FLUID_Y - 1).drawBack(false).recipeContext(this);
+            fluidOutX += SLOT_SPACING;
         }
 
-        widgets.addSlot(beamInput, 8, 36);
+        widgets.addSlot(beamInput, (int) BEAM_POSITION.x - 1, (int) BEAM_POSITION.y - 1).drawBack(false);
 
         for (int i = 0; i < byproducts.size() && i < BYPRODUCT_POSITIONS.size(); i++) {
+            ParticleEmiStack byproduct = byproducts.get(i);
+            if (byproduct.isEmpty()) continue;
             Vec2 pos = BYPRODUCT_POSITIONS.get(i);
-            widgets.addSlot(byproducts.get(i), (int) pos.x, (int) pos.y).recipeContext(this);
+            widgets.addSlot(byproduct, (int) pos.x - 1, (int) pos.y - 1).drawBack(false).recipeContext(this);
         }
-
-        widgets.addText(__("jei.nuclearcraft.particle.energy", formatParticleEnergy(releasedEnergyKeV)), 4, 77, 0x404040, false);
     }
 }

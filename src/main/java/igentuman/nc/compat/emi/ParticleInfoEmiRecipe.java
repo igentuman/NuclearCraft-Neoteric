@@ -22,7 +22,7 @@ public class ParticleInfoEmiRecipe extends BasicEmiRecipe {
     private final ParticleInfoRecipe recipe;
 
     public ParticleInfoEmiRecipe(EmiRecipeCategory category, ParticleInfoRecipe recipe) {
-        super(category, recipe.getId(), WIDTH, HEIGHT);
+        super(category, EmiHelper.syntheticRecipeId(category, recipe.getParticleId()), WIDTH, HEIGHT);
         this.recipe = recipe;
         ParticleEmiStack particleStack = ParticleEmiStack.of(recipe.getStack());
         this.inputs.add(particleStack);

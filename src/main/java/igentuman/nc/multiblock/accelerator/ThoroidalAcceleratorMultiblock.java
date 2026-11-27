@@ -75,6 +75,7 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
 
     @Override
     public void validateOuter() {
+        beginPortValidation();
         topRight = null;
         bottomLeft = null;
         initialPos = null;
@@ -85,7 +86,6 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
         controllerPos = BlockPosInstance.copy(controller().controllerBE().getBlockPos());
         multiblockDirection = null;
         controllers.clear();
-        connectedPorts = 0;
         width = 0;
         depth = 0;
         height = 0;
@@ -110,6 +110,7 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
             validationResult = ValidationResult.TOO_MANY_CONTROLLERS;
             return;
         }
+        if (!validatePorts()) return;
 
         validationResult = ValidationResult.VALID;
         outerValid = true;
@@ -669,7 +670,7 @@ public class ThoroidalAcceleratorMultiblock extends AbstractAcceleratorMultibloc
             return;
         }
 
-        isFormed = outerValid && innerValid;
+        finishValidation();
         focus = quadStrength + dipoleStrength/2D;
         if (isFormed) {
             validationResult = ValidationResult.VALID;

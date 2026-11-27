@@ -61,6 +61,7 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
 
     @Override
     public void validateOuter() {
+        beginPortValidation();
         topRight = null;
         bottomLeft = null;
         initialPos = null;
@@ -70,7 +71,6 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
         initialPos = BlockPosInstance.copy(controller().controllerBE().getBlockPos());
         multiblockDirection = null;
         controllers.clear();
-        connectedPorts = 0;
         width = 0;
         depth = 0;
         height = 0;
@@ -184,6 +184,7 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
             validationResult = ValidationResult.TOO_MANY_CONTROLLERS;
             return;
         }
+        if (!validatePorts()) return;
 
         validationResult = ValidationResult.VALID;
         outerValid = true;
@@ -193,7 +194,6 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
 
     @Override
     public void validate() {
-        isValidating = true;
         long startTime = System.currentTimeMillis();
         switch (stage) {
             case 0 -> validateOuter();
@@ -207,7 +207,7 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
             return;
         }
         long elapsedTime = System.currentTimeMillis() - startTime;
-        isFormed = outerValid && innerValid;
+        finishValidation();
         focus = quadStrength + dipoleStrength/2D;
 
         if (isFormed) {
@@ -242,6 +242,5 @@ public class LinearAcceleratorMultiblock extends AbstractAcceleratorMultiblock {
         controllerBE().setChanged();
 
         stage = 0;
-        isValidating = false;
     }
 }

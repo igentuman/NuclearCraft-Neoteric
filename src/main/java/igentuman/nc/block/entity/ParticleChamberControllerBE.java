@@ -116,6 +116,7 @@ public abstract class ParticleChamberControllerBE extends MultiblockControllerBE
             if (!signal && getMultiblock() != null) {
                 for (MultiblockPortBE port : getMultiblock().getPorts()) {
                     if (port instanceof ParticleChamberPortBE<?, ?> chamberPort
+                            && !chamberPort.isRemoved()
                             && chamberPort.redstoneMode == ParticleChamberPortBE.SignalSource.INPUT
                             && chamberPort.getRedstoneSignal() > 0) {
                         signal = true;

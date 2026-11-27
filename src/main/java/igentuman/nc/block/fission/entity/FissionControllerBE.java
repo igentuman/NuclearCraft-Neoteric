@@ -2,7 +2,6 @@ package igentuman.nc.block.fission.entity;
 
 import igentuman.api.nc.multiblock.IrradiationSupport;
 import igentuman.nc.NuclearCraft;
-import igentuman.nc.block.entity.MultiblockPortBE;
 import igentuman.nc.block.entity.MultiblockControllerBE;
 import igentuman.nc.compat.cc.SolidFissionReactorPeripheral;
 import igentuman.nc.compat.oc2.FissionReactorDevice;
@@ -149,7 +148,6 @@ public class FissionControllerBE extends MultiblockControllerBE implements Irrad
     private List<FluidStack>  allowedCoolantOutputs;
     @NBTField
     public boolean canAcceptFluids = true;
-    private boolean portsInitialized = false;
 
     public FissionControllerBE(BlockPos pPos, BlockState pBlockState) {
         super(FissionReactorRegistration.FISSION_BE.get(NAME).get(),pPos, pBlockState);
@@ -181,15 +179,6 @@ public class FissionControllerBE extends MultiblockControllerBE implements Irrad
                 .setInputAmperage(0)
                 .setOutputAmperage(16);
         energy = LazyOptional.of(() -> energyStorage);
-    }
-
-    public void initializePorts()
-    {
-        if(portsInitialized) return;
-        portsInitialized = true;
-        for(MultiblockPortBE port: getMultiblock().getPorts()) {
-            port.pushPull();
-        }
     }
 
     @Override
@@ -456,7 +445,6 @@ public class FissionControllerBE extends MultiblockControllerBE implements Irrad
             controllerEnabled = wasEnabled;
         }
         if (getMultiblock().isFormed()) {
-            initializePorts();
             trackChanges(updateModerationLevel());
             trackChanges(contentHandler().tick());
             if(controllerEnabled || reactivityLevel > 0) {

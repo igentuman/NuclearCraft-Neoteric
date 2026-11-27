@@ -435,11 +435,7 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
         if(controllerBE() != null) {
             controllerBE().multiblockTicksCounter++;
         }
-        HashSet<BlockPos> changedBlocks = new HashSet<>(updatedBlocks);
-        updatedBlocks.clear();
-        for(BlockPos pos: changedBlocks) {
-            removeFromCacheIfChanged(pos);
-        }
+        processBlockChanges();
         if(!canTick || !hasToRefresh) return;
 
         canTick = false;
@@ -450,8 +446,16 @@ public class AbstractAcceleratorMultiblock extends AbstractMultiblock {
             isFormed = false;
         }
         hasToRefresh = false;
-        validate();
-        canTick = true;
+        isValidating = true;
+        try {
+            validate();
+        } catch (RuntimeException | Error exception) {
+            stage = 0;
+            throw exception;
+        } finally {
+            isValidating = stage != 0;
+            canTick = true;
+        }
     }
 
     protected void veryfyCoolers() {

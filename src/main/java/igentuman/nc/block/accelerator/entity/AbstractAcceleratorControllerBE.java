@@ -175,7 +175,8 @@ public abstract class AbstractAcceleratorControllerBE extends MultiblockControll
         if(!isControlledByComputer && currentTick % 10 == 0) {
             int maxSignal = getRedstoneSignal();
             for (igentuman.nc.block.entity.MultiblockPortBE port : getMultiblock().getPorts()) {
-                if (port instanceof AcceleratorPortBE accPort && accPort.redstoneMode == AcceleratorPortBE.SignalSource.INPUT) {
+                if (port instanceof AcceleratorPortBE accPort && !accPort.isRemoved()
+                        && accPort.redstoneMode == AcceleratorPortBE.SignalSource.INPUT) {
                     maxSignal = Math.max(maxSignal, accPort.getRedstoneSignal());
                 }
             }

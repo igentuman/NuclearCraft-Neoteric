@@ -23,6 +23,8 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
@@ -31,9 +33,10 @@ import static net.minecraft.world.level.block.Blocks.AIR;
 
 public abstract class AbstractMultiblock implements Multiblock {
 
+    private static final int MAX_PORT_VALIDATION_RETRIES = 3;
     protected int failedValidations = 0;
     protected boolean toDeleteFlag = false;
-    public boolean hasToRefresh = true;
+    public volatile boolean hasToRefresh = true;
     public BlockPos errorBlockPos = BlockPos.ZERO;
     public int connectedPorts = 0;
     protected int height;
@@ -68,9 +71,12 @@ public abstract class AbstractMultiblock implements Multiblock {
     private Level level;
     protected AABB structureBounds;
     private CompletableFuture<Void> validationFuture;
-    public boolean isValidating = true;
+    public volatile boolean isValidating = true;
     protected boolean fullValidation = true;
-    public final HashSet<MultiblockPortBE> ports = new HashSet<>();
+    private final Set<MultiblockPortBE> validationPorts = new HashSet<>();
+    private volatile Set<MultiblockPortBE> ports = Set.of();
+    private final Set<BlockPos> missingPorts = new LinkedHashSet<>();
+    private int portValidationRetries;
     protected AbstractMultiblock(HashSet<Block> validOuterBlocks, HashSet<Block> validInnerBlocks, MultiblockController controller) {
         this.validOuterBlocks = validOuterBlocks;
         this.validInnerBlocks = validInnerBlocks;
@@ -109,6 +115,7 @@ public abstract class AbstractMultiblock implements Multiblock {
      * Clears all caches including the new chunk cache
      */
     public void clearCaches() {
+        ports = Set.of();
         bsCache.clear();
         beCache.clear();
         chunkCache.clear();
@@ -182,7 +189,7 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     public boolean isPort(BlockState bs) {
-        return bs.getBlock().asItem().toString().contains("port");
+        return bs.hasBlockEntity() && bs.getBlock().asItem().toString().contains("port");
     }
 
     @Override
@@ -658,18 +665,51 @@ public abstract class AbstractMultiblock implements Multiblock {
     }
 
     protected void processOuterBlock(BlockPos pos) {
-        attachMultiblock(pos);
+        BlockState state = getBlockState(pos);
         addIfNotExists(pos, allBlocks);
-        if (CONTROLLERS.matcher(getBlockState(pos).getBlock().asItem().toString()).matches()) {
+        if (CONTROLLERS.matcher(state.getBlock().asItem().toString()).matches()) {
             controllers.add(pos);
         }
-        if (isPort(getBlockState(pos))) {
-            if(getBlockEntity(pos, true) instanceof MultiblockAttachable attachableBe) {
-                attachableBe.setMultiblock(this);
-            }
-            ports.add((MultiblockPortBE) getBlockEntity(pos, true));
-            connectedPorts++;
+        if (!isPort(state)) {
+            attachMultiblock(pos);
+        } else if (getBlockEntity(pos, true) instanceof MultiblockPortBE port && !port.isRemoved()) {
+            attachMultiblock(port);
+            validationPorts.add(port);
+            connectedPorts = validationPorts.size();
+        } else {
+            beCache.remove(pos.asLong());
+            bsCache.remove(pos.asLong());
+            missingPorts.add(new BlockPos(pos));
         }
+    }
+
+    protected void beginPortValidation() {
+        ports = Set.of();
+        validationPorts.clear();
+        missingPorts.clear();
+        connectedPorts = 0;
+        chunkCache.clear();
+    }
+
+    protected boolean validatePorts() {
+        if (missingPorts.isEmpty()) return true;
+        errorBlockPos = missingPorts.iterator().next();
+        validationResult = ValidationResult.INCOMPLETE;
+        outerValid = false;
+        if (portValidationRetries < MAX_PORT_VALIDATION_RETRIES) {
+            portValidationRetries++;
+            hasToRefresh = true;
+        }
+        return false;
+    }
+
+    protected void finishValidation() {
+        if (missingPorts.isEmpty()) {
+            portValidationRetries = 0;
+        }
+        boolean formed = outerValid && innerValid;
+        ports = formed ? Set.copyOf(validationPorts) : Set.of();
+        isFormed = formed;
     }
 
     public void validateInner() {
@@ -821,13 +861,21 @@ public abstract class AbstractMultiblock implements Multiblock {
 
     @Override
     public void validate() {
+        isValidating = true;
+        try {
+            beginPortValidation();
+            validateStructure();
+        } finally {
+            isValidating = false;
+        }
+    }
+
+    private void validateStructure() {
         failedValidations++;
         if(failedValidations > 10) {
             toDeleteFlag = true;
             return;
         }
-        isValidating = true;
-        connectedPorts = 0;
         long startTime = System.currentTimeMillis();
         debugLog("=== Starting full validation for " + getClass().getSimpleName() + " at " + initialPos().toShortString() + " ===");
         
@@ -839,6 +887,9 @@ public abstract class AbstractMultiblock implements Multiblock {
         debugLog("Cleared validation caches and reset state");
 
         validateOuter();
+        if (isOuterValid() && !validatePorts()) {
+            failedValidations--;
+        }
         if (isOuterValid()) {
             debugLog("Outer validation passed, proceeding to inner validation");
             validateInner();
@@ -850,7 +901,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         }
         
         innerValid = validationResult.isValid;
-        isFormed = outerValid && innerValid;
+        finishValidation();
         
         if (isFormed) {
             failedValidations--;
@@ -867,7 +918,6 @@ public abstract class AbstractMultiblock implements Multiblock {
         controllerBE().validationsCounter++;
         debugLog("=== Validation completed for " + getClass().getSimpleName() + " at " + initialPos().toShortString() +
                 " in " + elapsedTime + "ms - Result: " + validationResult + " ===");
-        isValidating = false;
     }
 
     public boolean isInnerValid() {
@@ -911,11 +961,7 @@ public abstract class AbstractMultiblock implements Multiblock {
         if(controllerBE() != null) {
             controllerBE().multiblockTicksCounter++;
         }
-        HashSet<BlockPos> changedBlocks = new HashSet<>(updatedBlocks);
-        updatedBlocks.clear();
-        for(BlockPos pos: changedBlocks) {
-            removeFromCacheIfChanged(pos);
-        }
+        processBlockChanges();
         if(!canTick || !hasToRefresh) return;
         this.level = level;
         canTick = false;
@@ -927,8 +973,28 @@ public abstract class AbstractMultiblock implements Multiblock {
         outerValid = false;
         isFormed = false;
         hasToRefresh = false;
-        validate();
-        canTick = true;
+        try {
+            validate();
+        } finally {
+            canTick = true;
+        }
+    }
+
+    protected void processBlockChanges() {
+        HashSet<BlockPos> changedBlocks = new HashSet<>(updatedBlocks);
+        updatedBlocks.clear();
+        for (BlockPos pos : changedBlocks) {
+            if (!hasToRefresh && missingPorts.contains(pos)) {
+                clearChunkCacheForBlock(pos);
+                BlockState state = getBlockStateFromChunk(pos);
+                BlockEntity entity = getBlockEntityFromChunk(pos);
+                if ((state != null && !isPort(state))
+                        || (entity instanceof MultiblockPortBE port && !port.isRemoved())) {
+                    hasToRefresh = true;
+                }
+            }
+            removeFromCacheIfChanged(pos);
+        }
     }
 
     public void removeFromCacheIfChanged(BlockPos pos) {
@@ -996,7 +1062,8 @@ public abstract class AbstractMultiblock implements Multiblock {
     public void wipeCache() {
         if(isValidating) return;
         fullValidation = true;
-        hasToRefresh = true;
+        portValidationRetries = 0;
+        ports = Set.of();
         beCache.clear();
         bsCache.clear();
         allBlocks.clear();
@@ -1011,13 +1078,14 @@ public abstract class AbstractMultiblock implements Multiblock {
         height = 0;
         width = 0;
         depth = 0;
+        hasToRefresh = true;
     }
 
     public boolean isValidating() {
         return isValidating;
     }
 
-    public HashSet<MultiblockPortBE> getPorts() {
+    public Set<MultiblockPortBE> getPorts() {
         return ports;
     }
 }

@@ -2,8 +2,6 @@ package igentuman.nc.container;
 
 import igentuman.nc.block_entity.MultiblockControllerBE;
 import igentuman.nc.block_entity.MultiblockPortBE;
-import igentuman.nc.multiblock.MultiblockEntry;
-import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.registration.ModEntry;
 import igentuman.nc.setup.ModEntries;
 import igentuman.nc.util.SlotDef;
@@ -18,84 +16,73 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
+import org.jetbrains.annotations.Nullable;
 
 /** Menu opened from a multiblock port; mirrors the controller's inventory slots and exposes the redstone mode. */
 public class MultiblockPortContainer extends AbstractContainerMenu {
 
-    private final MultiblockPortBE blockEntity;
+    private final ModEntry portEntry;
+    private final BlockPos position;
+    private final Level level;
+    @Nullable
+    private final MultiblockPortBE port;
+    @Nullable
+    private final MultiblockControllerBE serverController;
+    @Nullable
+    private final BlockPos controllerPos;
+    @Nullable
+    private final ModEntry controllerEntry;
+    private final SlotsLayout layout;
     private final ContainerLevelAccess access;
     private final ContainerData data;
-    private int beSlots = 0;
+    private final int beSlots;
 
     public MultiblockPortContainer(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf extraData) {
-        this(containerId, playerInventory,
-                (MultiblockPortBE) playerInventory.player.level().getBlockEntity(extraData.readBlockPos()),
-                null);
+        this(containerId, playerInventory, OpeningData.read(extraData), null, null, null);
     }
 
     public MultiblockPortContainer(int containerId, Inventory playerInventory,
-                                   MultiblockPortBE blockEntity, ContainerData data) {
-        super(ModEntries.get(blockEntity.name).menu().get(), containerId);
-        this.blockEntity = blockEntity;
-        this.access = ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
+                                   MultiblockPortBE port, ContainerData data) {
+        this(containerId, playerInventory, port, data, port.controller());
+    }
 
-        this.data = data != null ? data : new SimpleContainerData(Math.max(1, blockEntity.getSyncFieldCount()));
+    private MultiblockPortContainer(int containerId, Inventory playerInventory, MultiblockPortBE port,
+                                    ContainerData data, @Nullable MultiblockControllerBE controller) {
+        this(containerId, playerInventory, new OpeningData(port.name, port.getBlockPos(),
+                controller == null ? null : controller.getBlockPos(),
+                controller == null ? "" : controller.getMultiblockName(), 0, data.getCount()),
+                port, controller, data);
+    }
+
+    private MultiblockPortContainer(int containerId, Inventory playerInventory, OpeningData opening,
+                                    @Nullable MultiblockPortBE serverPort,
+                                    @Nullable MultiblockControllerBE serverController,
+                                    @Nullable ContainerData serverData) {
+        super(ModEntries.get(opening.portName()).menu().get(), containerId);
+        this.portEntry = ModEntries.get(opening.portName());
+        this.position = opening.position();
+        this.level = playerInventory.player.level();
+        this.serverController = serverController;
+        this.controllerPos = opening.controllerPos();
+        this.controllerEntry = controllerPos == null ? null : ModEntries.get(opening.controllerName());
+        this.layout = createLayout(controllerEntry);
+
+        this.port = serverPort != null ? serverPort : findClientPort();
+        this.access = serverPort == null ? ContainerLevelAccess.NULL : ContainerLevelAccess.create(level, position);
+        this.data = serverData == null ? new SimpleContainerData(opening.dataCount()) : serverData;
         addDataSlots(this.data);
 
-        MultiblockControllerBE controllerForLookup = blockEntity.controller();
-        MultiblockEntry mbEntry = controllerForLookup != null
-                ? MultiblockRegistry.getByController(controllerForLookup.getMultiblockName())
-                : MultiblockRegistry.getByPort(blockEntity.name);
-        if (mbEntry != null) {
-            ModEntry controllerEntry = mbEntry.controllerEntry();
-            if (controllerEntry != null && controllerEntry.itemCap() != null) {
-                SlotsLayout slotsLayout = controllerEntry.slotsLayout();
-                int inputItemCount = controllerEntry.itemCap().inputSlots;
-                int inputFluidCount = controllerEntry.fluidCap() != null ? controllerEntry.fluidCap().inputTanks.size() : 0;
-                int outputItemCount = controllerEntry.itemCap().outputSlots;
-
-                MultiblockControllerBE controller = controllerForLookup;
-                IItemHandler inv;
-                boolean hasInventory;
-                if (controller != null) {
-                    inv = controller.getItemHandler(null);
-                    hasInventory = controller.hasInventory();
-                } else {
-                    inv = new ItemStackHandler(inputItemCount + outputItemCount);
-                    hasInventory = true;
-                }
-
-                if (hasInventory) {
-                    if (slotsLayout != null) {
-                        int inputItemOffset = 0;
-                        int outputItemOffset = inputItemCount + inputFluidCount;
-
-                        for (int i = 0; i < inputItemCount; i++) {
-                            SlotDef def = slotsLayout.slots.get(inputItemOffset + i);
-                            addSlot(new SlotItemHandler(inv, i, def.x, def.y));
-                            beSlots++;
-                        }
-                        for (int i = 0; i < outputItemCount; i++) {
-                            SlotDef def = slotsLayout.slots.get(outputItemOffset + i);
-                            addSlot(new SlotItemHandler(inv, inputItemCount + i, def.x, def.y));
-                            beSlots++;
-                        }
-                    } else {
-                        for (int i = 0; i < inputItemCount; i++) {
-                            addSlot(new SlotItemHandler(inv, i, 44 + (i % 3) * 18, 26 + (i / 3) * 18));
-                            beSlots++;
-                        }
-                        for (int i = 0; i < outputItemCount; i++) {
-                            addSlot(new SlotItemHandler(inv, inputItemCount + i, 116 + (i % 3) * 18, 26 + (i / 3) * 18));
-                            beSlots++;
-                        }
-                    }
-                }
-            }
+        IItemHandler items = serverController == null ? null : serverController.getItemHandler(null);
+        // The inventory packet populates these slots even if the client cannot see the controller.
+        if (serverPort == null && opening.itemSlots() > 0) {
+            items = new ItemStackHandler(opening.itemSlots());
         }
+        if (items != null) addMachineSlots(items);
+        this.beSlots = slots.size();
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
@@ -107,33 +94,121 @@ public class MultiblockPortContainer extends AbstractContainerMenu {
         }
     }
 
-    public MultiblockPortBE getBlockEntity() {
-        return blockEntity;
+    private void addMachineSlots(IItemHandler items) {
+        if (controllerEntry == null || controllerEntry.itemCap() == null) return;
+        int inputItems = controllerEntry.itemCap().inputSlots;
+        int outputItems = controllerEntry.itemCap().outputSlots;
+        int inputFluids = controllerEntry.fluidCap() == null ? 0 : controllerEntry.fluidCap().inputTanks.size();
+        if (items.getSlots() < inputItems + outputItems) return;
+
+        for (int i = 0; i < inputItems; i++) {
+            addItemSlot(items, i, i);
+        }
+        for (int i = 0; i < outputItems; i++) {
+            addItemSlot(items, inputItems + i, inputItems + inputFluids + i);
+        }
+    }
+
+    private void addItemSlot(IItemHandler items, int slot, int layoutIndex) {
+        SlotDef def = layout.slots.get(layoutIndex);
+        addSlot(new SlotItemHandler(items, slot, def.x, def.y));
+    }
+
+    private static SlotsLayout createLayout(@Nullable ModEntry entry) {
+        SlotsLayout layout = SlotsLayout.create();
+        if (entry == null) return layout;
+
+        int inputItems = entry.itemCap() == null ? 0 : entry.itemCap().inputSlots;
+        int outputItems = entry.itemCap() == null ? 0 : entry.itemCap().outputSlots;
+        int inputTanks = entry.fluidCap() == null ? 0 : entry.fluidCap().inputTanks.size();
+        int outputTanks = entry.fluidCap() == null ? 0 : entry.fluidCap().outputTanks.size();
+        SlotsLayout customLayout = entry.slotsLayout();
+        if (customLayout != null && customLayout.slots.size() >= inputItems + inputTanks + outputItems + outputTanks) {
+            return customLayout;
+        }
+
+        for (int i = 0; i < inputItems; i++) {
+            layout.addInput(44 + (i % 3) * 18, 26 + (i / 3) * 18);
+        }
+        int inputTankY = 30 + ((inputItems + 2) / 3) * 20;
+        for (int i = 0; i < inputTanks; i++) {
+            layout.addInput(30 + (i % 3) * 20, inputTankY + (i / 3) * 20);
+        }
+        for (int i = 0; i < outputItems; i++) {
+            layout.addOutput(116 + (i % 3) * 18, 26 + (i / 3) * 18);
+        }
+        int outputTankY = 30 + ((outputItems + 2) / 3) * 20;
+        for (int i = 0; i < outputTanks; i++) {
+            layout.addOutput(115 + (i % 3) * 20, outputTankY + (i / 3) * 20);
+        }
+        return layout;
+    }
+
+    @Nullable
+    private MultiblockPortBE findClientPort() {
+        return level.getBlockEntity(position) instanceof MultiblockPortBE clientPort
+                && clientPort.name.equals(portEntry.name()) ? clientPort : null;
+    }
+
+    public void writeOpeningData(RegistryFriendlyByteBuf buffer) {
+        buffer.writeUtf(portEntry.name());
+        buffer.writeBlockPos(position);
+        buffer.writeBoolean(controllerEntry != null);
+        if (controllerEntry != null) {
+            buffer.writeBlockPos(controllerPos);
+            buffer.writeUtf(controllerEntry.name());
+        }
+        buffer.writeVarInt(beSlots);
+        buffer.writeVarInt(data.getCount());
+    }
+
+    private record OpeningData(String portName, BlockPos position, @Nullable BlockPos controllerPos,
+                               String controllerName, int itemSlots, int dataCount) {
+        private static OpeningData read(RegistryFriendlyByteBuf buffer) {
+            String portName = buffer.readUtf();
+            BlockPos position = buffer.readBlockPos();
+            boolean attached = buffer.readBoolean();
+            BlockPos controllerPos = attached ? buffer.readBlockPos() : null;
+            String controllerName = attached ? buffer.readUtf() : "";
+            return new OpeningData(portName, position, controllerPos, controllerName,
+                    buffer.readVarInt(), buffer.readVarInt());
+        }
     }
 
     public BlockPos getPosition() {
-        return blockEntity.getBlockPos();
+        return position;
     }
 
-    /** Currently selected redstone mode, read from synced ContainerData (client-safe). */
+    public String[] getRedstoneModes() {
+        return port == null ? new String[0] : port.redstoneModes();
+    }
+
     public int getRedstoneMode() {
-        int idx = blockEntity.getSyncFieldIndex("redstoneMode");
-        return idx != -1 ? data.get(idx) : 0;
+        int idx = port == null ? -1 : port.getSyncFieldIndex("redstoneMode");
+        return idx >= 0 && idx < data.getCount() ? data.get(idx) : 0;
+    }
+
+    @Nullable
+    public ModEntry getControllerEntry() {
+        return controllerEntry;
+    }
+
+    @Nullable
+    public MultiblockControllerBE getController() {
+        if (!level.isClientSide()) return serverController;
+        if (controllerPos == null || controllerEntry == null || !level.hasChunkAt(controllerPos)) return null;
+        return level.getBlockEntity(controllerPos) instanceof MultiblockControllerBE controller
+                && !controller.isRemoved() && controllerEntry.name().equals(controller.getMultiblockName())
+                ? controller : null;
     }
 
     public SlotsLayout getLayout() {
-        MultiblockControllerBE controllerForLookup = blockEntity.controller();
-        MultiblockEntry mbEntry = controllerForLookup != null
-                ? MultiblockRegistry.getByController(controllerForLookup.getMultiblockName())
-                : MultiblockRegistry.getByPort(blockEntity.name);
-        if (mbEntry != null && mbEntry.controllerEntry() != null) {
-            return mbEntry.controllerEntry().slotsLayout();
-        }
-        return null;
+        return layout;
     }
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
+        if (slotIndex < 0 || slotIndex >= slots.size()) return ItemStack.EMPTY;
         Slot slot = slots.get(slotIndex);
         if (!slot.hasItem()) {
             return ItemStack.EMPTY;
@@ -163,6 +238,9 @@ public class MultiblockPortContainer extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(access, player, ModEntries.get(blockEntity.name).block().get());
+        if (level.isClientSide()) return true;
+        return port != null && !port.isRemoved() && port.getLevel() == player.level()
+                && port.controller() == serverController
+                && stillValid(access, player, portEntry.block().get());
     }
 }

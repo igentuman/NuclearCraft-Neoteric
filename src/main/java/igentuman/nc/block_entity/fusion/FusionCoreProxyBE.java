@@ -15,6 +15,11 @@ public class FusionCoreProxyBE extends MultiblockPortBE {
         super(type, pos, state, name);
     }
 
+    @Override
+    protected boolean keepsControllerBeforeFormation() {
+        return true;
+    }
+
     private FusionReactorControllerBE core() {
         return controller() instanceof FusionReactorControllerBE c ? c : null;
     }

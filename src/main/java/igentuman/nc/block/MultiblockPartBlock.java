@@ -126,7 +126,7 @@ public class MultiblockPartBlock extends BaseEntityBlock {
             } else if (be instanceof MultiblockPortBE partBE) {
                 ModEntry entry = ModEntries.get(partBE.name);
                 if (entry != null && entry.menu() != null) {
-                    serverPlayer.openMenu(partBE, pos);
+                    serverPlayer.openMenu(partBE);
                 }
             }
         }

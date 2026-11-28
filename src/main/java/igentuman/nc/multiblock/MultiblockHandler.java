@@ -26,6 +26,7 @@ import net.neoforged.neoforge.event.level.PistonEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -80,8 +81,9 @@ public final class MultiblockHandler {
     }
 
     public static void trackBlockChange(Level level, BlockPos pos, BlockState previousState, BlockState currentState) {
-        if (level.isClientSide() || !isStructuralChange(previousState, currentState)) return;
-        observeBlockChange(level, pos);
+        if (!(level instanceof ServerLevel server) || !server.getServer().isSameThread()
+                || !isStructuralChange(previousState, currentState)) return;
+        notifyWatchers(server, pos, true);
     }
 
     static boolean isStructuralChange(BlockState previousState, BlockState currentState) {
@@ -90,7 +92,7 @@ public final class MultiblockHandler {
 
     public static void observeBlockChange(Level level, BlockPos pos) {
         if (!(level instanceof ServerLevel server) || !server.getServer().isSameThread()) return;
-        notifyWatchers(server, pos);
+        notifyWatchers(server, pos, false);
     }
 
     @SubscribeEvent
@@ -333,12 +335,12 @@ public final class MultiblockHandler {
         instance.watchedChunks.clear();
     }
 
-    private static void notifyWatchers(ServerLevel level, BlockPos pos) {
+    private static void notifyWatchers(ServerLevel level, BlockPos pos, boolean structuralChange) {
         Map<Long, Set<MultiblockInstance>> watchers = WATCHERS.get(level.dimension());
         if (watchers == null) return;
         Set<MultiblockInstance> instances = watchers.get(ChunkPos.asLong(pos.getX() >> 4, pos.getZ() >> 4));
         if (instances == null || instances.isEmpty()) return;
-        for (MultiblockInstance instance : instances) instance.observeChange(level, pos);
+        for (MultiblockInstance instance : instances) instance.observeChange(level, pos, structuralChange);
     }
 
     public static MultiblockInstance getInstance(ServerLevel level, BlockPos controllerPos) {
@@ -359,6 +361,24 @@ public final class MultiblockHandler {
             if (match == null && instance.cache.contains(pos)) match = instance.cache.controllerPos();
         }
         return match;
+    }
+
+    @Nullable
+    public static BlockPos getControllerForPort(ServerLevel level, BlockPos pos, String portName) {
+        Map<Long, Set<MultiblockInstance>> watchers = WATCHERS.get(level.dimension());
+        Set<MultiblockInstance> watching = watchers == null ? null
+                : watchers.get(ChunkPos.asLong(pos.getX() >> 4, pos.getZ() >> 4));
+        if (watching == null) return null;
+        long key = pos.asLong();
+        for (MultiblockInstance instance : watching) {
+            if (!instance.formed || instance.dirty || instance.disposed || !instance.cache.ports().contains(key)) {
+                continue;
+            }
+            for (var port : instance.entry.portEntries()) {
+                if (port.name().equals(portName)) return instance.cache.controllerPos();
+            }
+        }
+        return null;
     }
 
     static void sendFormed(ServerLevel level, BlockPos controllerPos, AbstractMultiblockCache cache) {
@@ -408,13 +428,14 @@ public final class MultiblockHandler {
             this.formed = false;
         }
 
-        void observeChange(ServerLevel level, BlockPos pos) {
+        void observeChange(ServerLevel level, BlockPos pos, boolean structuralChange) {
             if (disposed) return;
             AbstractMultiblockCache abstractCache = cache;
             if (formed && !abstractCache.containsExpanded(pos, 1)) return;
             BlockState known = abstractCache.knownState(pos);
-            if (known == null && formed && !busy.get()) return;
-            if (known != null && level.hasChunkAt(pos)
+            if (known == null && formed && !busy.get()
+                    && !(structuralChange && abstractCache.contains(pos))) return;
+            if (!structuralChange && known != null && level.hasChunkAt(pos)
                     && StructuralBlockState.equivalent(known, level.getBlockState(pos))) return;
             abstractCache.invalidate(pos);
             pendingChanges.add(pos.asLong());

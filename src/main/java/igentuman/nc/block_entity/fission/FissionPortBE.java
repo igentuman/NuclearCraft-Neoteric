@@ -68,6 +68,7 @@ public class FissionPortBE extends MultiblockPortBE {
 
     @Override
     public void serverTick() {
+        super.serverTick();
         if (!(level instanceof ServerLevel) || redstoneMode == MODE_NONE) return;
         if (!(controller() instanceof RedstoneModeController rmc)) return;
         if (redstoneMode == MODE_SWITCH || redstoneMode == MODE_MODERATOR) {
@@ -79,6 +80,5 @@ public class FissionPortBE extends MultiblockPortBE {
                 level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
             }
         }
-        super.serverTick();
     }
 }

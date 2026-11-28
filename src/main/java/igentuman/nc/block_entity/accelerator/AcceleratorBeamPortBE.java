@@ -101,8 +101,10 @@ public class AcceleratorBeamPortBE extends AcceleratorPortBE implements IBeamPor
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        tag.putString("particlePortMode", particlePort.mode().getSerializedName());
-        tag.putInt("particlePortChannel", particlePort.channel());
+        if (particlePort.isConfigured()) {
+            tag.putString("particlePortMode", particlePort.mode().getSerializedName());
+            tag.putInt("particlePortChannel", particlePort.channel());
+        }
     }
 
     @Override

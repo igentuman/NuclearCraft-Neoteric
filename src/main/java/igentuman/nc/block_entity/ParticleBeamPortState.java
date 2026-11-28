@@ -26,7 +26,6 @@ public final class ParticleBeamPortState {
             int output = input >= 0 ? -1 : roles.apply(StructureRole.BEAM_OUTPUT).indexOf(position);
             if (input >= 0) set(BeamPortMode.INPUT, input);
             else if (output >= 0) set(BeamPortMode.OUTPUT, output);
-            else set(BeamPortMode.DISABLED, -1);
         }
         return mode != previousMode || channel != previousChannel || configured != previousConfigured;
     }

@@ -1,6 +1,6 @@
 package igentuman.nc.api.multiblock;
 
-import igentuman.nc.block_entity.MultiblockPortBE;
+import igentuman.nc.block.MultiblockPartBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -133,7 +133,7 @@ public abstract class AbstractCuboidValidator<C extends AbstractMultiblockCache>
                         return fail("multiblock.validation.extra_controller", pos, rl("multiblock_shell"), state);
                     }
                     if (!acceptShell(cache, pos, state, edgeX && edgeY && edgeZ)) return false;
-                    collectPort(cache, pos);
+                    if (state.getBlock() instanceof MultiblockPartBlock) cache.addWorkingPort(pos);
                 }
             }
         }
@@ -153,14 +153,10 @@ public abstract class AbstractCuboidValidator<C extends AbstractMultiblockCache>
                         return fail("multiblock.validation.extra_controller", pos, rl("multiblock_interior"), state);
                     }
                     if (!acceptInterior(cache, pos, state)) return false;
-                    collectPort(cache, pos);
+                    if (state.getBlock() instanceof MultiblockPartBlock) cache.addWorkingPort(pos);
                 }
             }
         }
         return true;
-    }
-
-    private void collectPort(C cache, BlockPos pos) {
-        if (cache.getBlockEntity(pos) instanceof MultiblockPortBE) cache.addWorkingPort(pos);
     }
 }

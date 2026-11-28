@@ -42,8 +42,7 @@ public record PacketFluidTankClick(int containerId, int tank, boolean flush) imp
             } else if (menu instanceof MultiblockControllerContainer controller) {
                 be = controller.getBlockEntity();
             } else if (menu instanceof MultiblockPortContainer port) {
-                if (port.getBlockEntity().isRemoved()) return;
-                be = port.getBlockEntity().controller();
+                be = port.getController();
             } else {
                 return;
             }

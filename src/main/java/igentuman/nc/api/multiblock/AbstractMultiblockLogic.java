@@ -52,10 +52,7 @@ public abstract class AbstractMultiblockLogic<C extends AbstractMultiblockCache>
             BlockPos pos = BlockPos.of(key);
             MultiblockPortBE port = portAt(level, pos);
             if (port == null) continue;
-            if (!controllerPos.equals(port.getControllerPos())) {
-                port.setControllerPos(controllerPos);
-                level.invalidateCapabilities(pos);
-            }
+            port.setControllerPos(controllerPos);
             if (controllerEntity instanceof MultiblockControllerBE controller) {
                 port.configureFromController(controller);
             }
@@ -69,7 +66,6 @@ public abstract class AbstractMultiblockLogic<C extends AbstractMultiblockCache>
             if (port == null || !controllerPos.equals(port.getControllerPos())) continue;
             port.setControllerPos(null);
             port.clearStructureConfiguration();
-            level.invalidateCapabilities(pos);
         }
     }
 

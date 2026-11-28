@@ -71,6 +71,12 @@ public class MultiblockControllerBE extends GlobalBlockEntity implements MenuPro
         return formed;
     }
 
+    protected boolean hasPublishedStructure() {
+        if (!(level instanceof ServerLevel)) return formed;
+        MultiblockHandler.MultiblockInstance instance = instance();
+        return instance != null && instance.formed;
+    }
+
     /** Positions this controller assigned to a structural role, in channel order. */
     public List<BlockPos> rolePositions(StructureRole role) {
         return List.of();

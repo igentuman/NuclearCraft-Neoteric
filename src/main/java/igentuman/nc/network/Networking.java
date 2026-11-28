@@ -11,7 +11,7 @@ import static igentuman.nc.NuclearCraft.MODID;
 public class Networking {
 
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MODID).versioned("1");
+        PayloadRegistrar registrar = event.registrar(MODID).versioned("2");
         registrar.playToServer(
                 PacketFluidTankClick.TYPE,
                 PacketFluidTankClick.STREAM_CODEC,

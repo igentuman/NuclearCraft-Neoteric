@@ -60,6 +60,7 @@ public class ChamberPortBE extends MultiblockPortBE {
 
     @Override
     public void serverTick() {
+        super.serverTick();
         if (!(level instanceof ServerLevel) || redstoneMode == MODE_NONE) return;
         if (!(controller() instanceof RedstoneModeController rmc)) return;
         if (redstoneMode == MODE_FREQUENCY || redstoneMode == MODE_TRANSFORMATION_ENERGY_RATE) {
@@ -71,6 +72,5 @@ public class ChamberPortBE extends MultiblockPortBE {
                 level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
             }
         }
-        super.serverTick();
     }
 }

@@ -33,7 +33,7 @@ public class LinearAcceleratorControllerBE extends AbstractAcceleratorController
     @Override
     public List<BlockPos> rolePositions(StructureRole role) {
         LinearAcceleratorCache cache = cache();
-        if (cache == null || !formed) return List.of();
+        if (cache == null || !hasPublishedStructure()) return List.of();
         return switch (role) {
             case BEAM_INPUT -> cache.beamInputs;
             case BEAM_OUTPUT -> cache.beamOutputs;

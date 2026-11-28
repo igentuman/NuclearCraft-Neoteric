@@ -28,7 +28,7 @@ public class BeamDiverterControllerBE extends AbstractAcceleratorControllerBE {
     @Override
     public List<BlockPos> rolePositions(StructureRole role) {
         BeamDiverterCache cache = cache();
-        if (cache == null || !formed) return List.of();
+        if (cache == null || !hasPublishedStructure()) return List.of();
         return switch (role) {
             case BEAM_INPUT -> cache.beamInputs;
             case BEAM_OUTPUT -> cache.beamOutputs;

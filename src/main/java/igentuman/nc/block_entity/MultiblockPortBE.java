@@ -2,11 +2,13 @@ package igentuman.nc.block_entity;
 
 import igentuman.nc.api.particle.IParticleHandler;
 import igentuman.nc.container.MultiblockPortContainer;
+import igentuman.nc.multiblock.MultiblockHandler;
 import igentuman.nc.util.NBTField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
@@ -21,6 +23,10 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
+import static net.minecraft.world.level.block.Block.UPDATE_CLIENTS;
+
 /** Base block entity for non-controller multiblock parts (ports); proxies capabilities to its controller. */
 public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider {
 
@@ -33,6 +39,7 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
     @Nullable
     @NBTField(syncToClient = true)
     public BlockPos controllerPos;
+    private boolean controllerChanged;
     private boolean sampleControlSignal;
     private int controlSignalSample;
 
@@ -44,11 +51,15 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
     public void onLoad() {
         super.onLoad();
         if (level instanceof ServerLevel serverLevel) {
-            BlockPos owner = igentuman.nc.multiblock.MultiblockHandler.getControllerForPos(serverLevel, worldPosition);
-            if (owner != null) setControllerPos(owner);
+            BlockPos owner = MultiblockHandler.getControllerForPort(serverLevel, worldPosition, name);
+            if (owner != null || !keepsControllerBeforeFormation()) setControllerPos(owner);
             MultiblockControllerBE controller = controller();
-            if (controller != null && controller.structureFormed()) configureFromController(controller);
+            if (owner != null && controller != null) configureFromController(controller);
         }
+    }
+
+    protected boolean keepsControllerBeforeFormation() {
+        return false;
     }
 
     @Override
@@ -56,16 +67,23 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
         controlSignalSample = sampleControlSignal && controllerPos != null && level != null
                 ? level.getBestNeighborSignal(worldPosition) : 0;
         if (wasChanged) {
-            wasChanged = false;
             setChanged();
+            wasChanged = false;
+        }
+        if (controllerChanged && level instanceof ServerLevel serverLevel) {
+            controllerChanged = false;
+            serverLevel.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), UPDATE_CLIENTS);
         }
     }
 
     public void setControllerPos(@Nullable BlockPos pos) {
-        if (!java.util.Objects.equals(controllerPos, pos)) controlSignalSample = 0;
+        if (Objects.equals(controllerPos, pos)) return;
+        controlSignalSample = 0;
         if (pos == null) sampleControlSignal = false;
-        this.controllerPos = pos;
+        controllerPos = pos;
+        controllerChanged = true;
         markDirty();
+        if (level instanceof ServerLevel serverLevel) serverLevel.invalidateCapabilities(worldPosition);
     }
 
     public void configureFromController(MultiblockControllerBE controller) {
@@ -110,7 +128,7 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
     public MultiblockControllerBE controller() {
         if (controllerPos == null || level == null || !level.hasChunkAt(controllerPos)) return null;
         BlockEntity be = level.getBlockEntity(controllerPos);
-        return be instanceof MultiblockControllerBE c ? c : null;
+        return be instanceof MultiblockControllerBE c && !c.isRemoved() ? c : null;
     }
 
     private static final String[] NO_REDSTONE_MODES = new String[0];
@@ -171,12 +189,17 @@ public class MultiblockPortBE extends GlobalBlockEntity implements MenuProvider 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        if (tag.contains("controllerPos")) controllerPos = BlockPos.of(tag.getLong("controllerPos"));
+        controllerPos = tag.contains("controllerPos") ? BlockPos.of(tag.getLong("controllerPos")) : null;
     }
 
     @Override
     public Component getDisplayName() {
         return Component.translatable("block.nuclearcraft." + name);
+    }
+
+    @Override
+    public void writeClientSideData(AbstractContainerMenu menu, RegistryFriendlyByteBuf buffer) {
+        if (menu instanceof MultiblockPortContainer portMenu) portMenu.writeOpeningData(buffer);
     }
 
     @Nullable

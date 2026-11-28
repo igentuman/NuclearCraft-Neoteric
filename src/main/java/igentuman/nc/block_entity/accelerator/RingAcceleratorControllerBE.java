@@ -38,7 +38,7 @@ public class RingAcceleratorControllerBE extends AbstractAcceleratorControllerBE
     @Override
     public List<BlockPos> rolePositions(StructureRole role) {
         RingAcceleratorCache cache = cache();
-        if (cache == null || !formed) return List.of();
+        if (cache == null || !hasPublishedStructure()) return List.of();
         return switch (role) {
             case BEAM_INPUT -> cache.beamInputs;
             case BEAM_OUTPUT -> cache.beamOutputs;

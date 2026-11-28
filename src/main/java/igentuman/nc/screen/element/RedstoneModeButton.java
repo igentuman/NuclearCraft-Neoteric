@@ -24,7 +24,7 @@ public class RedstoneModeButton extends AbstractWidget {
     }
 
     private String[] modes() {
-        return menu.getBlockEntity().redstoneModes();
+        return menu.getRedstoneModes();
     }
 
     private int currentMode(int count) {

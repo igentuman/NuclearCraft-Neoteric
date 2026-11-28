@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import igentuman.nc.block.MultiblockPartBlock;
 import igentuman.nc.block_entity.MultiblockControllerBE;
 import igentuman.nc.block_entity.MultiblockPortBE;
+import igentuman.nc.block_entity.fusion.FusionReactorControllerBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,11 +57,10 @@ public class FusionCoreProxyBlock extends MultiblockPartBlock {
                 String key = mode >= 0 && mode < keys.length ? keys[mode] : "none";
                 serverPlayer.displayClientMessage(Component.translatable("message.nuclearcraft.redstone_mode",
                         Component.translatable("message.nuclearcraft.redstone_mode." + key)), true);
-            } else if (be instanceof MultiblockPortBE partBE) {
-                assert partBE.controllerPos != null;
-                BlockState bs = level.getBlockState(partBE.controllerPos);
-                BlockHitResult hs = new BlockHitResult(partBE.controllerPos.getCenter(), hitResult.getDirection(), partBE.controllerPos, true);
-                return bs.useWithoutItem(level, player, hs);
+            } else if (be instanceof MultiblockPortBE port && port.controller() instanceof FusionReactorControllerBE core) {
+                BlockPos corePos = core.getBlockPos();
+                BlockHitResult coreHit = new BlockHitResult(corePos.getCenter(), hitResult.getDirection(), corePos, true);
+                return core.getBlockState().useWithoutItem(level, player, coreHit);
             }
         }
         return InteractionResult.sidedSuccess(level.isClientSide);

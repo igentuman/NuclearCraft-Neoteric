@@ -2,12 +2,10 @@ package igentuman.nc.screen;
 
 import igentuman.nc.container.MultiblockPortContainer;
 import igentuman.nc.handler.sided.FluidCapabilityHandler;
-import igentuman.nc.multiblock.MultiblockEntry;
-import igentuman.nc.multiblock.MultiblockRegistry;
 import igentuman.nc.registration.ModEntry;
+import igentuman.nc.screen.element.FluidSlotWidget;
 import igentuman.nc.screen.element.RedstoneModeButton;
 import igentuman.nc.screen.element.SlotWidget;
-import igentuman.nc.screen.element.FluidSlotWidget;
 import igentuman.nc.util.GuiFluidRenderer;
 import igentuman.nc.util.SlotDef;
 import igentuman.nc.util.SlotsLayout;
@@ -26,7 +24,7 @@ import static igentuman.nc.NuclearCraft.rl;
 public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPortContainer> {
 
     private static final ResourceLocation TEXTURE = rl("textures/gui/processor.png");
-    protected final List<SlotWidget> slotWidgets = new ArrayList<>();
+    private final List<FluidSlotWidget> tankWidgets = new ArrayList<>();
     protected RedstoneModeButton redstoneButton;
 
     public MultiblockPortScreen(MultiblockPortContainer menu, Inventory playerInventory, Component title) {
@@ -41,149 +39,60 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
         super.init();
         this.titleLabelX = (this.imageWidth - this.font.width(this.title)) / 2;
 
-        slotWidgets.clear();
+        tankWidgets.clear();
         SlotsLayout layout = menu.getLayout();
-        MultiblockEntry mbEntry = resolveMultiblockEntry();
-        ModEntry entry = mbEntry != null ? mbEntry.controllerEntry() : null;
+        ModEntry entry = menu.getControllerEntry();
         SlotWidget.RELATIVE_X = leftPos;
         SlotWidget.RELATIVE_Y = topPos;
-        if (layout != null && entry != null) {
+        if (entry != null) {
             int inputItemCount = entry.itemCap() != null ? entry.itemCap().inputSlots : 0;
             int inputFluidCount = entry.fluidCap() != null ? entry.fluidCap().inputTanks.size() : 0;
             int outputItemCount = entry.itemCap() != null ? entry.itemCap().outputSlots : 0;
-            int outputFluidCount = entry.fluidCap() != null ? entry.fluidCap().outputTanks.size() : 0;
-            for (int i = 0; i < layout.slots.size(); i++) {
+            int outputFluidOffset = inputItemCount + inputFluidCount + outputItemCount;
+            int slotCount = outputFluidOffset + (entry.fluidCap() == null ? 0 : entry.fluidCap().outputTanks.size());
+            for (int i = 0; i < slotCount; i++) {
                 SlotDef slotDef = layout.slots.get(i);
-                SlotWidget widget = new SlotWidget(slotDef.x, slotDef.y, 18, 18, Component.empty());
-                boolean isInputFluid = i >= inputItemCount && i < inputItemCount + inputFluidCount;
-                int outputFluidOffset = inputItemCount + inputFluidCount + outputItemCount;
-                boolean isOutputFluid = i >= outputFluidOffset && i < outputFluidOffset + outputFluidCount;
-                if (isInputFluid || isOutputFluid) {
-                    int tank = isInputFluid ? i - inputItemCount : i - inputItemCount - outputItemCount;
-                    widget = new FluidSlotWidget(slotDef.x, slotDef.y, menu, tank);
+                boolean inputFluid = i >= inputItemCount && i < inputItemCount + inputFluidCount;
+                boolean outputFluid = i >= outputFluidOffset;
+                SlotWidget widget;
+                if (inputFluid || outputFluid) {
+                    var tankWidget = new FluidSlotWidget(slotDef.x, slotDef.y, menu, tankWidgets.size());
+                    tankWidgets.add(tankWidget);
+                    widget = tankWidget;
+                } else {
+                    widget = new SlotWidget(slotDef.x, slotDef.y, 18, 18, Component.empty());
                 }
                 if (slotDef.output) {
                     widget.output();
                 }
-                slotWidgets.add(widget);
-                this.addRenderableWidget(widget);
-            }
-        } else if (entry != null && entry.itemCap() != null) {
-            int inputItemCount = entry.itemCap().inputSlots;
-            int outputItemCount = entry.itemCap().outputSlots;
-            for (int i = 0; i < inputItemCount; i++) {
-                SlotWidget widget = new SlotWidget(44 + (i % 3) * 18, 26 + (i / 3) * 18, 18, 18, Component.empty());
-                slotWidgets.add(widget);
-                this.addRenderableWidget(widget);
-            }
-            for (int i = 0; i < outputItemCount; i++) {
-                SlotWidget widget = new SlotWidget(116 + (i % 3) * 18, 26 + (i / 3) * 18, 18, 18, Component.empty());
-                widget.output();
-                slotWidgets.add(widget);
-                this.addRenderableWidget(widget);
-            }
-        } else if (entry != null && entry.fluidCap() != null) {
-            int inputFluidCount = entry.fluidCap().inputTanks.size();
-            int outputFluidCount = entry.fluidCap().outputTanks.size();
-            for (int i = 0; i < inputFluidCount; i++) {
-                SlotWidget widget = new FluidSlotWidget(30 + i * 20, 30, menu, i);
-                slotWidgets.add(widget);
-                this.addRenderableWidget(widget);
-            }
-            for (int i = 0; i < outputFluidCount; i++) {
-                SlotWidget widget = new FluidSlotWidget(115 + i * 20, 30, menu, inputFluidCount + i);
-                widget.output();
-                slotWidgets.add(widget);
-                this.addRenderableWidget(widget);
+                addRenderableWidget(widget);
             }
         }
 
-        if (menu.getBlockEntity().redstoneModes().length > 0) {
+        if (menu.getRedstoneModes().length > 0) {
             redstoneButton = new RedstoneModeButton(leftPos + imageWidth - 24, topPos + 6, menu);
             addRenderableWidget(redstoneButton);
         }
     }
 
-    private MultiblockEntry resolveMultiblockEntry() {
-        var controller = menu.getBlockEntity().controller();
-        return controller != null
-                ? MultiblockRegistry.getByController(controller.getMultiblockName())
-                : MultiblockRegistry.getByPort(menu.getBlockEntity().name);
-    }
-
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderLabels(guiGraphics, mouseX, mouseY);
-        var controller = menu.getBlockEntity().controller();
-        if (controller != null) {
-            if (controller.hasFluidTanks()) {
-                FluidCapabilityHandler tanks = controller.contentHandler.getFluidHandler();
-                renderFluidTanks(guiGraphics, 0, 0, tanks, false, 0, 0);
-                renderFluidTanks(guiGraphics, 0, 0, tanks, true, mouseX - leftPos, mouseY - topPos);
-            }
-        }
+        renderFluidTanks(guiGraphics, mouseX, mouseY, false);
     }
 
-    private void renderFluidTanks(GuiGraphics guiGraphics, int x, int y,
-                                   FluidCapabilityHandler tanks, boolean tooltip, int mouseX, int mouseY) {
-        SlotsLayout layout = menu.getLayout();
-        MultiblockEntry mbEntry = resolveMultiblockEntry();
-        ModEntry entry = mbEntry != null ? mbEntry.controllerEntry() : null;
-        if (entry == null) return;
-        int inputItemCount  = entry.itemCap()  != null ? entry.itemCap().inputSlots        : 0;
-        int inputFluidCount = entry.fluidCap() != null ? entry.fluidCap().inputTanks.size() : 0;
-        int outputItemCount = entry.itemCap()  != null ? entry.itemCap().outputSlots        : 0;
-        int outputFluidCount = entry.fluidCap() != null ? entry.fluidCap().outputTanks.size() : 0;
-
-        if (layout == null) {
-            for (int i = 0; i < inputFluidCount; i++) {
-                int fx = x + 30 + i * 20, fy = y + 30;
-                if (tooltip) {
-                    GuiFluidRenderer.renderFluidTooltip(guiGraphics, mouseX, mouseY, fx, fy, 16, 16,
-                            tanks.getFluidInTank(i), tanks.getTankCapacity(i));
-                } else {
-                    GuiFluidRenderer.renderFluidTank(guiGraphics, fx, fy, 16, 16,
-                            tanks.getFluidInTank(i), tanks.getTankCapacity(i));
-                }
-            }
-            for (int i = 0; i < outputFluidCount; i++) {
-                int fx = x + 115 + i * 20, fy = y + 30;
-                int tankIndex = inputFluidCount + i;
-                if (tooltip) {
-                    GuiFluidRenderer.renderFluidTooltip(guiGraphics, mouseX, mouseY, fx, fy, 16, 16,
-                            tanks.getFluidInTank(tankIndex), tanks.getTankCapacity(tankIndex));
-                } else {
-                    GuiFluidRenderer.renderFluidTank(guiGraphics, fx, fy, 16, 16,
-                            tanks.getFluidInTank(tankIndex), tanks.getTankCapacity(tankIndex));
-                }
-            }
-            return;
-        }
-
-        int outputFluidOffset = inputItemCount + inputFluidCount + outputItemCount;
-
-        for (int i = 0; i < inputFluidCount && (inputItemCount + i) < layout.slots.size(); i++) {
-            SlotDef def = layout.slots.get(inputItemCount + i);
+    private void renderFluidTanks(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean tooltip) {
+        var controller = menu.getController();
+        if (tankWidgets.isEmpty() || controller == null || !controller.hasFluidTanks()) return;
+        FluidCapabilityHandler tanks = controller.contentHandler.getFluidHandler();
+        for (int tank = 0; tank < tankWidgets.size() && tank < tanks.getTanks(); tank++) {
+            FluidSlotWidget widget = tankWidgets.get(tank);
             if (tooltip) {
-                GuiFluidRenderer.renderFluidTooltip(guiGraphics, mouseX, mouseY,
-                        x + def.x, y + def.y, 16, 16,
-                        tanks.getFluidInTank(i), tanks.getTankCapacity(i));
+                GuiFluidRenderer.renderFluidTooltip(guiGraphics, mouseX, mouseY, widget.X(), widget.Y(), 16, 16,
+                        tanks.getFluidInTank(tank), tanks.getTankCapacity(tank));
             } else {
-                GuiFluidRenderer.renderFluidTank(guiGraphics, x + def.x, y + def.y, 16, 16,
-                        tanks.getFluidInTank(i), tanks.getTankCapacity(i));
-            }
-        }
-
-        for (int i = 0; i < outputFluidCount && (outputFluidOffset + i) < layout.slots.size(); i++) {
-            SlotDef def = layout.slots.get(outputFluidOffset + i);
-            int tankIndex = inputFluidCount + i;
-            if (tooltip) {
-                GuiFluidRenderer.renderFluidTooltip(guiGraphics, mouseX, mouseY,
-                        x + def.x, y + def.y, 16, 16,
-                        tanks.getFluidInTank(tankIndex), tanks.getTankCapacity(tankIndex));
-            } else {
-                GuiFluidRenderer.renderFluidTank(guiGraphics, x + def.x, y + def.y, 16, 16,
-                        tanks.getFluidInTank(tankIndex), tanks.getTankCapacity(tankIndex));
+                GuiFluidRenderer.renderFluidTank(guiGraphics, widget.x, widget.y, 16, 16,
+                        tanks.getFluidInTank(tank), tanks.getTankCapacity(tank));
             }
         }
     }
@@ -199,5 +108,6 @@ public class MultiblockPortScreen extends AbstractContainerScreen<MultiblockPort
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         renderTooltip(guiGraphics, mouseX, mouseY);
+        renderFluidTanks(guiGraphics, mouseX, mouseY, true);
     }
 }
